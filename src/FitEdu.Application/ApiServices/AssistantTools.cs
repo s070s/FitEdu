@@ -22,6 +22,33 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
     private const int MaxSearchResults = 5;
     private const int MaxDescriptionLength = 200;
     private const string ExercisePagePrefix = "/exercises/";
+    private const string FilterValueSeparator = ", ";
+
+    /// <summary>
+    /// The library's fixed primary-muscle values (English, lower case). The filter matches whole
+    /// values only, so the small chat model is given the exact list rather than examples.
+    /// </summary>
+    public static readonly IReadOnlyList<string> MuscleFilterValues =
+    [
+        "abdominals", "abductors", "adductors", "biceps", "calves", "chest", "forearms", "glutes", "hamstrings",
+        "lats", "lower back", "middle back", "neck", "quadriceps", "shoulders", "traps", "triceps"
+    ];
+
+    /// <summary>The library's fixed equipment values (English, lower case), matched whole.</summary>
+    public static readonly IReadOnlyList<string> EquipmentFilterValues =
+    [
+        "bands", "barbell", "body only", "cable", "dumbbell", "e-z curl bar", "exercise ball", "foam roll",
+        "kettlebells", "machine", "medicine ball", "other"
+    ];
+
+    // Declared after the two lists: static fields are initialised in the order they are written.
+    private static readonly string SearchExercisesDescription =
+        "Searches the exercise library by a word in the exercise name. muscle and equipment are optional exact filters "
+        + "and always take an English value from these lists, even in a Greek conversation. "
+        + $"muscle is one of: {string.Join(FilterValueSeparator, MuscleFilterValues)}. "
+        + $"equipment is one of: {string.Join(FilterValueSeparator, EquipmentFilterValues)}. "
+        + "For a broad area pick the closest value (for the back: lats, middle back or lower back). "
+        + "query may be empty when a filter is given. maxResults is optional (default 5, max 5).";
 
     public IReadOnlyList<AITool> GetToolsForUser(string userId, string language)
     {
@@ -58,7 +85,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
                 (string query, string? muscle, string? equipment, int? maxResults, CancellationToken ct) =>
                     SearchExercisesAsync(query, muscle, equipment, maxResults, language, ct),
                 "search_exercises",
-                "Searches the exercise library by a word in the exercise name. muscle (e.g. chest, quadriceps, lower back) and equipment (e.g. barbell, dumbbell, body only) are optional exact filters; query may be empty when a filter is given. maxResults is optional (default 5, max 5)."),
+                SearchExercisesDescription),
             AIFunctionFactory.Create(
                 (CancellationToken ct) => RecommendCoursesAsync(userId, isEl, ct),
                 "recommend_courses",

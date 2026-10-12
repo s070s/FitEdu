@@ -146,6 +146,7 @@ public class AssistantServiceTests
         prompt.ShouldContain("exercise library");
         prompt.ShouldContain("consult a doctor or physiotherapist");
         prompt.ShouldContain("Never prescribe diets or supplements");
+        prompt.ShouldContain("seek professional help"); // serious distress, e.g. disordered eating
         prompt.ShouldNotContain("career", Case.Insensitive);
         prompt.ShouldNotContain("counsel", Case.Insensitive);
     }

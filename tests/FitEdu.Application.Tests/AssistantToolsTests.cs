@@ -212,6 +212,19 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
     }
 
     [Fact]
+    public async Task SearchExercisesTool_Description_ListsExactlyTheRealLibraryMuscleAndEquipmentValues()
+    {
+        // The filters match whole English values only, so the model must be told the real vocabulary.
+        var facets = await new ExerciseService(_library.Db).GetFacetsAsync();
+
+        AssistantTools.MuscleFilterValues.ShouldBe(facets.Muscles.Select(facet => facet.Value));
+        AssistantTools.EquipmentFilterValues.ShouldBe(facets.Equipment.Select(facet => facet.Value));
+        var description = NewTools(_library.Db).GetToolsForUser(UserId, "el").Single(tool => tool.Name == "search_exercises").Description;
+        description.ShouldContain(string.Join(", ", AssistantTools.MuscleFilterValues));
+        description.ShouldContain(string.Join(", ", AssistantTools.EquipmentFilterValues));
+    }
+
+    [Fact]
     public async Task SearchExercises_NoQueryAndNoFilter_ReturnsNothing()
     {
         var tools = NewTools(_library.Db);
