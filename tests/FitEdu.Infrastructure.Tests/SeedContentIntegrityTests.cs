@@ -1,0 +1,444 @@
+using System.Reflection;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using FitEdu.Application.Common;
+using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
+using Shouldly;
+using Xunit;
+
+namespace FitEdu.Infrastructure.Tests;
+
+/// <summary>
+/// Content gates for the real seed files under src/FitEdu.Shared/JSON and the resx files:
+/// counts, Greek text, exercise references and photos, and no career-era vocabulary.
+/// Each fact lists every problem it finds, so one run shows all the fixes a content file needs.
+/// </summary>
+[Trait("Category", "SeedContent")]
+public partial class SeedContentIntegrityTests
+{
+    private const int ExpectedCourseCount = 19;
+    private const int ExpectedAssessmentCount = 19;
+    private const string RatingQuestionType = "rating";
+    private const char EquipmentSeparator = ',';
+    private const string EnglishResxPattern = "*.resx";
+    private const string GreekResxSuffix = ".el.resx";
+    private const string AllFilesPattern = "*";
+
+    private static readonly string ExerciseImagesFolder = Path.Combine(RepoPaths.WebRoot, "images", "exercises");
+    private static readonly string ResourcesFolder = Path.Combine(RepoPaths.RepoRoot, "src", "FitEdu.Shared", "Resources");
+
+    // Every exercise photo pair is a start and an end frame.
+    private static readonly string[] ExerciseImageFileNames = ["0.webp", "1.webp"];
+
+    // The seven course categories and their Greek names (they become the Category rows).
+    private static readonly Dictionary<string, string> CourseCategoryGreekNames = new(StringComparer.Ordinal)
+    {
+        ["Strength"] = "Δύναμη",
+        ["Cardio"] = "Καρδιο",
+        ["Mobility"] = "Κινητικότητα",
+        ["Core"] = "Κορμός",
+        ["Nutrition"] = "Διατροφή",
+        ["Recovery"] = "Αποκατάσταση",
+        ["Performance"] = "Απόδοση"
+    };
+
+    // The codes the course equipment filter matches (see Course.Equipment).
+    private static readonly HashSet<string> EquipmentCodes = new(StringComparer.Ordinal)
+    {
+        "none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"
+    };
+
+    // Where the career-vocabulary gate looks. Task C3 adds the resx files and the C# seed code.
+    private static readonly VocabularyScanRoot[] VocabularyScanRoots =
+    [
+        new(RepoPaths.SeedJsonRoot, AllFilesPattern)
+    ];
+
+    // ---- Courses -----------------------------------------------------------------------------
+
+    [Fact]
+    public void Courses_AreExactlyNineteen_WithBilingualHeaderAndFitnessFields()
+    {
+        var courseFiles = SeedJsonFiles.LoadCourses();
+
+        var problems = courseFiles.SelectMany(FindCourseHeaderProblems).ToList();
+
+        courseFiles.Count.ShouldBe(ExpectedCourseCount);
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_CategoryIsOneOfTheSeven_WithItsExactGreekName()
+    {
+        var problems = new List<string>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            var category = course.Category ?? string.Empty;
+            if (!CourseCategoryGreekNames.TryGetValue(category, out var greekName))
+                problems.Add($"{fileName}: unknown category '{category}'");
+            else if (course.CategoryEl != greekName)
+                problems.Add($"{fileName}: categoryEl '{course.CategoryEl}' should be '{greekName}'");
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_EquipmentUsesOnlyKnownCodes()
+    {
+        var problems = new List<string>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            var codes = (course.Equipment ?? string.Empty).Split(EquipmentSeparator, StringSplitOptions.TrimEntries);
+            problems.AddRange(codes
+                .Where(code => !EquipmentCodes.Contains(code))
+                .Select(code => $"{fileName}: unknown equipment code '{code}'"));
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_EveryModuleAndLessonHasGreekText_AndEveryLessonHasContentOrExercises()
+    {
+        var problems = new List<string>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            foreach (var module in course.Modules)
+                problems.AddRange(FindModuleProblems($"{fileName} / {module.Title}", module));
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_EveryExerciseSlugExistsInExerciseLibrary()
+    {
+        var librarySlugs = SeedJsonFiles.LoadExerciseLibrary()
+            .Select(exercise => SlugHelper.FromExerciseId(exercise.Id))
+            .ToHashSet(StringComparer.Ordinal);
+
+        var problems = FindReferencedExercises()
+            .Where(reference => !librarySlugs.Contains(reference.Slug))
+            .Select(reference => $"{reference.Location}: unknown exercise slug '{reference.Slug}'")
+            .ToList();
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_ReferencedExercisesHaveBothImagesOnDisk()
+    {
+        var problems = new List<string>();
+
+        foreach (var slug in FindReferencedExercises().Select(reference => reference.Slug).Distinct())
+        {
+            problems.AddRange(ExerciseImageFileNames
+                .Select(imageFileName => Path.Combine(ExerciseImagesFolder, slug, imageFileName))
+                .Where(imagePath => !File.Exists(imagePath))
+                .Select(imagePath => $"missing image {Path.GetRelativePath(RepoPaths.WebRoot, imagePath)}"));
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Courses_ReferencedExercisesHaveAGreekOverlayRow()
+    {
+        var translatedSlugs = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => !string.IsNullOrWhiteSpace(row.NameEl))
+            .Select(row => row.Slug)
+            .ToHashSet(StringComparer.Ordinal);
+
+        var untranslatedSlugs = FindReferencedExercises()
+            .Select(reference => reference.Slug)
+            .Where(slug => !translatedSlugs.Contains(slug))
+            .Distinct()
+            .ToList();
+
+        untranslatedSlugs.ShouldBeEmpty("exercises.el.json needs a nameEl for these slugs");
+    }
+
+    // ---- Assessments -------------------------------------------------------------------------
+
+    [Fact]
+    public void Assessments_AreExactlyNineteen_AndBilingual()
+    {
+        var assessmentFiles = SeedJsonFiles.LoadAssessments();
+
+        var problems = assessmentFiles.SelectMany(FindAssessmentProblems).ToList();
+
+        assessmentFiles.Count.ShouldBe(ExpectedAssessmentCount);
+        problems.ShouldBeEmpty();
+    }
+
+    // ---- Blog --------------------------------------------------------------------------------
+
+    [Fact]
+    public void BlogSeed_CoverImagesAreSiteRootPathsThatExistOnDisk()
+    {
+        var problems = new List<string>();
+
+        foreach (var article in BlogSeedData.SeedArticles.Where(article => !string.IsNullOrWhiteSpace(article.CoverImageUrl)))
+        {
+            // A relative path renders broken on nested pages, so covers must start at the site root.
+            var coverUrl = article.CoverImageUrl!;
+            if (!coverUrl.StartsWith('/'))
+            {
+                problems.Add($"{article.Slug}: cover '{coverUrl}' is not a site-root path");
+                continue;
+            }
+
+            var coverPath = Path.Combine(RepoPaths.WebRoot, coverUrl.TrimStart('/'));
+            if (!File.Exists(coverPath))
+                problems.Add($"{article.Slug}: cover '{coverUrl}' is missing under wwwroot");
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    // ---- Vocabulary --------------------------------------------------------------------------
+
+    [Fact]
+    public void SeedFiles_ContainNoCareerVocabulary()
+    {
+        var problems = new List<string>();
+
+        foreach (var filePath in VocabularyScanRoots.SelectMany(FindFilesToScan))
+        {
+            var text = File.ReadAllText(filePath);
+            problems.AddRange(CareerVocabularyRegex().Matches(text)
+                .Select(match => $"{Path.GetRelativePath(RepoPaths.RepoRoot, filePath)}: '{match.Value}'")
+                .Distinct());
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    // ---- Resources ---------------------------------------------------------------------------
+
+    public static TheoryData<string> EnglishResxFiles()
+    {
+        var englishResxFiles = Directory.GetFiles(ResourcesFolder, EnglishResxPattern, SearchOption.AllDirectories)
+            .Where(filePath => !filePath.EndsWith(GreekResxSuffix, StringComparison.OrdinalIgnoreCase))
+            .Select(filePath => Path.GetRelativePath(ResourcesFolder, filePath))
+            .Order(StringComparer.Ordinal);
+
+        return new TheoryData<string>(englishResxFiles);
+    }
+
+    [Theory]
+    [MemberData(nameof(EnglishResxFiles))]
+    public void Resx_EnglishAndGreekKeysMatchEachOtherAndTheDesignerClass(string englishResxRelativePath)
+    {
+        var englishResxPath = Path.Combine(ResourcesFolder, englishResxRelativePath);
+        var greekResxPath = Path.ChangeExtension(englishResxPath, null) + GreekResxSuffix;
+        var englishValues = LoadResxValues(englishResxPath);
+        var greekValues = LoadResxValues(greekResxPath);
+        var designerKeys = LoadDesignerKeys(Path.GetFileNameWithoutExtension(englishResxPath));
+
+        englishValues.Keys.Except(greekValues.Keys).ShouldBeEmpty("keys missing from the .el.resx");
+        greekValues.Keys.Except(englishValues.Keys).ShouldBeEmpty("keys only in the .el.resx");
+        englishValues.Keys.Except(designerKeys).ShouldBeEmpty("keys missing from the Designer.cs class");
+        designerKeys.Except(englishValues.Keys).ShouldBeEmpty("Designer.cs properties with no resx key");
+        greekValues.Where(pair => string.IsNullOrWhiteSpace(pair.Value)).Select(pair => pair.Key)
+            .ShouldBeEmpty("keys with an empty Greek value");
+    }
+
+    // ---- Helpers -----------------------------------------------------------------------------
+
+    private static IEnumerable<string> FindCourseHeaderProblems(SeedFile<CourseSeedDto> file)
+    {
+        var course = file.Content;
+        (string Field, string? Value)[] requiredTexts =
+        [
+            ("title", course.Title), ("titleEl", course.TitleEl),
+            ("description", course.Description), ("descriptionEl", course.DescriptionEl),
+            ("category", course.Category), ("categoryEl", course.CategoryEl)
+        ];
+
+        foreach (var (field, _) in requiredTexts.Where(text => string.IsNullOrWhiteSpace(text.Value)))
+            yield return $"{file.Name}: {field} is empty";
+
+        // The seeder silently falls back to a default for an unknown name, so check the names here.
+        if (!IsEnumName<CourseLevel>(course.Level))
+            yield return $"{file.Name}: unknown level '{course.Level}'";
+        if (!IsEnumName<FitnessGoal>(course.Goal))
+            yield return $"{file.Name}: unknown goal '{course.Goal}'";
+        if (!IsEnumName<SubscriptionTier>(course.RequiredTier))
+            yield return $"{file.Name}: unknown requiredTier '{course.RequiredTier}'";
+        if (course.EstimatedWeeks is not > 0 || course.SessionsPerWeek is not > 0)
+            yield return $"{file.Name}: estimatedWeeks and sessionsPerWeek must be positive";
+    }
+
+    private static bool IsEnumName<TEnum>(string? value) where TEnum : struct, Enum =>
+        Enum.GetNames<TEnum>().Contains(value, StringComparer.OrdinalIgnoreCase);
+
+    private static IEnumerable<string> FindModuleProblems(string location, ModuleSeedDto module)
+    {
+        if (string.IsNullOrWhiteSpace(module.TitleEl))
+            yield return $"{location}: module titleEl is empty";
+        if (HasTextWithoutGreek(module.Description, module.DescriptionEl))
+            yield return $"{location}: module descriptionEl is empty";
+        if (module.Lessons.Count == 0)
+            yield return $"{location}: module has no lessons";
+
+        foreach (var lesson in module.Lessons)
+        {
+            foreach (var problem in FindLessonProblems($"{location} / {lesson.Title}", lesson))
+                yield return problem;
+        }
+    }
+
+    private static IEnumerable<string> FindLessonProblems(string location, LessonSeedDto lesson)
+    {
+        if (string.IsNullOrWhiteSpace(lesson.TitleEl))
+            yield return $"{location}: titleEl is empty";
+        if (HasTextWithoutGreek(lesson.Content, lesson.ContentEl))
+            yield return $"{location}: contentEl is empty";
+        if (string.IsNullOrWhiteSpace(lesson.Content) && lesson.Exercises.Count == 0)
+            yield return $"{location}: lesson has neither content nor exercises";
+        if (lesson.DurationMinutes is not > 0)
+            yield return $"{location}: durationMinutes must be positive";
+
+        foreach (var exercise in lesson.Exercises.Where(exercise => HasTextWithoutGreek(exercise.Notes, exercise.NotesEl)))
+            yield return $"{location} / {exercise.Slug}: notesEl is empty";
+    }
+
+    private static bool HasTextWithoutGreek(string? english, string? greek) =>
+        !string.IsNullOrWhiteSpace(english) && string.IsNullOrWhiteSpace(greek);
+
+    /// <summary>Every exercise a course points at: its cover photo and each lesson prescription.</summary>
+    private static List<ExerciseReference> FindReferencedExercises()
+    {
+        var references = new List<ExerciseReference>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            if (!string.IsNullOrWhiteSpace(course.CoverExerciseSlug))
+                references.Add(new ExerciseReference($"{fileName} cover", course.CoverExerciseSlug));
+
+            references.AddRange(course.Modules
+                .SelectMany(module => module.Lessons)
+                .SelectMany(lesson => lesson.Exercises.Select(exercise =>
+                    new ExerciseReference($"{fileName} / {lesson.Title}", exercise.Slug))));
+        }
+
+        return references;
+    }
+
+    private static IEnumerable<string> FindAssessmentProblems(SeedFile<AssessmentSeedDto> file)
+    {
+        var assessment = file.Content;
+        (string Field, string? Value)[] requiredTexts =
+        [
+            ("Title", assessment.Title), ("TitleEl", assessment.TitleEl),
+            ("Description", assessment.Description), ("DescriptionEl", assessment.DescriptionEl),
+            ("Category", assessment.Category), ("CategoryEl", assessment.CategoryEl)
+        ];
+
+        foreach (var (field, _) in requiredTexts.Where(text => string.IsNullOrWhiteSpace(text.Value)))
+            yield return $"{file.Name}: {field} is empty";
+        if (assessment.Key != file.Name)
+            yield return $"{file.Name}: Key '{assessment.Key}' does not match the file name";
+
+        // SchemaJson is itself a JSON document stored as a string.
+        using var schema = JsonDocument.Parse(assessment.SchemaJson);
+        foreach (var problem in FindSchemaProblems(file.Name, assessment.Key, schema.RootElement))
+            yield return problem;
+    }
+
+    private static IEnumerable<string> FindSchemaProblems(string location, string key, JsonElement schema)
+    {
+        if (ReadText(schema, "id") != key)
+            yield return $"{location}: schema id does not equal the Key";
+        if (string.IsNullOrWhiteSpace(ReadText(schema, "titleEl")))
+            yield return $"{location}: schema titleEl is empty";
+
+        foreach (var section in ReadArray(schema, "sections"))
+        {
+            var sectionLocation = $"{location} / {ReadText(section, "id")}";
+            if (string.IsNullOrWhiteSpace(ReadText(section, "titleEl")))
+                yield return $"{sectionLocation}: section titleEl is empty";
+
+            foreach (var question in ReadArray(section, "questions"))
+            {
+                foreach (var problem in FindQuestionProblems($"{sectionLocation} / {ReadText(question, "id")}", question))
+                    yield return problem;
+            }
+        }
+    }
+
+    private static IEnumerable<string> FindQuestionProblems(string location, JsonElement question)
+    {
+        if (string.IsNullOrWhiteSpace(ReadText(question, "labelEl")))
+            yield return $"{location}: labelEl is empty";
+
+        var isRating = ReadText(question, "type") == RatingQuestionType;
+        var hasRatingLabels = !string.IsNullOrWhiteSpace(ReadText(question, "minLabelEl"))
+            && !string.IsNullOrWhiteSpace(ReadText(question, "maxLabelEl"));
+        if (isRating && !hasRatingLabels)
+            yield return $"{location}: rating question needs minLabelEl and maxLabelEl";
+
+        // Greek options are shown in place of the English ones, so the two lists must line up.
+        var optionCount = ReadArray(question, "options").Count;
+        if (optionCount > 0 && ReadArray(question, "optionsEl").Count != optionCount)
+            yield return $"{location}: optionsEl must have one entry per option";
+    }
+
+    private static string? ReadText(JsonElement element, string propertyName) =>
+        element.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
+
+    private static List<JsonElement> ReadArray(JsonElement element, string propertyName) =>
+        element.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.Array
+            ? value.EnumerateArray().ToList()
+            : [];
+
+    private static IEnumerable<string> FindFilesToScan(VocabularyScanRoot root) =>
+        Directory.GetFiles(root.Folder, root.SearchPattern, SearchOption.AllDirectories);
+
+    private static Dictionary<string, string> LoadResxValues(string resxPath)
+    {
+        File.Exists(resxPath).ShouldBeTrue($"{resxPath} is missing");
+
+        return XDocument.Load(resxPath).Root!
+            .Elements("data")
+            .ToDictionary(
+                data => (string)data.Attribute("name")!,
+                data => (string?)data.Element("value") ?? string.Empty,
+                StringComparer.Ordinal);
+    }
+
+    /// <summary>The public string properties of the hand-edited Designer class with this name.</summary>
+    private static HashSet<string> LoadDesignerKeys(string resourceClassName)
+    {
+        var resourceAssembly = typeof(GlobalRes).Assembly;
+        var designerClass = resourceAssembly.GetTypes().SingleOrDefault(type => type.Name == resourceClassName);
+        designerClass.ShouldNotBeNull($"no Designer class named {resourceClassName} in {resourceAssembly.GetName().Name}");
+
+        return designerClass
+            .GetProperties(BindingFlags.Public | BindingFlags.Static)
+            .Where(property => property.PropertyType == typeof(string))
+            .Select(property => property.Name)
+            .ToHashSet(StringComparer.Ordinal);
+    }
+
+    // Career-era words: career, job(s), interview, résumé/resume, salary, LinkedIn, psychosocial,
+    // counsel(ling) and the Greek stem for career.
+    [GeneratedRegex(@"career|\bjobs?\b|interview|\br[eé]sum[eé]|salary|linkedin|psychosocial|counsel|καριέρ",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex CareerVocabularyRegex();
+
+    private sealed record ExerciseReference(string Location, string Slug);
+
+    private sealed record VocabularyScanRoot(string Folder, string SearchPattern);
+}
