@@ -61,7 +61,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Last updated: July 2026.
+        ///   Looks up a localized string similar to Last updated: October 2026.
         /// </summary>
         public static string LastUpdated {
             get {
@@ -79,7 +79,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to FitEdu is a university certificate project. ....
+        ///   Looks up a localized string similar to FitEdu is a university certificate project that demonstrates a ....
         /// </summary>
         public static string EducationalNotice {
             get {
@@ -97,7 +97,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to FitEdu is an online career-counselling ....
+        ///   Looks up a localized string similar to FitEdu is an online fitness-courses platform with an exercise library. This ....
         /// </summary>
         public static string PrivacyIntro {
             get {
@@ -115,7 +115,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to When you create an account we store your name, ....
+        ///   Looks up a localized string similar to When you create an account we store your name, email address, date of birth, ....
         /// </summary>
         public static string PrivacyDataBody {
             get {
@@ -133,7 +133,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to We process your data to give you access ....
+        ///   Looks up a localized string similar to We use your data to run your account, deliver the programmes, workouts and ....
         /// </summary>
         public static string PrivacyPurposeBody {
             get {
@@ -142,7 +142,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assessment (special-category) data.
+        ///   Looks up a localized string similar to Health-related assessment data.
         /// </summary>
         public static string PrivacySpecialTitle {
             get {
@@ -151,7 +151,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Some assessments ask about your wellbeing, ....
+        ///   Looks up a localized string similar to Some self-assessments ask about injuries, pain, balance, sleep, stress and ....
         /// </summary>
         public static string PrivacySpecialBody {
             get {
@@ -169,7 +169,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to We keep your account data for as long ....
+        ///   Looks up a localized string similar to We keep your data for as long as your account exists. When you delete your ....
         /// </summary>
         public static string PrivacyRetentionBody {
             get {
@@ -187,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You have the right to access the personal data ....
+        ///   Looks up a localized string similar to You have the right to access the personal data we hold about you, to correct ....
         /// </summary>
         public static string PrivacyRightsBody {
             get {
@@ -205,7 +205,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to We use only essential cookies ....
+        ///   Looks up a localized string similar to We use only essential cookies: one to keep you signed in, one to remember an ....
         /// </summary>
         public static string PrivacyCookiesBody {
             get {
@@ -223,7 +223,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to We may update this policy as the platform evolves ....
+        ///   Looks up a localized string similar to We may update this policy as the platform evolves; the date at the top of the ....
         /// </summary>
         public static string PrivacyContactBody {
             get {
@@ -241,7 +241,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to These terms govern your use of FitEdu ....
+        ///   Looks up a localized string similar to These terms govern your use of FitEdu. By creating an account or using the ....
         /// </summary>
         public static string TermsIntro {
             get {
@@ -259,7 +259,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to FitEdu offers online courses ....
+        ///   Looks up a localized string similar to FitEdu offers online fitness courses and training programmes, an exercise ....
         /// </summary>
         public static string TermsServiceBody {
             get {
@@ -277,7 +277,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You are responsible for the accuracy ....
+        ///   Looks up a localized string similar to You are responsible for the accuracy of the details you provide and for keeping ....
         /// </summary>
         public static string TermsAccountsBody {
             get {
@@ -295,7 +295,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You agree not to misuse the platform ....
+        ///   Looks up a localized string similar to You agree not to misuse the platform: no unlawful, harmful or abusive ....
         /// </summary>
         public static string TermsAcceptableBody {
             get {
@@ -313,7 +313,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Course materials, text and branding ....
+        ///   Looks up a localized string similar to Course materials, workout text and branding on the platform belong to their ....
         /// </summary>
         public static string TermsContentBody {
             get {
@@ -322,7 +322,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assessments and AI assistant.
+        ///   Looks up a localized string similar to Not medical advice.
         /// </summary>
         public static string TermsAssessmentsTitle {
             get {
@@ -331,7 +331,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The assessments and the AI assistant provide ....
+        ///   Looks up a localized string similar to Courses, workouts, self-assessments and the AI coach give general fitness ....
         /// </summary>
         public static string TermsAssessmentsBody {
             get {
@@ -349,7 +349,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The platform is provided "as is" ....
+        ///   Looks up a localized string similar to The platform is provided &quot;as is&quot;, without warranties of any kind. As an ....
         /// </summary>
         public static string TermsDisclaimerBody {
             get {
@@ -367,7 +367,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to We may update these terms as the project develops ....
+        ///   Looks up a localized string similar to We may update these terms as the project develops; the date at the top of the ....
         /// </summary>
         public static string TermsChangesBody {
             get {

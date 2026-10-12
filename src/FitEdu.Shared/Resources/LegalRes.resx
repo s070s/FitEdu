@@ -59,49 +59,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LastUpdated" xml:space="preserve">
-    <value>Last updated: July 2026</value>
+    <value>Last updated: October 2026</value>
   </data>
   <data name="EducationalNoticeTitle" xml:space="preserve">
     <value>Educational project</value>
   </data>
   <data name="EducationalNotice" xml:space="preserve">
-    <value>FitEdu is a university certificate project. The policies below are written to reflect how the platform actually handles data, but it is not a commercial service and these pages are not legal advice.</value>
+    <value>FitEdu is a university certificate project that demonstrates a fitness-education platform. Its courses, exercise library and self-assessments are general education, not medical advice. The policies below describe how the platform actually handles data, but FitEdu is not a commercial service and these pages are not legal advice.</value>
   </data>
   <data name="PrivacyTitle" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>
   <data name="PrivacyIntro" xml:space="preserve">
-    <value>FitEdu is an online career-counselling and e-learning platform. This policy explains what personal data we collect when you use it, why we process that data, how long we keep it, and the rights you have over it. FitEdu is a university certificate project built for educational purposes; it is not a commercial service, and you should not enter real crisis details or highly sensitive personal information into it.</value>
+    <value>FitEdu is an online fitness-courses platform with an exercise library. This policy explains what personal data we collect when you create an account, enrol in programmes, complete workouts, answer self-assessments or use chat, video calls, live classes and the AI coach; why we process that data; how long we keep it; and the rights you have over it. FitEdu is a university certificate project built for educational purposes, not a commercial service, so please do not enter detailed medical records or other highly sensitive information.</value>
   </data>
   <data name="PrivacyDataTitle" xml:space="preserve">
     <value>What data we collect</value>
   </data>
   <data name="PrivacyDataBody" xml:space="preserve">
-    <value>When you create an account we store your name, email address, date of birth and, optionally, a profile picture. As you use the platform we also store your course enrolments and progress, your assessment answers and results, any certificates you earn, your subscription and billing history, and the messages and calls you exchange through the built-in chat and video features. We record the date you gave consent and technical audit information such as who created or last changed a record.</value>
+    <value>When you create an account we store your name, email address, date of birth, training level and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your course reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
   </data>
   <data name="PrivacyPurposeTitle" xml:space="preserve">
     <value>Why we process your data</value>
   </data>
   <data name="PrivacyPurposeBody" xml:space="preserve">
-    <value>We process your data to give you access to your account, deliver the courses and assessments you sign up for, show your progress and certificates, run the chat and video features, and manage subscriptions. The lawful basis is the performance of our agreement with you and, for the assessment answers described below, your explicit consent.</value>
+    <value>We use your data to run your account, deliver the programmes, workouts and self-assessments you sign up for, track your progress and issue certificates, run chat, video calls and live classes, and manage your subscription. The lawful basis is the performance of our agreement with you and, for the health-related assessment answers described below, your explicit consent.</value>
   </data>
   <data name="PrivacySpecialTitle" xml:space="preserve">
-    <value>Assessment (special-category) data</value>
+    <value>Health-related assessment data</value>
   </data>
   <data name="PrivacySpecialBody" xml:space="preserve">
-    <value>Some assessments ask about your wellbeing, motivation and personal circumstances. These answers may reveal information that data-protection law treats as special-category data. We only process them to generate your assessment results and guidance, and we ask for your consent when you register. Please do not use the assessments or the AI assistant to report an emergency or a crisis — they are educational tools, not a substitute for professional or medical advice.</value>
+    <value>Some self-assessments ask about injuries, pain, balance, sleep, stress and nutrition. Data-protection law can treat these answers as health data, a special category. We use them only to show you your results, we ask for your consent when you register, and they are deleted together with your account. The AI coach answers your questions without saving them to your account. Self-assessments are not a medical screening: if you have symptoms such as chest pain, dizziness or an injury, see a doctor rather than relying on the platform.</value>
   </data>
   <data name="PrivacyRetentionTitle" xml:space="preserve">
     <value>How long we keep your data</value>
   </data>
   <data name="PrivacyRetentionBody" xml:space="preserve">
-    <value>We keep your account data for as long as your account exists. If you ask us to delete your account, we remove your personal data together with the dependent records (chat, calls, enrolments and certificates) tied to it. Because this is an educational project, the database may also be reset periodically.</value>
+    <value>We keep your data for as long as your account exists. When you delete your account, we remove your personal data together with the records tied to it: enrolments and workout progress, assessment answers, certificates, chat messages, call history and billing records. Because this is an educational project, the database may also be reset from time to time.</value>
   </data>
   <data name="PrivacyRightsTitle" xml:space="preserve">
     <value>Your rights</value>
   </data>
   <data name="PrivacyRightsBody" xml:space="preserve">
-    <value>You have the right to access the personal data we hold about you, to correct it, to ask us to delete it, and to withdraw your consent at any time. You can update most of your details from your profile page, and you can request deletion of your account. As this is a student project rather than a live service, requests are handled on a best-effort basis.</value>
+    <value>You have the right to access the personal data we hold about you, to correct it, to have it deleted and to withdraw your consent at any time. From your profile page you can update most of your details, download a copy of your data and delete your account. As this is a student project rather than a live service, other requests are handled on a best-effort basis.</value>
   </data>
   <data name="PrivacyCookiesTitle" xml:space="preserve">
     <value>Cookies</value>
@@ -113,25 +113,25 @@
     <value>Contact and changes</value>
   </data>
   <data name="PrivacyContactBody" xml:space="preserve">
-    <value>We may update this policy as the platform evolves; the date above shows when it last changed. As an educational project there is no dedicated data-protection office — questions can be raised through the project's public channels linked in the footer.</value>
+    <value>We may update this policy as the platform evolves; the date at the top of the page shows when it last changed. As an educational project there is no dedicated data-protection office — questions can be raised through the project's public channels linked in the footer.</value>
   </data>
   <data name="TermsTitle" xml:space="preserve">
     <value>Terms of Service</value>
   </data>
   <data name="TermsIntro" xml:space="preserve">
-    <value>These terms govern your use of FitEdu. By creating an account or using the platform you agree to them. FitEdu is a university certificate project provided for educational purposes and free of charge.</value>
+    <value>These terms govern your use of FitEdu. By creating an account or using the platform you agree to them. FitEdu is a university certificate project that demonstrates a fitness-education platform; it is provided for educational purposes, and its content is general fitness education, not medical advice.</value>
   </data>
   <data name="TermsServiceTitle" xml:space="preserve">
     <value>The service</value>
   </data>
   <data name="TermsServiceBody" xml:space="preserve">
-    <value>FitEdu offers online courses, career and wellbeing assessments, certificates, and chat and video features. Because it is a student project, features may change, break, or be reset without notice, and availability is not guaranteed.</value>
+    <value>FitEdu offers online fitness courses and training programmes, an exercise library, self-assessments, certificates, live classes, an AI coach, and chat and video features. Because it is a student project, features may change, break or be reset without notice, and availability is not guaranteed.</value>
   </data>
   <data name="TermsAccountsTitle" xml:space="preserve">
     <value>Your account</value>
   </data>
   <data name="TermsAccountsBody" xml:space="preserve">
-    <value>You are responsible for the accuracy of the details you provide and for keeping your password secure. You must be old enough under your local law to consent to using an online service; where a parent or guardian's consent is required, you confirm you have it.</value>
+    <value>You are responsible for the accuracy of the details you provide and for keeping your password secure. You must be old enough under your local law to consent to using an online service; where a parent's or guardian's consent is required, you confirm you have it.</value>
   </data>
   <data name="TermsAcceptableTitle" xml:space="preserve">
     <value>Acceptable use</value>
@@ -143,24 +143,24 @@
     <value>Content and intellectual property</value>
   </data>
   <data name="TermsContentBody" xml:space="preserve">
-    <value>Course materials, text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Content you submit — such as profile details and assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
+    <value>Course materials, workout text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Exercise photos and instructions come from the public-domain Free Exercise DB. Content you submit — such as profile details, reviews and assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
   </data>
   <data name="TermsAssessmentsTitle" xml:space="preserve">
-    <value>Assessments and AI assistant</value>
+    <value>Not medical advice</value>
   </data>
   <data name="TermsAssessmentsBody" xml:space="preserve">
-    <value>The assessments and the AI assistant provide general, automated guidance for learning purposes. They are not professional, medical, psychological, legal or financial advice, and you should not rely on them for important decisions or in an emergency. Always seek a qualified professional where appropriate.</value>
+    <value>Courses, workouts, self-assessments and the AI coach give general fitness education. They are not medical, physiotherapy or nutrition advice and do not replace an assessment by a qualified professional. Talk to a doctor or physiotherapist before you start training if you have a medical condition or an injury, are pregnant or have recently given birth, or have not exercised for a long time. Warm up, train within your limits and stop straight away if you feel pain, dizziness, chest discomfort or unusual shortness of breath. You train at your own risk.</value>
   </data>
   <data name="TermsDisclaimerTitle" xml:space="preserve">
     <value>Disclaimers and liability</value>
   </data>
   <data name="TermsDisclaimerBody" xml:space="preserve">
-    <value>The platform is provided "as is", without warranties of any kind. As an educational project offered free of charge, we are not liable for any loss arising from its use, to the extent permitted by law.</value>
+    <value>The platform is provided "as is", without warranties of any kind. As an educational project, we are not liable for any injury, loss or damage arising from its use or from following its programmes, to the extent permitted by law.</value>
   </data>
   <data name="TermsChangesTitle" xml:space="preserve">
     <value>Changes and contact</value>
   </data>
   <data name="TermsChangesBody" xml:space="preserve">
-    <value>We may update these terms as the project develops; the date above shows when they last changed. Continued use after a change means you accept the updated terms. Questions can be raised through the project's public channels linked in the footer.</value>
+    <value>We may update these terms as the project develops; the date at the top of the page shows when they last changed. Continued use after a change means you accept the updated terms. Questions can be raised through the project's public channels linked in the footer.</value>
   </data>
 </root>
