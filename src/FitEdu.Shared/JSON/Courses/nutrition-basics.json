@@ -105,10 +105,10 @@
             {
               "slug": "dead-bug",
               "sets": 2,
-              "reps": "6 per side",
+              "reps": "6",
               "restSeconds": 30,
-              "notes": "Keep your lower back pressed to the floor.",
-              "notesEl": "Κράτα τη μέση κολλημένη στο πάτωμα."
+              "notes": "Each side. Keep your lower back pressed to the floor.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τη μέση κολλημένη στο πάτωμα."
             },
             {
               "slug": "plank",

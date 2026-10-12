@@ -120,6 +120,17 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
+    public void Courses_PrescriptionRepsUseLanguageNeutralNotation()
+    {
+        var problems = FindPrescriptions()
+            .Where(prescription => !IsLanguageNeutralReps(prescription.Exercise.Reps))
+            .Select(prescription => $"{prescription.Location} / {prescription.Exercise.Slug}: reps '{prescription.Exercise.Reps}'")
+            .ToList();
+
+        problems.ShouldBeEmpty("reps show unchanged in both languages: keep numbers and unit symbols, move words to notes/notesEl");
+    }
+
+    [Fact]
     public void Courses_EveryExerciseSlugExistsInExerciseLibrary()
     {
         var librarySlugs = SeedJsonFiles.LoadExerciseLibrary()
@@ -309,26 +320,48 @@ public partial class SeedContentIntegrityTests
             yield return $"{location} / {exercise.Slug}: notesEl is empty";
     }
 
+    /// <summary>
+    /// Reps have no Greek column, so they may hold only numbers, symbols and the unit symbols
+    /// both languages read the same (s, min, m, rpm, RPE, AMRAP), and no decimal numbers
+    /// (1.5 is written 1,5 in Greek).
+    /// </summary>
+    private static bool IsLanguageNeutralReps(string? reps)
+    {
+        if (string.IsNullOrEmpty(reps))
+            return true;
+
+        var withoutUnits = RepsUnitSymbolRegex().Replace(reps, string.Empty);
+        return !withoutUnits.Any(char.IsLetter) && !DecimalNumberRegex().IsMatch(reps);
+    }
+
     private static bool HasTextWithoutGreek(string? english, string? greek) =>
         !string.IsNullOrWhiteSpace(english) && string.IsNullOrWhiteSpace(greek);
+
+    /// <summary>Every lesson prescription in the course files, located as "file / lesson".</summary>
+    private static List<Prescription> FindPrescriptions()
+    {
+        var prescriptions = new List<Prescription>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            var lessons = course.Modules.SelectMany(module => module.Lessons);
+            prescriptions.AddRange(lessons.SelectMany(lesson =>
+                lesson.Exercises.Select(exercise => new Prescription($"{fileName} / {lesson.Title}", exercise))));
+        }
+
+        return prescriptions;
+    }
 
     /// <summary>Every exercise a course points at: its cover photo and each lesson prescription.</summary>
     private static List<ExerciseReference> FindReferencedExercises()
     {
-        var references = new List<ExerciseReference>();
+        var coverReferences = SeedJsonFiles.LoadCourses()
+            .Where(file => !string.IsNullOrWhiteSpace(file.Content.CoverExerciseSlug))
+            .Select(file => new ExerciseReference($"{file.Name} cover", file.Content.CoverExerciseSlug!));
+        var prescriptionReferences = FindPrescriptions()
+            .Select(prescription => new ExerciseReference(prescription.Location, prescription.Exercise.Slug));
 
-        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
-        {
-            if (!string.IsNullOrWhiteSpace(course.CoverExerciseSlug))
-                references.Add(new ExerciseReference($"{fileName} cover", course.CoverExerciseSlug));
-
-            references.AddRange(course.Modules
-                .SelectMany(module => module.Lessons)
-                .SelectMany(lesson => lesson.Exercises.Select(exercise =>
-                    new ExerciseReference($"{fileName} / {lesson.Title}", exercise.Slug))));
-        }
-
-        return references;
+        return coverReferences.Concat(prescriptionReferences).ToList();
     }
 
     private static IEnumerable<string> FindAssessmentProblems(SeedFile<AssessmentSeedDto> file)
@@ -458,7 +491,15 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekPastTenseCommandRegex();
 
+    [GeneratedRegex(@"\b(?:s|min|m|rpm|RPE|AMRAP)\b", RegexOptions.CultureInvariant)]
+    private static partial Regex RepsUnitSymbolRegex();
+
+    [GeneratedRegex(@"\d[.,]\d", RegexOptions.CultureInvariant)]
+    private static partial Regex DecimalNumberRegex();
+
     private sealed record ExerciseReference(string Location, string Slug);
+
+    private sealed record Prescription(string Location, LessonExerciseSeedDto Exercise);
 
     private sealed record TextScanRoot(string Folder, string SearchPattern);
 }

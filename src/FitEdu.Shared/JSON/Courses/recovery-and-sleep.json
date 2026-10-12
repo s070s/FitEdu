@@ -124,26 +124,26 @@
             {
               "slug": "one-knee-to-chest",
               "sets": 2,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 10,
-              "notes": "Hold under the knee, not over the kneecap.",
-              "notesEl": "Πιάσε κάτω από το γόνατο, όχι πάνω στην επιγονατίδα."
+              "notes": "Each side. Hold under the knee, not over the kneecap.",
+              "notesEl": "Σε κάθε πλευρά. Πιάσε κάτω από το γόνατο, όχι πάνω στην επιγονατίδα."
             },
             {
               "slug": "ankle-on-the-knee",
               "sets": 2,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 10,
-              "notes": "Keep your head and shoulders relaxed on the floor.",
-              "notesEl": "Κράτα το κεφάλι και τους ώμους χαλαρά στο πάτωμα."
+              "notes": "Each side. Keep your head and shoulders relaxed on the floor.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα το κεφάλι και τους ώμους χαλαρά στο πάτωμα."
             },
             {
               "slug": "knee-across-the-body",
               "sets": 2,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 10,
-              "notes": "Let the knee drop only as far as is comfortable.",
-              "notesEl": "Άφησε το γόνατο να πέσει μόνο όσο νιώθεις άνετα."
+              "notes": "Each side. Let the knee drop only as far as is comfortable.",
+              "notesEl": "Σε κάθε πλευρά. Άφησε το γόνατο να πέσει μόνο όσο νιώθεις άνετα."
             },
             {
               "slug": "hug-knees-to-chest",

@@ -70,7 +70,7 @@ public sealed class LessonExerciseSeedDto
     public required string Slug { get; init; }
     public int? Sets { get; init; }
 
-    /// <summary>Free text such as "8-12", "30 s" or "AMRAP".</summary>
+    /// <summary>Free text such as "8-12", "30 s" or "AMRAP"; shown as-is in both languages (no words).</summary>
     public string? Reps { get; init; }
     public int? RestSeconds { get; init; }
     public string? Notes { get; init; }

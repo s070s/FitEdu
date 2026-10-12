@@ -58,10 +58,10 @@
             {
               "slug": "dead-bug",
               "sets": 3,
-              "reps": "6 per side",
+              "reps": "6",
               "restSeconds": 45,
-              "notes": "Lower back stays on the mat; breathe out as the leg lowers.",
-              "notesEl": "Η μέση μένει στο στρώμα· βγάλε τον αέρα καθώς κατεβαίνει το πόδι."
+              "notes": "Each side. Lower back stays on the mat; breathe out as the leg lowers.",
+              "notesEl": "Σε κάθε πλευρά. Η μέση μένει στο στρώμα· βγάλε τον αέρα καθώς κατεβαίνει το πόδι."
             }
           ]
         },
@@ -84,10 +84,10 @@
             {
               "slug": "dead-bug",
               "sets": 3,
-              "reps": "6 per side",
+              "reps": "6",
               "restSeconds": 30,
-              "notes": "Slow 4–5 second reps; back stays on the mat.",
-              "notesEl": "Αργές επαναλήψεις 4–5 δευτερολέπτων· η μέση μένει στο στρώμα."
+              "notes": "Each side. Slow 4–5 second reps; back stays on the mat.",
+              "notesEl": "Σε κάθε πλευρά. Αργές επαναλήψεις 4–5 δευτερολέπτων· η μέση μένει στο στρώμα."
             },
             {
               "slug": "butt-lift-bridge",
@@ -108,18 +108,18 @@
             {
               "slug": "side-bridge",
               "sets": 3,
-              "reps": "15–20 s per side",
+              "reps": "15–20 s",
               "restSeconds": 30,
-              "notes": "Knees bent; hips high in a line from head to knees.",
-              "notesEl": "Γόνατα λυγισμένα· λεκάνη ψηλά, σε ευθεία από το κεφάλι ως τα γόνατα."
+              "notes": "Each side. Knees bent; hips high in a line from head to knees.",
+              "notesEl": "Σε κάθε πλευρά. Γόνατα λυγισμένα· λεκάνη ψηλά, σε ευθεία από το κεφάλι ως τα γόνατα."
             },
             {
               "slug": "superman",
               "sets": 3,
-              "reps": "8 (2 s hold)",
+              "reps": "8",
               "restSeconds": 30,
-              "notes": "Lift only a few centimetres; look at the floor.",
-              "notesEl": "Σήκωσε μόνο λίγα εκατοστά· κοίτα το πάτωμα."
+              "notes": "Hold 2 s at the top of each rep. Lift only a few centimetres; look at the floor.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Σήκωσε μόνο λίγα εκατοστά· κοίτα το πάτωμα."
             },
             {
               "slug": "childs-pose",
@@ -151,10 +151,10 @@
             {
               "slug": "side-bridge",
               "sets": 3,
-              "reps": "15–20 s per side",
+              "reps": "15–20 s",
               "restSeconds": 30,
-              "notes": "Straight line from head to feet; push the floor away.",
-              "notesEl": "Ευθεία γραμμή από το κεφάλι ως τα πόδια· σπρώξε το πάτωμα μακριά."
+              "notes": "Each side. Straight line from head to feet; push the floor away.",
+              "notesEl": "Σε κάθε πλευρά. Ευθεία γραμμή από το κεφάλι ως τα πόδια· σπρώξε το πάτωμα μακριά."
             }
           ]
         },
@@ -177,18 +177,18 @@
             {
               "slug": "dead-bug",
               "sets": 3,
-              "reps": "6–8 per side",
+              "reps": "6–8",
               "restSeconds": 30,
-              "notes": "Opposite arm and leg together; back stays down.",
-              "notesEl": "Αντίθετο χέρι και πόδι μαζί· η μέση μένει κάτω."
+              "notes": "Each side. Opposite arm and leg together; back stays down.",
+              "notesEl": "Σε κάθε πλευρά. Αντίθετο χέρι και πόδι μαζί· η μέση μένει κάτω."
             },
             {
               "slug": "single-leg-glute-bridge",
               "sets": 3,
-              "reps": "8–10 per side",
+              "reps": "8–10",
               "restSeconds": 30,
-              "notes": "Keep your hips level; drive through the heel.",
-              "notesEl": "Κράτα τη λεκάνη ίσια· σπρώξε με τη φτέρνα."
+              "notes": "Each side. Keep your hips level; drive through the heel.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τη λεκάνη ίσια· σπρώξε με τη φτέρνα."
             },
             {
               "slug": "plank",
@@ -201,10 +201,10 @@
             {
               "slug": "side-bridge",
               "sets": 3,
-              "reps": "15–30 s per side",
+              "reps": "15–30 s",
               "restSeconds": 30,
-              "notes": "Hips high and stacked; push the floor away.",
-              "notesEl": "Λεκάνη ψηλά και ισχία το ένα πάνω στο άλλο· σπρώξε το πάτωμα μακριά."
+              "notes": "Each side. Hips high and stacked; push the floor away.",
+              "notesEl": "Σε κάθε πλευρά. Λεκάνη ψηλά και ισχία το ένα πάνω στο άλλο· σπρώξε το πάτωμα μακριά."
             },
             {
               "slug": "reverse-crunch",
@@ -217,10 +217,10 @@
             {
               "slug": "superman",
               "sets": 3,
-              "reps": "10 (2 s hold)",
+              "reps": "10",
               "restSeconds": 30,
-              "notes": "Lift a few centimetres and keep your neck long.",
-              "notesEl": "Σήκωσε λίγα εκατοστά και κράτα τον αυχένα ίσιο."
+              "notes": "Hold 2 s at the top of each rep. Lift a few centimetres and keep your neck long.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Σήκωσε λίγα εκατοστά και κράτα τον αυχένα ίσιο."
             },
             {
               "slug": "hug-knees-to-chest",

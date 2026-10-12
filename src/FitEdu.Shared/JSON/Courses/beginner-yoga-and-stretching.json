@@ -74,18 +74,18 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 2,
-              "reps": "15–20 s per side",
+              "reps": "15–20 s",
               "restSeconds": 15,
-              "notes": "Tuck your tailbone slightly before shifting forward.",
-              "notesEl": "Μάζεψε ελαφρά τον κόκκυγα πριν μετακινηθείς μπροστά."
+              "notes": "Each side. Tuck your tailbone slightly before shifting forward.",
+              "notesEl": "Σε κάθε πλευρά. Μάζεψε ελαφρά τον κόκκυγα πριν μετακινηθείς μπροστά."
             },
             {
               "slug": "seated-floor-hamstring-stretch",
               "sets": 2,
-              "reps": "15–20 s per side",
+              "reps": "15–20 s",
               "restSeconds": 15,
-              "notes": "Hinge from the hips with a long back; never pull hard.",
-              "notesEl": "Γείρε από τα ισχία με μακριά πλάτη· μην τραβάς ποτέ δυνατά."
+              "notes": "Each side. Hinge from the hips with a long back; never pull hard.",
+              "notesEl": "Σε κάθε πλευρά. Γείρε από τα ισχία με μακριά πλάτη· μην τραβάς ποτέ δυνατά."
             },
             {
               "slug": "hug-knees-to-chest",
@@ -98,10 +98,10 @@
             {
               "slug": "knee-across-the-body",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 10,
-              "notes": "Let the knee drop only as far as is comfortable.",
-              "notesEl": "Άφησε το γόνατο να πέσει μόνο όσο σου είναι άνετο."
+              "notes": "Each side. Let the knee drop only as far as is comfortable.",
+              "notesEl": "Σε κάθε πλευρά. Άφησε το γόνατο να πέσει μόνο όσο σου είναι άνετο."
             }
           ]
         }
@@ -125,10 +125,10 @@
             {
               "slug": "butt-lift-bridge",
               "sets": 3,
-              "reps": "8–10 (2 s hold)",
+              "reps": "8–10",
               "restSeconds": 45,
-              "notes": "Press through your heels; ribs stay down at the top.",
-              "notesEl": "Πίεσε με τις φτέρνες· τα πλευρά μένουν κάτω στην κορυφή."
+              "notes": "Hold 2 s at the top of each rep. Press through your heels; ribs stay down at the top.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Πίεσε με τις φτέρνες· τα πλευρά μένουν κάτω στην κορυφή."
             }
           ]
         },
@@ -151,26 +151,26 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 3,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 15,
-              "notes": "Squeeze the back glute to feel the front of the hip open.",
-              "notesEl": "Σφίξε τον γλουτό του πίσω ποδιού για να νιώσεις να ανοίγει το μπροστινό μέρος του ισχίου."
+              "notes": "Each side. Squeeze the back glute to feel the front of the hip open.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού για να νιώσεις να ανοίγει το μπροστινό μέρος του ισχίου."
             },
             {
               "slug": "butt-lift-bridge",
               "sets": 3,
-              "reps": "10 (2 s hold)",
+              "reps": "10",
               "restSeconds": 45,
-              "notes": "Heels down, ribs down, hips level.",
-              "notesEl": "Φτέρνες κάτω, πλευρά κάτω, λεκάνη οριζόντια."
+              "notes": "Hold 2 s at the top of each rep. Heels down, ribs down, hips level.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Φτέρνες κάτω, πλευρά κάτω, λεκάνη οριζόντια."
             },
             {
               "slug": "superman",
               "sets": 2,
-              "reps": "6 (2 s hold)",
+              "reps": "6",
               "restSeconds": 45,
-              "notes": "Lift low and long; keep your gaze on the mat.",
-              "notesEl": "Μικρό ύψος, μακρύ σώμα· το βλέμμα μένει στο στρώμα."
+              "notes": "Hold 2 s at the top of each rep. Lift low and long; keep your gaze on the mat.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Μικρό ύψος, μακρύ σώμα· το βλέμμα μένει στο στρώμα."
             },
             {
               "slug": "the-straddle",
@@ -183,10 +183,10 @@
             {
               "slug": "ankle-on-the-knee",
               "sets": 2,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 15,
-              "notes": "Flex the top foot to protect the knee.",
-              "notesEl": "Τράβηξε τα δάχτυλα του πάνω ποδιού προς το καλάμι για να προστατέψεις το γόνατο."
+              "notes": "Each side. Flex the top foot to protect the knee.",
+              "notesEl": "Σε κάθε πλευρά. Τράβηξε τα δάχτυλα του πάνω ποδιού προς το καλάμι για να προστατέψεις το γόνατο."
             },
             {
               "slug": "childs-pose",
@@ -226,10 +226,10 @@
             {
               "slug": "standing-lateral-stretch",
               "sets": 2,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 10,
-              "notes": "Lengthen up before you bend; keep both feet grounded.",
-              "notesEl": "Τεντώσου προς τα πάνω πριν γείρεις· και τα δύο πέλματα σταθερά στο πάτωμα."
+              "notes": "Each side. Lengthen up before you bend; keep both feet grounded.",
+              "notesEl": "Σε κάθε πλευρά. Τεντώσου προς τα πάνω πριν γείρεις· και τα δύο πέλματα σταθερά στο πάτωμα."
             },
             {
               "slug": "cat-stretch",
@@ -242,10 +242,10 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 3,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Tall chest, tailbone tucked, shift forward gently.",
-              "notesEl": "Στήθος ψηλά, κόκκυγας μαζεμένος, μετακινήσου απαλά μπροστά."
+              "notes": "Each side. Tall chest, tailbone tucked, shift forward gently.",
+              "notesEl": "Σε κάθε πλευρά. Στήθος ψηλά, κόκκυγας μαζεμένος, μετακινήσου απαλά μπροστά."
             },
             {
               "slug": "plank",
@@ -258,26 +258,26 @@
             {
               "slug": "butt-lift-bridge",
               "sets": 3,
-              "reps": "10–12 (2 s hold)",
+              "reps": "10–12",
               "restSeconds": 45,
-              "notes": "Lift with the glutes; lower one vertebra at a time.",
-              "notesEl": "Σήκωσε με τους γλουτούς· κατέβα σπόνδυλο προς σπόνδυλο."
+              "notes": "Hold 2 s at the top of each rep. Lift with the glutes; lower one vertebra at a time.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Σήκωσε με τους γλουτούς· κατέβα σπόνδυλο προς σπόνδυλο."
             },
             {
               "slug": "seated-floor-hamstring-stretch",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Lead with your chest, not your head.",
-              "notesEl": "Οδήγησε την κίνηση με το στήθος, όχι με το κεφάλι."
+              "notes": "Each side. Lead with your chest, not your head.",
+              "notesEl": "Σε κάθε πλευρά. Οδήγησε την κίνηση με το στήθος, όχι με το κεφάλι."
             },
             {
               "slug": "knee-across-the-body",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 10,
-              "notes": "Keep both shoulders resting on the mat.",
-              "notesEl": "Κράτα και τους δύο ώμους ακουμπισμένους στο στρώμα."
+              "notes": "Each side. Keep both shoulders resting on the mat.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα και τους δύο ώμους ακουμπισμένους στο στρώμα."
             },
             {
               "slug": "childs-pose",

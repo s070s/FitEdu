@@ -74,10 +74,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 2,
-              "reps": "8–10 per arm",
+              "reps": "8–10",
               "restSeconds": 60,
-              "notes": "Free hand on the chair seat; pull the elbow towards your hip.",
-              "notesEl": "Το ελεύθερο χέρι στο κάθισμα της καρέκλας· τράβα τον αγκώνα προς το ισχίο."
+              "notes": "Each arm. Free hand on the chair seat; pull the elbow towards your hip.",
+              "notesEl": "Σε κάθε χέρι. Το ελεύθερο χέρι στο κάθισμα της καρέκλας· τράβα τον αγκώνα προς το ισχίο."
             },
             {
               "slug": "seated-dumbbell-press",
@@ -90,10 +90,10 @@
             {
               "slug": "standing-hip-circles",
               "sets": 2,
-              "reps": "20 s per leg",
+              "reps": "20 s",
               "restSeconds": 30,
-              "notes": "Hold the chair back; make slow, smooth circles.",
-              "notesEl": "Κρατήσου από την πλάτη της καρέκλας· κάνε αργούς, ομαλούς κύκλους."
+              "notes": "Each leg. Hold the chair back; make slow, smooth circles.",
+              "notesEl": "Σε κάθε πόδι. Κρατήσου από την πλάτη της καρέκλας· κάνε αργούς, ομαλούς κύκλους."
             },
             {
               "slug": "chair-upper-body-stretch",
@@ -125,18 +125,18 @@
             {
               "slug": "step-up-with-knee-raise",
               "sets": 2,
-              "reps": "5–6 per leg",
+              "reps": "5–6",
               "restSeconds": 60,
-              "notes": "Low step, hand on a rail; stand fully tall on top.",
-              "notesEl": "Χαμηλό σκαλί, χέρι στην κουπαστή· πάνω στο σκαλί στάσου τελείως ίσια."
+              "notes": "Each leg. Low step, hand on a rail; stand fully tall on top.",
+              "notesEl": "Σε κάθε πόδι. Χαμηλό σκαλί, χέρι στην κουπαστή· πάνω στο σκαλί στάσου τελείως ίσια."
             },
             {
               "slug": "standing-hip-circles",
               "sets": 2,
-              "reps": "20 s per leg",
+              "reps": "20 s",
               "restSeconds": 30,
-              "notes": "Lighten your grip as your balance improves.",
-              "notesEl": "Χαλάρωνε το κράτημα όσο βελτιώνεται η ισορροπία σου."
+              "notes": "Each leg. Lighten your grip as your balance improves.",
+              "notesEl": "Σε κάθε πόδι. Χαλάρωνε το κράτημα όσο βελτιώνεται η ισορροπία σου."
             }
           ]
         },
@@ -159,10 +159,10 @@
             {
               "slug": "step-up-with-knee-raise",
               "sets": 2,
-              "reps": "6–8 per leg",
+              "reps": "6–8",
               "restSeconds": 60,
-              "notes": "Whole foot on the step; pause with the knee up.",
-              "notesEl": "Ολόκληρο το πέλμα στο σκαλί· παύση με το γόνατο ψηλά."
+              "notes": "Each leg. Whole foot on the step; pause with the knee up.",
+              "notesEl": "Σε κάθε πόδι. Ολόκληρο το πέλμα στο σκαλί· παύση με το γόνατο ψηλά."
             },
             {
               "slug": "incline-push-up",
@@ -175,10 +175,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 3,
-              "reps": "8–12 per arm",
+              "reps": "8–12",
               "restSeconds": 60,
-              "notes": "Flat back; squeeze the shoulder blade at the top.",
-              "notesEl": "Ίσια πλάτη· σφίξε την ωμοπλάτη στο πάνω σημείο."
+              "notes": "Each arm. Flat back; squeeze the shoulder blade at the top.",
+              "notesEl": "Σε κάθε χέρι. Ίσια πλάτη· σφίξε την ωμοπλάτη στο πάνω σημείο."
             },
             {
               "slug": "seated-dumbbell-press",
@@ -191,18 +191,18 @@
             {
               "slug": "side-leg-raises",
               "sets": 2,
-              "reps": "20 s per leg",
+              "reps": "20 s",
               "restSeconds": 30,
-              "notes": "Smooth, controlled swings; hold the chair and stay tall.",
-              "notesEl": "Ομαλές, ελεγχόμενες αιωρήσεις· κρατήσου από την καρέκλα και μείνε ευθυτενής."
+              "notes": "Each leg. Smooth, controlled swings; hold the chair and stay tall.",
+              "notesEl": "Σε κάθε πόδι. Ομαλές, ελεγχόμενες αιωρήσεις· κρατήσου από την καρέκλα και μείνε ευθυτενής."
             },
             {
               "slug": "calf-stretch-hands-against-wall",
               "sets": 2,
-              "reps": "20 s per leg",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Keep the back heel down and lean gently.",
-              "notesEl": "Κράτα την πίσω φτέρνα κάτω και γείρε απαλά."
+              "notes": "Each leg. Keep the back heel down and lean gently.",
+              "notesEl": "Σε κάθε πόδι. Κράτα την πίσω φτέρνα κάτω και γείρε απαλά."
             }
           ]
         }
@@ -252,10 +252,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 3,
-              "reps": "10–12 per arm",
+              "reps": "10–12",
               "restSeconds": 45,
-              "notes": "Pull towards your hip; lower for a count of three.",
-              "notesEl": "Τράβα προς το ισχίο· κατέβαζε μετρώντας ως το τρία."
+              "notes": "Each arm. Pull towards your hip; lower for a count of three.",
+              "notesEl": "Σε κάθε χέρι. Τράβα προς το ισχίο· κατέβαζε μετρώντας ως το τρία."
             },
             {
               "slug": "stiff-legged-dumbbell-deadlift",
@@ -276,10 +276,10 @@
             {
               "slug": "step-up-with-knee-raise",
               "sets": 2,
-              "reps": "8 per leg",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Hold the knee up for two seconds.",
-              "notesEl": "Κράτα το γόνατο ψηλά για δύο δευτερόλεπτα."
+              "notes": "Each leg. Hold the knee up for two seconds.",
+              "notesEl": "Σε κάθε πόδι. Κράτα το γόνατο ψηλά για δύο δευτερόλεπτα."
             },
             {
               "slug": "seated-dumbbell-press",
@@ -292,18 +292,18 @@
             {
               "slug": "standing-hip-circles",
               "sets": 2,
-              "reps": "30 s per leg",
+              "reps": "30 s",
               "restSeconds": 30,
-              "notes": "Fingertip support only, if you feel steady.",
-              "notesEl": "Μόνο ένα δάχτυλο στο στήριγμα, αν νιώθεις σταθερότητα."
+              "notes": "Each leg. Fingertip support only, if you feel steady.",
+              "notesEl": "Σε κάθε πόδι. Μόνο ένα δάχτυλο στο στήριγμα, αν νιώθεις σταθερότητα."
             },
             {
               "slug": "chair-lower-back-stretch",
               "sets": 2,
-              "reps": "15–20 s per side",
+              "reps": "15–20 s",
               "restSeconds": 15,
-              "notes": "Sit tall and reach up and over.",
-              "notesEl": "Κάθισε στητά και τέντωσε το χέρι πάνω από το κεφάλι προς το πλάι."
+              "notes": "Each side. Sit tall and reach up and over.",
+              "notesEl": "Σε κάθε πλευρά. Κάθισε στητά και τέντωσε το χέρι πάνω από το κεφάλι προς το πλάι."
             }
           ]
         }

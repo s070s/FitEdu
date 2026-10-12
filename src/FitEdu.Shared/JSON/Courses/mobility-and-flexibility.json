@@ -40,10 +40,10 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 2,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 15,
-              "notes": "Tuck the tailbone and squeeze the back glute before you shift.",
-              "notesEl": "Φέρε τον κόκκυγα προς τα κάτω και σφίξε τον πίσω γλουτό πριν μετακινηθείς."
+              "notes": "Each side. Tuck the tailbone and squeeze the back glute before you shift.",
+              "notesEl": "Σε κάθε πλευρά. Φέρε τον κόκκυγα προς τα κάτω και σφίξε τον πίσω γλουτό πριν μετακινηθείς."
             }
           ]
         },
@@ -74,42 +74,42 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Tailbone tucked, back glute squeezed, torso tall.",
-              "notesEl": "Κόκκυγας προς τα κάτω, πίσω γλουτός σφιγμένος, κορμός όρθιος."
+              "notes": "Each side. Tailbone tucked, back glute squeezed, torso tall.",
+              "notesEl": "Σε κάθε πλευρά. Κόκκυγας προς τα κάτω, πίσω γλουτός σφιγμένος, κορμός όρθιος."
             },
             {
               "slug": "shoulder-stretch",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 10,
-              "notes": "Keep the shoulder down, away from your ear.",
-              "notesEl": "Κράτα τον ώμο χαμηλά, μακριά από το αυτί."
+              "notes": "Each side. Keep the shoulder down, away from your ear.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τον ώμο χαμηλά, μακριά από το αυτί."
             },
             {
               "slug": "seated-floor-hamstring-stretch",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Hinge from the hips; the chest leads, not the head.",
-              "notesEl": "Γείρε από τα ισχία· οδηγεί το στήθος, όχι το κεφάλι."
+              "notes": "Each side. Hinge from the hips; the chest leads, not the head.",
+              "notesEl": "Σε κάθε πλευρά. Γείρε από τα ισχία· οδηγεί το στήθος, όχι το κεφάλι."
             },
             {
               "slug": "one-knee-to-chest",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 10,
-              "notes": "Hold under the knee and keep the other leg long.",
-              "notesEl": "Πιάσε κάτω από το γόνατο και κράτα το άλλο πόδι τεντωμένο."
+              "notes": "Each side. Hold under the knee and keep the other leg long.",
+              "notesEl": "Σε κάθε πλευρά. Πιάσε κάτω από το γόνατο και κράτα το άλλο πόδι τεντωμένο."
             },
             {
               "slug": "knee-across-the-body",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 10,
-              "notes": "Let the knee drop only as far as it goes comfortably.",
-              "notesEl": "Άφησε το γόνατο να πέσει μόνο όσο πάει άνετα."
+              "notes": "Each side. Let the knee drop only as far as it goes comfortably.",
+              "notesEl": "Σε κάθε πλευρά. Άφησε το γόνατο να πέσει μόνο όσο πάει άνετα."
             }
           ]
         }
@@ -133,34 +133,34 @@
             {
               "slug": "hip-circles-prone",
               "sets": 2,
-              "reps": "5 each way per side",
+              "reps": "5",
               "restSeconds": 15,
-              "notes": "Big, slow circles; keep your back still.",
-              "notesEl": "Μεγάλοι, αργοί κύκλοι· η πλάτη μένει ακίνητη."
+              "notes": "Each direction, each side. Big, slow circles; keep your back still.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πλευρά. Μεγάλοι, αργοί κύκλοι· η πλάτη μένει ακίνητη."
             },
             {
               "slug": "90-90-hamstring",
               "sets": 2,
-              "reps": "8–10 per side",
+              "reps": "8–10",
               "restSeconds": 15,
-              "notes": "Straighten the knee slowly and pause at the top.",
-              "notesEl": "Τέντωσε αργά το γόνατο και κάνε μια μικρή παύση στο πάνω σημείο."
+              "notes": "Each side. Straighten the knee slowly and pause at the top.",
+              "notesEl": "Σε κάθε πλευρά. Τέντωσε αργά το γόνατο και κάνε μια μικρή παύση στο πάνω σημείο."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 3,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Tuck, squeeze, then shift forward.",
-              "notesEl": "Φέρε τον κόκκυγα κάτω, σφίξε τον γλουτό και μετά μετακινήσου μπροστά."
+              "notes": "Each side. Tuck, squeeze, then shift forward.",
+              "notesEl": "Σε κάθε πλευρά. Φέρε τον κόκκυγα κάτω, σφίξε τον γλουτό και μετά μετακινήσου μπροστά."
             },
             {
               "slug": "on-your-side-quad-stretch",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Press the hip forward instead of pulling the heel harder.",
-              "notesEl": "Σπρώξε το ισχίο μπροστά αντί να τραβάς πιο δυνατά τη φτέρνα."
+              "notes": "Each side. Press the hip forward instead of pulling the heel harder.",
+              "notesEl": "Σε κάθε πλευρά. Σπρώξε το ισχίο μπροστά αντί να τραβάς πιο δυνατά τη φτέρνα."
             },
             {
               "slug": "the-straddle",
@@ -173,10 +173,10 @@
             {
               "slug": "ankle-on-the-knee",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Pull the toes of the crossed foot toward the shin to protect the knee.",
-              "notesEl": "Τράβα τα δάχτυλα του πάνω ποδιού προς την κνήμη για να προστατεύεις το γόνατο."
+              "notes": "Each side. Pull the toes of the crossed foot toward the shin to protect the knee.",
+              "notesEl": "Σε κάθε πλευρά. Τράβα τα δάχτυλα του πάνω ποδιού προς την κνήμη για να προστατεύεις το γόνατο."
             },
             {
               "slug": "hug-knees-to-chest",
@@ -199,15 +199,15 @@
             {
               "slug": "arm-circles",
               "sets": 2,
-              "reps": "10 s each way",
+              "reps": "10 s",
               "restSeconds": 10,
-              "notes": "Small circles first, arms level with the shoulders.",
-              "notesEl": "Πρώτα μικροί κύκλοι, χέρια στο ύψος των ώμων."
+              "notes": "Each direction. Small circles first, arms level with the shoulders.",
+              "notesEl": "Προς κάθε κατεύθυνση. Πρώτα μικροί κύκλοι, χέρια στο ύψος των ώμων."
             },
             {
               "slug": "dynamic-chest-stretch",
               "sets": 2,
-              "reps": "10 swings",
+              "reps": "10",
               "restSeconds": 15,
               "notes": "Control the swing back; speed comes later.",
               "notesEl": "Έλεγξε την κίνηση προς τα πίσω· η ταχύτητα έρχεται αργότερα."
@@ -239,26 +239,26 @@
             {
               "slug": "middle-back-stretch",
               "sets": 2,
-              "reps": "20 s per side",
+              "reps": "20 s",
               "restSeconds": 10,
-              "notes": "Turn from the ribs; the hips keep facing forward.",
-              "notesEl": "Στρίψε από τα πλευρά· η λεκάνη κοιτάζει μπροστά."
+              "notes": "Each side. Turn from the ribs; the hips keep facing forward.",
+              "notesEl": "Σε κάθε πλευρά. Στρίψε από τα πλευρά· η λεκάνη κοιτάζει μπροστά."
             },
             {
               "slug": "shoulder-stretch",
               "sets": 3,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 15,
-              "notes": "Pull the arm across at chest height, shoulder down.",
-              "notesEl": "Φέρε το χέρι απέναντι στο ύψος του στήθους, με τον ώμο χαμηλά."
+              "notes": "Each side. Pull the arm across at chest height, shoulder down.",
+              "notesEl": "Σε κάθε πλευρά. Φέρε το χέρι απέναντι στο ύψος του στήθους, με τον ώμο χαμηλά."
             },
             {
               "slug": "triceps-stretch",
               "sets": 2,
-              "reps": "20–30 s per side",
+              "reps": "20–30 s",
               "restSeconds": 15,
-              "notes": "Keep your head up; do not let it push forward.",
-              "notesEl": "Κράτα το κεφάλι ψηλά· μην το αφήνεις να σπρώχνεται μπροστά."
+              "notes": "Each side. Keep your head up; do not let it push forward.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα το κεφάλι ψηλά· μην το αφήνεις να σπρώχνεται μπροστά."
             }
           ]
         }
@@ -290,7 +290,7 @@
             {
               "slug": "inchworm",
               "sets": 2,
-              "reps": "4 walk-outs",
+              "reps": "4",
               "restSeconds": 20,
               "notes": "Walk out only to a plank you can hold; bend the knees if needed.",
               "notesEl": "Προχώρα με τα χέρια μόνο ως μια σανίδα που μπορείς να κρατήσεις· λύγισε τα γόνατα αν χρειάζεται."
@@ -298,10 +298,10 @@
             {
               "slug": "shoulder-stretch",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 10,
-              "notes": "Arm at chest height, shoulder away from the ear.",
-              "notesEl": "Χέρι στο ύψος του στήθους, ώμος μακριά από το αυτί."
+              "notes": "Each side. Arm at chest height, shoulder away from the ear.",
+              "notesEl": "Σε κάθε πλευρά. Χέρι στο ύψος του στήθους, ώμος μακριά από το αυτί."
             },
             {
               "slug": "cat-stretch",
@@ -314,34 +314,34 @@
             {
               "slug": "kneeling-hip-flexor",
               "sets": 3,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Glute on, ribs down, small shift forward.",
-              "notesEl": "Γλουτός σφιγμένος, πλευρά κάτω, μικρή μετακίνηση μπροστά."
+              "notes": "Each side. Glute on, ribs down, small shift forward.",
+              "notesEl": "Σε κάθε πλευρά. Γλουτός σφιγμένος, πλευρά κάτω, μικρή μετακίνηση μπροστά."
             },
             {
               "slug": "90-90-hamstring",
               "sets": 2,
-              "reps": "10 per side",
+              "reps": "10",
               "restSeconds": 15,
-              "notes": "Smooth reps; stop just short of a strong pull.",
-              "notesEl": "Ομαλές επαναλήψεις· σταμάτα λίγο πριν από το έντονο τράβηγμα."
+              "notes": "Each side. Smooth reps; stop just short of a strong pull.",
+              "notesEl": "Σε κάθε πλευρά. Ομαλές επαναλήψεις· σταμάτα λίγο πριν από το έντονο τράβηγμα."
             },
             {
               "slug": "ankle-on-the-knee",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Draw the legs in gently; head and shoulders stay down.",
-              "notesEl": "Τράβηξε απαλά τα πόδια προς το στήθος· κεφάλι και ώμοι μένουν στο πάτωμα."
+              "notes": "Each side. Draw the legs in gently; head and shoulders stay down.",
+              "notesEl": "Σε κάθε πλευρά. Τράβηξε απαλά τα πόδια προς το στήθος· κεφάλι και ώμοι μένουν στο πάτωμα."
             },
             {
               "slug": "knee-across-the-body",
               "sets": 2,
-              "reps": "30 s per side",
+              "reps": "30 s",
               "restSeconds": 10,
-              "notes": "On each exhale, let the knee and opposite shoulder grow heavy.",
-              "notesEl": "Σε κάθε εκπνοή, άφησε το γόνατο και τον αντίθετο ώμο να βαρύνουν."
+              "notes": "Each side. On each exhale, let the knee and opposite shoulder grow heavy.",
+              "notesEl": "Σε κάθε πλευρά. Σε κάθε εκπνοή, άφησε το γόνατο και τον αντίθετο ώμο να βαρύνουν."
             },
             {
               "slug": "childs-pose",

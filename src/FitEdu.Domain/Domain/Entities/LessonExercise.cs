@@ -24,7 +24,8 @@ public class LessonExercise
     public int? Sets { get; set; }
 
     /// <summary>
-    /// Free text so it can hold ranges or durations (e.g. "8–12", "30 s", "AMRAP").
+    /// Free text so it can hold ranges or durations (e.g. "8–12", "30 s", "AMRAP"). It has no
+    /// Greek twin, so it holds numbers and unit symbols only; words such as "per side" go in the notes.
     /// </summary>
     public string? Reps { get; set; }
 

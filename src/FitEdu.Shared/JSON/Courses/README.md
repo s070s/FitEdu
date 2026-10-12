@@ -35,7 +35,7 @@ matter.
 | `category`, `categoryEl` | The category is created on first use. `categoryEl` sets its Greek name, or fills it in when the category has none yet; an existing Greek name is kept. |
 | `equipment` | Comma-joined codes: `none`, `dumbbells`, `barbell`, `kettlebell`, `bands`, `mat`, `bike`, `chair`, `cables`, `machine`. |
 | `coverExerciseSlug`, `exercises[].slug` | Must be a slug from `docs/assets/exercise-slugs.txt`. An unknown slug stops the whole seed with an error naming the course or lesson and the slug. |
-| `exercises` | Shown in list order. `sets`, `reps` (free text such as `30 s` or `AMRAP`), `restSeconds`, `notes` and `notesEl` are optional. |
+| `exercises` | Shown in list order. `sets`, `reps`, `restSeconds`, `notes` and `notesEl` are optional. `reps` has no Greek twin, so it holds only numbers, ranges, symbols and the unit symbols `s`, `min`, `m`, `rpm`, `RPE`, `AMRAP` (`8–12`, `30 s`, `6 min @ RPE 7 + 3 min`), with no decimals; words such as "each side" go at the start of `notes` and `notesEl`. |
 
 Every field except `title` (course, module and lesson) and `slug` is optional; older files without
 the fitness fields seed with the defaults above.

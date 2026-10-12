@@ -40,18 +40,18 @@
             {
               "slug": "external-rotation-with-band",
               "sets": 2,
-              "reps": "12–15 per side",
+              "reps": "12–15",
               "restSeconds": 45,
-              "notes": "Towel between elbow and ribs; 2 s out, 2–3 s back.",
-              "notesEl": "Πετσέτα ανάμεσα σε αγκώνα και πλευρά· 2 δευτερόλεπτα έξω, 2–3 πίσω."
+              "notes": "Each side. Towel between elbow and ribs; 2 s out, 2–3 s back.",
+              "notesEl": "Σε κάθε πλευρά. Πετσέτα ανάμεσα σε αγκώνα και πλευρά· 2 δευτερόλεπτα έξω, 2–3 πίσω."
             },
             {
               "slug": "internal-rotation-with-band",
               "sets": 2,
-              "reps": "12–15 per side",
+              "reps": "12–15",
               "restSeconds": 45,
-              "notes": "Same set-up with the other side to the anchor; rotate in slowly.",
-              "notesEl": "Ίδια τοποθέτηση, με την άλλη πλευρά προς τη στερέωση· στρέψε αργά προς τα μέσα."
+              "notes": "Each side. Same set-up with the other side to the anchor; rotate in slowly.",
+              "notesEl": "Σε κάθε πλευρά. Ίδια τοποθέτηση, με την άλλη πλευρά προς τη στερέωση· στρέψε αργά προς τα μέσα."
             }
           ]
         },
@@ -74,10 +74,10 @@
             {
               "slug": "bodyweight-walking-lunge",
               "sets": 3,
-              "reps": "8 per leg",
+              "reps": "8",
               "restSeconds": 60,
-              "notes": "Short strides; front knee tracks over the middle toes.",
-              "notesEl": "Κοντά βήματα· το μπροστινό γόνατο κινείται στη γραμμή των μεσαίων δαχτύλων."
+              "notes": "Each leg. Short strides; front knee tracks over the middle toes.",
+              "notesEl": "Σε κάθε πόδι. Κοντά βήματα· το μπροστινό γόνατο κινείται στη γραμμή των μεσαίων δαχτύλων."
             },
             {
               "slug": "butt-lift-bridge",
@@ -90,26 +90,26 @@
             {
               "slug": "hip-extension-with-bands",
               "sets": 3,
-              "reps": "12 per leg",
+              "reps": "12",
               "restSeconds": 45,
-              "notes": "Move from the hip; keep the trunk tall, not arched.",
-              "notesEl": "Κινήσου από το ισχίο· κορμός ψηλά, χωρίς να καμπυλώνει η μέση."
+              "notes": "Each leg. Move from the hip; keep the trunk tall, not arched.",
+              "notesEl": "Σε κάθε πόδι. Κινήσου από το ισχίο· κορμός ψηλά, χωρίς να καμπυλώνει η μέση."
             },
             {
               "slug": "monster-walk",
               "sets": 3,
-              "reps": "10 steps each way",
+              "reps": "10",
               "restSeconds": 45,
-              "notes": "Feet wide, toes forward; keep tension on the bands.",
-              "notesEl": "Πόδια ανοιχτά, δάχτυλα μπροστά· κράτα τα λάστιχα τεντωμένα."
+              "notes": "Steps in each direction. Feet wide, toes forward; keep tension on the bands.",
+              "notesEl": "Βήματα προς κάθε κατεύθυνση. Πόδια ανοιχτά, δάχτυλα μπροστά· κράτα τα λάστιχα τεντωμένα."
             },
             {
               "slug": "dead-bug",
               "sets": 3,
-              "reps": "6–8 per side",
+              "reps": "6–8",
               "restSeconds": 45,
-              "notes": "Arms stay still; lower back stays on the floor.",
-              "notesEl": "Τα χέρια μένουν ακίνητα· η μέση μένει στο πάτωμα."
+              "notes": "Each side. Arms stay still; lower back stays on the floor.",
+              "notesEl": "Σε κάθε πλευρά. Τα χέρια μένουν ακίνητα· η μέση μένει στο πάτωμα."
             }
           ]
         },
@@ -156,10 +156,10 @@
             {
               "slug": "external-rotation-with-band",
               "sets": 3,
-              "reps": "12–15 per side",
+              "reps": "12–15",
               "restSeconds": 15,
-              "notes": "Towel between elbow and ribs; rotate out slowly.",
-              "notesEl": "Πετσέτα ανάμεσα σε αγκώνα και πλευρά· στρέψε αργά προς τα έξω."
+              "notes": "Each side. Towel between elbow and ribs; rotate out slowly.",
+              "notesEl": "Σε κάθε πλευρά. Πετσέτα ανάμεσα σε αγκώνα και πλευρά· στρέψε αργά προς τα έξω."
             },
             {
               "slug": "plank",
@@ -215,10 +215,10 @@
             {
               "slug": "single-leg-glute-bridge",
               "sets": 3,
-              "reps": "8–10 per side",
+              "reps": "8–10",
               "restSeconds": 30,
-              "notes": "Keep the hips level; pause 1 s at the top.",
-              "notesEl": "Κράτα τη λεκάνη οριζόντια· παύση 1 δευτερολέπτου στο πάνω σημείο."
+              "notes": "Each side. Keep the hips level; pause 1 s at the top.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τη λεκάνη οριζόντια· παύση 1 δευτερολέπτου στο πάνω σημείο."
             },
             {
               "slug": "back-flyes-with-bands",
@@ -231,18 +231,18 @@
             {
               "slug": "bodyweight-walking-lunge",
               "sets": 3,
-              "reps": "8–10 per leg",
+              "reps": "8–10",
               "restSeconds": 30,
-              "notes": "Short steps, 3 s down, torso tall.",
-              "notesEl": "Κοντά βήματα, 3 δευτερόλεπτα κάτω, κορμός όρθιος."
+              "notes": "Each leg. Short steps, 3 s down, torso tall.",
+              "notesEl": "Σε κάθε πόδι. Κοντά βήματα, 3 δευτερόλεπτα κάτω, κορμός όρθιος."
             },
             {
               "slug": "external-rotation-with-band",
               "sets": 3,
-              "reps": "12–15 per side",
+              "reps": "12–15",
               "restSeconds": 30,
-              "notes": "Elbow pinned to the towel; 2 s out, 3 s back.",
-              "notesEl": "Αγκώνας κολλημένος στην πετσέτα· 2 δευτερόλεπτα έξω, 3 πίσω."
+              "notes": "Each side. Elbow pinned to the towel; 2 s out, 3 s back.",
+              "notesEl": "Σε κάθε πλευρά. Αγκώνας κολλημένος στην πετσέτα· 2 δευτερόλεπτα έξω, 3 πίσω."
             },
             {
               "slug": "plank",

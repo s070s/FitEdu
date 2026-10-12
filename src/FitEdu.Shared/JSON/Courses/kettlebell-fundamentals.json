@@ -40,10 +40,10 @@
             {
               "slug": "one-arm-kettlebell-swings",
               "sets": 5,
-              "reps": "8 per side",
+              "reps": "8",
               "restSeconds": 60,
-              "notes": "Hips drive the bell; the arm stays loose like a rope.",
-              "notesEl": "Τα ισχία κινούν το kettlebell· το χέρι μένει χαλαρό σαν σχοινί."
+              "notes": "Each side. Hips drive the bell; the arm stays loose like a rope.",
+              "notesEl": "Σε κάθε πλευρά. Τα ισχία κινούν το kettlebell· το χέρι μένει χαλαρό σαν σχοινί."
             }
           ]
         },
@@ -66,34 +66,34 @@
             {
               "slug": "one-arm-kettlebell-swings",
               "sets": 4,
-              "reps": "10 per side",
+              "reps": "10",
               "restSeconds": 60,
-              "notes": "Snap the hips; stop the set if the finish gets sloppy.",
-              "notesEl": "Δυναμική ώθηση των ισχίων· σταμάτα το σετ αν χαλάσει το τελείωμα."
+              "notes": "Each side. Snap the hips; stop the set if the finish gets sloppy.",
+              "notesEl": "Σε κάθε πλευρά. Δυναμική ώθηση των ισχίων· σταμάτα το σετ αν χαλάσει το τελείωμα."
             },
             {
               "slug": "one-arm-kettlebell-row",
               "sets": 3,
-              "reps": "8–10 per side",
+              "reps": "8–10",
               "restSeconds": 60,
-              "notes": "Flat back; pull the elbow towards your hip.",
-              "notesEl": "Ίσια πλάτη· τράβα τον αγκώνα προς το ισχίο."
+              "notes": "Each side. Flat back; pull the elbow towards your hip.",
+              "notesEl": "Σε κάθε πλευρά. Ίσια πλάτη· τράβα τον αγκώνα προς το ισχίο."
             },
             {
               "slug": "one-arm-kettlebell-floor-press",
               "sets": 3,
-              "reps": "8–10 per side",
+              "reps": "8–10",
               "restSeconds": 60,
-              "notes": "Upper arm touches the floor softly; wrist stays straight.",
-              "notesEl": "Ο βραχίονας ακουμπά απαλά στο πάτωμα· ο καρπός μένει ίσιος."
+              "notes": "Each side. Upper arm touches the floor softly; wrist stays straight.",
+              "notesEl": "Σε κάθε πλευρά. Ο βραχίονας ακουμπά απαλά στο πάτωμα· ο καρπός μένει ίσιος."
             },
             {
               "slug": "kettlebell-one-legged-deadlift",
               "sets": 2,
-              "reps": "6–8 per side",
+              "reps": "6–8",
               "restSeconds": 45,
-              "notes": "Hips level; reach the free leg long behind you.",
-              "notesEl": "Ισχία στο ίδιο ύψος· τέντωσε το ελεύθερο πόδι μακριά πίσω σου."
+              "notes": "Each side. Hips level; reach the free leg long behind you.",
+              "notesEl": "Σε κάθε πλευρά. Ισχία στο ίδιο ύψος· τέντωσε το ελεύθερο πόδι μακριά πίσω σου."
             },
             {
               "slug": "plank",
@@ -125,18 +125,18 @@
             {
               "slug": "one-arm-kettlebell-clean",
               "sets": 3,
-              "reps": "5 per side",
+              "reps": "5",
               "restSeconds": 60,
-              "notes": "Keep the bell close and relax the hand as it lands.",
-              "notesEl": "Κράτα το kettlebell κοντά και χαλάρωσε την παλάμη όταν προσγειώνεται."
+              "notes": "Each side. Keep the bell close and relax the hand as it lands.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα το kettlebell κοντά και χαλάρωσε την παλάμη όταν προσγειώνεται."
             },
             {
               "slug": "one-arm-kettlebell-military-press-to-the-side",
               "sets": 3,
-              "reps": "5 per side",
+              "reps": "5",
               "restSeconds": 75,
-              "notes": "Brace glutes and abs; finish with your biceps by your ear.",
-              "notesEl": "Σφίξε γλουτούς και κοιλιακούς· τελείωσε με τον δικέφαλο δίπλα στο αυτί."
+              "notes": "Each side. Brace glutes and abs; finish with your biceps by your ear.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε γλουτούς και κοιλιακούς· τελείωσε με τον δικέφαλο δίπλα στο αυτί."
             }
           ]
         },
@@ -151,10 +151,10 @@
             {
               "slug": "kettlebell-turkish-get-up-lunge-style",
               "sets": 3,
-              "reps": "1–2 per side",
+              "reps": "1–2",
               "restSeconds": 60,
-              "notes": "Eyes on the bell; pause in each position.",
-              "notesEl": "Βλέμμα στο kettlebell· παύση σε κάθε θέση."
+              "notes": "Each side. Eyes on the bell; pause in each position.",
+              "notesEl": "Σε κάθε πλευρά. Βλέμμα στο kettlebell· παύση σε κάθε θέση."
             }
           ]
         },
@@ -169,26 +169,26 @@
             {
               "slug": "kettlebell-turkish-get-up-lunge-style",
               "sets": 3,
-              "reps": "1 per side",
+              "reps": "1",
               "restSeconds": 60,
-              "notes": "Slow and smooth; the arm stays locked.",
-              "notesEl": "Αργά και ομαλά· το χέρι μένει κλειδωμένο."
+              "notes": "Each side. Slow and smooth; the arm stays locked.",
+              "notesEl": "Σε κάθε πλευρά. Αργά και ομαλά· το χέρι μένει κλειδωμένο."
             },
             {
               "slug": "one-arm-kettlebell-clean",
               "sets": 3,
-              "reps": "5 per side",
+              "reps": "5",
               "restSeconds": 45,
-              "notes": "Bell travels close; soft landing in the rack.",
-              "notesEl": "Το kettlebell ανεβαίνει κοντά στο σώμα· απαλή προσγείωση στη θέση rack."
+              "notes": "Each side. Bell travels close; soft landing in the rack.",
+              "notesEl": "Σε κάθε πλευρά. Το kettlebell ανεβαίνει κοντά στο σώμα· απαλή προσγείωση στη θέση rack."
             },
             {
               "slug": "one-arm-kettlebell-military-press-to-the-side",
               "sets": 4,
-              "reps": "5 per side",
+              "reps": "5",
               "restSeconds": 90,
-              "notes": "Brace first, then press; no leaning back.",
-              "notesEl": "Πρώτα σφίξε τον κορμό, μετά σπρώξε· χωρίς κλίση προς τα πίσω."
+              "notes": "Each side. Brace first, then press; no leaning back.",
+              "notesEl": "Σε κάθε πλευρά. Πρώτα σφίξε τον κορμό, μετά σπρώξε· χωρίς κλίση προς τα πίσω."
             },
             {
               "slug": "goblet-squat",
@@ -201,18 +201,18 @@
             {
               "slug": "one-arm-kettlebell-swings",
               "sets": 4,
-              "reps": "10 per side",
+              "reps": "10",
               "restSeconds": 45,
-              "notes": "Every rep reaches chest height with the same snap.",
-              "notesEl": "Κάθε επανάληψη φτάνει στο ύψος του στήθους με το ίδιο δυναμικό τίναγμα των ισχίων."
+              "notes": "Each side. Every rep reaches chest height with the same snap.",
+              "notesEl": "Σε κάθε πλευρά. Κάθε επανάληψη φτάνει στο ύψος του στήθους με το ίδιο δυναμικό τίναγμα των ισχίων."
             },
             {
               "slug": "one-arm-kettlebell-row",
               "sets": 3,
-              "reps": "8 per side",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Pause for one second with the bell at your ribs.",
-              "notesEl": "Παύση ενός δευτερολέπτου με το kettlebell στα πλευρά."
+              "notes": "Each side. Pause for one second with the bell at your ribs.",
+              "notesEl": "Σε κάθε πλευρά. Παύση ενός δευτερολέπτου με το kettlebell στα πλευρά."
             }
           ]
         }

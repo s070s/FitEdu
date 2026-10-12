@@ -108,10 +108,10 @@
             {
               "slug": "superman",
               "sets": 2,
-              "reps": "8 (2 s hold)",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Lift long, not high; eyes stay on the floor.",
-              "notesEl": "Τεντώσου μακριά, όχι ψηλά· το βλέμμα μένει στο πάτωμα."
+              "notes": "Hold 2 s at the top of each rep. Lift long, not high; eyes stay on the floor.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Τεντώσου μακριά, όχι ψηλά· το βλέμμα μένει στο πάτωμα."
             },
             {
               "slug": "plank",
@@ -124,10 +124,10 @@
             {
               "slug": "dead-bug",
               "sets": 2,
-              "reps": "6 per side",
+              "reps": "6",
               "restSeconds": 45,
-              "notes": "Keep your lower back pressed into the floor.",
-              "notesEl": "Κράτα τη μέση κολλημένη στο πάτωμα."
+              "notes": "Each side. Keep your lower back pressed into the floor.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τη μέση κολλημένη στο πάτωμα."
             }
           ]
         }
@@ -159,10 +159,10 @@
             {
               "slug": "single-leg-glute-bridge",
               "sets": 2,
-              "reps": "6–8 per side",
+              "reps": "6–8",
               "restSeconds": 45,
-              "notes": "Keep your hips level as you rise.",
-              "notesEl": "Κράτα τη λεκάνη οριζόντια καθώς ανεβαίνεις."
+              "notes": "Each side. Keep your hips level as you rise.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τη λεκάνη οριζόντια καθώς ανεβαίνεις."
             }
           ]
         },
@@ -193,26 +193,26 @@
             {
               "slug": "bodyweight-walking-lunge",
               "sets": 3,
-              "reps": "6–8 per leg",
+              "reps": "6–8",
               "restSeconds": 60,
-              "notes": "Front knee over the foot; torso tall.",
-              "notesEl": "Μπροστινό γόνατο πάνω από το πέλμα· κορμός όρθιος."
+              "notes": "Each leg. Front knee over the foot; torso tall.",
+              "notesEl": "Σε κάθε πόδι. Μπροστινό γόνατο πάνω από το πέλμα· κορμός όρθιος."
             },
             {
               "slug": "single-leg-glute-bridge",
               "sets": 3,
-              "reps": "8 per side",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Hips stay level; squeeze for 1 s at the top.",
-              "notesEl": "Η λεκάνη μένει οριζόντια· σφίξε για 1 δευτ. στην κορυφή."
+              "notes": "Each side. Hips stay level; squeeze for 1 s at the top.",
+              "notesEl": "Σε κάθε πλευρά. Η λεκάνη μένει οριζόντια· σφίξε για 1 δευτ. στην κορυφή."
             },
             {
               "slug": "superman",
               "sets": 3,
-              "reps": "10 (2 s hold)",
+              "reps": "10",
               "restSeconds": 45,
-              "notes": "Reach long with arms and legs; exhale as you lift.",
-              "notesEl": "Τεντώσου μακριά με χέρια και πόδια· εκπνεύσε καθώς σηκώνεσαι."
+              "notes": "Hold 2 s at the top of each rep. Reach long with arms and legs; exhale as you lift.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Τεντώσου μακριά με χέρια και πόδια· εκπνεύσε καθώς σηκώνεσαι."
             },
             {
               "slug": "plank",
@@ -225,10 +225,10 @@
             {
               "slug": "dead-bug",
               "sets": 3,
-              "reps": "8 per side",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Move slowly; exhale as the leg extends.",
-              "notesEl": "Κινήσου αργά· εκπνεύσε καθώς τεντώνεις το πόδι."
+              "notes": "Each side. Move slowly; exhale as the leg extends.",
+              "notesEl": "Σε κάθε πλευρά. Κινήσου αργά· εκπνεύσε καθώς τεντώνεις το πόδι."
             },
             {
               "slug": "mountain-climbers",

@@ -48,10 +48,10 @@
             {
               "slug": "side-neck-stretch",
               "sets": 2,
-              "reps": "20 s each side",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Ear towards shoulder; the opposite shoulder stays low.",
-              "notesEl": "Αυτί προς τον ώμο· ο αντίθετος ώμος μένει χαμηλά."
+              "notes": "Each side. Ear towards shoulder; the opposite shoulder stays low.",
+              "notesEl": "Σε κάθε πλευρά. Αυτί προς τον ώμο· ο αντίθετος ώμος μένει χαμηλά."
             }
           ]
         },
@@ -66,10 +66,10 @@
             {
               "slug": "shoulder-circles",
               "sets": 2,
-              "reps": "10 each way",
+              "reps": "10",
               "restSeconds": 15,
-              "notes": "Slow, full circles; let the arms hang loose.",
-              "notesEl": "Αργοί, πλήρεις κύκλοι· άφησε τα χέρια να κρέμονται χαλαρά."
+              "notes": "Each direction. Slow, full circles; let the arms hang loose.",
+              "notesEl": "Προς κάθε κατεύθυνση. Αργοί, πλήρεις κύκλοι· άφησε τα χέρια να κρέμονται χαλαρά."
             },
             {
               "slug": "shoulder-raise",
@@ -90,10 +90,10 @@
             {
               "slug": "side-neck-stretch",
               "sets": 2,
-              "reps": "20 s each side",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Ear towards shoulder; the opposite shoulder stays low.",
-              "notesEl": "Αυτί προς τον ώμο· ο αντίθετος ώμος μένει χαμηλά."
+              "notes": "Each side. Ear towards shoulder; the opposite shoulder stays low.",
+              "notesEl": "Σε κάθε πλευρά. Αυτί προς τον ώμο· ο αντίθετος ώμος μένει χαμηλά."
             },
             {
               "slug": "upper-back-stretch",
@@ -175,18 +175,18 @@
             {
               "slug": "middle-back-stretch",
               "sets": 2,
-              "reps": "20 s each side",
+              "reps": "20 s",
               "restSeconds": 15,
-              "notes": "Turn from the ribs; the hips keep facing forward.",
-              "notesEl": "Στρίψε από τα πλευρά· η λεκάνη μένει στραμμένη μπροστά."
+              "notes": "Each side. Turn from the ribs; the hips keep facing forward.",
+              "notesEl": "Σε κάθε πλευρά. Στρίψε από τα πλευρά· η λεκάνη μένει στραμμένη μπροστά."
             },
             {
               "slug": "spinal-stretch",
               "sets": 2,
-              "reps": "3 twists each side",
+              "reps": "3",
               "restSeconds": 20,
-              "notes": "Twist gently, elbows wide, chin slightly down.",
-              "notesEl": "Στρίψε απαλά, με αγκώνες ανοιχτούς και πηγούνι ελαφρά χαμηλά."
+              "notes": "Each side. Twist gently, elbows wide, chin slightly down.",
+              "notesEl": "Σε κάθε πλευρά. Στρίψε απαλά, με αγκώνες ανοιχτούς και πηγούνι ελαφρά χαμηλά."
             },
             {
               "slug": "elbows-back",
@@ -199,10 +199,10 @@
             {
               "slug": "superman",
               "sets": 2,
-              "reps": "6 (2 s hold)",
+              "reps": "6",
               "restSeconds": 45,
-              "notes": "Lift only a few centimetres; long neck, eyes on the floor.",
-              "notesEl": "Σήκωσε μόνο λίγα εκατοστά· μακρύς αυχένας, βλέμμα στο πάτωμα."
+              "notes": "Hold 2 s at the top of each rep. Lift only a few centimetres; long neck, eyes on the floor.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Σήκωσε μόνο λίγα εκατοστά· μακρύς αυχένας, βλέμμα στο πάτωμα."
             }
           ]
         }
@@ -226,18 +226,18 @@
             {
               "slug": "standing-hip-flexors",
               "sets": 3,
-              "reps": "30 s each side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Tuck the pelvis and squeeze the back glute; stay tall.",
-              "notesEl": "Γύρνα τη λεκάνη προς τα μέσα και σφίξε τον γλουτό του πίσω ποδιού· κράτα τον κορμό όρθιο."
+              "notes": "Each side. Tuck the pelvis and squeeze the back glute; stay tall.",
+              "notesEl": "Σε κάθε πλευρά. Γύρνα τη λεκάνη προς τα μέσα και σφίξε τον γλουτό του πίσω ποδιού· κράτα τον κορμό όρθιο."
             },
             {
               "slug": "standing-pelvic-tilt",
               "sets": 2,
-              "reps": "8 slow tilts",
+              "reps": "8",
               "restSeconds": 15,
-              "notes": "Small, smooth rocking with soft knees.",
-              "notesEl": "Μικρές, ομαλές κινήσεις με τα γόνατα ελαφρά λυγισμένα."
+              "notes": "Tilt slowly. Small, smooth rocking with soft knees.",
+              "notesEl": "Αργές κλίσεις. Μικρές, ομαλές κινήσεις με τα γόνατα ελαφρά λυγισμένα."
             },
             {
               "slug": "butt-lift-bridge",
@@ -250,10 +250,10 @@
             {
               "slug": "superman",
               "sets": 3,
-              "reps": "8 (2 s hold)",
+              "reps": "8",
               "restSeconds": 45,
-              "notes": "Low and slow; long neck, eyes on the floor.",
-              "notesEl": "Χαμηλά και αργά· μακρύς αυχένας, βλέμμα στο πάτωμα."
+              "notes": "Hold 2 s at the top of each rep. Low and slow; long neck, eyes on the floor.",
+              "notesEl": "Κράτα 2 δευτερόλεπτα στο πάνω σημείο κάθε επανάληψης. Χαμηλά και αργά· μακρύς αυχένας, βλέμμα στο πάτωμα."
             },
             {
               "slug": "cat-stretch",
@@ -282,10 +282,10 @@
             {
               "slug": "side-neck-stretch",
               "sets": 2,
-              "reps": "30 s each side",
+              "reps": "30 s",
               "restSeconds": 15,
-              "notes": "Opposite shoulder low; breathe slowly.",
-              "notesEl": "Ο αντίθετος ώμος χαμηλά· ανάπνεε αργά."
+              "notes": "Each side. Opposite shoulder low; breathe slowly.",
+              "notesEl": "Σε κάθε πλευρά. Ο αντίθετος ώμος χαμηλά· ανάπνεε αργά."
             }
           ]
         },

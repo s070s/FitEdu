@@ -175,10 +175,10 @@
             {
               "slug": "split-jump",
               "sets": 4,
-              "reps": "40 s (20 s per side)",
+              "reps": "40 s",
               "restSeconds": 20,
-              "notes": "Front knee over the midfoot; land softly.",
-              "notesEl": "Μπροστινό γόνατο πάνω από τη μέση του πέλματος· απαλή προσγείωση."
+              "notes": "Switch the front leg after 20 s. Front knee over the midfoot; land softly.",
+              "notesEl": "Άλλαξε μπροστινό πόδι στα 20 δευτερόλεπτα. Μπροστινό γόνατο πάνω από τη μέση του πέλματος· απαλή προσγείωση."
             },
             {
               "slug": "mountain-climbers",

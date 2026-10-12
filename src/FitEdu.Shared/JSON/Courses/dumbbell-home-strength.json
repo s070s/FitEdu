@@ -82,10 +82,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 3,
-              "reps": "10–12 each side",
+              "reps": "10–12",
               "restSeconds": 60,
-              "notes": "Pull your elbow toward your hip; keep the torso still.",
-              "notesEl": "Τράβα τον αγκώνα προς τον γοφό· ο κορμός μένει ακίνητος."
+              "notes": "Each side. Pull your elbow toward your hip; keep the torso still.",
+              "notesEl": "Σε κάθε πλευρά. Τράβα τον αγκώνα προς τον γοφό· ο κορμός μένει ακίνητος."
             },
             {
               "slug": "standing-dumbbell-press",
@@ -98,10 +98,10 @@
             {
               "slug": "single-leg-glute-bridge",
               "sets": 2,
-              "reps": "12–15 each side",
+              "reps": "12–15",
               "restSeconds": 45,
-              "notes": "Drive through the heel and pause one second at the top.",
-              "notesEl": "Πίεσε με τη φτέρνα και κάνε παύση ενός δευτερολέπτου στο πάνω σημείο."
+              "notes": "Each side. Drive through the heel and pause one second at the top.",
+              "notesEl": "Σε κάθε πλευρά. Πίεσε με τη φτέρνα και κάνε παύση ενός δευτερολέπτου στο πάνω σημείο."
             },
             {
               "slug": "hammer-curls",
@@ -151,10 +151,10 @@
             {
               "slug": "split-squat-with-dumbbells",
               "sets": 3,
-              "reps": "8–12 each leg",
+              "reps": "8–12",
               "restSeconds": 90,
-              "notes": "Drop straight down; the front knee follows the toes.",
-              "notesEl": "Κατέβα κάθετα· το μπροστινό γόνατο ακολουθεί τα δάχτυλα."
+              "notes": "Each leg. Drop straight down; the front knee follows the toes.",
+              "notesEl": "Σε κάθε πόδι. Κατέβα κάθετα· το μπροστινό γόνατο ακολουθεί τα δάχτυλα."
             },
             {
               "slug": "stiff-legged-dumbbell-deadlift",
@@ -226,10 +226,10 @@
             {
               "slug": "dumbbell-rear-lunge",
               "sets": 3,
-              "reps": "8–10 each leg",
+              "reps": "8–10",
               "restSeconds": 90,
-              "notes": "Take a long step back; keep the front shin close to vertical.",
-              "notesEl": "Κάνε μεγάλο βήμα πίσω· η μπροστινή κνήμη μένει σχεδόν κάθετη."
+              "notes": "Each leg. Take a long step back; keep the front shin close to vertical.",
+              "notesEl": "Σε κάθε πόδι. Κάνε μεγάλο βήμα πίσω· η μπροστινή κνήμη μένει σχεδόν κάθετη."
             },
             {
               "slug": "dumbbell-floor-press",
@@ -242,10 +242,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 3,
-              "reps": "8–12 each side",
+              "reps": "8–12",
               "restSeconds": 60,
-              "notes": "3 seconds down; do not twist the torso.",
-              "notesEl": "3 δευτερόλεπτα κάτω· μη στρίβεις τον κορμό."
+              "notes": "Each side. 3 seconds down; do not twist the torso.",
+              "notesEl": "Σε κάθε πλευρά. 3 δευτερόλεπτα κάτω· μη στρίβεις τον κορμό."
             },
             {
               "slug": "arnold-dumbbell-press",

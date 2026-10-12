@@ -40,18 +40,18 @@
             {
               "slug": "bicycling-stationary",
               "sets": 2,
-              "reps": "1 min each at 70, 85 and 95 rpm",
+              "reps": "1 min @ 70 / 85 / 95 rpm",
               "restSeconds": 60,
-              "notes": "Spin easily in the rest minute; keep the hips still even at 95 rpm.",
-              "notesEl": "Κάνε χαλαρό πετάλι στο λεπτό ξεκούρασης· κράτα τη λεκάνη ακίνητη ακόμη και στις 95 rpm."
+              "notes": "One minute at each cadence in turn. Spin easily in the rest minute; keep the hips still even at 95 rpm.",
+              "notesEl": "Ένα λεπτό σε κάθε ρυθμό πεταλιού, με τη σειρά. Κάνε χαλαρό πετάλι στο λεπτό ξεκούρασης· κράτα τη λεκάνη ακίνητη ακόμη και στις 95 rpm."
             },
             {
               "slug": "recumbent-bike",
               "sets": 2,
-              "reps": "1 min each at 75, 80 and 85 rpm",
+              "reps": "1 min @ 75 / 80 / 85 rpm",
               "restSeconds": 60,
-              "notes": "Easier option: back against the seat, knees in line with your feet.",
-              "notesEl": "Ευκολότερη επιλογή: πλάτη ακουμπισμένη στο κάθισμα, γόνατα στην ευθεία των πελμάτων."
+              "notes": "One minute at each cadence in turn. Easier option: back against the seat, knees in line with your feet.",
+              "notesEl": "Ένα λεπτό σε κάθε ρυθμό πεταλιού, με τη σειρά. Ευκολότερη επιλογή: πλάτη ακουμπισμένη στο κάθισμα, γόνατα στην ευθεία των πελμάτων."
             }
           ]
         },
@@ -66,50 +66,50 @@
             {
               "slug": "standing-hip-circles",
               "sets": 1,
-              "reps": "5 each way, each leg",
+              "reps": "5",
               "restSeconds": 0,
-              "notes": "Hold the bike for balance and draw big, slow circles with the knee.",
-              "notesEl": "Κρατήσου από το ποδήλατο για ισορροπία και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
+              "notes": "Each direction, each leg. Hold the bike for balance and draw big, slow circles with the knee.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από το ποδήλατο για ισορροπία και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
             },
             {
               "slug": "front-leg-raises",
               "sets": 1,
-              "reps": "10 each leg",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Start small and let the swing grow; never force it.",
-              "notesEl": "Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μην πιέζεις ποτέ."
+              "notes": "Each leg. Start small and let the swing grow; never force it.",
+              "notesEl": "Σε κάθε πόδι. Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μην πιέζεις ποτέ."
             },
             {
               "slug": "bicycling-stationary",
               "sets": 3,
-              "reps": "6 min at RPE 5 + 2 min easy",
+              "reps": "6 min @ RPE 5 + 2 min",
               "restSeconds": 0,
-              "notes": "Week 1 shown (week 2: 8-minute blocks); you should be able to talk in full sentences.",
-              "notesEl": "Φαίνεται η εβδομάδα 1 (εβδομάδα 2: διαστήματα 8 λεπτών)· πρέπει να μπορείς να μιλάς με ολόκληρες προτάσεις."
+              "notes": "Spin easy for the 2 min between blocks. Week 1 shown (week 2: 8-minute blocks); you should be able to talk in full sentences.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 2 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 1 (εβδομάδα 2: διαστήματα 8 λεπτών)· πρέπει να μπορείς να μιλάς με ολόκληρες προτάσεις."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Tuck the pelvis and squeeze the back glute before you lean forward.",
-              "notesEl": "«Μάζεψε» ελαφρά τη λεκάνη και σφίξε τον γλουτό του πίσω ποδιού πριν γείρεις μπροστά."
+              "notes": "Each side. Tuck the pelvis and squeeze the back glute before you lean forward.",
+              "notesEl": "Σε κάθε πλευρά. «Μάζεψε» ελαφρά τη λεκάνη και σφίξε τον γλουτό του πίσω ποδιού πριν γείρεις μπροστά."
             },
             {
               "slug": "standing-elevated-quad-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Stand tall, keep the supporting knee soft and hold a wall if needed.",
-              "notesEl": "Στάσου ευθυτενής, κράτα το γόνατο στήριξης ελαφρά λυγισμένο και κρατήσου από τον τοίχο αν χρειαστεί."
+              "notes": "Each leg. Stand tall, keep the supporting knee soft and hold a wall if needed.",
+              "notesEl": "Σε κάθε πόδι. Στάσου ευθυτενής, κράτα το γόνατο στήριξης ελαφρά λυγισμένο και κρατήσου από τον τοίχο αν χρειαστεί."
             },
             {
               "slug": "calf-stretch-hands-against-wall",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Keep the back heel down and the back leg straight.",
-              "notesEl": "Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
+              "notes": "Each leg. Keep the back heel down and the back leg straight.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
             }
           ]
         }
@@ -133,34 +133,34 @@
             {
               "slug": "standing-hip-circles",
               "sets": 1,
-              "reps": "5 each way, each leg",
+              "reps": "5",
               "restSeconds": 0,
-              "notes": "Stand tall and move slowly through the biggest circle you can control.",
-              "notesEl": "Στάσου ευθυτενής και κινήσου αργά στον μεγαλύτερο κύκλο που μπορείς να ελέγξεις."
+              "notes": "Each direction, each leg. Stand tall and move slowly through the biggest circle you can control.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Στάσου ευθυτενής και κινήσου αργά στον μεγαλύτερο κύκλο που μπορείς να ελέγξεις."
             },
             {
               "slug": "bicycling-stationary",
               "sets": 3,
-              "reps": "6 min at RPE 7 + 3 min easy",
+              "reps": "6 min @ RPE 7 + 3 min",
               "restSeconds": 0,
-              "notes": "Week 3 shown (week 4: 2 × 10 min, 4 min easy); short phrases only.",
-              "notesEl": "Φαίνεται η εβδομάδα 3 (εβδομάδα 4: 2 × 10 λεπτά, 4 λεπτά χαλαρά)· μόνο σύντομες φράσεις."
+              "notes": "Spin easy for the 3 min between blocks. Week 3 shown (week 4: 2 × 10 min, 4 min easy); short phrases only.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 3 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 3 (εβδομάδα 4: 2 × 10 λεπτά, 4 λεπτά χαλαρά)· μόνο σύντομες φράσεις."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Keep the torso upright; feel the stretch at the front of the back hip.",
-              "notesEl": "Κράτα τον κορμό όρθιο· νιώσε τη διάταση στο μπροστινό μέρος του πίσω ισχίου."
+              "notes": "Each side. Keep the torso upright; feel the stretch at the front of the back hip.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τον κορμό όρθιο· νιώσε τη διάταση στο μπροστινό μέρος του πίσω ισχίου."
             },
             {
               "slug": "standing-hamstring-and-calf-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Hinge from the hips with a long back and pull the toes gently.",
-              "notesEl": "Γείρε μπροστά από τα ισχία με ίσια πλάτη και τράβηξε απαλά τα δάχτυλα."
+              "notes": "Each leg. Hinge from the hips with a long back and pull the toes gently.",
+              "notesEl": "Σε κάθε πόδι. Γείρε μπροστά από τα ισχία με ίσια πλάτη και τράβηξε απαλά τα δάχτυλα."
             },
             {
               "slug": "cat-stretch",
@@ -200,42 +200,42 @@
             {
               "slug": "front-leg-raises",
               "sets": 1,
-              "reps": "10 each leg",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Swing from the hip and keep the standing knee soft.",
-              "notesEl": "Κάνε την αιώρηση από το ισχίο και κράτα το γόνατο στήριξης ελαφρά λυγισμένο."
+              "notes": "Each leg. Swing from the hip and keep the standing knee soft.",
+              "notesEl": "Σε κάθε πόδι. Κάνε την αιώρηση από το ισχίο και κράτα το γόνατο στήριξης ελαφρά λυγισμένο."
             },
             {
               "slug": "standing-hip-circles",
               "sets": 1,
-              "reps": "5 each way, each leg",
+              "reps": "5",
               "restSeconds": 0,
-              "notes": "Hold the bike and keep the pelvis level as the knee circles.",
-              "notesEl": "Κρατήσου από το ποδήλατο και κράτα τη λεκάνη οριζόντια όσο το γόνατο κάνει κύκλους."
+              "notes": "Each direction, each leg. Hold the bike and keep the pelvis level as the knee circles.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από το ποδήλατο και κράτα τη λεκάνη οριζόντια όσο το γόνατο κάνει κύκλους."
             },
             {
               "slug": "bicycling-stationary",
               "sets": 4,
-              "reps": "4 min at RPE 8 + 2 min easy",
+              "reps": "4 min @ RPE 8 + 2 min",
               "restSeconds": 0,
-              "notes": "Week 5 shown (week 6: 3 × 6 min, 3 min easy); a few words only.",
-              "notesEl": "Φαίνεται η εβδομάδα 5 (εβδομάδα 6: 3 × 6 λεπτά, 3 λεπτά χαλαρά)· μόνο λίγες λέξεις."
+              "notes": "Spin easy for the 2 min between blocks. Week 5 shown (week 6: 3 × 6 min, 3 min easy); a few words only.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 2 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 5 (εβδομάδα 6: 3 × 6 λεπτά, 3 λεπτά χαλαρά)· μόνο λίγες λέξεις."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Squeeze the back glute and lean in gently; no bouncing.",
-              "notesEl": "Σφίξε τον γλουτό του πίσω ποδιού και γείρε απαλά μπροστά· χωρίς αναπηδήσεις."
+              "notes": "Each side. Squeeze the back glute and lean in gently; no bouncing.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού και γείρε απαλά μπροστά· χωρίς αναπηδήσεις."
             },
             {
               "slug": "standing-elevated-quad-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Tuck the pelvis slightly to feel the stretch along the front of the thigh.",
-              "notesEl": "«Μάζεψε» ελαφρά τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του μηρού."
+              "notes": "Each leg. Tuck the pelvis slightly to feel the stretch along the front of the thigh.",
+              "notesEl": "Σε κάθε πόδι. «Μάζεψε» ελαφρά τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του μηρού."
             },
             {
               "slug": "childs-pose",
@@ -258,34 +258,34 @@
             {
               "slug": "standing-hip-circles",
               "sets": 1,
-              "reps": "5 each way, each leg",
+              "reps": "5",
               "restSeconds": 0,
-              "notes": "Slow, controlled circles; hold the bike for balance.",
-              "notesEl": "Αργοί, ελεγχόμενοι κύκλοι· κρατήσου από το ποδήλατο για ισορροπία."
+              "notes": "Each direction, each leg. Slow, controlled circles; hold the bike for balance.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Αργοί, ελεγχόμενοι κύκλοι· κρατήσου από το ποδήλατο για ισορροπία."
             },
             {
               "slug": "bicycling-stationary",
               "sets": 1,
-              "reps": "30–35 min steady at RPE 5–6",
+              "reps": "30–35 min @ RPE 5–6",
               "restSeconds": 0,
-              "notes": "Week 5: 30 min, week 6: 35 min; full sentences throughout.",
-              "notesEl": "Εβδομάδα 5: 30 λεπτά, εβδομάδα 6: 35 λεπτά· ολόκληρες προτάσεις σε όλη τη διάρκεια."
+              "notes": "Steady pace. Week 5: 30 min, week 6: 35 min; full sentences throughout.",
+              "notesEl": "Σταθερός ρυθμός. Εβδομάδα 5: 30 λεπτά, εβδομάδα 6: 35 λεπτά· ολόκληρες προτάσεις σε όλη τη διάρκεια."
             },
             {
               "slug": "standing-hamstring-and-calf-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Keep the front knee straight but not locked; ease into the stretch.",
-              "notesEl": "Κράτα το μπροστινό γόνατο τεντωμένο αλλά όχι κλειδωμένο· μπες στη διάταση σταδιακά."
+              "notes": "Each leg. Keep the front knee straight but not locked; ease into the stretch.",
+              "notesEl": "Σε κάθε πόδι. Κράτα το μπροστινό γόνατο τεντωμένο αλλά όχι κλειδωμένο· μπες στη διάταση σταδιακά."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Pad the back knee with a folded towel if the floor is hard.",
-              "notesEl": "Βάλε μια διπλωμένη πετσέτα κάτω από το πίσω γόνατο αν το πάτωμα είναι σκληρό."
+              "notes": "Each side. Pad the back knee with a folded towel if the floor is hard.",
+              "notesEl": "Σε κάθε πλευρά. Βάλε μια διπλωμένη πετσέτα κάτω από το πίσω γόνατο αν το πάτωμα είναι σκληρό."
             },
             {
               "slug": "cat-stretch",

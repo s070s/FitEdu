@@ -40,18 +40,18 @@
             {
               "slug": "trail-running-walking",
               "sets": 4,
-              "reps": "1 min jog + 1 min walk",
+              "reps": "1 min + 1 min",
               "restSeconds": 0,
-              "notes": "Outdoors: practise one form cue during each jog.",
-              "notesEl": "Σε εξωτερικό χώρο: εξασκήσου σε μία οδηγία τεχνικής σε κάθε τρέξιμο."
+              "notes": "Jog 1 min, then walk 1 min. Outdoors: practise one form cue during each jog.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 1 λεπτό. Σε εξωτερικό χώρο: εξασκήσου σε μία οδηγία τεχνικής σε κάθε τρέξιμο."
             },
             {
               "slug": "running-treadmill",
               "sets": 4,
-              "reps": "1 min jog + 1 min walk",
+              "reps": "1 min + 1 min",
               "restSeconds": 0,
-              "notes": "Or on a treadmill: 1% incline, hands off the rails.",
-              "notesEl": "Ή στον διάδρομο: κλίση 1%, χέρια μακριά από τις χειρολαβές."
+              "notes": "Jog 1 min, then walk 1 min. Or on a treadmill: 1% incline, hands off the rails.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 1 λεπτό. Ή στον διάδρομο: κλίση 1%, χέρια μακριά από τις χειρολαβές."
             }
           ]
         },
@@ -66,42 +66,42 @@
             {
               "slug": "ankle-circles",
               "sets": 1,
-              "reps": "10 each way, each foot",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Hold a support and draw slow circles with your big toe.",
-              "notesEl": "Κρατήσου από ένα στήριγμα και ζωγράφισε αργούς κύκλους με το μεγάλο δάχτυλο."
+              "notes": "Each direction, each foot. Hold a support and draw slow circles with your big toe.",
+              "notesEl": "Προς κάθε κατεύθυνση, με κάθε πόδι. Κρατήσου από ένα στήριγμα και ζωγράφισε αργούς κύκλους με το μεγάλο δάχτυλο."
             },
             {
               "slug": "front-leg-raises",
               "sets": 1,
-              "reps": "10 each leg",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Start small and let the swing grow; never force it.",
-              "notesEl": "Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μη ζορίζεις ποτέ την κίνηση."
+              "notes": "Each leg. Start small and let the swing grow; never force it.",
+              "notesEl": "Σε κάθε πόδι. Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μη ζορίζεις ποτέ την κίνηση."
             },
             {
               "slug": "trail-running-walking",
               "sets": 8,
-              "reps": "1 min jog + 1.5 min walk",
+              "reps": "1 min + 90 s",
               "restSeconds": 0,
-              "notes": "Week 1 shown (see the lesson for weeks 2–3); jog at talk-test pace.",
-              "notesEl": "Εδώ φαίνεται η εβδομάδα 1 (δες το μάθημα για τις εβδομάδες 2–3)· τρέξε με ρυθμό που περνά το τεστ ομιλίας."
+              "notes": "Jog 1 min, then walk 90 s. Week 1 shown (see the lesson for weeks 2–3); jog at talk-test pace.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 90 δευτερόλεπτα. Εδώ φαίνεται η εβδομάδα 1 (δες το μάθημα για τις εβδομάδες 2–3)· τρέξε με ρυθμό που περνά το τεστ ομιλίας."
             },
             {
               "slug": "calf-stretch-hands-against-wall",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Keep the back heel down and the back leg straight.",
-              "notesEl": "Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
+              "notes": "Each leg. Keep the back heel down and the back leg straight.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Squeeze the back glute and tuck your pelvis slightly before leaning forward.",
-              "notesEl": "Σφίξε τον γλουτό του πίσω ποδιού και «μάζεψε» ελαφρά τη λεκάνη πριν γείρεις μπροστά."
+              "notes": "Each side. Squeeze the back glute and tuck your pelvis slightly before leaning forward.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού και «μάζεψε» ελαφρά τη λεκάνη πριν γείρεις μπροστά."
             }
           ]
         }
@@ -125,42 +125,42 @@
             {
               "slug": "standing-hip-circles",
               "sets": 1,
-              "reps": "5 each way, each leg",
+              "reps": "5",
               "restSeconds": 0,
-              "notes": "Hold a support and make big, slow circles with the knee.",
-              "notesEl": "Κρατήσου από ένα στήριγμα και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
+              "notes": "Each direction, each leg. Hold a support and make big, slow circles with the knee.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από ένα στήριγμα και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
             },
             {
               "slug": "side-leg-raises",
               "sets": 1,
-              "reps": "10 each leg",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Stand tall; swing out and across in a relaxed arc.",
-              "notesEl": "Κράτα τον κορμό ψηλό· αιώρησε το πόδι προς τα έξω και μετά μπροστά από το άλλο, σε ένα χαλαρό τόξο."
+              "notes": "Each leg. Stand tall; swing out and across in a relaxed arc.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τον κορμό ψηλό· αιώρησε το πόδι προς τα έξω και μετά μπροστά από το άλλο, σε ένα χαλαρό τόξο."
             },
             {
               "slug": "trail-running-walking",
               "sets": 3,
-              "reps": "5 min jog + 2.5 min walk",
+              "reps": "5 min + 2 min 30 s",
               "restSeconds": 0,
-              "notes": "Week 4 shown (see the lesson for weeks 5–6); keep it easy.",
-              "notesEl": "Εδώ φαίνεται η εβδομάδα 4 (δες το μάθημα για τις εβδομάδες 5–6)· κράτα τον ρυθμό χαλαρό."
+              "notes": "Jog 5 min, then walk 2 min 30 s. Week 4 shown (see the lesson for weeks 5–6); keep it easy.",
+              "notesEl": "Τρέξε χαλαρά 5 λεπτά και μετά περπάτησε 2 λεπτά και 30 δευτερόλεπτα. Εδώ φαίνεται η εβδομάδα 4 (δες το μάθημα για τις εβδομάδες 5–6)· κράτα τον ρυθμό χαλαρό."
             },
             {
               "slug": "standing-hamstring-and-calf-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Hinge forward with a long back; pull the belt gently.",
-              "notesEl": "Γείρε μπροστά από τα ισχία με ίσια πλάτη· τράβα απαλά τη ζώνη."
+              "notes": "Each leg. Hinge forward with a long back; pull the belt gently.",
+              "notesEl": "Σε κάθε πόδι. Γείρε μπροστά από τα ισχία με ίσια πλάτη· τράβα απαλά τη ζώνη."
             },
             {
               "slug": "standing-elevated-quad-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Tuck your pelvis to feel it at the front of the hip.",
-              "notesEl": "«Μάζεψε» τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του ισχίου."
+              "notes": "Each leg. Tuck your pelvis to feel it at the front of the hip.",
+              "notesEl": "Σε κάθε πόδι. «Μάζεψε» τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του ισχίου."
             }
           ]
         },
@@ -183,18 +183,18 @@
             {
               "slug": "bodyweight-walking-lunge",
               "sets": 2,
-              "reps": "8 each leg",
+              "reps": "8",
               "restSeconds": 60,
-              "notes": "Torso upright; front knee stays over the front foot.",
-              "notesEl": "Κορμός όρθιος· το μπροστινό γόνατο μένει πάνω από το μπροστινό πέλμα."
+              "notes": "Each leg. Torso upright; front knee stays over the front foot.",
+              "notesEl": "Σε κάθε πόδι. Κορμός όρθιος· το μπροστινό γόνατο μένει πάνω από το μπροστινό πέλμα."
             },
             {
               "slug": "step-up-with-knee-raise",
               "sets": 2,
-              "reps": "8 each leg",
+              "reps": "8",
               "restSeconds": 60,
-              "notes": "Push through the whole foot on the step; lift the other knee to hip height.",
-              "notesEl": "Σπρώξε με όλο το πέλμα πάνω στο σκαλί· σήκωσε το άλλο γόνατο ως το ύψος του ισχίου."
+              "notes": "Each leg. Push through the whole foot on the step; lift the other knee to hip height.",
+              "notesEl": "Σε κάθε πόδι. Σπρώξε με όλο το πέλμα πάνω στο σκαλί· σήκωσε το άλλο γόνατο ως το ύψος του ισχίου."
             },
             {
               "slug": "butt-lift-bridge",
@@ -242,50 +242,50 @@
             {
               "slug": "ankle-circles",
               "sets": 1,
-              "reps": "10 each way, each foot",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Smooth circles; keep the standing knee soft.",
-              "notesEl": "Ομαλοί κύκλοι· το γόνατο του ποδιού στήριξης μένει ελαφρά λυγισμένο."
+              "notes": "Each direction, each foot. Smooth circles; keep the standing knee soft.",
+              "notesEl": "Προς κάθε κατεύθυνση, με κάθε πόδι. Ομαλοί κύκλοι· το γόνατο του ποδιού στήριξης μένει ελαφρά λυγισμένο."
             },
             {
               "slug": "front-leg-raises",
               "sets": 1,
-              "reps": "10 each leg",
+              "reps": "10",
               "restSeconds": 0,
-              "notes": "Relaxed swing; stay tall over the standing leg.",
-              "notesEl": "Χαλαρή αιώρηση· μείνε ψηλά πάνω από το πόδι στήριξης."
+              "notes": "Each leg. Relaxed swing; stay tall over the standing leg.",
+              "notesEl": "Σε κάθε πόδι. Χαλαρή αιώρηση· μείνε ψηλά πάνω από το πόδι στήριξης."
             },
             {
               "slug": "trail-running-walking",
               "sets": 1,
-              "reps": "22–30 min continuous",
+              "reps": "22–30 min",
               "restSeconds": 0,
-              "notes": "Week 7: 22–25 min; week 8: 26–30 min. Easy pace.",
-              "notesEl": "Εβδομάδα 7: 22–25 λεπτά· εβδομάδα 8: 26–30 λεπτά. Χαλαρός ρυθμός."
+              "notes": "Run without walk breaks. Week 7: 22–25 min; week 8: 26–30 min. Easy pace.",
+              "notesEl": "Τρέξε συνεχόμενα, χωρίς διαλείμματα για περπάτημα. Εβδομάδα 7: 22–25 λεπτά· εβδομάδα 8: 26–30 λεπτά. Χαλαρός ρυθμός."
             },
             {
               "slug": "calf-stretch-hands-against-wall",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Heel down, back leg straight; lean in slowly.",
-              "notesEl": "Φτέρνα κάτω, πίσω πόδι τεντωμένο· γείρε αργά προς τον τοίχο."
+              "notes": "Each leg. Heel down, back leg straight; lean in slowly.",
+              "notesEl": "Σε κάθε πόδι. Φτέρνα κάτω, πίσω πόδι τεντωμένο· γείρε αργά προς τον τοίχο."
             },
             {
               "slug": "kneeling-hip-flexor",
               "sets": 1,
-              "reps": "20–30 s each side",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Squeeze the back glute to deepen the stretch.",
-              "notesEl": "Σφίξε τον γλουτό του πίσω ποδιού για να βαθύνει η διάταση."
+              "notes": "Each side. Squeeze the back glute to deepen the stretch.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού για να βαθύνει η διάταση."
             },
             {
               "slug": "standing-elevated-quad-stretch",
               "sets": 1,
-              "reps": "20–30 s each leg",
+              "reps": "20–30 s",
               "restSeconds": 0,
-              "notes": "Supporting knee soft; hips facing forward.",
-              "notesEl": "Το γόνατο στήριξης ελαφρά λυγισμένο· η λεκάνη κοιτά ίσια μπροστά."
+              "notes": "Each leg. Supporting knee soft; hips facing forward.",
+              "notesEl": "Σε κάθε πόδι. Το γόνατο στήριξης ελαφρά λυγισμένο· η λεκάνη κοιτά ίσια μπροστά."
             }
           ]
         }

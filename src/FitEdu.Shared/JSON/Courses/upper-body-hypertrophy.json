@@ -132,10 +132,10 @@
             {
               "slug": "one-arm-dumbbell-row",
               "sets": 2,
-              "reps": "8–12 each side",
+              "reps": "8–12",
               "restSeconds": 75,
-              "notes": "Pull the elbow toward your hip.",
-              "notesEl": "Τράβα τον αγκώνα προς τον γοφό."
+              "notes": "Each side. Pull the elbow toward your hip.",
+              "notesEl": "Σε κάθε πλευρά. Τράβα τον αγκώνα προς τον γοφό."
             },
             {
               "slug": "face-pull",

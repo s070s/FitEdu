@@ -125,10 +125,10 @@
             {
               "slug": "lateral-bound",
               "sets": 4,
-              "reps": "3 per side",
+              "reps": "3",
               "restSeconds": 60,
-              "notes": "Two-second stick on a bent landing leg.",
-              "notesEl": "Σταθεροποίηση δύο δευτερολέπτων στο λυγισμένο πόδι προσγείωσης."
+              "notes": "Each side. Two-second stick on a bent landing leg.",
+              "notesEl": "Σε κάθε πλευρά. Σταθεροποίηση δύο δευτερολέπτων στο λυγισμένο πόδι προσγείωσης."
             }
           ]
         },
@@ -151,10 +151,10 @@
             {
               "slug": "lateral-bound",
               "sets": 3,
-              "reps": "4 per side",
+              "reps": "4",
               "restSeconds": 60,
-              "notes": "Half-second stick in week 3; straight back in week 4.",
-              "notesEl": "Παύση μισού δευτερολέπτου την 3η εβδομάδα· αμέσως πίσω την 4η."
+              "notes": "Each side. Half-second stick in week 3; straight back in week 4.",
+              "notesEl": "Σε κάθε πλευρά. Παύση μισού δευτερολέπτου την 3η εβδομάδα· αμέσως πίσω την 4η."
             },
             {
               "slug": "knee-tuck-jump",
@@ -175,18 +175,18 @@
             {
               "slug": "split-jump",
               "sets": 3,
-              "reps": "4 per side",
+              "reps": "4",
               "restSeconds": 60,
-              "notes": "Front knee over the mid-foot; land back in the same lunge.",
-              "notesEl": "Μπροστινό γόνατο πάνω από τη μέση του πέλματος· προσγειώσου ξανά στην ίδια προβολή."
+              "notes": "Each side. Front knee over the mid-foot; land back in the same lunge.",
+              "notesEl": "Σε κάθε πλευρά. Μπροστινό γόνατο πάνω από τη μέση του πέλματος· προσγειώσου ξανά στην ίδια προβολή."
             },
             {
               "slug": "single-leg-butt-kick",
               "sets": 2,
-              "reps": "4 per leg",
+              "reps": "4",
               "restSeconds": 60,
-              "notes": "Stay tall; land quietly on a soft knee.",
-              "notesEl": "Μείνε ψηλός· προσγειώσου αθόρυβα με μαλακό γόνατο."
+              "notes": "Each leg. Stay tall; land quietly on a soft knee.",
+              "notesEl": "Σε κάθε πόδι. Μείνε ψηλός· προσγειώσου αθόρυβα με μαλακό γόνατο."
             },
             {
               "slug": "plyo-push-up",

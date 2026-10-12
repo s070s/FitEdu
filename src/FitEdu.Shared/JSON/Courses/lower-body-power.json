@@ -84,10 +84,10 @@
             {
               "slug": "barbell-walking-lunge",
               "sets": 3,
-              "reps": "8 per leg",
+              "reps": "8",
               "restSeconds": 90,
-              "notes": "Rear knee just above the floor, torso tall.",
-              "notesEl": "Πίσω γόνατο λίγο πάνω από το πάτωμα, κορμός όρθιος."
+              "notes": "Each leg. Rear knee just above the floor, torso tall.",
+              "notesEl": "Σε κάθε πόδι. Πίσω γόνατο λίγο πάνω από το πάτωμα, κορμός όρθιος."
             },
             {
               "slug": "barbell-hip-thrust",
@@ -159,10 +159,10 @@
             {
               "slug": "elevated-back-lunge",
               "sets": 2,
-              "reps": "6 per leg",
+              "reps": "6",
               "restSeconds": 90,
-              "notes": "Front shin near vertical; lower the back knee gently.",
-              "notesEl": "Μπροστινή κνήμη σχεδόν κάθετη· κατέβασε απαλά το πίσω γόνατο."
+              "notes": "Each leg. Front shin near vertical; lower the back knee gently.",
+              "notesEl": "Σε κάθε πόδι. Μπροστινή κνήμη σχεδόν κάθετη· κατέβασε απαλά το πίσω γόνατο."
             },
             {
               "slug": "standing-barbell-calf-raise",
