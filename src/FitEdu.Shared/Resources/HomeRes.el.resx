@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>FitEdu | Επαγγελματικός Προσανατολισμός</value>
+    <value>FitEdu | Μαθήματα Fitness &amp; Βιβλιοθήκη Ασκήσεων</value>
   </data>
   <data name="WelcomeUser" xml:space="preserve">
     <value>Καλώς ήρθες, {0}!</value>
@@ -127,154 +127,43 @@
     <value>Είσαι συνδεδεμένος. Επισκέψου το &lt;a href="/profile"&gt;προφίλ&lt;/a&gt; σου για να δεις τα στοιχεία σου.</value>
   </data>
   <data name="HeroTitleLine1" xml:space="preserve">
-    <value>Από την απογοήτευση στη σαφήνεια</value>
+    <value>Προπονήσου με σχέδιο.</value>
   </data>
   <data name="HeroTitleLine2" xml:space="preserve">
-    <value>Από το Zero στο Hero</value>
+    <value>Κινήσου καλύτερα κάθε εβδομάδα.</value>
   </data>
   <data name="HeroSubtitle" xml:space="preserve">
-    <value>Η πρώτη ελληνική online πλατφόρμα που συνδυάζει επαγγελματικό προσανατολισμό με ψυχοκοινωνική ενδυνάμωση για μαθητές και αποφοίτους Λυκείου.</value>
+    <value>Δομημένα μαθήματα fitness, βιβλιοθήκη ασκήσεων με φωτογραφίες αρχικής και τελικής θέσης και αυτοέλεγχοι για ασφαλή προπόνηση — στα Ελληνικά και στα Αγγλικά.</value>
   </data>
   <data name="HeroCtaButton" xml:space="preserve">
-    <value>Κλείσε δωρεάν διαγνωστική συνεδρία</value>
-  </data>
-  <data name="ProblemTitle" xml:space="preserve">
-    <value>Αν αυτά σου φαίνονται γνώριμα,</value>
-  </data>
-  <data name="ProblemTitleHighlight" xml:space="preserve">
-    <value>είσαι στο σωστό μέρος</value>
-  </data>
-  <data name="ProblemCard1" xml:space="preserve">
-    <value>Δεν πέτυχες τους βαθμούς που περίμενες</value>
-  </data>
-  <data name="ProblemCard2" xml:space="preserve">
-    <value>Νιώθεις χαμένος χωρίς ξεκάθαρη κατεύθυνση</value>
-  </data>
-  <data name="ProblemCard3" xml:space="preserve">
-    <value>Αισθάνεσαι πίεση από γονείς και κοινωνία</value>
-  </data>
-  <data name="ProblemCard4" xml:space="preserve">
-    <value>Αμφισβητείς τον εαυτό σου και τις δυνατότητές σου</value>
-  </data>
-  <data name="ProblemConclusion" xml:space="preserve">
-    <value>Δεν είσαι αποτυχημένος.</value>
-  </data>
-  <data name="ProblemConclusionHighlight" xml:space="preserve">
-    <value>Απλώς κανείς δεν σου έμαθε πώς να διαχειρίζεσαι την αποτυχία.</value>
-  </data>
-  <data name="SolutionTitle" xml:space="preserve">
-    <value>Τι είναι το</value>
-  </data>
-  <data name="SolutionTitleHighlight" xml:space="preserve">
-    <value>FitEdu</value>
-  </data>
-  <data name="SolutionCard1Title" xml:space="preserve">
-    <value>Διαδικτυακά Μαθήματα</value>
-  </data>
-  <data name="SolutionCard1Text" xml:space="preserve">
-    <value>Δομημένα μαθήματα αυτογνωσίας, ανθεκτικότητας και λήψης αποφάσεων.</value>
-  </data>
-  <data name="SolutionCard2Title" xml:space="preserve">
-    <value>Συμβουλευτικές Συνεδρίες</value>
-  </data>
-  <data name="SolutionCard2Text" xml:space="preserve">
-    <value>Ατομική και ομαδική υποστήριξη με ξεκάθαρο πλάνο δράσης.</value>
-  </data>
-  <data name="SolutionCard3Title" xml:space="preserve">
-    <value>Κοινότητα Υποστήριξης</value>
-  </data>
-  <data name="SolutionCard3Text" xml:space="preserve">
-    <value>Δεν είσαι μόνος. Μαθαίνεις και εξελίσσεσαι μαζί με άλλους.</value>
-  </data>
-  <data name="MethodTitleFrom" xml:space="preserve">
-    <value>Από το</value>
-  </data>
-  <data name="MethodTitleZeroState" xml:space="preserve">
-    <value>Zero State</value>
-  </data>
-  <data name="MethodTitleTo" xml:space="preserve">
-    <value>στο</value>
-  </data>
-  <data name="MethodTitleHeroState" xml:space="preserve">
-    <value>Hero State</value>
-  </data>
-  <data name="ZeroStateTitle" xml:space="preserve">
-    <value>Zero State</value>
-  </data>
-  <data name="ZeroState1" xml:space="preserve">
-    <value>Ανασφάλεια</value>
-  </data>
-  <data name="ZeroState2" xml:space="preserve">
-    <value>Σύγχυση</value>
-  </data>
-  <data name="ZeroState3" xml:space="preserve">
-    <value>Φόβος αποτυχίας</value>
-  </data>
-  <data name="ZeroState4" xml:space="preserve">
-    <value>Κοινωνική πίεση</value>
-  </data>
-  <data name="HeroStateTitle" xml:space="preserve">
-    <value>Hero State</value>
-  </data>
-  <data name="HeroState1" xml:space="preserve">
-    <value>Αυτογνωσία</value>
-  </data>
-  <data name="HeroState2" xml:space="preserve">
-    <value>Ανθεκτικότητα</value>
-  </data>
-  <data name="HeroState3" xml:space="preserve">
-    <value>Ελπίδα</value>
-  </data>
-  <data name="HeroState4" xml:space="preserve">
-    <value>Αυτοπεποίθηση</value>
-  </data>
-  <data name="HeroState5" xml:space="preserve">
-    <value>Δράση</value>
-  </data>
-  <data name="StoryTitle" xml:space="preserve">
-    <value>Η ιστορία πίσω από το</value>
-  </data>
-  <data name="StoryTitleHighlight" xml:space="preserve">
-    <value>FitEdu</value>
+    <value>Ξεκίνα δωρεάν</value>
   </data>
   <data name="TestimonialsTitle" xml:space="preserve">
-    <value>Ευχαριστημένοι</value>
+    <value>Ιστορίες</value>
   </data>
   <data name="TestimonialsTitleHighlight" xml:space="preserve">
-    <value>Πελάτες</value>
-  </data>
-  <data name="StoryQuote" xml:space="preserve">
-    <value>Το 2014 απέτυχα στις Πανελλαδικές. Ένιωσα χαμένος και χωρίς κατεύθυνση. Σήμερα βοηθάω μαθητές να μετατρέψουν την αποτυχία σε δύναμη και σχέδιο δράσης.</value>
-  </data>
-  <data name="StoryAuthorInitials" xml:space="preserve">
-    <value>ΓΚ</value>
-  </data>
-  <data name="StoryAuthorName" xml:space="preserve">
-    <value>Γεώργιος Κόκκαλης</value>
-  </data>
-  <data name="StoryAuthorTitle" xml:space="preserve">
-    <value>Ιδρυτής</value>
+    <value>μελών</value>
   </data>
   <data name="CtaTitle" xml:space="preserve">
-    <value>Το επόμενο βήμα</value>
+    <value>Έτοιμος/η για την πρώτη σου</value>
   </data>
   <data name="CtaTitleHighlight" xml:space="preserve">
-    <value>ξεκινά εδώ</value>
+    <value>προπόνηση;</value>
   </data>
   <data name="CtaText" xml:space="preserve">
-    <value>Κλείσε δωρεάν μια σύντομη διαγνωστική συνεδρία και δες αν το FitEdu είναι για σένα.</value>
+    <value>Φτιάξε δωρεάν λογαριασμό, διάλεξε στόχο και ακολούθησε ένα πρόγραμμα για το επίπεδό σου.</value>
   </data>
   <data name="CtaButton" xml:space="preserve">
-    <value>Κλείσε δωρεάν συνεδρία</value>
+    <value>Δημιουργία δωρεάν λογαριασμού</value>
   </data>
   <data name="FooterBrand" xml:space="preserve">
     <value>FitEdu</value>
   </data>
   <data name="FooterAuthorName" xml:space="preserve">
-    <value>Γεώργιος Κόκκαλης</value>
+    <value>Ομάδα Προπονητών FitEdu</value>
   </data>
   <data name="FooterAuthorRole" xml:space="preserve">
-    <value>Σύμβουλος Επαγγελματικού Προσανατολισμού</value>
+    <value>Πλατφόρμα εκπαίδευσης fitness</value>
   </data>
   <data name="FooterCopyright" xml:space="preserve">
     <value>© 2026 FitEdu</value>
@@ -295,7 +184,7 @@
     <value>Δεν έχουν δημοσιευτεί ακόμη άρθρα.</value>
   </data>
   <data name="DashboardContinueLearning" xml:space="preserve">
-    <value>Συνέχισε τη Μάθηση</value>
+    <value>Τα προγράμματά σου</value>
   </data>
   <data name="DashboardExplore" xml:space="preserve">
     <value>Εξερεύνηση</value>
@@ -314,5 +203,68 @@
   </data>
   <data name="BackToHome" xml:space="preserve">
     <value>Επιστροφή στην αρχική</value>
+  </data>
+  <data name="HeroCtaSecondary" xml:space="preserve">
+    <value>Δες τις ασκήσεις</value>
+  </data>
+  <data name="StatsCourses" xml:space="preserve">
+    <value>Μαθήματα</value>
+  </data>
+  <data name="StatsExercises" xml:space="preserve">
+    <value>Ασκήσεις</value>
+  </data>
+  <data name="StatsLessons" xml:space="preserve">
+    <value>Προπονήσεις &amp; μαθήματα</value>
+  </data>
+  <data name="StatsMembers" xml:space="preserve">
+    <value>Μέλη</value>
+  </data>
+  <data name="GoalsTitle" xml:space="preserve">
+    <value>Διάλεξε τον</value>
+  </data>
+  <data name="GoalsTitleHighlight" xml:space="preserve">
+    <value>στόχο σου</value>
+  </data>
+  <data name="HowTitle" xml:space="preserve">
+    <value>Πώς δουλεύει</value>
+  </data>
+  <data name="HowTitleHighlight" xml:space="preserve">
+    <value>το FitEdu</value>
+  </data>
+  <data name="HowStep1Title" xml:space="preserve">
+    <value>Έλεγξε το επίπεδό σου</value>
+  </data>
+  <data name="HowStep1Text" xml:space="preserve">
+    <value>Σύντομοι αυτοέλεγχοι δείχνουν από πού να ξεκινήσεις και τι να προσέξεις.</value>
+  </data>
+  <data name="HowStep2Title" xml:space="preserve">
+    <value>Ακολούθησε ένα πρόγραμμα</value>
+  </data>
+  <data name="HowStep2Text" xml:space="preserve">
+    <value>Κάθε προπόνηση έχει τις ασκήσεις της με σετ, επαναλήψεις, διαλείμματα και οδηγίες τεχνικής.</value>
+  </data>
+  <data name="HowStep3Title" xml:space="preserve">
+    <value>Παρακολούθησε την πρόοδό σου</value>
+  </data>
+  <data name="HowStep3Text" xml:space="preserve">
+    <value>Σημείωσε τις προπονήσεις, κράτα το σερί σου και πάρε πιστοποιητικό στο τέλος.</value>
+  </data>
+  <data name="FeaturedTitle" xml:space="preserve">
+    <value>Δημοφιλή</value>
+  </data>
+  <data name="FeaturedTitleHighlight" xml:space="preserve">
+    <value>προγράμματα</value>
+  </data>
+  <data name="TodayPlanTitle" xml:space="preserve">
+    <value>Το σημερινό πλάνο</value>
+  </data>
+  <data name="TodayPlanContinue" xml:space="preserve">
+    <value>Συνέχισε την προπόνηση</value>
+  </data>
+  <data name="TodayPlanEmpty" xml:space="preserve">
+    <value>Δεν έχεις πρόγραμμα ακόμη — διάλεξε ένα για την πρώτη σου προπόνηση.</value>
+  </data>
+  <data name="RecommendedTitle" xml:space="preserve">
+    <value>Προτεινόμενα για σένα</value>
   </data>
 </root>

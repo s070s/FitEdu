@@ -58,13 +58,6 @@ public partial class SeedContentIntegrityTests
         "Strength", "Nutrition", "Recovery", "Mobility", "Beginners"
     };
 
-    // Career-era Home copy whose Greek value is still the English text. Task C3 rewrites the
-    // Home copy and deletes these entries.
-    private static readonly HashSet<string> KnownCopiedGreekValues = new(StringComparer.Ordinal)
-    {
-        "HomeRes.MethodTitleZeroState", "HomeRes.MethodTitleHeroState", "HomeRes.ZeroStateTitle", "HomeRes.HeroStateTitle"
-    };
-
     // Where the text gates (career vocabulary, Greek command forms) look.
     // Task C3 adds the resx files and the C# seed code.
     private static readonly TextScanRoot[] TextScanRoots =
@@ -312,8 +305,7 @@ public partial class SeedContentIntegrityTests
         var copiedKeys = greekValues
             .Where(pair => englishValues.TryGetValue(pair.Key, out var englishValue) && englishValue == pair.Value)
             .Where(pair => HasTranslatableText(pair.Value))
-            .Select(pair => pair.Key)
-            .Where(key => !KnownCopiedGreekValues.Contains($"{resourceClassName}.{key}"))
+            .Select(pair => $"{resourceClassName}.{pair.Key}")
             .ToList();
 
         copiedKeys.ShouldBeEmpty("Greek values that repeat the English text");
