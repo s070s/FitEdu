@@ -10,7 +10,7 @@ namespace FitEdu.Web.Startup;
 /// Startup migration + seed: pre-warms LocalDB in Development, migrates the relational
 /// database, and seeds roles, subscription plans, and the admin user unconditionally, plus
 /// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven exercise-library/
-/// course/assessment/student sample data — none of which belongs in a real deployment.
+/// course/assessment/student/learning-path sample data — none of which belongs in a real deployment.
 /// </summary>
 public static class DatabaseSeedingExtensions
 {
@@ -170,6 +170,11 @@ public static class DatabaseSeedingExtensions
                 ?? throw new InvalidOperationException(
                     "SeedData:StudentPassword is required when SeedData:Enabled=true. Set it via User Secrets.");
             await StudentSeeder.SeedFromJsonAsync(userManager, studentJsonPath, studentPassword, startupLogger);
+
+            // Path steps name their courses by English title, so paths seed after the courses.
+            var pathJsonPath = config.GetValue<string>("SeedData:JsonPaths:Paths")
+                               ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Paths");
+            await LearningPathSeeder.SeedFromJsonAsync(db, pathJsonPath, startupLogger);
         }
     }
 }

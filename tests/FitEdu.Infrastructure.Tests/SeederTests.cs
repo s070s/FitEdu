@@ -547,6 +547,122 @@ public sealed class SeederTests : IDisposable
         logger.Warnings.ShouldContain(warning => warning.Contains("not-a-real-exercise"));
     }
 
+    // ---- LearningPathSeeder --------------------------------------------------
+
+    private const string SamplePathsJson = """
+    [
+      {
+        "title": "Beginner Start", "titleEl": "Ξεκίνημα για Αρχάριους",
+        "description": "Start here.", "descriptionEl": "Ξεκίνα από εδώ.",
+        "category": "Strength", "categoryEl": "Δύναμη",
+        "displayOrder": 2, "isPublished": true,
+        "courseTitles": [ "Core & Stability", "Bodyweight Basics" ]
+      }
+    ]
+    """;
+
+    /// <summary>Saves minimal courses with the given English titles and returns their ids in the same order.</summary>
+    private static async Task<List<Guid>> AddCoursesAsync(ApplicationDbContext db, params string[] titles)
+    {
+        var courses = titles.Select(title => new Course { Id = Guid.NewGuid(), TitleEn = title }).ToList();
+        db.Courses.AddRange(courses);
+        await db.SaveChangesAsync();
+        return courses.Select(course => course.Id).ToList();
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_ValidJson_SeedsPublishedBilingualPathWithStepsInListOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var courseIds = await AddCoursesAsync(db, "Bodyweight Basics", "Core & Stability");
+        var dir = TempDirWith("paths.json", SamplePathsJson);
+
+        await LearningPathSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var path = await db.LearningPaths.Include(p => p.Steps).Include(p => p.Category).SingleAsync();
+        path.TitleEn.ShouldBe("Beginner Start");
+        path.TitleEl.ShouldBe("Ξεκίνημα για Αρχάριους");
+        path.DescriptionEn.ShouldBe("Start here.");
+        path.DescriptionEl.ShouldBe("Ξεκίνα από εδώ.");
+        path.DisplayOrder.ShouldBe(2);
+        path.IsPublished.ShouldBeTrue();
+        path.PublishedAt.ShouldNotBeNull();
+        path.Category!.NameEn.ShouldBe("Strength");
+        path.Category.NameEl.ShouldBe("Δύναμη");
+
+        var steps = path.Steps.OrderBy(step => step.StepOrder).ToList();
+        steps.Select(step => step.StepOrder).ShouldBe([1, 2]);
+        steps.Select(step => step.CourseId).ShouldBe([courseIds[1], courseIds[0]]);
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_ReusesTheCourseCategoryWithTheSameName()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var strength = new Category { Id = Guid.NewGuid(), NameEn = "Strength", NameEl = "Δύναμη" };
+        db.Categories.Add(strength);
+        await AddCoursesAsync(db, "Bodyweight Basics", "Core & Stability");
+        var dir = TempDirWith("paths.json", SamplePathsJson);
+
+        await LearningPathSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.Categories.CountAsync()).ShouldBe(1);
+        (await db.LearningPaths.SingleAsync()).CategoryId.ShouldBe(strength.Id);
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_DuplicateCourseTitles_UsesOneOfThemInsteadOfThrowing()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var courseIds = await AddCoursesAsync(db, "Bodyweight Basics", "Bodyweight Basics", "Core & Stability");
+        var dir = TempDirWith("paths.json", SamplePathsJson);
+
+        await LearningPathSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var steps = await db.LearningPathSteps.OrderBy(step => step.StepOrder).ToListAsync();
+        steps.Count.ShouldBe(2);
+        steps[1].CourseId.ShouldBeOneOf(courseIds[0], courseIds[1]);
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_UnknownCourseTitle_ThrowsNamingPathAndTitle()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddCoursesAsync(db, "Bodyweight Basics");
+        var dir = TempDirWith("paths.json", SamplePathsJson);
+
+        var exception = await Should.ThrowAsync<InvalidOperationException>(
+            () => LearningPathSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance));
+
+        exception.Message.ShouldContain("'Beginner Start'");
+        exception.Message.ShouldContain("'Core & Stability'");
+        (await db.LearningPaths.CountAsync()).ShouldBe(0); // nothing half-seeded
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_WhenPathsExist_SkipsSeeding()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddCoursesAsync(db, "Bodyweight Basics", "Core & Stability");
+        db.LearningPaths.Add(new LearningPath { Id = Guid.NewGuid(), TitleEn = "Existing" });
+        await db.SaveChangesAsync();
+        var dir = TempDirWith("paths.json", SamplePathsJson);
+
+        await LearningPathSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.LearningPaths.SingleAsync()).TitleEn.ShouldBe("Existing");
+    }
+
+    [Fact]
+    public async Task LearningPathSeeder_MissingDirectory_IsNoOp()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        await Should.NotThrowAsync(() => LearningPathSeeder.SeedFromJsonAsync(db, NonExistentDir(), NullLogger.Instance));
+
+        (await db.LearningPaths.CountAsync()).ShouldBe(0);
+    }
+
     // ---- StudentSeeder -------------------------------------------------------
 
     [Fact]

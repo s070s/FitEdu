@@ -16,6 +16,7 @@ internal static class SeedJsonFiles
     public static readonly string CoursesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Courses");
     public static readonly string AssessmentsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Assessments");
     public static readonly string ExercisesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Exercises");
+    public static readonly string PathsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Paths");
 
     private static readonly string ExerciseLibraryPath = Path.Combine(ExercisesFolder, "exercises.json");
     private static readonly string GreekOverlayPath = Path.Combine(ExercisesFolder, "exercises.el.json");
@@ -32,6 +33,10 @@ internal static class SeedJsonFiles
     public static List<SeedFile<CourseSeedDto>> LoadCourses() => LoadFolder<CourseSeedDto>(CoursesFolder);
 
     public static List<SeedFile<AssessmentSeedDto>> LoadAssessments() => LoadFolder<AssessmentSeedDto>(AssessmentsFolder);
+
+    /// <summary>Every learning path in the Paths folder, in file-name order.</summary>
+    public static List<LearningPathSeedDto> LoadPaths() =>
+        LoadFolder<List<LearningPathSeedDto>>(PathsFolder).SelectMany(file => file.Content).ToList();
 
     public static List<ExerciseSeedDto> LoadExerciseLibrary() => Deserialize<List<ExerciseSeedDto>>(ExerciseLibraryPath);
 

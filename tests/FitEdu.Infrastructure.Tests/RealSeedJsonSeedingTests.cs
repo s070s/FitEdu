@@ -19,6 +19,8 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
     private const int ExpectedExerciseCount = 873;
     private const int ExpectedCourseCount = 19;
     private const int ExpectedAssessmentCount = 19;
+    private const int ExpectedPathCount = 4;
+    private const int ExpectedStepsPerPath = 4;
 
     private readonly RealSeedJsonDatabase _seeded;
 
@@ -130,6 +132,31 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
     }
 
     [Fact]
+    public async Task Paths_FourPublishedBilingualPathsOfFourSteps_EachStepIsTheCourseTheFileNames()
+    {
+        var expectedRows = SeedJsonFiles.LoadPaths()
+            .SelectMany(path => path.CourseTitles.Select((courseTitle, index) => $"{path.Title} | step {index + 1} | {courseTitle}"))
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+        var paths = await Db.LearningPaths.Include(path => path.Category).ToListAsync();
+        var seededSteps = await Db.LearningPathSteps
+            .Select(step => new { Path = step.LearningPath!.TitleEn, step.StepOrder, Course = step.Course!.TitleEn })
+            .ToListAsync();
+        var seededRows = seededSteps
+            .Select(step => $"{step.Path} | step {step.StepOrder} | {step.Course}")
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+        paths.Count.ShouldBe(ExpectedPathCount);
+        paths.ShouldAllBe(path => path.IsPublished && path.PublishedAt != null);
+        paths.ShouldAllBe(path => !string.IsNullOrWhiteSpace(path.TitleEl) && !string.IsNullOrWhiteSpace(path.DescriptionEl));
+        paths.ShouldAllBe(path => path.Category != null && !string.IsNullOrWhiteSpace(path.Category.NameEl));
+        seededRows.Count.ShouldBe(ExpectedPathCount * ExpectedStepsPerPath);
+        seededRows.ShouldBe(expectedRows);
+    }
+
+    [Fact]
     public async Task SeededText_FitsTheColumnLengthLimits()
     {
         // SQLite ignores HasMaxLength, so a too-long seed text would only fail on SQL Server.
@@ -142,6 +169,7 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
         seededRows.AddRange(await Db.Lessons.AsNoTracking().ToListAsync());
         seededRows.AddRange(await Db.LessonExercises.AsNoTracking().ToListAsync());
         seededRows.AddRange(await Db.AssessmentDefinitions.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.LearningPaths.AsNoTracking().ToListAsync());
 
         var problems = seededRows.SelectMany(FindValuesOverTheirLimit).ToList();
 
@@ -195,6 +223,7 @@ public sealed class RealSeedJsonDatabase : IAsyncLifetime
         await ExerciseSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.ExercisesFolder, Logger);
         await CourseSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.CoursesFolder, Logger);
         await AssessmentSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.AssessmentsFolder, Logger);
+        await LearningPathSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.PathsFolder, Logger);
 
         // The tests read what was saved, not the entities the seeders still track.
         Db.ChangeTracker.Clear();
