@@ -83,7 +83,8 @@ FitEdu.sln
 │   ├── FitEdu.Infrastructure/  EF Core DbContext, migrations, service implementations
 │   ├── FitEdu.Web/             Blazor SSR + API controllers — the only deployable project
 │   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
-└── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
+├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
+└── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
 ```
 
 > Adding a field to an entity touches several layers (entity → EF config → migration → DTO → mapping helper → controller → consumer → page → resx). Follow the checklist in [docs/ADDING-A-FIELD.md](docs/ADDING-A-FIELD.md) so no step is missed — a skipped step surfaces as a silently blank value, not an error.

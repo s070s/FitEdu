@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FitEdu blog cover</title>
+    <!--
+        1200x675 blog cover. render-brand-images.mjs puts the original exercise photo into #photo,
+        then saves the screenshot as src/FitEdu.Web/wwwroot/images/blog/<article slug>.webp.
+    -->
+    <link rel="stylesheet" href="brand-templates.css">
+    <style>
+        body {
+            width: 1200px;
+            height: 675px;
+            overflow: hidden;
+        }
+
+        .cover {
+            position: relative;
+            width: 1200px;
+            height: 675px;
+        }
+
+        .cover .photo {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Darkens the lower left so the brand mark stays readable on any photo. */
+        .shade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(24deg, rgba(14, 17, 22, 0.9) 0%, rgba(14, 17, 22, 0.35) 34%, rgba(14, 17, 22, 0) 60%);
+        }
+
+        .brand {
+            position: absolute;
+            left: 52px;
+            bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-mark {
+            width: 72px;
+            height: 72px;
+            display: block;
+        }
+
+        .accent-rule {
+            width: 96px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--teal);
+        }
+    </style>
+</head>
+<body>
+    <main class="cover">
+        <div class="photo"><img id="photo" alt=""></div>
+        <div class="shade"></div>
+        <div class="brand">
+            <img class="brand-mark" src="../../src/FitEdu.Web/wwwroot/favicon.svg" alt="">
+            <div class="accent-rule"></div>
+        </div>
+    </main>
+</body>
+</html>
