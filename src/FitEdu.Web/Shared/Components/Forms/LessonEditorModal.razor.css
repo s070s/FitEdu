@@ -1,0 +1,10 @@
+/* Many search matches scroll inside the picker instead of pushing the modal footer away. */
+.exercise-search-results {
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+/* Keep the move/remove buttons together when a long exercise name wraps on a phone. */
+.exercise-row-actions {
+    flex-shrink: 0;
+}

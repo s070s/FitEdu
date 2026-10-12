@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
 
@@ -17,6 +18,10 @@ public partial class LessonEditorModal
     [Parameter, EditorRequired] public EventCallback OnSaved { get; set; }
 
     [Inject] private IAdminLessonConsumer LessonConsumer { get; set; } = default!;
+    [Inject] private IExerciseConsumer ExerciseConsumer { get; set; } = default!;
+
+    // The picker shows one short page of matches; the admin narrows the search instead of paging.
+    private const int ExerciseSearchPageSize = 10;
 
     private string _titleEn = string.Empty;
     private string? _titleEl;
@@ -35,6 +40,12 @@ public partial class LessonEditorModal
     private string _errorMessage = string.Empty;
     private bool _wasVisible;
 
+    // Exercise rows in lesson order, and the picker's search state (null results = no search yet)
+    private List<ExerciseRow> _exerciseRows = [];
+    private string _exerciseSearch = string.Empty;
+    private List<ExerciseListItemDto>? _exerciseSearchResults;
+    private bool _isSearching;
+
     protected override void OnParametersSet()
     {
         var justOpened = IsVisible && !_wasVisible;
@@ -46,6 +57,9 @@ public partial class LessonEditorModal
         _errorMessage = string.Empty;
         _pendingPdf = null;
         _pendingVideo = null;
+        _exerciseSearch = string.Empty;
+        _exerciseSearchResults = null;
+        _exerciseRows = EditingLesson?.Exercises?.Select(ExerciseRow.FromDto).ToList() ?? [];
 
         if (EditingLesson is not null)
         {
@@ -76,6 +90,53 @@ public partial class LessonEditorModal
     private void OnPdfSelected(InputFileChangeEventArgs e) => _pendingPdf = e.File;
     private void OnVideoSelected(InputFileChangeEventArgs e) => _pendingVideo = e.File;
 
+    // ── Exercise picker ──
+
+    private async Task SearchExercisesAsync()
+    {
+        var searchTerm = _exerciseSearch.Trim();
+        if (searchTerm.Length == 0)
+        {
+            _exerciseSearchResults = null;
+            return;
+        }
+
+        _isSearching = true;
+        try
+        {
+            var filter = new ExerciseFilterDto(Search: searchTerm);
+            var page = await ExerciseConsumer.ListAsync(1, ExerciseSearchPageSize, filter: filter);
+            _exerciseSearchResults = page.Items;
+        }
+        finally
+        {
+            _isSearching = false;
+        }
+    }
+
+    private async Task OnExerciseSearchKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await SearchExercisesAsync();
+    }
+
+    private void AddExercise(ExerciseListItemDto exercise) =>
+        _exerciseRows.Add(new ExerciseRow { Slug = exercise.Slug, Name = exercise.Name });
+
+    private void RemoveExercise(int index) => _exerciseRows.RemoveAt(index);
+
+    private void MoveExerciseUp(int index) => SwapExercises(index, index - 1);
+
+    private void MoveExerciseDown(int index) => SwapExercises(index, index + 1);
+
+    private void SwapExercises(int index, int otherIndex)
+    {
+        if (otherIndex < 0 || otherIndex >= _exerciseRows.Count)
+            return;
+
+        (_exerciseRows[index], _exerciseRows[otherIndex]) = (_exerciseRows[otherIndex], _exerciseRows[index]);
+    }
+
     private async Task SaveAsync()
     {
         if (string.IsNullOrWhiteSpace(_titleEn))
@@ -96,8 +157,10 @@ public partial class LessonEditorModal
                 ? await _contentEditorEl.GetContentAsync()
                 : _contentEl;
 
+            // The list is always sent, so saving replaces the lesson's exercises with exactly these rows.
+            var exercises = _exerciseRows.Select(row => row.ToDto()).ToList();
             var request = new SaveLessonRequest(
-                _titleEn, _titleEl, contentEn, contentEl, _videoUrl, _duration, _sortOrder, ModuleId);
+                _titleEn, _titleEl, contentEn, contentEl, _videoUrl, _duration, _sortOrder, ModuleId, exercises);
 
             Guid lessonId;
 
@@ -152,5 +215,30 @@ public partial class LessonEditorModal
         {
             _isSaving = false;
         }
+    }
+
+    /// <summary>Editable copy of one exercise row (the DTO is an immutable record).</summary>
+    private sealed class ExerciseRow
+    {
+        public required string Slug { get; init; }
+        public required string Name { get; init; }
+        public int? Sets { get; set; }
+        public string? Reps { get; set; }
+        public int? RestSeconds { get; set; }
+        public string? NotesEn { get; set; }
+        public string? NotesEl { get; set; }
+
+        public static ExerciseRow FromDto(LessonExerciseEditDto dto) => new()
+        {
+            Slug = dto.Slug,
+            Name = dto.Name ?? dto.Slug,
+            Sets = dto.Sets,
+            Reps = dto.Reps,
+            RestSeconds = dto.RestSeconds,
+            NotesEn = dto.NotesEn,
+            NotesEl = dto.NotesEl
+        };
+
+        public LessonExerciseEditDto ToDto() => new(Slug, Sets, Reps, RestSeconds, NotesEn, NotesEl, Name);
     }
 }

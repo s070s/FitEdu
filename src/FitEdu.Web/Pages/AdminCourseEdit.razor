@@ -81,6 +81,60 @@ else
                 }
             </div>
 
+            @* Fitness fields: side by side from md up (sm for the two numbers), one per line on phones *@
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="course-level">@AdminRes.Level</label>
+                    <select id="course-level" class="form-select" @bind="courseLevel">
+                        @foreach (var level in Enum.GetValues<CourseLevel>())
+                        {
+                            <option value="@level">@level</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="course-goal">@AdminRes.Goal</label>
+                    <select id="course-goal" class="form-select" @bind="courseGoal">
+                        @foreach (var goal in Enum.GetValues<FitnessGoal>())
+                        {
+                            <option value="@goal">@goal</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label" for="course-equipment">@AdminRes.Equipment</label>
+                    <input id="course-equipment" class="form-control" maxlength="120" @bind="courseEquipment"
+                           aria-describedby="course-equipment-hint" />
+                    <small id="course-equipment-hint" class="form-text text-light-muted">@AdminRes.EquipmentHint</small>
+                </div>
+                <div class="col-sm-6 col-md-4 mb-3">
+                    <label class="form-label" for="course-weeks">@AdminRes.EstimatedWeeks</label>
+                    <input id="course-weeks" type="number" min="1" max="104" class="form-control" @bind="courseEstimatedWeeks" />
+                </div>
+                <div class="col-sm-6 col-md-4 mb-3">
+                    <label class="form-label" for="course-sessions">@AdminRes.SessionsPerWeek</label>
+                    <input id="course-sessions" type="number" min="1" max="14" class="form-control" @bind="courseSessionsPerWeek" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="course-cover-exercise">@AdminRes.CoverExercise</label>
+                <input id="course-cover-exercise"
+                       class="form-control @(coverExerciseSlugInvalid ? "is-invalid" : "")"
+                       maxlength="120"
+                       @bind="courseCoverExerciseSlug"
+                       aria-invalid="@(coverExerciseSlugInvalid ? "true" : null)"
+                       aria-describedby="@CoverExerciseDescribedBy" />
+                @if (coverExerciseSlugInvalid)
+                {
+                    <div id="course-cover-exercise-error" class="invalid-feedback">@AdminRes.UnknownExerciseSlug</div>
+                }
+                <small id="course-cover-exercise-hint" class="form-text text-light-muted">@AdminRes.CoverExerciseHint</small>
+            </div>
+
             <SaveCancelBar SaveLabel="@AdminRes.SaveCourse"
                            SavingLabel="@AdminRes.Saving"
                            IsSaving="isSaving"

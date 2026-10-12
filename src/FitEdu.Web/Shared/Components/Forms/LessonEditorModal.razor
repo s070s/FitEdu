@@ -62,6 +62,116 @@
                 }
             </div>
         </div>
+
+        @* ── Exercises: rows in lesson order, then the library search that adds rows ── *@
+        <section class="lesson-exercises mb-3" aria-labelledby="lesson-exercises-heading">
+            <h6 id="lesson-exercises-heading" class="fw-semibold">@AdminRes.Exercises</h6>
+
+            @if (_exerciseRows.Count == 0)
+            {
+                <p class="text-light-muted small">@AdminRes.NoLessonExercises</p>
+            }
+
+            @for (var index = 0; index < _exerciseRows.Count; index++)
+            {
+                var rowIndex = index;
+                var row = _exerciseRows[rowIndex];
+                var idPrefix = $"exercise-{rowIndex}";
+                <div class="card mb-2 lesson-exercise-row" @key="row">
+                    <div class="card-body p-2">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <span class="fw-semibold">
+                                @(rowIndex + 1). @row.Name
+                                <small class="text-light-muted fw-normal ms-1">@row.Slug</small>
+                            </span>
+                            <div class="btn-group btn-group-sm exercise-row-actions">
+                                <button type="button" class="btn btn-outline-secondary exercise-move-up"
+                                        title="@AdminRes.MoveUp" aria-label="@($"{AdminRes.MoveUp}: {row.Name}")"
+                                        disabled="@(rowIndex == 0)" @onclick="() => MoveExerciseUp(rowIndex)">
+                                    <i class="bi bi-arrow-up" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary exercise-move-down"
+                                        title="@AdminRes.MoveDown" aria-label="@($"{AdminRes.MoveDown}: {row.Name}")"
+                                        disabled="@(rowIndex == _exerciseRows.Count - 1)" @onclick="() => MoveExerciseDown(rowIndex)">
+                                    <i class="bi bi-arrow-down" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger exercise-remove"
+                                        title="@AdminRes.RemoveExercise" aria-label="@($"{AdminRes.RemoveExercise}: {row.Name}")"
+                                        @onclick="() => RemoveExercise(rowIndex)">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        @* One field per line on phones, three numbers side by side from sm, all five from lg *@
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-4 col-lg-2">
+                                <label class="form-label small mb-1" for="@($"{idPrefix}-sets")">@AdminRes.Sets</label>
+                                <input id="@($"{idPrefix}-sets")" type="number" min="1" max="100"
+                                       class="form-control form-control-sm" @bind="row.Sets" />
+                            </div>
+                            <div class="col-12 col-sm-4 col-lg-2">
+                                <label class="form-label small mb-1" for="@($"{idPrefix}-reps")">@AdminRes.Reps</label>
+                                <input id="@($"{idPrefix}-reps")" maxlength="40" placeholder="8–12"
+                                       class="form-control form-control-sm" @bind="row.Reps" />
+                            </div>
+                            <div class="col-12 col-sm-4 col-lg-2">
+                                <label class="form-label small mb-1" for="@($"{idPrefix}-rest")">@AdminRes.RestSeconds</label>
+                                <input id="@($"{idPrefix}-rest")" type="number" min="0" max="3600"
+                                       class="form-control form-control-sm" @bind="row.RestSeconds" />
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <label class="form-label small mb-1" for="@($"{idPrefix}-notes-en")">@AdminRes.Notes (EN)</label>
+                                <input id="@($"{idPrefix}-notes-en")" maxlength="500"
+                                       class="form-control form-control-sm" @bind="row.NotesEn" />
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <label class="form-label small mb-1" for="@($"{idPrefix}-notes-el")">@AdminRes.Notes (EL)</label>
+                                <input id="@($"{idPrefix}-notes-el")" maxlength="500"
+                                       class="form-control form-control-sm" @bind="row.NotesEl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="exercise-picker mt-3">
+                <label class="form-label" for="exercise-search">@AdminRes.AddExercise</label>
+                <div class="input-group">
+                    <input id="exercise-search" type="search" class="form-control"
+                           placeholder="@AdminRes.SearchExercises"
+                           @bind="_exerciseSearch" @bind:event="oninput"
+                           @onkeydown="OnExerciseSearchKeyDown" />
+                    <button type="button" class="btn btn-outline-secondary exercise-search-button"
+                            title="@AdminRes.SearchExercises" aria-label="@AdminRes.SearchExercises"
+                            disabled="@_isSearching" @onclick="SearchExercisesAsync">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                @if (_exerciseSearchResults?.Count == 0)
+                {
+                    <p class="text-light-muted small mt-2 mb-0" role="status">@AdminRes.NoExercisesFound</p>
+                }
+                else if (_exerciseSearchResults is not null)
+                {
+                    <div class="list-group mt-2 exercise-search-results">
+                        @foreach (var exercise in _exerciseSearchResults)
+                        {
+                            <button type="button" @key="exercise.Id"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 exercise-search-result"
+                                    aria-label="@($"{AdminRes.AddExercise}: {exercise.Name}")"
+                                    @onclick="() => AddExercise(exercise)">
+                                <span>
+                                    @exercise.Name
+                                    <small class="text-light-muted ms-1">@exercise.Slug</small>
+                                </span>
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </section>
     </Body>
     <Footer>
         <button class="btn btn-primary" @onclick="SaveAsync" disabled="@_isSaving">
