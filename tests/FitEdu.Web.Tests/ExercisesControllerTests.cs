@@ -1,9 +1,12 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Shared.Resources.Messages;
 using Shouldly;
 using Xunit;
 
@@ -19,6 +22,8 @@ public class ExercisesControllerTests : IClassFixture<CustomWebAppFactory>
     private readonly CustomWebAppFactory _factory;
 
     public ExercisesControllerTests(CustomWebAppFactory factory) => _factory = factory;
+
+    private const string GreekCulture = "el-GR";
 
     private static string UniqueSlug(string prefix) => $"{prefix}-{Guid.NewGuid():N}";
 
@@ -82,6 +87,21 @@ public class ExercisesControllerTests : IClassFixture<CustomWebAppFactory>
         var response = await client.GetAsync($"/api/exercises/{UniqueSlug("missing")}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetExercise_UnknownSlug_ExplainsInTheRequestLanguage()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(GreekCulture);
+        var expectedDetail = ErrorMessagesRes.ResourceManager.GetString(
+            nameof(ErrorMessagesRes.Exercise_NotFound), new CultureInfo(GreekCulture));
+
+        var response = await client.GetAsync($"/api/exercises/{UniqueSlug("missing")}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        problem!.Detail.ShouldBe(expectedDetail);
     }
 
     [Fact]

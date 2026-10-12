@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Controllers;
 
@@ -59,7 +60,7 @@ public class ExercisesController(IExerciseService exerciseService) : ControllerB
         var dto = await exerciseService.GetPublishedBySlugAsync(slug, lang, cancellationToken);
         return dto is not null
             ? Ok(dto)
-            : Problem(detail: "Exercise not found", statusCode: StatusCodes.Status404NotFound);
+            : Problem(detail: ErrorMessagesRes.Exercise_NotFound, statusCode: StatusCodes.Status404NotFound);
     }
 
     /// <summary>

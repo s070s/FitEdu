@@ -285,4 +285,7 @@
   <data name="Auth_GdprConsentRequired" xml:space="preserve">
     <value>Πρέπει να συναινέσετε στην επεξεργασία δεδομένων.</value>
   </data>
+  <data name="Exercise_NotFound" xml:space="preserve">
+    <value>Η άσκηση δεν βρέθηκε.</value>
+  </data>
 </root>

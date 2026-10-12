@@ -563,5 +563,14 @@ namespace FitEdu.Shared.Resources.Messages {
             }
         }
 
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercise not found..
+        /// </summary>
+        public static string Exercise_NotFound {
+            get {
+                return ResourceManager.GetString("Exercise_NotFound", resourceCulture);
+            }
+        }
     }
 }

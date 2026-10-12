@@ -285,4 +285,7 @@
   <data name="Auth_GdprConsentRequired" xml:space="preserve">
     <value>You must consent to data processing.</value>
   </data>
+  <data name="Exercise_NotFound" xml:space="preserve">
+    <value>Exercise not found.</value>
+  </data>
 </root>
