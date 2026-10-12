@@ -9,8 +9,8 @@ namespace FitEdu.Web.Startup;
 /// <summary>
 /// Startup migration + seed: pre-warms LocalDB in Development, migrates the relational
 /// database, and seeds roles, subscription plans, and the admin user unconditionally, plus
-/// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven course/assessment/
-/// student sample data — none of which belongs in a real deployment.
+/// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven exercise-library/
+/// course/assessment/student sample data — none of which belongs in a real deployment.
 /// </summary>
 public static class DatabaseSeedingExtensions
 {
@@ -150,6 +150,11 @@ public static class DatabaseSeedingExtensions
         if (app.Environment.IsDevelopment() && config.GetValue<bool>("SeedData:Enabled"))
         {
             await BlogArticleSeeder.SeedAsync(db, startupLogger);
+
+            // Exercises before courses, so course lessons can link exercises by slug.
+            var exerciseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Exercises")
+                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Exercises");
+            await ExerciseSeeder.SeedFromJsonAsync(db, exerciseJsonPath, startupLogger);
 
             var jsonSeedPath = config.GetValue<string>("SeedData:JsonPaths:Courses")
                                ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Courses");

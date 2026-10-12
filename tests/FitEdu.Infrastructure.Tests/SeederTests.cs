@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.DTOs;
@@ -18,12 +19,22 @@ public sealed class SeederTests : IDisposable
 {
     private readonly List<string> _tempDirs = [];
 
-    private string TempDirWith(string fileName, string content)
+    private string TempDirWith(string fileName, string content) => TempDirWithFiles((fileName, content));
+
+    /// <summary>Creates a temp folder holding each file; a relative path may include a sub-folder.</summary>
+    private string TempDirWithFiles(params (string RelativePath, string Content)[] files)
     {
         var dir = Path.Combine(Path.GetTempPath(), "fitedu-seed-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dir);
-        File.WriteAllText(Path.Combine(dir, fileName), content);
         _tempDirs.Add(dir);
+
+        foreach (var (relativePath, content) in files)
+        {
+            var fullPath = Path.Combine(dir, relativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+            File.WriteAllText(fullPath, content);
+        }
+
         return dir;
     }
 
@@ -148,6 +159,155 @@ public sealed class SeederTests : IDisposable
         (await db.Courses.CountAsync()).ShouldBe(1); // unchanged
     }
 
+    // ---- ExerciseSeeder ------------------------------------------------------
+
+    private const string SampleExercisesJson = """
+    [
+      {
+        "id": "3_4_Sit-Up",
+        "name": "3/4 Sit-Up",
+        "force": "pull",
+        "level": "beginner",
+        "mechanic": "compound",
+        "equipment": "body only",
+        "primaryMuscles": ["abdominals"],
+        "secondaryMuscles": [],
+        "instructions": ["Lie down on the floor.", "Raise your torso toward your knees."],
+        "category": "strength",
+        "images": ["3_4_Sit-Up/0.jpg", "3_4_Sit-Up/1.jpg"]
+      },
+      {
+        "id": "Pushups",
+        "name": "Pushups",
+        "force": null,
+        "level": "beginner",
+        "mechanic": null,
+        "equipment": null,
+        "primaryMuscles": ["chest"],
+        "secondaryMuscles": ["shoulders", "triceps"],
+        "instructions": ["Lie on the floor face down."],
+        "category": "strength",
+        "images": ["Pushups/0.jpg", "Pushups/1.jpg"]
+      }
+    ]
+    """;
+
+    private static string GreekRowsJson(string slug, string nameEl) => $$"""
+    [ { "slug": "{{slug}}", "nameEl": "{{nameEl}}", "instructionsEl": ["Βήμα ένα.", "Βήμα δύο."] } ]
+    """;
+
+    [Fact]
+    public async Task ExerciseSeeder_ValidJson_SeedsExercisesWithSlugAndJoinedFields()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("exercises.json", SampleExercisesJson);
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var exercises = await db.Exercises.OrderBy(e => e.Slug).ToListAsync();
+        exercises.Select(e => e.Slug).ShouldBe(["3-4-sit-up", "pushups"]);
+
+        var sitUp = exercises[0];
+        sitUp.NameEn.ShouldBe("3/4 Sit-Up");
+        sitUp.NameEl.ShouldBeNull();
+        sitUp.Force.ShouldBe("pull");
+        sitUp.SecondaryMuscles.ShouldBe(string.Empty);
+        sitUp.InstructionsEn.ShouldBe("Lie down on the floor.\nRaise your torso toward your knees.");
+        sitUp.InstructionsEl.ShouldBeNull();
+        sitUp.ImageCount.ShouldBe(2);
+        sitUp.IsPublished.ShouldBeTrue();
+
+        var pushups = exercises[1];
+        pushups.Force.ShouldBeNull();
+        pushups.Equipment.ShouldBeNull();
+        pushups.PrimaryMuscles.ShouldBe("chest");
+        pushups.SecondaryMuscles.ShouldBe("shoulders, triceps");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_SecondRun_IsNoOp()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("exercises.json", SampleExercisesJson);
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.Exercises.CountAsync()).ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_MissingDirectory_IsNoOp()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        await Should.NotThrowAsync(() => ExerciseSeeder.SeedFromJsonAsync(db, NonExistentDir(), NullLogger.Instance));
+
+        (await db.Exercises.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_GreekOverlayFile_FillsGreekNameAndInstructions()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            ("exercises.el.json", GreekRowsJson("pushups", "Κάμψεις")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var pushups = await db.Exercises.SingleAsync(e => e.Slug == "pushups");
+        pushups.NameEl.ShouldBe("Κάμψεις");
+        pushups.InstructionsEl.ShouldBe("Βήμα ένα.\nΒήμα δύο.");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_GreekFragmentFolder_FillsGreekNameAndInstructions()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            (Path.Combine("el", "strength-basics.el.json"), GreekRowsJson("3-4-sit-up", "Κοιλιακοί 3/4")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var sitUp = await db.Exercises.SingleAsync(e => e.Slug == "3-4-sit-up");
+        sitUp.NameEl.ShouldBe("Κοιλιακοί 3/4");
+        sitUp.InstructionsEl.ShouldBe("Βήμα ένα.\nΒήμα δύο.");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_DuplicateGreekSlug_KeepsRowFromFirstFileByName()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        // Written in reverse order so the test proves files are read by name, not creation order.
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            (Path.Combine("el", "b-course.el.json"), GreekRowsJson("pushups", "Δεύτερο")),
+            (Path.Combine("el", "a-course.el.json"), GreekRowsJson("pushups", "Πρώτο")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var pushups = await db.Exercises.SingleAsync(e => e.Slug == "pushups");
+        pushups.NameEl.ShouldBe("Πρώτο");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_UnknownGreekSlug_IsSkippedWithWarning()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new WarningRecordingLogger();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            (Path.Combine("el", "strength-basics.el.json"), GreekRowsJson("not-a-real-exercise", "Άγνωστη")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.CountAsync()).ShouldBe(2);
+        (await db.Exercises.AnyAsync(e => e.NameEl != null)).ShouldBeFalse();
+        logger.Warnings.ShouldContain(warning => warning.Contains("not-a-real-exercise"));
+    }
+
     // ---- StudentSeeder -------------------------------------------------------
 
     [Fact]
@@ -188,5 +348,22 @@ public sealed class SeederTests : IDisposable
     {
         foreach (var d in _tempDirs.Where(Directory.Exists))
             Directory.Delete(d, recursive: true);
+    }
+
+    /// <summary>Keeps the text of every warning so a test can check what the seeder reported.</summary>
+    private sealed class WarningRecordingLogger : ILogger
+    {
+        public List<string> Warnings { get; } = [];
+
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string> formatter)
+        {
+            if (logLevel == LogLevel.Warning)
+                Warnings.Add(formatter(state, exception));
+        }
     }
 }

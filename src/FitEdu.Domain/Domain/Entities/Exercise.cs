@@ -9,7 +9,7 @@ public class Exercise : AuditableEntity
     public Guid Id { get; set; }
 
     /// <summary>
-    /// URL-safe unique key (e.g. "push-ups"), used in /exercises/{slug} and the image folder.
+    /// URL-safe unique key (e.g. "pushups"), used in /exercises/{slug} and the image folder.
     /// </summary>
     public required string Slug { get; set; }
 
@@ -46,12 +46,12 @@ public class Exercise : AuditableEntity
     public string? Equipment { get; set; }
 
     /// <summary>
-    /// Comma-joined, lowercase muscle names (e.g. "chest,triceps").
+    /// Lowercase muscle names joined with ", " (e.g. "chest, triceps").
     /// </summary>
     public required string PrimaryMuscles { get; set; }
 
     /// <summary>
-    /// Comma-joined, lowercase muscle names. Empty string when there are none.
+    /// Lowercase muscle names joined with ", ". Empty string when there are none.
     /// </summary>
     public required string SecondaryMuscles { get; set; }
 
