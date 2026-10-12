@@ -11,6 +11,7 @@ namespace FitEdu.Infrastructure.Tests;
 internal static class SeedJsonFiles
 {
     private const string JsonFilePattern = "*.json";
+    private const string GreekFragmentFilePattern = "*.el.json";
 
     public static readonly string CoursesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Courses");
     public static readonly string AssessmentsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Assessments");
@@ -18,6 +19,7 @@ internal static class SeedJsonFiles
 
     private static readonly string ExerciseLibraryPath = Path.Combine(ExercisesFolder, "exercises.json");
     private static readonly string GreekOverlayPath = Path.Combine(ExercisesFolder, "exercises.el.json");
+    private static readonly string GreekFragmentsFolder = Path.Combine(ExercisesFolder, "el");
 
     // Case-insensitive like the seeders, but an unknown field fails instead of being silently
     // ignored, so a misspelt field name in a seed file cannot slip through.
@@ -33,7 +35,20 @@ internal static class SeedJsonFiles
 
     public static List<ExerciseSeedDto> LoadExerciseLibrary() => Deserialize<List<ExerciseSeedDto>>(ExerciseLibraryPath);
 
-    public static List<ExerciseGreekSeedDto> LoadGreekOverlay() => Deserialize<List<ExerciseGreekSeedDto>>(GreekOverlayPath);
+    /// <summary>
+    /// The Greek row the seeder applies to each slug: exercises.el.json first, then el/*.el.json
+    /// in ordinal file-name order, and the first row for a slug wins (as in ExerciseSeeder).
+    /// </summary>
+    public static List<ExerciseGreekSeedDto> LoadGreekOverlay()
+    {
+        var fragmentPaths = Directory.GetFiles(GreekFragmentsFolder, GreekFragmentFilePattern).Order(StringComparer.Ordinal);
+        string[] greekFilePaths = [GreekOverlayPath, .. fragmentPaths];
+
+        return greekFilePaths
+            .SelectMany(Deserialize<List<ExerciseGreekSeedDto>>)
+            .DistinctBy(row => row.Slug, StringComparer.Ordinal)
+            .ToList();
+    }
 
     private static List<SeedFile<T>> LoadFolder<T>(string folderPath) =>
         Directory.GetFiles(folderPath, JsonFilePattern)

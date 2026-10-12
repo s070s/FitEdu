@@ -50,7 +50,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 > | `Assessments/` | 19 self-check questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
 > | `Students/` | The 10 demo students (`first.last@fitedu.local`). |
 >
-> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, no career-era wording) and `RealSeedJsonSeedingTests` runs the real seeders on these folders, so a broken file fails `dotnet test` instead of a fresh database.
+> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives, no career-era wording) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies), and `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
 

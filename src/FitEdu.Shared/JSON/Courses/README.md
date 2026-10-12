@@ -33,7 +33,7 @@ matter.
 | `level` | `Beginner`, `Intermediate` or `Advanced`; anything else becomes `Beginner`. |
 | `goal` | `GeneralFitness`, `Strength`, `MuscleGain`, `FatLoss`, `Endurance`, `Mobility`, `Recovery` or `Nutrition`; anything else becomes `GeneralFitness`. |
 | `category`, `categoryEl` | The category is created on first use. `categoryEl` sets its Greek name, or fills it in when the category has none yet; an existing Greek name is kept. |
-| `equipment` | Comma-joined codes: `none`, `dumbbells`, `barbell`, `kettlebell`, `bands`, `mat`, `bike`, `chair`, `cables`, `machine`. |
+| `equipment` | Comma-joined codes with no spaces (the catalogue filter matches `,code,` exactly): `none`, `dumbbells`, `barbell`, `kettlebell`, `bands`, `mat`, `bike`, `chair`, `cables`, `machine`. |
 | `coverExerciseSlug`, `exercises[].slug` | Must be a slug from `docs/assets/exercise-slugs.txt`. An unknown slug stops the whole seed with an error naming the course or lesson and the slug. |
 | `exercises` | Shown in list order. `sets`, `reps`, `restSeconds`, `notes` and `notesEl` are optional. `reps` has no Greek twin, so it holds only numbers, ranges, symbols and the unit symbols `s`, `min`, `m`, `rpm`, `RPE`, `AMRAP` (`8–12`, `30 s`, `6 min @ RPE 7 + 3 min`), with no decimals; words such as "each side" go at the start of `notes` and `notesEl`. |
 
@@ -45,5 +45,5 @@ The seeder accepts files with fields left out, but the shipped catalogue is held
 Greek text, misspells a field name, uses a level, goal, tier or equipment code outside the lists
 above, uses a category other than Strength (Δύναμη), Cardio (Καρδιο), Mobility (Κινητικότητα), Core
 (Κορμός), Nutrition (Διατροφή), Recovery (Αποκατάσταση) or Performance (Απόδοση) with exactly that
-`categoryEl`, or points at an exercise with no photos or no Greek name in
-`../Exercises/exercises.el.json`.
+`categoryEl`, writes words in `reps`, or points at an exercise with no photos or no Greek name in
+`../Exercises/exercises.el.json` or `../Exercises/el/*.el.json`.

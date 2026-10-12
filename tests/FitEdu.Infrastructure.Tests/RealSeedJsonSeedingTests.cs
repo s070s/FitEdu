@@ -129,9 +129,52 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
         untranslatedSlugs.ShouldBeEmpty();
     }
 
-    private static IEnumerable<string> DescribePrescriptions(CourseSeedDto course) =>
-        course.Modules.SelectMany(module => module.Lessons.SelectMany(lesson => lesson.Exercises.Select((exercise, index) =>
-            DescribePrescription(course.Title, module.SortOrder, lesson.SortOrder, index + 1, exercise.Slug))));
+    [Fact]
+    public async Task SeededText_FitsTheColumnLengthLimits()
+    {
+        // SQLite ignores HasMaxLength, so a too-long seed text would only fail on SQL Server.
+        // Compare every seeded string with the limit the EF model gives its column.
+        var seededRows = new List<object>();
+        seededRows.AddRange(await Db.Exercises.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.Categories.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.Courses.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.Modules.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.Lessons.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.LessonExercises.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.AssessmentDefinitions.AsNoTracking().ToListAsync());
+
+        var problems = seededRows.SelectMany(FindValuesOverTheirLimit).ToList();
+
+        seededRows.ShouldNotBeEmpty();
+        problems.ShouldBeEmpty();
+    }
+
+    /// <summary>Every string property of the row that is longer than its column's max length.</summary>
+    private IEnumerable<string> FindValuesOverTheirLimit(object row)
+    {
+        // Entry() on an untracked row reads its values without starting to track it.
+        foreach (var property in Db.Entry(row).Properties)
+        {
+            var maxLength = property.Metadata.GetMaxLength();
+            if (maxLength is not null && property.CurrentValue is string value && value.Length > maxLength)
+                yield return $"{row.GetType().Name}.{property.Metadata.Name}: {value.Length} characters, limit {maxLength}";
+        }
+    }
+
+    private static IEnumerable<string> DescribePrescriptions(CourseSeedDto course)
+    {
+        var rows = new List<string>();
+
+        foreach (var module in course.Modules)
+            rows.AddRange(module.Lessons.SelectMany(lesson => DescribeLessonPrescriptions(course.Title, module.SortOrder, lesson)));
+
+        return rows;
+    }
+
+    // The seeder numbers prescriptions 1, 2, 3… in list order.
+    private static IEnumerable<string> DescribeLessonPrescriptions(string course, int moduleSortOrder, LessonSeedDto lesson) =>
+        lesson.Exercises.Select((exercise, index) =>
+            DescribePrescription(course, moduleSortOrder, lesson.SortOrder, index + 1, exercise.Slug));
 
     private static string DescribePrescription(string course, int moduleSortOrder, int lessonSortOrder, int sortOrder, string slug) =>
         $"{course} | module {moduleSortOrder} | lesson {lessonSortOrder} | #{sortOrder} {slug}";

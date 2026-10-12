@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.TestSupport;
@@ -23,13 +24,11 @@ public partial class SeedContentIntegrityTests
     private const int ExpectedCourseCount = 19;
     private const int ExpectedAssessmentCount = 19;
     private const string RatingQuestionType = "rating";
-    private const char EquipmentSeparator = ',';
     private const string EnglishResxPattern = "*.resx";
     private const string GreekResxSuffix = ".el.resx";
     private const string AllFilesPattern = "*";
 
     private static readonly string ExerciseImagesFolder = Path.Combine(RepoPaths.WebRoot, "images", "exercises");
-    private static readonly string ResourcesFolder = Path.Combine(RepoPaths.RepoRoot, "src", "FitEdu.Shared", "Resources");
 
     // Every exercise photo pair is a start and an end frame.
     private static readonly string[] ExerciseImageFileNames = ["0.webp", "1.webp"];
@@ -50,6 +49,13 @@ public partial class SeedContentIntegrityTests
     private static readonly HashSet<string> EquipmentCodes = new(StringComparer.Ordinal)
     {
         "none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"
+    };
+
+    // Career-era Home copy whose Greek value is still the English text. Task C3 rewrites the
+    // Home copy and deletes these entries.
+    private static readonly HashSet<string> KnownCopiedGreekValues = new(StringComparer.Ordinal)
+    {
+        "HomeRes.MethodTitleZeroState", "HomeRes.MethodTitleHeroState", "HomeRes.ZeroStateTitle", "HomeRes.HeroStateTitle"
     };
 
     // Where the text gates (career vocabulary, Greek command forms) look.
@@ -96,7 +102,8 @@ public partial class SeedContentIntegrityTests
 
         foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
         {
-            var codes = (course.Equipment ?? string.Empty).Split(EquipmentSeparator, StringSplitOptions.TrimEntries);
+            // No trimming: the catalogue filter matches ",code," exactly, so " bands" would never match.
+            var codes = (course.Equipment ?? string.Empty).Split(Course.EquipmentSeparator);
             problems.AddRange(codes
                 .Where(code => !EquipmentCodes.Contains(code))
                 .Select(code => $"{fileName}: unknown equipment code '{code}'"));
@@ -175,7 +182,7 @@ public partial class SeedContentIntegrityTests
             .Distinct()
             .ToList();
 
-        untranslatedSlugs.ShouldBeEmpty("exercises.el.json needs a nameEl for these slugs");
+        untranslatedSlugs.ShouldBeEmpty("exercises.el.json or el/*.el.json needs a nameEl for these slugs");
     }
 
     // ---- Assessments -------------------------------------------------------------------------
@@ -234,9 +241,9 @@ public partial class SeedContentIntegrityTests
 
     public static TheoryData<string> EnglishResxFiles()
     {
-        var englishResxFiles = Directory.GetFiles(ResourcesFolder, EnglishResxPattern, SearchOption.AllDirectories)
+        var englishResxFiles = Directory.GetFiles(RepoPaths.ResourcesRoot, EnglishResxPattern, SearchOption.AllDirectories)
             .Where(filePath => !filePath.EndsWith(GreekResxSuffix, StringComparison.OrdinalIgnoreCase))
-            .Select(filePath => Path.GetRelativePath(ResourcesFolder, filePath))
+            .Select(filePath => Path.GetRelativePath(RepoPaths.ResourcesRoot, filePath))
             .Order(StringComparer.Ordinal);
 
         return new TheoryData<string>(englishResxFiles);
@@ -246,7 +253,7 @@ public partial class SeedContentIntegrityTests
     [MemberData(nameof(EnglishResxFiles))]
     public void Resx_EnglishAndGreekKeysMatchEachOtherAndTheDesignerClass(string englishResxRelativePath)
     {
-        var englishResxPath = Path.Combine(ResourcesFolder, englishResxRelativePath);
+        var englishResxPath = Path.Combine(RepoPaths.ResourcesRoot, englishResxRelativePath);
         var greekResxPath = Path.ChangeExtension(englishResxPath, null) + GreekResxSuffix;
         var englishValues = LoadResxValues(englishResxPath);
         var greekValues = LoadResxValues(greekResxPath);
@@ -258,6 +265,26 @@ public partial class SeedContentIntegrityTests
         designerKeys.Except(englishValues.Keys).ShouldBeEmpty("Designer.cs properties with no resx key");
         greekValues.Where(pair => string.IsNullOrWhiteSpace(pair.Value)).Select(pair => pair.Key)
             .ShouldBeEmpty("keys with an empty Greek value");
+    }
+
+    [Theory]
+    [MemberData(nameof(EnglishResxFiles))]
+    public void Resx_GreekValuesAreNotCopiesOfTheEnglishText(string englishResxRelativePath)
+    {
+        var englishResxPath = Path.Combine(RepoPaths.ResourcesRoot, englishResxRelativePath);
+        var greekResxPath = Path.ChangeExtension(englishResxPath, null) + GreekResxSuffix;
+        var resourceClassName = Path.GetFileNameWithoutExtension(englishResxPath);
+        var englishValues = LoadResxValues(englishResxPath);
+        var greekValues = LoadResxValues(greekResxPath);
+
+        var copiedKeys = greekValues
+            .Where(pair => englishValues.TryGetValue(pair.Key, out var englishValue) && englishValue == pair.Value)
+            .Where(pair => HasTranslatableText(pair.Value))
+            .Select(pair => pair.Key)
+            .Where(key => !KnownCopiedGreekValues.Contains($"{resourceClassName}.{key}"))
+            .ToList();
+
+        copiedKeys.ShouldBeEmpty("Greek values that repeat the English text");
     }
 
     // ---- Helpers -----------------------------------------------------------------------------
@@ -392,18 +419,20 @@ public partial class SeedContentIntegrityTests
         if (string.IsNullOrWhiteSpace(ReadText(schema, "titleEl")))
             yield return $"{location}: schema titleEl is empty";
 
-        foreach (var section in ReadArray(schema, "sections"))
-        {
-            var sectionLocation = $"{location} / {ReadText(section, "id")}";
-            if (string.IsNullOrWhiteSpace(ReadText(section, "titleEl")))
-                yield return $"{sectionLocation}: section titleEl is empty";
+        foreach (var problem in ReadArray(schema, "sections").SelectMany(section => FindSectionProblems(location, section)))
+            yield return problem;
+    }
 
-            foreach (var question in ReadArray(section, "questions"))
-            {
-                foreach (var problem in FindQuestionProblems($"{sectionLocation} / {ReadText(question, "id")}", question))
-                    yield return problem;
-            }
-        }
+    private static IEnumerable<string> FindSectionProblems(string location, JsonElement section)
+    {
+        var sectionLocation = $"{location} / {ReadText(section, "id")}";
+        if (string.IsNullOrWhiteSpace(ReadText(section, "titleEl")))
+            yield return $"{sectionLocation}: section titleEl is empty";
+
+        var questionProblems = ReadArray(section, "questions")
+            .SelectMany(question => FindQuestionProblems($"{sectionLocation} / {ReadText(question, "id")}", question));
+        foreach (var problem in questionProblems)
+            yield return problem;
     }
 
     private static IEnumerable<string> FindQuestionProblems(string location, JsonElement question)
@@ -464,6 +493,13 @@ public partial class SeedContentIntegrityTests
                 StringComparer.Ordinal);
     }
 
+    /// <summary>
+    /// True when the value has words to translate once the terms Greek keeps in English
+    /// (the brand, "Email", "PDF", ...) are removed; numbers and symbols need no translation.
+    /// </summary>
+    private static bool HasTranslatableText(string value) =>
+        TermsKeptInEnglishRegex().Replace(value, string.Empty).Any(char.IsLetter);
+
     /// <summary>The public string properties of the hand-edited Designer class with this name.</summary>
     private static HashSet<string> LoadDesignerKeys(string resourceClassName)
     {
@@ -490,6 +526,10 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"\b(?:επέλεξε|επέστρεψε|κατέγραψε|διέκοψε|κατέκτησε|επανέλαβε|απέφυγε|παρέμεινε|προσέθεσε|μετέφερε|συνέδεσε|επέτρεψε|εισέπνευσε|εξέπνευσε)\b",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekPastTenseCommandRegex();
+
+    // The brand and the terms the Greek UI keeps in English.
+    [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies)\b", RegexOptions.CultureInvariant)]
+    private static partial Regex TermsKeptInEnglishRegex();
 
     [GeneratedRegex(@"\b(?:s|min|m|rpm|RPE|AMRAP)\b", RegexOptions.CultureInvariant)]
     private static partial Regex RepsUnitSymbolRegex();
