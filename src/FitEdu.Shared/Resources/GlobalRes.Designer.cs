@@ -214,7 +214,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to Training level.
         /// </summary>
         public static string Label_Info_Status {
             get {
@@ -654,34 +654,34 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Student.
+        ///   Looks up a localized string similar to Beginner.
         /// </summary>
-        public static string StatusStudent {
+        public static string StatusBeginner {
             get {
-                return ResourceManager.GetString("StatusStudent", resourceCulture);
+                return ResourceManager.GetString("StatusBeginner", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Graduate.
+        ///   Looks up a localized string similar to Intermediate.
         /// </summary>
-        public static string StatusGraduate {
+        public static string StatusIntermediate {
             get {
-                return ResourceManager.GetString("StatusGraduate", resourceCulture);
+                return ResourceManager.GetString("StatusIntermediate", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to NEET (not in education, employment, or training).
+        ///   Looks up a localized string similar to Advanced.
         /// </summary>
-        public static string StatusNEET {
+        public static string StatusAdvanced {
             get {
-                return ResourceManager.GetString("StatusNEET", resourceCulture);
+                return ResourceManager.GetString("StatusAdvanced", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Other.
+        ///   Looks up a localized string similar to Prefer not to say.
         /// </summary>
         public static string StatusOther {
             get {

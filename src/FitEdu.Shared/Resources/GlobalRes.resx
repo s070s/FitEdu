@@ -139,7 +139,7 @@
     <value>Last Name</value>
   </data>
   <data name="Label_Info_Status" xml:space="preserve">
-    <value>Status</value>
+    <value>Training level</value>
   </data>
   <data name="Label_LoggingIn" xml:space="preserve">
     <value>Logging In...</value>
@@ -315,17 +315,17 @@
   <data name="StatusDraft" xml:space="preserve">
     <value>Draft</value>
   </data>
-  <data name="StatusStudent" xml:space="preserve">
-    <value>Student</value>
+  <data name="StatusBeginner" xml:space="preserve">
+    <value>Beginner</value>
   </data>
-  <data name="StatusGraduate" xml:space="preserve">
-    <value>Graduate</value>
+  <data name="StatusIntermediate" xml:space="preserve">
+    <value>Intermediate</value>
   </data>
-  <data name="StatusNEET" xml:space="preserve">
-    <value>NEET (not in education, employment, or training)</value>
+  <data name="StatusAdvanced" xml:space="preserve">
+    <value>Advanced</value>
   </data>
   <data name="StatusOther" xml:space="preserve">
-    <value>Other</value>
+    <value>Prefer not to say</value>
   </data>
   <data name="NavigationMenu" xml:space="preserve">
     <value>Navigation menu</value>

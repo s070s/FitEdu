@@ -203,7 +203,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Register_WithNeetStatus_AssignsNeetStatusToCreatedUser()
+    public async Task Register_WithAdvancedStatus_AssignsAdvancedStatusToCreatedUser()
     {
         var h = Build();
         ApplicationUser? createdUser = null;
@@ -219,14 +219,14 @@ public class AuthServiceTests
             FirstName = "F",
             LastName = "L",
             GdprConsent = true,
-            Status = UserStatus.NEET
+            Status = UserStatus.Advanced
         });
 
-        createdUser!.Status.ShouldBe(UserStatus.NEET);
+        createdUser!.Status.ShouldBe(UserStatus.Advanced);
     }
 
     [Fact]
-    public async Task Register_WithUnknownStatus_CoercesToStudent()
+    public async Task Register_WithUnknownStatus_CoercesToBeginner()
     {
         var h = Build();
         ApplicationUser? createdUser = null;
@@ -245,7 +245,7 @@ public class AuthServiceTests
             Status = UserStatus.Unknown
         });
 
-        createdUser!.Status.ShouldBe(UserStatus.Student);
+        createdUser!.Status.ShouldBe(UserStatus.Beginner);
     }
 
     // ---- Forgot / Reset ------------------------------------------------------

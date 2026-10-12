@@ -38,7 +38,7 @@ public class ApplicationUser : IdentityUser
     }
 
     /// <summary>
-    /// Extensible status stored as int for forward compatibility.
+    /// Self-reported training level, stored as int for forward compatibility.
     /// </summary>
     public UserStatus Status { get; set; } = UserStatus.Unknown;
 

@@ -1,14 +1,16 @@
 namespace FitEdu.Domain.Enums;
 
 /// <summary>
-/// Extensible user status. Add values as needed; avoid removing existing ones.
-/// Stored as int in DB for forward compatibility.
+/// The user's self-reported training level (the "Status" field on register/profile).
+/// Stored as int in DB: the values are kept from the earlier career-era names
+/// (Student/Graduate/NEET), so existing rows map onto Beginner/Intermediate/Advanced.
+/// Add values as needed; never renumber or remove existing ones.
 /// </summary>
 public enum UserStatus
 {
     Unknown = 0,
-    Student = 1,
-    Graduate = 2,
-    NEET = 3,       // Not in Education, Employment, or Training
+    Beginner = 1,
+    Intermediate = 2,
+    Advanced = 3,
     Other = 99
 }

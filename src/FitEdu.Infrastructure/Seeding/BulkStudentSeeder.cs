@@ -88,7 +88,7 @@ public static class BulkStudentSeeder
                 Email = email,
                 FirstName = firstName,
                 LastName = lastName,
-                Status = UserStatus.Student,
+                Status = UserStatus.Beginner,
                 EmailConfirmed = true,
                 IsEnabled = true,
                 GdprConsentGiven = true,

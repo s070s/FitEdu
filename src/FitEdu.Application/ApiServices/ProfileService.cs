@@ -33,7 +33,7 @@ public class ProfileService(
         user.LastName = request.LastName.Trim();
         user.DisplayName = request.DisplayName?.Trim();
         user.DateOfBirth = request.DateOfBirth;
-        user.Status = request.Status == UserStatus.Unknown ? UserStatus.Student : request.Status;
+        user.Status = request.Status == UserStatus.Unknown ? UserStatus.Beginner : request.Status;
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)

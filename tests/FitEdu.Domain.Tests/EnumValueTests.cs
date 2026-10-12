@@ -64,9 +64,9 @@ public class EnumValueTests
     public void UserStatus_HasStableValues()
     {
         ((int)UserStatus.Unknown).ShouldBe(0);
-        ((int)UserStatus.Student).ShouldBe(1);
-        ((int)UserStatus.Graduate).ShouldBe(2);
-        ((int)UserStatus.NEET).ShouldBe(3);
+        ((int)UserStatus.Beginner).ShouldBe(1);
+        ((int)UserStatus.Intermediate).ShouldBe(2);
+        ((int)UserStatus.Advanced).ShouldBe(3);
         ((int)UserStatus.Other).ShouldBe(99);
     }
 }

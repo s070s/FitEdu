@@ -51,10 +51,10 @@ public class RegisterRequestDto
     public bool GdprConsent { get; set; }
 
     /// <summary>
-    /// Optional demographic status (Student/Graduate/NEET/Other). Defaults to Student;
-    /// <see cref="UserStatus.Unknown"/> is coerced back to Student server-side since it is
+    /// Optional training level (Beginner/Intermediate/Advanced/Other). Defaults to Beginner;
+    /// <see cref="UserStatus.Unknown"/> is coerced back to Beginner server-side since it is
     /// not a real user-facing option.
     /// </summary>
-    /// <example>Student</example>
-    public UserStatus Status { get; set; } = UserStatus.Student;
+    /// <example>Beginner</example>
+    public UserStatus Status { get; set; } = UserStatus.Beginner;
 }
