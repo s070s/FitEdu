@@ -20,6 +20,35 @@ public class CertificateService : ICertificateService
     private readonly INotificationDispatcher _notifications;
     private readonly ILogger<CertificateService> _logger;
 
+    private const string Heading = "Programme Completion Certificate";
+    private const string PlatformName = "FitEdu";
+    private const float BrandMarkSize = 44;
+
+    // Brand palette (the --bg-primary, --text-* tokens and the teal accent in wwwroot/css/app.css).
+    private const string PageColor = "#0E1116";
+    private const string LimeColor = "#C6F432";
+    private const string TealColor = "#2EC4B6";
+    private const string StrongTextColor = "#F2F5F7";
+    private const string LightTextColor = "#B8C2CC";
+    private const string MutedTextColor = "#8A96A3";
+    private const string DividerColor = "#2A323C";
+
+    /// <summary>
+    /// The dumbbell mark of src/FitEdu.Web/wwwroot/favicon.svg. Infrastructure has no access to the
+    /// web root, so the markup is copied here; CertificateServiceTests keeps the two in step.
+    /// </summary>
+    public const string BrandMarkSvg =
+        """
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+          <rect width="64" height="64" rx="14" fill="#0E1116"/>
+          <rect x="20" y="28" width="24" height="8" fill="#2EC4B6"/>
+          <rect x="12" y="12" width="8" height="40" rx="2" fill="#C6F432"/>
+          <rect x="44" y="12" width="8" height="40" rx="2" fill="#C6F432"/>
+          <rect x="8" y="20" width="4" height="24" rx="1" fill="#C6F432"/>
+          <rect x="52" y="20" width="4" height="24" rx="1" fill="#C6F432"/>
+        </svg>
+        """;
+
     static CertificateService()
     {
         // Set once when the class is first loaded. Community license is free for
@@ -183,7 +212,7 @@ public class CertificateService : ICertificateService
     {
         // Render the certificate in the culture active for the current request
         // (set by UseRequestLocalization). Defaults to English outside a localized request.
-        var pdfBytes = BuildDocument(cert, CultureInfo.CurrentUICulture);
+        var pdfBytes = CreateDocument(cert, CultureInfo.CurrentUICulture).GeneratePdf();
 
         using var stream = new MemoryStream(pdfBytes);
         return await _storage.SaveFileAsync(
@@ -204,7 +233,12 @@ public class CertificateService : ICertificateService
         return isGreek && !string.IsNullOrWhiteSpace(titleEl) ? titleEl : titleEn;
     }
 
-    private static byte[] BuildDocument(Certificate cert, CultureInfo culture)
+    /// <summary>
+    /// Lays out the one-page landscape certificate in the brand palette: the dumbbell mark and
+    /// name at the top, the heading, recipient and programme in the middle, the issue date and
+    /// verification id at the bottom.
+    /// </summary>
+    public static IDocument CreateDocument(Certificate cert, CultureInfo culture)
     {
         var courseTitle = ResolveCourseTitle(cert.CourseTitleEn, cert.CourseTitleEl, culture);
 
@@ -213,87 +247,84 @@ public class CertificateService : ICertificateService
             container.Page(page =>
             {
                 page.Size(PageSizes.A4.Landscape());
+                page.PageColor(PageColor);
                 page.MarginHorizontal(60);
-                page.MarginVertical(50);
+                page.MarginVertical(44);
+                page.DefaultTextStyle(style => style.FontColor(LightTextColor));
 
-                page.Content().Column(col =>
-                {
-                    col.Spacing(14);
-
-                    // Platform name
-                    col.Item().AlignCenter()
-                        .Text("FitEdu")
-                        .FontSize(11)
-                        .FontColor("#888888")
-                        .LetterSpacing(0.1f);
-
-                    // Divider
-                    col.Item().PaddingVertical(2)
-                        .LineHorizontal(1)
-                        .LineColor("#dddddd");
-
-                    // Main heading
-                    col.Item().AlignCenter()
-                        .Text("Certificate of Completion")
-                        .FontSize(32)
-                        .Bold()
-                        .FontColor("#1e3a5f");
-
-                    col.Item().AlignCenter()
-                        .Text("This is to certify that")
-                        .FontSize(13)
-                        .FontColor("#777777");
-
-                    // Recipient
-                    col.Item().AlignCenter()
-                        .Text(cert.RecipientName)
-                        .FontSize(26)
-                        .Bold()
-                        .FontColor("#111111");
-
-                    col.Item().AlignCenter()
-                        .Text("has successfully completed")
-                        .FontSize(13)
-                        .FontColor("#777777");
-
-                    // Course title — localised for the issuing culture (English by default)
-                    col.Item().AlignCenter()
-                        .Text(courseTitle)
-                        .FontSize(20)
-                        .Bold()
-                        .FontColor("#1e3a5f");
-
-                    // Optional duration
-                    if (cert.TotalDurationMinutes is > 0)
-                    {
-                        var hours = cert.TotalDurationMinutes.Value / 60;
-                        var minutes = cert.TotalDurationMinutes.Value % 60;
-                        var label = hours > 0 ? $"{hours}h {minutes}m" : $"{minutes}m";
-
-                        col.Item().AlignCenter()
-                            .Text($"Total duration: {label}")
-                            .FontSize(11)
-                            .FontColor("#888888");
-                    }
-
-                    // Divider
-                    col.Item().PaddingVertical(2)
-                        .LineHorizontal(1)
-                        .LineColor("#dddddd");
-
-                    // Issue date
-                    col.Item().AlignCenter()
-                        .Text($"Issued on {cert.IssuedAt:MMMM dd, yyyy}")
-                        .FontSize(12)
-                        .FontColor("#555555");
-
-                    // Verification ID
-                    col.Item().AlignCenter()
-                        .Text($"Verification ID: {cert.VerificationId}")
-                        .FontSize(9)
-                        .FontColor("#aaaaaa");
-                });
+                page.Header().Element(ComposeBrandRow);
+                page.Content().AlignMiddle().Element(content => ComposeBody(content, cert, courseTitle));
+                page.Footer().Element(footer => ComposeFooter(footer, cert));
             });
-        }).GeneratePdf();
+        })
+        .WithMetadata(new DocumentMetadata { Title = Heading, Author = PlatformName, Subject = courseTitle });
     }
+
+    private static void ComposeBrandRow(IContainer container)
+    {
+        container.Row(row =>
+        {
+            row.Spacing(12);
+            row.ConstantItem(BrandMarkSize).Height(BrandMarkSize).Svg(BrandMarkSvg);
+            row.RelativeItem().AlignMiddle()
+                .Text(PlatformName)
+                .FontSize(20)
+                .Bold()
+                .FontColor(StrongTextColor);
+        });
+    }
+
+    private static void ComposeBody(IContainer container, Certificate cert, string courseTitle)
+    {
+        container.Column(column =>
+        {
+            column.Spacing(12);
+
+            // A short lime rule above the heading, like the accent bars in the app.
+            column.Item().AlignCenter().Width(80).LineHorizontal(3).LineColor(LimeColor);
+
+            column.Item().AlignCenter().Text(Heading).FontSize(32).Bold().FontColor(LimeColor);
+            column.Item().AlignCenter().Text("This is to certify that").FontSize(13);
+            column.Item().AlignCenter().Text(cert.RecipientName).FontSize(28).Bold().FontColor(StrongTextColor);
+            column.Item().AlignCenter().Text("has completed the programme").FontSize(13);
+
+            // Course title, localised for the issuing culture (English by default)
+            column.Item().AlignCenter().Text(courseTitle).FontSize(22).Bold().FontColor(TealColor);
+
+            var duration = FormatDuration(cert.TotalDurationMinutes);
+            if (duration is not null)
+                column.Item().AlignCenter().Text($"Total training time: {duration}").FontSize(11);
+        });
+    }
+
+    private static void ComposeFooter(IContainer container, Certificate cert)
+    {
+        container.Column(column =>
+        {
+            column.Item().LineHorizontal(1).LineColor(DividerColor);
+            column.Item().PaddingTop(10).Row(row =>
+            {
+                row.RelativeItem().Text(FormatIssuedOn(cert.IssuedAt)).FontSize(11);
+                row.RelativeItem().AlignRight()
+                    .Text($"Verification ID: {cert.VerificationId}")
+                    .FontSize(9)
+                    .FontColor(MutedTextColor);
+            });
+        });
+    }
+
+    /// <summary>"1h 30m", or "45m" under an hour; null when no lesson has a duration.</summary>
+    private static string? FormatDuration(int? totalMinutes)
+    {
+        if (totalMinutes is not > 0)
+            return null;
+
+        var hours = totalMinutes.Value / 60;
+        var minutes = totalMinutes.Value % 60;
+        return hours > 0 ? $"{hours}h {minutes}m" : $"{minutes}m";
+    }
+
+    // The labels are English, so the date is too (a Greek month name would read oddly beside them).
+    private static string FormatIssuedOn(DateTime issuedAt) =>
+        string.Create(CultureInfo.InvariantCulture, $"Issued on {issuedAt:MMMM d, yyyy}");
 }
