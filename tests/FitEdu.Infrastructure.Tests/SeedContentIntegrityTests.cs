@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -311,6 +312,20 @@ public partial class SeedContentIntegrityTests
         copiedKeys.ShouldBeEmpty("Greek values that repeat the English text");
     }
 
+    [Fact]
+    public void CourseRes_HasALabelForEveryLevelGoalAndEquipmentCode()
+    {
+        var expectedKeys = Enum.GetNames<CourseLevel>().Select(name => $"Level_{name}")
+            .Concat(Enum.GetNames<FitnessGoal>().Select(name => $"Goal_{name}"))
+            .Concat(EquipmentCodes.Select(code => $"Equipment_{code}"));
+
+        var missingKeys = expectedKeys
+            .Where(key => CourseRes.ResourceManager.GetString(key, CultureInfo.InvariantCulture) is null)
+            .ToList();
+
+        missingKeys.ShouldBeEmpty("course chips and filters show these values through CourseRes");
+    }
+
     // ---- Helpers -----------------------------------------------------------------------------
 
     private static IEnumerable<string> FindCourseHeaderProblems(SeedFile<CourseSeedDto> file)
@@ -576,7 +591,7 @@ public partial class SeedContentIntegrityTests
     private static partial Regex CapitalisedInnerWordRegex();
 
     // The brand and the terms the Greek UI keeps in English.
-    [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies)\b", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]
     private static partial Regex TermsKeptInEnglishRegex();
 
     [GeneratedRegex(@"\b(?:s|min|m|rpm|RPE|AMRAP)\b", RegexOptions.CultureInvariant)]

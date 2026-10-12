@@ -221,5 +221,86 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Saving", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercises.
+        /// </summary>
+        public static string Exercises {
+            get {
+                return ResourceManager.GetString("Exercises", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sets.
+        /// </summary>
+        public static string Sets {
+            get {
+                return ResourceManager.GetString("Sets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reps.
+        /// </summary>
+        public static string Reps {
+            get {
+                return ResourceManager.GetString("Reps", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rest.
+        /// </summary>
+        public static string Rest {
+            get {
+                return ResourceManager.GetString("Rest", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} s rest.
+        /// </summary>
+        public static string RestSecondsFormat {
+            get {
+                return ResourceManager.GetString("RestSecondsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to How to do it.
+        /// </summary>
+        public static string ShowInstructions {
+            get {
+                return ResourceManager.GetString("ShowInstructions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string StartPosition {
+            get {
+                return ResourceManager.GetString("StartPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Finish.
+        /// </summary>
+        public static string EndPosition {
+            get {
+                return ResourceManager.GetString("EndPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Workout {0} of {1}.
+        /// </summary>
+        public static string WorkoutProgressFormat {
+            get {
+                return ResourceManager.GetString("WorkoutProgressFormat", resourceCulture);
+            }
+        }
     }
 }

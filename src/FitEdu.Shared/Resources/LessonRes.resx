@@ -152,4 +152,31 @@
 	<data name="CertificatePending" xml:space="preserve">
 		<value>Your certificate is being prepared — check My Certificates in a few minutes.</value>
 	</data>
+	<data name="Exercises" xml:space="preserve">
+		<value>Exercises</value>
+	</data>
+	<data name="Sets" xml:space="preserve">
+		<value>Sets</value>
+	</data>
+	<data name="Reps" xml:space="preserve">
+		<value>Reps</value>
+	</data>
+	<data name="Rest" xml:space="preserve">
+		<value>Rest</value>
+	</data>
+	<data name="RestSecondsFormat" xml:space="preserve">
+		<value>{0} s rest</value>
+	</data>
+	<data name="ShowInstructions" xml:space="preserve">
+		<value>How to do it</value>
+	</data>
+	<data name="StartPosition" xml:space="preserve">
+		<value>Start</value>
+	</data>
+	<data name="EndPosition" xml:space="preserve">
+		<value>Finish</value>
+	</data>
+	<data name="WorkoutProgressFormat" xml:space="preserve">
+		<value>Workout {0} of {1}</value>
+	</data>
 </root>

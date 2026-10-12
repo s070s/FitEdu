@@ -159,4 +159,19 @@
 	<data name="DownloadMyData" xml:space="preserve">
 		<value>Λήψη των δεδομένων μου</value>
 	</data>
+	<data name="Goal" xml:space="preserve">
+		<value>Στόχος προπόνησης</value>
+	</data>
+	<data name="WorkoutsCompleted" xml:space="preserve">
+		<value>Ολοκληρωμένες προπονήσεις</value>
+	</data>
+	<data name="MinutesTrained" xml:space="preserve">
+		<value>Λεπτά προπόνησης</value>
+	</data>
+	<data name="CurrentStreak" xml:space="preserve">
+		<value>Τρέχον σερί</value>
+	</data>
+	<data name="StreakDaysFormat" xml:space="preserve">
+		<value>{0} ημέρες</value>
+	</data>
 </root>

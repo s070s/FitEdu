@@ -419,5 +419,50 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("DownloadMyData", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Training goal.
+        /// </summary>
+        public static string Goal {
+            get {
+                return ResourceManager.GetString("Goal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Workouts completed.
+        /// </summary>
+        public static string WorkoutsCompleted {
+            get {
+                return ResourceManager.GetString("WorkoutsCompleted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes trained.
+        /// </summary>
+        public static string MinutesTrained {
+            get {
+                return ResourceManager.GetString("MinutesTrained", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Current streak.
+        /// </summary>
+        public static string CurrentStreak {
+            get {
+                return ResourceManager.GetString("CurrentStreak", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days.
+        /// </summary>
+        public static string StreakDaysFormat {
+            get {
+                return ResourceManager.GetString("StreakDaysFormat", resourceCulture);
+            }
+        }
     }
 }

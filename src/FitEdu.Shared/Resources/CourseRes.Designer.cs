@@ -275,5 +275,266 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("CourseSlotsFullNotice", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Goal.
+        /// </summary>
+        public static string Goal {
+            get {
+                return ResourceManager.GetString("Goal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Equipment.
+        /// </summary>
+        public static string Equipment {
+            get {
+                return ResourceManager.GetString("Equipment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} weeks.
+        /// </summary>
+        public static string WeeksFormat {
+            get {
+                return ResourceManager.GetString("WeeksFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}× per week.
+        /// </summary>
+        public static string SessionsPerWeekFormat {
+            get {
+                return ResourceManager.GetString("SessionsPerWeekFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Beginner.
+        /// </summary>
+        public static string Level_Beginner {
+            get {
+                return ResourceManager.GetString("Level_Beginner", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Intermediate.
+        /// </summary>
+        public static string Level_Intermediate {
+            get {
+                return ResourceManager.GetString("Level_Intermediate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string Level_Advanced {
+            get {
+                return ResourceManager.GetString("Level_Advanced", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to General fitness.
+        /// </summary>
+        public static string Goal_GeneralFitness {
+            get {
+                return ResourceManager.GetString("Goal_GeneralFitness", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Strength.
+        /// </summary>
+        public static string Goal_Strength {
+            get {
+                return ResourceManager.GetString("Goal_Strength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Muscle gain.
+        /// </summary>
+        public static string Goal_MuscleGain {
+            get {
+                return ResourceManager.GetString("Goal_MuscleGain", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fat loss.
+        /// </summary>
+        public static string Goal_FatLoss {
+            get {
+                return ResourceManager.GetString("Goal_FatLoss", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Endurance.
+        /// </summary>
+        public static string Goal_Endurance {
+            get {
+                return ResourceManager.GetString("Goal_Endurance", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mobility.
+        /// </summary>
+        public static string Goal_Mobility {
+            get {
+                return ResourceManager.GetString("Goal_Mobility", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Recovery.
+        /// </summary>
+        public static string Goal_Recovery {
+            get {
+                return ResourceManager.GetString("Goal_Recovery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nutrition.
+        /// </summary>
+        public static string Goal_Nutrition {
+            get {
+                return ResourceManager.GetString("Goal_Nutrition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No equipment.
+        /// </summary>
+        public static string Equipment_none {
+            get {
+                return ResourceManager.GetString("Equipment_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dumbbells.
+        /// </summary>
+        public static string Equipment_dumbbells {
+            get {
+                return ResourceManager.GetString("Equipment_dumbbells", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Barbell.
+        /// </summary>
+        public static string Equipment_barbell {
+            get {
+                return ResourceManager.GetString("Equipment_barbell", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kettlebell.
+        /// </summary>
+        public static string Equipment_kettlebell {
+            get {
+                return ResourceManager.GetString("Equipment_kettlebell", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bands.
+        /// </summary>
+        public static string Equipment_bands {
+            get {
+                return ResourceManager.GetString("Equipment_bands", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mat.
+        /// </summary>
+        public static string Equipment_mat {
+            get {
+                return ResourceManager.GetString("Equipment_mat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bike.
+        /// </summary>
+        public static string Equipment_bike {
+            get {
+                return ResourceManager.GetString("Equipment_bike", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chair.
+        /// </summary>
+        public static string Equipment_chair {
+            get {
+                return ResourceManager.GetString("Equipment_chair", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cables.
+        /// </summary>
+        public static string Equipment_cables {
+            get {
+                return ResourceManager.GetString("Equipment_cables", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Machine.
+        /// </summary>
+        public static string Equipment_machine {
+            get {
+                return ResourceManager.GetString("Equipment_machine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All goals.
+        /// </summary>
+        public static string AllGoals {
+            get {
+                return ResourceManager.GetString("AllGoals", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All levels.
+        /// </summary>
+        public static string AllLevels {
+            get {
+                return ResourceManager.GetString("AllLevels", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Any equipment.
+        /// </summary>
+        public static string AllEquipment {
+            get {
+                return ResourceManager.GetString("AllEquipment", resourceCulture);
+            }
+        }
     }
 }

@@ -152,4 +152,31 @@
 	<data name="CertificatePending" xml:space="preserve">
 		<value>Το πιστοποιητικό σας ετοιμάζεται — ελέγξτε στα Πιστοποιητικά μου σε λίγα λεπτά.</value>
 	</data>
+	<data name="Exercises" xml:space="preserve">
+		<value>Ασκήσεις</value>
+	</data>
+	<data name="Sets" xml:space="preserve">
+		<value>Σετ</value>
+	</data>
+	<data name="Reps" xml:space="preserve">
+		<value>Επαναλήψεις</value>
+	</data>
+	<data name="Rest" xml:space="preserve">
+		<value>Διάλειμμα</value>
+	</data>
+	<data name="RestSecondsFormat" xml:space="preserve">
+		<value>{0} δευτ. διάλειμμα</value>
+	</data>
+	<data name="ShowInstructions" xml:space="preserve">
+		<value>Πώς γίνεται</value>
+	</data>
+	<data name="StartPosition" xml:space="preserve">
+		<value>Αρχή</value>
+	</data>
+	<data name="EndPosition" xml:space="preserve">
+		<value>Τέλος</value>
+	</data>
+	<data name="WorkoutProgressFormat" xml:space="preserve">
+		<value>Προπόνηση {0} από {1}</value>
+	</data>
 </root>

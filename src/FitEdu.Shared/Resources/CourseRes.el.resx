@@ -170,4 +170,91 @@
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
 		<value>Έχετε χρησιμοποιήσει όλα τα διαθέσιμά σας μαθήματα.</value>
 	</data>
+	<data name="Level" xml:space="preserve">
+		<value>Επίπεδο</value>
+	</data>
+	<data name="Goal" xml:space="preserve">
+		<value>Στόχος</value>
+	</data>
+	<data name="Equipment" xml:space="preserve">
+		<value>Εξοπλισμός</value>
+	</data>
+	<data name="WeeksFormat" xml:space="preserve">
+		<value>{0} εβδομάδες</value>
+	</data>
+	<data name="SessionsPerWeekFormat" xml:space="preserve">
+		<value>{0}× την εβδομάδα</value>
+	</data>
+	<data name="Level_Beginner" xml:space="preserve">
+		<value>Αρχάριο</value>
+	</data>
+	<data name="Level_Intermediate" xml:space="preserve">
+		<value>Μεσαίο</value>
+	</data>
+	<data name="Level_Advanced" xml:space="preserve">
+		<value>Προχωρημένο</value>
+	</data>
+	<data name="Goal_GeneralFitness" xml:space="preserve">
+		<value>Γενική φυσική κατάσταση</value>
+	</data>
+	<data name="Goal_Strength" xml:space="preserve">
+		<value>Δύναμη</value>
+	</data>
+	<data name="Goal_MuscleGain" xml:space="preserve">
+		<value>Μυϊκή ανάπτυξη</value>
+	</data>
+	<data name="Goal_FatLoss" xml:space="preserve">
+		<value>Απώλεια λίπους</value>
+	</data>
+	<data name="Goal_Endurance" xml:space="preserve">
+		<value>Αντοχή</value>
+	</data>
+	<data name="Goal_Mobility" xml:space="preserve">
+		<value>Κινητικότητα</value>
+	</data>
+	<data name="Goal_Recovery" xml:space="preserve">
+		<value>Αποκατάσταση</value>
+	</data>
+	<data name="Goal_Nutrition" xml:space="preserve">
+		<value>Διατροφή</value>
+	</data>
+	<data name="Equipment_none" xml:space="preserve">
+		<value>Χωρίς εξοπλισμό</value>
+	</data>
+	<data name="Equipment_dumbbells" xml:space="preserve">
+		<value>Αλτήρες</value>
+	</data>
+	<data name="Equipment_barbell" xml:space="preserve">
+		<value>Μπάρα</value>
+	</data>
+	<data name="Equipment_kettlebell" xml:space="preserve">
+		<value>Kettlebell</value>
+	</data>
+	<data name="Equipment_bands" xml:space="preserve">
+		<value>Λάστιχα</value>
+	</data>
+	<data name="Equipment_mat" xml:space="preserve">
+		<value>Στρωματάκι</value>
+	</data>
+	<data name="Equipment_bike" xml:space="preserve">
+		<value>Ποδήλατο</value>
+	</data>
+	<data name="Equipment_chair" xml:space="preserve">
+		<value>Καρέκλα</value>
+	</data>
+	<data name="Equipment_cables" xml:space="preserve">
+		<value>Τροχαλίες</value>
+	</data>
+	<data name="Equipment_machine" xml:space="preserve">
+		<value>Μηχάνημα</value>
+	</data>
+	<data name="AllGoals" xml:space="preserve">
+		<value>Όλοι οι στόχοι</value>
+	</data>
+	<data name="AllLevels" xml:space="preserve">
+		<value>Όλα τα επίπεδα</value>
+	</data>
+	<data name="AllEquipment" xml:space="preserve">
+		<value>Οποιοσδήποτε εξοπλισμός</value>
+	</data>
 </root>
