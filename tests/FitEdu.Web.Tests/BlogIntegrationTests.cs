@@ -1,0 +1,28 @@
+using System.Net;
+using Shouldly;
+using Xunit;
+
+namespace FitEdu.Web.Tests;
+
+public class BlogIntegrationTests : IClassFixture<CustomWebAppFactory>
+{
+    private readonly CustomWebAppFactory _factory;
+
+    public BlogIntegrationTests(CustomWebAppFactory factory) => _factory = factory;
+
+    [Fact]
+    public async Task Summaries_Anonymous_Returns200()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync("/api/blog/summaries")).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetBySlug_Unknown_Returns404()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync("/api/blog/this-slug-does-not-exist")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+}

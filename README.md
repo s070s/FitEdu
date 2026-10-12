@@ -1,4 +1,4 @@
-# ResetYourFuture
+# FitEdu
 
 A psychosocial career counseling platform with courses, learning paths, assessments, course reviews, scheduled live sessions, real-time chat, video calls, in-app notifications, subscriptions, blog, testimonials, site search, certificate generation, and a local AI assistant.
 
@@ -8,8 +8,8 @@ A psychosocial career counseling platform with courses, learning paths, assessme
 
 ```bash
 # 1. Clone
-git clone https://github.com/s070s/ResetYourFuture.git
-cd ResetYourFuture
+git clone https://github.com/s070s/FitEdu.git
+cd FitEdu
 
 # 2. Trust HTTPS dev certificate (once per machine)
 dotnet dev-certs https --trust
@@ -28,8 +28,8 @@ dotnet restore
 dotnet build
 
 # 6. Run
-dotnet run --project src/ResetYourFuture.Web
-# Visual Studio: right-click Solution → Configure Startup Projects → set ResetYourFuture.Web → F5
+dotnet run --project src/FitEdu.Web
+# Visual Studio: right-click Solution → Configure Startup Projects → set FitEdu.Web → F5
 
 # 7. (Optional) Install Ollama for the local AI assistant — everything else is automatic
 winget install Ollama.Ollama   # see the "AI Assistant" section below
@@ -39,7 +39,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 > **Database connection string — do you need to change it on a new PC?** The default targets SQL Server **LocalDB** (`Server=(localdb)\MSSQLLocalDB`), whose instance name is the same on every machine, so **cloning onto a new PC needs no change** — just have LocalDB installed (it ships with Visual Studio and SQL Server Express). Only set `ConnectionStrings__DefaultConnection` in `.env` if you point the app at a **different** SQL Server — a named instance, SQL Express, a remote server, or SQL authentication — because that server name is specific to the machine it runs on. Since `.env` is gitignored it never travels with a clone: on a new PC you recreate it from `.env.template` (LocalDB default) and adjust the connection string only if you are *not* using LocalDB. The app reads `.env` first and falls back to the dev default in `appsettings.Development.json`.
 
-**Admin:** `admin@resetyourfuture.local` / *(password you set in `.env`)*
+**Admin:** `admin@fitedu.local` / *(password you set in `.env`)*
 
 > Seed data (students, courses, assessments) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10).
 
@@ -47,7 +47,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 > **Known build issue (OpenApi pin):** package versions are pinned centrally in `Directory.Packages.props`, and committed `packages.lock.json` files with CI `--locked-mode` guard against drift. If a `restore`/`build` ever fails with a `Microsoft.OpenApi` version conflict (some restore paths silently rewrite that pin), recover with `git checkout Directory.Packages.props` (and any changed `.csproj`), then restore again.
 >
-> **Known build issue (SDK-supplied lock entry):** `src/ResetYourFuture.Web/packages.lock.json` carries a `Direct` entry for `Microsoft.AspNetCore.App.Internal.Assets` that **no file in this repo declares** — its version comes from the installed .NET SDK's bundled-versions props. So an SDK servicing update changes what restore resolves, and `--locked-mode` then fails on a lock file nobody edited. This has already required three manual bumps (`9d8764c` → 10.0.10, `2df6bac` → 10.0.11, `1513d66` → 10.0.12). Recovery when it happens locally is the same each time: `dotnet restore ResetYourFuture.sln --force-evaluate` and commit the refreshed lock file. **In CI it is now pinned instead:** `.github/workflows/tests.yml` installs `dotnet-version: 10.0.401` (the SDK that bundles ASP.NET Core 10.0.12, matching the committed lock file) rather than floating on `10.0.x`, which had broken the build on 2026-09-09 as soon as SDK 10.0.401 shipped with 10.0.12. **The pin and the lock entry are one unit and must be changed together** — editing the lock file alone breaks CI just as surely as letting the SDK float did, which is exactly what happened on 2026-09-12 when `1513d66` moved the lock to 10.0.12 while the pin still said 10.0.400. So after any `--force-evaluate` refresh, bump `dotnet-version` to the SDK you refreshed with, in the same commit. The upstream problem — a lock file containing an SDK-supplied package cannot be shared across SDK versions — is tracked at [dotnet/aspnetcore#64897](https://github.com/dotnet/aspnetcore/issues/64897).
+> **Known build issue (SDK-supplied lock entry):** `src/FitEdu.Web/packages.lock.json` carries a `Direct` entry for `Microsoft.AspNetCore.App.Internal.Assets` that **no file in this repo declares** — its version comes from the installed .NET SDK's bundled-versions props. So an SDK servicing update changes what restore resolves, and `--locked-mode` then fails on a lock file nobody edited. This has already required three manual bumps (`9d8764c` → 10.0.10, `2df6bac` → 10.0.11, `1513d66` → 10.0.12). Recovery when it happens locally is the same each time: `dotnet restore FitEdu.sln --force-evaluate` and commit the refreshed lock file. **In CI it is now pinned instead:** `.github/workflows/tests.yml` installs `dotnet-version: 10.0.401` (the SDK that bundles ASP.NET Core 10.0.12, matching the committed lock file) rather than floating on `10.0.x`, which had broken the build on 2026-09-09 as soon as SDK 10.0.401 shipped with 10.0.12. **The pin and the lock entry are one unit and must be changed together** — editing the lock file alone breaks CI just as surely as letting the SDK float did, which is exactly what happened on 2026-09-12 when `1513d66` moved the lock to 10.0.12 while the pin still said 10.0.400. So after any `--force-evaluate` refresh, bump `dotnet-version` to the SDK you refreshed with, in the same commit. The upstream problem — a lock file containing an SDK-supplied package cannot be shared across SDK versions — is tracked at [dotnet/aspnetcore#64897](https://github.com/dotnet/aspnetcore/issues/64897).
 
 ---
 
@@ -76,13 +76,13 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 ## Solution Structure
 
 ```
-ResetYourFuture.sln
+FitEdu.sln
 ├── src/
-│   ├── ResetYourFuture.Domain/          Entities, enums, value objects — no framework dependencies
-│   ├── ResetYourFuture.Application/     Service interfaces, DTOs, application services, entity→DTO mapping helpers (Mappings/)
-│   ├── ResetYourFuture.Infrastructure/  EF Core DbContext, migrations, service implementations
-│   ├── ResetYourFuture.Web/             Blazor SSR + API controllers — the only deployable project
-│   └── ResetYourFuture.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
+│   ├── FitEdu.Domain/          Entities, enums, value objects — no framework dependencies
+│   ├── FitEdu.Application/     Service interfaces, DTOs, application services, entity→DTO mapping helpers (Mappings/)
+│   ├── FitEdu.Infrastructure/  EF Core DbContext, migrations, service implementations
+│   ├── FitEdu.Web/             Blazor SSR + API controllers — the only deployable project
+│   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
 └── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
 ```
 
@@ -95,10 +95,10 @@ ResetYourFuture.sln
 Run the full suite locally:
 
 ```bash
-dotnet test ResetYourFuture.sln
+dotnet test FitEdu.sln
 ```
 
-The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `ResetYourFuture.TestSupport` for shared fixtures. The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
+The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `FitEdu.TestSupport` for shared fixtures. The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
 
 Web integration tests boot the real ASP.NET Core pipeline through `WebApplicationFactory<Program>`. The test host supplies dummy JWT/admin settings, runs in Development, swaps SQL Server for InMemory, and uses SQLite only for provider behaviors InMemory cannot execute, such as `EF.Functions.Like` or `ExecuteUpdateAsync`.
 
@@ -125,7 +125,7 @@ The app exposes two health endpoints for uptime probes and orchestrators:
 For live runtime metrics (GC, thread pool, request rate, exceptions) without any extra setup, attach the built-in .NET counters to a running instance:
 
 ```bash
-dotnet counters monitor -n ResetYourFuture.Web
+dotnet counters monitor -n FitEdu.Web
 ```
 
 A full metrics/tracing stack (OpenTelemetry + an OTLP backend) is intentionally *not* wired in — this single-instance project has no metrics backend to ship to, and `dotnet-counters` plus the daily log error-digest cover live diagnostics. Adopting OpenTelemetry is the documented next step if the app is ever run unattended (see `docs/plans/38-audit-observability.md`).
@@ -152,7 +152,7 @@ Interactive API docs are generated from the code (built-in `Microsoft.AspNetCore
 
 > **Production:** the Swagger UI and `/openapi/v1.json` endpoints are mapped only when `ASPNETCORE_ENVIRONMENT=Development`; they are **not** exposed in Production.
 
-**Implementation:** `src/ResetYourFuture.Web/OpenApi/OpenApiExtensions.cs` (info metadata, JWT bearer security scheme, per-operation security/lock, parameter & response descriptions, request examples, hub documentation). Action/DTO summaries flow into the doc via `<GenerateDocumentationFile>` on the `ResetYourFuture.Web` and `ResetYourFuture.Application` projects.
+**Implementation:** `src/FitEdu.Web/OpenApi/OpenApiExtensions.cs` (info metadata, JWT bearer security scheme, per-operation security/lock, parameter & response descriptions, request examples, hub documentation). Action/DTO summaries flow into the doc via `<GenerateDocumentationFile>` on the `FitEdu.Web` and `FitEdu.Application` projects.
 
 The tables below are a quick static reference; **Swagger UI is the authoritative, always-current source.**
 
@@ -504,7 +504,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 | `SeedData__StudentPassword` | `.env` | Seed student password. Required when `SeedData:Enabled = true`. |
 | `Payment:MockEnabled` | `appsettings.Development.json` | `true` in dev — skips real Stripe; uses mock checkout. |
 | `Payment__WebhookSecret` | `.env` | Stripe HMAC signing secret. Leave unset in dev. |
-| `AllowedHosts` | `.env` or env var | Default `localhost;127.0.0.1`. **Set to your production domain** (e.g. `reset-your-future.com;www.reset-your-future.com`) before deploying. |
+| `AllowedHosts` | `.env` or env var | Default `localhost;127.0.0.1`. **Set to your production domain** (e.g. `fitedu.com;www.fitedu.com`) before deploying. |
 | `SelfBaseUrl` | `.env` | The app's own real bound base address (used for its self-calling loopback API consumers). Defaults to `https://localhost:7090` in Development only — **startup throws** outside Development if unset or still pointing at localhost. |
 | `Email__Smtp__Host` (+ `Port`/`Username`/`Password`/`FromAddress`) | `.env` | SMTP relay for real email via `SmtpEmailService` (MailKit). Set it to send real mail; leave unset in Development to use the logging stub. **Required outside Development** — startup throws without it. |
 | `Assistant__Enabled` / `Assistant__BaseUrl` | `.env` or `appsettings.json` | Toggle the local AI assistant (default on) and point it at a non-default Ollama host. |
@@ -629,7 +629,7 @@ A grounded, bilingual (EN/EL) AI helper available to every authenticated user, r
 
 3. **Run the app:**
    ```powershell
-   dotnet run --project src/ResetYourFuture.Web
+   dotnet run --project src/FitEdu.Web
    ```
    On first start the app **auto-pulls the two models it needs** — `qwen3:1.7b` (chat, ≈ 1.4 GB) and `bge-m3` (embeddings, ≈ 1.2 GB); ~2.6 GB total, one-time. The assistant widget shows live download progress and goes live the moment everything is ready.
 
@@ -662,7 +662,7 @@ You can install or start Ollama **after** the app is already running — it keep
 |---------|-----|
 | DB connection fails | `sqllocaldb info MSSQLLocalDB`. Verify connection string. If the instance is stopped: `sqllocaldb start MSSQLLocalDB`. |
 | Database missing / dropped | Just restart the app — `MigrateAsync` at startup recreates and reseeds it automatically. |
-| Adding a new migration | `dotnet ef migrations add <Name> --project src/ResetYourFuture.Infrastructure --startup-project src/ResetYourFuture.Web` — then restart; migrations apply on next run. |
+| Adding a new migration | `dotnet ef migrations add <Name> --project src/FitEdu.Infrastructure --startup-project src/FitEdu.Web` — then restart; migrations apply on next run. |
 | Seed data missing | `SeedData:Enabled = true` in `appsettings.Development.json`. |
 | Email link not found | Search `STUB EMAIL` in `Logs/log-<today>.txt` or use dev endpoints. |
 | Role-based page inaccessible | Check `AspNetUserRoles` table. Admin pages require `Admin` role. |
@@ -697,7 +697,7 @@ You can install or start Ollama **after** the app is already running — it keep
 
 ## Logging
 
-Daily rotating log files at `src/ResetYourFuture.Web/Logs/log-YYYY-MM-DD.txt`. The `Logs/` directory and all `*.log` files are gitignored.
+Daily rotating log files at `src/FitEdu.Web/Logs/log-YYYY-MM-DD.txt`. The `Logs/` directory and all `*.log` files are gitignored.
 
 ---
 

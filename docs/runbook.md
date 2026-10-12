@@ -20,8 +20,8 @@ references leaves dangling avatar/certificate paths.
 **Database** (SQL Server):
 
 ```bash
-sqlcmd -S <server> -Q "BACKUP DATABASE [ResetYourFutureDb] TO DISK = N'D:\backups\ryf-$(date +%F).bak' WITH INIT, COMPRESSION"
-# or, for a portable schema+data package:  sqlpackage /a:Export /scs:"<connection>" /tf:"D:\backups\ryf-$(date +%F).bacpac"
+sqlcmd -S <server> -Q "BACKUP DATABASE [FitEduDb] TO DISK = N'D:\backups\fitedu-$(date +%F).bak' WITH INIT, COMPRESSION"
+# or, for a portable schema+data package:  sqlpackage /a:Export /scs:"<connection>" /tf:"D:\backups\fitedu-$(date +%F).bacpac"
 ```
 
 **Uploads** (the directory pointed at by `Storage:UploadsPath`, default `<ContentRoot>/App_Data/Uploads`):
@@ -52,7 +52,7 @@ automatic undo. Always follow this order:
    changes column types/indexes:
    ```bash
    dotnet tool restore
-   dotnet ef migrations script --idempotent --project src/ResetYourFuture.Infrastructure --startup-project src/ResetYourFuture.Web -o migrate.sql
+   dotnet ef migrations script --idempotent --project src/FitEdu.Infrastructure --startup-project src/FitEdu.Web -o migrate.sql
    ```
    CI already applies the full migration chain against a real SQL Server container (BUILD-2), so a
    SQL-Server-only break is usually caught before you get here.

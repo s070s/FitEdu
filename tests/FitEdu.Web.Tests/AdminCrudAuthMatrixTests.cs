@@ -1,0 +1,100 @@
+using System.Net;
+using Shouldly;
+using Xunit;
+
+namespace FitEdu.Web.Tests;
+
+/// <summary>
+/// Auth-matrix coverage for the remaining AdminOnly CRUD controllers
+/// (modules / lessons / assessments). Read endpoints return 200 for admins (empty data)
+/// and 403 for students.
+/// </summary>
+public class AdminCrudAuthMatrixTests : IClassFixture<CustomWebAppFactory>
+{
+    private readonly CustomWebAppFactory _factory;
+
+    public AdminCrudAuthMatrixTests(CustomWebAppFactory factory) => _factory = factory;
+
+    [Theory]
+    [InlineData("/api/admin/assessments")]
+    [InlineData("/api/admin/categories")]
+    [InlineData("/api/admin/categories/all")]
+    public async Task AdminList_Admin_Returns200(string url)
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        (await client.GetAsync(url)).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task AdminModulesByCourse_Admin_Returns200()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        (await client.GetAsync($"/api/admin/modules/course/{Guid.NewGuid()}")).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task AdminLessonsByModule_Admin_Returns200()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        (await client.GetAsync($"/api/admin/lessons/module/{Guid.NewGuid()}")).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Theory]
+    [InlineData("/api/admin/assessments")]
+    [InlineData("/api/admin/modules/course/00000000-0000-0000-0000-000000000000")]
+    [InlineData("/api/admin/lessons/module/00000000-0000-0000-0000-000000000000")]
+    [InlineData("/api/admin/categories")]
+    [InlineData("/api/admin/categories/all")]
+    public async Task AdminEndpoints_Student_Returns403(string url)
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        (await client.GetAsync(url)).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    [Theory]
+    [InlineData("/api/admin/assessments")]
+    [InlineData("/api/admin/modules/course/00000000-0000-0000-0000-000000000000")]
+    [InlineData("/api/admin/lessons/module/00000000-0000-0000-0000-000000000000")]
+    [InlineData("/api/admin/categories")]
+    [InlineData("/api/admin/categories/all")]
+    public async Task AdminEndpoints_Anonymous_Returns401(string url)
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync(url)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task AdminAssistantReindex_Admin_Returns202()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var response = await client.PostAsync("/api/admin/assistant/reindex", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+    }
+
+    [Fact]
+    public async Task AdminAssistantReindex_Student_Returns403()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var response = await client.PostAsync("/api/admin/assistant/reindex", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task AdminAssistantReindex_Anonymous_Returns401()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsync("/api/admin/assistant/reindex", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+}

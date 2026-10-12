@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> **Status (2026-07-14, trimmed to remaining work):** the transport half of this plan is **implemented and removed from this document**: `SmtpEmailService` (MailKit) + `EmailOptions` exist in `src/ResetYourFuture.Infrastructure/ApiServices/`, registered in `Startup/ServiceRegistrationExtensions.cs:38-45` whenever `Email:Smtp:Host` is configured (StubEmailService stays the Development default; production still fails fast when nothing is configured) — the former Tasks 1–2. The **API path** also already sends real emails: register confirmation (`AuthApiService.cs:86`, link built by `AuthController` → `Url.Action("ConfirmEmail")`, i.e. the JSON API action), forgot-password (`AuthApiService.cs:295`) and admin force-reset (`AdminUserService.cs:296-298`) — both reset links point at **`/reset-password?email=…&token=…`, a page that does not exist yet**, so every emailed reset link currently lands on the NotFound page. The **circuit path** is still unwired: the Blazor ForgotPassword/Register pages call `Infrastructure/Services/AuthService`, which generates tokens but sends nothing (its own comment at `AuthService.cs:301-304` says so). Tasks 3–9 below remain as originally designed (original numbering kept so internal cross-references hold).
+> **Status (2026-07-14, trimmed to remaining work):** the transport half of this plan is **implemented and removed from this document**: `SmtpEmailService` (MailKit) + `EmailOptions` exist in `src/FitEdu.Infrastructure/ApiServices/`, registered in `Startup/ServiceRegistrationExtensions.cs:38-45` whenever `Email:Smtp:Host` is configured (StubEmailService stays the Development default; production still fails fast when nothing is configured) — the former Tasks 1–2. The **API path** also already sends real emails: register confirmation (`AuthApiService.cs:86`, link built by `AuthController` → `Url.Action("ConfirmEmail")`, i.e. the JSON API action), forgot-password (`AuthApiService.cs:295`) and admin force-reset (`AdminUserService.cs:296-298`) — both reset links point at **`/reset-password?email=…&token=…`, a page that does not exist yet**, so every emailed reset link currently lands on the NotFound page. The **circuit path** is still unwired: the Blazor ForgotPassword/Register pages call `Infrastructure/Services/AuthService`, which generates tokens but sends nothing (its own comment at `AuthService.cs:301-304` says so). Tasks 3–9 below remain as originally designed (original numbering kept so internal cross-references hold).
 
 **Goal (remaining):** Wire the Blazor circuit-side `AuthService` register/forgot flows to actually send confirmation/reset links, and add the user-facing `/reset-password` + `/confirm-email` pages plus a rate-limited resend-confirmation endpoint with a Login button — completing the flows the already-implemented `SmtpEmailService` transport was built for, and fixing the emailed reset link that today points at a non-existent page.
 
@@ -15,20 +15,20 @@
 ## File Structure
 
 **Create:**
-- `src/ResetYourFuture.Web/Pages/ResetPassword.razor` (+ `.cs`) — `/reset-password` page.
-- `src/ResetYourFuture.Web/Pages/ConfirmEmail.razor` (+ `.cs`) — `/confirm-email` page.
+- `src/FitEdu.Web/Pages/ResetPassword.razor` (+ `.cs`) — `/reset-password` page.
+- `src/FitEdu.Web/Pages/ConfirmEmail.razor` (+ `.cs`) — `/confirm-email` page.
 
 **Modify:**
-- `src/ResetYourFuture.Web/appsettings.json` + `appsettings.Development.json` — `App:BaseUrl` (verify whether it already exists before adding).
-- `src/ResetYourFuture.Infrastructure/Services/AuthService.cs` — inject `IEmailService`, `App:BaseUrl`, send links, `ConfirmEmailAsync`.
-- `src/ResetYourFuture.Application/Interfaces/IAuthService.cs` — add `ConfirmEmailAsync`.
-- `src/ResetYourFuture.Web/Controllers/AuthController.cs` — add `resend-confirmation`; point the register confirmation link at the new `/confirm-email` page instead of the raw API action.
-- `src/ResetYourFuture.Web/Pages/Login.razor` + `Login.razor.cs` — resend button + handler.
-- `src/ResetYourFuture.Shared/Resources/GlobalRes.{resx,el.resx,Designer.cs}` — new UI keys.
-- `src/ResetYourFuture.Shared/Resources/Messages/SuccessMessagesRes.{resx,el.resx,Designer.cs}` — `ConfirmationEmailResent`.
-- `src/ResetYourFuture.Shared/Resources/Messages/ErrorMessagesRes.{resx,el.resx,Designer.cs}` — `InvalidResetLink`, `InvalidConfirmationLink`.
-- `tests/ResetYourFuture.Infrastructure.Tests/AuthServiceTests.cs` — harness + new tests.
-- `tests/ResetYourFuture.Web.Tests/AuthControllerTests.cs` — resend tests.
+- `src/FitEdu.Web/appsettings.json` + `appsettings.Development.json` — `App:BaseUrl` (verify whether it already exists before adding).
+- `src/FitEdu.Infrastructure/Services/AuthService.cs` — inject `IEmailService`, `App:BaseUrl`, send links, `ConfirmEmailAsync`.
+- `src/FitEdu.Application/Interfaces/IAuthService.cs` — add `ConfirmEmailAsync`.
+- `src/FitEdu.Web/Controllers/AuthController.cs` — add `resend-confirmation`; point the register confirmation link at the new `/confirm-email` page instead of the raw API action.
+- `src/FitEdu.Web/Pages/Login.razor` + `Login.razor.cs` — resend button + handler.
+- `src/FitEdu.Shared/Resources/GlobalRes.{resx,el.resx,Designer.cs}` — new UI keys.
+- `src/FitEdu.Shared/Resources/Messages/SuccessMessagesRes.{resx,el.resx,Designer.cs}` — `ConfirmationEmailResent`.
+- `src/FitEdu.Shared/Resources/Messages/ErrorMessagesRes.{resx,el.resx,Designer.cs}` — `InvalidResetLink`, `InvalidConfirmationLink`.
+- `tests/FitEdu.Infrastructure.Tests/AuthServiceTests.cs` — harness + new tests.
+- `tests/FitEdu.Web.Tests/AuthControllerTests.cs` — resend tests.
 
 > Note: line numbers and code snippets below were written against the 2026-06-25 codebase — re-verify each against the current source while implementing (the auth stack has since gained refresh-token hardening and localized messages).
 
@@ -37,13 +37,13 @@
 ## Task 3: Wire AuthService to send links + add ConfirmEmailAsync
 
 **Files:**
-- Modify: `src/ResetYourFuture.Application/Interfaces/IAuthService.cs`
-- Modify: `src/ResetYourFuture.Infrastructure/Services/AuthService.cs`
-- Test: `tests/ResetYourFuture.Infrastructure.Tests/AuthServiceTests.cs`
+- Modify: `src/FitEdu.Application/Interfaces/IAuthService.cs`
+- Modify: `src/FitEdu.Infrastructure/Services/AuthService.cs`
+- Test: `tests/FitEdu.Infrastructure.Tests/AuthServiceTests.cs`
 
 - [ ] **Step 1: Update the test harness to inject `IEmailService` + `App:BaseUrl`**
 
-In `AuthServiceTests.cs`, add `using ResetYourFuture.Web.ApiInterfaces;` is already present. Change the `Harness` record and `Build()`:
+In `AuthServiceTests.cs`, add `using FitEdu.Web.ApiInterfaces;` is already present. Change the `Harness` record and `Build()`:
 
 Replace the `Harness` record:
 ```csharp
@@ -197,12 +197,12 @@ Add these tests to `AuthServiceTests.cs` (inside the class):
 
 - [ ] **Step 3: Run the tests to verify they fail to compile**
 
-Run: `dotnet test tests/ResetYourFuture.Infrastructure.Tests --filter "FullyQualifiedName~AuthServiceTests"`
+Run: `dotnet test tests/FitEdu.Infrastructure.Tests --filter "FullyQualifiedName~AuthServiceTests"`
 Expected: BUILD FAILS — `AuthService` constructor has no `IEmailService` parameter; `ConfirmEmailAsync` does not exist.
 
 - [ ] **Step 4: Add `ConfirmEmailAsync` to `IAuthService`**
 
-In `src/ResetYourFuture.Application/Interfaces/IAuthService.cs`, add after the `ResetPasswordAsync` line:
+In `src/FitEdu.Application/Interfaces/IAuthService.cs`, add after the `ResetPasswordAsync` line:
 ```csharp
     Task<AuthResponseDto> ConfirmEmailAsync( string userId, string token );
 ```
@@ -214,7 +214,7 @@ In `AuthService.cs`, add the field (near the other `private readonly` fields):
     private readonly IEmailService _emailService;
     private readonly string _appBaseUrl;
 ```
-Add `using ResetYourFuture.Web.ApiInterfaces;` is already present. Update the constructor signature — insert `IEmailService emailService` after `subscriptionService`:
+Add `using FitEdu.Web.ApiInterfaces;` is already present. Update the constructor signature — insert `IEmailService emailService` after `subscriptionService`:
 ```csharp
     public AuthService(
         IHttpContextAccessor httpContextAccessor ,
@@ -323,13 +323,13 @@ Add the new `ConfirmEmailAsync` method (e.g. right after `ResetPasswordAsync`):
 
 - [ ] **Step 7: Run the tests to verify they pass**
 
-Run: `dotnet test tests/ResetYourFuture.Infrastructure.Tests --filter "FullyQualifiedName~AuthServiceTests"`
+Run: `dotnet test tests/FitEdu.Infrastructure.Tests --filter "FullyQualifiedName~AuthServiceTests"`
 Expected: PASS (all existing + 6 new).
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add src/ResetYourFuture.Application/Interfaces/IAuthService.cs src/ResetYourFuture.Infrastructure/Services/AuthService.cs tests/ResetYourFuture.Infrastructure.Tests/AuthServiceTests.cs
+git add src/FitEdu.Application/Interfaces/IAuthService.cs src/FitEdu.Infrastructure/Services/AuthService.cs tests/FitEdu.Infrastructure.Tests/AuthServiceTests.cs
 git commit -m "feat(auth): send confirmation/reset emails from AuthService; add ConfirmEmailAsync"
 ```
 
@@ -338,9 +338,9 @@ git commit -m "feat(auth): send confirmation/reset emails from AuthService; add 
 ## Task 4: Add localization resource keys
 
 **Files:**
-- Modify: `src/ResetYourFuture.Shared/Resources/GlobalRes.resx`, `.el.resx`, `.Designer.cs`
-- Modify: `src/ResetYourFuture.Shared/Resources/Messages/SuccessMessagesRes.resx`, `.el.resx`, `.Designer.cs`
-- Modify: `src/ResetYourFuture.Shared/Resources/Messages/ErrorMessagesRes.resx`, `.el.resx`, `.Designer.cs`
+- Modify: `src/FitEdu.Shared/Resources/GlobalRes.resx`, `.el.resx`, `.Designer.cs`
+- Modify: `src/FitEdu.Shared/Resources/Messages/SuccessMessagesRes.resx`, `.el.resx`, `.Designer.cs`
+- Modify: `src/FitEdu.Shared/Resources/Messages/ErrorMessagesRes.resx`, `.el.resx`, `.Designer.cs`
 
 Each new key needs three edits: English `.resx`, Greek `.el.resx`, and a property in `.Designer.cs`. Existing entries (e.g. `ForgotPasswordTitle` at `GlobalRes.resx:159`) show the exact format.
 
@@ -481,13 +481,13 @@ Add these properties inside the `GlobalRes` class in `GlobalRes.Designer.cs` (ma
 
 - [ ] **Step 6: Build to verify resources compile and resolve**
 
-Run: `dotnet build src/ResetYourFuture.Shared/ResetYourFuture.Shared.csproj`
+Run: `dotnet build src/FitEdu.Shared/FitEdu.Shared.csproj`
 Expected: Build succeeded.
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/ResetYourFuture.Shared/Resources
+git add src/FitEdu.Shared/Resources
 git commit -m "feat(i18n): add reset/confirm/resend resource strings (EN + EL)"
 ```
 
@@ -496,8 +496,8 @@ git commit -m "feat(i18n): add reset/confirm/resend resource strings (EN + EL)"
 ## Task 5: `/reset-password` Blazor page
 
 **Files:**
-- Create: `src/ResetYourFuture.Web/Pages/ResetPassword.razor`
-- Create: `src/ResetYourFuture.Web/Pages/ResetPassword.razor.cs`
+- Create: `src/FitEdu.Web/Pages/ResetPassword.razor`
+- Create: `src/FitEdu.Web/Pages/ResetPassword.razor.cs`
 
 - [ ] **Step 1: Create `ResetPassword.razor`**
 
@@ -557,11 +557,11 @@ git commit -m "feat(i18n): add reset/confirm/resend resource strings (EN + EL)"
 
 ```csharp
 using Microsoft.AspNetCore.Components;
-using ResetYourFuture.Web.Interfaces;
-using ResetYourFuture.Shared.DTOs;
+using FitEdu.Web.Interfaces;
+using FitEdu.Shared.DTOs;
 using System.Web;
 
-namespace ResetYourFuture.Web.Pages;
+namespace FitEdu.Web.Pages;
 
 public partial class ResetPassword
 {
@@ -617,13 +617,13 @@ public partial class ResetPassword
 
 - [ ] **Step 3: Build to verify it compiles**
 
-Run: `dotnet build src/ResetYourFuture.Web/ResetYourFuture.Web.csproj`
+Run: `dotnet build src/FitEdu.Web/FitEdu.Web.csproj`
 Expected: Build succeeded.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/ResetYourFuture.Web/Pages/ResetPassword.razor src/ResetYourFuture.Web/Pages/ResetPassword.razor.cs
+git add src/FitEdu.Web/Pages/ResetPassword.razor src/FitEdu.Web/Pages/ResetPassword.razor.cs
 git commit -m "feat(auth): add /reset-password page"
 ```
 
@@ -632,8 +632,8 @@ git commit -m "feat(auth): add /reset-password page"
 ## Task 6: `/confirm-email` Blazor page
 
 **Files:**
-- Create: `src/ResetYourFuture.Web/Pages/ConfirmEmail.razor`
-- Create: `src/ResetYourFuture.Web/Pages/ConfirmEmail.razor.cs`
+- Create: `src/FitEdu.Web/Pages/ConfirmEmail.razor`
+- Create: `src/FitEdu.Web/Pages/ConfirmEmail.razor.cs`
 
 - [ ] **Step 1: Create `ConfirmEmail.razor`**
 
@@ -668,11 +668,11 @@ git commit -m "feat(auth): add /reset-password page"
 
 ```csharp
 using Microsoft.AspNetCore.Components;
-using ResetYourFuture.Web.Interfaces;
-using ResetYourFuture.Shared.Resources.Messages;
+using FitEdu.Web.Interfaces;
+using FitEdu.Shared.Resources.Messages;
 using System.Web;
 
-namespace ResetYourFuture.Web.Pages;
+namespace FitEdu.Web.Pages;
 
 public partial class ConfirmEmail
 {
@@ -708,13 +708,13 @@ public partial class ConfirmEmail
 
 - [ ] **Step 3: Build to verify it compiles**
 
-Run: `dotnet build src/ResetYourFuture.Web/ResetYourFuture.Web.csproj`
+Run: `dotnet build src/FitEdu.Web/FitEdu.Web.csproj`
 Expected: Build succeeded.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/ResetYourFuture.Web/Pages/ConfirmEmail.razor src/ResetYourFuture.Web/Pages/ConfirmEmail.razor.cs
+git add src/FitEdu.Web/Pages/ConfirmEmail.razor src/FitEdu.Web/Pages/ConfirmEmail.razor.cs
 git commit -m "feat(auth): add /confirm-email page"
 ```
 
@@ -723,8 +723,8 @@ git commit -m "feat(auth): add /confirm-email page"
 ## Task 7: Resend-confirmation endpoint
 
 **Files:**
-- Modify: `src/ResetYourFuture.Web/Controllers/AuthController.cs`
-- Test: `tests/ResetYourFuture.Web.Tests/AuthControllerTests.cs`
+- Modify: `src/FitEdu.Web/Controllers/AuthController.cs`
+- Test: `tests/FitEdu.Web.Tests/AuthControllerTests.cs`
 
 - [ ] **Step 1: Write the failing integration tests**
 
@@ -736,8 +736,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
-using ResetYourFuture.Web.ApiInterfaces;
-using ResetYourFuture.Web.Identity;
+using FitEdu.Web.ApiInterfaces;
+using FitEdu.Web.Identity;
 ```
 Then add the tests inside the class:
 ```csharp
@@ -822,7 +822,7 @@ Then add the tests inside the class:
 
 - [ ] **Step 2: Run the tests to verify they fail**
 
-Run: `dotnet test tests/ResetYourFuture.Web.Tests --filter "FullyQualifiedName~ResendConfirmation"`
+Run: `dotnet test tests/FitEdu.Web.Tests --filter "FullyQualifiedName~ResendConfirmation"`
 Expected: FAIL — endpoint returns 404 (route not mapped) / assertions fail.
 
 - [ ] **Step 3: Add the endpoint to `AuthController`**
@@ -870,13 +870,13 @@ Insert after the `ResetPassword` action (and before the `GetCurrentUser`/`#if DE
 
 - [ ] **Step 4: Run the tests to verify they pass**
 
-Run: `dotnet test tests/ResetYourFuture.Web.Tests --filter "FullyQualifiedName~ResendConfirmation"`
+Run: `dotnet test tests/FitEdu.Web.Tests --filter "FullyQualifiedName~ResendConfirmation"`
 Expected: PASS (3 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/ResetYourFuture.Web/Controllers/AuthController.cs tests/ResetYourFuture.Web.Tests/AuthControllerTests.cs
+git add src/FitEdu.Web/Controllers/AuthController.cs tests/FitEdu.Web.Tests/AuthControllerTests.cs
 git commit -m "feat(auth): add rate-limited resend-confirmation endpoint"
 ```
 
@@ -885,8 +885,8 @@ git commit -m "feat(auth): add rate-limited resend-confirmation endpoint"
 ## Task 8: Resend button on the Login page
 
 **Files:**
-- Modify: `src/ResetYourFuture.Web/Pages/Login.razor`
-- Modify: `src/ResetYourFuture.Web/Pages/Login.razor.cs`
+- Modify: `src/FitEdu.Web/Pages/Login.razor`
+- Modify: `src/FitEdu.Web/Pages/Login.razor.cs`
 
 - [ ] **Step 1: Add the resend button to `Login.razor`**
 
@@ -962,13 +962,13 @@ Add the method (e.g. after `DevConfirmPendingEmail`):
 
 - [ ] **Step 3: Build to verify it compiles**
 
-Run: `dotnet build src/ResetYourFuture.Web/ResetYourFuture.Web.csproj`
+Run: `dotnet build src/FitEdu.Web/FitEdu.Web.csproj`
 Expected: Build succeeded.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/ResetYourFuture.Web/Pages/Login.razor src/ResetYourFuture.Web/Pages/Login.razor.cs
+git add src/FitEdu.Web/Pages/Login.razor src/FitEdu.Web/Pages/Login.razor.cs
 git commit -m "feat(auth): add resend-confirmation button on Login page"
 ```
 
@@ -980,24 +980,24 @@ git commit -m "feat(auth): add resend-confirmation button on Login page"
 
 - [ ] **Step 1: Full solution build**
 
-Run: `dotnet build ResetYourFuture.sln`
+Run: `dotnet build FitEdu.sln`
 Expected: Build succeeded, 0 errors.
 
 - [ ] **Step 2: Full test suite**
 
-Run: `dotnet test ResetYourFuture.sln`
+Run: `dotnet test FitEdu.sln`
 Expected: All tests pass (including the new `AuthServiceTests` email tests and resend `AuthControllerTests`; `SmtpEmailServiceTests` already exists from the implemented transport half).
 
 - [ ] **Step 3: Manual live-send check against Papercut/Mailhog**
 
 Start a local SMTP catcher (Papercut SMTP on `localhost:25`, or Mailhog on `localhost:1025`). Configure User Secrets for the Web project so the real SMTP service is selected in Development:
 ```bash
-cd src/ResetYourFuture.Web
+cd src/FitEdu.Web
 dotnet user-secrets set "Email:Smtp:Host" "localhost"
 dotnet user-secrets set "Email:Smtp:Port" "25"        # Mailhog: 1025
 dotnet user-secrets set "Email:Smtp:UseStartTls" "false"
 ```
-Run the app (`dotnet run --project src/ResetYourFuture.Web`). Then:
+Run the app (`dotnet run --project src/FitEdu.Web`). Then:
 1. Register a new user → a "Confirm your email" message appears in the catcher; the link opens `/confirm-email` and confirms successfully.
 2. Try to log in before confirming → the unconfirmed-email warning shows a "Resend confirmation email" button; clicking it produces a new message in the catcher.
 3. Use Forgot Password for a confirmed user → a "Reset your password" message appears; the link opens `/reset-password`, and submitting a new password succeeds and allows login.

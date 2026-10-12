@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-25 · **Trimmed to remaining work:** 2026-07-14
 **Status:** Partially implemented — the transport half (former §§1–3: `SmtpEmailService`, `EmailOptions`, registration) is done and removed from this document; the flow half (§§4–9 below) remains.
-**Area:** `src/ResetYourFuture.Web` (Blazor Server), `src/ResetYourFuture.Infrastructure`, `src/ResetYourFuture.Application`
+**Area:** `src/FitEdu.Web` (Blazor Server), `src/FitEdu.Infrastructure`, `src/FitEdu.Application`
 
 ## Problem (remaining)
 
@@ -35,9 +35,9 @@ This blocks two audit UI/UX issues:
 - `AuthService` runs inside the Blazor circuit where `HttpContext` is null, so it cannot derive
   scheme/host for links the way `AuthController` does (`Request.Scheme`/`Request.Host`). Links must come
   from configuration.
-- `IEmailService` lives in `ResetYourFuture.Application/ApiInterfaces` (namespace
-  `ResetYourFuture.Web.ApiInterfaces`). `StubEmailService` lives in
-  `ResetYourFuture.Infrastructure/ApiServices` (namespace `ResetYourFuture.Web.ApiServices`). The Web
+- `IEmailService` lives in `FitEdu.Application/ApiInterfaces` (namespace
+  `FitEdu.Web.ApiInterfaces`). `StubEmailService` lives in
+  `FitEdu.Infrastructure/ApiServices` (namespace `FitEdu.Web.ApiServices`). The Web
   project references Infrastructure (Program.cs already uses `StubEmailService`).
 
 ## Decisions
@@ -56,7 +56,7 @@ This blocks two audit UI/UX issues:
 
 ## Components (§§1–3, the transport, are implemented and removed; original numbering kept)
 
-### 4. `AuthService` wiring — `src/ResetYourFuture.Infrastructure/Services/AuthService.cs`
+### 4. `AuthService` wiring — `src/FitEdu.Infrastructure/Services/AuthService.cs`
 
 - Add `IEmailService _emailService` constructor parameter (after `subscriptionService`, before
   `context`, or wherever cleanest — update all call sites incl. tests).
@@ -76,7 +76,7 @@ This blocks two audit UI/UX issues:
 - New `ConfirmEmailAsync(string userId, string token)`: `FindByIdAsync` → `ConfirmEmailAsync` → map to
   `AuthResponseDto`. Used by the `/confirm-email` page.
 
-### 5. `IAuthService` — `src/ResetYourFuture.Application/Interfaces/IAuthService.cs`
+### 5. `IAuthService` — `src/FitEdu.Application/Interfaces/IAuthService.cs`
 
 Add:
 ```csharp
@@ -84,7 +84,7 @@ Task<AuthResponseDto> ConfirmEmailAsync(string userId, string token);
 ```
 (Resend stays on the controller, not here.)
 
-### 6. `/reset-password` Blazor page — `src/ResetYourFuture.Web/Pages/ResetPassword.razor(.cs)`
+### 6. `/reset-password` Blazor page — `src/FitEdu.Web/Pages/ResetPassword.razor(.cs)`
 
 - `@page "/reset-password"`. `[SupplyParameterFromQuery] Email`, `[SupplyParameterFromQuery] Token`.
 - Form: new password + confirm (reuse `Label_NewPassword`, `Label_Password`/confirm patterns,
@@ -93,7 +93,7 @@ Task<AuthResponseDto> ConfirmEmailAsync(string userId, string token);
 - Submit → `IAuthService.ResetPasswordAsync`. Success → success alert + link to `/login`. Failure →
   error alert with returned errors. Guard against missing token (show error, no form).
 
-### 7. `/confirm-email` Blazor page — `src/ResetYourFuture.Web/Pages/ConfirmEmail.razor(.cs)`
+### 7. `/confirm-email` Blazor page — `src/FitEdu.Web/Pages/ConfirmEmail.razor(.cs)`
 
 - `@page "/confirm-email"`. `[SupplyParameterFromQuery] UserId`, `[SupplyParameterFromQuery] Token`.
 - `OnInitializedAsync` → `IAuthService.ConfirmEmailAsync(UserId, Token)`. Show success (+ login link) or
@@ -138,7 +138,7 @@ localization pattern. Reuse existing keys (`Label_NewPassword`, `Label_Password`
 
 ## Verification
 
-- `dotnet build` and `dotnet test ResetYourFuture.sln` must pass.
+- `dotnet build` and `dotnet test FitEdu.sln` must pass.
 - Manual live-send check against Papercut/Mailhog: set User Secrets
   (`Email:Smtp:Host=localhost`, `Port=25`, `UseStartTls=false`), run the app, register a user and use
   forgot-password / resend, observe the messages and follow the links to `/confirm-email` and

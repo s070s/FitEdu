@@ -11,7 +11,7 @@
 
 Static analysis only — the app was not launched. Examined:
 
-- All 32 routable pages in `src/ResetYourFuture.Web/Pages/` (markup read in full for AdminUsers, AdminCourses, AdminBlog, AdminCategories, AdminAssessmentSubmissions, AdminCourseEdit (partial), Billing, Courses, Assessments, AssessmentForm, AssessmentHistory, CourseDetail, LessonViewer, MyCertificates, VerifyCertificate, Pricing, Home, Login, Register, ForgotPassword, Profile, Chat, Disabled, SubscriptionSuccess).
+- All 32 routable pages in `src/FitEdu.Web/Pages/` (markup read in full for AdminUsers, AdminCourses, AdminBlog, AdminCategories, AdminAssessmentSubmissions, AdminCourseEdit (partial), Billing, Courses, Assessments, AssessmentForm, AssessmentHistory, CourseDetail, LessonViewer, MyCertificates, VerifyCertificate, Pricing, Home, Login, Register, ForgotPassword, Profile, Chat, Disabled, SubscriptionSuccess).
 - Shared components: ScrollableTable, SortableColumnHeader, AdminPaginationToolbar, PaginationNav, ConfirmModal, FormModal, DismissibleAlert, StatusBadge, LoadingSpinner, PageStateContainer, CategoryFilterBar, UpgradePrompt, PresenceIndicator, MessagePane, AssistantWidget, IncomingCallToast.
 - Layout: MainLayout, NavMenu (+ scoped CSS), AvatarDropdown, CultureSelector, ImpersonationBanner; `App.razor`, `Routes.razor`.
 - CSS: `app.css` (309 lines), `shared-components.css` (653 lines), targeted reads/greps of scoped `.razor.css` files; repo-wide sweeps for `style="`, `data-label`, `aria-*`, `role=`, `<caption`, `.sort-arrow`, `tier-badge`.
@@ -54,7 +54,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 - **Recommendation:** Replace `bg-primary text-white` with the themed card-header (already styled globally at `shared-components.css:68-72`) plus a border accent; use `--bg-neutral-subtle` badges as elsewhere.
 
 ### UI-15: `role="menu"` dropdown without arrow-key or Escape handling  [Info] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Layout/AvatarDropdown.razor:5-38` — declares `aria-haspopup="menu"`/`role="menu"`/`role="menuitem"` and closes on focus-out, but implements no ArrowUp/ArrowDown/Escape/Home/End keyboard model that the `menu` role promises.
+- **Evidence:** `src/FitEdu.Web/Layout/AvatarDropdown.razor:5-38` — declares `aria-haspopup="menu"`/`role="menu"`/`role="menuitem"` and closes on focus-out, but implements no ArrowUp/ArrowDown/Escape/Home/End keyboard model that the `menu` role promises.
 - **Impact:** Minor: only two items, Tab still works because they are real links/buttons; but the announced role sets expectations the widget doesn't meet.
 - **Recommendation:** Either downgrade to the disclosure pattern (`aria-expanded` on the button, plain links — no `menu` roles) or add the key handling. The disclosure pattern is the cheaper, correct fix here.
 

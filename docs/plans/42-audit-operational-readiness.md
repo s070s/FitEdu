@@ -9,7 +9,7 @@
 
 ## 1. Methodology
 
-Read in full: `src/ResetYourFuture.Web/Startup/DatabaseSeedingExtensions.cs`, `src/ResetYourFuture.Infrastructure/Seeding/BulkStudentSeedingService.cs`, `BlogArticleSeeder.cs`, `SubscriptionPlanSeeder.cs` (headers), README production checklist and Email/Configuration sections, `.env.template`, `.gitignore` (state paths all ignored), `appsettings*.json`, `Controllers/SubscriptionController.cs` (webhook path), `Application/ApiServices/SubscriptionService.cs` (mock-payment path), `Application/ApiServices/AdminUserService.cs` (admin lifecycle operations). NOT examined: `CourseSeeder`/`AssessmentSeeder`/`StudentSeeder` internals beyond their Development-only call sites, and no runtime verification (no build/run per repo constraints).
+Read in full: `src/FitEdu.Web/Startup/DatabaseSeedingExtensions.cs`, `src/FitEdu.Infrastructure/Seeding/BulkStudentSeedingService.cs`, `BlogArticleSeeder.cs`, `SubscriptionPlanSeeder.cs` (headers), README production checklist and Email/Configuration sections, `.env.template`, `.gitignore` (state paths all ignored), `appsettings*.json`, `Controllers/SubscriptionController.cs` (webhook path), `Application/ApiServices/SubscriptionService.cs` (mock-payment path), `Application/ApiServices/AdminUserService.cs` (admin lifecycle operations). NOT examined: `CourseSeeder`/`AssessmentSeeder`/`StudentSeeder` internals beyond their Development-only call sites, and no runtime verification (no build/run per repo constraints).
 
 ## 2. Summary Scorecard
 

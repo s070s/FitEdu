@@ -48,9 +48,9 @@ Overall the security foundations are notably strong for a certificate project: H
 - **Recommendation:** Raise to 10–12 chars, and add a compromised-password check (k-anonymity HaveIBeenPwned API or a local common-password list) on register / change-password.
 
 ### SEC-9: Admin-backup impersonation cookie uses `SameSite=Lax`, not `Strict`  [Low] [Effort: S]
-- **Evidence:** `Startup/InfrastructureEndpointsExtensions.cs:147-157` writes `.RYF.AdminUserId` with `SameSite=SameSiteMode.Lax` (the primary `.RYF.Auth` cookie is `Strict`). Value is DataProtection-protected (integrity-protected).
+- **Evidence:** `Startup/InfrastructureEndpointsExtensions.cs:147-157` writes `.FitEdu.AdminUserId` with `SameSite=SameSiteMode.Lax` (the primary `.FitEdu.Auth` cookie is `Strict`). Value is DataProtection-protected (integrity-protected).
 - **Impact:** Minor — the cookie only records which admin to restore to on impersonation exit and is integrity-protected, but the looser `Lax` scope is inconsistent with the Strict primary cookie for no clear reason.
-- **Recommendation:** Set `SameSite=Strict` to match `.RYF.Auth`.
+- **Recommendation:** Set `SameSite=Strict` to match `.FitEdu.Auth`.
 
 ### SEC-10: `.env.template` ships weak default development secrets  [Info] [Effort: S]
 - **Evidence:** `.env.template` documents `Jwt__Key`, `AdminUser__Password`, and `SeedData__StudentPassword` with weak, human-guessable placeholder values (keys referenced only; values not reproduced here). `appsettings.json` correctly leaves these blank by design; the JWT length guard (`AuthenticationSetupExtensions.cs:49-50`) enforces ≥32 bytes at startup.

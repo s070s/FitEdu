@@ -14,7 +14,7 @@ and WebRTC):
 
 - Node.js 18+ and the .NET 10 SDK
 - SQL Server LocalDB with the Development database seeded (any prior `dotnet run` of
-  `ResetYourFuture.Web` does this; `SeedData:Enabled=true` so the JSON students exist)
+  `FitEdu.Web` does this; `SeedData:Enabled=true` so the JSON students exist)
 
 ## Running
 
@@ -25,13 +25,13 @@ npx playwright install chromium   # first time only
 npx playwright test
 ```
 
-Playwright starts the dev server itself (`dotnet run --project ../../src/ResetYourFuture.Web`)
+Playwright starts the dev server itself (`dotnet run --project ../../src/FitEdu.Web`)
 and reuses it if already running on `https://localhost:7090`.
 
 ## Notes
 
 - **Seeded passwords:** global setup resets the passwords of the two seeded students
-  (`alice.johnson@` / `bob.smith@resetyourfuture.local`) to a known test value through the
+  (`alice.johnson@` / `bob.smith@fitedu.local`) to a known test value through the
   Development-only `/api/auth/dev/reset-password` endpoint. This only touches regenerable
   local seed data and keeps real credential values out of the suite.
 - **Not in CI:** the `test` job is a Linux `dotnet test` job with no database. CI does now have a

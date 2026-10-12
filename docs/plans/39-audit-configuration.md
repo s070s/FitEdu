@@ -9,7 +9,7 @@
 
 ## 1. Methodology
 
-Read in full: `src/ResetYourFuture.Web/appsettings.json`, `appsettings.Development.json`, `Properties/launchSettings.json`, `Startup/EnvFileLoader.cs`, `Startup/ServiceRegistrationExtensions.cs`, `Startup/AuthenticationSetupExtensions.cs`, `Startup/DatabaseSeedingExtensions.cs`, `.env.template`, `src/ResetYourFuture.Application/Common/AssistantOptions.cs`, `src/ResetYourFuture.Infrastructure/Configuration/EmailOptions.cs`; searched `src/` for `ValidateOnStart` / `ValidateDataAnnotations` / `IValidateOptions` (zero hits) and for consumers of `Payment:*`, `SelfBaseUrl`, `Sitemap:BaseUrl`. Secret *values* were not read or reproduced anywhere in this report (keys/files referenced only). No build/run performed.
+Read in full: `src/FitEdu.Web/appsettings.json`, `appsettings.Development.json`, `Properties/launchSettings.json`, `Startup/EnvFileLoader.cs`, `Startup/ServiceRegistrationExtensions.cs`, `Startup/AuthenticationSetupExtensions.cs`, `Startup/DatabaseSeedingExtensions.cs`, `.env.template`, `src/FitEdu.Application/Common/AssistantOptions.cs`, `src/FitEdu.Infrastructure/Configuration/EmailOptions.cs`; searched `src/` for `ValidateOnStart` / `ValidateDataAnnotations` / `IValidateOptions` (zero hits) and for consumers of `Payment:*`, `SelfBaseUrl`, `Sitemap:BaseUrl`. Secret *values* were not read or reproduced anywhere in this report (keys/files referenced only). No build/run performed.
 
 ## 2. Summary Scorecard
 
@@ -34,11 +34,11 @@ Overall: the configuration design is thoughtful for a project of this scale — 
 
 ### CFG-7: Three overlapping base-URL keys must agree but nothing relates them  [Low] [Effort: S]
 - **Evidence:** `appsettings.json` — `SelfBaseUrl` (line 10, dev value), `App:BaseUrl` (lines 40-42, production value), `Sitemap:BaseUrl` (lines 49-51, production value). `App:BaseUrl` builds email confirmation/reset links; `Sitemap:BaseUrl` builds sitemap URLs; `SelfBaseUrl` is the loopback API address. The committed defaults are mutually inconsistent (one localhost, two production).
-- **Impact:** Easy to update one and not the others; a deployment that sets `SelfBaseUrl` but inherits the committed `App:BaseUrl` sends users email links to the wrong host (or vice versa in dev, where email links point at reset-your-future.com unless overridden — Development json overrides `App:BaseUrl` but not `Sitemap:BaseUrl`).
+- **Impact:** Easy to update one and not the others; a deployment that sets `SelfBaseUrl` but inherits the committed `App:BaseUrl` sends users email links to the wrong host (or vice versa in dev, where email links point at fitedu.com unless overridden — Development json overrides `App:BaseUrl` but not `Sitemap:BaseUrl`).
 - **Recommendation:** Collapse `Sitemap:BaseUrl` into `App:BaseUrl` (single public-URL key), keep `SelfBaseUrl` separate (it is legitimately different — loopback), and document the distinction in the README Configuration table.
 
 ### CFG-8: Single launch profile; no Production-like local profile  [Info] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Properties/launchSettings.json` — one `https` profile, `ASPNETCORE_ENVIRONMENT=Development`, port 7090 (matching the `SelfBaseUrl` dev default).
+- **Evidence:** `src/FitEdu.Web/Properties/launchSettings.json` — one `https` profile, `ASPNETCORE_ENVIRONMENT=Development`, port 7090 (matching the `SelfBaseUrl` dev default).
 - **Impact:** None day-to-day; it just means the Production code paths (real exception handler, HSTS, email fail-fast, no seed data) are never exercised locally, so CFG-1/CFG-2 class problems stay invisible until a real deployment.
 - **Recommendation:** Optionally add a `https-prodlike` profile with `ASPNETCORE_ENVIRONMENT=Production` and documented required env vars, as a cheap pre-deployment smoke test.
 

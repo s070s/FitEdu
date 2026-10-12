@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FitEdu.Domain\FitEdu.Domain.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Application\FitEdu.Application.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Infrastructure\FitEdu.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Shared\FitEdu.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

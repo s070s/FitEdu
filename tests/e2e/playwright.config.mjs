@@ -33,7 +33,7 @@ export default defineConfig({
         trace: 'retain-on-failure',
     },
     webServer: {
-        command: 'dotnet run --project ../../src/ResetYourFuture.Web',
+        command: 'dotnet run --project ../../src/FitEdu.Web',
         url: 'https://localhost:7090',
         reuseExistingServer: true,
         ignoreHTTPSErrors: true,

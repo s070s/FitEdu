@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="bunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FitEdu.Domain\FitEdu.Domain.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Application\FitEdu.Application.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Infrastructure\FitEdu.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Shared\FitEdu.Shared.csproj" />
+    <ProjectReference Include="..\..\src\FitEdu.Web\FitEdu.Web.csproj" />
+    <ProjectReference Include="..\FitEdu.TestSupport\FitEdu.TestSupport.csproj" />
+  </ItemGroup>
+
+</Project>

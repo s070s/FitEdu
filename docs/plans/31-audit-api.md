@@ -4,7 +4,7 @@
 |---|---|
 | Finding prefix | API |
 | Created | 2026-07-11 |
-| Scope | REST conventions, status-code consistency, request validation plumbing, paging conventions, response envelopes (ProblemDetails), OpenAPI/Swagger accuracy, versioning, and endpoint authorization *as convention* — across the 24 controllers in `src/ResetYourFuture.Web/Controllers/`, the 4 minimal-API endpoints in `src/ResetYourFuture.Web/Startup/InfrastructureEndpointsExtensions.cs`, and the OpenAPI pipeline in `src/ResetYourFuture.Web/OpenApi/` |
+| Scope | REST conventions, status-code consistency, request validation plumbing, paging conventions, response envelopes (ProblemDetails), OpenAPI/Swagger accuracy, versioning, and endpoint authorization *as convention* — across the 24 controllers in `src/FitEdu.Web/Controllers/`, the 4 minimal-API endpoints in `src/FitEdu.Web/Startup/InfrastructureEndpointsExtensions.cs`, and the OpenAPI pipeline in `src/FitEdu.Web/OpenApi/` |
 | Delegated | Individual authorization vulnerabilities & rate-limit/brute-force posture → 25 (SEC). Business-rule correctness of endpoint behavior → 27 (BIZ). Query performance → 34 (PERF). Where an API-facing symptom is rooted in the schema (user-delete 500, missing Conflict from concurrency) → 30 (DB). Server-side sorting → implemented across the list endpoints (former plan 10), not re-reported. |
 
 ## 1. Methodology

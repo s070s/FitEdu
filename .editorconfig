@@ -52,7 +52,7 @@ csharp_style_namespace_declarations = false
 # EF Core migrations are scaffolded by `dotnet ef` and regenerate on the next
 # migration, so hand-styling them is pointless. Mark them generated so style and
 # analyzer rules (e.g. IDE0161 file-scoped namespaces) skip code we don't maintain.
-[src/ResetYourFuture.Infrastructure/Data/Migrations/*.cs]
+[src/FitEdu.Infrastructure/Data/Migrations/*.cs]
 generated_code = true
 
 # Test method names deliberately use Method_Scenario_Expectation with underscores —

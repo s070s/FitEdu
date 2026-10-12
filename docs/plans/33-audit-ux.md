@@ -15,7 +15,7 @@ Static analysis only — no app launch or browser. Examined:
 - Navigation surface: `Routes.razor`, `App.razor`, `Layout/NavMenu.razor`, `Layout/MainLayout.razor`, full `@page` route inventory (36 routes).
 - Feedback components and every usage site: `DismissibleAlert` (11 usages), `ConfirmModal` (7 usages), inline confirm patterns (3 pages), `PageStateContainer` (0 usages — dead), `LoadingSpinner`.
 - Forms: Login, Register (+ `RegisterRequestDto`/`LoginRequestDto` DataAnnotations), ForgotPassword, Profile, AssessmentForm, AdminCategories/AdminUsers modal forms, AdminCourseEdit.
-- Bilingual posture: all 18 resx pairs in `src/ResetYourFuture.Shared/Resources/` (EN/EL key counts compared — 100% parity), date/time format strings across pages.
+- Bilingual posture: all 18 resx pairs in `src/FitEdu.Shared/Resources/` (EN/EL key counts compared — 100% parity), date/time format strings across pages.
 - NOT examined: actual Greek translation quality (native review), live SignalR/chat flows, payment redirects — not verifiable statically.
 
 ## 2. Summary Scorecard

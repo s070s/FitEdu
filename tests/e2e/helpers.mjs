@@ -7,10 +7,10 @@
  */
 export const TEST_PASSWORD = 'E2e-Smoke-Pass-1!';
 
-/** Deterministic students from ResetYourFuture.Shared/JSON/Students/students.json. */
+/** Deterministic students from FitEdu.Shared/JSON/Students/students.json. */
 export const STUDENTS = {
-    alice: 'alice.johnson@resetyourfuture.local',
-    bob: 'bob.smith@resetyourfuture.local',
+    alice: 'alice.johnson@fitedu.local',
+    bob: 'bob.smith@fitedu.local',
 };
 
 /**

@@ -1,8 +1,8 @@
 {
-  "name": "resetyourfuture-e2e",
+  "name": "fitedu-e2e",
   "version": "1.0.0",
   "private": true,
-  "description": "Playwright end-to-end smoke suite for ResetYourFuture (local-only; see README.md)",
+  "description": "Playwright end-to-end smoke suite for FitEdu (local-only; see README.md)",
   "type": "module",
   "scripts": {
     "test": "playwright test",

@@ -9,7 +9,7 @@
 
 ## 1. Methodology
 
-Examined: `src/ResetYourFuture.Web/Logging/FileLogger.cs`, `FileLoggerProvider.cs`, `FileLoggerExtensions.cs`; wiring in `src/ResetYourFuture.Web/Program.cs` (line 12); `Logging` sections of `appsettings.json` / `appsettings.Development.json`; the on-disk `src/ResetYourFuture.Web/Logs/` directory (daily files present, gitignored); a repo-wide inventory of `logger.Log*` call sites (169 calls across 52 files) with targeted reads of `AuthApiService.cs`, `AdminUserService.cs`, `SubscriptionService.cs`, `SubscriptionController.cs`, `AssistantService.cs`, `StubEmailService.cs`, `InfrastructureEndpointsExtensions.cs`. NOT examined: contents of the actual log files (they contain user emails; verified only file names/dates), and no build/run was performed (per repo constraints).
+Examined: `src/FitEdu.Web/Logging/FileLogger.cs`, `FileLoggerProvider.cs`, `FileLoggerExtensions.cs`; wiring in `src/FitEdu.Web/Program.cs` (line 12); `Logging` sections of `appsettings.json` / `appsettings.Development.json`; the on-disk `src/FitEdu.Web/Logs/` directory (daily files present, gitignored); a repo-wide inventory of `logger.Log*` call sites (169 calls across 52 files) with targeted reads of `AuthApiService.cs`, `AdminUserService.cs`, `SubscriptionService.cs`, `SubscriptionController.cs`, `AssistantService.cs`, `StubEmailService.cs`, `InfrastructureEndpointsExtensions.cs`. NOT examined: contents of the actual log files (they contain user emails; verified only file names/dates), and no build/run was performed (per repo constraints).
 
 ## 2. Summary Scorecard
 
@@ -30,22 +30,22 @@ All four Medium findings are resolved: auth flows now log user IDs, not emails (
 > The four Medium findings (LOG-1 error digest, LOG-2 PII, LOG-3 file-provider drop/drain, LOG-4 admin actor) are fixed, along with LOG-6 (log directory anchored to the content root) — see git (`Fix LOG-1` … `Fix LOG-4`, `Fix LOG-1 and LOG-6`). The remaining open items are four Low.
 
 ### LOG-5: No log retention or cleanup — unbounded growth  [Low] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Logging/FileLoggerProvider.cs:36` creates `log-{date}.txt` daily; nothing anywhere deletes old files. `src/ResetYourFuture.Web/Logs/` already accumulates files (2026-07-07 onward); the directory is gitignored (`.gitignore`: `Logs/`) so growth is invisible in the repo.
+- **Evidence:** `src/FitEdu.Web/Logging/FileLoggerProvider.cs:36` creates `log-{date}.txt` daily; nothing anywhere deletes old files. `src/FitEdu.Web/Logs/` already accumulates files (2026-07-07 onward); the directory is gitignored (`.gitignore`: `Logs/`) so growth is invisible in the repo.
 - **Impact:** Disk creep on any long-lived host; combined with LOG-2, an ever-growing PII archive with no retention policy.
 - **Recommendation:** On rollover in `WriteLoopAsync` (the `logFile != currentFile` branch), delete files older than N days (configurable, default 14). One `Directory.EnumerateFiles` + date parse; ~15 lines.
 
 ### LOG-7: Hardcoded `Information` floor ignores configured log levels  [Low] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Logging/FileLogger.cs:18` — `IsEnabled(logLevel) => logLevel >= LogLevel.Information`, regardless of `Logging:LogLevel` in `appsettings.json`.
+- **Evidence:** `src/FitEdu.Web/Logging/FileLogger.cs:18` — `IsEnabled(logLevel) => logLevel >= LogLevel.Information`, regardless of `Logging:LogLevel` in `appsettings.json`.
 - **Impact:** Setting `"Default": "Debug"` in configuration raises console verbosity but the file silently never captures Debug/Trace — the one sink that persists is the one you cannot turn up when diagnosing an issue.
 - **Recommendation:** Remove the hardcoded check (return `true`; the `LoggerFactory` already applies configured filter rules per provider) or make the floor a constructor parameter fed from configuration (`Logging:File:MinLevel`).
 
 ### LOG-8: Scopes are discarded — per-request context never reaches the file  [Low] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Logging/FileLogger.cs:16` — `BeginScope` returns `null`.
+- **Evidence:** `src/FitEdu.Web/Logging/FileLogger.cs:16` — `BeginScope` returns `null`.
 - **Impact:** ASP.NET Core's request/connection scopes (which carry the `TraceIdentifier` that ProblemDetails hands to clients) are dropped, so log lines from one request cannot be grouped. This is the mechanical half of the correlation gap; the adoption path is OBS territory (report 38).
 - **Recommendation:** Implement a minimal `IExternalScopeProvider` (or accept one via `ISupportExternalScope`) and append flattened scope values to the entry line.
 
 ### LOG-9: No HTTP request/access logging  [Low] [Effort: S]
-- **Evidence:** `src/ResetYourFuture.Web/Program.cs` — no `UseHttpLogging`/W3C logging middleware; only application events are logged. `Microsoft.AspNetCore` is filtered to Warning (`appsettings.json:5`), so per-request Info lines from the framework are suppressed too.
+- **Evidence:** `src/FitEdu.Web/Program.cs` — no `UseHttpLogging`/W3C logging middleware; only application events are logged. `Microsoft.AspNetCore` is filtered to Warning (`appsettings.json:5`), so per-request Info lines from the framework are suppressed too.
 - **Impact:** No record of which endpoints were hit, by whom, with what status — makes post-hoc investigation of "was this endpoint probed / who downloaded that certificate" impossible from logs alone.
 - **Recommendation:** For the demo context, `app.UseHttpLogging()` gated to Production with fields limited to method/path/status/duration is enough; revisit under the OTel path (report 38) where `http.server.request.duration` metrics largely replace access logs.
 

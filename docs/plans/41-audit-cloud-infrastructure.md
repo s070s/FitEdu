@@ -9,7 +9,7 @@
 
 ## 1. Methodology
 
-Read: `src/ResetYourFuture.Web/Startup/ServiceRegistrationExtensions.cs` (DataProtection lines 171-186, Ollama registration 96-109, self-clients 211-253), `Startup/AuthenticationSetupExtensions.cs` (SQL Server + retry), `src/ResetYourFuture.Infrastructure/ApiServices/LocalFileStorage.cs`, `src/ResetYourFuture.Infrastructure/ApiServices/SmtpEmailService.cs` registration path, `appsettings.json`/`appsettings.Development.json`, `Program.cs` (HTTPS redirect/HSTS lines 68-74), `.gitignore`; searched `src/` for `UseForwardedHeaders`/`ForwardedHeadersOptions`/`KnownProxies` (zero hits) and the repo for Dockerfile/compose/IaC files (none). On-disk state verified: `src/ResetYourFuture.Web/DataProtection-Keys/` (one key XML), `App_Data/Uploads/`, `Logs/`. No build/run performed.
+Read: `src/FitEdu.Web/Startup/ServiceRegistrationExtensions.cs` (DataProtection lines 171-186, Ollama registration 96-109, self-clients 211-253), `Startup/AuthenticationSetupExtensions.cs` (SQL Server + retry), `src/FitEdu.Infrastructure/ApiServices/LocalFileStorage.cs`, `src/FitEdu.Infrastructure/ApiServices/SmtpEmailService.cs` registration path, `appsettings.json`/`appsettings.Development.json`, `Program.cs` (HTTPS redirect/HSTS lines 68-74), `.gitignore`; searched `src/` for `UseForwardedHeaders`/`ForwardedHeadersOptions`/`KnownProxies` (zero hits) and the repo for Dockerfile/compose/IaC files (none). On-disk state verified: `src/FitEdu.Web/DataProtection-Keys/` (one key XML), `App_Data/Uploads/`, `Logs/`. No build/run performed.
 
 ## 2. Summary Scorecard
 
