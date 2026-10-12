@@ -199,7 +199,7 @@ th.sort-active {
         align-items: flex-start;
         padding: 0.5rem 0.75rem;
         border: none;
-        border-bottom: 1px solid rgba(172, 173, 190, 0.08);
+        border-bottom: 1px solid rgba(var(--border-subtle-rgb), 0.08);
         gap: 1rem;
         text-align: right;
         color: var(--text-light-normal);

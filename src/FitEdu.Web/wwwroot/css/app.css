@@ -1,42 +1,43 @@
 :root {
     /* Backgrounds */
-    --bg-primary: #0a0c20;
-    --bg-surface: #121429;
-    --bg-table-even: #10132c;
-    --bg-table-odd: #181c3a;
-    --bg-table-header: #10132c;
-    --bg-table-header-hover: #1b1f44;
-    --bg-table-header-active: #22265a;
-    --bg-table-row-hover: #2d205a;
+    --bg-primary: #0E1116;
+    --bg-surface: #161B22;
+    --bg-table-even: #131820;
+    --bg-table-odd: #1A2029;
+    --bg-table-header: #131820;
+    --bg-table-header-hover: #1F2731;
+    --bg-table-header-active: #263040;
+    --bg-table-row-hover: #22301C;
     /* Text */
-    --text-strong-normal: #F0F0F0;
-    --text-light-normal: #CDD5DF;
-    --text-accent: #CEC8F0;
-    --text-strong-accent: #C47CB4;
-    --text-light-muted: rgb(175 189 202 / 82%);
+    --text-strong-normal: #F2F5F7;
+    --text-light-normal: #B8C2CC;
+    --text-accent: #D9F99D;
+    --text-strong-accent: #C6F432;
+    --text-light-muted: rgb(170 180 190 / 85%);
     /* Semantic / Feedback */
-    --color-success: #17c40f;
-    --color-error: #c53923;
-    --color-warning: #f8df08;
+    --color-success: #4ADE80;
+    --color-error: #F43F5E;
+    --color-warning: #FACC15;
     /* Semantic backgrounds (subtle / transparent) */
-    --bg-success-subtle: rgba(23, 196, 15, 0.15);
-    --bg-error-subtle: rgba(197, 57, 35, 0.15);
-    --bg-warning-subtle: rgba(248, 223, 8, 0.15);
-    --bg-info-subtle: rgba(196, 188, 234, 0.15);
+    --bg-success-subtle: rgba(74, 222, 128, 0.15);
+    --bg-error-subtle: rgba(244, 63, 94, 0.15);
+    --bg-warning-subtle: rgba(250, 204, 21, 0.15);
+    --bg-info-subtle: rgba(46, 196, 182, 0.15);
     --bg-neutral-subtle: rgba(95, 103, 120, 0.2);
     /* Attention (impersonation / high-visibility banners) */
-    --color-attention: #ff9800;
-    --color-attention-border: #e65100;
+    --color-attention: #FF6B3D;
+    --color-attention-border: #E04E1F;
     /* RGB triplets (for rgba() decomposition) */
-    --bg-primary-rgb: 10, 12, 32;
-    --bg-surface-rgb: 18, 20, 41;
-    --text-accent-rgb: 206, 200, 240;
-    --text-strong-accent-rgb: 196, 124, 180;
+    --bg-primary-rgb: 14, 17, 22;
+    --bg-surface-rgb: 22, 27, 34;
+    --text-accent-rgb: 217, 249, 157;
+    --text-strong-accent-rgb: 198, 244, 50;
+    --border-subtle-rgb: 184, 194, 204;
     /* UI Utilities */
-    --border-subtle: #acadbe40;
-    --focus-ring: #c4bcea8c;
-    --overlay-soft: #0a0c20d9;
-    --button-regular: #c4bcea;
+    --border-subtle: #B8C2CC33;
+    --focus-ring: #C6F4328C;
+    --overlay-soft: #0E1116D9;
+    --button-regular: #D9F99D;
     /* Spacing */
     --space-1: 4px;
     --space-2: 8px;
@@ -208,24 +209,24 @@ input:-webkit-autofill:active {
 
 .compass-boot__ring-outer {
     fill: none;
-    stroke: rgba(172, 173, 190, 0.25);
+    stroke: rgba(var(--border-subtle-rgb), 0.25);
     stroke-width: 1.5;
 }
 
 .compass-boot__tick-cardinal {
-    stroke: rgba(206, 200, 240, 0.75);
+    stroke: rgba(var(--text-accent-rgb), 0.75);
     stroke-width: 2;
     stroke-linecap: round;
 }
 
 .compass-boot__tick-minor {
-    stroke: rgba(206, 200, 240, 0.3);
+    stroke: rgba(var(--text-accent-rgb), 0.3);
     stroke-width: 1;
     stroke-linecap: round;
 }
 
 .compass-boot__cardinal-n {
-    fill: rgba(206, 200, 240, 0.7);
+    fill: rgba(var(--text-accent-rgb), 0.7);
     font-size: 9px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 700;
@@ -235,26 +236,26 @@ input:-webkit-autofill:active {
 
 .compass-boot__arc-track {
     fill: none;
-    stroke: rgba(196, 124, 180, 0.15);
+    stroke: rgba(var(--text-strong-accent-rgb), 0.15);
     stroke-width: 3;
 }
 
 /* Progress arc: driven by --blazor-load-percentage, starts at 12 o'clock */
 .compass-boot__arc-progress {
     fill: none;
-    stroke: #C47CB4;
+    stroke: var(--text-strong-accent);
     stroke-width: 3;
     stroke-linecap: round;
     transform-origin: 60px 60px;
     transform: rotate(-90deg);
     stroke-dasharray: calc(2.9531 * var(--blazor-load-percentage, 0%)), 295.31;
     transition: stroke-dasharray 0.12s ease-out;
-    filter: drop-shadow(0 0 5px rgba(196, 124, 180, 0.65));
+    filter: drop-shadow(0 0 5px rgba(var(--text-strong-accent-rgb), 0.65));
 }
 
 .compass-boot__ring-inner {
     fill: none;
-    stroke: rgba(172, 173, 190, 0.15);
+    stroke: rgba(var(--border-subtle-rgb), 0.15);
     stroke-width: 0.8;
 }
 
@@ -264,14 +265,14 @@ input:-webkit-autofill:active {
     will-change: transform;
 }
 
-.compass-boot__needle-north { fill: #C47CB4; }
-.compass-boot__needle-south { fill: rgba(206, 200, 240, 0.45); }
+.compass-boot__needle-north { fill: var(--text-strong-accent); }
+.compass-boot__needle-south { fill: rgba(var(--text-accent-rgb), 0.45); }
 
-.compass-boot__center       { fill: #C47CB4; }
-.compass-boot__center-inner { fill: #0a0c20; }
+.compass-boot__center       { fill: var(--text-strong-accent); }
+.compass-boot__center-inner { fill: var(--bg-primary); }
 
 .compass-boot__label {
-    color: rgba(206, 200, 240, 0.6);
+    color: rgba(var(--text-accent-rgb), 0.6);
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 0.7rem;
     letter-spacing: 0.2em;
@@ -307,8 +308,8 @@ input:-webkit-autofill:active {
 
 /* Outer SVG breathing glow on the boot screen */
 @keyframes compass-boot-glow {
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(196, 124, 180, 0.2)); }
-    50%       { filter: drop-shadow(0 0 20px rgba(196, 124, 180, 0.5)); }
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(var(--text-strong-accent-rgb), 0.2)); }
+    50%       { filter: drop-shadow(0 0 20px rgba(var(--text-strong-accent-rgb), 0.5)); }
 }
 
 /* ================================================

@@ -49,7 +49,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 - **Recommendation:** Switch the hook to a locale-independent class (`<td class="actions-cell" data-label=…>`) and match `.table-responsive td.actions-cell` in the CSS; one mechanical sweep of the 10 action cells.
 
 ### UI-14: Bootstrap default palette leaks into the themed UI  [Low] [Effort: S]
-- **Evidence:** `AssessmentHistory.razor:22` — `card-header bg-primary text-white` renders Bootstrap's stock blue header on the otherwise pink/purple (`--text-strong-accent`) theme; `AdminCourseEdit.razor:124` — `badge bg-light text-dark`; `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the orange banner, but the only `btn-light` in the app).
+- **Evidence:** `AssessmentHistory.razor:22` — `card-header bg-primary text-white` renders Bootstrap's stock blue header on the otherwise volt-lime (`--text-strong-accent`) theme; `AdminCourseEdit.razor:124` — `badge bg-light text-dark`; `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).
 - **Impact:** The one blue element in the app reads as foreign; light badges are near-white blobs on dark cards.
 - **Recommendation:** Replace `bg-primary text-white` with the themed card-header (already styled globally at `shared-components.css:68-72`) plus a border accent; use `--bg-neutral-subtle` badges as elsewhere.
 
