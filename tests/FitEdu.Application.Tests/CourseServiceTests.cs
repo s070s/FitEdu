@@ -178,7 +178,98 @@ public class CourseServiceTests
         item.CategoryName.ShouldBeNull();
     }
 
+    private static Course FitnessCourse(string titleEn, FitnessGoal goal, CourseLevel level, string? equipment)
+    {
+        var course = CourseWithLessons(titleEn, 0);
+        course.Goal = goal;
+        course.Level = level;
+        course.Equipment = equipment;
+        return course;
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_CarriesFitnessFieldsAndCoverUrl()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = FitnessCourse("Course", FitnessGoal.FatLoss, CourseLevel.Intermediate, "none,bands");
+        course.EstimatedWeeks = 6;
+        course.SessionsPerWeek = 3;
+        course.CoverExerciseSlug = "plank";
+        db.Courses.AddRange(course, CourseWithLessons("No Cover", 0));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var items = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items;
+
+        var item = items.Single(i => i.Title == "Course");
+        item.Goal.ShouldBe(FitnessGoal.FatLoss);
+        item.Level.ShouldBe(CourseLevel.Intermediate);
+        item.Equipment.ShouldBe("none,bands");
+        item.EstimatedWeeks.ShouldBe(6);
+        item.SessionsPerWeek.ShouldBe(3);
+        item.CoverImageUrl.ShouldBe("/images/exercises/plank/0.webp");
+        items.Single(i => i.Title == "No Cover").CoverImageUrl.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_FiltersByGoalLevelAndEquipment()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Courses.AddRange(
+            FitnessCourse("Match", FitnessGoal.Strength, CourseLevel.Advanced, "barbell,dumbbells,cables"),
+            FitnessCourse("Wrong Goal", FitnessGoal.Mobility, CourseLevel.Advanced, "dumbbells"),
+            FitnessCourse("Wrong Level", FitnessGoal.Strength, CourseLevel.Beginner, "dumbbells"),
+            FitnessCourse("No Dumbbells", FitnessGoal.Strength, CourseLevel.Advanced, "barbell"),
+            FitnessCourse("No Equipment Listed", FitnessGoal.Strength, CourseLevel.Advanced, null));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(
+            UserId, 1, 10, "en", goal: FitnessGoal.Strength, level: CourseLevel.Advanced, equipment: "dumbbells");
+
+        result.Items.ShouldHaveSingleItem().Title.ShouldBe("Match");
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_EquipmentFilterMatchesWholeCodesInAnyPosition()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Courses.AddRange(
+            FitnessCourse("First", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell,mat"),
+            FitnessCourse("Last", FitnessGoal.Strength, CourseLevel.Beginner, "mat,kettlebell"),
+            FitnessCourse("Only", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell"),
+            FitnessCourse("Longer Code", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebells"));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en", equipment: "kettlebell");
+
+        string.Join("|", result.Items.Select(i => i.Title)).ShouldBe("First|Last|Only");
+    }
+
     // ---- GetCourseDetailAsync -----------------------------------------------
+
+    [Fact]
+    public async Task GetCourseDetail_CarriesFitnessFieldsAndCoverUrl()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = FitnessCourse("Course", FitnessGoal.Endurance, CourseLevel.Beginner, "bike");
+        course.EstimatedWeeks = 8;
+        course.SessionsPerWeek = 4;
+        course.CoverExerciseSlug = "bicycling";
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!;
+
+        detail.Goal.ShouldBe(FitnessGoal.Endurance);
+        detail.Level.ShouldBe(CourseLevel.Beginner);
+        detail.Equipment.ShouldBe("bike");
+        detail.EstimatedWeeks.ShouldBe(8);
+        detail.SessionsPerWeek.ShouldBe(4);
+        detail.CoverImageUrl.ShouldBe("/images/exercises/bicycling/0.webp");
+    }
 
     [Fact]
     public async Task GetCourseDetail_Missing_ReturnsNull()

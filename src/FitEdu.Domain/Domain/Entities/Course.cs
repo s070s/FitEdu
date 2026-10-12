@@ -8,6 +8,11 @@ namespace FitEdu.Domain.Entities;
 /// </summary>
 public class Course : AuditableEntity
 {
+    /// <summary>
+    /// Joins the codes stored in Equipment (e.g. "none,bands").
+    /// </summary>
+    public const string EquipmentSeparator = ",";
+
     public Guid Id
     {
         get; set;

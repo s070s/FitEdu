@@ -52,6 +52,37 @@ public class ConsumerTests
     }
 
     [Fact]
+    public async Task CourseConsumer_GetCourses_SendsCategorySearchGoalLevelAndEquipmentFilters()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK,
+            new PagedResult<CourseListItemDto>([], 0, 1, 10));
+        var consumer = new CourseConsumer(client, TokenProvider());
+        var categoryId = Guid.NewGuid();
+
+        await consumer.GetCoursesAsync(categoryId: categoryId, search: "core work",
+            goal: FitnessGoal.FatLoss, level: CourseLevel.Intermediate, equipment: "dumbbells");
+
+        var query = handler.LastRequest!.RequestUri!.Query;
+        query.ShouldContain($"categoryId={categoryId}");
+        query.ShouldContain("search=core%20work");
+        query.ShouldContain("goal=FatLoss");
+        query.ShouldContain("level=Intermediate");
+        query.ShouldContain("equipment=dumbbells");
+    }
+
+    [Fact]
+    public async Task CourseConsumer_GetCourses_WithoutFilters_SendsNoFilterParameters()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK,
+            new PagedResult<CourseListItemDto>([], 0, 1, 10));
+        var consumer = new CourseConsumer(client, TokenProvider());
+
+        await consumer.GetCoursesAsync();
+
+        handler.LastRequest!.RequestUri!.Query.ShouldBe("?page=1&pageSize=10&lang=en");
+    }
+
+    [Fact]
     public async Task CourseConsumer_GetCourses_ServerError_ReturnsEmptyPagedResult()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);

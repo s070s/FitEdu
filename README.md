@@ -191,8 +191,8 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories)) | Yes |
-| `GET` | `api/courses/{courseId}` | Course detail with modules and lessons | Yes |
+| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week and a cover image URL | Yes |
+| `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | Yes |
 | `POST` | `api/courses/{courseId}/enroll` | Enroll in a course | Yes |
 | `GET` | `api/courses/lessons/{lessonId}` | Lesson detail, including the prescribed exercises (sets, reps, rest, notes, photos) in lesson order | Yes |
 | `POST` | `api/courses/lessons/{lessonId}/complete` | Mark lesson complete | Yes |

@@ -22,6 +22,7 @@ public class CourseService(
 {
     public async Task<PagedResult<CourseListItemDto>> GetPublishedCoursesAsync(
         string userId, int page, int pageSize, string lang, Guid? categoryId = null, string? search = null,
+        FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null,
         CancellationToken cancellationToken = default)
     {
         var isEl = Localized.IsEl(lang);
@@ -45,7 +46,8 @@ public class CourseService(
                 (c.DescriptionEl != null && EF.Functions.Like(c.DescriptionEl, term)));
         }
 
-        query = query.OrderBy(c => c.TitleEn);
+        query = ApplyFitnessFilters(query, goal, level, equipment)
+            .OrderBy(c => c.TitleEn);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -84,7 +86,13 @@ public class CourseService(
                 c.RequiredTier,
                 c.CategoryId,
                 CategoryNameEn = c.Category != null ? c.Category.NameEn : null,
-                CategoryNameEl = c.Category != null ? c.Category.NameEl : null
+                CategoryNameEl = c.Category != null ? c.Category.NameEl : null,
+                c.Level,
+                c.Goal,
+                c.Equipment,
+                c.EstimatedWeeks,
+                c.SessionsPerWeek,
+                c.CoverExerciseSlug
             })
             .ToListAsync(cancellationToken);
 
@@ -101,7 +109,13 @@ public class CourseService(
                 c.CategoryId,
                 c.CategoryId is null ? null : Localized.Pick(isEl, c.CategoryNameEn, c.CategoryNameEl),
                 rating?.AverageRating,
-                rating?.ReviewCount ?? 0
+                rating?.ReviewCount ?? 0,
+                c.Level,
+                c.Goal,
+                c.Equipment,
+                c.EstimatedWeeks,
+                c.SessionsPerWeek,
+                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug)
             );
         }).ToList();
 
@@ -157,7 +171,13 @@ public class CourseService(
                     completedLessonIds.Contains(l.Id)
                 )).ToList()
             )).ToList(),
-            course.RequiredTier
+            course.RequiredTier,
+            course.Level,
+            course.Goal,
+            course.Equipment,
+            course.EstimatedWeeks,
+            course.SessionsPerWeek,
+            ExerciseImagePaths.CourseCoverUrl(course.CoverExerciseSlug)
         );
     }
 
@@ -385,6 +405,29 @@ public class CourseService(
             courseCompleted,
             certificatePending
         ));
+    }
+
+    /// <summary>
+    /// Optional catalog filters. Equipment matches one whole code: the column is wrapped as
+    /// ",mat,kettlebell," and searched for ",kettlebell," so "kettlebells" never matches.
+    /// </summary>
+    private static IQueryable<Course> ApplyFitnessFilters(
+        IQueryable<Course> query, FitnessGoal? goal, CourseLevel? level, string? equipment)
+    {
+        if (goal is { } wantedGoal)
+            query = query.Where(c => c.Goal == wantedGoal);
+
+        if (level is { } wantedLevel)
+            query = query.Where(c => c.Level == wantedLevel);
+
+        if (!string.IsNullOrWhiteSpace(equipment))
+        {
+            var equipmentToken = Course.EquipmentSeparator + equipment.Trim() + Course.EquipmentSeparator;
+            query = query.Where(c => c.Equipment != null &&
+                (Course.EquipmentSeparator + c.Equipment + Course.EquipmentSeparator).Contains(equipmentToken));
+        }
+
+        return query;
     }
 
     private static ContentType GetContentType(Lesson lesson)

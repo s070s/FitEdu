@@ -1,4 +1,5 @@
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using System.Net.Http.Json;
 
 namespace FitEdu.Web.Consumers;
@@ -8,13 +9,17 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public class CourseConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider tokenProvider) : ApiClientBase(http, tokenProvider), ICourseConsumer
 {
-    public async Task<PagedResult<CourseListItemDto>> GetCoursesAsync(int page = 1, int pageSize = 10, string lang = "en", Guid? categoryId = null, string? search = null)
+    public async Task<PagedResult<CourseListItemDto>> GetCoursesAsync(
+        int page = 1, int pageSize = 10, string lang = "en", Guid? categoryId = null, string? search = null,
+        FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null)
     {
-        var url = $"api/courses?page={page}&pageSize={pageSize}&lang={lang}";
-        if (categoryId is { } catId)
-            url += $"&categoryId={catId}";
-        if (!string.IsNullOrWhiteSpace(search))
-            url += $"&search={Uri.EscapeDataString(search)}";
+        // Enums travel by name (e.g. goal=FatLoss); the API model binder accepts names and numbers.
+        var url = $"api/courses?page={page}&pageSize={pageSize}&lang={lang}"
+            + OptionalQuery("categoryId", categoryId?.ToString())
+            + OptionalQuery("search", search)
+            + OptionalQuery("goal", goal?.ToString())
+            + OptionalQuery("level", level?.ToString())
+            + OptionalQuery("equipment", equipment);
 
         return await GetAsync<PagedResult<CourseListItemDto>>(url)
            ?? new PagedResult<CourseListItemDto>([], 0, page, pageSize);

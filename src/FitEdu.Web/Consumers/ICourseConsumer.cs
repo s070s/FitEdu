@@ -1,4 +1,5 @@
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 
 namespace FitEdu.Web.Consumers;
 
@@ -7,7 +8,9 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public interface ICourseConsumer
 {
-    Task<PagedResult<CourseListItemDto>> GetCoursesAsync(int page = 1, int pageSize = 10, string lang = "en", Guid? categoryId = null, string? search = null);
+    Task<PagedResult<CourseListItemDto>> GetCoursesAsync(
+        int page = 1, int pageSize = 10, string lang = "en", Guid? categoryId = null, string? search = null,
+        FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null);
     Task<CourseDetailDto?> GetCourseAsync(Guid courseId, string lang = "en");
     Task<EnrollmentResultDto?> EnrollAsync(Guid courseId);
     Task<LessonDetailDto?> GetLessonAsync(Guid lessonId, string lang = "en");
