@@ -196,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assessments.
+        ///   Looks up a localized string similar to Self-assessments.
         /// </summary>
         public static string FeatureAssessments {
             get {
@@ -205,7 +205,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificates.
+        ///   Looks up a localized string similar to Completion certificates.
         /// </summary>
         public static string FeatureCertificates {
             get {
@@ -214,7 +214,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Priority support.
+        ///   Looks up a localized string similar to Priority coaching.
         /// </summary>
         public static string FeaturePrioritySupport {
             get {
@@ -304,7 +304,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited courses.
+        ///   Looks up a localized string similar to Unlimited active courses.
         /// </summary>
         public static string UnlimitedCourses {
             get {

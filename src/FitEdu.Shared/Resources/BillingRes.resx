@@ -64,19 +64,19 @@
 		<value>No expiry (lifetime)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Unlimited courses</value>
+		<value>Unlimited active courses</value>
 	</data>
 	<data name="CoursesCountFormat" xml:space="preserve">
 		<value>{0} course(s)</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
-		<value>Assessments</value>
+		<value>Self-assessments</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Certificates</value>
+		<value>Completion certificates</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Priority support</value>
+		<value>Priority coaching</value>
 	</data>
 	<data name="ChangePlan" xml:space="preserve">
 		<value>Change Plan</value>

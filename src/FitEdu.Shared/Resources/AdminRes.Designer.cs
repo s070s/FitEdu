@@ -394,7 +394,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Role / Company.
+        ///   Looks up a localized string similar to Role / Context.
         /// </summary>
         public static string ColRoleCompany {
             get {
@@ -799,7 +799,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Company / Context.
+        ///   Looks up a localized string similar to Gym / Context.
         /// </summary>
         public static string FieldCompanyContext {
             get {
@@ -862,7 +862,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unique identifier, e.g. career_clarity_v1.
+        ///   Looks up a localized string similar to unique identifier, e.g. training_readiness_v1.
         /// </summary>
         public static string FieldKeyHint {
             get {
@@ -1896,7 +1896,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sessions.
+        ///   Looks up a localized string similar to live classes.
         /// </summary>
         public static string ItemLabelSessions {
             get {
@@ -2310,7 +2310,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to save the learning path..
+        ///   Looks up a localized string similar to Failed to save the training path..
         /// </summary>
         public static string PathSaveFailed {
             get {

@@ -46,7 +46,7 @@
 		<value>Επιλέξτε το Πλάνο σας</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
-		<value>Ξεκλειδώστε τις δυνατότητές σας με το κατάλληλο πλάνο.</value>
+		<value>Προπονήσου έξυπνα με το πλάνο που ταιριάζει στους στόχους σου.</value>
 	</data>
 	<data name="CurrentPlanLabel" xml:space="preserve">
 		<value>Τρέχον πλάνο σας:</value>
@@ -61,19 +61,19 @@
 		<value>Δωρεάν</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Απεριόριστα μαθήματα</value>
+		<value>Απεριόριστα ενεργά μαθήματα</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Έως {0} μάθημα/τα</value>
+		<value>Ενεργά μαθήματα τη φορά: έως {0}</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
-		<value>Πρόσβαση σε αξιολογήσεις</value>
+		<value>Αξιολογήσεις αυτοελέγχου φυσικής κατάστασης</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Πιστοποιητικά</value>
+		<value>Πιστοποιητικά ολοκλήρωσης</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Προτεραιότητα υποστήριξης</value>
+		<value>Καθοδήγηση από προπονητή με προτεραιότητα</value>
 	</data>
 	<data name="BtnCurrentPlan" xml:space="preserve">
 		<value>Τρέχον Πλάνο</value>
@@ -110,5 +110,11 @@
 	</data>
 	<data name="UpgradeNow" xml:space="preserve">
 		<value>Αναβάθμιση Τώρα</value>
+	</data>
+	<data name="FeatureExerciseLibrary" xml:space="preserve">
+		<value>Πλήρης βιβλιοθήκη ασκήσεων</value>
+	</data>
+	<data name="FeatureLiveClasses" xml:space="preserve">
+		<value>Ζωντανά μαθήματα</value>
 	</data>
 </root>

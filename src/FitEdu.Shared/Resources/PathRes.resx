@@ -59,10 +59,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PathsTitle" xml:space="preserve">
-    <value>Learning Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="NoPathsYet" xml:space="preserve">
-    <value>No learning paths available yet.</value>
+    <value>No training paths available yet.</value>
   </data>
   <data name="StepsCountFormat" xml:space="preserve">
     <value>{0} courses</value>
@@ -95,10 +95,10 @@
     <value>Loading paths…</value>
   </data>
   <data name="PathNotFound" xml:space="preserve">
-    <value>Learning path not found.</value>
+    <value>Training path not found.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Learning Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="NewPath" xml:space="preserve">
     <value>New path</value>
@@ -107,7 +107,7 @@
     <value>Edit Path</value>
   </data>
   <data name="NoPathsFound" xml:space="preserve">
-    <value>No learning paths found.</value>
+    <value>No training paths found.</value>
   </data>
   <data name="ColTitle" xml:space="preserve">
     <value>Title</value>
@@ -200,6 +200,6 @@
     <value>Remove</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Failed to save the learning path. Please try again.</value>
+    <value>Failed to save the training path. Please try again.</value>
   </data>
 </root>

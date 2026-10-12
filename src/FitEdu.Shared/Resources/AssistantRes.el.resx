@@ -43,7 +43,7 @@
 		<value>Κλείσιμο</value>
 	</data>
 	<data name="Disclaimer" xml:space="preserve">
-		<value>Δημιουργήθηκε από AI — δεν αποτελεί επαγγελματική συμβουλή.</value>
+		<value>Παράγεται από AI — δεν αποτελεί ιατρική ή επαγγελματική συμβουλή.</value>
 	</data>
 	<data name="ErrorGeneric" xml:space="preserve">
 		<value>Κάτι πήγε στραβά. Δοκιμάστε ξανά.</value>
@@ -73,15 +73,15 @@
 		<value>Βάσει:</value>
 	</data>
 	<data name="SuggestedQuestion1" xml:space="preserve">
-		<value>Ποιο μάθημα να ξεκινήσω πρώτα;</value>
+		<value>Με ποιο μάθημα να ξεκινήσω ως αρχάριος;</value>
 	</data>
 	<data name="SuggestedQuestion2" xml:space="preserve">
-		<value>Ποιες αξιολογήσεις είναι διαθέσιμες;</value>
+		<value>Δείξε μου ασκήσεις για την πλάτη</value>
 	</data>
 	<data name="SuggestedQuestion3" xml:space="preserve">
-		<value>Πώς λειτουργούν τα πιστοποιητικά;</value>
+		<value>Πώς να εξελίξω το squat μου;</value>
 	</data>
 	<data name="Title" xml:space="preserve">
-		<value>Βοηθός FitEdu</value>
+		<value>Προπονητής FitEdu</value>
 	</data>
 </root>

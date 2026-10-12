@@ -64,19 +64,19 @@
 		<value>Χωρίς λήξη (ισόβια)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Απεριόριστα μαθήματα</value>
+		<value>Απεριόριστα ενεργά μαθήματα</value>
 	</data>
 	<data name="CoursesCountFormat" xml:space="preserve">
 		<value>{0} μάθημα(-τα)</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
-		<value>Αξιολογήσεις</value>
+		<value>Αξιολογήσεις αυτοελέγχου</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Πιστοποιητικά</value>
+		<value>Πιστοποιητικά ολοκλήρωσης</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Προτεραιότητα υποστήριξης</value>
+		<value>Καθοδήγηση από προπονητή με προτεραιότητα</value>
 	</data>
 	<data name="ChangePlan" xml:space="preserve">
 		<value>Αλλαγή Πλάνου</value>

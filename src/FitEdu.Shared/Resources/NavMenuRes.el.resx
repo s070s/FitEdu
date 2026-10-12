@@ -184,9 +184,12 @@
     <value>Κριτικές</value>
   </data>
   <data name="Paths" xml:space="preserve">
-    <value>Διαδρομές</value>
+    <value>Διαδρομές προπόνησης</value>
   </data>
   <data name="Sessions" xml:space="preserve">
-    <value>Ζωντανές Συνεδρίες</value>
+    <value>Ζωντανά μαθήματα</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Ασκήσεις</value>
   </data>
 </root>

@@ -151,7 +151,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assessment access.
+        ///   Looks up a localized string similar to Fitness self-assessments.
         /// </summary>
         public static string FeatureAssessmentAccess {
             get {
@@ -160,7 +160,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificates.
+        ///   Looks up a localized string similar to Completion certificates.
         /// </summary>
         public static string FeatureCertificates {
             get {
@@ -169,7 +169,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Priority support.
+        ///   Looks up a localized string similar to Priority coaching.
         /// </summary>
         public static string FeaturePrioritySupport {
             get {
@@ -232,7 +232,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlock your full potential with the right plan for you..
+        ///   Looks up a localized string similar to Train smarter with the plan that fits your goals..
         /// </summary>
         public static string Subtitle {
             get {
@@ -241,7 +241,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited courses.
+        ///   Looks up a localized string similar to Unlimited active courses.
         /// </summary>
         public static string UnlimitedCourses {
             get {
@@ -250,7 +250,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Up to {0} course(s).
+        ///   Looks up a localized string similar to Up to {0} active course(s) at a time.
         /// </summary>
         public static string UpToCoursesFormat {
             get {
@@ -273,6 +273,24 @@ namespace FitEdu.Shared.Resources {
         public static string UpgradeNow {
             get {
                 return ResourceManager.GetString("UpgradeNow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Full exercise library.
+        /// </summary>
+        public static string FeatureExerciseLibrary {
+            get {
+                return ResourceManager.GetString("FeatureExerciseLibrary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live classes.
+        /// </summary>
+        public static string FeatureLiveClasses {
+            get {
+                return ResourceManager.GetString("FeatureLiveClasses", resourceCulture);
             }
         }
     }

@@ -46,7 +46,7 @@
 		<value>Choose Your Plan</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
-		<value>Unlock your full potential with the right plan for you.</value>
+		<value>Train smarter with the plan that fits your goals.</value>
 	</data>
 	<data name="CurrentPlanLabel" xml:space="preserve">
 		<value>Your current plan:</value>
@@ -61,19 +61,19 @@
 		<value>Free</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Unlimited courses</value>
+		<value>Unlimited active courses</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Up to {0} course(s)</value>
+		<value>Up to {0} active course(s) at a time</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
-		<value>Assessment access</value>
+		<value>Fitness self-assessments</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Certificates</value>
+		<value>Completion certificates</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Priority support</value>
+		<value>Priority coaching</value>
 	</data>
 	<data name="BtnCurrentPlan" xml:space="preserve">
 		<value>Current Plan</value>
@@ -110,5 +110,11 @@
 	</data>
 	<data name="UpgradeNow" xml:space="preserve">
 		<value>Upgrade Now</value>
+	</data>
+	<data name="FeatureExerciseLibrary" xml:space="preserve">
+		<value>Full exercise library</value>
+	</data>
+	<data name="FeatureLiveClasses" xml:space="preserve">
+		<value>Live classes</value>
 	</data>
 </root>

@@ -159,7 +159,7 @@
 		<value>Key</value>
 	</data>
 	<data name="FieldKeyHint" xml:space="preserve">
-		<value>unique identifier, e.g. career_clarity_v1</value>
+		<value>unique identifier, e.g. training_readiness_v1</value>
 	</data>
 	<data name="FieldTitle" xml:space="preserve">
 		<value>Title</value>
@@ -528,7 +528,7 @@
 		<value>Order</value>
 	</data>
 	<data name="ColRoleCompany" xml:space="preserve">
-		<value>Role / Company</value>
+		<value>Role / Context</value>
 	</data>
 	<data name="StatusActive" xml:space="preserve">
 		<value>Active</value>
@@ -639,7 +639,7 @@
 		<value>Role / Title (Greek)</value>
 	</data>
 	<data name="FieldCompanyContext" xml:space="preserve">
-		<value>Company / Context</value>
+		<value>Gym / Context</value>
 	</data>
 	<data name="FieldQuote" xml:space="preserve">
 		<value>Quote</value>
@@ -711,7 +711,7 @@
     <value>paths</value>
   </data>
   <data name="ItemLabelSessions" xml:space="preserve">
-    <value>sessions</value>
+    <value>live classes</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
     <value>Course saved successfully.</value>
@@ -849,7 +849,7 @@
     <value>Title (English) is required.</value>
   </data>
   <data name="PathSaveFailed" xml:space="preserve">
-    <value>Failed to save the learning path.</value>
+    <value>Failed to save the training path.</value>
   </data>
   <data name="ModuleSaveFailed" xml:space="preserve">
     <value>Error saving module.</value>

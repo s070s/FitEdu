@@ -184,9 +184,12 @@
     <value>Reviews</value>
   </data>
   <data name="Paths" xml:space="preserve">
-    <value>Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="Sessions" xml:space="preserve">
-    <value>Live Sessions</value>
+    <value>Live classes</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Exercises</value>
   </data>
 </root>

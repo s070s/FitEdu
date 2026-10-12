@@ -178,7 +178,7 @@
     <value>Κλειδί</value>
   </data>
   <data name="FieldKeyHint" xml:space="preserve">
-    <value>μοναδικό αναγνωριστικό, π.χ. career_clarity_v1</value>
+    <value>μοναδικό αναγνωριστικό, π.χ. training_readiness_v1</value>
   </data>
   <data name="FieldTitle" xml:space="preserve">
     <value>Τίτλος</value>
@@ -547,7 +547,7 @@
     <value>Σειρά</value>
   </data>
   <data name="ColRoleCompany" xml:space="preserve">
-    <value>Ρόλος / Εταιρεία</value>
+    <value>Ρόλος / Πλαίσιο</value>
   </data>
   <data name="StatusActive" xml:space="preserve">
     <value>Ενεργό</value>
@@ -658,7 +658,7 @@
     <value>Ρόλος / Τίτλος (στα ελληνικά)</value>
   </data>
   <data name="FieldCompanyContext" xml:space="preserve">
-    <value>Εταιρεία / Πλαίσιο</value>
+    <value>Γυμναστήριο / Πλαίσιο</value>
   </data>
   <data name="FieldQuote" xml:space="preserve">
     <value>Παράθεση</value>
@@ -730,7 +730,7 @@
     <value>διαδρομές</value>
   </data>
   <data name="ItemLabelSessions" xml:space="preserve">
-    <value>συνεδρίες</value>
+    <value>ζωντανά μαθήματα</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
     <value>Το μάθημα αποθηκεύτηκε επιτυχώς.</value>
@@ -868,7 +868,7 @@
     <value>Ο τίτλος (Αγγλικά) είναι υποχρεωτικός.</value>
   </data>
   <data name="PathSaveFailed" xml:space="preserve">
-    <value>Απέτυχε η αποθήκευση της διαδρομής μάθησης.</value>
+    <value>Απέτυχε η αποθήκευση της διαδρομής προπόνησης.</value>
   </data>
   <data name="ModuleSaveFailed" xml:space="preserve">
     <value>Σφάλμα κατά την αποθήκευση της ενότητας.</value>
