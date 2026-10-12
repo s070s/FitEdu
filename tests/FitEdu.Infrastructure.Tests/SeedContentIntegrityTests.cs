@@ -324,6 +324,19 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
+    public void AssistantRes_GreekAddressesTheMemberInformally()
+    {
+        var greekValues = LoadResxValues(Path.Combine(RepoPaths.ResourcesRoot, "AssistantRes" + GreekResxSuffix));
+
+        var formalKeys = greekValues
+            .Where(pair => GreekFormalImperativeRegex().IsMatch(pair.Value))
+            .Select(pair => $"{pair.Key}: {pair.Value}")
+            .ToList();
+
+        formalKeys.ShouldBeEmpty("the coach says εσύ (e.g. Δοκίμασε, not Δοκιμάστε)");
+    }
+
+    [Fact]
     public void CourseRes_HasALabelForEveryLevelGoalAndEquipmentCode()
     {
         var expectedKeys = Enum.GetNames<CourseLevel>().Select(name => $"Level_{name}")
@@ -597,6 +610,12 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"\b(?:επέλεξε|επέστρεψε|κατέγραψε|διέκοψε|κατέκτησε|επανέλαβε|απέφυγε|παρέμεινε|προσέθεσε|μετέφερε|συνέδεσε|επέτρεψε|εισέπνευσε|εξέπνευσε)\b",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekPastTenseCommandRegex();
+
+    // Polite-plural commands a UI string tends to use; the informal forms are Δοκίμασε, Κάνε,
+    // Επίλεξε, Πάτησε, Γράψε, Ρώτα and Έλεγξε.
+    [GeneratedRegex(@"\b(?:δοκιμάστε|κάντε|επιλέξτε|πατήστε|γράψτε|ρωτήστε|ελέγξτε)\b",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex GreekFormalImperativeRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Romanian) keep theirs.
