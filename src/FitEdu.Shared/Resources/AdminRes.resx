@@ -833,4 +833,61 @@
   <data name="ModuleSaveFailed" xml:space="preserve">
     <value>Error saving module.</value>
   </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Goal</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="EquipmentHint" xml:space="preserve">
+    <value>Comma-separated codes: none, dumbbells, barbell, kettlebell, bands, mat, bike, chair, cables, machine.</value>
+  </data>
+  <data name="EstimatedWeeks" xml:space="preserve">
+    <value>Estimated weeks</value>
+  </data>
+  <data name="SessionsPerWeek" xml:space="preserve">
+    <value>Sessions per week</value>
+  </data>
+  <data name="CoverExercise" xml:space="preserve">
+    <value>Cover exercise (slug)</value>
+  </data>
+  <data name="CoverExerciseHint" xml:space="preserve">
+    <value>An exercise slug from the library, e.g. barbell-squat. Its start photo becomes the cover.</value>
+  </data>
+  <data name="UnknownExerciseSlug" xml:space="preserve">
+    <value>No exercise with this slug</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Exercises</value>
+  </data>
+  <data name="AddExercise" xml:space="preserve">
+    <value>Add exercise</value>
+  </data>
+  <data name="RemoveExercise" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="SearchExercises" xml:space="preserve">
+    <value>Search exercises by name</value>
+  </data>
+  <data name="NoExercisesFound" xml:space="preserve">
+    <value>No exercises found.</value>
+  </data>
+  <data name="NoLessonExercises" xml:space="preserve">
+    <value>No exercises in this lesson yet.</value>
+  </data>
+  <data name="Sets" xml:space="preserve">
+    <value>Sets</value>
+  </data>
+  <data name="Reps" xml:space="preserve">
+    <value>Reps</value>
+  </data>
+  <data name="RestSeconds" xml:space="preserve">
+    <value>Rest (s)</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
 </root>

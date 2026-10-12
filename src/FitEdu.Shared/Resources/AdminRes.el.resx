@@ -852,4 +852,61 @@
   <data name="ModuleSaveFailed" xml:space="preserve">
     <value>Σφάλμα κατά την αποθήκευση της ενότητας.</value>
   </data>
+  <data name="Level" xml:space="preserve">
+    <value>Επίπεδο</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Στόχος</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Εξοπλισμός</value>
+  </data>
+  <data name="EquipmentHint" xml:space="preserve">
+    <value>Κωδικοί χωρισμένοι με κόμμα: none, dumbbells, barbell, kettlebell, bands, mat, bike, chair, cables, machine.</value>
+  </data>
+  <data name="EstimatedWeeks" xml:space="preserve">
+    <value>Εκτιμώμενες εβδομάδες</value>
+  </data>
+  <data name="SessionsPerWeek" xml:space="preserve">
+    <value>Προπονήσεις ανά εβδομάδα</value>
+  </data>
+  <data name="CoverExercise" xml:space="preserve">
+    <value>Άσκηση εξωφύλλου (slug)</value>
+  </data>
+  <data name="CoverExerciseHint" xml:space="preserve">
+    <value>Ένα slug άσκησης από τη βιβλιοθήκη, π.χ. barbell-squat. Η φωτογραφία έναρξης γίνεται το εξώφυλλο.</value>
+  </data>
+  <data name="UnknownExerciseSlug" xml:space="preserve">
+    <value>Δεν υπάρχει άσκηση με αυτό το slug</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Ασκήσεις</value>
+  </data>
+  <data name="AddExercise" xml:space="preserve">
+    <value>Προσθήκη άσκησης</value>
+  </data>
+  <data name="RemoveExercise" xml:space="preserve">
+    <value>Αφαίρεση</value>
+  </data>
+  <data name="SearchExercises" xml:space="preserve">
+    <value>Αναζήτηση ασκήσεων με όνομα</value>
+  </data>
+  <data name="NoExercisesFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν ασκήσεις.</value>
+  </data>
+  <data name="NoLessonExercises" xml:space="preserve">
+    <value>Δεν υπάρχουν ακόμη ασκήσεις σε αυτό το μάθημα.</value>
+  </data>
+  <data name="Sets" xml:space="preserve">
+    <value>Σετ</value>
+  </data>
+  <data name="Reps" xml:space="preserve">
+    <value>Επαναλήψεις</value>
+  </data>
+  <data name="RestSeconds" xml:space="preserve">
+    <value>Διάλειμμα (δευτ.)</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Σημειώσεις</value>
+  </data>
 </root>

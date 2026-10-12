@@ -364,7 +364,13 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
             ["titleEl"] = "Θεμέλια Ανθεκτικότητας",
             ["descriptionEn"] = "An introductory course on building personal resilience.",
             ["descriptionEl"] = "Εισαγωγικό μάθημα για την ανθεκτικότητα.",
-            ["requiredTier"] = 0
+            ["requiredTier"] = 0,
+            ["level"] = 0,
+            ["goal"] = 1,
+            ["equipment"] = "dumbbells,mat",
+            ["estimatedWeeks"] = 8,
+            ["sessionsPerWeek"] = 3,
+            ["coverExerciseSlug"] = "barbell-squat"
         },
         [typeof(SaveModuleRequest)] = () => new JsonObject
         {
@@ -384,7 +390,19 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
             ["videoUrl"] = "https://videos.example.com/lesson-1.mp4",
             ["durationMinutes"] = 12,
             ["sortOrder"] = 1,
-            ["moduleId"] = "5a7b9c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d"
+            ["moduleId"] = "5a7b9c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+            ["exercises"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["slug"] = "barbell-squat",
+                    ["sets"] = 3,
+                    ["reps"] = "8–12",
+                    ["restSeconds"] = 90,
+                    ["notesEn"] = "Keep your chest up.",
+                    ["notesEl"] = "Κρατήστε το στήθος ψηλά."
+                }
+            }
         },
         [typeof(SaveBlogArticleRequest)] = () => new JsonObject
         {

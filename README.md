@@ -359,8 +359,8 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 |--------|-------|-------------|------|
 | `GET` | `api/admin/courses` | List all courses | Admin |
 | `GET` | `api/admin/courses/{id}` | Course detail with modules and enrollments | Admin |
-| `POST` | `api/admin/courses` | Create course | Admin |
-| `PUT` | `api/admin/courses/{id}` | Update course | Admin |
+| `POST` | `api/admin/courses` | Create course (incl. level, goal, equipment codes, weeks, sessions per week, cover exercise slug; an unknown slug returns 400) | Admin |
+| `PUT` | `api/admin/courses/{id}` | Update course (same fields and slug check) | Admin |
 | `DELETE` | `api/admin/courses/{id}` | Delete course | Admin |
 | `POST` | `api/admin/courses/{id}/publish` | Publish | Admin |
 | `POST` | `api/admin/courses/{id}/unpublish` | Unpublish | Admin |
@@ -380,9 +380,9 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
 | `GET` | `api/admin/lessons/module/{moduleId}` | List lessons for a module | Admin |
-| `GET` | `api/admin/lessons/{id}` | Lesson detail | Admin |
-| `POST` | `api/admin/lessons` | Create lesson | Admin |
-| `PUT` | `api/admin/lessons/{id}` | Update lesson | Admin |
+| `GET` | `api/admin/lessons/{id}` | Lesson detail, including its exercise rows in order | Admin |
+| `POST` | `api/admin/lessons` | Create lesson, optionally with its exercises (slug, sets, reps, rest, notes EN/EL) | Admin |
+| `PUT` | `api/admin/lessons/{id}` | Update lesson; an `exercises` list replaces the lesson's exercises wholesale in list order (omit it to keep them; an unknown slug returns 400) | Admin |
 | `DELETE` | `api/admin/lessons/{id}` | Delete lesson | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/pdf` | Upload PDF | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/video` | Upload video | Admin |

@@ -1,4 +1,3 @@
-using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +6,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Extensions;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
@@ -27,15 +27,15 @@ public class AdminLessonsController : ControllerBase
     private readonly IApplicationDbContext _db;
     // File storage abstraction used to save and delete lesson PDFs and videos.
     private readonly IFileStorage _fileStorage;
-    // HTML sanitizer to strip XSS payloads from rich-text lesson content.
-    private readonly IHtmlSanitizer _sanitizer;
+    // Lesson create/update (sanitising, exercise rows, concurrency) lives in the admin course service.
+    private readonly IAdminCourseService _adminCourseService;
 
-    // Constructor receives dependencies (DbContext and file storage) via DI.
-    public AdminLessonsController(IApplicationDbContext db, IFileStorage fileStorage, IHtmlSanitizer sanitizer)
+    // Constructor receives dependencies (DbContext, file storage and the admin course service) via DI.
+    public AdminLessonsController(IApplicationDbContext db, IFileStorage fileStorage, IAdminCourseService adminCourseService)
     {
         _db = db;
         _fileStorage = fileStorage;
-        _sanitizer = sanitizer;
+        _adminCourseService = adminCourseService;
     }
 
     // Helper property to get the current authenticated user's ID (used for audit fields).
@@ -73,75 +73,31 @@ public class AdminLessonsController : ControllerBase
         return Ok(lesson);
     }
 
-    /// <summary>Create a new lesson under a module.</summary>
+    /// <summary>Create a new lesson under a module, with its exercises when given.</summary>
     [HttpPost]
     [ProducesResponseType<AdminLessonDto>(StatusCodes.Status201Created)]
-    public async Task<ActionResult<AdminLessonDto>> CreateLesson([FromBody] SaveLessonRequest request)
+    public async Task<ActionResult<AdminLessonDto>> CreateLesson([FromBody] SaveLessonRequest request, CancellationToken cancellationToken = default)
     {
-        // Create a new Lesson entity with provided values and audit metadata.
-        var lesson = new Lesson
-        {
-            Id = Guid.NewGuid(),
-            TitleEn = request.TitleEn,
-            TitleEl = request.TitleEl,
-            ContentEn = request.ContentEn is not null ? _sanitizer.Sanitize(request.ContentEn) : null,
-            ContentEl = request.ContentEl is not null ? _sanitizer.Sanitize(request.ContentEl) : null,
-            VideoPath = request.VideoUrl,
-            DurationMinutes = request.DurationMinutes,
-            SortOrder = request.SortOrder,
-            ModuleId = request.ModuleId,
-            IsPublished = false,
-            UpdatedByUserId = UserId
-        };
-
-        // Add the entity to the context and persist it.
-        _db.Lessons.Add(lesson);
-        await _db.SaveChangesAsync();
+        var result = await _adminCourseService.CreateLessonAsync(request, UserId, cancellationToken);
+        if (!result.IsSuccess)
+            return result.ToActionResult(this);
 
         // API-4: point Location at the new by-id GET for this lesson, not the module-scoped
         // list of all its siblings.
+        var dto = result.Value!;
         return CreatedAtAction(nameof(GetLessonById), new
         {
-            id = lesson.Id
-        }, lesson.ToAdminDto());
+            id = dto.Id
+        }, dto);
     }
 
-    /// <summary>Update an existing lesson by id.</summary>
+    /// <summary>Update an existing lesson by id. A non-null exercise list replaces the lesson's exercises wholesale.</summary>
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<AdminLessonDto>> UpdateLesson(Guid id, [FromBody] SaveLessonRequest request)
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<AdminLessonDto>> UpdateLesson(Guid id, [FromBody] SaveLessonRequest request, CancellationToken cancellationToken = default)
     {
-        // Find the lesson or return 404 if it does not exist.
-        var lesson = await _db.Lessons.FindAsync(id);
-        if (lesson == null)
-            return NotFound();
-
-        // Apply updates to the entity and set audit metadata.
-        lesson.TitleEn = request.TitleEn;
-        lesson.TitleEl = request.TitleEl;
-        lesson.ContentEn = request.ContentEn is not null ? _sanitizer.Sanitize(request.ContentEn) : null;
-        lesson.ContentEl = request.ContentEl is not null ? _sanitizer.Sanitize(request.ContentEl) : null;
-        lesson.VideoPath = request.VideoUrl ?? lesson.VideoPath;
-        lesson.DurationMinutes = request.DurationMinutes;
-        lesson.SortOrder = request.SortOrder;
-        lesson.UpdatedAt = DateTimeOffset.UtcNow;
-        lesson.UpdatedByUserId = UserId;
-
-        // DB-7: RowVersion (AuditableEntity) is included in this UPDATE's WHERE clause
-        // automatically — no DTO/client round-trip needed, since the lesson was loaded and saved
-        // within this same request. If another request updated this lesson in between (the
-        // read-modify-write race the finding describes), zero rows match and EF throws instead of
-        // silently overwriting that request's change.
-        try
-        {
-            await _db.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Conflict("This lesson was modified by someone else. Reload and try again.");
-        }
-
-        // Return 200 OK with the updated DTO.
-        return Ok(lesson.ToAdminDto());
+        var result = await _adminCourseService.UpdateLessonAsync(id, request, UserId, cancellationToken);
+        return result.ToActionResult(this);
     }
 
     /// <summary>Delete a lesson, its completion records, and any associated files.</summary>
