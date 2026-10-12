@@ -9,7 +9,7 @@
       "licenceStatedAt": "https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md",
       "checkedOn": "2026-10-12",
       "type": "image/webp",
-      "notes": "873 exercises x 2 frames, converted from the JPG pairs in the main-branch ZIP by tools/assets/convert-exercise-images.mjs (max 480 px wide, WebP quality 0.8)"
+      "notes": "873 exercises x 2 frames, converted from the JPG pairs in the main-branch ZIP by tools/assets/convert-exercise-images.mjs (max 480 px wide, WebP quality 0.8). The Unlicense covers the repository as a whole; per-image authorship is not published, so the credit is \"free-exercise-db contributors\""
     },
     {
       "glob": "images/hero-home.webp",
@@ -29,7 +29,7 @@
       "licenceStatedAt": "https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md",
       "checkedOn": "2026-10-12",
       "type": "image/webp",
-      "notes": "1200x675, rendered by tools/assets/render-brand-images.mjs from images/exercises/<slug>/0.webp"
+      "notes": "1200x675, rendered by tools/assets/render-brand-images.mjs from images/exercises/<slug>/0.webp. Repository-wide Unlicense, credit \"free-exercise-db contributors\" (as for images/exercises)"
     },
     {
       "glob": "images/og-home.jpg",
