@@ -18,8 +18,9 @@ public static partial class ExerciseSeeder
     private const string GreekOverlayFileName = "exercises.el.json";
     private const string GreekFragmentFolderName = "el";
     private const string GreekFragmentFilePattern = "*.el.json";
-    private const string MuscleSeparator = ", ";
-    private const string InstructionSeparator = "\n";
+    // The entity owns the stored format, so the read side splits on the same separators.
+    private const string MuscleSeparator = Exercise.MuscleSeparator;
+    private const string InstructionSeparator = Exercise.InstructionSeparator;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

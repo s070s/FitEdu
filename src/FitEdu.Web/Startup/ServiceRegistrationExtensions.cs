@@ -83,6 +83,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IAuthApiService, AuthApiService>();
         builder.Services.AddScoped<ICourseService, CourseService>();
+        builder.Services.AddScoped<IExerciseService, ExerciseService>();
         builder.Services.AddScoped<IAdminCourseService, AdminCourseService>();
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
@@ -377,6 +378,8 @@ public static class ServiceRegistrationExtensions
 
         builder.Services.AddHttpClient<ICourseConsumer, CourseConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
+        // Public library API (anonymous), so no SsrApiHandler — like the blog consumer.
+        builder.Services.AddHttpClient<IExerciseConsumer, ExerciseConsumer>(Configure);
         builder.Services.AddHttpClient<IAssessmentConsumer, AssessmentConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<ISubscriptionConsumer, SubscriptionConsumer>(Configure)

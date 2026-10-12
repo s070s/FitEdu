@@ -364,6 +364,75 @@ public class CourseServiceTests
         last.NextLessonId.ShouldBeNull();
     }
 
+    private static Exercise NewExercise(string slug, string nameEn) =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Slug = slug,
+            NameEn = nameEn,
+            Category = "strength",
+            Level = "beginner",
+            PrimaryMuscles = "chest, triceps",
+            SecondaryMuscles = string.Empty,
+            InstructionsEn = "Lower.\nPush up.",
+            IsPublished = true
+        };
+
+    [Fact]
+    public async Task GetLessonDetail_IncludesPrescribedExercisesInSortOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        var lesson = course.Modules.First().Lessons.First();
+        var pushUp = NewExercise("pushups", "Pushups");
+        pushUp.NameEl = "Κάμψεις";
+        var squat = NewExercise("squat", "Squat");
+        db.Exercises.AddRange(pushUp, squat);
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 2, Reps = "12" });
+        lesson.Exercises.Add(new LessonExercise
+        {
+            Id = Guid.NewGuid(), ExerciseId = pushUp.Id, SortOrder = 1,
+            Sets = 3, Reps = "8-12", RestSeconds = 60, NotesEn = "Elbows at 45 degrees", NotesEl = "Αγκώνες στις 45 μοίρες"
+        });
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, lesson.Id, "el")).Value!;
+
+        detail.Exercises.ShouldNotBeNull();
+        string.Join("|", detail.Exercises.Select(x => x.Slug)).ShouldBe("pushups|squat");
+        var first = detail.Exercises[0];
+        first.ExerciseId.ShouldBe(pushUp.Id);
+        first.Name.ShouldBe("Κάμψεις");
+        first.Sets.ShouldBe(3);
+        first.Reps.ShouldBe("8-12");
+        first.RestSeconds.ShouldBe(60);
+        first.Notes.ShouldBe("Αγκώνες στις 45 μοίρες");
+        string.Join("|", first.PrimaryMuscles).ShouldBe("chest|triceps");
+        string.Join("|", first.Instructions).ShouldBe("Lower.|Push up.");
+        first.Image0Url.ShouldBe("/images/exercises/pushups/0.webp");
+        first.Image1Url.ShouldBe("/images/exercises/pushups/1.webp");
+        detail.Exercises[1].Name.ShouldBe("Squat"); // no Greek name: English fallback
+    }
+
+    [Fact]
+    public async Task GetLessonDetail_LessonWithoutExercises_ReturnsEmptyList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, course.Modules.First().Lessons.First().Id, "en")).Value!;
+
+        detail.Exercises.ShouldNotBeNull();
+        detail.Exercises.ShouldBeEmpty();
+    }
+
     // ---- CompleteLessonAsync -------------------------------------------------
 
     [Fact]

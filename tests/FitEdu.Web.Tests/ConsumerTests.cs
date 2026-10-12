@@ -135,6 +135,93 @@ public class ConsumerTests
         (await consumer.GetBySlugAsync("missing")).ShouldBeNull();
     }
 
+    // ---- ExerciseConsumer ----------------------------------------------------
+
+    [Fact]
+    public async Task ExerciseConsumer_List_SendsPagingLanguageAndFilters()
+    {
+        var body = new PagedResult<ExerciseListItemDto>(
+            [new(Guid.NewGuid(), "pushups", "Pushups", "strength", "beginner", "body only", ["chest"], "/0.webp", "/1.webp")],
+            1, 1, 24);
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK, body);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+        var filter = new ExerciseFilterDto(Search: "push up", Muscle: "lower back", Equipment: "body only", Level: "beginner", Category: "strength");
+
+        var result = await consumer.ListAsync(page: 2, pageSize: 12, lang: "el", filter: filter);
+
+        result.Items.ShouldHaveSingleItem().Slug.ShouldBe("pushups");
+        var query = handler.LastRequest!.RequestUri!.Query;
+        handler.LastRequest.RequestUri.AbsolutePath.ShouldBe("/api/exercises");
+        query.ShouldContain("page=2");
+        query.ShouldContain("pageSize=12");
+        query.ShouldContain("lang=el");
+        query.ShouldContain("search=push%20up");
+        query.ShouldContain("muscle=lower%20back");
+        query.ShouldContain("equipment=body%20only");
+        query.ShouldContain("level=beginner");
+        query.ShouldContain("category=strength");
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_List_WithoutFilter_SendsNoFilterParameters()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK,
+            new PagedResult<ExerciseListItemDto>([], 0, 1, 24));
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        await consumer.ListAsync();
+
+        handler.LastRequest!.RequestUri!.Query.ShouldNotContain("muscle=");
+        handler.LastRequest.RequestUri.Query.ShouldNotContain("search=");
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_List_ServerError_ReturnsEmptyPagedResult()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var result = await consumer.ListAsync(page: 3, pageSize: 12);
+
+        result.Items.ShouldBeEmpty();
+        result.TotalCount.ShouldBe(0);
+        result.Page.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetBySlug_NotFound_ReturnsNull()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.NotFound);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        (await consumer.GetBySlugAsync("pushups", "el")).ShouldBeNull();
+        handler.LastRequest!.RequestUri!.PathAndQuery.ShouldBe("/api/exercises/pushups?lang=el");
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetFacets_ServerError_ReturnsEmptyFacets()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var facets = await consumer.GetFacetsAsync();
+
+        facets.Muscles.ShouldBeEmpty();
+        facets.Equipment.ShouldBeEmpty();
+        facets.Levels.ShouldBeEmpty();
+        facets.Categories.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetLessonsUsingExercise_ServerError_ReturnsEmptyList()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        (await consumer.GetLessonsUsingExerciseAsync("pushups", "el")).ShouldBeEmpty();
+        handler.LastRequest!.RequestUri!.PathAndQuery.ShouldBe("/api/exercises/pushups/lessons?lang=el");
+    }
+
     // ---- ApiClientBase auth (C1: authenticate inside the Blazor circuit) -----
 
     [Fact]

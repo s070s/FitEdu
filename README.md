@@ -194,10 +194,21 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories)) | Yes |
 | `GET` | `api/courses/{courseId}` | Course detail with modules and lessons | Yes |
 | `POST` | `api/courses/{courseId}/enroll` | Enroll in a course | Yes |
-| `GET` | `api/courses/lessons/{lessonId}` | Lesson detail | Yes |
+| `GET` | `api/courses/lessons/{lessonId}` | Lesson detail, including the prescribed exercises (sets, reps, rest, notes, photos) in lesson order | Yes |
 | `POST` | `api/courses/lessons/{lessonId}/complete` | Mark lesson complete | Yes |
 | `GET` | `api/courses/{courseId}/reviews` | Approved reviews, aggregate rating, and the caller's own review — see [Course Reviews](#course-reviews) | Yes |
 | `POST` | `api/courses/{courseId}/reviews` | Create/update own review (enrolled only; edits reset it to Pending for moderation) | Yes |
+
+### Exercises — `api/exercises`
+
+The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position).
+
+| Method | Route | Description | Auth |
+|--------|-------|-------------|------|
+| `GET` | `api/exercises` | Paged list ordered by name (`?page=1&pageSize=24&lang=en`; optional `search`, `muscle`, `equipment`, `level`, `category` filters) | No |
+| `GET` | `api/exercises/facets` | Every muscle, equipment, level and category value with its exercise count (drives the filter chips) | No |
+| `GET` | `api/exercises/{slug}` | Exercise detail with muscles, force, mechanic and step-by-step instructions (`?lang=en`) | No |
+| `GET` | `api/exercises/{slug}/lessons` | Lessons of published courses that prescribe the exercise (`?lang=en`) | No |
 
 ### Lesson Assets — `api/lessons`
 

@@ -3,6 +3,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
+using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
@@ -238,6 +239,8 @@ public class CourseService(
             .AsNoTracking()
             .Include(l => l.Module)
                 .ThenInclude(m => m.Course)
+            .Include(l => l.Exercises.OrderBy(x => x.SortOrder))
+                .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(l => l.Id == lessonId, cancellationToken);
 
         if (lesson is null)
@@ -286,7 +289,8 @@ public class CourseService(
             course.Id,
             Localized.Pick(isEl, course.TitleEn, course.TitleEl),
             previousLessonId,
-            nextLessonId
+            nextLessonId,
+            lesson.Exercises.Select(x => x.ToLessonExerciseDto(isEl)).ToList()
         );
 
         return ServiceResult<LessonDetailDto>.Ok(dto);

@@ -6,6 +6,16 @@ namespace FitEdu.Domain.Entities;
 /// </summary>
 public class Exercise : AuditableEntity
 {
+    /// <summary>
+    /// Joins the muscle names stored in PrimaryMuscles and SecondaryMuscles.
+    /// </summary>
+    public const string MuscleSeparator = ", ";
+
+    /// <summary>
+    /// Joins the steps stored in InstructionsEn and InstructionsEl.
+    /// </summary>
+    public const string InstructionSeparator = "\n";
+
     public Guid Id { get; set; }
 
     /// <summary>
