@@ -52,6 +52,8 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 > | `Paths/` | 4 published learning paths of 4 courses each (Beginner Start, Fat Loss, Build Muscle, Move Better). Each step names its course by English title, so an unknown title stops the seed ([file format](src/FitEdu.Shared/JSON/Paths/README.md)). |
 > | `Showcase/` | 6 Home-page testimonials and 6 live classes hosted by the admin account, dated on the next six weekdays after the seed date (UTC) and capped at 6 people like the video call ([file format](src/FitEdu.Shared/JSON/Showcase/README.md)). |
 >
+> The blog articles are seeded from code: `src/FitEdu.Application/DTOs/Blog/BlogSeedData.cs` holds 4 fitness articles in English and Greek (progressive overload, protein, sleep, a five-minute warm-up) by "FitEdu", with covers under `wwwroot/images/blog/` and English keyword tags (Strength, Nutrition, Recovery, Mobility, Beginners).
+>
 > `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives, no career-era wording) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies), and `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.

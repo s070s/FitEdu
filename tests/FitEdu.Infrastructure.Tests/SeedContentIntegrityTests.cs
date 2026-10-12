@@ -23,6 +23,7 @@ public partial class SeedContentIntegrityTests
 {
     private const int ExpectedCourseCount = 19;
     private const int ExpectedAssessmentCount = 19;
+    private const int ExpectedBlogArticleCount = 4;
     private const string RatingQuestionType = "rating";
     private const string EnglishResxPattern = "*.resx";
     private const string GreekResxSuffix = ".el.resx";
@@ -49,6 +50,12 @@ public partial class SeedContentIntegrityTests
     private static readonly HashSet<string> EquipmentCodes = new(StringComparer.Ordinal)
     {
         "none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"
+    };
+
+    // The blog tag vocabulary (tags stay English keywords in both languages).
+    private static readonly HashSet<string> BlogTags = new(StringComparer.Ordinal)
+    {
+        "Strength", "Nutrition", "Recovery", "Mobility", "Beginners"
     };
 
     // Career-era Home copy whose Greek value is still the English text. Task C3 rewrites the
@@ -236,6 +243,18 @@ public partial class SeedContentIntegrityTests
         problems.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void BlogSeed_FourBilingualFitnessArticles_WithUniqueSlugsCoversAndKnownTags()
+    {
+        var articles = BlogSeedData.SeedArticles;
+
+        var problems = articles.SelectMany(FindBlogArticleProblems).ToList();
+
+        articles.Count.ShouldBe(ExpectedBlogArticleCount);
+        articles.Select(article => article.Slug).Distinct(StringComparer.Ordinal).Count().ShouldBe(ExpectedBlogArticleCount);
+        problems.ShouldBeEmpty();
+    }
+
     // ---- Vocabulary --------------------------------------------------------------------------
 
     [Fact]
@@ -324,6 +343,25 @@ public partial class SeedContentIntegrityTests
             yield return $"{file.Name}: unknown requiredTier '{course.RequiredTier}'";
         if (course.EstimatedWeeks is not > 0 || course.SessionsPerWeek is not > 0)
             yield return $"{file.Name}: estimatedWeeks and sessionsPerWeek must be positive";
+    }
+
+    private static IEnumerable<string> FindBlogArticleProblems(SaveBlogArticleRequest article)
+    {
+        (string Field, string? Value)[] greekTexts =
+            [("TitleEl", article.TitleEl), ("SummaryEl", article.SummaryEl), ("ContentEl", article.ContentEl)];
+
+        foreach (var (field, _) in greekTexts.Where(text => string.IsNullOrWhiteSpace(text.Value)))
+            yield return $"{article.Slug}: {field} is empty";
+        if (string.IsNullOrWhiteSpace(article.CoverImageUrl))
+            yield return $"{article.Slug}: no cover image";
+        foreach (var tag in (article.Tags ?? []).Where(tag => !BlogTags.Contains(tag)))
+            yield return $"{article.Slug}: unknown tag '{tag}'";
+
+        string[] allTexts = [article.TitleEn, article.SummaryEn, article.ContentEn, .. greekTexts.Select(text => text.Value ?? string.Empty)];
+        foreach (var match in allTexts.SelectMany(text => CareerVocabularyRegex().Matches(text)))
+            yield return $"{article.Slug}: career-era word '{match.Value}'";
+        foreach (var match in greekTexts.SelectMany(text => GreekPastTenseCommandRegex().Matches(text.Value ?? string.Empty)))
+            yield return $"{article.Slug}: past tense '{match.Value}' used as a command";
     }
 
     private static bool IsEnumName<TEnum>(string? value) where TEnum : struct, Enum =>
