@@ -59,11 +59,17 @@ public partial class SeedContentIntegrityTests
         "Strength", "Nutrition", "Recovery", "Mobility", "Beginners"
     };
 
-    // Where the text gates (career vocabulary, Greek command forms) look.
-    // Task C3 adds the resx files and the C# seed code.
+    private static readonly string SourceRoot = Path.Combine(RepoPaths.RepoRoot, "src");
+
+    // Where the text gates (career vocabulary, Greek command forms) look: the seed JSON, every
+    // resx file and the seed data written in C# (blog articles, plans, the seeders).
     private static readonly TextScanRoot[] TextScanRoots =
     [
-        new(RepoPaths.SeedJsonRoot, AllFilesPattern)
+        new(RepoPaths.SeedJsonRoot, AllFilesPattern),
+        new(RepoPaths.ResourcesRoot, EnglishResxPattern),
+        new(Path.Combine(SourceRoot, "FitEdu.Application", "DTOs", "Blog"), "BlogSeedData.cs"),
+        new(Path.Combine(SourceRoot, "FitEdu.Infrastructure", "Seeding"), "*.cs"),
+        new(Path.Combine(SourceRoot, "FitEdu.Web", "Startup"), "DatabaseSeedingExtensions.cs")
     ];
 
     // ---- Courses -----------------------------------------------------------------------------
@@ -572,9 +578,11 @@ public partial class SeedContentIntegrityTests
             .ToHashSet(StringComparer.Ordinal);
     }
 
-    // Career-era words: career, job(s), interview, résumé/resume, salary, LinkedIn, psychosocial,
-    // counsel(ling) and the Greek stem for career.
-    [GeneratedRegex(@"career|\bjobs?\b|interview|\br[eé]sum[eé]|salary|linkedin|psychosocial|counsel|καριέρ",
+    // Career-era words: career, job(s), interview, résumé/resume, CV, salary, LinkedIn, employer,
+    // psychosocial, counsel(ling), and the Greek career, profession, career guidance, interview,
+    // CV, employer and psychosocial stems. "Resume a course" is written "Continue" instead.
+    [GeneratedRegex(@"career|\bjobs?\b|interview|\br[eé]sum[eé]|\bCV\b|salary|linkedin|employer|psychosocial|counsel"
+        + @"|καριέρ|επάγγελμα|επαγγελματικ\w*\s+προσανατολισμ|συνέντευξ|βιογραφικ|εργοδότ|ψυχοκοινωνικ",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex CareerVocabularyRegex();
 
