@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.DTOs;
@@ -536,7 +535,7 @@ public sealed class SeederTests : IDisposable
     public async Task ExerciseSeeder_UnknownGreekSlug_IsSkippedWithWarning()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var logger = new WarningRecordingLogger();
+        var logger = new RecordingLogger();
         var dir = TempDirWithFiles(
             ("exercises.json", SampleExercisesJson),
             (Path.Combine("el", "strength-basics.el.json"), GreekRowsJson("not-a-real-exercise", "Άγνωστη")));
@@ -588,22 +587,5 @@ public sealed class SeederTests : IDisposable
     {
         foreach (var d in _tempDirs.Where(Directory.Exists))
             Directory.Delete(d, recursive: true);
-    }
-
-    /// <summary>Keeps the text of every warning so a test can check what the seeder reported.</summary>
-    private sealed class WarningRecordingLogger : ILogger
-    {
-        public List<string> Warnings { get; } = [];
-
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-
-        public bool IsEnabled(LogLevel logLevel) => true;
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-            Func<TState, Exception?, string> formatter)
-        {
-            if (logLevel == LogLevel.Warning)
-                Warnings.Add(formatter(state, exception));
-        }
     }
 }

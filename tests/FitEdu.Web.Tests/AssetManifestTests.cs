@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.FileSystemGlobbing;
+using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
 
@@ -18,9 +19,8 @@ public class AssetManifestTests
     // The shipped image files the policy covers, relative to wwwroot.
     private static readonly string[] ShippedImagePatterns = ["images/**/*", "favicon.*", "icon-*.png"];
 
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
-    private static readonly string WebRoot = Path.Combine(RepositoryRoot, "src", "FitEdu.Web", "wwwroot");
-    private static readonly string ManifestPath = Path.Combine(RepositoryRoot, "docs", "assets", "asset-manifest.json");
+    private static readonly string WebRoot = RepoPaths.WebRoot;
+    private static readonly string ManifestPath = Path.Combine(RepoPaths.RepoRoot, "docs", "assets", "asset-manifest.json");
 
     private static readonly JsonSerializerOptions ManifestJsonOptions = new() { PropertyNameCaseInsensitive = true };
 
@@ -97,16 +97,5 @@ public class AssetManifestTests
         return matcher.GetResultsInFullPath(WebRoot)
             .Select(fullPath => Path.GetRelativePath(WebRoot, fullPath).Replace('\\', '/'))
             .ToList();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "FitEdu.sln")))
-        {
-            directory = directory.Parent;
-        }
-
-        return directory?.FullName ?? throw new InvalidOperationException("FitEdu.sln not found above the test directory");
     }
 }
