@@ -907,6 +907,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Quote (Greek).
+        /// </summary>
+        public static string FieldQuoteEl {
+            get {
+                return ResourceManager.GetString("FieldQuoteEl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required.
         /// </summary>
         public static string FieldRequired {
@@ -921,6 +930,15 @@ namespace FitEdu.Shared.Resources {
         public static string FieldRoleTitle {
             get {
                 return ResourceManager.GetString("FieldRoleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role / Title (Greek).
+        /// </summary>
+        public static string FieldRoleTitleEl {
+            get {
+                return ResourceManager.GetString("FieldRoleTitleEl", resourceCulture);
             }
         }
         

@@ -29,6 +29,11 @@
         </div>
 
         <div class="col-md-6">
+            <label class="form-label" for="t-role-el">@AdminRes.FieldRoleTitleEl</label>
+            <input id="t-role-el" type="text" class="form-control" @bind="_roleOrTitleEl" maxlength="150" lang="el" />
+        </div>
+
+        <div class="col-md-6">
             <label class="form-label" for="t-company">@AdminRes.FieldCompanyContext</label>
             <input id="t-company" type="text" class="form-control" @bind="_companyOrContext" maxlength="150"
                    placeholder="e.g. FitEdu Graduate" />
@@ -39,6 +44,12 @@
             <textarea id="t-quote" class="form-control" rows="4" @bind="_quoteText" maxlength="1000"
                       placeholder="The testimonial quote (max 1000 characters)"></textarea>
             <div class="form-text">@(_quoteText?.Length ?? 0) / 1000</div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="t-quote-el">@AdminRes.FieldQuoteEl</label>
+            <textarea id="t-quote-el" class="form-control" rows="4" @bind="_quoteTextEl" maxlength="1000" lang="el"></textarea>
+            <div class="form-text">@_quoteTextEl.Length / 1000</div>
         </div>
 
         <div class="col-md-4">

@@ -620,11 +620,17 @@
 	<data name="FieldRoleTitle" xml:space="preserve">
 		<value>Role / Title</value>
 	</data>
+	<data name="FieldRoleTitleEl" xml:space="preserve">
+		<value>Role / Title (Greek)</value>
+	</data>
 	<data name="FieldCompanyContext" xml:space="preserve">
 		<value>Company / Context</value>
 	</data>
 	<data name="FieldQuote" xml:space="preserve">
 		<value>Quote</value>
+	</data>
+	<data name="FieldQuoteEl" xml:space="preserve">
+		<value>Quote (Greek)</value>
 	</data>
 	<data name="FieldDisplayOrder" xml:space="preserve">
 		<value>Display Order</value>

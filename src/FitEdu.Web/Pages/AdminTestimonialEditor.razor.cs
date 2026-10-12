@@ -24,8 +24,10 @@ public partial class AdminTestimonialEditor
     // Form fields
     private string _fullName = string.Empty;
     private string _roleOrTitle = string.Empty;
+    private string _roleOrTitleEl = string.Empty;
     private string _companyOrContext = string.Empty;
     private string _quoteText = string.Empty;
+    private string _quoteTextEl = string.Empty;
     private int _displayOrder = 1;
     private bool _isActive = true;
 
@@ -49,8 +51,10 @@ public partial class AdminTestimonialEditor
             {
                 _fullName = item.FullName;
                 _roleOrTitle = item.RoleOrTitle ?? string.Empty;
+                _roleOrTitleEl = item.RoleOrTitleEl ?? string.Empty;
                 _companyOrContext = item.CompanyOrContext ?? string.Empty;
                 _quoteText = item.QuoteText;
+                _quoteTextEl = item.QuoteTextEl ?? string.Empty;
                 _displayOrder = item.DisplayOrder;
                 _isActive = item.IsActive;
                 _avatarPath = item.AvatarPath;
@@ -130,11 +134,13 @@ public partial class AdminTestimonialEditor
         {
             var request = new SaveTestimonialRequest(
                 FullName: _fullName.Trim(),
-                RoleOrTitle: string.IsNullOrWhiteSpace(_roleOrTitle) ? null : _roleOrTitle.Trim(),
-                CompanyOrContext: string.IsNullOrWhiteSpace(_companyOrContext) ? null : _companyOrContext.Trim(),
+                RoleOrTitle: TrimToNull(_roleOrTitle),
+                CompanyOrContext: TrimToNull(_companyOrContext),
                 QuoteText: _quoteText.Trim(),
                 DisplayOrder: _displayOrder,
-                IsActive: _isActive);
+                IsActive: _isActive,
+                RoleOrTitleEl: TrimToNull(_roleOrTitleEl),
+                QuoteTextEl: TrimToNull(_quoteTextEl));
 
             AdminTestimonialDto? result;
 
@@ -163,6 +169,10 @@ public partial class AdminTestimonialEditor
     }
 
     private void Cancel() => Navigation.NavigateTo("/admin/testimonials");
+
+    /// <summary>Blank text is saved as null, so the public page falls back to the English text.</summary>
+    private static string? TrimToNull(string value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     /// <summary>
     /// Builds a preview URL for the avatar using the API media endpoint.

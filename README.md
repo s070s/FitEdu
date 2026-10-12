@@ -325,7 +325,7 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/testimonials` | All active testimonials ordered by `DisplayOrder` | No |
+| `GET` | `api/testimonials` | All active testimonials ordered by `DisplayOrder`, role and quote in the requested language (`?lang=en`; Greek falls back to English when a testimonial has no Greek text) | No |
 
 ### Search — `api/search`
 

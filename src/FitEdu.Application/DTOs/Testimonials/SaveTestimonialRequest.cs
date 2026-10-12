@@ -14,5 +14,7 @@ public record SaveTestimonialRequest(
     [MaxLength(150)] string? CompanyOrContext,
     [Required, MaxLength(1000)] string QuoteText,
     int DisplayOrder,
-    bool IsActive
+    bool IsActive,
+    [MaxLength(150)] string? RoleOrTitleEl = null,
+    [MaxLength(1000)] string? QuoteTextEl = null
 );

@@ -7,8 +7,11 @@ namespace FitEdu.Application.ApiInterfaces;
 /// </summary>
 public interface ITestimonialService
 {
-    /// <summary>Returns all active testimonials ordered by DisplayOrder for the public landing page.</summary>
-    Task<IReadOnlyList<AdminTestimonialDto>> GetActiveAsync(CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Returns all active testimonials ordered by DisplayOrder for the public landing page, with
+    /// RoleOrTitle and QuoteText in <paramref name="lang"/> ("el" picks Greek, falling back to English).
+    /// </summary>
+    Task<IReadOnlyList<AdminTestimonialDto>> GetActiveAsync(string lang = "en", CancellationToken cancellationToken = default);
 
     /// <summary>Returns all testimonials paginated for the admin list.</summary>
     Task<PagedResult<AdminTestimonialDto>> GetAllForAdminAsync(int page, int pageSize, string sortBy, string sortDir, CancellationToken cancellationToken = default);

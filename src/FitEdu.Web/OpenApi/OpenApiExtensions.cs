@@ -420,12 +420,14 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         },
         [typeof(SaveTestimonialRequest)] = () => new JsonObject
         {
-            ["fullName"] = "Alex Doe",
-            ["roleOrTitle"] = "Career Changer",
-            ["companyOrContext"] = "2025 Cohort",
-            ["quoteText"] = "This program completely reset my career direction.",
+            ["fullName"] = "Eleni Papadopoulou",
+            ["roleOrTitle"] = "Ran her first 5K",
+            ["companyOrContext"] = null,
+            ["quoteText"] = "The run-walk weeks built up so gradually that I never dreaded a session.",
             ["displayOrder"] = 1,
-            ["isActive"] = true
+            ["isActive"] = true,
+            ["roleOrTitleEl"] = "Έτρεξε τα πρώτα της 5 χλμ",
+            ["quoteTextEl"] = "Οι εβδομάδες με τρέξιμο και περπάτημα ανέβαιναν τόσο σταδιακά που δεν φοβήθηκα ποτέ καμία προπόνηση."
         },
     };
 

@@ -10,9 +10,9 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public class TestimonialConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider tokenProvider) : ApiClientBase(http, tokenProvider), ITestimonialConsumer
 {
-    public async Task<IReadOnlyList<TestimonialDto>?> GetActiveAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<TestimonialDto>?> GetActiveAsync(string lang = "en", CancellationToken ct = default)
     {
-        var response = await Http.GetAsync("api/testimonials", ct);
+        var response = await Http.GetAsync($"api/testimonials?lang={lang}", ct);
         if (!response.IsSuccessStatusCode)
             return null;
 

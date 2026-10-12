@@ -21,12 +21,12 @@ public class TestimonialsController : ControllerBase
         _testimonials = testimonials;
     }
 
-    /// <summary>Returns all active testimonials ordered by DisplayOrder.</summary>
+    /// <summary>Returns all active testimonials ordered by DisplayOrder, with role and quote in <paramref name="lang"/>.</summary>
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AdminTestimonialDto>>> GetActive(
-        CancellationToken cancellationToken = default)
+        [FromQuery] string lang = "en", CancellationToken cancellationToken = default)
     {
-        var result = await _testimonials.GetActiveAsync(cancellationToken);
+        var result = await _testimonials.GetActiveAsync(lang, cancellationToken);
         return Ok(result);
     }
 }

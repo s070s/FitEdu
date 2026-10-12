@@ -639,11 +639,17 @@
   <data name="FieldRoleTitle" xml:space="preserve">
     <value>Ρόλος / Τίτλος</value>
   </data>
+  <data name="FieldRoleTitleEl" xml:space="preserve">
+    <value>Ρόλος / Τίτλος (στα ελληνικά)</value>
+  </data>
   <data name="FieldCompanyContext" xml:space="preserve">
     <value>Εταιρεία / Πλαίσιο</value>
   </data>
   <data name="FieldQuote" xml:space="preserve">
     <value>Παράθεση</value>
+  </data>
+  <data name="FieldQuoteEl" xml:space="preserve">
+    <value>Παράθεση (στα ελληνικά)</value>
   </data>
   <data name="FieldDisplayOrder" xml:space="preserve">
     <value>Σειρά εμφάνισης</value>

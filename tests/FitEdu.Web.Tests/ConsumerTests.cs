@@ -24,7 +24,7 @@ public class ConsumerTests
 {
     // A no-op token provider for consumer tests: the stubbed handler ignores auth, and an
     // anonymous principal yields a null token (the IAuthService substitute returns null).
-    private static ApiTokenProvider TokenProvider()
+    internal static ApiTokenProvider TokenProvider()
     {
         var authState = Substitute.For<AuthenticationStateProvider>();
         authState.GetAuthenticationStateAsync()

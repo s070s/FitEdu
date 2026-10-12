@@ -142,7 +142,7 @@ public partial class Home : IDisposable
     {
         try
         {
-            _testimonials = await TestimonialConsumer.GetActiveAsync();
+            _testimonials = await TestimonialConsumer.GetActiveAsync(CurrentLang);
         }
         catch
         {
