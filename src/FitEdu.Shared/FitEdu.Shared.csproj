@@ -100,6 +100,20 @@
       <DependentUpon>CourseRes.resx</DependentUpon>
     </Compile>
 
+    <!-- Exercise -->
+    <EmbeddedResource Update="Resources\ExerciseRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExerciseRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ExerciseRes.el.resx">
+      <DependentUpon>ExerciseRes.resx</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Resources\ExerciseRes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExerciseRes.resx</DependentUpon>
+    </Compile>
+
     <!-- Category -->
     <EmbeddedResource Update="Resources\CategoryRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
