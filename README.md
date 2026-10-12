@@ -56,7 +56,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 >
 > The three subscription plans are seeded from code in every environment, once, when the table is empty: `SubscriptionPlanSeeder` writes Free (starter courses and the exercise library, 1 active course), Plus (every Free and Plus course plus assessments, 10 active courses) and Pro (everything, plus certificates and priority support), each with an English and a Greek description. Live classes are open to every signed-in member, so no plan sells them. A database seeded before this change keeps its old plan descriptions until the plans table is emptied.
 >
-> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). It also keeps career-era wording out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
+> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). It also keeps career-era wording out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`, the email wording in `EmailTemplates.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
 
@@ -82,7 +82,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | CI | GitHub Actions (`.github/workflows/tests.yml`) |
 | Logging | Custom daily file logger |
-| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither |
+| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates` (English) |
 | Security | HSTS · `X-Content-Type-Options` · `X-Frame-Options` · `Referrer-Policy` · `Permissions-Policy` |
 | AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:1.7b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
 

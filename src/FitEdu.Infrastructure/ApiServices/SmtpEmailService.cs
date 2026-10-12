@@ -23,30 +23,15 @@ public sealed class SmtpEmailService : IEmailService
         _logger = logger;
     }
 
-    public Task SendEmailConfirmationAsync(string email, string confirmationLink, CancellationToken cancellationToken = default)
-    {
-        var safeLink = System.Net.WebUtility.HtmlEncode(confirmationLink);
-        var html = $"<p>Welcome to FitEdu. Please confirm your email address:</p>" +
-                   $"<p><a href=\"{safeLink}\">Confirm my email</a></p>" +
-                   $"<p>If the link does not work, copy this URL into your browser:<br>{safeLink}</p>";
-        var text = $"Welcome to FitEdu. Confirm your email: {confirmationLink}";
-        return SendAsync(email, "Confirm your email", html, text, cancellationToken);
-    }
+    public Task SendEmailConfirmationAsync(string email, string confirmationLink, CancellationToken cancellationToken = default) =>
+        SendAsync(email, EmailTemplates.EmailConfirmation(confirmationLink), cancellationToken);
 
-    public Task SendPasswordResetAsync(string email, string resetLink, CancellationToken cancellationToken = default)
-    {
-        var safeLink = System.Net.WebUtility.HtmlEncode(resetLink);
-        var html = $"<p>We received a request to reset your password.</p>" +
-                   $"<p><a href=\"{safeLink}\">Reset my password</a></p>" +
-                   $"<p>If you did not request this, you can ignore this email. " +
-                   $"If the link does not work, copy this URL into your browser:<br>{safeLink}</p>";
-        var text = $"Reset your FitEdu password: {resetLink}";
-        return SendAsync(email, "Reset your password", html, text, cancellationToken);
-    }
+    public Task SendPasswordResetAsync(string email, string resetLink, CancellationToken cancellationToken = default) =>
+        SendAsync(email, EmailTemplates.PasswordReset(resetLink), cancellationToken);
 
-    private async Task SendAsync(string to, string subject, string htmlBody, string textBody, CancellationToken ct)
+    private async Task SendAsync(string to, EmailContent content, CancellationToken ct)
     {
-        var message = BuildMessage(_options, to, subject, htmlBody, textBody);
+        var message = BuildMessage(_options, to, content);
 
         using var client = new SmtpClient();
         try
@@ -63,18 +48,18 @@ public sealed class SmtpEmailService : IEmailService
                 await client.DisconnectAsync(true, ct);
         }
 
-        _logger.LogInformation("Email '{Subject}' sent to {To}.", subject, to);
+        _logger.LogInformation("Email '{Subject}' sent to {To}.", content.Subject, to);
     }
 
     /// <summary>Builds the MIME message. Extracted so message construction is unit-testable
     /// without a live SMTP server.</summary>
-    public static MimeMessage BuildMessage(EmailOptions options, string to, string subject, string htmlBody, string textBody)
+    public static MimeMessage BuildMessage(EmailOptions options, string to, EmailContent content)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(options.Smtp.FromName, options.Smtp.FromAddress));
         message.To.Add(MailboxAddress.Parse(to));
-        message.Subject = subject;
-        message.Body = new BodyBuilder { HtmlBody = htmlBody, TextBody = textBody }.ToMessageBody();
+        message.Subject = content.Subject;
+        message.Body = new BodyBuilder { HtmlBody = content.HtmlBody, TextBody = content.TextBody }.ToMessageBody();
         return message;
     }
 }

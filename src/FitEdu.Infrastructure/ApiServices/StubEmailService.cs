@@ -28,9 +28,9 @@ public class StubEmailService : IEmailService
         _logger.LogInformation(
             "STUB EMAIL - Email Confirmation:\n" +
             "To: {Email}\n" +
-            "Subject: Confirm your email\n" +
+            "Subject: {Subject}\n" +
             "Link: {ConfirmationLink}",
-            email, confirmationLink);
+            email, EmailTemplates.EmailConfirmationSubject, confirmationLink);
 
         return Task.CompletedTask;
     }
@@ -40,9 +40,9 @@ public class StubEmailService : IEmailService
         _logger.LogInformation(
             "STUB EMAIL - Password Reset:\n" +
             "To: {Email}\n" +
-            "Subject: Reset your password\n" +
+            "Subject: {Subject}\n" +
             "Link: {ResetLink}",
-            email, resetLink);
+            email, EmailTemplates.PasswordResetSubject, resetLink);
 
         return Task.CompletedTask;
     }
