@@ -8,8 +8,9 @@ using System.Text.Json;
 namespace FitEdu.Infrastructure.Seeding;
 
 /// <summary>
-/// Seeds the three default subscription plans (Free, Plus, Pro).
+/// Seeds the three default subscription plans (Free, Plus, Pro), each described in English and Greek.
 /// Idempotent: skips if plans already exist.
+/// Live classes are open to every signed-in member, so no plan description sells them.
 /// </summary>
 public static class SubscriptionPlanSeeder
 {
@@ -27,7 +28,8 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Free",
-                Description = "Get started with basic access to free courses.",
+                Description = "Start free with bodyweight, mobility and other starter courses, the full exercise library and 1 active course at a time.",
+                DescriptionEl = "Ξεκίνα δωρεάν με μαθήματα βάρους σώματος, κινητικότητας και άλλα μαθήματα για αρχάριους, την πλήρη βιβλιοθήκη ασκήσεων και 1 ενεργό μάθημα τη φορά.",
                 Price = 0m,
                 BillingPeriod = BillingPeriod.Lifetime,
                 Tier = SubscriptionTier.Free,
@@ -45,7 +47,8 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Plus",
-                Description = "Unlock all courses and assessments.",
+                Description = "Every Free and Plus course, all fitness self-assessments and up to 10 active courses at a time.",
+                DescriptionEl = "Όλα τα μαθήματα Free και Plus, όλες οι αξιολογήσεις αυτοελέγχου φυσικής κατάστασης και έως 10 ενεργά μαθήματα τη φορά.",
                 Price = 9.99m,
                 BillingPeriod = BillingPeriod.Monthly,
                 Tier = SubscriptionTier.Plus,
@@ -63,7 +66,8 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Pro",
-                Description = "Full access with certificates and priority support.",
+                Description = "Everything in Plus, plus the advanced Pro programmes, unlimited active courses, completion certificates and priority support.",
+                DescriptionEl = "Όλα όσα περιλαμβάνει το Plus, μαζί με τα προχωρημένα προγράμματα Pro, απεριόριστα ενεργά μαθήματα, πιστοποιητικά ολοκλήρωσης και υποστήριξη με προτεραιότητα.",
                 Price = 19.99m,
                 BillingPeriod = BillingPeriod.Monthly,
                 Tier = SubscriptionTier.Pro,

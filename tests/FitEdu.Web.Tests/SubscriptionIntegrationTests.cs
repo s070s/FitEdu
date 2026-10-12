@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FitEdu.Domain.Enums;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Consumers;
 using Shouldly;
 using Xunit;
 
@@ -19,6 +20,22 @@ public class SubscriptionIntegrationTests : IClassFixture<CustomWebAppFactory>
         var client = _factory.CreateClient();
 
         (await client.GetAsync("/api/subscriptions/plans")).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task SubscriptionConsumer_PassesTheLanguage_AndGetsTheSeededPlanDescriptionsInIt()
+    {
+        // Real chain: SubscriptionPlanSeeder (run at host start) -> service -> api/subscriptions/plans?lang=
+        // -> the consumer the Pricing page uses.
+        var consumer = new SubscriptionConsumer(_factory.CreateClient(), ConsumerTests.TokenProvider());
+
+        var greek = await consumer.GetPlansAsync("el");
+        var english = await consumer.GetPlansAsync("en");
+
+        greek.Count.ShouldBe(3);
+        greek.Single(plan => plan.Tier == SubscriptionTier.Free).Description.ShouldStartWith("Ξεκίνα δωρεάν");
+        english.Single(plan => plan.Tier == SubscriptionTier.Free).Description.ShouldStartWith("Start free");
+        greek.Select(plan => plan.Price).ShouldBe(english.Select(plan => plan.Price));
     }
 
     [Fact]

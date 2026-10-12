@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using System.Globalization;
 
 namespace FitEdu.Web.Pages;
 
@@ -20,11 +21,14 @@ public partial class Pricing
     private string? _cancelMessage;
     private bool _cancelSuccess;
 
+    private static string CurrentLang =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _plans = await SubscriptionService.GetPlansAsync();
+            _plans = await SubscriptionService.GetPlansAsync(CurrentLang);
             _currentStatus = await SubscriptionService.GetStatusAsync();
         }
         catch (Exception ex)

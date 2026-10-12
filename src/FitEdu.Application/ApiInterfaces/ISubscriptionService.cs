@@ -9,9 +9,10 @@ namespace FitEdu.Application.ApiInterfaces;
 public interface ISubscriptionService
 {
     /// <summary>
-    /// Get all active subscription plans.
+    /// Get all active subscription plans, with the description in <paramref name="lang"/>
+    /// ("el" picks Greek, falling back to English).
     /// </summary>
-    Task<List<SubscriptionPlanDto>> GetPlansAsync(CancellationToken cancellationToken = default);
+    Task<List<SubscriptionPlanDto>> GetPlansAsync(string lang = "en", CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get the current user's subscription status.

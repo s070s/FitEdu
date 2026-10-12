@@ -54,6 +54,8 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 >
 > The blog articles are seeded from code: `src/FitEdu.Application/DTOs/Blog/BlogSeedData.cs` holds 4 fitness articles in English and Greek (progressive overload, protein, sleep, a five-minute warm-up) by "FitEdu", with covers under `wwwroot/images/blog/` and English keyword tags (Strength, Nutrition, Recovery, Mobility, Beginners).
 >
+> The three subscription plans are seeded from code in every environment, once, when the table is empty: `SubscriptionPlanSeeder` writes Free (starter courses and the exercise library, 1 active course), Plus (every Free and Plus course plus assessments, 10 active courses) and Pro (everything, plus certificates and priority support), each with an English and a Greek description. Live classes are open to every signed-in member, so no plan sells them. A database seeded before this change keeps its old plan descriptions until the plans table is emptied.
+>
 > `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives, no career-era wording) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies), and `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
@@ -277,7 +279,7 @@ Upcoming live sessions an admin schedules and users register for (see [Scheduled
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/subscriptions/plans` | List plans | No |
+| `GET` | `api/subscriptions/plans` | List plans, with the description in the chosen language (`?lang=en`) | No |
 | `GET` | `api/subscriptions/status` | Current user's subscription status | Yes |
 | `POST` | `api/subscriptions/checkout` | Start checkout | Yes |
 | `POST` | `api/subscriptions/webhook` | Payment webhook | No |

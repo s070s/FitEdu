@@ -7,7 +7,8 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public interface ISubscriptionConsumer
 {
-    Task<List<SubscriptionPlanDto>> GetPlansAsync();
+    /// <summary>Active plans with the description in <paramref name="lang"/> ("en" or "el").</summary>
+    Task<List<SubscriptionPlanDto>> GetPlansAsync(string lang = "en");
     Task<UserSubscriptionStatusDto?> GetStatusAsync();
     Task<CheckoutSessionDto?> CheckoutAsync(Guid planId);
     Task<CancelSubscriptionResultDto?> CancelAsync();

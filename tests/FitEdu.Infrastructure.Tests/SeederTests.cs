@@ -57,6 +57,40 @@ public sealed class SeederTests : IDisposable
     }
 
     [Fact]
+    public async Task SubscriptionPlanSeeder_DescribesEveryPlanInEnglishAndGreek_AndKeepsPricesAndLimits()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        await SubscriptionPlanSeeder.SeedAsync(db, NullLogger.Instance);
+
+        var plans = await db.SubscriptionPlans.ToDictionaryAsync(plan => plan.Tier);
+        plans.Values.ShouldAllBe(plan => !string.IsNullOrWhiteSpace(plan.Description) && !string.IsNullOrWhiteSpace(plan.DescriptionEl));
+        plans[SubscriptionTier.Free].Description!.ShouldContain("exercise library");
+        plans[SubscriptionTier.Plus].Description!.ShouldContain("Every Free and Plus course");
+        plans[SubscriptionTier.Pro].Description!.ShouldContain("certificates");
+        // Every signed-in member can join a live class, so no plan may sell them as a Pro extra.
+        plans.Values.ShouldAllBe(plan => !plan.Description!.Contains("live", StringComparison.OrdinalIgnoreCase));
+
+        // The pricing, billing and entitlement tests depend on these values.
+        ShouldHavePriceAndLimits(plans[SubscriptionTier.Free], 0m, BillingPeriod.Lifetime, 1, assessments: false, certificates: false, prioritySupport: false);
+        ShouldHavePriceAndLimits(plans[SubscriptionTier.Plus], 9.99m, BillingPeriod.Monthly, 10, assessments: true, certificates: false, prioritySupport: false);
+        ShouldHavePriceAndLimits(plans[SubscriptionTier.Pro], 19.99m, BillingPeriod.Monthly, int.MaxValue, assessments: true, certificates: true, prioritySupport: true);
+    }
+
+    private static void ShouldHavePriceAndLimits(SubscriptionPlan plan, decimal price, BillingPeriod billingPeriod,
+        int maxCourses, bool assessments, bool certificates, bool prioritySupport)
+    {
+        plan.Price.ShouldBe(price);
+        plan.BillingPeriod.ShouldBe(billingPeriod);
+        plan.IsActive.ShouldBeTrue();
+        var features = System.Text.Json.JsonSerializer.Deserialize<PlanFeaturesDto>(plan.FeaturesJson!)!;
+        features.MaxCourses.ShouldBe(maxCourses);
+        features.AssessmentAccess.ShouldBe(assessments);
+        features.CertificateAccess.ShouldBe(certificates);
+        features.PrioritySupport.ShouldBe(prioritySupport);
+    }
+
+    [Fact]
     public async Task SubscriptionPlanSeeder_IsIdempotent()
     {
         await using var db = DbContextFactory.CreateInMemory();
