@@ -52,8 +52,9 @@ public partial class SeedContentIntegrityTests
         "none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"
     };
 
-    // Where the career-vocabulary gate looks. Task C3 adds the resx files and the C# seed code.
-    private static readonly VocabularyScanRoot[] VocabularyScanRoots =
+    // Where the text gates (career vocabulary, Greek command forms) look.
+    // Task C3 adds the resx files and the C# seed code.
+    private static readonly TextScanRoot[] TextScanRoots =
     [
         new(RepoPaths.SeedJsonRoot, AllFilesPattern)
     ];
@@ -209,17 +210,13 @@ public partial class SeedContentIntegrityTests
     [Fact]
     public void SeedFiles_ContainNoCareerVocabulary()
     {
-        var problems = new List<string>();
+        FindTextMatches(CareerVocabularyRegex()).ShouldBeEmpty();
+    }
 
-        foreach (var filePath in VocabularyScanRoots.SelectMany(FindFilesToScan))
-        {
-            var text = File.ReadAllText(filePath);
-            problems.AddRange(CareerVocabularyRegex().Matches(text)
-                .Select(match => $"{Path.GetRelativePath(RepoPaths.RepoRoot, filePath)}: '{match.Value}'")
-                .Distinct());
-        }
-
-        problems.ShouldBeEmpty();
+    [Fact]
+    public void SeedFiles_GreekInstructionsUseImperativeNotPastTense()
+    {
+        FindTextMatches(GreekPastTenseCommandRegex()).ShouldBeEmpty("use the imperative (e.g. Επίλεξε, not Επέλεξε)");
     }
 
     // ---- Resources ---------------------------------------------------------------------------
@@ -403,7 +400,23 @@ public partial class SeedContentIntegrityTests
             ? value.EnumerateArray().ToList()
             : [];
 
-    private static IEnumerable<string> FindFilesToScan(VocabularyScanRoot root) =>
+    /// <summary>Every match of the pattern in the scanned files, as "file: 'match'" (once per file).</summary>
+    private static List<string> FindTextMatches(Regex pattern)
+    {
+        var matches = new List<string>();
+
+        foreach (var filePath in TextScanRoots.SelectMany(FindFilesToScan))
+        {
+            var text = File.ReadAllText(filePath);
+            matches.AddRange(pattern.Matches(text)
+                .Select(match => $"{Path.GetRelativePath(RepoPaths.RepoRoot, filePath)}: '{match.Value}'")
+                .Distinct());
+        }
+
+        return matches;
+    }
+
+    private static IEnumerable<string> FindFilesToScan(TextScanRoot root) =>
         Directory.GetFiles(root.Folder, root.SearchPattern, SearchOption.AllDirectories);
 
     private static Dictionary<string, string> LoadResxValues(string resxPath)
@@ -438,7 +451,14 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex CareerVocabularyRegex();
 
+    // Third-person past forms that read as "he/she selected" when used as a command.
+    // The imperatives are Επίλεξε, Επίστρεψε, Κατάγραψε, Διάκοψε, Κατάκτησε, Επανάλαβε,
+    // Απόφυγε, Παράμεινε, Πρόσθεσε, Μετάφερε, Σύνδεσε, Επίτρεψε, Εισπνεύσε, Εκπνεύσε.
+    [GeneratedRegex(@"\b(?:επέλεξε|επέστρεψε|κατέγραψε|διέκοψε|κατέκτησε|επανέλαβε|απέφυγε|παρέμεινε|προσέθεσε|μετέφερε|συνέδεσε|επέτρεψε|εισέπνευσε|εξέπνευσε)\b",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex GreekPastTenseCommandRegex();
+
     private sealed record ExerciseReference(string Location, string Slug);
 
-    private sealed record VocabularyScanRoot(string Folder, string SearchPattern);
+    private sealed record TextScanRoot(string Folder, string SearchPattern);
 }
