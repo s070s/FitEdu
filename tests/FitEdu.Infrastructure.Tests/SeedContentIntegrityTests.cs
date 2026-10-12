@@ -62,14 +62,16 @@ public partial class SeedContentIntegrityTests
     private static readonly string SourceRoot = Path.Combine(RepoPaths.RepoRoot, "src");
 
     // Where the text gates (career vocabulary, Greek command forms) look: the seed JSON, every
-    // resx file and the seed data written in C# (blog articles, plans, the seeders).
+    // resx file, the seed data written in C# (blog articles, plans, the seeders) and the other
+    // member-facing text written in C# (the assistant's system prompt).
     private static readonly TextScanRoot[] TextScanRoots =
     [
         new(RepoPaths.SeedJsonRoot, AllFilesPattern),
         new(RepoPaths.ResourcesRoot, EnglishResxPattern),
         new(Path.Combine(SourceRoot, "FitEdu.Application", "DTOs", "Blog"), "BlogSeedData.cs"),
         new(Path.Combine(SourceRoot, "FitEdu.Infrastructure", "Seeding"), "*.cs"),
-        new(Path.Combine(SourceRoot, "FitEdu.Web", "Startup"), "DatabaseSeedingExtensions.cs")
+        new(Path.Combine(SourceRoot, "FitEdu.Web", "Startup"), "DatabaseSeedingExtensions.cs"),
+        new(Path.Combine(SourceRoot, "FitEdu.Application", "ApiServices"), "AssistantService.cs")
     ];
 
     // ---- Courses -----------------------------------------------------------------------------

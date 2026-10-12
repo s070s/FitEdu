@@ -27,9 +27,9 @@ public class AssistantIndexingServiceTests
     private static Course PublishedCourse(string titleEl = "Τίτλος") => new()
     {
         Id = Guid.NewGuid(),
-        TitleEn = "Career Discovery",
+        TitleEn = "Strength Foundations",
         TitleEl = titleEl,
-        DescriptionEn = "Find your path.",
+        DescriptionEn = "Squat, hinge, push and pull with good form.",
         IsPublished = true
     };
 
@@ -157,6 +157,56 @@ public class AssistantIndexingServiceTests
         lessonChunk.Text.ShouldContain("Lesson body text.");
         lessonChunk.Text.ShouldNotContain("<p>");
     }
+
+    [Fact]
+    public async Task RunIndexPassAsync_WorkoutLesson_AppendsExerciseNamesAndPrimaryMusclesInListOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Bodyweight Basics", TitleEl = "Βασικές Ασκήσεις", IsPublished = true };
+        var module = new Module { Id = Guid.NewGuid(), TitleEn = "Week 1", CourseId = course.Id, Course = course };
+        var lesson = new Lesson
+        {
+            Id = Guid.NewGuid(),
+            TitleEn = "Full-body workout A",
+            TitleEl = "Προπόνηση σώματος Α",
+            ContentEn = "Warm up first.",
+            ContentEl = "Ζεσταίνεσαι πρώτα.",
+            ModuleId = module.Id,
+            Module = module,
+            IsPublished = true
+        };
+        var pushUps = NewExercise("pushups", "Pushups", "Κάμψεις", "chest, triceps");
+        var plank = NewExercise("plank", "Plank", nameEl: null, "abdominals");
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = plank, SortOrder = 2 });
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = pushUps, SortOrder = 1 });
+        db.Courses.Add(course);
+        db.Modules.Add(module);
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+        var (svc, _) = NewService(db);
+
+        await svc.RunIndexPassAsync();
+
+        var lessonChunks = (await db.AssistantContentChunks.ToListAsync())
+            .Where(c => c.SourceType == AssistantSourceType.Lesson)
+            .ToDictionary(c => c.Language, c => c.Text);
+        lessonChunks["en"].ShouldContain("Exercises: Pushups (chest, triceps); Plank (abdominals)");
+        lessonChunks["el"].ShouldContain("Exercises: Κάμψεις (chest, triceps); Plank (abdominals)"); // English name when no Greek one
+    }
+
+    private static Exercise NewExercise(string slug, string nameEn, string? nameEl, string primaryMuscles) => new()
+    {
+        Id = Guid.NewGuid(),
+        Slug = slug,
+        NameEn = nameEn,
+        NameEl = nameEl,
+        Category = "strength",
+        Level = "beginner",
+        PrimaryMuscles = primaryMuscles,
+        SecondaryMuscles = string.Empty,
+        InstructionsEn = "Step one.",
+        IsPublished = true
+    };
 
     [Fact]
     public async Task RunIndexPassAsync_UnpublishedLessonInPublishedCourse_IsSkipped()
