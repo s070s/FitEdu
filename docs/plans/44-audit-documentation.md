@@ -1,0 +1,70 @@
+# Audit: Documentation
+
+| | |
+|---|---|
+| Finding prefix | DOC |
+| Created | 2026-07-11 |
+| Scope | README.md accuracy and coverage, the `docs/` folder, XML doc comments on public APIs, code-comment quality and staleness, OpenAPI/Swagger as living API documentation, `.env.template` as setup documentation, LICENSE and CHANGELOG presence. |
+| Delegated | The *functional* gap behind the stale email plan (no reset/confirm pages, UI calling dev-only endpoints) → UX (33). OpenAPI document correctness/exposure at runtime → API (31). Privacy-policy/terms pages (user-facing legal docs) → COMP (29). Versioning/tags/release discipline that a CHANGELOG would hang off → GOV (45). Third-party license posture (QuestPDF) → DEP (43). |
+
+## 1. Methodology
+
+Read `README.md` (522 lines) in full and spot-verified its claims against code: email registration logic (`src/ResetYourFuture.Web/Startup/ServiceRegistrationExtensions.cs:36-53`), seed defaults (`src/ResetYourFuture.Infrastructure/Seeding/BulkStudentSeedingService.cs:42`, `appsettings.Development.json`), the Auth endpoint table against `Controllers/AuthController.cs` route attributes, config keys against `appsettings.json` / `.env.template`, and admin/assistant/WebRtc sections against `appsettings.json`. Read both files under `docs/superpowers/` and checked their promised artifacts against the codebase (page routes, controller endpoints). Measured XML doc coverage by counting files containing `/// <summary>` per project and reading representative controllers/DTOs. Searched for references to deleted plan documents (`AI_ASSISTANT_PLAN.md`, `VIDEO_CALL_PLAN.md`). Checked repo root for LICENSE/CHANGELOG/CONTRIBUTING (none). Used `git log` (read-only) to date README updates against feature commits.
+
+NOT examined: rendered Swagger UI output (would require running the app); XML doc *prose* quality file-by-file beyond sampling.
+
+## 2. Summary Scorecard
+
+| Severity | Count |
+|----------|-------|
+| Critical | 0 |
+| High | 0 |
+| Medium | 0 |
+| Low | 2 |
+| Info | 2 |
+
+Documentation is a relative strength of this project. The README is a genuine operator's manual — quickstart, full endpoint tables with an explicit "Swagger UI is the authoritative source" disclaimer, config reference, production checklist, per-feature sections, and a troubleshooting table — and it has demonstrably been updated per feature (commits `c7e8b27`, `3d33110`). XML doc coverage is high (Domain 34/34 files with summaries, Application 74/83, Infrastructure 32/44) and load-bearing, feeding the OpenAPI document via `GenerateDocumentationFile` on the Web and Application projects. All three Medium findings — drift, not absence — are now resolved: the Email section and Configuration table were rewritten to match `SmtpEmailService` and document the `Email__Smtp__*` keys (DOC-1); the stale email-flows plan/spec now carry accurate dated status headers (DOC-2); and the repo ships an MIT `LICENSE` (© 2026 s070s) with a README License section (DOC-3). What remains is two Low items (dangling `_PLAN.md` references, no architecture doc) and two Info.
+
+## 3. Findings
+
+> The three Medium findings are resolved: **DOC-1** — the README Email section, Tech Stack line, production checklist, and Configuration table were rewritten to match `SmtpEmailService` (MailKit, auto-registered when `Email__Smtp__Host` is set; stub only in Development; fail-fast otherwise), with the `Email__Smtp__*` keys documented in both the table and `.env.template`. **DOC-2** — `docs/superpowers/plans/2026-06-25-email-service-auth-flows.md` and its design spec now carry accurate dated status headers recording what landed (SmtpEmailService, EmailOptions, tests) versus what did not (the reset/confirm pages, owned by UX 33). **DOC-3** — the repo now ships an MIT `LICENSE` (© 2026 s070s) and a README License section that also flags the conditional QuestPDF Community tier (see git: `Fix DOC-3`). The remaining open items are four Low and two Info.
+
+### DOC-4: Code comments reference plan documents that were deleted from the repo  [Low] [Effort: S]
+- **Evidence:** `src/ResetYourFuture.Web/Controllers/AssistantController.cs:14` ("See AI_ASSISTANT_PLAN.md for the overall design") and `src/ResetYourFuture.Application/DTOs/Assistant/AssistantDtos.cs:6` ("no server-side conversation persistence — see AI_ASSISTANT_PLAN.md D7") reference a file deleted in commit `dff8e94`; `src/ResetYourFuture.Web/wwwroot/js/webrtc-interop.js:1` references `VIDEO_CALL_PLAN.md`, deleted in `1730c4d`.
+- **Impact:** Dangling pointers in the most design-dense areas of the code. The `AssistantDtos.cs` case is the worst: it cites a specific decision ("D7") whose rationale now exists nowhere in the repo — the delete-plan-on-completion convention (DOC-2) silently orphaned it.
+- **Recommendation:** Inline the one-sentence rationale where the decision matters (e.g. "clients replay the transcript; the server deliberately stores nothing per-conversation") and drop the file references. A repo-wide grep for `_PLAN.md` on future plan deletions prevents recurrence.
+
+### DOC-7: No architecture overview or decision records beyond a 7-line folder tree  [Low] [Effort: M]
+- **Evidence:** `README.md:69-80` shows the solution layout with one-line project descriptions — the sum total of architecture documentation. Recurring, non-obvious decisions are recorded nowhere durable: the two parallel auth paths (cookie for Blazor SSR, JWT for the API — described only inside the stale plan doc `docs/superpowers/specs/...-design.md`), the global `InteractiveServerRenderMode` on `<Routes>` (`App.razor:44`) and its consequences (no real form POSTs), the CSS layering rule (app.css vs shared-components.css vs scoped), and the assistant's deliberate single-turn-RAG/no-persistence design (its rationale pointer now dangling, DOC-4).
+- **Impact:** Onboarding cost lands on the developer's own future self and on assessors: the auth-path split in particular has already caused real bugs elsewhere (see MAINT/ARCH reports) and cannot be learned from any current doc.
+- **Recommendation:** One `docs/architecture.md` (or a short ADR list) capturing the 4–6 standing decisions above, a request-flow sketch for the two auth paths, and a pointer from the README. Half a day, disproportionate payoff for a certificate submission.
+
+### DOC-8: No CHANGELOG  [Info] [Effort: S]
+- **Evidence:** No `CHANGELOG*` at the root; release history exists only as 253 git commit messages.
+- **Impact:** Minimal while there are no versions or releases to chronicle — the real gap is the absent versioning discipline itself, owned by GOV (45) (GOV-1). A CHANGELOG becomes worthwhile the moment tags exist.
+- **Recommendation:** Defer until GOV-1's tagging lands; then a `Keep a Changelog`-style file seeded from the feature-complete commits (`git log --oneline` is already clean enough to reconstruct it).
+
+### DOC-9: Strength — XML doc coverage is high and wired into the OpenAPI pipeline  [Info] [Effort: S]
+- **Evidence:** Files containing `/// <summary>` per project: Domain 34/34, Application 74/83, Infrastructure 32/44 (Web controllers sampled: fully summarized, e.g. `AssistantController.cs`). `<GenerateDocumentationFile>true</GenerateDocumentationFile>` on `ResetYourFuture.Web.csproj:8` and `ResetYourFuture.Application.csproj:7` feeds these into the OpenAPI document, with `NoWarn 1591` documented as a deliberate "document the API surface, not every member" policy in both csproj comments. `README.md:100-123` correctly frames Swagger UI as authoritative and the endpoint tables as a static convenience.
+- **Impact:** Positive observation — the API is effectively self-documenting, and comment quality sampled is explanatory (*why*, not *what*): e.g. the SSE buffering note at `AssistantController.cs:33`, the registration-fallback rationale at `ServiceRegistrationExtensions.cs:36-39`.
+- **Recommendation:** None required. If Infrastructure coverage is ever raised, prioritize the seeding and background-service classes where behavior is least guessable.
+
+## 4. Prioritized Action List
+
+All three Medium items (DOC-1, DOC-2, DOC-3) are resolved. The remaining backlog:
+
+| ID | Severity | Effort | Action |
+|----|----------|--------|--------|
+| DOC-4 | Low | S | Fix three dangling references to deleted plan docs; inline the D7 rationale |
+| DOC-7 | Low | M | Write docs/architecture.md with the standing decisions (auth paths, render mode, CSS layers) |
+| DOC-8 | Info | S | CHANGELOG — defer until GOV-1 tagging exists |
+| DOC-9 | Info | S | (Strength) keep XML-doc→OpenAPI pipeline as-is |
+
+## 5. Related Findings Elsewhere
+
+- **UX (33):** the functional side of DOC-2 — no user-facing reset/confirm pages in Release; Login/Register/ForgotPassword pages call `#if DEBUG`-only endpoints.
+- **API (31):** runtime correctness and exposure of the OpenAPI document that DOC-9's pipeline produces.
+- **COMP (29):** COMP-1 — missing privacy policy/terms pages, the user-facing legal documentation companion to DOC-3.
+- **DEP (43):** DEP-6 — QuestPDF Community license note; DEP-2 — recording vendored-asset provenance (documentation of dependencies).
+- **GOV (45):** GOV-1 — no tags/versioning (prerequisite for DOC-8); GOV-6 — absent CONTRIBUTING/health files.
+- **CFG (39):** configuration-surface documentation overlaps former DOC-6 (fixed) from the operations side.

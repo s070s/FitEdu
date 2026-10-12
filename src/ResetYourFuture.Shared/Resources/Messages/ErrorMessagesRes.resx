@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmailConfirmationError" xml:space="preserve">
+    <value>Error Confirming Email</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="EmailTakenError" xml:space="preserve">
+    <value>This email address is already registered. Please use a different email or try logging in.</value>
+  </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Login Error</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>Account Disabled</value>
+  </data>
+  <data name="AccountDisabledMessage" xml:space="preserve">
+    <value>Your account has been disabled by an administrator.</value>
+  </data>
+  <data name="AccountDisabledContact" xml:space="preserve">
+    <value>If you believe this is a mistake, please contact support for assistance.</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>Back to Login</value>
+  </data>
+  <data name="EmailNotConfirmedHint" xml:space="preserve">
+    <value>Your email address isn't confirmed yet. Please check your inbox for the confirmation link.</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials.</value>
+  </data>
+  <data name="EmailNotConfirmedError" xml:space="preserve">
+    <value>Email not confirmed.</value>
+  </data>
+  <data name="AccountDisabledContactSupport" xml:space="preserve">
+    <value>Your account has been disabled. Please contact support.</value>
+  </data>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>Account locked. Try again later.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found.</value>
+  </data>
+  <data name="InvalidOrExpiredRefreshToken" xml:space="preserve">
+    <value>Invalid or expired refresh token.</value>
+  </data>
+  <data name="AccountIsDisabled" xml:space="preserve">
+    <value>Account is disabled.</value>
+  </data>
+  <data name="InvalidRequest" xml:space="preserve">
+    <value>Invalid request.</value>
+  </data>
+  <data name="RegistrationFailedGeneric" xml:space="preserve">
+    <value>Registration failed. Please check your details and try again.</value>
+  </data>
+  <data name="InvalidConfirmationLink" xml:space="preserve">
+    <value>Invalid confirmation link.</value>
+  </data>
+  <data name="AssessmentAccessRequiresPlus" xml:space="preserve">
+    <value>Assessment access requires a Plus subscription or higher.</value>
+  </data>
+  <data name="AssessmentAnswersInvalid" xml:space="preserve">
+    <value>Your answers don't match this assessment's questions.</value>
+  </data>
+  <data name="AssessmentNotFoundOrUnpublished" xml:space="preserve">
+    <value>Assessment not found or not published</value>
+  </data>
+  <data name="AssessmentRequiresTierFormat" xml:space="preserve">
+    <value>This assessment requires a {0} subscription or higher.</value>
+  </data>
+  <data name="CourseNotFound" xml:space="preserve">
+    <value>Course not found</value>
+  </data>
+  <data name="CourseRequiresTierFormat" xml:space="preserve">
+    <value>This course requires a {0} subscription or higher. Please upgrade your plan.</value>
+  </data>
+  <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
+    <value>Your {0} plan allows up to {1} course(s). Please upgrade to enroll in more courses.</value>
+  </data>
+  <data name="LessonNotFound" xml:space="preserve">
+    <value>Lesson not found</value>
+  </data>
+  <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
+    <value>You must be enrolled in this course to view lessons</value>
+  </data>
+  <data name="NotEnrolledInCourse" xml:space="preserve">
+    <value>Not enrolled in this course</value>
+  </data>
+  <data name="NoFileProvided" xml:space="preserve">
+    <value>No file provided</value>
+  </data>
+  <data name="FileTooLarge5Mb" xml:space="preserve">
+    <value>File too large (max 5 MB)</value>
+  </data>
+  <data name="OnlyImageFilesAllowed" xml:space="preserve">
+    <value>Only image files are allowed (jpeg, png, gif, webp).</value>
+  </data>
+  <data name="FailedToSaveAvatar" xml:space="preserve">
+    <value>Failed to save avatar.</value>
+  </data>
+  <data name="CategoryNameExists" xml:space="preserve">
+    <value>A category with this name already exists.</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>Category not found</value>
+  </data>
+  <data name="UnexpectedErrorTryAgain" xml:space="preserve">
+    <value>An unexpected error occurred. Please try again.</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Unable to connect to the server. Please try again.</value>
+  </data>
+  <data name="EnterEmailAndPassword" xml:space="preserve">
+    <value>Please enter email and new password.</value>
+  </data>
+  <data name="PasswordResetFailed" xml:space="preserve">
+    <value>Error resetting password.</value>
+  </data>
+  <data name="FailedToLoadBilling" xml:space="preserve">
+    <value>Failed to load billing information. Please try again.</value>
+  </data>
+  <data name="FailedToCancel" xml:space="preserve">
+    <value>Failed to cancel. Please try again.</value>
+  </data>
+  <data name="FailedToLoadCourses" xml:space="preserve">
+    <value>Failed to load courses. Please try again.</value>
+  </data>
+  <data name="FailedToLoadAnalytics" xml:space="preserve">
+    <value>Failed to load analytics. Please try again.</value>
+  </data>
+  <data name="FailedToLoadCourse" xml:space="preserve">
+    <value>Failed to load course. Please try again.</value>
+  </data>
+  <data name="FailedToEnroll" xml:space="preserve">
+    <value>Failed to enroll. Please try again.</value>
+  </data>
+  <data name="FailedToSendResetLink" xml:space="preserve">
+    <value>Error sending reset link.</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Access denied.</value>
+  </data>
+  <data name="Auth_EmailRequired" xml:space="preserve">
+    <value>Email is required.</value>
+  </data>
+  <data name="Auth_EmailInvalid" xml:space="preserve">
+    <value>Enter a valid email address.</value>
+  </data>
+  <data name="Auth_PasswordRequired" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
+  <data name="Auth_PasswordComplexity" xml:space="preserve">
+    <value>Password must be at least 8 characters and include an uppercase letter and a digit.</value>
+  </data>
+  <data name="Auth_ConfirmPasswordRequired" xml:space="preserve">
+    <value>Please confirm your password.</value>
+  </data>
+  <data name="Auth_PasswordMismatch" xml:space="preserve">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="Auth_FirstNameRequired" xml:space="preserve">
+    <value>First name is required.</value>
+  </data>
+  <data name="Auth_LastNameRequired" xml:space="preserve">
+    <value>Last name is required.</value>
+  </data>
+  <data name="Auth_GdprConsentRequired" xml:space="preserve">
+    <value>You must consent to data processing.</value>
+  </data>
+</root>

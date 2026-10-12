@@ -1,0 +1,100 @@
+@page "/admin/assessments"
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>@AdminRes.AssessmentManagement</PageTitle>
+
+<h1 class="h2">@AdminRes.AssessmentManagement</h1>
+
+<DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
+
+<div class="d-flex gap-2 mb-3">
+    <input type="text" class="form-control" placeholder="@AdminRes.SearchAssessments"
+           aria-label="@AdminRes.SearchAssessments"
+           value="@_searchTerm" @oninput="OnSearchInput" />
+    <button class="btn btn-primary text-nowrap" @onclick="CreateAssessment">@AdminRes.CreateNewAssessment</button>
+</div>
+
+@if (_pagedResult == null)
+{
+    <LoadingSpinner Label="@AdminRes.Loading" />
+}
+else
+{
+    <ScrollableTable Items="_pagedResult.Items" TItem="AssessmentDefinitionListItemDto">
+        <HeaderRow>
+            <tr>
+                <SortableColumnHeader ColumnKey="title" Label="@AdminRes.FieldTitle"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="key" Label="@AdminRes.FieldKey"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="category" Label="@AdminRes.ColCategory"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="tier" Label="@AdminRes.ColTier"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="status" Label="@AdminRes.ColStatus"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="submissions" Label="@AdminRes.ColSubmissions"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <SortableColumnHeader ColumnKey="createdat" Label="@AdminRes.ColCreated"
+                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                      OnSort="OnSort" />
+                <th>@AdminRes.ColActions</th>
+            </tr>
+        </HeaderRow>
+        <RowTemplate Context="assessment">
+            <tr @key="assessment.Id">
+                <td data-label="@AdminRes.FieldTitle">@assessment.Title</td>
+                <td data-label="@AdminRes.FieldKey">@assessment.Key</td>
+                <td data-label="@AdminRes.ColCategory">@(assessment.CategoryNameEn ?? "—")</td>
+                <td data-label="@AdminRes.ColTier">@assessment.RequiredTier</td>
+                <td data-label="@AdminRes.ColStatus">
+                    <StatusBadge IsActive="assessment.IsPublished"
+                                 ActiveText="@AdminRes.StatusPublished"
+                                 InactiveText="@AdminRes.StatusDraft" />
+                </td>
+                <td data-label="@AdminRes.ColSubmissions">@assessment.SubmissionCount</td>
+                <td data-label="@AdminRes.ColCreated">@assessment.CreatedAt.ToLocalTime().ToString("d")</td>
+                <td data-label="@AdminRes.ColActions">
+                    <button class="btn btn-sm btn-primary" @onclick="() => EditAssessment(assessment.Id)">@AdminRes.Edit</button>
+                    @if (assessment.IsPublished)
+                    {
+                        <button class="btn btn-sm btn-warning" @onclick="() => UnpublishAssessment(assessment.Id)">@AdminRes.Unpublish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-success" @onclick="() => PublishAssessment(assessment.Id)">@AdminRes.Publish</button>
+                    }
+                    <button class="btn btn-sm btn-info" @onclick="() => ViewSubmissions(assessment.Id)">@AdminRes.ColSubmissions</button>
+                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteAssessment(assessment.Id)">@AdminRes.Delete</button>
+                </td>
+            </tr>
+        </RowTemplate>
+    </ScrollableTable>
+
+    <AdminPaginationToolbar CurrentPage="_pagedResult.Page"
+                            TotalPages="_pagedResult.TotalPages"
+                            TotalCount="_pagedResult.TotalCount"
+                            PageSize="_pagedResult.PageSize"
+                            HasPreviousPage="_pagedResult.HasPreviousPage"
+                            HasNextPage="_pagedResult.HasNextPage"
+                            PageSizeOptions="PageSizeOptions"
+                            ItemLabel="@AdminRes.ItemLabelAssessments"
+                            OnPageSizeChanged="OnPageSizeChanged"
+                            OnPreviousPage="() => GoToPage(_pagedResult.Page - 1)"
+                            OnNextPage="() => GoToPage(_pagedResult.Page + 1)" />
+}
+
+<ConfirmModal IsVisible="@(_pendingDeleteId.HasValue)"
+              Title="@AdminRes.ConfirmTitle"
+              Message="@AdminRes.ConfirmDeleteAssessment"
+              ConfirmLabel="@AdminRes.Delete"
+              CancelLabel="@AdminRes.Cancel"
+              OnConfirm="ExecuteDeleteAsync"
+              OnCancel="@(() => _pendingDeleteId = null)" />
+

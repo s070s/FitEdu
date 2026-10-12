@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<a class="skip-link" href="#main-content">@GlobalRes.SkipToContent</a>
+
+<ImpersonationBanner />
+
+<header>
+    <NavMenu>
+        <TrailingContent>
+            <SiteSearchBox />
+            <CultureSelector />
+            <NotificationBell />
+            <AvatarDropdown />
+        </TrailingContent>
+    </NavMenu>
+</header>
+
+<main id="main-content" class="content" tabindex="-1">
+    @Body
+</main>
+
+<SiteFooter />
+
+<CallOverlayHost />
+<AssistantWidget />

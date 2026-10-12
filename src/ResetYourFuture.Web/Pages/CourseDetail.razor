@@ -1,0 +1,220 @@
+@page "/courses/{CourseId:guid}"
+@attribute [Authorize]
+
+<PageTitle>@(_course?.Title ?? CourseRes.CourseDefault) - Reset Your Future</PageTitle>
+
+@if (_loading)
+{
+    <LoadingSpinner Label="@CourseRes.LoadingCourse" />
+}
+else if (_error is not null)
+{
+    <p class="text-danger">@_error</p>
+    <button class="btn btn-primary me-2" @onclick="LoadAllAsync">@GlobalRes.TryAgain</button>
+    <button class="btn btn-secondary" @onclick="GoBack">@CourseRes.BackToCourses</button>
+}
+else if (_course is null)
+{
+    <p>@CourseRes.CourseNotFound</p>
+    <button class="btn btn-secondary" @onclick="GoBack">@CourseRes.BackToCourses</button>
+}
+else
+{
+    <div class="course-header">
+        <button class="btn-link" @onclick="GoBack">@CourseRes.BackToCourses</button>
+        <h1>@_course.Title</h1>
+        @if (!string.IsNullOrEmpty(_course.Description))
+        {
+            <div class="description">@((MarkupString)_course.Description)</div>
+        }
+
+        <div class="progress-section">
+            @if (_course.IsEnrolled)
+            {
+                <div class="progress-bar-container"
+                     role="progressbar"
+                     aria-valuenow="@_course.ProgressPercent"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-label="@string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, _course.ProgressPercent)">
+                    <div class="progress-bar-fill" style="width: @(_course.ProgressPercent)%"></div>
+                </div>
+                <span class="progress-text">
+                    @string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, _course.ProgressPercent)
+                </span>
+                @if (_course.IsCompleted)
+                {
+                    <span class="completed-badge">@CourseRes.CourseCompleted</span>
+                }
+            }
+            else if (_userTier < _course.RequiredTier)
+            {
+                <div class="enroll-upgrade-notice">
+                    <p>@string.Format(CourseRes.RequiresPlanFormat, _course.RequiredTier)</p>
+                    <button class="btn btn-primary" @onclick="GoToPricing">@CourseRes.UpgradePlan</button>
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="EnrollInCourse" disabled="@_enrolling">
+                    @(_enrolling ? CourseRes.Enrolling : CourseRes.EnrollInThisCourse)
+                </button>
+                @if (_enrollError is not null)
+                {
+                    <div class="enroll-error-notice">
+                        <p class="text-danger">@_enrollError</p>
+                        <button class="btn btn-outline-primary btn-sm" @onclick="GoToPricing">@CourseRes.UpgradePlan</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="modules-list">
+        @foreach (var module in _course.Modules.OrderBy(m => m.SortOrder))
+        {
+            var isExpanded = _expandedModules.Contains(module.Id);
+            <div class="card mb-3" @key="module.Id">
+                <div class="card-header d-flex justify-content-between align-items-center collapsible-header"
+                     role="button"
+                     tabindex="0"
+                     aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
+                     @onclick="() => ToggleModule(module.Id)"
+                     @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
+                    <span class="fw-semibold">@module.SortOrder. @module.Title</span>
+                    <i class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")"></i>
+                </div>
+                <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
+                    <div class="collapsible-body-inner">
+                        <div class="card-body">
+                            @if (!string.IsNullOrEmpty(module.Description))
+                            {
+                                <div class="module-description">@((MarkupString)module.Description)</div>
+                            }
+                            <ul class="lessons-list">
+                                @foreach (var lesson in module.Lessons.OrderBy(l => l.SortOrder))
+                                {
+                                    <li class="lesson-item @(lesson.IsCompleted ? "completed" : "")"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="@lesson.Title"
+                                        @onclick="() => ViewLesson(lesson.Id)"
+                                        @onkeydown="@(e => { if (e.IsActivationKey()) ViewLesson(lesson.Id); })">
+                                        <span class="lesson-icon" aria-hidden="true">
+                                            @if (lesson.IsCompleted)
+                                            {
+                                                <text>✓</text>
+                                            }
+                                            else if (lesson.ContentType == 2)
+                                            {
+                                                <text>▶</text>
+                                            }
+                                            else
+                                            {
+                                                <text>📄</text>
+                                            }
+                                        </span>
+                                        <span class="lesson-title">@lesson.Title</span>
+                                        @if (lesson.DurationMinutes.HasValue)
+                                        {
+                                            <span class="lesson-duration">@lesson.DurationMinutes @CourseRes.MinutesShort</span>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <h2>@ReviewRes.ReviewsTitle</h2>
+            @if (_reviewsData?.Summary is { } summary)
+            {
+                <div class="reviews-summary">
+                    <StarRating Value="summary.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)" />
+                    <span>@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)</span>
+                </div>
+            }
+        </div>
+
+        @if (_course.IsEnrolled)
+        {
+            @if (_showReviewForm)
+            {
+                <div class="review-form card">
+                    <div class="card-body">
+                        <h3 class="h5">@(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)</h3>
+                        <div class="mb-2">
+                            <label class="form-label">@ReviewRes.RatingLabel</label>
+                            <select class="form-select" style="max-width:120px" value="@_formRating"
+                                    @onchange="e => _formRating = int.Parse(e.Value!.ToString()!)">
+                                @for (var i = 5; i >= 1; i--)
+                                {
+                                    <option value="@i">@i ★</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">@ReviewRes.BodyLabel</label>
+                            <textarea class="form-control" rows="4" maxlength="2000"
+                                      placeholder="@ReviewRes.BodyPlaceholder"
+                                      value="@_formBody" @oninput="e => _formBody = e.Value?.ToString() ?? string.Empty"></textarea>
+                        </div>
+                        @if (_reviewError is not null)
+                        {
+                            <p class="text-danger">@_reviewError</p>
+                        }
+                        <button class="btn btn-primary me-2" disabled="@(_submittingReview || string.IsNullOrWhiteSpace(_formBody))" @onclick="SubmitReviewAsync">
+                            @(_reviewsData?.MyReview is null ? ReviewRes.SubmitReview : ReviewRes.UpdateReview)
+                        </button>
+                        <button class="btn btn-secondary" @onclick="CloseReviewForm">@ReviewRes.Cancel</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @if (_reviewsData?.MyReview is { Status: "Pending" })
+                {
+                    <p class="text-light-muted">@ReviewRes.MyReviewPending</p>
+                }
+                else if (_reviewsData?.MyReview is { Status: "Rejected" })
+                {
+                    <p class="text-danger">@ReviewRes.MyReviewRejected</p>
+                }
+                <button class="btn btn-outline-primary mb-3" @onclick="OpenReviewForm">
+                    @(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)
+                </button>
+            }
+        }
+        else
+        {
+            <p class="text-light-muted">@ReviewRes.EnrollToReview</p>
+        }
+
+        @if (_reviewsData is { Reviews.Count: > 0 })
+        {
+            <div class="review-list">
+                @foreach (var review in _reviewsData.Reviews)
+                {
+                    <div class="review-item" @key="review.Id">
+                        <div class="review-item-header">
+                            <span class="review-author">@review.AuthorName</span>
+                            <StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" />
+                        </div>
+                        <p class="review-body">@review.Body</p>
+                        <span class="review-date">@review.CreatedAt.ToLocalTime().ToString("d")</span>
+                    </div>
+                }
+            </div>
+        }
+        else if (_reviewsData is not null)
+        {
+            <p class="text-light-muted">@ReviewRes.NoReviewsYet</p>
+        }
+    </div>
+}
+

@@ -1,0 +1,73 @@
+@* Renders a general-purpose form modal with header/body/footer slots. *@
+@inject IJSRuntime JS
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1" @onclick="OnClose"
+         role="dialog" aria-modal="true" aria-labelledby="@_titleId"
+         @ref="_dialogRef" @onkeydown="HandleKeyDown">
+        <div class="modal-dialog @Size" @onclick:stopPropagation="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="@_titleId">@Title</h5>
+                    @if (ShowCloseButton)
+                    {
+                        <button type="button" class="btn-close" @onclick="OnClose" aria-label="@CloseLabel"></button>
+                    }
+                </div>
+                <div class="modal-body">
+                    @Body
+                </div>
+                @if (Footer is not null)
+                {
+                    <div class="modal-footer">
+                        @Footer
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public bool IsVisible { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public string Size { get; set; } = "";
+    [Parameter] public RenderFragment? Body { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public bool ShowCloseButton { get; set; } = true;
+    [Parameter] public string CloseLabel { get; set; } = GlobalRes.Close;
+
+    private ElementReference _dialogRef;
+    private bool _wasVisible;
+    private readonly string _titleId = "form-modal-" + Guid.NewGuid().ToString("N");
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Move focus into the dialog when it opens (WCAG 2.4.3 / 4.1.2).
+        if (IsVisible && !_wasVisible)
+        {
+            _wasVisible = true;
+            try
+            {
+                await _dialogRef.FocusAsync();
+                // UI-5: traps Tab within the dialog and restores focus to the trigger on
+                // close (WCAG 2.4.3) — the trigger is whatever element has focus right now.
+                await JS.InvokeVoidAsync("modalInterop.activate", _dialogRef);
+            }
+            catch { /* element gone / circuit closed */ }
+        }
+        else if (!IsVisible && _wasVisible)
+        {
+            _wasVisible = false;
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+            await OnClose.InvokeAsync();
+    }
+}

@@ -1,0 +1,179 @@
+@page "/billing"
+@attribute [Authorize]
+
+<PageTitle>@BillingRes.PageTitle</PageTitle>
+
+<div class="billing-page">
+    <h1>@BillingRes.PageHeading</h1>
+
+    @if (_loading)
+    {
+        <LoadingSpinner Label="@BillingRes.LoadingBilling" />
+    }
+    else if (_error is not null)
+    {
+        <p class="text-danger">@_error</p>
+        <button class="btn btn-secondary" @onclick="LoadBillingOverviewAsync">@GlobalRes.TryAgain</button>
+    }
+    else if (_overview is not null)
+    {
+        @* ── Current Plan Card ── *@
+        <div class="billing-section">
+            <h2>@BillingRes.CurrentPlan</h2>
+            <div class="current-plan-card">
+                <div class="plan-info">
+                    <div class="plan-name-row">
+                        <span class="plan-name">@_overview.CurrentSubscription?.PlanName</span>
+                        <span class="tier-badge tier-@_overview.CurrentSubscription?.Tier.ToString().ToLowerInvariant()">
+                            @_overview.CurrentSubscription?.Tier
+                        </span>
+                    </div>
+
+                    <div class="plan-dates">
+                        <p><strong>@BillingRes.ActiveSince</strong> @_overview.CurrentSubscription?.StartedAt.ToLocalTime().ToString("d")</p>
+                        @if (_overview.CurrentSubscription?.ExpiresAt is not null)
+                        {
+                            <p><strong>@BillingRes.NextRenewal</strong> @_overview.CurrentSubscription.ExpiresAt.Value.ToLocalTime().ToString("d")</p>
+                        }
+                        else
+                        {
+                            <p><strong>@BillingRes.Renewal</strong> @BillingRes.NoExpiry</p>
+                        }
+                    </div>
+
+                    @if (_overview.CurrentSubscription?.Features is not null)
+                    {
+                        <div class="plan-features-summary">
+                            <span class="feature-tag">
+                                @(_overview.CurrentSubscription.Features.MaxCourses >= 1000
+                                    ? BillingRes.UnlimitedCourses
+                                    : string.Format(BillingRes.CoursesCountFormat, _overview.CurrentSubscription.Features.MaxCourses))
+                            </span>
+                            @if (_overview.CurrentSubscription.Features.AssessmentAccess)
+                            {
+                                <span class="feature-tag">@BillingRes.FeatureAssessments</span>
+                            }
+                            @if (_overview.CurrentSubscription.Features.CertificateAccess)
+                            {
+                                <span class="feature-tag">@BillingRes.FeatureCertificates</span>
+                            }
+                            @if (_overview.CurrentSubscription.Features.PrioritySupport)
+                            {
+                                <span class="feature-tag">@BillingRes.FeaturePrioritySupport</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="plan-actions">
+                    <button class="btn btn-primary" @onclick="GoToPricing">@BillingRes.ChangePlan</button>
+                    @if (_overview.CurrentSubscription?.Tier > SubscriptionTier.Free)
+                    {
+                        <button class="btn btn-outline-warning" @onclick="RequestCancel" disabled="@_cancelling">
+                            @BillingRes.CancelSubscription
+                        </button>
+                    }
+                </div>
+
+                @if (_cancelMessage is not null)
+                {
+                    <div class="cancel-msg @(_cancelSuccess ? "msg-success" : "msg-error")">
+                        @_cancelMessage
+                    </div>
+                }
+
+                <ConfirmModal IsVisible="_showCancelConfirm"
+                              Title="@BillingRes.CancelConfirmTitle"
+                              ConfirmLabel="@BillingRes.CancelSubscription"
+                              CancelLabel="@BillingRes.KeepSubscription"
+                              ConfirmButtonClass="btn-warning"
+                              IsBusy="_cancelling"
+                              OnConfirm="CancelSubscription"
+                              OnCancel="CloseCancelDialog">
+                    <BodyContent>
+                        <p>@string.Format(BillingRes.CancelConfirmBody, _overview.CurrentSubscription?.PlanName)</p>
+                        @if (_overview.CurrentSubscription?.ExpiresAt is not null)
+                        {
+                            <p class="mb-0">@string.Format(BillingRes.CancelConfirmAccessUntil, _overview.CurrentSubscription.ExpiresAt.Value.ToLocalTime().ToString("d"))</p>
+                        }
+                    </BodyContent>
+                </ConfirmModal>
+            </div>
+        </div>
+
+        @* ── Transaction History ── *@
+        <div class="billing-section">
+            <h2>@BillingRes.TransactionHistory</h2>
+
+            @if (_overview.Transactions.TotalCount == 0)
+            {
+                <p class="text-light-muted">@BillingRes.NoTransactions</p>
+            }
+            else
+            {
+                <ScrollableTable Items="_overview.Transactions.Items" TItem="BillingTransactionDto"
+                                 TableCssClass="transactions-table">
+                    <HeaderRow>
+                        <tr>
+                            <SortableColumnHeader ColumnKey="createdat" Label="@BillingRes.ColDate"
+                                                  CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                                  OnSort="OnSort" />
+                            <th>@BillingRes.ColDescription</th>
+                            <SortableColumnHeader ColumnKey="plan" Label="@BillingRes.ColPlan"
+                                                  CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                                  OnSort="OnSort" />
+                            <SortableColumnHeader ColumnKey="amount" Label="@BillingRes.ColAmount"
+                                                  CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                                  OnSort="OnSort" />
+                            <th>@BillingRes.ColReference</th>
+                        </tr>
+                    </HeaderRow>
+                    <RowTemplate Context="tx">
+                        <tr @key="tx.Id">
+                            <td data-label="@BillingRes.ColDate">@tx.CreatedAt.ToLocalTime().ToString("g")</td>
+                            <td data-label="@BillingRes.ColDescription">
+                                <span class="tx-type tx-type-@tx.Type.ToLowerInvariant()">@tx.Type</span>
+                                <span>@tx.Description</span>
+                            </td>
+                            <td data-label="@BillingRes.ColPlan">@tx.PlanName</td>
+                            <td data-label="@BillingRes.ColAmount" class="@(tx.Amount > 0 ? "amount-charge" : "amount-zero")">
+                                @if (tx.Amount == 0)
+                                {
+                                    <span>—</span>
+                                }
+                                else
+                                {
+                                    <span>@tx.Currency @tx.Amount.ToString("F2")</span>
+                                }
+                            </td>
+                            <td data-label="@BillingRes.ColReference" class="tx-ref">
+                                @if (!string.IsNullOrEmpty(tx.StripeSessionId))
+                                {
+                                    <code>@tx.StripeSessionId[..Math.Min(20, tx.StripeSessionId.Length)]…</code>
+                                }
+                                else
+                                {
+                                    <span class="text-light-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                    </RowTemplate>
+                </ScrollableTable>
+
+                <AdminPaginationToolbar CurrentPage="_overview.Transactions.Page"
+                                        TotalPages="_overview.Transactions.TotalPages"
+                                        TotalCount="_overview.Transactions.TotalCount"
+                                        PageSize="_overview.Transactions.PageSize"
+                                        HasPreviousPage="_overview.Transactions.HasPreviousPage"
+                                        HasNextPage="_overview.Transactions.HasNextPage"
+                                        PageSizeOptions="PageSizeOptions"
+                                        ItemLabel="@BillingRes.ItemLabelTransactions"
+                                        OnPageSizeChanged="OnPageSizeChanged"
+                                        OnPreviousPage="PreviousPage"
+                                        OnNextPage="NextPage" />
+            }
+        </div>
+    }
+</div>
+
+

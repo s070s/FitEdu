@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ResetYourFuture.Application</RootNamespace>
+    <!-- Emit XML docs so the Web project's OpenAPI source generator can read DTO
+         <summary>/<example> comments from this referenced project (.NET 10). -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <!-- Mirror the implicit usings that Microsoft.NET.Sdk.Web adds so moved files compile unchanged -->
+  <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Identity" />
+    <Using Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
+    <PackageReference Include="System.Numerics.Tensors" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ResetYourFuture.Domain\ResetYourFuture.Domain.csproj" />
+    <ProjectReference Include="..\ResetYourFuture.Shared\ResetYourFuture.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

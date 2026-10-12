@@ -1,0 +1,116 @@
+@* Renders the main message area: header, pagination, message list, and input. *@
+
+<div class="chat-main">
+    @if ( Conversation is null )
+    {
+        <div class="chat-placeholder">
+            <span class="bi bi-chat-dots" style="font-size: 3rem;"></span>
+            <p>@ChatRes.SelectConversation</p>
+        </div>
+    }
+    else
+    {
+        <div class="chat-header">
+            @if (OnBackToList.HasDelegate)
+            {
+                <button class="btn-back-mobile" @onclick="OnBackToList" title="@ChatRes.Back" aria-label="@ChatRes.Back">
+                    <span class="bi bi-arrow-left" aria-hidden="true"></span>
+                </button>
+            }
+            <h6>
+                <span class="bi bi-person"></span> @Conversation.OtherUserName
+                <span class="chat-header-role">(@Conversation.OtherUserRole)</span>
+                <PresenceIndicator UserId="@Conversation.OtherUserId" LastSeenAt="@Conversation.OtherUserLastSeenAt" ShowLabel="true" />
+            </h6>
+            <button class="btn-video-call ms-auto" @onclick="StartVideoCall"
+                    disabled="@(CallService.Stage != CallStage.Idle)"
+                    title="@CallRes.StartVideoCall" aria-label="@CallRes.StartVideoCall">
+                <span class="bi bi-camera-video" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        @if ( Messages is not null )
+        {
+            <div class="d-flex justify-content-between align-items-center px-3 py-1 chat-pagination">
+                <small class="text-light-muted">@Messages.TotalCount @ChatRes.Messages</small>
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label mb-0 text-light-muted small" for="msg-page-size">@GlobalRes.PaginationRows</label>
+                    <select id="msg-page-size" class="page-size-select" value="@PageSize" @onchange="HandlePageSizeChange">
+                        @foreach ( var opt in PageSizeOptions )
+                        {
+                            <option value="@opt">@opt</option>
+                        }
+                    </select>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            @onclick="OnPreviousPage"
+                            disabled="@(!Messages.HasPreviousPage)">‹ @GlobalRes.PaginationOlder</button>
+                    <span class="small">@string.Format(GlobalRes.PaginationPageOfFormat, Messages.Page, Messages.TotalPages)</span>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            @onclick="OnNextPage"
+                            disabled="@(!Messages.HasNextPage)">@GlobalRes.PaginationNewer ›</button>
+                </div>
+            </div>
+        }
+
+        <div class="chat-messages" @ref="_messageContainer"
+             role="log" aria-live="polite" aria-relevant="additions"
+             aria-label="@ChatRes.Messages">
+            @if ( IsLoading )
+            {
+                <div class="text-center p-3">
+                    <LoadingSpinner Size="LoadingSpinner.SpinnerSize.Small" Label="@ChatRes.LoadingMessages" />
+                </div>
+            }
+            else
+            {
+                <Virtualize Items="Messages?.Items ?? new()" Context="msg" OverscanCount="10">
+                    @if (msg.CallEvent is not null)
+                    {
+                        <div class="call-event-chip" @key="msg.Id">
+                            <span class="bi bi-camera-video" aria-hidden="true"></span>
+                            @GetCallEventText(msg)
+                        </div>
+                    }
+                    else
+                    {
+                        var isMine = msg.SenderId == CurrentUserId;
+                        <div class="message-bubble @(isMine ? "mine" : "theirs")" @key="msg.Id">
+                            <div class="message-sender">
+                                @msg.SenderName
+                                <span class="message-role">(@msg.SenderRole)</span>
+                            </div>
+                            <div class="message-content">@msg.Content</div>
+                            <div class="message-time">@msg.SentAt.ToLocalTime().ToString( "HH:mm" )</div>
+                        </div>
+                    }
+                </Virtualize>
+            }
+        </div>
+
+        @if (!IsConnected)
+        {
+            <div class="d-flex align-items-center gap-2 px-3 py-1 small text-warning" role="status" aria-live="polite">
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span>@ChatRes.Reconnecting</span>
+            </div>
+        }
+
+        <div class="chat-input">
+            <div class="textarea-wrapper">
+                <div class="resize-handle-top" @ref="_resizeHandleRef"></div>
+                @* PERF-6: no per-keystroke binding — the value is read via JS interop only on send. *@
+                <textarea class="form-control" placeholder="@ChatRes.TypeMessage"
+                          aria-label="@ChatRes.TypeMessage"
+                          rows="1"
+                          @ref="_textareaRef"
+                          @onkeydown="HandleKeyDown"
+                          disabled="@(!IsConnected)"></textarea>
+            </div>
+            <button class="btn btn-primary" @onclick="SendMessage"
+                    aria-label="@ChatRes.Send"
+                    disabled="@(!IsConnected)">
+                <span class="bi bi-send" aria-hidden="true"></span>
+            </button>
+        </div>
+    }
+</div>

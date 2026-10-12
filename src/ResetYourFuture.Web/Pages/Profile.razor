@@ -1,0 +1,146 @@
+@page "/profile"
+@attribute [Authorize]
+@using ResetYourFuture.Web.Extensions
+
+<PageTitle>@ProfileRes.PageTitle</PageTitle>
+
+<div class="profile-container">
+    <h2>@ProfileRes.Heading</h2>
+
+    <AuthorizeView>
+        <Authorized>
+            @if (profile == null)
+            {
+                @if (_loadError is not null)
+                {
+                    <p class="text-danger">@_loadError</p>
+                    <button class="btn btn-secondary" @onclick="LoadProfileAsync">@GlobalRes.TryAgain</button>
+                }
+                else
+                {
+                    <LoadingSpinner Label="@ProfileRes.Loading" />
+                }
+            }
+            else
+            {
+                <FormCardSection Title="@ProfileRes.BasicInformation"
+                                 IsCollapsible="true"
+                                 InitiallyExpanded="true"
+                                 CssClass="card mb-3">
+                    <ChildContent>
+                        <div class="mb-3">
+                            <label class="form-label" for="profile-avatar">@ProfileRes.LabelAvatar</label>
+                            <div>
+                                @if (!string.IsNullOrEmpty(avatarDataUrl))
+                                {
+                                    <img src="@avatarDataUrl" alt="@ProfileRes.LabelAvatar" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;" />
+                                }
+                                <InputFile id="profile-avatar" OnChange="HandleAvatarUpload" class="form-control mt-2" accept="image/*" disabled="@_uploadingAvatar" />
+                                @if (_uploadingAvatar)
+                                {
+                                    <div class="mt-2 d-flex align-items-center gap-2">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        <span>@ProfileRes.UploadingAvatar</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="profile-display-name">@ProfileRes.LabelDisplayName</label>
+                            <input id="profile-display-name" type="text" class="form-control" @bind="displayName" placeholder="@profile.Email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="profile-status">@GlobalRes.Label_Info_Status</label>
+                            <select id="profile-status" class="form-select" @bind="profileStatus">
+                                @foreach (var status in UserStatusLabels.Selectable)
+                                {
+                                    <option value="@status">@UserStatusLabels.Label(status)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <p><strong>@ProfileRes.LabelEmail</strong> @profile.Email</p>
+                        <p><strong>@ProfileRes.LabelName</strong> @profile.FirstName @profile.LastName</p>
+                        <p><strong>@ProfileRes.LabelDateOfBirth</strong> @(profile.DateOfBirth?.ToString("d") ?? ProfileRes.NotSpecified)</p>
+
+                        <button class="btn btn-primary" @onclick="UpdateProfile" disabled="@isSaving">@ProfileRes.BtnSaveProfile</button>
+                    </ChildContent>
+                </FormCardSection>
+
+                <FormCardSection Title="@ProfileRes.ChangePassword"
+                                 IsCollapsible="true"
+                                 InitiallyExpanded="false"
+                                 CssClass="card mb-3">
+                    <ChildContent>
+                        <form @onsubmit="ChangePassword" @onsubmit:preventDefault="true">
+                            <div class="mb-3">
+                                <label class="form-label" for="profile-current-password">@ProfileRes.LabelCurrentPassword</label>
+                                <input id="profile-current-password" type="password" class="form-control" autocomplete="current-password" @bind="currentPassword" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="profile-new-password">@ProfileRes.LabelNewPassword</label>
+                                <input id="profile-new-password" type="password" class="form-control" autocomplete="new-password"
+                                       aria-describedby="profile-password-help" @bind="newPassword" />
+                                <div class="form-text" id="profile-password-help">@GlobalRes.PasswordRulesHint</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="profile-confirm-password">@ProfileRes.LabelConfirmNewPassword</label>
+                                <input id="profile-confirm-password" type="password" class="form-control" autocomplete="new-password" @bind="confirmPassword" />
+                            </div>
+                            <button type="submit" class="btn btn-warning" disabled="@isChangingPassword">@ProfileRes.ChangePassword</button>
+                        </form>
+                    </ChildContent>
+                </FormCardSection>
+
+                <FormCardSection Title="@ProfileRes.YourData"
+                                 IsCollapsible="true"
+                                 InitiallyExpanded="false"
+                                 CssClass="card mb-3">
+                    <ChildContent>
+                        <p>@ProfileRes.DownloadMyDataDescription</p>
+                        <a class="btn btn-outline-primary" href="api/profile/export">@ProfileRes.DownloadMyData</a>
+                    </ChildContent>
+                </FormCardSection>
+
+                @if (!string.IsNullOrEmpty(message))
+                {
+                    <div class="alert alert-info">@message</div>
+                }
+
+                @if (!_isImpersonating)
+                {
+                    <button class="btn btn-secondary mt-3" @onclick="Logout">@ProfileRes.BtnLogout</button>
+
+                    <FormCardSection Title="@ProfileRes.DangerZone"
+                                     IsCollapsible="true"
+                                     InitiallyExpanded="false"
+                                     CssClass="card mb-3 mt-3">
+                        <ChildContent>
+                            <p>@ProfileRes.DeleteAccountDescription</p>
+                            @if (_deleteError is not null)
+                            {
+                                <div class="alert alert-danger">@_deleteError</div>
+                            }
+                            <button class="btn btn-danger" @onclick="RequestDeleteAccount" disabled="@_isDeleting">@ProfileRes.DeleteAccount</button>
+                        </ChildContent>
+                    </FormCardSection>
+
+                    <ConfirmModal IsVisible="_showDeleteConfirm"
+                                  Title="@ProfileRes.DeleteAccountConfirmTitle"
+                                  Message="@ProfileRes.DeleteAccountConfirmBody"
+                                  ConfirmLabel="@ProfileRes.DeleteAccount"
+                                  CancelLabel="@GlobalRes.Cancel"
+                                  IsBusy="_isDeleting"
+                                  OnConfirm="DeleteAccount"
+                                  OnCancel="CloseDeleteDialog" />
+                }
+            }
+        </Authorized>
+        <NotAuthorized>
+            <p>@ProfileRes.RedirectingToLogin</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+

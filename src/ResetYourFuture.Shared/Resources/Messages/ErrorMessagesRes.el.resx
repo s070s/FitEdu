@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmailConfirmationError" xml:space="preserve">
+    <value>Σφάλμα κατα την επαλήθευση του email!</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Σφάλμα</value>
+  </data>
+  <data name="EmailTakenError" xml:space="preserve">
+    <value>Η διεύθυνση email είναι ήδη εγγεγραμένη</value>
+  </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Σφάλμα κατα τη σύνδεση!</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>Ο Λογαριασμός Απενεργοποιήθηκε</value>
+  </data>
+  <data name="AccountDisabledMessage" xml:space="preserve">
+    <value>Ο λογαριασμός σας έχει απενεργοποιηθεί από διαχειριστή.</value>
+  </data>
+  <data name="AccountDisabledContact" xml:space="preserve">
+    <value>Εάν πιστεύετε ότι πρόκειται για λάθος, επικοινωνήστε με την υποστήριξη.</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>Επιστροφή στη Σύνδεση</value>
+  </data>
+  <data name="EmailNotConfirmedHint" xml:space="preserve">
+    <value>Η διεύθυνση email σας δεν έχει επιβεβαιωθεί ακόμη. Ελέγξτε τα εισερχόμενά σας για τον σύνδεσμο επιβεβαίωσης.</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Μη έγκυρα διαπιστευτήρια.</value>
+  </data>
+  <data name="EmailNotConfirmedError" xml:space="preserve">
+    <value>Το email δεν έχει επιβεβαιωθεί.</value>
+  </data>
+  <data name="AccountDisabledContactSupport" xml:space="preserve">
+    <value>Ο λογαριασμός σας έχει απενεργοποιηθεί. Παρακαλώ επικοινωνήστε με την υποστήριξη.</value>
+  </data>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>Ο λογαριασμός κλειδώθηκε. Δοκιμάστε ξανά αργότερα.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Ο χρήστης δεν βρέθηκε.</value>
+  </data>
+  <data name="InvalidOrExpiredRefreshToken" xml:space="preserve">
+    <value>Μη έγκυρο ή ληγμένο token ανανέωσης.</value>
+  </data>
+  <data name="AccountIsDisabled" xml:space="preserve">
+    <value>Ο λογαριασμός είναι απενεργοποιημένος.</value>
+  </data>
+  <data name="InvalidRequest" xml:space="preserve">
+    <value>Μη έγκυρο αίτημα.</value>
+  </data>
+  <data name="RegistrationFailedGeneric" xml:space="preserve">
+    <value>Η εγγραφή απέτυχε. Ελέγξτε τα στοιχεία σας και δοκιμάστε ξανά.</value>
+  </data>
+  <data name="InvalidConfirmationLink" xml:space="preserve">
+    <value>Μη έγκυρος σύνδεσμος επιβεβαίωσης.</value>
+  </data>
+  <data name="AssessmentAccessRequiresPlus" xml:space="preserve">
+    <value>Η πρόσβαση σε αξιολογήσεις απαιτεί συνδρομή Plus ή ανώτερη.</value>
+  </data>
+  <data name="AssessmentAnswersInvalid" xml:space="preserve">
+    <value>Οι απαντήσεις σου δεν αντιστοιχούν στις ερωτήσεις αυτής της αξιολόγησης.</value>
+  </data>
+  <data name="AssessmentNotFoundOrUnpublished" xml:space="preserve">
+    <value>Η αξιολόγηση δεν βρέθηκε ή δεν έχει δημοσιευτεί</value>
+  </data>
+  <data name="AssessmentRequiresTierFormat" xml:space="preserve">
+    <value>Αυτή η αξιολόγηση απαιτεί συνδρομή {0} ή ανώτερη.</value>
+  </data>
+  <data name="CourseNotFound" xml:space="preserve">
+    <value>Το μάθημα δεν βρέθηκε</value>
+  </data>
+  <data name="CourseRequiresTierFormat" xml:space="preserve">
+    <value>Αυτό το μάθημα απαιτεί συνδρομή {0} ή ανώτερη. Αναβαθμίστε το πλάνο σας.</value>
+  </data>
+  <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
+    <value>Το πλάνο {0} επιτρέπει έως {1} μάθημα/μαθήματα. Αναβαθμίστε για εγγραφή σε περισσότερα μαθήματα.</value>
+  </data>
+  <data name="LessonNotFound" xml:space="preserve">
+    <value>Το μάθημα δεν βρέθηκε</value>
+  </data>
+  <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
+    <value>Πρέπει να είστε εγγεγραμμένος σε αυτό το μάθημα για να δείτε τα μαθήματα</value>
+  </data>
+  <data name="NotEnrolledInCourse" xml:space="preserve">
+    <value>Δεν είστε εγγεγραμμένος σε αυτό το μάθημα</value>
+  </data>
+  <data name="NoFileProvided" xml:space="preserve">
+    <value>Δεν παρέχεται αρχείο</value>
+  </data>
+  <data name="FileTooLarge5Mb" xml:space="preserve">
+    <value>Το αρχείο είναι πολύ μεγάλο (μέγιστο 5 MB)</value>
+  </data>
+  <data name="OnlyImageFilesAllowed" xml:space="preserve">
+    <value>Επιτρέπονται μόνο αρχεία εικόνας (jpeg, png, gif, webp).</value>
+  </data>
+  <data name="FailedToSaveAvatar" xml:space="preserve">
+    <value>Αποτυχία αποθήκευσης του avatar.</value>
+  </data>
+  <data name="CategoryNameExists" xml:space="preserve">
+    <value>Υπάρχει ήδη κατηγορία με αυτό το όνομα.</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>Η κατηγορία δεν βρέθηκε</value>
+  </data>
+  <data name="UnexpectedErrorTryAgain" xml:space="preserve">
+    <value>Παρουσιάστηκε μη αναμενόμενο σφάλμα. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="EnterEmailAndPassword" xml:space="preserve">
+    <value>Παρακαλώ εισαγάγετε email και νέο κωδικό πρόσβασης.</value>
+  </data>
+  <data name="PasswordResetFailed" xml:space="preserve">
+    <value>Σφάλμα κατά την επαναφορά του κωδικού πρόσβασης.</value>
+  </data>
+  <data name="FailedToLoadBilling" xml:space="preserve">
+    <value>Απέτυχε η φόρτωση των στοιχείων χρέωσης. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToCancel" xml:space="preserve">
+    <value>Η ακύρωση απέτυχε. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToLoadCourses" xml:space="preserve">
+    <value>Απέτυχε η φόρτωση των μαθημάτων. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToLoadAnalytics" xml:space="preserve">
+    <value>Απέτυχε η φόρτωση των αναλυτικών στοιχείων. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToLoadCourse" xml:space="preserve">
+    <value>Απέτυχε η φόρτωση του μαθήματος. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToEnroll" xml:space="preserve">
+    <value>Η εγγραφή απέτυχε. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="FailedToSendResetLink" xml:space="preserve">
+    <value>Σφάλμα κατά την αποστολή του συνδέσμου επαναφοράς.</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Άρνηση πρόσβασης.</value>
+  </data>
+  <data name="Auth_EmailRequired" xml:space="preserve">
+    <value>Το email είναι υποχρεωτικό.</value>
+  </data>
+  <data name="Auth_EmailInvalid" xml:space="preserve">
+    <value>Εισαγάγετε μια έγκυρη διεύθυνση email.</value>
+  </data>
+  <data name="Auth_PasswordRequired" xml:space="preserve">
+    <value>Ο κωδικός πρόσβασης είναι υποχρεωτικός.</value>
+  </data>
+  <data name="Auth_PasswordComplexity" xml:space="preserve">
+    <value>Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες και να περιλαμβάνει ένα κεφαλαίο γράμμα και έναν αριθμό.</value>
+  </data>
+  <data name="Auth_ConfirmPasswordRequired" xml:space="preserve">
+    <value>Παρακαλώ επιβεβαιώστε τον κωδικό πρόσβασής σας.</value>
+  </data>
+  <data name="Auth_PasswordMismatch" xml:space="preserve">
+    <value>Οι κωδικοί πρόσβασης δεν ταιριάζουν.</value>
+  </data>
+  <data name="Auth_FirstNameRequired" xml:space="preserve">
+    <value>Το όνομα είναι υποχρεωτικό.</value>
+  </data>
+  <data name="Auth_LastNameRequired" xml:space="preserve">
+    <value>Το επώνυμο είναι υποχρεωτικό.</value>
+  </data>
+  <data name="Auth_GdprConsentRequired" xml:space="preserve">
+    <value>Πρέπει να συναινέσετε στην επεξεργασία δεδομένων.</value>
+  </data>
+</root>

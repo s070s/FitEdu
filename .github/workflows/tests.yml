@@ -1,0 +1,114 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  # Adds a "Run workflow" button on the Actions tab, so CI can be re-run without a push.
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Dummy values so the integration host (WebApplicationFactory<Program>) can boot.
+    # Program.cs requires these at startup; none are real secrets.
+    env:
+      Jwt__Key: "ci-test-signing-key-not-a-secret-min-32-bytes!!"
+      Jwt__Issuer: "ResetYourFuture.Tests"
+      Jwt__Audience: "ResetYourFuture.Tests"
+      AdminUser__Password: "Ci-Test-Admin-1!"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # Pinned, not `10.0.x`. src/ResetYourFuture.Web/packages.lock.json carries an
+          # SDK-supplied `Microsoft.AspNetCore.App.Internal.Assets` entry whose version is
+          # whatever ASP.NET Core the installed SDK bundles, so a floating SDK breaks the
+          # `--locked-mode` restore below with NU1004 the moment a new patch ships
+          # (10.0.400 bundles 10.0.11; the lock file says 10.0.12). 10.0.401 bundles 10.0.12.
+          # When that lock entry is next refreshed, bump this pin to the matching SDK.
+          dotnet-version: 10.0.401
+
+      # BUILD-1: --locked-mode makes a silent package-version drift (e.g. the Microsoft.OpenApi
+      # auto-pin trap) fail the restore loudly instead of quietly rewriting the pin.
+      # After an intentional version change, regenerate the lock files locally with
+      # `dotnet restore ResetYourFuture.sln --force-evaluate` and commit them.
+      - name: Restore
+        run: dotnet restore ResetYourFuture.sln --locked-mode
+
+      - name: Build
+        run: dotnet build ResetYourFuture.sln -c Release --no-restore
+
+      # GOV-2: .editorconfig style rules are advisory in local builds but a hard gate here.
+      # A file that drifts from the configured style (e.g. a block-scoped namespace where the
+      # repo uses file-scoped) fails CI, so drift can't accumulate silently as it did before.
+      # Scoped to `style --severity warn` (the warning-level IDE rules, currently clean); the
+      # whitespace/paren reformatting backlog and analyzer-warnings-as-errors are deferred.
+      - name: Verify code style
+        run: dotnet format style ResetYourFuture.sln --verify-no-changes --severity warn --no-restore
+
+      - name: Test
+        run: dotnet test ResetYourFuture.sln -c Release --no-build --logger "trx" --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: TestResults/*.trx
+          if-no-files-found: ignore
+
+      # DEP-10: push the regenerated lock files back to the Dependabot branch, so what merges is
+      # what this run just built and tested. Deliberately placed after the test step: a bump that
+      # fails the suite leaves no commit behind. A GITHUB_TOKEN push does not retrigger workflows,
+      # which is fine here — this run is already the verification.
+  # BUILD-2: the test suite runs on EF InMemory/SQLite, so a migration valid there but broken on
+  # SQL Server (types, indexes, collation) would ship green and only fail at production startup.
+  # This job applies the whole migration chain against a real SQL Server container.
+  migrations:
+    runs-on: ubuntu-latest
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "Ci-Migrations-Sa-1!"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ci-Migrations-Sa-1!' -C -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          --health-start-period=30s
+
+    env:
+      # The design-time DbContext factory reads this env var, so `dotnet ef` targets the container.
+      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=ResetYourFutureCiDb;User Id=sa;Password=Ci-Migrations-Sa-1!;TrustServerCertificate=True;Encrypt=False"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # Pinned, not `10.0.x`. src/ResetYourFuture.Web/packages.lock.json carries an
+          # SDK-supplied `Microsoft.AspNetCore.App.Internal.Assets` entry whose version is
+          # whatever ASP.NET Core the installed SDK bundles, so a floating SDK breaks the
+          # `--locked-mode` restore below with NU1004 the moment a new patch ships
+          # (10.0.400 bundles 10.0.11; the lock file says 10.0.12). 10.0.401 bundles 10.0.12.
+          # When that lock entry is next refreshed, bump this pin to the matching SDK.
+          dotnet-version: 10.0.401
+
+      - name: Restore
+        run: dotnet restore ResetYourFuture.sln --locked-mode
+
+      - name: Restore tools (dotnet-ef)
+        run: dotnet tool restore
+
+      - name: Apply migrations to SQL Server
+        run: dotnet ef database update --project src/ResetYourFuture.Infrastructure --startup-project src/ResetYourFuture.Web

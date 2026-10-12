@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <UserSecretsId>44814c73-03a4-406e-9f6a-d3fcc210e112</UserSecretsId>
+    <!-- Emit XML doc comments so Microsoft.AspNetCore.OpenApi's source generator can
+         surface <summary>/<param>/<response> text into the OpenAPI document (.NET 10). -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- 1591: missing XML comment on a public member. We document the API surface,
+         not every public member, so suppress the noise. -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Identity + EF Core -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+
+    <!-- Authentication -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+
+    <!-- Local AI assistant: Ollama-backed IChatClient/IEmbeddingGenerator -->
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+
+    <!-- SignalR client (used by ChatService) -->
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+
+    <!-- JWT parsing -->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+
+    <!-- OpenAPI -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <!-- Pin transitive Microsoft.OpenApi to a patched 2.x release (CVE-2026-49451 fixed in 2.7.5+); avoids the breaking 3.x major. -->
+    <PackageReference Include="Microsoft.OpenApi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ResetYourFuture.Domain\ResetYourFuture.Domain.csproj" />
+    <ProjectReference Include="..\ResetYourFuture.Application\ResetYourFuture.Application.csproj" />
+    <ProjectReference Include="..\ResetYourFuture.Infrastructure\ResetYourFuture.Infrastructure.csproj" />
+    <ProjectReference Include="..\ResetYourFuture.Shared\ResetYourFuture.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\Uploads\avatars\" />
+    <Folder Include="App_Data\Uploads\lessons\pdf\" />
+    <Folder Include="App_Data\Uploads\lessons\video\" />
+    <Folder Include="Logs\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+</Project>

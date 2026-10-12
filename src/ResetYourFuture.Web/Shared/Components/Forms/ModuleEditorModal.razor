@@ -1,0 +1,38 @@
+@* Module create/edit modal for admin course editing. *@
+
+<FormModal IsVisible="IsVisible"
+           Title="@(EditingModule == null ? AdminRes.AddModule : AdminRes.EditModule)"
+           OnClose="OnClose">
+    <Body>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger py-2">@_errorMessage</div>
+        }
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label" for="module-title-en">@AdminRes.FieldTitle (EN)</label>
+                <input id="module-title-en" class="form-control" @bind="_titleEn" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label" for="module-title-el">@AdminRes.FieldTitle (EL)</label>
+                <input id="module-title-el" class="form-control" @bind="_titleEl" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="module-desc-en">@AdminRes.FieldDescription (EN)</label>
+            <textarea id="module-desc-en" class="form-control" @bind="_descriptionEn" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="module-desc-el">@AdminRes.FieldDescription (EL)</label>
+            <textarea id="module-desc-el" class="form-control" @bind="_descriptionEl" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="module-sort">@AdminRes.SortOrder</label>
+            <input id="module-sort" type="number" class="form-control" @bind="_sortOrder" />
+        </div>
+    </Body>
+    <Footer>
+        <button class="btn btn-primary" @onclick="SaveAsync" disabled="@_isSaving">@AdminRes.Save</button>
+        <button class="btn btn-secondary" @onclick="OnClose">@AdminRes.Cancel</button>
+    </Footer>
+</FormModal>

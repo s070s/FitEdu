@@ -1,0 +1,20 @@
+bin/
+obj/
+.env
+.claude/
+.vs/
+.vscode/
+Logs/
+*.log
+*.db
+*.db-shm
+*.db-wal
+App_Data/
+DataProtection-Keys/
+*.user
+TestResults/
+
+# Playwright e2e suite (tests/e2e)
+node_modules/
+test-results/
+playwright-report/

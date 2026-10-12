@@ -1,0 +1,109 @@
+using Microsoft.AspNetCore.Components;
+using ResetYourFuture.Web.Consumers;
+using ResetYourFuture.Application.DTOs;
+using ResetYourFuture.Shared.Resources;
+
+namespace ResetYourFuture.Web.Pages;
+
+public partial class Pricing
+{
+    [Inject] private ISubscriptionConsumer SubscriptionService { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private ILogger<Pricing> _logger { get; set; } = default!;
+
+    private List<SubscriptionPlanDto> _plans = [];
+    private UserSubscriptionStatusDto? _currentStatus;
+    private bool _loading = true;
+    private bool _processing;
+    private bool _showCancelConfirm;
+    private string? _error;
+    private string? _cancelMessage;
+    private bool _cancelSuccess;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _plans = await SubscriptionService.GetPlansAsync();
+            _currentStatus = await SubscriptionService.GetStatusAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = PricingRes.FailedToLoadPlans;
+            _logger.LogError(ex, "Failed to load pricing plans.");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task Checkout(Guid planId)
+    {
+        _processing = true;
+        _cancelMessage = null;
+        try
+        {
+            var session = await SubscriptionService.CheckoutAsync(planId);
+            if (session is not null && !string.IsNullOrEmpty(session.CheckoutUrl))
+            {
+                Navigation.NavigateTo(session.CheckoutUrl, forceLoad: false);
+            }
+            else
+            {
+                // Reload status after successful mock checkout
+                _currentStatus = await SubscriptionService.GetStatusAsync();
+                _error = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = PricingRes.CheckoutFailed;
+            _logger.LogError(ex, "Checkout failed for plan {PlanId}.", planId);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private async Task CancelSubscription()
+    {
+        _processing = true;
+        _cancelMessage = null;
+        try
+        {
+            var result = await SubscriptionService.CancelAsync();
+            if (result is not null)
+            {
+                _cancelSuccess = result.Success;
+                _cancelMessage = result.Message;
+
+                if (result.Success)
+                {
+                    _currentStatus = await SubscriptionService.GetStatusAsync();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _cancelSuccess = false;
+            _cancelMessage = PricingRes.FailedToCancel;
+            _logger.LogError(ex, "Failed to cancel subscription.");
+        }
+        finally
+        {
+            _processing = false;
+            _showCancelConfirm = false;
+        }
+    }
+
+    private void RequestCancel() => _showCancelConfirm = true;
+
+    private void CloseCancelDialog() => _showCancelConfirm = false;
+
+    private void NavigateToRegister()
+    {
+        Navigation.NavigateTo("/register");
+    }
+}

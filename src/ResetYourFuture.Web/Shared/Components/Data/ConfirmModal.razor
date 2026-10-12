@@ -1,0 +1,87 @@
+@* Renders a confirmation modal with confirm/cancel buttons and optional busy spinner. *@
+@inject IJSRuntime JS
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1"
+         role="dialog" aria-modal="true" aria-labelledby="@_titleId"
+         @ref="_dialogRef" @onkeydown="HandleKeyDown">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="@_titleId">@Title</h5>
+                    <button type="button" class="btn-close" @onclick="OnCancel"
+                            disabled="@IsBusy" aria-label="@CancelLabel"></button>
+                </div>
+                <div class="modal-body">
+                    @if (BodyContent is not null)
+                    {
+                        @BodyContent
+                    }
+                    else
+                    {
+                        <p>@Message</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="OnCancel"
+                            disabled="@IsBusy">@CancelLabel</button>
+                    <button class="btn @ConfirmButtonClass" @onclick="OnConfirm"
+                            disabled="@IsBusy">
+                        @if (IsBusy)
+                        {
+                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        }
+                        @ConfirmLabel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public bool IsVisible { get; set; }
+    [Parameter] public string Title { get; set; } = GlobalRes.Confirm;
+    [Parameter] public string Message { get; set; } = GlobalRes.AreYouSure;
+    [Parameter] public RenderFragment? BodyContent { get; set; }
+    [Parameter] public string ConfirmLabel { get; set; } = GlobalRes.Confirm;
+    [Parameter] public string CancelLabel { get; set; } = GlobalRes.Cancel;
+    [Parameter] public string ConfirmButtonClass { get; set; } = "btn-danger";
+    [Parameter] public bool IsBusy { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private ElementReference _dialogRef;
+    private bool _wasVisible;
+    private readonly string _titleId = "confirm-modal-" + Guid.NewGuid().ToString("N");
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Move focus into the dialog when it opens so Escape works and focus
+        // does not remain behind the backdrop (WCAG 2.4.3).
+        if (IsVisible && !_wasVisible)
+        {
+            _wasVisible = true;
+            try
+            {
+                await _dialogRef.FocusAsync();
+                // UI-5: traps Tab within the dialog and restores focus to the trigger on
+                // close (WCAG 2.4.3) — the trigger is whatever element has focus right now.
+                await JS.InvokeVoidAsync("modalInterop.activate", _dialogRef);
+            }
+            catch { /* element gone / circuit closed */ }
+        }
+        else if (!IsVisible && _wasVisible)
+        {
+            _wasVisible = false;
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape" && !IsBusy)
+            await OnCancel.InvokeAsync();
+    }
+}

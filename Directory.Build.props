@@ -1,0 +1,37 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- GOV-1: give the built artifact an identity so the demoed/graded build is nameable
+         (assemblies stamp this version). Bump alongside the matching git tag at each milestone;
+         cut v1.0.0 at submission. -->
+    <VersionPrefix>0.9.0</VersionPrefix>
+
+    <!-- GOV-2: run the .editorconfig style rules (IDExxxx) and the recommended analyzers during
+         every build, not just inside an IDE, so drift surfaces as a warning here and in every
+         build. CI hard-gates only the warning-level STYLE rules, via a "dotnet format style"
+         verify-no-changes step (see .github/workflows/tests.yml) so a style drift fails the
+         build. The recommended analyzers stay advisory (their remaining warning backlog is not yet
+         clean); escalating them to errors is deferred until that backlog is worked down.
+         (Note: XML comments cannot contain a double-hyphen, so command flags are written unprefixed here.) -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!-- BUILD-1: write a committed packages.lock.json per project so restores are reproducible and a
+         silent version drift (notably the Microsoft.OpenApi auto-pin trap) fails loudly under CI's
+         locked-mode restore instead of quietly breaking the build. -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+    <!-- Audit direct AND transitive packages against the NuGet advisory database, so a known
+         vulnerability surfaces as an NU190x restore warning. Dependabot was removed on
+         2026-09-05, so this is now the only dependency-security signal the repo produces. -->
+    <NuGetAuditMode>all</NuGetAuditMode>
+
+    <!-- Build speed: skip recompiling downstream projects when only method bodies change -->
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <!-- Build speed: enable VS-specific incremental-build optimizations -->
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
+</Project>
