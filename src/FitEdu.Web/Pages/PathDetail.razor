@@ -13,6 +13,10 @@ else if (_path is null)
 }
 else
 {
+    <SeoHead Title="@_path.Title"
+             Description="@_path.Description"
+             CanonicalUrl="@($"/paths/{_path.Id}")" />
+
     <a class="back-link" href="/paths">&larr; @PathRes.BackToPaths</a>
 
     <div class="path-detail-header">

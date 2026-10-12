@@ -11,6 +11,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Services;
+using FitEdu.Web.Services;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text.Json;
@@ -218,7 +219,8 @@ public static class InfrastructureEndpointsExtensions
         .Produces(StatusCodes.Status302Found);
 
         // --- Sitemap ---
-        app.MapGet("/sitemap.xml", async (IBlogArticleService blog, IExerciseService exercises, IConfiguration sitemapConfig, IMemoryCache sitemapCache, HttpContext ctx) =>
+        app.MapGet("/sitemap.xml", async (IBlogArticleService blog, IExerciseService exercises, ILearningPathService paths,
+            IConfiguration sitemapConfig, IMemoryCache sitemapCache, HttpContext ctx) =>
         {
             var baseUrl = sitemapConfig["Sitemap:BaseUrl"]
                 ?? throw new InvalidOperationException("Sitemap:BaseUrl is not configured.");
@@ -229,30 +231,29 @@ public static class InfrastructureEndpointsExtensions
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
                 var articles = await blog.GetPublishedSummariesAsync(200, "en", ctx.RequestAborted);
                 var exerciseSlugs = await exercises.GetPublishedSlugsAsync(ctx.RequestAborted);
+                var publishedPaths = await paths.GetPublishedAsync(null, "en", ctx.RequestAborted);
 
-                var escapedBase = System.Security.SecurityElement.Escape(baseUrl);
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-                sb.AppendLine($"  <url><loc>{escapedBase}/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>");
+                var sitemap = new SitemapBuilder(baseUrl);
+                sitemap.AddPage("/", "1.0", "weekly");
+
+                // The pages anyone can open without signing in (robots.txt keeps the rest out).
+                sitemap.AddPage("/exercises", "0.8", "weekly");
+                sitemap.AddPage("/paths", "0.8", "weekly");
+                sitemap.AddPage("/blog", "0.7", "weekly");
+                sitemap.AddPage("/pricing", "0.6", "monthly");
+                sitemap.AddPage("/privacy", "0.3", "yearly");
+                sitemap.AddPage("/terms", "0.3", "yearly");
 
                 foreach (var article in articles)
-                {
-                    var safeSlug = System.Security.SecurityElement.Escape(article.Slug);
-                    var lastmod = article.PublishedAt?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
-                    sb.AppendLine($"  <url><loc>{escapedBase}/blog/{safeSlug}</loc><lastmod>{lastmod}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>");
-                }
+                    sitemap.AddPage($"/blog/{article.Slug}", "0.8", "monthly", article.PublishedAt ?? DateTimeOffset.UtcNow);
 
-                // The public exercise library: its index page, then one page per published exercise.
-                sb.AppendLine(CultureInfo.InvariantCulture, $"  <url><loc>{escapedBase}/exercises</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>");
+                foreach (var path in publishedPaths)
+                    sitemap.AddPage($"/paths/{path.Id}", "0.7", "monthly");
+
                 foreach (var exerciseSlug in exerciseSlugs)
-                {
-                    var safeSlug = System.Security.SecurityElement.Escape(exerciseSlug);
-                    sb.AppendLine(CultureInfo.InvariantCulture, $"  <url><loc>{escapedBase}/exercises/{safeSlug}</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>");
-                }
+                    sitemap.AddPage($"/exercises/{exerciseSlug}", "0.6", "monthly");
 
-                sb.AppendLine("</urlset>");
-                return sb.ToString();
+                return sitemap.ToXml();
             });
 
             ctx.Response.ContentType = "application/xml; charset=utf-8";
@@ -260,7 +261,7 @@ public static class InfrastructureEndpointsExtensions
         }).AllowAnonymous()
         .WithTags("Infrastructure")
         .WithName("Sitemap")
-        .WithSummary("XML sitemap of public pages, published blog articles and published exercises.")
+        .WithSummary("XML sitemap of public pages, published blog articles, learning paths and exercises.")
         .WithDescription("Returns an application/xml sitemap for search-engine crawlers. Cached for 30 minutes.")
         .Produces(StatusCodes.Status200OK, contentType: "application/xml");
 
