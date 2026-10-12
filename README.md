@@ -41,7 +41,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 **Admin:** `admin@fitedu.local` / *(password you set in `.env`)*
 
-> Seed data (blog articles, the public-domain exercise library, courses, assessments, students) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The exercise library comes from `src/FitEdu.Shared/JSON/Exercises/` (source, licence and Greek-translation format in [its README](src/FitEdu.Shared/JSON/Exercises/README.md)). The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10).
+> Seed data (blog articles, the public-domain exercise library, courses, assessments, students) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The exercise library comes from `src/FitEdu.Shared/JSON/Exercises/` (source, licence and Greek-translation format in [its README](src/FitEdu.Shared/JSON/Exercises/README.md)); course files in `src/FitEdu.Shared/JSON/Courses/` can link those exercises by slug ([course file format](src/FitEdu.Shared/JSON/Courses/README.md)). The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10).
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
 

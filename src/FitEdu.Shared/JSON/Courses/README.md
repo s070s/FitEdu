@@ -1,0 +1,41 @@
+# Course seed data
+
+Each `*.json` file in this folder is one course. `CourseSeeder` loads them in Development when
+`SeedData:Enabled` is true, after the exercise library (`../Exercises/`). It seeds only when the
+`Courses` table is empty, so a change here needs an empty table or a fresh database. The field
+names match `CourseSeedDto` (`src/FitEdu.Application/DTOs/Seed/CourseSeedDtos.cs`); case does not
+matter.
+
+```json
+{
+  "title": "Bodyweight Basics", "titleEl": "…", "description": "…", "descriptionEl": "…",
+  "requiredTier": "Free", "isPublished": true,
+  "category": "Strength", "categoryEl": "Δύναμη",
+  "level": "Beginner", "goal": "FatLoss", "equipment": "none,mat",
+  "estimatedWeeks": 6, "sessionsPerWeek": 3, "coverExerciseSlug": "pushups",
+  "modules": [
+    { "title": "Week 1", "titleEl": "…", "sortOrder": 1,
+      "lessons": [
+        { "title": "Workout A", "titleEl": "…", "content": "…", "contentEl": "…",
+          "durationMinutes": 30, "sortOrder": 1,
+          "exercises": [
+            { "slug": "pushups", "sets": 3, "reps": "8-12", "restSeconds": 60,
+              "notes": "Elbows at 45°", "notesEl": "…" }
+          ] }
+      ] }
+  ]
+}
+```
+
+| Field | Rule |
+|---|---|
+| `requiredTier` | `Free`, `Plus` or `Pro`; anything else becomes `Free`. |
+| `level` | `Beginner`, `Intermediate` or `Advanced`; anything else becomes `Beginner`. |
+| `goal` | `GeneralFitness`, `Strength`, `MuscleGain`, `FatLoss`, `Endurance`, `Mobility`, `Recovery` or `Nutrition`; anything else becomes `GeneralFitness`. |
+| `category`, `categoryEl` | The category is created on first use. `categoryEl` sets its Greek name, or fills it in when the category has none yet; an existing Greek name is kept. |
+| `equipment` | Comma-joined codes: `none`, `dumbbells`, `barbell`, `kettlebell`, `bands`, `mat`, `bike`, `chair`, `cables`, `machine`. |
+| `coverExerciseSlug`, `exercises[].slug` | Must be a slug from `docs/assets/exercise-slugs.txt`. An unknown slug stops the whole seed with an error naming the course or lesson and the slug. |
+| `exercises` | Shown in list order. `sets`, `reps` (free text such as `30 s` or `AMRAP`), `restSeconds`, `notes` and `notesEl` are optional. |
+
+Every field except `title` (course, module and lesson) and `slug` is optional; older files without
+the fitness fields seed with the defaults above.
