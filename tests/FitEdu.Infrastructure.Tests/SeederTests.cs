@@ -7,7 +7,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.TestSupport;
+using FitEdu.Infrastructure.Data;
 using FitEdu.Infrastructure.Seeding;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using Shouldly;
@@ -157,6 +159,244 @@ public sealed class SeederTests : IDisposable
         await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
 
         (await db.Courses.CountAsync()).ShouldBe(1); // unchanged
+    }
+
+    private const string FitnessCourseJson = """
+    {
+      "title": "Bodyweight Basics",
+      "level": "intermediate",
+      "goal": "FATLOSS",
+      "equipment": "none,mat",
+      "estimatedWeeks": 6,
+      "sessionsPerWeek": 3,
+      "coverExerciseSlug": "pushups",
+      "modules": [
+        { "title": "Week 1", "sortOrder": 1,
+          "lessons": [ { "title": "Workout A", "sortOrder": 1,
+            "exercises": [
+              { "slug": "pushups", "sets": 3, "reps": "10", "restSeconds": 60, "notes": "Elbows 45°", "notesEl": "Αγκώνες 45°" },
+              { "slug": "plank", "reps": "30 s" }
+            ] } ] }
+      ]
+    }
+    """;
+
+    /// <summary>One course whose only lesson ("Workout A") prescribes the given exercise.</summary>
+    private static string CourseJsonWithExercise(string lessonExerciseSlug, string coverExerciseSlug) => $$"""
+    {
+      "title": "Bodyweight Basics",
+      "coverExerciseSlug": "{{coverExerciseSlug}}",
+      "modules": [
+        { "title": "Week 1", "sortOrder": 1,
+          "lessons": [ { "title": "Workout A", "sortOrder": 1,
+            "exercises": [ { "slug": "{{lessonExerciseSlug}}", "sets": 3 } ] } ] }
+      ]
+    }
+    """;
+
+    /// <summary>Saves minimal library exercises so course lessons can link them by slug.</summary>
+    private static async Task<Dictionary<string, Guid>> AddExercisesAsync(ApplicationDbContext db, params string[] slugs)
+    {
+        var exercises = slugs.Select(slug => new Exercise
+        {
+            Id = Guid.NewGuid(),
+            Slug = slug,
+            NameEn = slug,
+            Category = "strength",
+            Level = "beginner",
+            PrimaryMuscles = "chest",
+            SecondaryMuscles = string.Empty,
+            InstructionsEn = "Step one."
+        }).ToList();
+
+        db.Exercises.AddRange(exercises);
+        await db.SaveChangesAsync();
+        return exercises.ToDictionary(exercise => exercise.Slug, exercise => exercise.Id);
+    }
+
+    [Fact]
+    public async Task CourseSeeder_FitnessFields_AreMappedCaseInsensitively()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddExercisesAsync(db, "pushups", "plank");
+        var dir = TempDirWith("course.json", FitnessCourseJson);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var course = await db.Courses.SingleAsync();
+        course.Level.ShouldBe(CourseLevel.Intermediate);
+        course.Goal.ShouldBe(FitnessGoal.FatLoss);
+        course.Equipment.ShouldBe("none,mat");
+        course.EstimatedWeeks.ShouldBe(6);
+        course.SessionsPerWeek.ShouldBe(3);
+        course.CoverExerciseSlug.ShouldBe("pushups");
+    }
+
+    [Fact]
+    public async Task CourseSeeder_LessonExercises_AreLinkedBySlugInListOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var exerciseIds = await AddExercisesAsync(db, "pushups", "plank");
+        var dir = TempDirWith("course.json", FitnessCourseJson);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var lesson = await db.Lessons.Include(l => l.Exercises).SingleAsync();
+        var prescriptions = lesson.Exercises.OrderBy(x => x.SortOrder).ToList();
+        prescriptions.Count.ShouldBe(2);
+
+        var pushups = prescriptions[0];
+        pushups.ExerciseId.ShouldBe(exerciseIds["pushups"]);
+        pushups.SortOrder.ShouldBe(1);
+        pushups.Sets.ShouldBe(3);
+        pushups.Reps.ShouldBe("10");
+        pushups.RestSeconds.ShouldBe(60);
+        pushups.NotesEn.ShouldBe("Elbows 45°");
+        pushups.NotesEl.ShouldBe("Αγκώνες 45°");
+
+        var plank = prescriptions[1];
+        plank.ExerciseId.ShouldBe(exerciseIds["plank"]);
+        plank.SortOrder.ShouldBe(2);
+        plank.Sets.ShouldBeNull();
+        plank.Reps.ShouldBe("30 s");
+        plank.RestSeconds.ShouldBeNull();
+        plank.NotesEn.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task CourseSeeder_UnknownLessonExerciseSlug_ThrowsNamingLessonAndSlug()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddExercisesAsync(db, "pushups");
+        var dir = TempDirWith("course.json", CourseJsonWithExercise(lessonExerciseSlug: "push-ups", coverExerciseSlug: "pushups"));
+
+        var exception = await Should.ThrowAsync<InvalidOperationException>(
+            () => CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance));
+
+        exception.Message.ShouldContain("'Workout A'");
+        exception.Message.ShouldContain("'push-ups'");
+        (await db.Courses.CountAsync()).ShouldBe(0); // nothing half-seeded
+    }
+
+    [Fact]
+    public async Task CourseSeeder_UnknownCoverExerciseSlug_ThrowsNamingCourseAndSlug()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddExercisesAsync(db, "pushups");
+        var dir = TempDirWith("course.json", CourseJsonWithExercise(lessonExerciseSlug: "pushups", coverExerciseSlug: "burpee"));
+
+        var exception = await Should.ThrowAsync<InvalidOperationException>(
+            () => CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance));
+
+        exception.Message.ShouldContain("'Bodyweight Basics'");
+        exception.Message.ShouldContain("'burpee'");
+        (await db.Courses.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CourseSeeder_JsonWithoutFitnessFields_UsesDefaults()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("course.json", SampleCourseJson);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var course = await db.Courses.SingleAsync();
+        course.RequiredTier.ShouldBe(SubscriptionTier.Free);
+        course.Level.ShouldBe(CourseLevel.Beginner);
+        course.Goal.ShouldBe(FitnessGoal.GeneralFitness);
+        course.Equipment.ShouldBeNull();
+        course.EstimatedWeeks.ShouldBeNull();
+        course.SessionsPerWeek.ShouldBeNull();
+        course.CoverExerciseSlug.ShouldBeNull();
+        course.CategoryId.ShouldBeNull();
+        (await db.LessonExercises.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CourseSeeder_UnknownEnumValues_FallBackToDefaults()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("course.json", """
+        { "title": "Odd Values", "requiredTier": "Gold", "level": "Olympian", "goal": "99" }
+        """);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var course = await db.Courses.SingleAsync();
+        course.RequiredTier.ShouldBe(SubscriptionTier.Free);
+        course.Level.ShouldBe(CourseLevel.Beginner);
+        course.Goal.ShouldBe(FitnessGoal.GeneralFitness);
+    }
+
+    // ---- CategorySeedHelper (through the course and assessment seeders) -----
+
+    private const string StrengthCourseJson = """
+    { "title": "Strong Start", "category": "strength", "categoryEl": "Δύναμη" }
+    """;
+
+    [Fact]
+    public async Task CategorySeedHelper_SetsGreekName()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("course.json", StrengthCourseJson);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        var category = await db.Categories.SingleAsync();
+        category.NameEn.ShouldBe("strength");
+        category.NameEl.ShouldBe("Δύναμη");
+    }
+
+    [Fact]
+    public async Task CategorySeedHelper_BackfillsGreekNameOfExistingCategory()
+    {
+        var databaseName = Guid.NewGuid().ToString("N");
+        await using (var setupDb = DbContextFactory.CreateInMemory(databaseName))
+        {
+            setupDb.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
+            await setupDb.SaveChangesAsync();
+        }
+
+        var dir = TempDirWith("course.json", StrengthCourseJson);
+        await using (var seedDb = DbContextFactory.CreateInMemory(databaseName))
+        {
+            await CourseSeeder.SeedFromJsonAsync(seedDb, dir, NullLogger.Instance);
+        }
+
+        await using var readDb = DbContextFactory.CreateInMemory(databaseName);
+        var category = await readDb.Categories.SingleAsync();
+        category.NameEn.ShouldBe("Strength");
+        category.NameEl.ShouldBe("Δύναμη");
+    }
+
+    [Fact]
+    public async Task CategorySeedHelper_KeepsExistingGreekName()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength", NameEl = "Ισχύς" });
+        await db.SaveChangesAsync();
+        var dir = TempDirWith("course.json", StrengthCourseJson);
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.Categories.SingleAsync()).NameEl.ShouldBe("Ισχύς");
+    }
+
+    [Fact]
+    public async Task AssessmentSeeder_CategoryEl_SetsGreekCategoryName()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("assessment.json", """
+        { "key": "fitness-check", "title": "Fitness Check", "category": "Performance", "categoryEl": "Απόδοση", "schemaJson": "{}" }
+        """);
+
+        await AssessmentSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.AssessmentDefinitions.CountAsync()).ShouldBe(1);
+        var category = await db.Categories.SingleAsync();
+        category.NameEn.ShouldBe("Performance");
+        category.NameEl.ShouldBe("Απόδοση");
     }
 
     // ---- ExerciseSeeder ------------------------------------------------------

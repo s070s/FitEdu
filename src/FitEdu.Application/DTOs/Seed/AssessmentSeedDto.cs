@@ -29,6 +29,12 @@ public sealed class AssessmentSeedDto
     {
         get; init;
     }
+
+    /// <summary>Greek category name; fills Category.NameEl when the category has none yet.</summary>
+    public string? CategoryEl
+    {
+        get; init;
+    }
     public required string SchemaJson
     {
         get; init;

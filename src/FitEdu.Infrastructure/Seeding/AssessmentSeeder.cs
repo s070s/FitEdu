@@ -83,7 +83,7 @@ public static class AssessmentSeeder
         }
 
         var def = MapToAssessmentDefinition(dto);
-        def.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category);
+        def.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category, dto.CategoryEl);
         db.AssessmentDefinitions.Add(def);
 
         logger.LogInformation("Loaded assessment '{Title}' (Key: {Key}) from {FileName}",
