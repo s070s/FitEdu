@@ -33,7 +33,7 @@ public partial class Home : IDisposable
 
     private PersistingComponentStateSubscription _persistSub;
 
-    private string? backgroundImageUrl = "/images/background.png";
+    private string? backgroundImageUrl = "/images/hero-home.webp";
     private string heroBackgroundStyle => !string.IsNullOrEmpty(backgroundImageUrl)
         ? $"background-image: url('{backgroundImageUrl}'); background-size: cover; background-position: center;"
         : string.Empty;
