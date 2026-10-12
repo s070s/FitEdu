@@ -252,7 +252,7 @@ public sealed class RealExerciseLibraryDatabase : IAsyncLifetime
     public async Task InitializeAsync()
     {
         var logger = new RecordingLogger();
-        await ExerciseSeeder.SeedFromJsonAsync(Db, Path.Combine(RepoPaths.SeedJsonRoot, "Exercises"), logger);
+        await ExerciseSeeder.SeedFromJsonAsync(Db, RepoPaths.ExerciseSeedFolder, logger);
         logger.Errors.ShouldBeEmpty();
         Db.ChangeTracker.Clear();
     }

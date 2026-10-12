@@ -17,6 +17,12 @@ public static class RepoPaths
     /// <summary>The seed data folders (Courses, Assessments, Exercises, Students): src/FitEdu.Shared/JSON.</summary>
     public static string SeedJsonRoot { get; } = Path.Combine(RepoRoot, "src", "FitEdu.Shared", "JSON");
 
+    /// <summary>The exercise library seed folder: src/FitEdu.Shared/JSON/Exercises.</summary>
+    public static string ExerciseSeedFolder { get; } = Path.Combine(SeedJsonRoot, "Exercises");
+
+    /// <summary>The course seed folder: src/FitEdu.Shared/JSON/Courses.</summary>
+    public static string CourseSeedFolder { get; } = Path.Combine(SeedJsonRoot, "Courses");
+
     /// <summary>The localisation resources (*.resx, *.el.resx, *.Designer.cs): src/FitEdu.Shared/Resources.</summary>
     public static string ResourcesRoot { get; } = Path.Combine(RepoRoot, "src", "FitEdu.Shared", "Resources");
 

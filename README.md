@@ -643,7 +643,7 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 ## AI Assistant
 
-A grounded, bilingual (EN/EL) AI helper available to every authenticated user, regardless of subscription tier. It answers site questions from a background index of published courses, lessons, assessments, and blog articles, and — as a **tool-calling agent** — can look up the signed-in user's own enrollments, lesson progress, assessment results and subscription, plus search and recommend courses. Everything runs **locally** via [Ollama](https://ollama.com) — no cloud API, no per-token cost, no data leaves the machine.
+A grounded, bilingual (EN/EL) AI helper available to every authenticated user, regardless of subscription tier. It answers site questions from a background index of published courses (with every lesson in them, as students see them), assessments, and blog articles, and — as a **tool-calling agent** — can look up the signed-in user's own enrollments, lesson progress, assessment results and subscription, plus search and recommend courses and search the exercise library. Everything runs **locally** via [Ollama](https://ollama.com) — no cloud API, no per-token cost, no data leaves the machine.
 
 **Setup:** the assistant needs [Ollama](https://ollama.com) running locally; everything after that is automatic (the app pulls the models itself). If the widget shows *"Assistant unavailable — is Ollama installed and running?"*, work through these three steps.
 

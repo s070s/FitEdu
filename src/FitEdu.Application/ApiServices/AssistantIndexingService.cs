@@ -39,11 +39,13 @@ public class AssistantIndexingService(
                 lang => BuildCourseSource(course, lang), existingByKey, touched,
                 r => { if (r) added++; else updated++; }, () => unchanged++, cancellationToken);
 
+        // Every lesson of a published course, the lessons students can open (CourseService rule):
+        // seeded lessons keep Lesson.IsPublished false, so that flag would hide all of them.
         var lessons = await db.Lessons
             .AsNoTracking()
             .Include(l => l.Module).ThenInclude(m => m.Course)
             .Include(l => l.Exercises).ThenInclude(x => x.Exercise)
-            .Where(l => l.IsPublished && l.Module.Course.IsPublished)
+            .Where(l => l.Module.Course.IsPublished)
             .ToListAsync(cancellationToken);
         foreach (var lesson in lessons)
             await ProcessSourceAsync(AssistantSourceType.Lesson, lesson.Id,

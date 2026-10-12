@@ -13,9 +13,9 @@ internal static class SeedJsonFiles
     private const string JsonFilePattern = "*.json";
     private const string GreekFragmentFilePattern = "*.el.json";
 
-    public static readonly string CoursesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Courses");
+    public static readonly string CoursesFolder = RepoPaths.CourseSeedFolder;
     public static readonly string AssessmentsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Assessments");
-    public static readonly string ExercisesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Exercises");
+    public static readonly string ExercisesFolder = RepoPaths.ExerciseSeedFolder;
     public static readonly string PathsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Paths");
     public static readonly string ShowcaseFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Showcase");
 
