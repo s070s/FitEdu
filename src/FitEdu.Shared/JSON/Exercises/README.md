@@ -50,6 +50,10 @@ Greek text is kept out of `exercises.json` so the upstream copy stays untouched.
 1. `exercises.el.json` in this folder, if it exists, then
 2. every `el/*.el.json` file, in ordinal file-name order.
 
+`exercises.el.json` holds one row for each of the 140 exercises the seed courses use (a course
+exercise without a Greek name fails `SeedContentIntegrityTests`). `el/` is empty and takes extra
+fragment files when more exercises are translated.
+
 Each file is a JSON array of rows:
 
 ```json

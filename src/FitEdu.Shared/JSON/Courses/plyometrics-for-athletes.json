@@ -1,0 +1,279 @@
+{
+  "title": "Plyometrics for Athletes",
+  "titleEl": "Πλειομετρικές Ασκήσεις για Αθλητές",
+  "description": "Six weeks of bodyweight jump training for experienced athletes (plus a sturdy box or step for box jumps): learn to land, build reactive power and finish with circuits that let you repeat explosive efforts late in a match. Not medical advice — consult a professional before starting if you have a health condition.",
+  "descriptionEl": "Έξι εβδομάδες προπόνησης αλμάτων με βάρος σώματος για έμπειρους αθλητές (και ένα σταθερό κουτί ή σκαλί για τα άλματα σε κουτί): μάθε να προσγειώνεσαι, χτίσε αντιδραστική ισχύ και ολοκλήρωσε με κυκλώματα που σου επιτρέπουν να επαναλαμβάνεις εκρηκτικές προσπάθειες ακόμη και στο τέλος ενός αγώνα. Δεν αποτελεί ιατρική συμβουλή — συμβουλέψου επαγγελματία πριν ξεκινήσεις αν έχεις κάποια πάθηση.",
+  "requiredTier": "Pro",
+  "isPublished": true,
+  "category": "Performance",
+  "categoryEl": "Απόδοση",
+  "level": "Advanced",
+  "goal": "Endurance",
+  "equipment": "none",
+  "estimatedWeeks": 6,
+  "sessionsPerWeek": 2,
+  "coverExerciseSlug": "box-jump-multiple-response",
+  "modules": [
+    {
+      "title": "Week 1–2: Land Before You Launch",
+      "titleEl": "Εβδομάδες 1–2: Πρώτα η Προσγείωση",
+      "description": "How plyometrics work, how to land, and a first session of low- to moderate-intensity jumps at about 90 foot contacts.",
+      "descriptionEl": "Πώς λειτουργούν οι πλειομετρικές ασκήσεις, πώς προσγειώνεσαι σωστά και μια πρώτη προπόνηση με άλματα χαμηλής έως μέτριας έντασης, με περίπου 90 επαφές ποδιών.",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "title": "How Plyometric Training Works",
+          "titleEl": "Πώς Λειτουργεί η Πλειομετρική Προπόνηση",
+          "durationMinutes": 10,
+          "sortOrder": 1,
+          "content": "# How Plyometric Training Works\n\nPlyometric training uses fast jumps, bounds, hops and throws to make you more explosive. Sprinting, cutting, jumping for a rebound or pushing off an opponent all depend on producing a lot of force in a very short time, and that is exactly the quality this course trains. Over six weeks you will train twice a week, using your bodyweight and, for box jumps, a sturdy box or step.\n\n## The stretch-shortening cycle\n\nEvery plyometric movement has three phases:\n\n1. **Loading:** your muscles and tendons stretch under tension as you dip or land, storing elastic energy like a spring\n2. **Transition:** a very brief pause between landing and take-off; the shorter it is, the more of that stored energy you can use\n3. **Take-off:** the muscles shorten forcefully and the stored energy adds to the push\n\nWith practice your nervous system learns to stiffen the legs at the right moment and spend less time on the ground. That skill is what separates a plyometric jump from a slow squat followed by a jump.\n\n## Power that lasts\n\nThe goal of this course is power endurance: the ability to repeat explosive efforts many times, even late in a match, without losing height, speed or control. You first build clean jumps of maximal quality, then gradually shorten the rest so you can repeat them despite fatigue.\n\n## Intensity and volume\n\nJumps range from low to high stress on the body:\n\n- **Low intensity:** skipping, small in-place jumps and ankle hops\n- **Moderate intensity:** squat jumps, star jumps, box jumps and standing long jumps\n- **High intensity:** tuck jumps, lateral bounds, single-leg hops and rebounding box jumps\n\nVolume is counted in foot contacts: every time one or both feet land, that counts as one contact. Coaches commonly keep a session at around 80–100 contacts at the start of a training block and up to about 120–150 for experienced athletes. This course starts at about 90 contacts in weeks 1–2 and reaches about 140 in weeks 5–6.\n\n## Rest is part of the training\n\n- **Between reps and sets:** explosive work needs plenty of recovery; for maximal jumps, rest roughly five to ten times as long as the set lasted\n- **Between sessions:** allow 48–72 hours, which is why you train twice a week\n- **Within the week:** avoid plyometrics on the day after a heavy leg session or a hard match\n\n## Are you ready?\n\nPlyometrics are for people who already train regularly. Before you start, check honestly that you can:\n\n- Do 5 slow single-leg squats down to a bench on each leg, with the knee staying in line with the toes\n- Stand on one leg for 30 seconds with your eyes open and no drifting at the hip\n- Do 10 controlled push-ups with your body in one straight line\n- Train without pain in your knees, ankles, hips or lower back\n\nIf any of these is a struggle, spend a few weeks on strength and balance work first.\n\n## How to judge each rep\n\nEvery rep in this course is done with full intent: as high, as far or as fast as you can. Stop a set early when a jump is clearly lower, a landing becomes loud or your knees start to drift inwards. More tired reps do not build more power; they only put more load on your joints.",
+          "contentEl": "# Πώς Λειτουργεί η Πλειομετρική Προπόνηση\n\nΗ πλειομετρική προπόνηση χρησιμοποιεί γρήγορα άλματα, εκρηκτικούς διασκελισμούς (bounds), αναπηδήσεις και ρίψεις για να σε κάνει πιο εκρηκτικό. Το σπριντ, οι αλλαγές κατεύθυνσης, το άλμα για ριμπάουντ ή το σπρώξιμο ενός αντιπάλου εξαρτώνται όλα από την παραγωγή μεγάλης δύναμης σε πολύ λίγο χρόνο, και αυτή ακριβώς την ικανότητα προπονεί αυτό το πρόγραμμα. Για έξι εβδομάδες θα προπονείσαι δύο φορές την εβδομάδα με το βάρος του σώματός σου και, για τα άλματα σε κουτί (box jumps), με ένα σταθερό κουτί ή σκαλί.\n\n## Ο κύκλος διάτασης-βράχυνσης\n\nΚάθε πλειομετρική κίνηση έχει τρεις φάσεις:\n\n1. **Φόρτιση:** οι μύες και οι τένοντές σου τεντώνονται υπό τάση καθώς κατεβαίνεις ή προσγειώνεσαι και αποθηκεύουν ελαστική ενέργεια σαν ελατήριο\n2. **Μετάβαση:** μια πολύ σύντομη παύση ανάμεσα στην προσγείωση και την απογείωση· όσο πιο σύντομη είναι, τόσο περισσότερη από την αποθηκευμένη ενέργεια μπορείς να αξιοποιήσεις\n3. **Απογείωση:** οι μύες βραχύνονται δυναμικά και η αποθηκευμένη ενέργεια προστίθεται στην ώθηση\n\nΜε την εξάσκηση, το νευρικό σου σύστημα μαθαίνει να «σκληραίνει» τα πόδια την κατάλληλη στιγμή, ώστε να μένεις λιγότερο χρόνο στο έδαφος. Αυτή η δεξιότητα ξεχωρίζει ένα πλειομετρικό άλμα από ένα αργό squat που ακολουθείται από άλμα.\n\n## Ισχύς που διαρκεί\n\nΣτόχος του προγράμματος είναι η αντοχή στην ισχύ: η ικανότητα να επαναλαμβάνεις εκρηκτικές προσπάθειες πολλές φορές, ακόμη και στο τέλος ενός αγώνα, χωρίς να χάνεις ύψος, ταχύτητα ή έλεγχο. Πρώτα χτίζεις καθαρά άλματα μέγιστης ποιότητας και μετά μειώνεις σταδιακά την ξεκούραση, ώστε να μπορείς να τα επαναλαμβάνεις παρά την κούραση.\n\n## Ένταση και όγκος\n\nΤα άλματα επιβαρύνουν το σώμα από λίγο έως πολύ:\n\n- **Χαμηλή ένταση:** skipping, μικρά άλματα στη θέση και αναπηδήσεις από τους αστραγάλους\n- **Μέτρια ένταση:** squats με άλμα, άλματα «αστέρι», άλματα σε κουτί και άλματα μήκους από στάση\n- **Υψηλή ένταση:** άλματα με γόνατα στο στήθος, πλάγια άλματα, αναπηδήσεις στο ένα πόδι και συνεχόμενα άλματα σε κουτί με αναπήδηση\n\nΟ όγκος μετριέται σε επαφές ποδιών: κάθε φορά που προσγειώνεσαι στο ένα ή και στα δύο πόδια, μετράει μία επαφή. Οι προπονητές συνήθως κρατούν μια προπόνηση γύρω στις 80–100 επαφές στην αρχή ενός προπονητικού κύκλου και έως περίπου 120–150 για έμπειρους αθλητές. Αυτό το πρόγραμμα ξεκινά από περίπου 90 επαφές τις εβδομάδες 1–2 και φτάνει περίπου τις 140 τις εβδομάδες 5–6.\n\n## Η ξεκούραση είναι μέρος της προπόνησης\n\n- **Ανάμεσα σε επαναλήψεις και σετ:** η εκρηκτική δουλειά χρειάζεται άφθονη αποκατάσταση· στα μέγιστα άλματα ξεκουράσου περίπου πέντε έως δέκα φορές όσο κράτησε το σετ\n- **Ανάμεσα σε προπονήσεις:** άφησε 48–72 ώρες, γι' αυτό προπονείσαι δύο φορές την εβδομάδα\n- **Μέσα στην εβδομάδα:** απόφυγε τις πλειομετρικές την επομένη μιας βαριάς προπόνησης ποδιών ή ενός δύσκολου αγώνα\n\n## Είσαι έτοιμος;\n\nΟι πλειομετρικές ασκήσεις απευθύνονται σε όσους ήδη προπονούνται τακτικά. Πριν ξεκινήσεις, έλεγξε με ειλικρίνεια ότι μπορείς:\n\n- Να κάνεις 5 αργά squats στο ένα πόδι μέχρι να καθίσεις σε πάγκο, σε κάθε πόδι, με το γόνατο να μένει στην ίδια γραμμή με τα δάχτυλα\n- Να σταθείς στο ένα πόδι για 30 δευτερόλεπτα με ανοιχτά μάτια, χωρίς να «φεύγει» το ισχίο\n- Να κάνεις 10 ελεγχόμενα push-ups με το σώμα σε μία ευθεία\n- Να προπονείσαι χωρίς πόνο σε γόνατα, αστραγάλους, ισχία ή μέση\n\nΑν δυσκολεύεσαι σε κάποιο από αυτά, αφιέρωσε πρώτα μερικές εβδομάδες σε ασκήσεις δύναμης και ισορροπίας.\n\n## Πώς κρίνεις κάθε επανάληψη\n\nΚάθε επανάληψη σε αυτό το πρόγραμμα γίνεται με μέγιστη προσπάθεια: όσο πιο ψηλά, όσο πιο μακριά ή όσο πιο γρήγορα μπορείς. Σταμάτα το σετ νωρίτερα όταν ένα άλμα είναι εμφανώς χαμηλότερο, μια προσγείωση γίνεται θορυβώδης ή τα γόνατά σου αρχίζουν να γέρνουν προς τα μέσα. Περισσότερες κουρασμένες επαναλήψεις δεν χτίζουν περισσότερη ισχύ· απλώς φορτώνουν περισσότερο τις αρθρώσεις σου."
+        },
+        {
+          "title": "Landing Mechanics and the Box Jump",
+          "titleEl": "Μηχανική Προσγείωσης και το Άλμα σε Κουτί",
+          "durationMinutes": 12,
+          "sortOrder": 2,
+          "content": "# Landing Mechanics and the Box Jump\n\nBefore you jump higher, you need to land well. A good landing absorbs force through the hips, knees and ankles together, so the muscles do the work and the joints are protected. The box jump is the ideal place to learn this, because you land on top of the box near the peak of your jump, so you fall a shorter distance and each landing is gentler.\n\n## What it trains\n\n- **Target:** the quadriceps and glutes, which straighten the knees and hips to drive the take-off\n- **Synergists:** the hamstrings and adductors, which help extend the hips, and the calves, which add the final push through the ankles; the arm swing adds height\n- **Stabilisers:** the abdominals and lower-back muscles, which hold the trunk firm, plus the outer-hip muscles (gluteus medius), which keep the knees in line with the toes on landing\n- **Type:** a compound lower-body push; a plyometric jump of moderate intensity\n\n## Set-up\n\n- Use a stable plyometric box, a sturdy step or a solid bench that cannot tip or slide, about knee height to start\n- Stand about an arm's length away, feet hip- to shoulder-width apart, knees slightly bent\n- Keep the arms relaxed by your sides, ready to swing\n- Check that the floor around the box is clear and not slippery\n\n## Form cues\n\n1. Dip quickly into a quarter squat while swinging both arms back\n2. Swing the arms forward and up as you drive through the whole foot\n3. Fully extend the hips, knees and ankles as you leave the floor\n4. Lift the knees just enough to clear the edge of the box\n5. Land with both feet flat on the box at the same time, softly and quietly\n6. Absorb the landing with the hips back, chest up and knees over the toes\n7. Hold the landing for one second, then stand tall\n8. In the single-response version, step down one foot at a time\n\n## Common errors\n\n1. A box that is too high — if you have to tuck into a deep squat to land, lower it; land at about the same depth you took off from\n2. Knees collapsing inwards on landing — lower the box and push the knees out over the toes\n3. Landing only on the toes or only on the heels — aim for the whole foot, with the weight over the mid-foot\n4. Jumping down after every rep in week 1 — step down instead, because dropping off the box adds landing stress\n\n## Easier and harder versions\n\n- Easier: a lower box, or a jump onto a line on the floor with a stuck landing\n- Harder: the multiple-response box jump, in which you drop back down and rebound straight onto the box again; use a lower box than for single jumps and add it only once every landing is clean\n\n## Today's practice\n\nDo 3 sets of 4 single-response box jumps, stepping down after each rep and resting a full minute between sets. Film one set or ask someone to watch: every landing should be quiet, stable and on the whole foot. The multiple-response version joins the programme in weeks 3–4.\n\n## Safety\n\n- Stop if you feel sharp pain in the knees, shins, ankles or Achilles tendon\n- Never jump onto a stack of plates, a chair or any surface that can move\n- Keep sets short; missed landings on a box usually happen when you are tired",
+          "contentEl": "# Μηχανική Προσγείωσης και το Άλμα σε Κουτί\n\nΠριν πηδήξεις ψηλότερα, πρέπει να προσγειώνεσαι σωστά. Μια καλή προσγείωση απορροφά τη δύναμη ταυτόχρονα μέσω ισχίων, γονάτων και αστραγάλων, ώστε το έργο να το κάνουν οι μύες και οι αρθρώσεις να προστατεύονται. Το άλμα σε κουτί (box jump) είναι ιδανικό για να το μάθεις, επειδή προσγειώνεσαι πάνω στο κουτί κοντά στο ψηλότερο σημείο του άλματος, οπότε πέφτεις από μικρότερο ύψος και κάθε προσγείωση είναι πιο ήπια.\n\n## Τι δουλεύει\n\n- **Κύριοι μύες:** οι τετρακέφαλοι και οι γλουτιαίοι, που τεντώνουν γόνατα και ισχία και δίνουν την ώθηση στην απογείωση\n- **Συνεργοί:** οι οπίσθιοι μηριαίοι και οι προσαγωγοί, που βοηθούν στην έκταση του ισχίου, και οι γάμπες, που προσθέτουν την τελική ώθηση από τους αστραγάλους· η αιώρηση των χεριών δίνει επιπλέον ύψος\n- **Σταθεροποιητές:** οι κοιλιακοί και οι μύες της μέσης, που κρατούν τον κορμό σταθερό, καθώς και οι μύες στο έξω μέρος του ισχίου (μέσος γλουτιαίος), που κρατούν τα γόνατα στην ίδια γραμμή με τα δάχτυλα στην προσγείωση\n- **Τύπος:** σύνθετη ώθηση των κάτω άκρων· πλειομετρικό άλμα μέτριας έντασης\n\n## Τοποθέτηση\n\n- Χρησιμοποίησε ένα σταθερό πλειομετρικό κουτί, ένα γερό σκαλί ή έναν συμπαγή πάγκο που δεν ανατρέπεται ούτε γλιστράει, περίπου στο ύψος του γονάτου για αρχή\n- Στάσου σε απόσταση περίπου ενός χεριού από το κουτί, με τα πόδια ανοιχτά από το πλάτος της λεκάνης έως το πλάτος των ώμων και τα γόνατα ελαφρώς λυγισμένα\n- Κράτα τα χέρια χαλαρά στα πλάγια, έτοιμα να αιωρηθούν\n- Έλεγξε ότι το πάτωμα γύρω από το κουτί είναι ελεύθερο και δεν γλιστράει\n\n## Οδηγίες τεχνικής\n\n1. Κατέβα γρήγορα σε ένα μικρό squat (περίπου ένα τέταρτο της διαδρομής) αιωρώντας και τα δύο χέρια προς τα πίσω\n2. Φέρε τα χέρια μπροστά και πάνω καθώς σπρώχνεις με όλο το πέλμα\n3. Τέντωσε πλήρως ισχία, γόνατα και αστραγάλους καθώς φεύγεις από το έδαφος\n4. Σήκωσε τα γόνατα όσο χρειάζεται για να περάσεις την άκρη του κουτιού\n5. Προσγειώσου με τα δύο πέλματα επίπεδα πάνω στο κουτί ταυτόχρονα, απαλά και αθόρυβα\n6. Απορρόφησε την προσγείωση με τα ισχία πίσω, το στήθος ψηλά και τα γόνατα πάνω από τα δάχτυλα\n7. Κράτα τη θέση προσγείωσης για ένα δευτερόλεπτο και μετά σηκώσου όρθιος\n8. Στο απλό άλμα σε κουτί, κατέβα με βήμα, ένα πόδι τη φορά\n\n## Συνηθισμένα λάθη\n\n1. Πολύ ψηλό κουτί — αν πρέπει να μαζευτείς σε βαθύ squat για να προσγειωθείς, χαμήλωσέ το· προσγειώσου περίπου στο ίδιο βάθος από το οποίο απογειώθηκες\n2. Γόνατα που «κλείνουν» προς τα μέσα στην προσγείωση — χαμήλωσε το κουτί και σπρώξε τα γόνατα προς τα έξω, πάνω από τα δάχτυλα\n3. Προσγείωση μόνο στις μύτες ή μόνο στις φτέρνες — στόχευσε σε όλο το πέλμα, με το βάρος στη μέση του\n4. Πήδημα προς τα κάτω μετά από κάθε επανάληψη την 1η εβδομάδα — κατέβα με βήμα, γιατί η πτώση από το κουτί αυξάνει την επιβάρυνση της προσγείωσης\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερο: χαμηλότερο κουτί ή άλμα πάνω σε μια γραμμή στο πάτωμα με σταθερή προσγείωση\n- Δυσκολότερο: τα συνεχόμενα άλματα σε κουτί, όπου πέφτεις ξανά κάτω και αναπηδάς αμέσως πάνω στο κουτί· χρησιμοποίησε χαμηλότερο κουτί από ό,τι στα απλά άλματα και πρόσθεσέ τα μόνο όταν κάθε προσγείωση είναι καθαρή\n\n## Η σημερινή εξάσκηση\n\nΚάνε 3 σετ των 4 απλών αλμάτων σε κουτί, κατεβαίνοντας με βήμα μετά από κάθε επανάληψη και ξεκουραζόμενος ένα ολόκληρο λεπτό ανάμεσα στα σετ. Βιντεοσκόπησε ένα σετ ή ζήτα από κάποιον να σε παρακολουθήσει: κάθε προσγείωση πρέπει να είναι αθόρυβη, σταθερή και σε όλο το πέλμα. Τα συνεχόμενα άλματα σε κουτί μπαίνουν στο πρόγραμμα τις εβδομάδες 3–4.\n\n## Ασφάλεια\n\n- Σταμάτα αν νιώσεις οξύ πόνο σε γόνατα, κνήμες, αστραγάλους ή αχίλλειο τένοντα\n- Μην πηδάς ποτέ πάνω σε στοίβα από δίσκους, σε καρέκλα ή σε οποιαδήποτε επιφάνεια μπορεί να μετακινηθεί\n- Κράτα τα σετ σύντομα· οι αστοχίες στην προσγείωση πάνω στο κουτί συνήθως συμβαίνουν όταν είσαι κουρασμένος",
+          "exercises": [
+            {
+              "slug": "front-box-jump",
+              "sets": 3,
+              "reps": "4",
+              "restSeconds": 60,
+              "notes": "Land quietly in a quarter squat; step down after every rep.",
+              "notesEl": "Αθόρυβη προσγείωση σε μικρό squat· κατέβα με βήμα μετά από κάθε επανάληψη."
+            }
+          ]
+        },
+        {
+          "title": "Foundation Session: Clean Contacts",
+          "titleEl": "Βασική Προπόνηση: Καθαρές Επαφές",
+          "durationMinutes": 40,
+          "sortOrder": 3,
+          "content": "# Foundation Session: Clean Contacts\n\nThis is your session for weeks 1 and 2, done twice a week with at least 48 hours between sessions. It contains about 90 foot contacts of low- to moderate-intensity jumps. The aim is not to get tired; it is to make every take-off sharp and every landing quiet, so the harder weeks are built on solid technique.\n\n## Warm-up\n\nSpend about 10 minutes raising your body temperature and preparing your tendons:\n\n1. Three minutes of easy jogging or jogging on the spot\n2. Ten leg swings forwards and backwards and ten sideways on each leg\n3. Six walking lunges per leg, reaching overhead\n4. Two sets of 10 small ankle hops, staying light on the balls of your feet\n5. Three practice jumps at about 50%, 70% and 90% effort\n\n## The workout\n\n- Do the exercises in order, finishing all sets of one before moving on to the next\n- Every rep is done with full intent, but stop a set as soon as a jump drops in height or a landing turns loud\n- Rest as listed; you should feel fully ready before each set, with your breathing back to normal\n- In weeks 1–2, pause for one second in each landing of the star jumps and jump squats before the next rep; this teaches you to absorb force before you learn to rebound\n- In week 2, if every landing in week 1 was clean, add one rep to the box jumps and the long jumps\n- Measure your best standing long jump in every session; it is your simplest power test, and you will compare it in week 6\n\n**Effort:** the session as a whole should feel like RPE 6–7 out of 10; each individual jump is a maximal effort, but overall fatigue should stay low.\n\n## Cool-down\n\nWalk easily for three minutes, then hold each stretch for 30 seconds per side: a calf stretch against a wall, a kneeling hip-flexor stretch, a standing quad stretch and a seated hamstring stretch. Finish with a minute of slow breathing through the nose.\n\n## Safety\n\n- Jump on a firm, non-slip surface such as a sports-hall floor, rubber matting or flat grass; avoid concrete\n- Wear trainers with good grip and support, and keep the area around you clear\n- A dull ache in the calves or thighs the next day is normal; sharp or lasting pain in a tendon or joint means you should stop and have it checked",
+          "contentEl": "# Βασική Προπόνηση: Καθαρές Επαφές\n\nΑυτή είναι η προπόνησή σου για τις εβδομάδες 1 και 2 και την κάνεις δύο φορές την εβδομάδα, με τουλάχιστον 48 ώρες ανάμεσα στις προπονήσεις. Περιλαμβάνει περίπου 90 επαφές ποδιών με άλματα χαμηλής έως μέτριας έντασης. Ο στόχος δεν είναι να κουραστείς· είναι κάθε απογείωση να είναι εκρηκτική και κάθε προσγείωση αθόρυβη, ώστε οι πιο απαιτητικές εβδομάδες να χτιστούν πάνω σε γερή τεχνική.\n\n## Ζέσταμα\n\nΑφιέρωσε περίπου 10 λεπτά για να ανεβάσεις τη θερμοκρασία του σώματος και να προετοιμάσεις τους τένοντές σου:\n\n1. Τρία λεπτά χαλαρό τρέξιμο ή τρέξιμο στη θέση\n2. Δέκα αιωρήσεις του ποδιού μπρος-πίσω και δέκα στο πλάι με κάθε πόδι\n3. Έξι προβολές με βάδισμα σε κάθε πόδι, τεντώνοντας τα χέρια πάνω από το κεφάλι\n4. Δύο σετ των 10 μικρών αναπηδήσεων από τους αστραγάλους, πατώντας ελαφριά στο μπροστινό μέρος των πελμάτων\n5. Τρία δοκιμαστικά άλματα σε περίπου 50%, 70% και 90% της προσπάθειας\n\n## Η προπόνηση\n\n- Κάνε τις ασκήσεις με τη σειρά, ολοκληρώνοντας όλα τα σετ της μίας πριν περάσεις στην επόμενη\n- Κάθε επανάληψη γίνεται με μέγιστη προσπάθεια, αλλά σταμάτα το σετ μόλις ένα άλμα χάσει ύψος ή μια προσγείωση γίνει θορυβώδης\n- Ξεκουράσου όσο αναγράφεται· πριν από κάθε σετ πρέπει να νιώθεις εντελώς έτοιμος, με την αναπνοή σου να έχει επανέλθει\n- Τις εβδομάδες 1–2, κάνε παύση ενός δευτερολέπτου σε κάθε προσγείωση στα άλματα «αστέρι» και στα squats με άλμα πριν από την επόμενη επανάληψη· έτσι μαθαίνεις να απορροφάς τη δύναμη πριν μάθεις να αναπηδάς\n- Τη 2η εβδομάδα, αν όλες οι προσγειώσεις της 1ης ήταν καθαρές, πρόσθεσε μία επανάληψη στα άλματα σε κουτί και στα άλματα μήκους\n- Μέτρα το καλύτερο άλμα μήκους από στάση σε κάθε προπόνηση· είναι το πιο απλό τεστ ισχύος σου και θα το συγκρίνεις την 6η εβδομάδα\n\n**Ένταση:** η προπόνηση συνολικά πρέπει να αντιστοιχεί σε RPE 6–7 στα 10· κάθε άλμα χωριστά είναι μέγιστη προσπάθεια, αλλά η συνολική κούραση πρέπει να μένει χαμηλή.\n\n## Αποθεραπεία\n\nΠερπάτα χαλαρά για τρία λεπτά και μετά κράτα κάθε διάταση για 30 δευτερόλεπτα σε κάθε πλευρά: διάταση γάμπας στον τοίχο, διάταση καμπτήρων του ισχίου από γονατιστή θέση, όρθια διάταση τετρακεφάλου και καθιστή διάταση οπίσθιων μηριαίων. Τελείωσε με ένα λεπτό αργής αναπνοής από τη μύτη.\n\n## Ασφάλεια\n\n- Πήδα σε σταθερή επιφάνεια που δεν γλιστράει, όπως πάτωμα αθλητικής αίθουσας, λαστιχένιο δάπεδο ή επίπεδο γρασίδι· απόφυγε το τσιμέντο\n- Φόρα αθλητικά παπούτσια με καλό κράτημα και στήριξη και κράτα τον χώρο γύρω σου ελεύθερο\n- Ένας ήπιος πόνος στις γάμπες ή στους μηρούς την επόμενη μέρα είναι φυσιολογικός· οξύς ή επίμονος πόνος σε τένοντα ή άρθρωση σημαίνει ότι πρέπει να σταματήσεις και να ζητήσεις να τον εξετάσει ειδικός",
+          "exercises": [
+            {
+              "slug": "fast-skipping",
+              "sets": 2,
+              "reps": "15 m",
+              "restSeconds": 45,
+              "notes": "Short, springy contacts; stay tall and relaxed.",
+              "notesEl": "Σύντομες, ελαστικές επαφές· μείνε ψηλός και χαλαρός."
+            },
+            {
+              "slug": "star-jump",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 60,
+              "notes": "Pause for one second in each landing before the next jump.",
+              "notesEl": "Παύση ενός δευτερολέπτου σε κάθε προσγείωση πριν από το επόμενο άλμα."
+            },
+            {
+              "slug": "freehand-jump-squat",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 75,
+              "notes": "Jump straight up; stick each landing for one second.",
+              "notesEl": "Πήδα κατευθείαν προς τα πάνω· κράτα κάθε προσγείωση για ένα δευτερόλεπτο."
+            },
+            {
+              "slug": "front-box-jump",
+              "sets": 3,
+              "reps": "4",
+              "restSeconds": 75,
+              "notes": "Land quietly, stand tall, then step down.",
+              "notesEl": "Αθόρυβη προσγείωση, σήκω όρθιος και μετά κατέβα με βήμα."
+            },
+            {
+              "slug": "standing-long-jump",
+              "sets": 3,
+              "reps": "3",
+              "restSeconds": 90,
+              "notes": "Big arm swing; stick the landing and note your best distance.",
+              "notesEl": "Μεγάλη αιώρηση χεριών· σταθερή προσγείωση και σημείωσε την καλύτερη απόστασή σου."
+            },
+            {
+              "slug": "plyo-push-up",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 75,
+              "notes": "Body in one line; push hard enough for your hands to leave the floor.",
+              "notesEl": "Σώμα σε μία ευθεία· σπρώξε τόσο δυνατά ώστε να φύγουν οι παλάμες από το πάτωμα."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Week 3–4: Reactive Power",
+      "titleEl": "Εβδομάδες 3–4: Αντιδραστική Ισχύς",
+      "description": "Shorter ground contacts, single-leg and sideways jumps, and the rebounding box jump, at about 110 foot contacts per session.",
+      "descriptionEl": "Συντομότερες επαφές με το έδαφος, άλματα στο ένα πόδι και στο πλάι και τα συνεχόμενα άλματα σε κουτί, με περίπου 110 επαφές ποδιών ανά προπόνηση.",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "title": "The Lateral Bound",
+          "titleEl": "Το Πλάγιο Άλμα (Lateral Bound)",
+          "durationMinutes": 12,
+          "sortOrder": 1,
+          "content": "# The Lateral Bound\n\nMost sports are not played in straight lines. Cutting, shuffling and pushing off to the side all need power in the frontal plane, and that is exactly what the lateral bound trains. It is also a single-leg landing, so it challenges your knee and hip control more than any jump from weeks 1–2.\n\n## What it trains\n\n- **Target:** the glutes and adductors of the push-off leg, which drive you sideways\n- **Synergists:** the quadriceps, hamstrings and calves, which extend the knee, hip and ankle at take-off\n- **Stabilisers:** the muscles on the outside of the hip (gluteus medius), which stop the knee and pelvis collapsing on landing, plus the obliques, which keep the trunk upright\n- **Type:** a compound, single-leg lower-body push; a high-intensity plyometric, because every landing is on one leg\n\n## Set-up\n\n- Find a clear lane at least three metres wide\n- Stand on your right leg in a half squat, facing forwards, with the left foot just off the floor\n- Hinge slightly at the hips, chest up, arms ready to swing across your body\n- Mark a landing spot about one body length to your left as a first target\n\n## Form cues\n\n1. Shift your weight onto the push-off leg and sit a little deeper into the hip as a short countermovement\n2. Push hard through the whole foot and extend the hip, knee and ankle to bound sideways\n3. Swing the arms in the direction of travel to add distance\n4. Land on the leading (left) leg, on the whole foot, with the knee bent and in line with the toes\n5. Keep the hips level and the trunk upright; your nose stays roughly over the landing knee\n6. Stick the landing for two seconds, then push off the landing leg to bound back to the start\n7. Once the stuck version is solid, drop the pause and rebound straight back after landing\n\n## Common errors\n\n1. Knee caving inwards on landing — shorten the distance and aim the knee over the second toe\n2. Landing on the toes with the trunk tipping sideways — land on the whole foot and keep the chest above the knee\n3. Bounding up instead of across — think \"low and long\", with the hips travelling sideways\n4. Rushing the rebound before the landing is stable — keep the two-second hold until every landing is completely still\n\n## Easier and harder versions\n\n- Easier: a shorter bound to a closer line, or a sideways hop that lands on both feet\n- Harder: continuous bounds with no pause, or bounds at a slight forward angle, like a speed skater\n\n## Today's practice\n\nDo 4 sets of 3 bounds to each side with a two-second stick on every landing, resting a minute between sets. In the session for weeks 3–4 you will use the same drill with a shorter pause.\n\n## Safety\n\n- Stop if you feel pain on the inside or outside of the knee, or in the ankle\n- Start with a modest distance; in week 3, control on landing matters more than distance\n- Do this drill early in the session, while your legs are fresh",
+          "contentEl": "# Το Πλάγιο Άλμα (Lateral Bound)\n\nΤα περισσότερα αθλήματα δεν παίζονται σε ευθείες γραμμές. Οι αλλαγές κατεύθυνσης, οι πλάγιες μετακινήσεις και η ώθηση προς το πλάι χρειάζονται ισχύ στο μετωπιαίο επίπεδο, και αυτό ακριβώς προπονεί το πλάγιο άλμα. Επιπλέον, η προσγείωση γίνεται στο ένα πόδι, οπότε δοκιμάζει τον έλεγχο του γονάτου και του ισχίου σου περισσότερο από οποιοδήποτε άλμα των εβδομάδων 1–2.\n\n## Τι δουλεύει\n\n- **Κύριοι μύες:** οι γλουτιαίοι και οι προσαγωγοί του ποδιού ώθησης, που σε εκτινάσσουν στο πλάι\n- **Συνεργοί:** οι τετρακέφαλοι, οι οπίσθιοι μηριαίοι και οι γάμπες, που εκτείνουν γόνατο, ισχίο και αστράγαλο στην απογείωση\n- **Σταθεροποιητές:** οι μύες στο έξω μέρος του ισχίου (μέσος γλουτιαίος), που εμποδίζουν το γόνατο και τη λεκάνη να «καταρρεύσουν» στην προσγείωση, καθώς και οι πλάγιοι κοιλιακοί, που κρατούν τον κορμό όρθιο\n- **Τύπος:** σύνθετη ώθηση των κάτω άκρων στο ένα πόδι· πλειομετρική άσκηση υψηλής έντασης, επειδή κάθε προσγείωση γίνεται στο ένα πόδι\n\n## Τοποθέτηση\n\n- Βρες έναν ελεύθερο διάδρομο πλάτους τουλάχιστον τριών μέτρων\n- Στάσου στο δεξί πόδι σε μισό squat, κοιτώντας μπροστά, με το αριστερό πόδι λίγο πάνω από το πάτωμα\n- Λύγισε ελαφρώς από τα ισχία, με το στήθος ψηλά και τα χέρια έτοιμα να αιωρηθούν μπροστά από το σώμα\n- Σημάδεψε ένα σημείο προσγείωσης περίπου ένα μήκος σώματος στα αριστερά σου ως πρώτο στόχο\n\n## Οδηγίες τεχνικής\n\n1. Μετάφερε το βάρος στο πόδι ώθησης και κάθισε λίγο πιο βαθιά στο ισχίο ως μια σύντομη αντίθετη κίνηση\n2. Σπρώξε δυνατά με όλο το πέλμα και τέντωσε ισχίο, γόνατο και αστράγαλο για να εκτιναχθείς στο πλάι\n3. Αιώρησε τα χέρια προς την κατεύθυνση της κίνησης για να κερδίσεις απόσταση\n4. Προσγειώσου στο πόδι που οδηγεί την κίνηση (αριστερό), σε όλο το πέλμα, με το γόνατο λυγισμένο και στην ίδια γραμμή με τα δάχτυλα\n5. Κράτα τη λεκάνη οριζόντια και τον κορμό όρθιο· η μύτη σου μένει περίπου πάνω από το γόνατο προσγείωσης\n6. Κράτα σταθερή την προσγείωση για δύο δευτερόλεπτα και μετά σπρώξε με το πόδι προσγείωσης για να εκτιναχθείς πίσω στην αρχή\n7. Όταν η εκδοχή με παύση γίνει σταθερή, κόψε την παύση και αναπήδησε αμέσως πίσω μετά την προσγείωση\n\n## Συνηθισμένα λάθη\n\n1. Γόνατο που «κλείνει» προς τα μέσα στην προσγείωση — μίκρυνε την απόσταση και στόχευσε το γόνατο πάνω από το δεύτερο δάχτυλο του ποδιού\n2. Προσγείωση στις μύτες με τον κορμό να γέρνει στο πλάι — προσγειώσου σε όλο το πέλμα και κράτα το στήθος πάνω από το γόνατο\n3. Άλμα προς τα πάνω αντί για το πλάι — σκέψου «χαμηλά και μακριά», με τα ισχία να ταξιδεύουν στο πλάι\n4. Βιαστική αναπήδηση πριν σταθεροποιηθεί η προσγείωση — κράτα την παύση των δύο δευτερολέπτων μέχρι κάθε προσγείωση να είναι εντελώς ακίνητη\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερο: πιο κοντό άλμα προς μια πιο κοντινή γραμμή ή πλάγια αναπήδηση με προσγείωση στα δύο πόδια\n- Δυσκολότερο: συνεχόμενα άλματα χωρίς παύση ή άλματα με ελαφριά κλίση προς τα μπροστά, όπως ένας πατινέρ ταχύτητας\n\n## Η σημερινή εξάσκηση\n\nΚάνε 4 σετ των 3 αλμάτων προς κάθε πλευρά με σταθεροποίηση δύο δευτερολέπτων σε κάθε προσγείωση, ξεκουραζόμενος ένα λεπτό ανάμεσα στα σετ. Στην προπόνηση των εβδομάδων 3–4 θα κάνεις την ίδια άσκηση με μικρότερη παύση.\n\n## Ασφάλεια\n\n- Σταμάτα αν νιώσεις πόνο στην εσωτερική ή την εξωτερική πλευρά του γονάτου ή στον αστράγαλο\n- Ξεκίνα με μέτρια απόσταση· την 3η εβδομάδα ο έλεγχος στην προσγείωση μετράει περισσότερο από την απόσταση\n- Κάνε την άσκηση νωρίς στην προπόνηση, όσο τα πόδια σου είναι ξεκούραστα",
+          "exercises": [
+            {
+              "slug": "lateral-bound",
+              "sets": 4,
+              "reps": "3 per side",
+              "restSeconds": 60,
+              "notes": "Two-second stick on a bent landing leg.",
+              "notesEl": "Σταθεροποίηση δύο δευτερολέπτων στο λυγισμένο πόδι προσγείωσης."
+            }
+          ]
+        },
+        {
+          "title": "Reactive Power Session",
+          "titleEl": "Προπόνηση Αντιδραστικής Ισχύος",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# Reactive Power Session\n\nWeeks 3 and 4 shift the focus from absorbing force to reusing it. The jumps now flow from one rep into the next with short ground contacts, and two new challenges appear: single-leg work and rebounding off the floor between box jumps. Expect about 110 foot contacts, twice a week, with at least 48 hours between sessions.\n\n## Warm-up\n\nUse the same 10-minute warm-up as in weeks 1–2, then add:\n\n1. Two runs of fast skipping over about 15 metres\n2. Two sets of 10 quick ankle hops with stiff knees, as if the floor were hot\n3. Two practice lateral bounds to each side at about 70% effort\n\n## The workout\n\n- Keep the order: the jumps that need the most speed and height come first, while you are fresh\n- Ground contacts should be short and springy; on the rebound jumps think \"hot floor\" rather than \"soft cushion\", while still landing quietly\n- In week 3, keep a half-second pause in the lateral bounds; in week 4, bound straight back with no pause if your landings stay stable\n- Single-leg work uses the same number of reps on each leg; start with your weaker leg\n- Rest fully between sets; if you are still breathing hard when the rest ends, take another 30 seconds\n- In week 4, add a clap to the plyo push-ups only if your body stays in one straight line\n\n**Effort:** each rep is maximal; the session as a whole should feel like RPE 7 out of 10. Retest your standing long jump in the first exercise, while you are fresh; it should match or beat week 1.\n\n## Cool-down\n\nWalk for three minutes, then hold a calf stretch, a kneeling hip-flexor stretch, a standing quad stretch and a figure-four glute stretch for 30 seconds per side. Finish with a minute of slow breathing through the nose.\n\n## Safety\n\n- Rebounding is harder on tendons; if your Achilles or the tendon below the kneecap is sore the next morning, go back to the week 1–2 session for a week\n- Keep the box low for rebound jumps; the goal is short ground contact, not height\n- Stop any single-leg exercise as soon as the knee starts to wobble or drift inwards",
+          "contentEl": "# Προπόνηση Αντιδραστικής Ισχύος\n\nΟι εβδομάδες 3 και 4 μεταφέρουν την έμφαση από την απορρόφηση της δύναμης στην επαναχρησιμοποίησή της. Τα άλματα πλέον ρέουν από τη μία επανάληψη στην επόμενη με σύντομες επαφές στο έδαφος και εμφανίζονται δύο νέες προκλήσεις: η δουλειά στο ένα πόδι και η αναπήδηση από το πάτωμα ανάμεσα στα άλματα σε κουτί. Υπολόγιζε περίπου 110 επαφές ποδιών, δύο φορές την εβδομάδα, με τουλάχιστον 48 ώρες ανάμεσα στις προπονήσεις.\n\n## Ζέσταμα\n\nΚάνε το ίδιο ζέσταμα 10 λεπτών με τις εβδομάδες 1–2 και πρόσθεσε:\n\n1. Δύο διαδρομές γρήγορου skipping περίπου 15 μέτρων\n2. Δύο σετ των 10 γρήγορων αναπηδήσεων από τους αστραγάλους με σχεδόν τεντωμένα, σφιχτά γόνατα, σαν να καίει το πάτωμα\n3. Δύο δοκιμαστικά πλάγια άλματα προς κάθε πλευρά σε περίπου 70% της προσπάθειας\n\n## Η προπόνηση\n\n- Κράτα τη σειρά: τα άλματα που χρειάζονται τη μεγαλύτερη ταχύτητα και το μεγαλύτερο ύψος έρχονται πρώτα, όσο είσαι ξεκούραστος\n- Οι επαφές με το έδαφος πρέπει να είναι σύντομες και ελαστικές· στα άλματα με αναπήδηση σκέψου «καυτό πάτωμα» και όχι «μαλακό μαξιλάρι», προσγειώνοντας όμως πάντα αθόρυβα\n- Την 3η εβδομάδα κράτα μια παύση μισού δευτερολέπτου στα πλάγια άλματα· την 4η εκτινάξου αμέσως πίσω χωρίς παύση, αν οι προσγειώσεις σου μένουν σταθερές\n- Οι ασκήσεις στο ένα πόδι γίνονται με τον ίδιο αριθμό επαναλήψεων σε κάθε πόδι· ξεκίνα με το πιο αδύναμο\n- Ξεκουράσου πλήρως ανάμεσα στα σετ· αν λαχανιάζεις ακόμη όταν τελειώνει η ξεκούραση, πάρε άλλα 30 δευτερόλεπτα\n- Την 4η εβδομάδα, πρόσθεσε παλαμάκι στα πλειομετρικά push-ups μόνο αν το σώμα σου μένει σε μία ευθεία\n\n**Ένταση:** κάθε επανάληψη είναι μέγιστη· η προπόνηση συνολικά πρέπει να αντιστοιχεί σε RPE 7 στα 10. Ξανακάνε το τεστ του άλματος μήκους από στάση στην πρώτη άσκηση, όσο είσαι ξεκούραστος· η απόσταση πρέπει να ισοφαρίζει ή να ξεπερνά αυτή της 1ης εβδομάδας.\n\n## Αποθεραπεία\n\nΠερπάτα για τρία λεπτά και μετά κράτα διάταση γάμπας, διάταση καμπτήρων του ισχίου από γονατιστή θέση, όρθια διάταση τετρακεφάλου και διάταση γλουτών σε σχήμα «4» για 30 δευτερόλεπτα σε κάθε πλευρά. Τελείωσε με ένα λεπτό αργής αναπνοής από τη μύτη.\n\n## Ασφάλεια\n\n- Η αναπήδηση επιβαρύνει περισσότερο τους τένοντες· αν ο αχίλλειος ή ο τένοντας κάτω από την επιγονατίδα πονάει το επόμενο πρωί, γύρνα στην προπόνηση των εβδομάδων 1–2 για μία εβδομάδα\n- Κράτα το κουτί χαμηλό στα άλματα με αναπήδηση· στόχος είναι η σύντομη επαφή με το έδαφος και όχι το ύψος\n- Σταμάτα οποιαδήποτε άσκηση στο ένα πόδι μόλις το γόνατο αρχίσει να τρέμει ή να γέρνει προς τα μέσα",
+          "exercises": [
+            {
+              "slug": "standing-long-jump",
+              "sets": 3,
+              "reps": "3",
+              "restSeconds": 75,
+              "notes": "Retest: aim to match or beat your week 1 distance.",
+              "notesEl": "Επανέλεγχος: στόχευσε να ισοφαρίσεις ή να ξεπεράσεις την απόσταση της 1ης εβδομάδας."
+            },
+            {
+              "slug": "lateral-bound",
+              "sets": 3,
+              "reps": "4 per side",
+              "restSeconds": 60,
+              "notes": "Half-second stick in week 3; straight back in week 4.",
+              "notesEl": "Παύση μισού δευτερολέπτου την 3η εβδομάδα· αμέσως πίσω την 4η."
+            },
+            {
+              "slug": "knee-tuck-jump",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 75,
+              "notes": "Rebound quickly; end the set when your knees no longer reach hip height.",
+              "notesEl": "Γρήγορη αναπήδηση· τελείωσε το σετ όταν τα γόνατα δεν φτάνουν πια στο ύψος των ισχίων."
+            },
+            {
+              "slug": "box-jump-multiple-response",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 90,
+              "notes": "Low box; spend as little time on the floor as you can.",
+              "notesEl": "Χαμηλό κουτί· μείνε στο πάτωμα όσο το δυνατόν λιγότερο."
+            },
+            {
+              "slug": "split-jump",
+              "sets": 3,
+              "reps": "4 per side",
+              "restSeconds": 60,
+              "notes": "Front knee over the mid-foot; land back in the same lunge.",
+              "notesEl": "Μπροστινό γόνατο πάνω από τη μέση του πέλματος· προσγειώσου ξανά στην ίδια προβολή."
+            },
+            {
+              "slug": "single-leg-butt-kick",
+              "sets": 2,
+              "reps": "4 per leg",
+              "restSeconds": 60,
+              "notes": "Stay tall; land quietly on a soft knee.",
+              "notesEl": "Μείνε ψηλός· προσγειώσου αθόρυβα με μαλακό γόνατο."
+            },
+            {
+              "slug": "plyo-push-up",
+              "sets": 3,
+              "reps": "5",
+              "restSeconds": 60,
+              "notes": "Body stays in one line; add a clap in week 4 only if clean.",
+              "notesEl": "Το σώμα μένει σε μία ευθεία· πρόσθεσε παλαμάκι την 4η εβδομάδα μόνο αν η τεχνική είναι καθαρή."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Week 5–6: Power Endurance",
+      "titleEl": "Εβδομάδες 5–6: Αντοχή στην Ισχύ",
+      "description": "Manage load and recovery, then repeat explosive efforts with shorter rest; week 6 ends with a retest.",
+      "descriptionEl": "Διαχειρίσου το φορτίο και την αποκατάσταση και μετά επανάλαβε εκρηκτικές προσπάθειες με λιγότερη ξεκούραση· η 6η εβδομάδα τελειώνει με επανέλεγχο.",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "title": "Recovery and Load for Explosive Athletes",
+          "titleEl": "Αποκατάσταση και Φορτίο για Εκρηκτικούς Αθλητές",
+          "durationMinutes": 9,
+          "sortOrder": 1,
+          "content": "# Recovery and Load for Explosive Athletes\n\nPlyometrics feel easy on the lungs, but they are hard on the nervous system, muscles and tendons. The final block raises the total number of contacts and shortens the rest, so how you recover between sessions now decides whether you get faster or simply more tired.\n\n## Count your total load, not just this course\n\n- Sprints, matches and team practice also contain hundreds of jumps, landings and changes of direction\n- In weeks with two or more matches, cut each plyometric session by about a third\n- Put plyometrics and heavy lower-body strength work on the same day, or at least not on the day before a hard session, so your legs get full recovery days in between\n- If you can, do plyometrics before strength work or sport practice, while you are fresh\n\n## Signs you are recovering well\n\n- Your standing long jump stays the same or improves from session to session\n- Muscle soreness fades within 48 hours\n- You sleep well and feel keen to train\n\n## Signs to back off\n\n- Your long jump distance falls more than about 5% below your best for two sessions in a row\n- Tendon pain that is worse on the morning after a session, especially in the Achilles or just below the kneecap\n- Heavy, flat legs during the warm-up jumps, or poor sleep for several nights\n\nIf you notice these signs, take an extra rest day or repeat the previous week's session at a lower volume. Pain that sharpens while you jump, or does not settle within a few days, is a reason to stop and see a qualified professional.\n\n## Sleep, food and fluids\n\n1. **Sleep:** most adults need 7–9 hours a night; athletes in hard training often benefit from the upper end\n2. **Protein:** spread it over three or four meals; many athletes aim for about 1.6 g per kilogram of body weight a day\n3. **Carbohydrate:** fuels repeated hard efforts; eat a carbohydrate-rich meal a few hours before training\n4. **Fluids:** start each session well hydrated and drink to thirst during it; pale-yellow urine is a simple guide\n\n## Planning weeks 5 and 6\n\n- **Week 5:** the full power-endurance session twice, at about 140 contacts\n- **Week 6, session 1:** the same session with one fewer circuit round, so you start to freshen up\n- **Week 6, session 2:** a retest: warm up, do 3 standing long jumps and compare your best with week 1, then complete only Part A of the session\n\n## After the course\n\nPower fades slowly when you keep a little of it. During a competitive season, one short plyometric session a week, with 40–60 contacts of your best-quality jumps, usually helps you keep much of what you have built.",
+          "contentEl": "# Αποκατάσταση και Φορτίο για Εκρηκτικούς Αθλητές\n\nΟι πλειομετρικές ασκήσεις δεν κουράζουν πολύ τους πνεύμονες, αλλά επιβαρύνουν έντονα το νευρικό σύστημα, τους μύες και τους τένοντες. Η τελευταία ενότητα αυξάνει τον συνολικό αριθμό επαφών και μειώνει την ξεκούραση, οπότε ο τρόπος που αποκαθίστασαι ανάμεσα στις προπονήσεις κρίνει πλέον αν θα γίνεις ταχύτερος ή απλώς πιο κουρασμένος.\n\n## Μέτρα το συνολικό σου φορτίο, όχι μόνο αυτό του προγράμματος\n\n- Τα σπριντ, οι αγώνες και οι προπονήσεις της ομάδας περιέχουν κι αυτά εκατοντάδες άλματα, προσγειώσεις και αλλαγές κατεύθυνσης\n- Τις εβδομάδες με δύο ή περισσότερους αγώνες, μείωσε κάθε πλειομετρική προπόνηση κατά περίπου ένα τρίτο\n- Κάνε τις πλειομετρικές και τη βαριά προπόνηση δύναμης για τα πόδια την ίδια μέρα ή τουλάχιστον όχι την παραμονή μιας δύσκολης προπόνησης, ώστε τα πόδια σου να έχουν ενδιάμεσα πλήρεις μέρες αποκατάστασης\n- Αν μπορείς, κάνε τις πλειομετρικές πριν από την προπόνηση δύναμης ή την προπόνηση του αθλήματός σου, όσο είσαι ξεκούραστος\n\n## Σημάδια ότι αποκαθίστασαι καλά\n\n- Το άλμα μήκους από στάση μένει ίδιο ή βελτιώνεται από προπόνηση σε προπόνηση\n- Ο μυϊκός πόνος υποχωρεί μέσα σε 48 ώρες\n- Κοιμάσαι καλά και έχεις όρεξη για προπόνηση\n\n## Σημάδια ότι πρέπει να μειώσεις το φορτίο\n\n- Η απόσταση στο άλμα μήκους μένει πάνω από 5% περίπου κάτω από την καλύτερή σου για δύο συνεχόμενες προπονήσεις\n- Πόνος σε τένοντα που χειροτερεύει το πρωί μετά την προπόνηση, ειδικά στον αχίλλειο ή ακριβώς κάτω από την επιγονατίδα\n- Βαριά, «άδεια» πόδια στα άλματα του ζεστάματος ή κακός ύπνος για αρκετές νύχτες\n\nΑν προσέξεις αυτά τα σημάδια, πάρε μια επιπλέον μέρα ξεκούρασης ή επανάλαβε την προπόνηση της προηγούμενης εβδομάδας με μικρότερο όγκο. Πόνος που οξύνεται όσο πηδάς ή δεν υποχωρεί μέσα σε λίγες μέρες είναι λόγος να σταματήσεις και να απευθυνθείς σε κατάλληλο επαγγελματία.\n\n## Ύπνος, φαγητό και υγρά\n\n1. **Ύπνος:** οι περισσότεροι ενήλικες χρειάζονται 7–9 ώρες τη νύχτα· οι αθλητές σε απαιτητική προπόνηση συχνά ωφελούνται από το πάνω όριο\n2. **Πρωτεΐνη:** μοίρασέ τη σε τρία ή τέσσερα γεύματα· πολλοί αθλητές στοχεύουν σε περίπου 1,6 g ανά κιλό σωματικού βάρους την ημέρα\n3. **Υδατάνθρακες:** δίνουν ενέργεια για επαναλαμβανόμενες έντονες προσπάθειες· φάε ένα γεύμα πλούσιο σε υδατάνθρακες λίγες ώρες πριν από την προπόνηση\n4. **Υγρά:** ξεκίνα κάθε προπόνηση καλά ενυδατωμένος και πίνε όποτε διψάς κατά τη διάρκειά της· τα ανοιχτόχρωμα κίτρινα ούρα είναι ένας απλός οδηγός\n\n## Ο σχεδιασμός των εβδομάδων 5 και 6\n\n- **5η εβδομάδα:** η πλήρης προπόνηση αντοχής στην ισχύ δύο φορές, με περίπου 140 επαφές\n- **6η εβδομάδα, 1η προπόνηση:** η ίδια προπόνηση με έναν γύρο κυκλώματος λιγότερο, ώστε να αρχίσει να υποχωρεί η κούραση\n- **6η εβδομάδα, 2η προπόνηση:** επανέλεγχος: ζεστάσου, κάνε 3 άλματα μήκους από στάση, σύγκρινε το καλύτερο με την 1η εβδομάδα και μετά ολοκλήρωσε μόνο το Μέρος Α της προπόνησης\n\n## Μετά το πρόγραμμα\n\nΗ ισχύς χάνεται αργά όταν τη συντηρείς λίγο. Κατά τη διάρκεια της αγωνιστικής περιόδου, μία σύντομη πλειομετρική προπόνηση την εβδομάδα, με 40–60 επαφές από τα καλύτερης ποιότητας άλματά σου, συνήθως σε βοηθά να κρατήσεις μεγάλο μέρος από όσα έχτισες."
+        },
+        {
+          "title": "Power Endurance Circuits",
+          "titleEl": "Κυκλώματα Αντοχής στην Ισχύ",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# Power Endurance Circuits\n\nThe final block turns your power into power you can repeat. Part A keeps a few maximal jumps with full rest, so your top-end power stays sharp. Part B is a circuit of explosive efforts with short rests, which teaches you to keep jumping high and landing well while tired, the way a long rally, a series of sprints or the closing minutes of a match demand. Expect about 140 foot contacts.\n\n## Warm-up\n\nDo the full warm-up from weeks 3–4, including the fast skipping, quick ankle hops and practice lateral bounds. Finish with two jump squats and two plyo push-ups at about 80% effort, so the first circuit round does not come as a shock.\n\n## The workout\n\n### Part A — maximal power (about 10 minutes)\n\n- Standing long jumps and multiple-response box jumps, with full rest between sets\n- Every rep at full intent; these are your best-quality jumps of the day\n\n### Part B — power-endurance circuit (about 16 minutes)\n\n1. Work for 20 seconds at each station, then rest for 40 seconds while you move to the next one\n2. Go through the four stations in order: scissors jumps, lateral bounds, jump squats, plyo push-ups\n3. Rest for 2 minutes after each round and complete 3 rounds\n4. Count your reps at each station in round 1; aim to stay within one or two reps of that number in rounds 2 and 3\n5. If your reps fall further than that, or your landings get loud, end the station early and rest\n\n**Progression:** in week 5, session 2, cut the circuit rest to 30 seconds if every round stayed sharp in session 1. In week 6, session 1 drops to 2 rounds; session 2 is the retest described in the recovery lesson.\n\n**Effort:** Part A is maximal on every rep; Part B should build to RPE 8 out of 10 by the last round, with heavy breathing but clean technique.\n\n## Cool-down\n\nWalk or jog very easily for five minutes until your breathing settles. Then hold a calf stretch, a kneeling hip-flexor stretch, a standing quad stretch and a doorway chest stretch for 30 seconds per side, and finish with a minute of slow breathing through the nose.\n\n## Safety\n\n- Fatigue is the point of Part B, but sloppy landings are not; stop a station the moment your knees cave in or your landings get heavy\n- Keep at least 48 hours between these sessions, and do not place them right next to a match or a hard team practice\n- Stop and get checked if any tendon or joint pain sharpens during the circuit instead of easing as you warm up",
+          "contentEl": "# Κυκλώματα Αντοχής στην Ισχύ\n\nΗ τελευταία ενότητα μετατρέπει την ισχύ σου σε ισχύ που μπορείς να επαναλαμβάνεις. Το Μέρος Α διατηρεί λίγα μέγιστα άλματα με πλήρη ξεκούραση, ώστε η μέγιστη ισχύς σου να διατηρείται σε υψηλό επίπεδο. Το Μέρος Β είναι ένα κύκλωμα εκρηκτικών προσπαθειών με σύντομες ξεκουράσεις, που σε μαθαίνει να συνεχίζεις να πηδάς ψηλά και να προσγειώνεσαι σωστά ενώ είσαι κουρασμένος, όπως απαιτούν ένα μεγάλο ράλι, μια σειρά από σπριντ ή τα τελευταία λεπτά ενός αγώνα. Υπολόγιζε περίπου 140 επαφές ποδιών.\n\n## Ζέσταμα\n\nΚάνε όλο το ζέσταμα των εβδομάδων 3–4, μαζί με το γρήγορο skipping, τις γρήγορες αναπηδήσεις από τους αστραγάλους και τα δοκιμαστικά πλάγια άλματα. Τελείωσε με δύο squats με άλμα και δύο πλειομετρικά push-ups σε περίπου 80% της προσπάθειας, ώστε ο πρώτος γύρος του κυκλώματος να μη σε αιφνιδιάσει.\n\n## Η προπόνηση\n\n### Μέρος Α — μέγιστη ισχύς (περίπου 10 λεπτά)\n\n- Άλματα μήκους από στάση και συνεχόμενα άλματα σε κουτί, με πλήρη ξεκούραση ανάμεσα στα σετ\n- Κάθε επανάληψη με μέγιστη προσπάθεια· αυτά είναι τα καλύτερης ποιότητας άλματα της ημέρας\n\n### Μέρος Β — κύκλωμα αντοχής στην ισχύ (περίπου 16 λεπτά)\n\n1. Δούλεψε 20 δευτερόλεπτα σε κάθε σταθμό και μετά ξεκουράσου 40 δευτερόλεπτα όσο πηγαίνεις στον επόμενο\n2. Πέρασε από τους τέσσερις σταθμούς με τη σειρά: ψαλιδωτά άλματα, πλάγια άλματα, squats με άλμα, πλειομετρικά push-ups\n3. Ξεκουράσου 2 λεπτά μετά από κάθε γύρο και ολοκλήρωσε 3 γύρους\n4. Μέτρα τις επαναλήψεις σου σε κάθε σταθμό στον 1ο γύρο· στους γύρους 2 και 3 στόχευσε να μείνεις σε απόσταση μίας ή δύο επαναλήψεων από αυτόν τον αριθμό\n5. Αν οι επαναλήψεις πέσουν περισσότερο ή οι προσγειώσεις σου γίνουν θορυβώδεις, τελείωσε νωρίτερα τον σταθμό και ξεκουράσου\n\n**Πρόοδος:** την 5η εβδομάδα, στη 2η προπόνηση, μείωσε την ξεκούραση του κυκλώματος στα 30 δευτερόλεπτα αν στην 1η προπόνηση όλοι οι γύροι διατήρησαν την ποιότητά τους. Την 6η εβδομάδα, η 1η προπόνηση πέφτει στους 2 γύρους· η 2η είναι ο επανέλεγχος που περιγράφεται στο μάθημα για την αποκατάσταση.\n\n**Ένταση:** το Μέρος Α είναι μέγιστο σε κάθε επανάληψη· το Μέρος Β πρέπει να φτάσει σε RPE 8 στα 10 μέχρι τον τελευταίο γύρο, με βαριά αναπνοή αλλά καθαρή τεχνική.\n\n## Αποθεραπεία\n\nΠερπάτα ή τρέξε πολύ χαλαρά για πέντε λεπτά, μέχρι να ηρεμήσει η αναπνοή σου. Μετά κράτα διάταση γάμπας, διάταση καμπτήρων του ισχίου από γονατιστή θέση, όρθια διάταση τετρακεφάλου και διάταση στήθους στο κούφωμα μιας πόρτας για 30 δευτερόλεπτα σε κάθε πλευρά και τελείωσε με ένα λεπτό αργής αναπνοής από τη μύτη.\n\n## Ασφάλεια\n\n- Η κούραση είναι ο σκοπός του Μέρους Β, οι πρόχειρες προσγειώσεις όμως όχι· σταμάτα τον σταθμό τη στιγμή που τα γόνατα «κλείνουν» προς τα μέσα ή οι προσγειώσεις βαραίνουν\n- Άφηνε τουλάχιστον 48 ώρες ανάμεσα σε αυτές τις προπονήσεις και μην τις τοποθετείς αμέσως πριν ή μετά από αγώνα ή δύσκολη προπόνηση της ομάδας\n- Σταμάτα και ζήτα έλεγχο αν κάποιος πόνος σε τένοντα ή άρθρωση οξύνεται κατά τη διάρκεια του κυκλώματος αντί να υποχωρεί καθώς ζεσταίνεσαι",
+          "exercises": [
+            {
+              "slug": "standing-long-jump",
+              "sets": 3,
+              "reps": "3",
+              "restSeconds": 90,
+              "notes": "Full intent; stick the landing and note your distance.",
+              "notesEl": "Μέγιστη προσπάθεια· σταθερή προσγείωση και σημείωσε την απόστασή σου."
+            },
+            {
+              "slug": "box-jump-multiple-response",
+              "sets": 3,
+              "reps": "6",
+              "restSeconds": 90,
+              "notes": "Minimal floor contact; end the set if you miss the middle of the box.",
+              "notesEl": "Ελάχιστη επαφή με το πάτωμα· τελείωσε το σετ αν δεν προσγειωθείς στο κέντρο του κουτιού."
+            },
+            {
+              "slug": "scissors-jump",
+              "sets": 3,
+              "reps": "20 s",
+              "restSeconds": 40,
+              "notes": "Switch legs in the air; land in a balanced lunge.",
+              "notesEl": "Άλλαξε πόδια στον αέρα· προσγειώσου σε σταθερή προβολή."
+            },
+            {
+              "slug": "lateral-bound",
+              "sets": 3,
+              "reps": "20 s",
+              "restSeconds": 40,
+              "notes": "Continuous bounds; the knee stays over the toes.",
+              "notesEl": "Συνεχόμενα άλματα· το γόνατο μένει πάνω από τα δάχτυλα."
+            },
+            {
+              "slug": "freehand-jump-squat",
+              "sets": 3,
+              "reps": "20 s",
+              "restSeconds": 40,
+              "notes": "Rebound straight into the next jump without losing height.",
+              "notesEl": "Αναπήδησε κατευθείαν στο επόμενο άλμα χωρίς να χάνεις ύψος."
+            },
+            {
+              "slug": "plyo-push-up",
+              "sets": 3,
+              "reps": "20 s",
+              "restSeconds": 120,
+              "notes": "Explosive push, quick reset; switch to kneeling if your hips sag.",
+              "notesEl": "Εκρηκτική ώθηση, γρήγορη επαναφορά· πέρασε σε γονατιστή θέση αν πέφτει η λεκάνη."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

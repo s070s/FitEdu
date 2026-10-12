@@ -1,0 +1,295 @@
+{
+  "title": "Beginner Yoga & Stretching",
+  "titleEl": "Γιόγκα & Διατάσεις για Αρχάριους",
+  "description": "A gentle four-week introduction to yoga-style stretching on a mat: learn to breathe with movement, open the hips, hamstrings and spine, and build the back-of-body strength that lets you control your new range. Three short sessions a week, with holds that grow as you progress. Not medical advice — consult a professional before starting if you have a health condition.",
+  "descriptionEl": "Μια ήπια εισαγωγή τεσσάρων εβδομάδων στις διατάσεις τύπου γιόγκα πάνω σε στρώμα: μάθε να αναπνέεις μαζί με την κίνηση, άνοιξε ισχία, οπίσθιους μηριαίους και σπονδυλική στήλη και χτίσε τη δύναμη στο πίσω μέρος του σώματος που σου επιτρέπει να ελέγχεις το νέο σου εύρος. Τρεις σύντομες προπονήσεις την εβδομάδα, με κρατήματα που μεγαλώνουν καθώς προοδεύεις. Δεν αποτελεί ιατρική συμβουλή — συμβουλέψου επαγγελματία πριν ξεκινήσεις αν έχεις κάποια πάθηση.",
+  "requiredTier": "Plus",
+  "isPublished": true,
+  "category": "Mobility",
+  "categoryEl": "Κινητικότητα",
+  "level": "Beginner",
+  "goal": "Mobility",
+  "equipment": "mat",
+  "estimatedWeeks": 4,
+  "sessionsPerWeek": 3,
+  "coverExerciseSlug": "cat-stretch",
+  "modules": [
+    {
+      "title": "Week 1: Breath and Gentle Foundations",
+      "titleEl": "Εβδομάδα 1: Αναπνοή και Ήπια Θεμέλια",
+      "description": "Learn how yoga-style stretching works, link your breath to movement and practise a short, gentle floor flow.",
+      "descriptionEl": "Μάθε πώς λειτουργούν οι διατάσεις τύπου γιόγκα, συνδύασε την αναπνοή με την κίνηση και κάνε μια σύντομη, ήπια ροή στο πάτωμα.",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "title": "How Yoga-Style Stretching Works",
+          "titleEl": "Πώς Λειτουργούν οι Διατάσεις Τύπου Γιόγκα",
+          "durationMinutes": 10,
+          "sortOrder": 1,
+          "content": "# How Yoga-Style Stretching Works\n\nBeginner yoga and simple stretching share one goal: moving your joints comfortably through a larger range, with calm, steady breathing. This course uses beginner-friendly floor and kneeling positions rather than advanced poses, so you can practise safely at home on a mat.\n\n## Flexibility and mobility\n\n- **Flexibility** is how far a muscle and the tissue around it allow a joint to move, for example how far you can fold forward over straight legs.\n- **Mobility** is how well you can actively control that range, for example lifting your hips into a bridge or raising your chest and legs in a superman.\n- Good practice trains both: relaxed holds for flexibility and gentle strength work for control.\n\n## How range improves\n\nWhen you hold a stretch regularly, two things change. In the short term, your nervous system learns to tolerate the stretch, so the same position feels easier after a few weeks. Over longer periods, muscles and connective tissue adapt slowly. Both changes need repetition: a few minutes on most days beats one long session a week.\n\n## How long and how often\n\nGuidelines for healthy adults suggest:\n\n1. Hold each static stretch for about 10–30 seconds (older adults often benefit from 30–60 seconds)\n2. Repeat it 2–4 times, aiming for roughly 60 seconds in total per area\n3. Stretch at least 2–3 days a week; daily practice gives the best results\n4. Stretch when your body is warm, after a short warm-up or at the end of a workout\n\nThis course starts with mostly 15–20 second holds in week 1 and builds to 30 seconds by week 4, with three sessions a week.\n\n## Find the right intensity\n\nUse a simple 0–10 scale, where 0 is no sensation and 10 is pain. Aim for a mild to moderate pull of about 3–5 out of 10. You should be able to breathe slowly and keep your face relaxed. If you have to hold your breath or grit your teeth, back off until you can breathe smoothly again.\n\n## Breathing basics\n\n- Breathe in and out through your nose if that feels comfortable\n- Let the belly and lower ribs expand as you breathe in\n- Use a slightly longer exhale to settle deeper into a stretch\n- Never force the breath; keep it quiet and even\n\n## Static versus dynamic\n\nStatic stretches are held still. Dynamic movements, such as moving slowly between rounding and arching the spine, take a joint through its range again and again with control. Beginners should avoid bouncing (ballistic stretching), because it makes the end of the range harder to control.\n\n## Safety\n\n- Mild tension is the goal; sharp, burning or shooting pain means stop\n- Pad your knees with a folded mat or towel in kneeling positions\n- If you are pregnant, have had recent surgery, or have a joint or back condition, ask a professional which positions suit you",
+          "contentEl": "# Πώς Λειτουργούν οι Διατάσεις Τύπου Γιόγκα\n\nΗ γιόγκα για αρχάριους και οι απλές διατάσεις έχουν κοινό στόχο: να κινείς τις αρθρώσεις σου άνετα σε μεγαλύτερο εύρος, με ήρεμη και σταθερή αναπνοή. Αυτό το πρόγραμμα χρησιμοποιεί εύκολες θέσεις στο πάτωμα και στα γόνατα αντί για προχωρημένες στάσεις, ώστε να εξασκείσαι με ασφάλεια στο σπίτι πάνω σε ένα στρώμα.\n\n## Ευλυγισία και κινητικότητα\n\n- **Ευλυγισία** είναι το εύρος κίνησης που επιτρέπουν σε μια άρθρωση ο μυς και οι ιστοί γύρω της, για παράδειγμα πόσο σκύβεις μπροστά με τεντωμένα πόδια.\n- **Κινητικότητα** είναι το πόσο καλά ελέγχεις ενεργητικά αυτό το εύρος, για παράδειγμα όταν σηκώνεις τη λεκάνη σε γέφυρα ή σηκώνεις στήθος και πόδια στο superman.\n- Μια καλή εξάσκηση δουλεύει και τα δύο: χαλαρά κρατήματα για ευλυγισία και ήπια ενδυνάμωση για έλεγχο.\n\n## Πώς βελτιώνεται το εύρος\n\nΌταν κρατάς μια διάταση τακτικά, αλλάζουν δύο πράγματα. Βραχυπρόθεσμα, το νευρικό σου σύστημα μαθαίνει να ανέχεται τη διάταση, οπότε η ίδια θέση μοιάζει πιο εύκολη μετά από λίγες εβδομάδες. Μακροπρόθεσμα, οι μύες και ο συνδετικός ιστός προσαρμόζονται σιγά σιγά. Και οι δύο αλλαγές θέλουν επανάληψη: λίγα λεπτά τις περισσότερες μέρες είναι καλύτερα από μία μεγάλη προπόνηση την εβδομάδα.\n\n## Πόση ώρα και πόσο συχνά\n\nΟι οδηγίες για υγιείς ενήλικες προτείνουν:\n\n1. Κράτα κάθε στατική διάταση περίπου 10–30 δευτερόλεπτα (οι μεγαλύτεροι σε ηλικία συχνά ωφελούνται από 30–60 δευτερόλεπτα)\n2. Επανάλαβέ τη 2–4 φορές, με στόχο περίπου 60 δευτερόλεπτα συνολικά ανά περιοχή\n3. Κάνε διατάσεις τουλάχιστον 2–3 μέρες την εβδομάδα· η καθημερινή εξάσκηση δίνει τα καλύτερα αποτελέσματα\n4. Κάνε διατάσεις όταν το σώμα είναι ζεστό, μετά από ένα σύντομο ζέσταμα ή στο τέλος μιας προπόνησης\n\nΤο πρόγραμμα ξεκινά κυρίως με κρατήματα 15–20 δευτερολέπτων την 1η εβδομάδα και φτάνει τα 30 δευτερόλεπτα την 4η, με τρεις προπονήσεις την εβδομάδα.\n\n## Βρες τη σωστή ένταση\n\nΧρησιμοποίησε μια απλή κλίμακα 0–10, όπου 0 σημαίνει καμία αίσθηση και 10 πόνο. Στόχευσε σε ένα ήπιο έως μέτριο τράβηγμα, περίπου 3–5 στα 10. Πρέπει να μπορείς να αναπνέεις αργά και να έχεις χαλαρό πρόσωπο. Αν χρειάζεται να κρατάς την ανάσα σου ή να σφίγγεις τα δόντια, χαλάρωσε μέχρι να αναπνέεις ξανά ομαλά.\n\n## Βασικά της αναπνοής\n\n- Ανάπνεε από τη μύτη, αν σου είναι άνετο\n- Άφησε την κοιλιά να φουσκώνει και τα κάτω πλευρά να ανοίγουν όταν παίρνεις ανάσα\n- Κάνε την εκπνοή λίγο πιο μεγάλη για να «βυθιστείς» πιο βαθιά στη διάταση\n- Μη ζορίζεις ποτέ την αναπνοή· κράτα την ήσυχη και σταθερή\n\n## Στατικές και δυναμικές διατάσεις\n\nΟι στατικές διατάσεις κρατιούνται ακίνητες. Οι δυναμικές κινήσεις, όπως το αργό πέρασμα από την κύρτωση στο καμάρωμα της σπονδυλικής στήλης, περνούν μια άρθρωση από το εύρος της ξανά και ξανά με έλεγχο. Οι αρχάριοι καλό είναι να αποφεύγουν τις αναπηδήσεις (βαλλιστικές διατάσεις), γιατί δυσκολεύουν τον έλεγχο στο τέλος του εύρους.\n\n## Ασφάλεια\n\n- Στόχος είναι η ήπια ένταση· οξύς ή καυστικός πόνος, ή πόνος σαν ηλεκτρικό ρεύμα, σημαίνει ότι πρέπει να σταματήσεις\n- Βάλε ένα διπλωμένο στρώμα ή μια πετσέτα κάτω από τα γόνατα στις γονατιστές θέσεις\n- Αν είσαι έγκυος, έχεις κάνει πρόσφατα χειρουργείο ή έχεις κάποιο πρόβλημα σε αρθρώσεις ή μέση, ρώτα έναν επαγγελματία ποιες θέσεις σου ταιριάζουν"
+        },
+        {
+          "title": "The Cat Stretch: Move Your Spine with Your Breath",
+          "titleEl": "Η Διάταση της Γάτας: Κίνησε τη Σπονδυλική Στήλη με την Αναπνοή",
+          "durationMinutes": 12,
+          "sortOrder": 2,
+          "content": "# The Cat Stretch: Move Your Spine with Your Breath\n\nThe cat stretch is one of the first positions taught in beginner yoga. From your hands and knees you round your whole spine towards the ceiling, then return to a neutral back. It teaches you to move the spine one section at a time and to time each movement with your breath.\n\n## What it trains\n\n- **Target:** the muscles along the lower back (erector spinae), which lengthen as you round\n- **Also stretched:** the middle back and the upper trapezius at the base of the neck\n- **Working muscles:** the abdominals draw the belly in to create the rounding\n- **Stabilisers:** the shoulders and arms hold you steady on your hands\n- **Type:** a static stretch that can also be done as a slow, rhythmic spinal movement; it carries no push or pull load\n\n## Set-up\n\n- Kneel on the mat with your knees under your hips, about hip-width apart\n- Place your hands under your shoulders, fingers spread and pointing forward\n- Start with a neutral back: long spine, neck in line, gaze down at the mat\n- Pad your knees with a folded mat or towel if they feel sensitive\n\n## Form cues\n\n1. Breathe in through your nose and feel your back widen\n2. As you breathe out, draw your belly button gently towards your spine\n3. Tuck your tailbone under and let the rounding travel up your back\n4. Push the floor away so your shoulder blades spread apart\n5. Let your head drop last, chin moving towards your chest\n6. Hold for about 15 seconds, breathing slowly into your back\n7. Breathe in and return to a neutral back, one section of the spine at a time\n\n## Common errors\n\n1. Rounding only the upper back while the lower back stays flat; start the movement from the pelvis\n2. Sinking into the shoulders; keep pressing the floor away\n3. Holding the breath; the exhale should lead the rounding\n4. Rushing; this is a slow movement, not a quick exercise\n\n## Easier and harder versions\n\n- **Easier:** use a smaller range, or do it seated on a chair with your hands on your knees\n- **Add the cow:** after the rounded hold, breathe in and let the belly lower slightly while the chest moves forward and the gaze lifts, then breathe out back into the cat; a gentle arch is enough\n- **Harder:** hold longer (up to 30 seconds) or move slowly between cat and cow for 6–8 breaths\n\n## Safety\n\n- Keep the movement within a comfortable range; never force the spine\n- If taking weight on your hands hurts your wrists, make fists or rest on your forearms\n- Stop if you feel pain that travels down a leg or an arm",
+          "contentEl": "# Η Διάταση της Γάτας: Κίνησε τη Σπονδυλική Στήλη με την Αναπνοή\n\nΗ διάταση της γάτας είναι από τις πρώτες θέσεις που διδάσκονται στη γιόγκα για αρχάριους. Από τα τέσσερα, κυρτώνεις όλη τη σπονδυλική στήλη προς το ταβάνι και μετά επιστρέφεις σε ουδέτερη πλάτη. Σε μαθαίνει να κινείς τη σπονδυλική στήλη τμήμα προς τμήμα και να συγχρονίζεις κάθε κίνηση με την αναπνοή.\n\n## Τι δουλεύει\n\n- **Στόχος:** οι μύες κατά μήκος της μέσης (ορθωτήρες της σπονδυλικής στήλης), που επιμηκύνονται καθώς κυρτώνεις\n- **Τεντώνονται επίσης:** η μέση πλάτη και ο άνω τραπεζοειδής στη βάση του αυχένα\n- **Μύες που δουλεύουν:** οι κοιλιακοί τραβούν την κοιλιά μέσα για να δημιουργηθεί η κύρτωση\n- **Σταθεροποιητές:** οι ώμοι και τα χέρια σε κρατούν σταθερό πάνω στις παλάμες\n- **Τύπος:** στατική διάταση που μπορεί να γίνει και ως αργή, ρυθμική κίνηση της σπονδυλικής στήλης· δεν έχει φορτίο ώθησης ή έλξης\n\n## Τοποθέτηση\n\n- Γονάτισε στο στρώμα με τα γόνατα κάτω από τα ισχία, περίπου στο άνοιγμα της λεκάνης\n- Βάλε τις παλάμες κάτω από τους ώμους, με τα δάχτυλα ανοιχτά και στραμμένα μπροστά\n- Ξεκίνα με ουδέτερη πλάτη: μακριά σπονδυλική στήλη, αυχένας στην ίδια ευθεία, βλέμμα στο στρώμα\n- Βάλε ένα διπλωμένο στρώμα ή μια πετσέτα κάτω από τα γόνατα αν είναι ευαίσθητα\n\n## Οδηγίες τεχνικής\n\n1. Πάρε ανάσα από τη μύτη και νιώσε την πλάτη να φαρδαίνει\n2. Καθώς βγάζεις τον αέρα, τράβηξε απαλά τον αφαλό προς τη σπονδυλική στήλη\n3. Μάζεψε τον κόκκυγα προς τα μέσα και άφησε την κύρτωση να ανεβαίνει στην πλάτη\n4. Σπρώξε το πάτωμα μακριά ώστε οι ωμοπλάτες να ανοίξουν\n5. Άφησε το κεφάλι να πέσει τελευταίο, με το πηγούνι προς το στήθος\n6. Κράτα περίπου 15 δευτερόλεπτα, αναπνέοντας αργά προς την πλάτη\n7. Πάρε ανάσα και γύρνα σε ουδέτερη πλάτη, τμήμα προς τμήμα\n\n## Συνηθισμένα λάθη\n\n1. Κυρτώνεις μόνο την πάνω πλάτη ενώ η μέση μένει επίπεδη· ξεκίνα την κίνηση από τη λεκάνη\n2. «Βουλιάζεις» στους ώμους· συνέχισε να σπρώχνεις το πάτωμα μακριά\n3. Κρατάς την ανάσα σου· η εκπνοή πρέπει να οδηγεί την κύρτωση\n4. Βιάζεσαι· είναι μια αργή κίνηση, όχι μια γρήγορη άσκηση\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- **Ευκολότερη:** μικρότερο εύρος ή καθιστή εκδοχή σε καρέκλα, με τα χέρια στα γόνατα\n- **Πρόσθεσε την «αγελάδα»:** μετά το κράτημα στην κύρτωση, πάρε ανάσα και άφησε την κοιλιά να κατέβει λίγο, ενώ το στήθος πηγαίνει μπροστά και το βλέμμα σηκώνεται· μετά βγάλε τον αέρα και γύρνα στη γάτα· ένα ήπιο καμάρωμα αρκεί\n- **Δυσκολότερη:** κράτα περισσότερο (έως 30 δευτερόλεπτα) ή κινήσου αργά ανάμεσα σε γάτα και αγελάδα για 6–8 αναπνοές\n\n## Ασφάλεια\n\n- Κράτα την κίνηση σε άνετο εύρος· μη ζορίζεις ποτέ τη σπονδυλική στήλη\n- Αν οι καρποί πονούν όταν στηρίζεσαι στις παλάμες, κλείσε τα χέρια σε γροθιές ή στηρίξου στους πήχεις\n- Σταμάτα αν νιώσεις πόνο που «κατεβαίνει» σε πόδι ή χέρι",
+          "exercises": [
+            {
+              "slug": "cat-stretch",
+              "sets": 3,
+              "reps": "15 s",
+              "restSeconds": 15,
+              "notes": "Exhale to round, starting from the pelvis.",
+              "notesEl": "Βγάλε τον αέρα για να κυρτώσεις, ξεκινώντας από τη λεκάνη."
+            }
+          ]
+        },
+        {
+          "title": "Session A: Gentle Floor Flow",
+          "titleEl": "Προπόνηση Α: Ήπια Ροή στο Πάτωμα",
+          "durationMinutes": 20,
+          "sortOrder": 3,
+          "content": "# Session A: Gentle Floor Flow\n\nThis is your first full practice. It moves from hands and knees to kneeling, seated and finally lying positions, so each pose prepares you for the next. Do it three times in week 1, on non-consecutive days if you can, and keep every hold comfortable. You will come back to it as the lighter session in weeks 2 and 3.\n\n## Warm-up\n\nSpend about 4 minutes getting warm before you hold any stretch:\n\n- March on the spot or walk around the room for 2 minutes\n- Roll your shoulders slowly, 5 times forwards and 5 times backwards\n- Sit or stand tall and take 5 slow breaths, making each exhale a little longer than the inhale\n\n## The workout\n\n1. Go through the six exercises in order, holding each one for the time listed\n2. Rest briefly as you move between positions, using the rest time shown\n3. Complete 2 rounds in total; the second round usually feels easier\n4. Keep the intensity at about 3–4 out of 10, a mild pull rather than a strain\n5. Use the talk test: you should be able to say a full sentence calmly in every hold\n6. On two-sided stretches, do the right side and then the left side before resting\n\nTotal time: about 10–12 minutes for the two rounds.\n\n## Cool-down\n\nLie on your back with your legs long and your arms relaxed by your sides, palms up. Close your eyes if that feels comfortable and breathe slowly for 2–3 minutes. Notice which areas felt tight today; they become your focus for the next session.\n\n## Safety\n\n- Ease out of any position that causes sharp pain, pins and needles or numbness\n- Sit on a folded towel or cushion in the seated stretch if your lower back rounds heavily\n- Move slowly from lying to standing so you do not feel light-headed",
+          "contentEl": "# Προπόνηση Α: Ήπια Ροή στο Πάτωμα\n\nΑυτή είναι η πρώτη σου ολοκληρωμένη εξάσκηση. Περνά από τα τέσσερα στη γονατιστή θέση, μετά στην καθιστή και τέλος στην ξαπλωτή, ώστε κάθε στάση να σε προετοιμάζει για την επόμενη. Κάνε την τρεις φορές την 1η εβδομάδα, αν γίνεται σε μη συνεχόμενες μέρες, και κράτα κάθε θέση άνετη. Θα επιστρέψεις σε αυτήν ως την πιο ελαφριά προπόνηση τις εβδομάδες 2 και 3.\n\n## Ζέσταμα\n\nΑφιέρωσε περίπου 4 λεπτά για να ζεσταθείς πριν κρατήσεις οποιαδήποτε διάταση:\n\n- Βάδισε επί τόπου ή περπάτα στο δωμάτιο για 2 λεπτά\n- Κάνε αργούς κύκλους με τους ώμους, 5 φορές μπροστά και 5 φορές πίσω\n- Κάθισε ή στάσου με όρθιο κορμό και πάρε 5 αργές ανάσες, κάνοντας κάθε εκπνοή λίγο πιο μεγάλη από την εισπνοή\n\n## Η προπόνηση\n\n1. Κάνε τις έξι ασκήσεις με τη σειρά, κρατώντας καθεμία για τον χρόνο που αναγράφεται\n2. Ξεκουράσου λίγο καθώς αλλάζεις θέση, όσο δείχνει ο χρόνος διαλείμματος\n3. Ολοκλήρωσε 2 γύρους συνολικά· ο δεύτερος γύρος συνήθως μοιάζει πιο εύκολος\n4. Κράτα την ένταση περίπου στο 3–4 στα 10, ένα ήπιο τράβηγμα και όχι ζόρισμα\n5. Κάνε το τεστ ομιλίας: σε κάθε κράτημα πρέπει να μπορείς να πεις ήρεμα μια ολόκληρη πρόταση\n6. Στις διατάσεις με δύο πλευρές, κάνε πρώτα τη δεξιά και μετά την αριστερή πλευρά πριν ξεκουραστείς\n\nΣυνολικός χρόνος: περίπου 10–12 λεπτά για τους δύο γύρους.\n\n## Αποθεραπεία\n\nΞάπλωσε ανάσκελα με τα πόδια τεντωμένα και τα χέρια χαλαρά δίπλα στο σώμα, με τις παλάμες προς τα πάνω. Κλείσε τα μάτια αν σου είναι άνετο και ανάπνεε αργά για 2–3 λεπτά. Πρόσεξε ποιες περιοχές ένιωσες σφιγμένες σήμερα· αυτές γίνονται ο στόχος σου στην επόμενη προπόνηση.\n\n## Ασφάλεια\n\n- Βγες από κάθε θέση που προκαλεί οξύ πόνο, μυρμήγκιασμα ή μούδιασμα\n- Κάθισε σε μια διπλωμένη πετσέτα ή ένα μαξιλάρι στην καθιστή διάταση αν η μέση σου κυρτώνει πολύ\n- Σηκώσου αργά από την ξαπλωτή θέση, για να μη ζαλιστείς",
+          "exercises": [
+            {
+              "slug": "cat-stretch",
+              "sets": 2,
+              "reps": "15 s",
+              "restSeconds": 10,
+              "notes": "Round from the pelvis up as you breathe out.",
+              "notesEl": "Κύρτωσε από τη λεκάνη προς τα πάνω καθώς βγάζεις τον αέρα."
+            },
+            {
+              "slug": "childs-pose",
+              "sets": 2,
+              "reps": "30 s",
+              "restSeconds": 10,
+              "notes": "Widen your knees if your belly feels squashed; breathe into your back.",
+              "notesEl": "Άνοιξε τα γόνατα αν η κοιλιά πιέζεται· ανάπνεε προς την πλάτη."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 2,
+              "reps": "15–20 s per side",
+              "restSeconds": 15,
+              "notes": "Tuck your tailbone slightly before shifting forward.",
+              "notesEl": "Μάζεψε ελαφρά τον κόκκυγα πριν μετακινηθείς μπροστά."
+            },
+            {
+              "slug": "seated-floor-hamstring-stretch",
+              "sets": 2,
+              "reps": "15–20 s per side",
+              "restSeconds": 15,
+              "notes": "Hinge from the hips with a long back; never pull hard.",
+              "notesEl": "Γείρε από τα ισχία με μακριά πλάτη· μην τραβάς ποτέ δυνατά."
+            },
+            {
+              "slug": "hug-knees-to-chest",
+              "sets": 2,
+              "reps": "20 s",
+              "restSeconds": 10,
+              "notes": "Hold under the knees and relax your shoulders.",
+              "notesEl": "Κράτα κάτω από τα γόνατα και χαλάρωσε τους ώμους."
+            },
+            {
+              "slug": "knee-across-the-body",
+              "sets": 2,
+              "reps": "20 s per side",
+              "restSeconds": 10,
+              "notes": "Let the knee drop only as far as is comfortable.",
+              "notesEl": "Άφησε το γόνατο να πέσει μόνο όσο σου είναι άνετο."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 2–3: Open the Hips, Wake Up the Back",
+      "titleEl": "Εβδομάδες 2–3: Άνοιξε τα Ισχία, Ξύπνησε την Πλάτη",
+      "description": "Longer holds for the hips and hamstrings, plus gentle strength work for the glutes and back so you can control your new range.",
+      "descriptionEl": "Μεγαλύτερα κρατήματα για ισχία και οπίσθιους μηριαίους, μαζί με ήπια ενδυνάμωση γλουτών και πλάτης για να ελέγχεις το νέο σου εύρος.",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "title": "Bridge Pose: Strength for the Back of Your Body",
+          "titleEl": "Η Γέφυρα: Δύναμη για το Πίσω Μέρος του Σώματος",
+          "durationMinutes": 12,
+          "sortOrder": 1,
+          "content": "# Bridge Pose: Strength for the Back of Your Body\n\nThe bridge is a beginner yoga pose and a classic strength exercise in one. Lying on your back, you press through your feet to lift your hips. This strengthens the muscles that extend the hip and gently opens the front of the hips, balancing the many forward-folding stretches in this course.\n\n## What it trains\n\n- **Target:** the gluteus maximus, the main hip extensor\n- **Synergists:** the hamstrings help lift and hold the hips\n- **Stabilisers:** the abdominals and the muscles along the spine keep the trunk steady; the inner and outer thigh muscles keep the knees in line\n- **Type:** an isolation movement for the hips; a pushing action through the feet against the floor\n\n## Set-up\n\n- Lie on your back on the mat, knees bent, feet flat and about shoulder-width apart\n- Walk your heels in until your fingertips can almost touch them\n- Rest your arms by your sides, palms down\n- Point your toes forward and keep your knees in line with your feet\n\n## Form cues\n\n1. Breathe in and let your lower back rest naturally on the mat\n2. Breathe out, press through your heels and lift your hips\n3. Rise until your shoulders, hips and knees form a straight diagonal line\n4. Squeeze your glutes at the top rather than pushing your ribs up\n5. Hold for 2 seconds with your weight on your upper back, not your neck\n6. Breathe in and lower slowly, placing your spine down from top to bottom\n\n## Common errors\n\n1. Arching the lower back at the top; stop when your shoulders, hips and knees are in line and keep the ribs down\n2. Pushing through the toes, which shifts the work to the front of the thighs; keep the pressure in your heels\n3. Knees falling inwards or outwards; keep them pointing over your toes\n4. Turning the head while lifted; keep your gaze on the ceiling\n\n## Easier and harder versions\n\n- **Easier:** a smaller lift, pausing for just 1 second at the top\n- **Harder:** hold for 10–20 seconds at the top while breathing slowly\n- **Harder still:** a single-leg bridge, with one foot lifted and the hips kept level\n\n## Safety\n\n- Never turn your head while your hips are lifted, because your neck is carrying load\n- Stop if you feel a pinch in your lower back and reduce the height of the lift\n- If your hamstrings cramp, walk your feet slightly closer to your hips",
+          "contentEl": "# Η Γέφυρα: Δύναμη για το Πίσω Μέρος του Σώματος\n\nΗ γέφυρα είναι ταυτόχρονα στάση γιόγκα για αρχάριους και κλασική άσκηση ενδυνάμωσης. Ξαπλωμένος ανάσκελα, πιέζεις με τα πέλματα για να σηκώσεις τη λεκάνη. Έτσι δυναμώνεις τους μύες που κάνουν έκταση στο ισχίο και ανοίγεις απαλά το μπροστινό μέρος των ισχίων, αντισταθμίζοντας τις πολλές διατάσεις του προγράμματος που σε φέρνουν σε σκύψιμο προς τα μπροστά.\n\n## Τι δουλεύει\n\n- **Στόχος:** ο μέγας γλουτιαίος, ο κύριος μυς που κάνει έκταση στο ισχίο\n- **Συνεργοί:** οι οπίσθιοι μηριαίοι βοηθούν να σηκωθεί και να κρατηθεί η λεκάνη\n- **Σταθεροποιητές:** οι κοιλιακοί και οι μύες κατά μήκος της σπονδυλικής στήλης κρατούν τον κορμό σταθερό· οι μύες στο εσωτερικό και στο εξωτερικό του μηρού κρατούν τα γόνατα στη σωστή γραμμή\n- **Τύπος:** μονοαρθρική κίνηση για τα ισχία· κίνηση ώθησης με τα πέλματα πάνω στο πάτωμα\n\n## Τοποθέτηση\n\n- Ξάπλωσε ανάσκελα στο στρώμα, με λυγισμένα γόνατα και τα πέλματα στο πάτωμα, περίπου στο άνοιγμα των ώμων\n- Φέρε τις φτέρνες κοντά στους γλουτούς, ώστε οι άκρες των δαχτύλων των χεριών σου σχεδόν να τις αγγίζουν\n- Άφησε τα χέρια δίπλα στο σώμα, με τις παλάμες προς τα κάτω\n- Οι μύτες των ποδιών κοιτούν μπροστά και τα γόνατα μένουν στην ίδια γραμμή με τα πέλματα\n\n## Οδηγίες τεχνικής\n\n1. Πάρε ανάσα και άφησε τη μέση να ακουμπά φυσικά στο στρώμα\n2. Βγάλε τον αέρα, πίεσε με τις φτέρνες και σήκωσε τη λεκάνη\n3. Ανέβα μέχρι ώμοι, ισχία και γόνατα να σχηματίσουν μια ευθεία διαγώνια γραμμή\n4. Σφίξε τους γλουτούς στην κορυφή αντί να σπρώχνεις τα πλευρά προς τα πάνω\n5. Κράτα 2 δευτερόλεπτα, με το βάρος στην πάνω πλάτη και όχι στον αυχένα\n6. Πάρε ανάσα και κατέβα αργά, ακουμπώντας τη σπονδυλική στήλη από πάνω προς τα κάτω\n\n## Συνηθισμένα λάθη\n\n1. Καμάρωμα της μέσης στην κορυφή· σταμάτα όταν ώμοι, ισχία και γόνατα είναι σε μία ευθεία και κράτα τα πλευρά κάτω\n2. Πίεση με τις μύτες, που μεταφέρει τη δουλειά στο μπροστινό μέρος των μηρών· κράτα την πίεση στις φτέρνες\n3. Γόνατα που πέφτουν προς τα μέσα ή προς τα έξω· κράτα τα να κοιτούν πάνω από τα δάχτυλα των ποδιών\n4. Γύρισμα του κεφαλιού ενώ η λεκάνη είναι ψηλά· κράτα το βλέμμα στο ταβάνι\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- **Ευκολότερη:** μικρότερη ανύψωση, με παύση μόνο 1 δευτερολέπτου στην κορυφή\n- **Δυσκολότερη:** κράτα 10–20 δευτερόλεπτα στην κορυφή αναπνέοντας αργά\n- **Ακόμη πιο δύσκολη:** γέφυρα στο ένα πόδι, με το άλλο πέλμα σηκωμένο και τη λεκάνη οριζόντια\n\n## Ασφάλεια\n\n- Μη γυρνάς ποτέ το κεφάλι όσο η λεκάνη είναι σηκωμένη, γιατί ο αυχένας δέχεται φορτίο\n- Σταμάτα αν νιώσεις τσίμπημα στη μέση και μείωσε το ύψος της ανύψωσης\n- Αν σε πιάνει κράμπα στους οπίσθιους μηριαίους, φέρε τα πέλματα λίγο πιο κοντά στη λεκάνη",
+          "exercises": [
+            {
+              "slug": "butt-lift-bridge",
+              "sets": 3,
+              "reps": "8–10 (2 s hold)",
+              "restSeconds": 45,
+              "notes": "Press through your heels; ribs stay down at the top.",
+              "notesEl": "Πίεσε με τις φτέρνες· τα πλευρά μένουν κάτω στην κορυφή."
+            }
+          ]
+        },
+        {
+          "title": "Session B: Hips, Hamstrings and Back Strength",
+          "titleEl": "Προπόνηση Β: Ισχία, Οπίσθιοι Μηριαίοι και Δύναμη Πλάτης",
+          "durationMinutes": 28,
+          "sortOrder": 2,
+          "content": "# Session B: Hips, Hamstrings and Back Strength\n\nThis session is the heart of weeks 2 and 3. Holds get longer, the key hip stretch gains a third set, and two strength moves, the bridge and the superman, teach your hips and back to control the range you are building. Do Session B twice a week and Session A once, for three sessions in total.\n\n## Warm-up\n\nAbout 5 minutes:\n\n- Walk or march on the spot for 2 minutes\n- Do 6 slow rounds of cat and cow on your hands and knees, one breath for each movement\n- Lie on your back with knees bent and rock them gently from side to side 8 times\n\n## The workout\n\n1. Work through the exercises in order, completing all sets of one before moving to the next\n2. For stretches, hold 20 seconds in week 2 and up to 30 seconds in week 3\n3. In the bridge and the superman, move slowly and pause for 2 seconds at the top of each rep\n4. Effort in the strength moves is moderate, about 5–6 out of 10 on the rating of perceived exertion (RPE) scale; finish each set with several reps in reserve\n5. Stretches stay at a mild pull, about 3–5 out of 10, with smooth breathing\n6. Rest as listed, using the time to breathe slowly and set up the next position\n\nTotal time: about 18–20 minutes, plus the warm-up and cool-down.\n\n## Cool-down\n\nAfter the final child's pose, roll onto your back for 2–3 minutes of quiet breathing. Let each exhale last about twice as long as the inhale, for example in for 3 counts and out for 6, if that feels easy.\n\n## Safety\n\n- In the superman, lift only a few centimetres and keep your neck long; skip it if it causes back pain\n- In the straddle, keep your knees and toes pointing up and never force your legs wider\n- If one side is clearly tighter, give it an extra hold rather than pushing harder",
+          "contentEl": "# Προπόνηση Β: Ισχία, Οπίσθιοι Μηριαίοι και Δύναμη Πλάτης\n\nΑυτή η προπόνηση είναι η καρδιά των εβδομάδων 2 και 3. Τα κρατήματα μεγαλώνουν, η βασική διάταση ισχίου αποκτά τρίτο σετ και δύο ασκήσεις δύναμης, η γέφυρα και το superman, μαθαίνουν στα ισχία και στην πλάτη να ελέγχουν το εύρος που χτίζεις. Κάνε την Προπόνηση Β δύο φορές την εβδομάδα και την Προπόνηση Α μία, δηλαδή τρεις προπονήσεις συνολικά.\n\n## Ζέσταμα\n\nΠερίπου 5 λεπτά:\n\n- Περπάτα ή βάδισε επί τόπου για 2 λεπτά\n- Κάνε 6 αργούς γύρους γάτας και αγελάδας στα τέσσερα, με μία ανάσα για κάθε κίνηση\n- Ξάπλωσε ανάσκελα με λυγισμένα γόνατα και λίκνισέ τα απαλά δεξιά-αριστερά 8 φορές\n\n## Η προπόνηση\n\n1. Κάνε τις ασκήσεις με τη σειρά, ολοκληρώνοντας όλα τα σετ της μίας πριν περάσεις στην επόμενη\n2. Στις διατάσεις, κράτα 20 δευτερόλεπτα την 2η εβδομάδα και έως 30 δευτερόλεπτα την 3η\n3. Στη γέφυρα και στο superman, κινήσου αργά και κάνε παύση 2 δευτερολέπτων στην κορυφή κάθε επανάληψης\n4. Η προσπάθεια στις ασκήσεις δύναμης είναι μέτρια, περίπου 5–6 στα 10 στην κλίμακα αντιληπτής προσπάθειας (RPE)· τελείωσε κάθε σετ με αρκετές επαναλήψεις ακόμη σε απόθεμα\n5. Οι διατάσεις μένουν σε ήπιο τράβηγμα, περίπου 3–5 στα 10, με ομαλή αναπνοή\n6. Ξεκουράσου όσο αναγράφεται και χρησιμοποίησε τον χρόνο για να αναπνεύσεις αργά και να ετοιμάσεις την επόμενη θέση\n\nΣυνολικός χρόνος: περίπου 18–20 λεπτά, συν το ζέσταμα και την αποθεραπεία.\n\n## Αποθεραπεία\n\nΜετά την τελευταία στάση του παιδιού, γύρνα ανάσκελα για 2–3 λεπτά ήσυχης αναπνοής. Άφησε κάθε εκπνοή να κρατά περίπου διπλάσιο χρόνο από την εισπνοή, για παράδειγμα εισπνοή μετρώντας ως το 3 και εκπνοή ως το 6, αν σου βγαίνει εύκολα.\n\n## Ασφάλεια\n\n- Στο superman, σήκωσε μόνο λίγα εκατοστά και κράτα τον αυχένα μακρύ· παράλειψέ το αν σου προκαλεί πόνο στη μέση\n- Στη διάταση με ανοιχτά πόδια, κράτα γόνατα και δάχτυλα να κοιτούν προς τα πάνω και μην ανοίγεις ποτέ τα πόδια με το ζόρι\n- Αν η μία πλευρά είναι αισθητά πιο σφιχτή, δώσ' της ένα επιπλέον κράτημα αντί να πιέζεις περισσότερο",
+          "exercises": [
+            {
+              "slug": "cat-stretch",
+              "sets": 2,
+              "reps": "20 s",
+              "restSeconds": 10,
+              "notes": "Exhale and round; inhale back to neutral.",
+              "notesEl": "Βγάλε τον αέρα και κύρτωσε· πάρε ανάσα και γύρνα σε ουδέτερη πλάτη."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 3,
+              "reps": "20–30 s per side",
+              "restSeconds": 15,
+              "notes": "Squeeze the back glute to feel the front of the hip open.",
+              "notesEl": "Σφίξε τον γλουτό του πίσω ποδιού για να νιώσεις να ανοίγει το μπροστινό μέρος του ισχίου."
+            },
+            {
+              "slug": "butt-lift-bridge",
+              "sets": 3,
+              "reps": "10 (2 s hold)",
+              "restSeconds": 45,
+              "notes": "Heels down, ribs down, hips level.",
+              "notesEl": "Φτέρνες κάτω, πλευρά κάτω, λεκάνη οριζόντια."
+            },
+            {
+              "slug": "superman",
+              "sets": 2,
+              "reps": "6 (2 s hold)",
+              "restSeconds": 45,
+              "notes": "Lift low and long; keep your gaze on the mat.",
+              "notesEl": "Μικρό ύψος, μακρύ σώμα· το βλέμμα μένει στο στρώμα."
+            },
+            {
+              "slug": "the-straddle",
+              "sets": 2,
+              "reps": "20–30 s",
+              "restSeconds": 15,
+              "notes": "Sit tall first, then hinge forward from the hips.",
+              "notesEl": "Κάθισε πρώτα ψηλά και μετά γείρε μπροστά από τα ισχία."
+            },
+            {
+              "slug": "ankle-on-the-knee",
+              "sets": 2,
+              "reps": "20–30 s per side",
+              "restSeconds": 15,
+              "notes": "Flex the top foot to protect the knee.",
+              "notesEl": "Τράβηξε τα δάχτυλα του πάνω ποδιού προς το καλάμι για να προστατέψεις το γόνατο."
+            },
+            {
+              "slug": "childs-pose",
+              "sets": 1,
+              "reps": "45 s",
+              "restSeconds": 0,
+              "notes": "Rest your forehead and let each exhale soften your back.",
+              "notesEl": "Ακούμπησε το μέτωπο και άφησε κάθε εκπνοή να χαλαρώνει την πλάτη."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Week 4: Your Complete Flow",
+      "titleEl": "Εβδομάδα 4: Η Ολοκληρωμένη Ροή σου",
+      "description": "Bring everything together in one standing-to-floor sequence, learn to relax at the end of practice and plan how to keep going.",
+      "descriptionEl": "Ένωσε όσα έμαθες σε μία ροή από την όρθια θέση ως το πάτωμα, μάθε να χαλαρώνεις στο τέλος της εξάσκησης και σχεδίασε πώς θα συνεχίσεις.",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "title": "Breathing, Relaxation and Your Home Practice",
+          "titleEl": "Αναπνοή, Χαλάρωση και η Εξάσκησή σου στο Σπίτι",
+          "durationMinutes": 10,
+          "sortOrder": 1,
+          "content": "# Breathing, Relaxation and Your Home Practice\n\nYoga-style practice is more than a list of stretches. How you breathe, how you finish a session and how regularly you practise decide most of the progress you make. This lesson gives you simple tools for all three.\n\n## Breathing that supports stretching\n\nSlow, relaxed breathing helps your muscles let go, while holding your breath tends to make you brace against the stretch. Two patterns are enough for this course:\n\n- **Belly breathing:** one hand on your chest and one on your belly; breathe so the lower hand rises more than the upper one\n- **Longer exhale:** breathe in for about 3 counts and out for about 5–6; in a hold, use each exhale to relax a little deeper\n\nMany people find these patterns calming. If counting feels stressful, simply breathe slowly and quietly through your nose.\n\n## Finish with stillness\n\nEnd each session with 2–5 minutes lying on your back, arms and legs relaxed. In yoga this is the classic final resting position. Use it to scan your body from feet to head and soften any area that feels tense. If lying flat bothers your lower back, bend your knees with your feet on the floor, or place a rolled towel under your knees.\n\n## How to keep progressing\n\n1. Keep practising at least 2–3 days a week; short daily sessions work even better\n2. Add time before intensity: first lengthen holds from 20 to 30 seconds, then add a set, and only then ease slightly deeper\n3. Aim for about 60 seconds of total stretching per area across your sets\n4. Build strength in the range you gain: bridges, back raises and planks help you control it\n5. Change one thing at a time so you can tell what helps\n\n## Track simple signs\n\nPick two or three markers and check them every two weeks: how close your hands get to your foot in the seated hamstring stretch, how easily you can draw both legs towards your chest in the ankle-on-the-knee stretch, or how many slow breaths you can take while holding a steady plank. Write the results down, because progress in flexibility is gradual and easy to miss.\n\n## Fit it into your week\n\n- Link practice to a habit you already have, such as after your evening walk\n- Keep your mat where you can see it\n- On busy days, do a 5-minute version: cat stretch, child's pose and one hip stretch\n- Gentle stretching is fine on the day after strength or cardio training\n\n## Safety\n\n- Relaxation breathing should never make you dizzy; if it does, return to normal breathing\n- Feeling more flexible on some days than others is normal; on a stiff day, stay at a mild pull\n- Seek professional advice if any position repeatedly causes pain",
+          "contentEl": "# Αναπνοή, Χαλάρωση και η Εξάσκησή σου στο Σπίτι\n\nΗ εξάσκηση τύπου γιόγκα είναι κάτι παραπάνω από μια λίστα διατάσεων. Ο τρόπος που αναπνέεις, ο τρόπος που κλείνεις μια προπόνηση και το πόσο τακτικά εξασκείσαι καθορίζουν το μεγαλύτερο μέρος της προόδου σου. Αυτό το μάθημα σου δίνει απλά εργαλεία και για τα τρία.\n\n## Αναπνοή που βοηθά τη διάταση\n\nΗ αργή, χαλαρή αναπνοή βοηθά τους μύες να «αφεθούν», ενώ όταν κρατάς την ανάσα σου τείνεις να σφίγγεσαι και να αντιστέκεσαι στη διάταση. Δύο τρόποι αναπνοής αρκούν για αυτό το πρόγραμμα:\n\n- **Διαφραγματική αναπνοή:** ένα χέρι στο στήθος και ένα στην κοιλιά· ανάπνεε έτσι ώστε το κάτω χέρι να ανεβαίνει περισσότερο από το πάνω\n- **Μεγαλύτερη εκπνοή:** πάρε ανάσα μετρώντας ως το 3 περίπου και βγάλε τον αέρα μετρώντας ως το 5–6· σε ένα κράτημα, χρησιμοποίησε κάθε εκπνοή για να χαλαρώσεις λίγο πιο βαθιά\n\nΠολλοί βρίσκουν αυτούς τους τρόπους αναπνοής ηρεμιστικούς. Αν το μέτρημα σε αγχώνει, απλώς ανάπνεε αργά και ήσυχα από τη μύτη.\n\n## Κλείσε με ακινησία\n\nΤελείωνε κάθε προπόνηση με 2–5 λεπτά ξαπλωμένος ανάσκελα, με χαλαρά χέρια και πόδια. Στη γιόγκα αυτή είναι η κλασική τελική θέση χαλάρωσης. Χρησιμοποίησέ τη για να «σαρώσεις» το σώμα σου από τα πόδια ως το κεφάλι και να χαλαρώσεις κάθε σημείο που νιώθεις σφιγμένο. Αν η ύπτια θέση ενοχλεί τη μέση σου, λύγισε τα γόνατα με τα πέλματα στο πάτωμα ή βάλε μια τυλιγμένη πετσέτα κάτω από τα γόνατα.\n\n## Πώς να συνεχίσεις να προοδεύεις\n\n1. Συνέχισε να εξασκείσαι τουλάχιστον 2–3 μέρες την εβδομάδα· οι σύντομες καθημερινές προπονήσεις λειτουργούν ακόμη καλύτερα\n2. Αύξησε πρώτα τον χρόνο και μετά την ένταση: μάκρυνε τα κρατήματα από 20 σε 30 δευτερόλεπτα, μετά πρόσθεσε ένα σετ και μόνο τότε πήγαινε λίγο πιο βαθιά\n3. Στόχευσε σε περίπου 60 δευτερόλεπτα συνολικής διάτασης ανά περιοχή, αθροίζοντας όλα τα σετ\n4. Χτίσε δύναμη στο εύρος που κερδίζεις: οι γέφυρες, οι εκτάσεις πλάτης και η σανίδα σε βοηθούν να το ελέγχεις\n5. Άλλαζε ένα πράγμα κάθε φορά, ώστε να καταλαβαίνεις τι σε βοηθά\n\n## Κατέγραψε απλά σημάδια\n\nΔιάλεξε δύο ή τρεις δείκτες και έλεγξέ τους κάθε δύο εβδομάδες: πόσο κοντά φτάνουν τα χέρια σου στο πέλμα στην καθιστή διάταση οπίσθιων μηριαίων, πόσο εύκολα φέρνεις και τα δύο πόδια προς το στήθος στη διάταση «αστράγαλος στο γόνατο» ή πόσες αργές ανάσες μπορείς να πάρεις κρατώντας μια σταθερή σανίδα. Γράψε τα αποτελέσματα, γιατί η πρόοδος στην ευλυγισία είναι σταδιακή και περνά εύκολα απαρατήρητη.\n\n## Βρες χρόνο μέσα στην εβδομάδα\n\n- Σύνδεσε την εξάσκηση με μια συνήθεια που ήδη έχεις, για παράδειγμα μετά τη βραδινή σου βόλτα\n- Κράτα το στρώμα σου σε σημείο που το βλέπεις\n- Τις πιο πιεσμένες μέρες, κάνε μια εκδοχή 5 λεπτών: διάταση της γάτας, στάση του παιδιού και μία διάταση ισχίου\n- Οι ήπιες διατάσεις είναι εντάξει και την επόμενη μέρα μετά από προπόνηση δύναμης ή καρδιο\n\n## Ασφάλεια\n\n- Η αναπνοή χαλάρωσης δεν πρέπει ποτέ να σε ζαλίζει· αν συμβεί, γύρνα σε κανονική αναπνοή\n- Είναι φυσιολογικό να νιώθεις πιο ευλύγιστος κάποιες μέρες από άλλες· σε μια «σφιχτή» μέρα, μείνε σε ήπιο τράβηγμα\n- Ζήτα τη γνώμη επαγγελματία αν κάποια θέση σού προκαλεί επανειλημμένα πόνο"
+        },
+        {
+          "title": "Session C: The Complete Beginner Flow",
+          "titleEl": "Προπόνηση Γ: Η Ολοκληρωμένη Ροή για Αρχάριους",
+          "durationMinutes": 35,
+          "sortOrder": 2,
+          "content": "# Session C: The Complete Beginner Flow\n\nThis is the final session of the course and the routine you can keep using afterwards. It moves from standing to kneeling, into a plank, through lying and seated positions and finally into rest, combining 30-second stretches with the strength moves you practised in weeks 2 and 3. Do it three times in week 4.\n\n## Warm-up\n\nAbout 5 minutes:\n\n- March on the spot for 2 minutes, swinging your arms\n- Roll your shoulders 5 times each way, then circle your hips gently 5 times each way\n- Do 6 slow rounds of cat and cow, one breath for each movement\n\n## The workout\n\n1. Follow the exercises in order as one continuous flow, completing all sets of each before moving on\n2. Hold stretches for about 30 seconds, with slow nasal breathing and a longer exhale\n3. Keep stretches at a mild to moderate pull, about 4–5 out of 10\n4. In the plank and the bridge, work at about RPE 6 out of 10 and end each set while your form is still good\n5. If 30 seconds is too long for any stretch, hold 20 seconds and add a third set\n6. Move between positions slowly; each transition is part of the practice\n\nTotal time: about 25 minutes, plus the warm-up and cool-down.\n\n## Cool-down\n\nAfter child's pose, lie on your back in the final resting position for 3–5 minutes. Breathe with a longer exhale, then let the breath return to its natural rhythm and scan your body from feet to head. Roll onto your side before sitting up slowly.\n\n## Safety\n\n- In the plank, keep your hips level with your shoulders; drop to your knees if your lower back sags\n- In the standing side bend, keep your weight even on both feet and bend only as far as you can breathe comfortably\n- Skip any position that causes pain today and replace it with a few slow breaths lying on your back",
+          "contentEl": "# Προπόνηση Γ: Η Ολοκληρωμένη Ροή για Αρχάριους\n\nΑυτή είναι η τελευταία προπόνηση του προγράμματος και η ρουτίνα που μπορείς να συνεχίσεις και μετά. Περνά από την όρθια θέση στη γονατιστή, σε σανίδα (plank), σε ξαπλωτές και καθιστές θέσεις και τέλος σε χαλάρωση, συνδυάζοντας διατάσεις 30 δευτερολέπτων με τις ασκήσεις δύναμης που εξάσκησες τις εβδομάδες 2 και 3. Κάνε την τρεις φορές την 4η εβδομάδα.\n\n## Ζέσταμα\n\nΠερίπου 5 λεπτά:\n\n- Βάδισε επί τόπου για 2 λεπτά κουνώντας τα χέρια\n- Κάνε κύκλους με τους ώμους 5 φορές προς κάθε κατεύθυνση και μετά απαλούς κύκλους με τη λεκάνη 5 φορές προς κάθε κατεύθυνση\n- Κάνε 6 αργούς γύρους γάτας και αγελάδας, με μία ανάσα για κάθε κίνηση\n\n## Η προπόνηση\n\n1. Ακολούθησε τις ασκήσεις με τη σειρά σαν μία συνεχή ροή, ολοκληρώνοντας όλα τα σετ κάθε άσκησης πριν προχωρήσεις\n2. Κράτα τις διατάσεις περίπου 30 δευτερόλεπτα, με αργή αναπνοή από τη μύτη και μεγαλύτερη εκπνοή\n3. Κράτα τις διατάσεις σε ήπιο έως μέτριο τράβηγμα, περίπου 4–5 στα 10\n4. Στη σανίδα και στη γέφυρα, δούλεψε περίπου σε RPE 6 στα 10 και τελείωνε κάθε σετ όσο η τεχνική σου είναι ακόμη καλή\n5. Αν τα 30 δευτερόλεπτα είναι πολλά για κάποια διάταση, κράτα 20 δευτερόλεπτα και πρόσθεσε τρίτο σετ\n6. Άλλαζε θέση αργά· κάθε μετάβαση είναι μέρος της εξάσκησης\n\nΣυνολικός χρόνος: περίπου 25 λεπτά, συν το ζέσταμα και την αποθεραπεία.\n\n## Αποθεραπεία\n\nΜετά τη στάση του παιδιού, ξάπλωσε ανάσκελα στην τελική θέση χαλάρωσης για 3–5 λεπτά. Ανάπνεε με μεγαλύτερη εκπνοή, μετά άφησε την αναπνοή να γυρίσει στον φυσικό της ρυθμό και «σάρωσε» το σώμα σου από τα πόδια ως το κεφάλι. Γύρνα στο πλάι πριν σηκωθείς αργά σε καθιστή θέση.\n\n## Ασφάλεια\n\n- Στη σανίδα, κράτα τη λεκάνη στο ύψος των ώμων· στηρίξου στα γόνατα αν η μέση «πέφτει»\n- Στην όρθια πλάγια διάταση, μοίρασε το βάρος εξίσου στα δύο πέλματα και γείρε μόνο όσο μπορείς να αναπνέεις άνετα\n- Παράλειψε όποια θέση σου προκαλεί πόνο σήμερα και αντικατάστησέ τη με λίγες αργές ανάσες ξαπλωμένος ανάσκελα",
+          "exercises": [
+            {
+              "slug": "standing-lateral-stretch",
+              "sets": 2,
+              "reps": "20–30 s per side",
+              "restSeconds": 10,
+              "notes": "Lengthen up before you bend; keep both feet grounded.",
+              "notesEl": "Τεντώσου προς τα πάνω πριν γείρεις· και τα δύο πέλματα σταθερά στο πάτωμα."
+            },
+            {
+              "slug": "cat-stretch",
+              "sets": 2,
+              "reps": "30 s",
+              "restSeconds": 10,
+              "notes": "Round evenly from tailbone to neck.",
+              "notesEl": "Κύρτωσε ομοιόμορφα από τον κόκκυγα ως τον αυχένα."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 3,
+              "reps": "30 s per side",
+              "restSeconds": 15,
+              "notes": "Tall chest, tailbone tucked, shift forward gently.",
+              "notesEl": "Στήθος ψηλά, κόκκυγας μαζεμένος, μετακινήσου απαλά μπροστά."
+            },
+            {
+              "slug": "plank",
+              "sets": 3,
+              "reps": "15–20 s",
+              "restSeconds": 30,
+              "notes": "One straight line from head to heels; breathe steadily.",
+              "notesEl": "Μία ευθεία από το κεφάλι ως τις φτέρνες· ανάπνεε σταθερά."
+            },
+            {
+              "slug": "butt-lift-bridge",
+              "sets": 3,
+              "reps": "10–12 (2 s hold)",
+              "restSeconds": 45,
+              "notes": "Lift with the glutes; lower one vertebra at a time.",
+              "notesEl": "Σήκωσε με τους γλουτούς· κατέβα σπόνδυλο προς σπόνδυλο."
+            },
+            {
+              "slug": "seated-floor-hamstring-stretch",
+              "sets": 2,
+              "reps": "30 s per side",
+              "restSeconds": 15,
+              "notes": "Lead with your chest, not your head.",
+              "notesEl": "Οδήγησε την κίνηση με το στήθος, όχι με το κεφάλι."
+            },
+            {
+              "slug": "knee-across-the-body",
+              "sets": 2,
+              "reps": "30 s per side",
+              "restSeconds": 10,
+              "notes": "Keep both shoulders resting on the mat.",
+              "notesEl": "Κράτα και τους δύο ώμους ακουμπισμένους στο στρώμα."
+            },
+            {
+              "slug": "childs-pose",
+              "sets": 1,
+              "reps": "60 s",
+              "restSeconds": 0,
+              "notes": "Long, slow exhales; let your forehead rest.",
+              "notesEl": "Μεγάλες, αργές εκπνοές· άφησε το μέτωπο να ακουμπήσει."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
