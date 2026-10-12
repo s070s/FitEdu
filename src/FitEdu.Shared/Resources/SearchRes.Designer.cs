@@ -151,6 +151,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Exercise.
+        /// </summary>
+        public static string TypeExercise {
+            get {
+                return ResourceManager.GetString("TypeExercise", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Type to search the site..
         /// </summary>
         public static string EnterQuery {

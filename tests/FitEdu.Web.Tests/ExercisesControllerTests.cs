@@ -132,4 +132,30 @@ public class ExercisesControllerTests : IClassFixture<CustomWebAppFactory>
         usage.LessonId.ShouldBe(lesson.Id);
         usage.CourseTitle.ShouldBe("Course");
     }
+
+    [Fact]
+    public async Task Sitemap_ListsTheLibraryAndEachPublishedExercise()
+    {
+        // The only sitemap request in this class (the XML is cached for 30 minutes), so the
+        // exercises seeded here are always in it.
+        var client = _factory.CreateClient();
+        var published = await SeedExerciseAsync(UniqueSlug("sitemap"));
+        var hidden = await SeedExerciseAsync(UniqueSlug("sitemap-draft"), published: false);
+
+        var xml = await client.GetStringAsync("/sitemap.xml");
+
+        xml.ShouldContain("<loc>https://tests.local/exercises</loc>");
+        xml.ShouldContain($"<loc>https://tests.local/exercises/{published.Slug}</loc>");
+        xml.ShouldNotContain(hidden.Slug);
+    }
+
+    [Fact]
+    public async Task Robots_AllowsTheExerciseLibrary()
+    {
+        var client = _factory.CreateClient();
+
+        var robots = await client.GetStringAsync("/robots.txt");
+
+        robots.ShouldContain("Allow: /exercises");
+    }
 }

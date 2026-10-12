@@ -48,7 +48,7 @@ public class SiteSearchService(
         string query, string language, int limit, CancellationToken cancellationToken)
     {
         var isEl = Localized.IsEl(language);
-        var perType = Math.Max(1, limit / 3 + 1); // spread the cap roughly evenly across the three sources
+        var perType = Math.Max(1, limit / TitleSearchSourceCount + 1); // spread the cap roughly evenly across the sources
 
         // Plain .Contains (not EF.Functions.Like): translates to a sargable LIKE '%term%' on SQL
         // Server under its default case-insensitive collation, and — unlike EF.Functions.Like —
@@ -74,8 +74,18 @@ public class SiteSearchService(
             .Select(a => new SiteSearchHitDto("BlogArticle", isEl ? (a.TitleEl ?? a.TitleEn) : a.TitleEn, null, $"blog/{a.Slug}"))
             .ToListAsync(cancellationToken);
 
-        return courses.Concat(assessments).Concat(articles).Take(limit).ToList();
+        var exercises = await db.Exercises.AsNoTracking()
+            .Where(e => e.IsPublished && (e.NameEn.Contains(query) || (e.NameEl != null && e.NameEl.Contains(query))))
+            .OrderBy(e => e.NameEn)
+            .Take(perType)
+            .Select(e => new SiteSearchHitDto("Exercise", isEl ? (e.NameEl ?? e.NameEn) : e.NameEn, null, $"exercises/{e.Slug}"))
+            .ToListAsync(cancellationToken);
+
+        return courses.Concat(assessments).Concat(articles).Concat(exercises).Take(limit).ToList();
     }
+
+    // Courses, assessments, blog articles and exercises.
+    private const int TitleSearchSourceCount = 4;
 
     private const int MaxSnippetLength = 160;
 

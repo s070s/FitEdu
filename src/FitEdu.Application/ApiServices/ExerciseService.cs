@@ -95,6 +95,15 @@ public class ExerciseService(IApplicationDbContext db) : IExerciseService
             .ToList();
     }
 
+    /// <summary>Every published slug, for the sitemap.</summary>
+    public async Task<IReadOnlyList<string>> GetPublishedSlugsAsync(CancellationToken cancellationToken = default)
+    {
+        return await PublishedExercises()
+            .OrderBy(e => e.Slug)
+            .Select(e => e.Slug)
+            .ToListAsync(cancellationToken);
+    }
+
     private IQueryable<Exercise> PublishedExercises() =>
         db.Exercises.AsNoTracking().Where(e => e.IsPublished);
 

@@ -85,6 +85,7 @@ public partial class SiteSearchBox : IDisposable
         "Course" => "bi-book",
         "Assessment" => "bi-list-check",
         "BlogArticle" => "bi-newspaper",
+        "Exercise" => "bi-activity",
         _ => "bi-file-earmark"
     };
 

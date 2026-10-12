@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Allow: /blog/
+Allow: /exercises
 Disallow: /admin
 Disallow: /api/
 Disallow: /login

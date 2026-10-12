@@ -52,6 +52,7 @@ public partial class Search
         "Course" => "bi-book",
         "Assessment" => "bi-list-check",
         "BlogArticle" => "bi-newspaper",
+        "Exercise" => "bi-activity",
         _ => "bi-file-earmark"
     };
 
@@ -60,6 +61,7 @@ public partial class Search
         "Course" => SearchRes.TypeCourse,
         "Assessment" => SearchRes.TypeAssessment,
         "BlogArticle" => SearchRes.TypeBlogArticle,
+        "Exercise" => SearchRes.TypeExercise,
         _ => sourceType
     };
 }

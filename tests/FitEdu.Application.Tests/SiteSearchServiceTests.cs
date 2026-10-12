@@ -133,6 +133,54 @@ public class SiteSearchServiceTests
         result.Hits.ShouldContain(h => h.SourceType == "BlogArticle" && h.Title == "5 Career Tips");
     }
 
+    private static Exercise PublishedExercise(string slug, string nameEn, string? nameEl = null) =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Slug = slug,
+            NameEn = nameEn,
+            NameEl = nameEl,
+            Category = "strength",
+            Level = "beginner",
+            PrimaryMuscles = "chest",
+            SecondaryMuscles = string.Empty,
+            InstructionsEn = "Step.",
+            IsPublished = true
+        };
+
+    [Fact]
+    public async Task TitleFallback_MatchesPublishedExercisesByName_LinkingToTheirSlug()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var hidden = PublishedExercise("barbell-squat-draft", "Barbell Squat Draft");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(PublishedExercise("barbell-squat", "Barbell Squat"), hidden);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, AssistantAvailability.Disabled);
+
+        var result = await svc.SearchAsync("Squat", "en", 8);
+
+        var hit = result.Hits.ShouldHaveSingleItem();
+        hit.SourceType.ShouldBe("Exercise");
+        hit.Title.ShouldBe("Barbell Squat");
+        hit.Url.ShouldBe("exercises/barbell-squat");
+    }
+
+    [Fact]
+    public async Task TitleFallback_Greek_MatchesGreekExerciseNameAndShowsIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Exercises.Add(PublishedExercise("plank", "Plank", nameEl: "Σανίδα"));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, AssistantAvailability.Disabled);
+
+        var result = await svc.SearchAsync("Σανίδα", "el", 8);
+
+        var hit = result.Hits.ShouldHaveSingleItem();
+        hit.Title.ShouldBe("Σανίδα");
+        hit.Url.ShouldBe("exercises/plank");
+    }
+
     [Fact]
     public async Task TitleFallback_NoMatch_ReturnsEmptyHits()
     {

@@ -88,6 +88,9 @@
   <data name="TypeBlogArticle" xml:space="preserve">
     <value>Article</value>
   </data>
+  <data name="TypeExercise" xml:space="preserve">
+    <value>Exercise</value>
+  </data>
   <data name="EnterQuery" xml:space="preserve">
     <value>Type to search the site.</value>
   </data>

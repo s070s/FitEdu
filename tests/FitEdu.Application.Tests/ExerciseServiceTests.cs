@@ -228,6 +228,22 @@ public class ExerciseServiceTests
         Joined(facets.Categories.Select(f => $"{f.Value}={f.Count}")).ShouldBe("strength=2|stretching=1");
     }
 
+    // ---- GetPublishedSlugsAsync ------------------------------------------------
+
+    [Fact]
+    public async Task GetPublishedSlugs_ReturnsPublishedSlugsInOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var hidden = NewExercise("hidden", "Hidden");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(NewExercise("squat", "Squat"), NewExercise("lunge", "Lunge"), hidden);
+        await db.SaveChangesAsync();
+
+        var slugs = await NewService(db).GetPublishedSlugsAsync();
+
+        Joined(slugs).ShouldBe("lunge|squat");
+    }
+
     // ---- GetLessonsUsingExerciseAsync ------------------------------------------
 
     private static Course CourseWithLessons(string titleEn, bool published, params string[] lessonTitles)

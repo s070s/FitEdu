@@ -11,6 +11,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Services;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -217,7 +218,7 @@ public static class InfrastructureEndpointsExtensions
         .Produces(StatusCodes.Status302Found);
 
         // --- Sitemap ---
-        app.MapGet("/sitemap.xml", async (IBlogArticleService blog, IConfiguration sitemapConfig, IMemoryCache sitemapCache, HttpContext ctx) =>
+        app.MapGet("/sitemap.xml", async (IBlogArticleService blog, IExerciseService exercises, IConfiguration sitemapConfig, IMemoryCache sitemapCache, HttpContext ctx) =>
         {
             var baseUrl = sitemapConfig["Sitemap:BaseUrl"]
                 ?? throw new InvalidOperationException("Sitemap:BaseUrl is not configured.");
@@ -227,6 +228,7 @@ public static class InfrastructureEndpointsExtensions
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
                 var articles = await blog.GetPublishedSummariesAsync(200, "en", ctx.RequestAborted);
+                var exerciseSlugs = await exercises.GetPublishedSlugsAsync(ctx.RequestAborted);
 
                 var escapedBase = System.Security.SecurityElement.Escape(baseUrl);
                 var sb = new System.Text.StringBuilder();
@@ -241,6 +243,14 @@ public static class InfrastructureEndpointsExtensions
                     sb.AppendLine($"  <url><loc>{escapedBase}/blog/{safeSlug}</loc><lastmod>{lastmod}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>");
                 }
 
+                // The public exercise library: its index page, then one page per published exercise.
+                sb.AppendLine(CultureInfo.InvariantCulture, $"  <url><loc>{escapedBase}/exercises</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>");
+                foreach (var exerciseSlug in exerciseSlugs)
+                {
+                    var safeSlug = System.Security.SecurityElement.Escape(exerciseSlug);
+                    sb.AppendLine(CultureInfo.InvariantCulture, $"  <url><loc>{escapedBase}/exercises/{safeSlug}</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>");
+                }
+
                 sb.AppendLine("</urlset>");
                 return sb.ToString();
             });
@@ -250,7 +260,7 @@ public static class InfrastructureEndpointsExtensions
         }).AllowAnonymous()
         .WithTags("Infrastructure")
         .WithName("Sitemap")
-        .WithSummary("XML sitemap of public pages and published blog articles.")
+        .WithSummary("XML sitemap of public pages, published blog articles and published exercises.")
         .WithDescription("Returns an application/xml sitemap for search-engine crawlers. Cached for 30 minutes.")
         .Produces(StatusCodes.Status200OK, contentType: "application/xml");
 

@@ -14,4 +14,5 @@ public interface IExerciseService
     Task<ExerciseFacetsDto> GetFacetsAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<LessonUsingExerciseDto>> GetLessonsUsingExerciseAsync(
         string slug, string lang, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<string>> GetPublishedSlugsAsync(CancellationToken cancellationToken = default);
 }
