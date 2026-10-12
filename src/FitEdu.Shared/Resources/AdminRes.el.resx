@@ -192,11 +192,17 @@
   <data name="AddQuestion" xml:space="preserve">
     <value>+ Προσθήκη Ερώτησης</value>
   </data>
+  <data name="AddSection" xml:space="preserve">
+    <value>+ Προσθήκη Ενότητας</value>
+  </data>
   <data name="NoQuestions" xml:space="preserve">
     <value>Δεν υπάρχουν ερωτήσεις ακόμα. Κάντε κλικ στο «Προσθήκη Ερώτησης» για να ξεκινήσετε.</value>
   </data>
   <data name="QuestionNumber" xml:space="preserve">
     <value>Ερώτηση {0}</value>
+  </data>
+  <data name="SectionNumber" xml:space="preserve">
+    <value>Ενότητα {0}</value>
   </data>
   <data name="QuestionId" xml:space="preserve">
     <value>ID Ερώτησης</value>
@@ -212,6 +218,9 @@
   </data>
   <data name="TypeChoice" xml:space="preserve">
     <value>Επιλογή (επιλέξτε ένα)</value>
+  </data>
+  <data name="TypeMultiSelect" xml:space="preserve">
+    <value>Πολλαπλή επιλογή (επίλεξε όσα θέλεις)</value>
   </data>
   <data name="FieldRequired" xml:space="preserve">
     <value>Υποχρεωτικό</value>
@@ -233,6 +242,12 @@
   </data>
   <data name="FieldMax" xml:space="preserve">
     <value>Μέγιστο</value>
+  </data>
+  <data name="FieldMinLabel" xml:space="preserve">
+    <value>Ετικέτα ελάχιστης τιμής</value>
+  </data>
+  <data name="FieldMaxLabel" xml:space="preserve">
+    <value>Ετικέτα μέγιστης τιμής</value>
   </data>
   <data name="FieldOptions" xml:space="preserve">
     <value>Επιλογές</value>

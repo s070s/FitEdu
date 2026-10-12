@@ -173,11 +173,17 @@
 	<data name="AddQuestion" xml:space="preserve">
 		<value>+ Add Question</value>
 	</data>
+	<data name="AddSection" xml:space="preserve">
+		<value>+ Add Section</value>
+	</data>
 	<data name="NoQuestions" xml:space="preserve">
 		<value>No questions yet. Click "Add Question" to start building your assessment.</value>
 	</data>
 	<data name="QuestionNumber" xml:space="preserve">
 		<value>Question {0}</value>
+	</data>
+	<data name="SectionNumber" xml:space="preserve">
+		<value>Section {0}</value>
 	</data>
 	<data name="QuestionId" xml:space="preserve">
 		<value>Question ID</value>
@@ -193,6 +199,9 @@
 	</data>
 	<data name="TypeChoice" xml:space="preserve">
 		<value>Choice (select one)</value>
+	</data>
+	<data name="TypeMultiSelect" xml:space="preserve">
+		<value>Multiple choice (select any)</value>
 	</data>
 	<data name="FieldRequired" xml:space="preserve">
 		<value>Required</value>
@@ -214,6 +223,12 @@
 	</data>
 	<data name="FieldMax" xml:space="preserve">
 		<value>Max</value>
+	</data>
+	<data name="FieldMinLabel" xml:space="preserve">
+		<value>Min label</value>
+	</data>
+	<data name="FieldMaxLabel" xml:space="preserve">
+		<value>Max label</value>
 	</data>
 	<data name="FieldOptions" xml:space="preserve">
 		<value>Options</value>

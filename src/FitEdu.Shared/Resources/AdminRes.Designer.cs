@@ -115,6 +115,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to + Add Section.
+        /// </summary>
+        public static string AddSection {
+            get {
+                return ResourceManager.GetString("AddSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assessment Details.
         /// </summary>
         public static string AssessmentDetails {
@@ -871,11 +880,29 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max label.
+        /// </summary>
+        public static string FieldMaxLabel {
+            get {
+                return ResourceManager.GetString("FieldMaxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Min.
         /// </summary>
         public static string FieldMin {
             get {
                 return ResourceManager.GetString("FieldMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min label.
+        /// </summary>
+        public static string FieldMinLabel {
+            get {
+                return ResourceManager.GetString("FieldMinLabel", resourceCulture);
             }
         }
         
@@ -1555,6 +1582,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Section {0}.
+        /// </summary>
+        public static string SectionNumber {
+            get {
+                return ResourceManager.GetString("SectionNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shared fields.
         /// </summary>
         public static string SharedFields {
@@ -1686,6 +1722,15 @@ namespace FitEdu.Shared.Resources {
         public static string TypeChoice {
             get {
                 return ResourceManager.GetString("TypeChoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple choice (select any).
+        /// </summary>
+        public static string TypeMultiSelect {
+            get {
+                return ResourceManager.GetString("TypeMultiSelect", resourceCulture);
             }
         }
         
