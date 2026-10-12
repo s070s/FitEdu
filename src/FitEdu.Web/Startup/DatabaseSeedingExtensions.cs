@@ -10,7 +10,8 @@ namespace FitEdu.Web.Startup;
 /// Startup migration + seed: pre-warms LocalDB in Development, migrates the relational
 /// database, and seeds roles, subscription plans, and the admin user unconditionally, plus
 /// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven exercise-library/
-/// course/assessment/student/learning-path sample data — none of which belongs in a real deployment.
+/// course/assessment/student/learning-path/testimonial/live-class sample data — none of which
+/// belongs in a real deployment.
 /// </summary>
 public static class DatabaseSeedingExtensions
 {
@@ -175,6 +176,13 @@ public static class DatabaseSeedingExtensions
             var pathJsonPath = config.GetValue<string>("SeedData:JsonPaths:Paths")
                                ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Paths");
             await LearningPathSeeder.SeedFromJsonAsync(db, pathJsonPath, startupLogger);
+
+            // Testimonials and live classes; the admin account seeded above hosts the classes.
+            var showcaseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Showcase")
+                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Showcase");
+            var liveClassHost = await userManager.FindByEmailAsync(adminEmail)
+                ?? throw new InvalidOperationException($"Admin user '{adminEmail}' not found; it hosts the seeded live classes.");
+            await ShowcaseSeeder.SeedFromJsonAsync(db, showcaseJsonPath, liveClassHost.Id, TimeProvider.System, startupLogger);
         }
     }
 }

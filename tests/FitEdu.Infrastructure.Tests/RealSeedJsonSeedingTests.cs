@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
+using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Infrastructure.Seeding;
 using FitEdu.TestSupport;
@@ -21,6 +23,8 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
     private const int ExpectedAssessmentCount = 19;
     private const int ExpectedPathCount = 4;
     private const int ExpectedStepsPerPath = 4;
+    private const int ExpectedTestimonialCount = 6;
+    private const int ExpectedLiveClassCount = 6;
 
     private readonly RealSeedJsonDatabase _seeded;
 
@@ -157,6 +161,45 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
     }
 
     [Fact]
+    public async Task Testimonials_SixActiveRowsWithGreekQuoteAndRole()
+    {
+        var fileNames = SeedJsonFiles.LoadTestimonials().Select(testimonial => testimonial.FullName).Order(StringComparer.Ordinal).ToList();
+
+        var testimonials = await Db.Testimonials.ToListAsync();
+
+        testimonials.Count.ShouldBe(ExpectedTestimonialCount);
+        testimonials.Select(testimonial => testimonial.FullName).Order(StringComparer.Ordinal).ShouldBe(fileNames);
+        testimonials.ShouldAllBe(testimonial => testimonial.IsActive);
+        testimonials.ShouldAllBe(testimonial => !string.IsNullOrWhiteSpace(testimonial.QuoteTextEl));
+        testimonials.ShouldAllBe(testimonial => !string.IsNullOrWhiteSpace(testimonial.RoleOrTitleEl));
+        // No Greek column exists for the context, so it stays empty and the role carries it.
+        testimonials.ShouldAllBe(testimonial => testimonial.CompanyOrContext == null);
+    }
+
+    [Fact]
+    public async Task LiveClasses_SixBilingualClassesHostedByTheAdmin_WithinTheCallCap_LinkedToTheCourseTheFileNames()
+    {
+        var expectedRows = SeedJsonFiles.LoadLiveClasses()
+            .Select(liveClass => $"{liveClass.Title} | {liveClass.CourseTitle}")
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+        var sessions = await Db.ScheduledSessions.Include(session => session.Course).ToListAsync();
+        var seededRows = sessions
+            .Select(session => $"{session.TitleEn} | {session.Course?.TitleEn}")
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+        sessions.Count.ShouldBe(ExpectedLiveClassCount);
+        seededRows.ShouldBe(expectedRows);
+        sessions.ShouldAllBe(session => session.HostUserId == RealSeedJsonDatabase.AdminUserId);
+        sessions.ShouldAllBe(session => !string.IsNullOrWhiteSpace(session.TitleEl));
+        sessions.ShouldAllBe(session => session.MaxParticipants == ScheduledSession.MaxParticipantsLimit);
+        sessions.ShouldAllBe(session => session.StartsAtUtc > RealSeedJsonDatabase.SeedMoment);
+        sessions.ShouldAllBe(session => session.StartsAtUtc.DayOfWeek != DayOfWeek.Saturday && session.StartsAtUtc.DayOfWeek != DayOfWeek.Sunday);
+    }
+
+    [Fact]
     public async Task SeededText_FitsTheColumnLengthLimits()
     {
         // SQLite ignores HasMaxLength, so a too-long seed text would only fail on SQL Server.
@@ -170,6 +213,8 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
         seededRows.AddRange(await Db.LessonExercises.AsNoTracking().ToListAsync());
         seededRows.AddRange(await Db.AssessmentDefinitions.AsNoTracking().ToListAsync());
         seededRows.AddRange(await Db.LearningPaths.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.Testimonials.AsNoTracking().ToListAsync());
+        seededRows.AddRange(await Db.ScheduledSessions.AsNoTracking().ToListAsync());
 
         var problems = seededRows.SelectMany(FindValuesOverTheirLimit).ToList();
 
@@ -214,6 +259,11 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
 /// </summary>
 public sealed class RealSeedJsonDatabase : IAsyncLifetime
 {
+    public const string AdminUserId = "seed-admin";
+
+    // Monday 12 October 2026: the live classes are dated from this moment.
+    public static readonly DateTimeOffset SeedMoment = new(2026, 10, 12, 9, 0, 0, TimeSpan.Zero);
+
     public ApplicationDbContext Db { get; } = DbContextFactory.CreateSqlite();
 
     public RecordingLogger Logger { get; } = new();
@@ -224,10 +274,19 @@ public sealed class RealSeedJsonDatabase : IAsyncLifetime
         await CourseSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.CoursesFolder, Logger);
         await AssessmentSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.AssessmentsFolder, Logger);
         await LearningPathSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.PathsFolder, Logger);
+        await AddAdminUserAsync();
+        await ShowcaseSeeder.SeedFromJsonAsync(Db, SeedJsonFiles.ShowcaseFolder, AdminUserId, new FixedTimeProvider(SeedMoment), Logger);
 
         // The tests read what was saved, not the entities the seeders still track.
         Db.ChangeTracker.Clear();
     }
 
     public async Task DisposeAsync() => await Db.DisposeAsync();
+
+    /// <summary>The live-class host; SQLite enforces the session's foreign key to the user.</summary>
+    private async Task AddAdminUserAsync()
+    {
+        Db.Users.Add(new ApplicationUser { Id = AdminUserId, UserName = "admin@fitedu.local", FirstName = "System", LastName = "Administrator" });
+        await Db.SaveChangesAsync();
+    }
 }

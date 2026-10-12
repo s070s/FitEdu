@@ -1,0 +1,56 @@
+[
+  {
+    "fullName": "Eleni Papadopoulou",
+    "roleOrTitle": "Ran her first 5K",
+    "roleOrTitleEl": "Έτρεξε τα πρώτα της 5 χλμ",
+    "quoteText": "I could barely jog for one minute when I started. The run-walk weeks built up so gradually that I never dreaded a session, and in week eight I ran my first 5K without stopping. Four months on, I still run three mornings a week.",
+    "quoteTextEl": "Όταν ξεκίνησα, μετά βίας έτρεχα ένα λεπτό. Οι εβδομάδες με τρέξιμο και περπάτημα ανέβαιναν τόσο σταδιακά που δεν φοβήθηκα ποτέ καμία προπόνηση, και την όγδοη εβδομάδα έτρεξα τα πρώτα μου 5 χλμ χωρίς στάση. Τέσσερις μήνες μετά, συνεχίζω να τρέχω τρία πρωινά την εβδομάδα.",
+    "displayOrder": 1,
+    "isActive": true
+  },
+  {
+    "fullName": "Marcus Bennett",
+    "roleOrTitle": "Desk worker, 42",
+    "roleOrTitleEl": "Εργαζόμενος γραφείου, 42",
+    "quoteText": "Ten minutes of the desk routines each day made a bigger difference than I expected. My neck and upper back feel much less stiff by the evening, and for the first time I have a habit that survives busy weeks.",
+    "quoteTextEl": "Δέκα λεπτά από τις ρουτίνες γραφείου κάθε μέρα έκαναν μεγαλύτερη διαφορά απ' ό,τι περίμενα. Ο αυχένας και το πάνω μέρος της πλάτης μου είναι πολύ λιγότερο πιασμένα μέχρι το βράδυ, και για πρώτη φορά έχω μια συνήθεια που αντέχει και στις πιεσμένες εβδομάδες.",
+    "displayOrder": 2,
+    "isActive": true
+  },
+  {
+    "fullName": "Sofia Konstantinou",
+    "roleOrTitle": "Mum of two, 35",
+    "roleOrTitleEl": "Μαμά δύο παιδιών, 35",
+    "quoteText": "With two small kids, getting to a gym just wasn't realistic. A pair of adjustable dumbbells and three 40-minute sessions a week were enough: my goblet squat went from 10 kg to 18 kg in six weeks, and carrying shopping and children up the stairs feels easier.",
+    "quoteTextEl": "Με δύο μικρά παιδιά, το γυμναστήριο απλώς δεν ήταν ρεαλιστική επιλογή. Ένα ζευγάρι ρυθμιζόμενοι αλτήρες και τρεις προπονήσεις των 40 λεπτών την εβδομάδα ήταν αρκετά: το goblet squat μου ανέβηκε από τα 10 στα 18 κιλά σε έξι εβδομάδες, και μου είναι πιο εύκολο να ανεβάζω ψώνια και παιδιά στις σκάλες.",
+    "displayOrder": 3,
+    "isActive": true
+  },
+  {
+    "fullName": "Daniel Okafor",
+    "roleOrTitle": "Back to lifting at 29",
+    "roleOrTitleEl": "Ξανά στα βάρη στα 29",
+    "quoteText": "The technique lessons fixed habits I'd had for years, especially in my deadlift set-up. By following the progression instead of chasing numbers, I added 30 kg to my deadlift over the six weeks, and every session felt under control.",
+    "quoteTextEl": "Τα μαθήματα τεχνικής διόρθωσαν συνήθειες που είχα χρόνια, ειδικά στο στήσιμο του deadlift. Ακολουθώντας την προοδευτικότητα του προγράμματος αντί να κυνηγάω νούμερα, πρόσθεσα 30 κιλά στο deadlift μου μέσα στις έξι εβδομάδες, και ένιωθα κάθε προπόνηση υπό έλεγχο.",
+    "displayOrder": 4,
+    "isActive": true
+  },
+  {
+    "fullName": "Giorgos Antoniou",
+    "roleOrTitle": "Retired teacher, 67",
+    "roleOrTitleEl": "Συνταξιούχος εκπαιδευτικός, 67",
+    "quoteText": "I joined because I had started to feel unsteady on the stairs. Twice a week with a chair and light dumbbells, at my own pace, and now I can stand on one leg for 30 seconds and get up off the floor without using my hands. My grandchildren can't believe I train more often than they do.",
+    "quoteTextEl": "Γράφτηκα επειδή είχα αρχίσει να νιώθω ανασφάλεια στις σκάλες. Δύο φορές την εβδομάδα με μια καρέκλα και ελαφριούς αλτήρες, με τον δικό μου ρυθμό, και τώρα στέκομαι στο ένα πόδι για 30 δευτερόλεπτα και σηκώνομαι από το πάτωμα χωρίς να στηριχτώ στα χέρια. Τα εγγόνια μου δεν πιστεύουν ότι γυμνάζομαι πιο συχνά από εκείνα.",
+    "displayOrder": 5,
+    "isActive": true
+  },
+  {
+    "fullName": "Aisha Rahman",
+    "roleOrTitle": "Nurse on rotating shifts, 31",
+    "roleOrTitleEl": "Νοσηλεύτρια σε κυλιόμενες βάρδιες, 31",
+    "quoteText": "Shift work used to wreck my training week. The sleep and recovery lessons helped me plan sessions around my rota, and I've gone from skipping half my workouts to training three times a week, every week, for four months.",
+    "quoteTextEl": "Οι βάρδιες μού χαλούσαν κάθε εβδομάδα προπόνησης. Τα μαθήματα για τον ύπνο και την αποκατάσταση με βοήθησαν να οργανώνω τις προπονήσεις γύρω από το πρόγραμμα των βαρδιών μου, και από το να χάνω τις μισές προπονήσεις έφτασα να γυμνάζομαι τρεις φορές την εβδομάδα, κάθε εβδομάδα, εδώ και τέσσερις μήνες.",
+    "displayOrder": 6,
+    "isActive": true
+  }
+]

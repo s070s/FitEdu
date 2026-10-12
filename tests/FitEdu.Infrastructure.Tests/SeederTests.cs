@@ -663,6 +663,168 @@ public sealed class SeederTests : IDisposable
         (await db.LearningPaths.CountAsync()).ShouldBe(0);
     }
 
+    // ---- ShowcaseSeeder ------------------------------------------------------
+
+    private const string HostUserId = "admin-user-id";
+
+    // Monday 12 October 2026, late in the UTC day.
+    private static readonly DateTimeOffset SeedMoment = new(2026, 10, 12, 22, 30, 0, TimeSpan.Zero);
+
+    private const string SampleTestimonialsJson = """
+    [
+      { "fullName": "Marcus Bennett", "roleOrTitle": "Desk worker, 42", "roleOrTitleEl": "Εργαζόμενος γραφείου, 42",
+        "quoteText": "Ten minutes a day helped.", "quoteTextEl": "Δέκα λεπτά τη μέρα βοήθησαν.", "displayOrder": 2, "isActive": true },
+      { "fullName": "Eleni Papadopoulou", "roleOrTitle": "Ran her first 5K", "roleOrTitleEl": "Έτρεξε τα πρώτα της 5 χλμ",
+        "quoteText": "I ran 5K without stopping.", "quoteTextEl": "Έτρεξα 5 χλμ χωρίς στάση.", "displayOrder": 1, "isActive": true }
+    ]
+    """;
+
+    private static string LiveClassesJson(int weekdayOffset = 1, string? courseTitle = "Mobility & Flexibility", int maxParticipants = 6) =>
+        $$"""
+        [
+          { "title": "Live Mobility Flow", "titleEl": "Ζωντανή Ροή Κινητικότητας",
+            "courseTitle": {{(courseTitle is null ? "null" : $"\"{courseTitle}\"")}},
+            "weekdayOffset": {{weekdayOffset}}, "hourUtc": 18, "durationMinutes": 45, "maxParticipants": {{maxParticipants}} }
+        ]
+        """;
+
+    private string ShowcaseDir(string? liveClassesJson = null) => TempDirWithFiles(
+        ("testimonials.json", SampleTestimonialsJson),
+        ("live-classes.json", liveClassesJson ?? LiveClassesJson()));
+
+    private static Task SeedShowcaseAsync(ApplicationDbContext db, string dir, DateTimeOffset? now = null) =>
+        ShowcaseSeeder.SeedFromJsonAsync(db, dir, HostUserId, new FixedTimeProvider(now ?? SeedMoment), NullLogger.Instance);
+
+    [Fact]
+    public async Task ShowcaseSeeder_Testimonials_AreSeededActiveAndBilingual()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = ShowcaseDir(LiveClassesJson(courseTitle: null));
+
+        await SeedShowcaseAsync(db, dir);
+
+        var testimonials = await db.Testimonials.OrderBy(t => t.DisplayOrder).ToListAsync();
+        testimonials.Select(t => t.FullName).ShouldBe(["Eleni Papadopoulou", "Marcus Bennett"]);
+
+        var eleni = testimonials[0];
+        eleni.RoleOrTitle.ShouldBe("Ran her first 5K");
+        eleni.RoleOrTitleEl.ShouldBe("Έτρεξε τα πρώτα της 5 χλμ");
+        eleni.QuoteText.ShouldBe("I ran 5K without stopping.");
+        eleni.QuoteTextEl.ShouldBe("Έτρεξα 5 χλμ χωρίς στάση.");
+        eleni.CompanyOrContext.ShouldBeNull();
+        eleni.AvatarPath.ShouldBeNull();
+        eleni.IsActive.ShouldBeTrue();
+        eleni.Id.ShouldNotBe(Guid.Empty);
+    }
+
+    [Theory]
+    [InlineData("2026-10-12", 1, "2026-10-13")] // Monday -> Tuesday
+    [InlineData("2026-10-12", 5, "2026-10-19")] // Monday -> next Monday
+    [InlineData("2026-10-12", 6, "2026-10-20")]
+    [InlineData("2026-10-16", 1, "2026-10-19")] // Friday -> Monday
+    [InlineData("2026-10-17", 1, "2026-10-19")] // Saturday -> Monday
+    [InlineData("2026-10-18", 6, "2026-10-26")] // Sunday -> the Monday after next
+    public async Task ShowcaseSeeder_LiveClass_StartsOnTheNthWeekdayAfterTheSeedDate_AtTheUtcHour(
+        string seedDate, int weekdayOffset, string expectedDate)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddCoursesAsync(db, "Mobility & Flexibility");
+        var dir = ShowcaseDir(LiveClassesJson(weekdayOffset));
+        var now = DateTimeOffset.Parse(seedDate + "T23:59:00+00:00", System.Globalization.CultureInfo.InvariantCulture);
+
+        await SeedShowcaseAsync(db, dir, now);
+
+        var session = await db.ScheduledSessions.SingleAsync();
+        var expectedStart = DateTimeOffset.Parse(expectedDate + "T18:00:00+00:00", System.Globalization.CultureInfo.InvariantCulture);
+        session.StartsAtUtc.ShouldBe(expectedStart);
+        session.StartsAtUtc.Offset.ShouldBe(TimeSpan.Zero);
+    }
+
+    [Fact]
+    public async Task ShowcaseSeeder_LiveClass_IsHostedByTheGivenUser_AndLinkedToItsCourseByTitle()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var courseIds = await AddCoursesAsync(db, "Mobility & Flexibility");
+        var dir = ShowcaseDir();
+
+        await SeedShowcaseAsync(db, dir);
+
+        var session = await db.ScheduledSessions.SingleAsync();
+        session.HostUserId.ShouldBe(HostUserId);
+        session.TitleEn.ShouldBe("Live Mobility Flow");
+        session.TitleEl.ShouldBe("Ζωντανή Ροή Κινητικότητας");
+        session.CourseId.ShouldBe(courseIds[0]);
+        session.DurationMinutes.ShouldBe(45);
+        session.MaxParticipants.ShouldBe(6);
+        session.Status.ShouldBe(ScheduledSessionStatus.Scheduled);
+    }
+
+    [Fact]
+    public async Task ShowcaseSeeder_LiveClassWithoutCourseTitle_HasNoCourse()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = ShowcaseDir(LiveClassesJson(courseTitle: null));
+
+        await SeedShowcaseAsync(db, dir);
+
+        (await db.ScheduledSessions.SingleAsync()).CourseId.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ShowcaseSeeder_EachTableIsSeededOnlyWhileItIsEmpty()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddCoursesAsync(db, "Mobility & Flexibility");
+        db.Testimonials.Add(new Testimonial { Id = Guid.NewGuid(), FullName = "Real Member", QuoteText = "Written by an admin." });
+        await db.SaveChangesAsync();
+        var dir = ShowcaseDir();
+
+        await SeedShowcaseAsync(db, dir);
+        await SeedShowcaseAsync(db, dir);
+
+        (await db.Testimonials.SingleAsync()).FullName.ShouldBe("Real Member");
+        (await db.ScheduledSessions.CountAsync()).ShouldBe(1); // seeded by the first run only
+    }
+
+    [Fact]
+    public async Task ShowcaseSeeder_UnknownCourseTitle_ThrowsNamingClassAndTitle()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = ShowcaseDir(LiveClassesJson(courseTitle: "Kettlebell Basics"));
+
+        var exception = await Should.ThrowAsync<InvalidOperationException>(() => SeedShowcaseAsync(db, dir));
+
+        exception.Message.ShouldContain("'Live Mobility Flow'");
+        exception.Message.ShouldContain("'Kettlebell Basics'");
+        (await db.ScheduledSessions.CountAsync()).ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(7)] // above the 6 people a video call holds
+    public async Task ShowcaseSeeder_MaxParticipantsOutsideTheCallCap_Throws(int maxParticipants)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddCoursesAsync(db, "Mobility & Flexibility");
+        var dir = ShowcaseDir(LiveClassesJson(maxParticipants: maxParticipants));
+
+        var exception = await Should.ThrowAsync<InvalidOperationException>(() => SeedShowcaseAsync(db, dir));
+
+        exception.Message.ShouldContain("'Live Mobility Flow'");
+        exception.Message.ShouldContain("maxParticipants");
+    }
+
+    [Fact]
+    public async Task ShowcaseSeeder_MissingDirectory_IsNoOp()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        await Should.NotThrowAsync(() => SeedShowcaseAsync(db, NonExistentDir()));
+
+        (await db.Testimonials.CountAsync()).ShouldBe(0);
+        (await db.ScheduledSessions.CountAsync()).ShouldBe(0);
+    }
+
     // ---- StudentSeeder -------------------------------------------------------
 
     [Fact]

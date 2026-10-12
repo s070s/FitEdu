@@ -41,7 +41,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 **Admin:** `admin@fitedu.local` / *(password you set in `.env`)*
 
-> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). The seed catalogue, all in English and Greek:
+> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths, testimonials, live classes) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). The seed catalogue, all in English and Greek:
 >
 > | Folder under `src/FitEdu.Shared/JSON/` | What it seeds |
 > |---|---|
@@ -50,6 +50,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 > | `Assessments/` | 19 self-check questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
 > | `Students/` | The 10 demo students (`first.last@fitedu.local`). |
 > | `Paths/` | 4 published learning paths of 4 courses each (Beginner Start, Fat Loss, Build Muscle, Move Better). Each step names its course by English title, so an unknown title stops the seed ([file format](src/FitEdu.Shared/JSON/Paths/README.md)). |
+> | `Showcase/` | 6 Home-page testimonials and 6 live classes hosted by the admin account, dated on the next six weekdays after the seed date (UTC) and capped at 6 people like the video call ([file format](src/FitEdu.Shared/JSON/Showcase/README.md)). |
 >
 > `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos, language-neutral `reps`, Greek imperatives, no career-era wording) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies), and `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 

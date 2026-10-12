@@ -17,10 +17,13 @@ internal static class SeedJsonFiles
     public static readonly string AssessmentsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Assessments");
     public static readonly string ExercisesFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Exercises");
     public static readonly string PathsFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Paths");
+    public static readonly string ShowcaseFolder = Path.Combine(RepoPaths.SeedJsonRoot, "Showcase");
 
     private static readonly string ExerciseLibraryPath = Path.Combine(ExercisesFolder, "exercises.json");
     private static readonly string GreekOverlayPath = Path.Combine(ExercisesFolder, "exercises.el.json");
     private static readonly string GreekFragmentsFolder = Path.Combine(ExercisesFolder, "el");
+    private static readonly string TestimonialsPath = Path.Combine(ShowcaseFolder, "testimonials.json");
+    private static readonly string LiveClassesPath = Path.Combine(ShowcaseFolder, "live-classes.json");
 
     // Case-insensitive like the seeders, but an unknown field fails instead of being silently
     // ignored, so a misspelt field name in a seed file cannot slip through.
@@ -37,6 +40,10 @@ internal static class SeedJsonFiles
     /// <summary>Every learning path in the Paths folder, in file-name order.</summary>
     public static List<LearningPathSeedDto> LoadPaths() =>
         LoadFolder<List<LearningPathSeedDto>>(PathsFolder).SelectMany(file => file.Content).ToList();
+
+    public static List<TestimonialSeedDto> LoadTestimonials() => Deserialize<List<TestimonialSeedDto>>(TestimonialsPath);
+
+    public static List<LiveClassSeedDto> LoadLiveClasses() => Deserialize<List<LiveClassSeedDto>>(LiveClassesPath);
 
     public static List<ExerciseSeedDto> LoadExerciseLibrary() => Deserialize<List<ExerciseSeedDto>>(ExerciseLibraryPath);
 

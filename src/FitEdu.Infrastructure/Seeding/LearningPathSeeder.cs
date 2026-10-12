@@ -10,7 +10,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// Seeds learning paths from the JSON files in the Shared project's JSON/Paths folder.
 /// Runs after the course seeder: each step names its course by English title.
 /// </summary>
-public static class LearningPathSeeder
+public static partial class LearningPathSeeder
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -29,25 +29,25 @@ public static class LearningPathSeeder
     {
         if (await db.LearningPaths.AnyAsync(cancellationToken))
         {
-            logger.LogInformation("Learning paths already exist; skipping seed.");
+            LogAlreadySeeded(logger);
             return;
         }
 
         var resolvedPath = Path.GetFullPath(jsonFolderPath);
         if (!Directory.Exists(resolvedPath))
         {
-            logger.LogWarning("Learning path JSON seed folder not found: {Path}", resolvedPath);
+            LogFolderNotFound(logger, resolvedPath);
             return;
         }
 
         var jsonFiles = Directory.GetFiles(resolvedPath, "*.json").Order(StringComparer.Ordinal).ToList();
         if (jsonFiles.Count == 0)
         {
-            logger.LogWarning("No learning path JSON seed files found in: {Path}", resolvedPath);
+            LogNoFiles(logger, resolvedPath);
             return;
         }
 
-        var courseIdsByTitle = await LoadCourseIdsByTitleAsync(db, cancellationToken);
+        var courseIdsByTitle = await CourseTitleLookup.LoadCourseIdsByTitleAsync(db, cancellationToken);
         var categoryCache = await CategorySeedHelper.LoadCacheAsync(db, cancellationToken);
         var seededCount = 0;
 
@@ -55,33 +55,24 @@ public static class LearningPathSeeder
         {
             var paths = await ReadPathsAsync(filePath, cancellationToken);
             foreach (var dto in paths)
-            {
-                var path = MapToPath(dto, courseIdsByTitle);
-                path.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category, dto.CategoryEl);
-                db.LearningPaths.Add(path);
-                seededCount++;
-            }
+                AddPath(db, dto, courseIdsByTitle, categoryCache);
+
+            seededCount += paths.Count;
         }
 
         await db.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Seeded {Count} learning path(s) from JSON files.", seededCount);
+        LogSeeded(logger, seededCount);
     }
 
-    /// <summary>
-    /// Maps each English course title to a course id. Two courses may share a title, so the
-    /// first one read wins instead of the dictionary build throwing on the duplicate key.
-    /// </summary>
-    private static async Task<Dictionary<string, Guid>> LoadCourseIdsByTitleAsync(
+    private static void AddPath(
         ApplicationDbContext db,
-        CancellationToken cancellationToken)
+        LearningPathSeedDto dto,
+        Dictionary<string, Guid> courseIdsByTitle,
+        Dictionary<string, Category> categoryCache)
     {
-        var courses = await db.Courses
-            .Select(course => new { course.TitleEn, course.Id })
-            .ToListAsync(cancellationToken);
-
-        return courses
-            .GroupBy(course => course.TitleEn, StringComparer.Ordinal)
-            .ToDictionary(group => group.Key, group => group.First().Id, StringComparer.Ordinal);
+        var path = MapToPath(dto, courseIdsByTitle);
+        path.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category, dto.CategoryEl);
+        db.LearningPaths.Add(path);
     }
 
     private static async Task<List<LearningPathSeedDto>> ReadPathsAsync(string filePath, CancellationToken cancellationToken)
@@ -126,4 +117,18 @@ public static class LearningPathSeeder
             StepOrder = stepOrder
         };
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Learning paths already exist; skipping seed.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Learning path JSON seed folder not found: {Path}")]
+    private static partial void LogFolderNotFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "No learning path JSON seed files found in: {Path}")]
+    private static partial void LogNoFiles(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} learning path(s) from JSON files.")]
+    private static partial void LogSeeded(ILogger logger, int count);
 }

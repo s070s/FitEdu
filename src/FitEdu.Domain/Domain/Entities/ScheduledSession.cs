@@ -11,6 +11,9 @@ namespace FitEdu.Domain.Entities;
 /// </summary>
 public class ScheduledSession
 {
+    /// <summary>The most people one session can register: a group video call holds six.</summary>
+    public const int MaxParticipantsLimit = 6;
+
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public required string HostUserId { get; set; }
@@ -27,7 +30,7 @@ public class ScheduledSession
     public int DurationMinutes { get; set; } = 30;
 
     /// <summary>Registration cap, independent of the WebRTC mesh's own global participant cap.</summary>
-    public int MaxParticipants { get; set; } = 6;
+    public int MaxParticipants { get; set; } = MaxParticipantsLimit;
 
     public ScheduledSessionStatus Status { get; set; } = ScheduledSessionStatus.Scheduled;
 
