@@ -62,6 +62,10 @@ Each file is a JSON array of rows:
 ]
 ```
 
+Names use sentence case, as Greek does: only the first word of the name and of any brackets
+starts with a capital (`Πιέσεις ώμων με αλτήρες (Dumbbell shoulder press)`), proper nouns such as
+Arnold aside; `SeedContentIntegrityTests` checks it.
+
 The first row for a slug wins; later rows for the same slug are skipped with a warning. A row whose
 slug is not in `exercises.json` is skipped with a warning. A missing Greek name or instruction list
 falls back to English in the app.

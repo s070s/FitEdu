@@ -185,6 +185,19 @@ public partial class SeedContentIntegrityTests
         untranslatedSlugs.ShouldBeEmpty("exercises.el.json or el/*.el.json needs a nameEl for these slugs");
     }
 
+    // ---- Exercises ---------------------------------------------------------------------------
+
+    [Fact]
+    public void GreekOverlay_ExerciseNamesUseSentenceCase()
+    {
+        var problems = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => row.NameEl is not null && CapitalisedInnerWordRegex().IsMatch(row.NameEl))
+            .Select(row => $"{row.Slug}: '{row.NameEl}'")
+            .ToList();
+
+        problems.ShouldBeEmpty("Greek names capitalise only the first word of the name and of its brackets");
+    }
+
     // ---- Assessments -------------------------------------------------------------------------
 
     [Fact]
@@ -526,6 +539,11 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"\b(?:επέλεξε|επέστρεψε|κατέγραψε|διέκοψε|κατέκτησε|επανέλαβε|απέφυγε|παρέμεινε|προσέθεσε|μετέφερε|συνέδεσε|επέτρεψε|εισέπνευσε|εξέπνευσε)\b",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekPastTenseCommandRegex();
+
+    // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
+    // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Romanian) keep theirs.
+    [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian)\b)[A-ZΆΈ-ΏΑ-Ϋ]", RegexOptions.CultureInvariant)]
+    private static partial Regex CapitalisedInnerWordRegex();
 
     // The brand and the terms the Greek UI keeps in English.
     [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies)\b", RegexOptions.CultureInvariant)]
