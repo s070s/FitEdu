@@ -161,7 +161,7 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
         }
     }
 
-    private static IEnumerable<string> DescribePrescriptions(CourseSeedDto course)
+    private static List<string> DescribePrescriptions(CourseSeedDto course)
     {
         var rows = new List<string>();
 
