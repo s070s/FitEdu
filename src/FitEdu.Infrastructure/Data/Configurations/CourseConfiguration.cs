@@ -30,8 +30,24 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(c => c.RequiredTier)
             .HasConversion<int>();
 
+        // Level and Goal stored as int
+        builder.Property(c => c.Level)
+            .HasConversion<int>();
+
+        builder.Property(c => c.Goal)
+            .HasConversion<int>();
+
+        builder.Property(c => c.Equipment)
+            .HasMaxLength(120);
+
+        builder.Property(c => c.CoverExerciseSlug)
+            .HasMaxLength(120);
+
         // Index on IsPublished for catalog queries
         builder.HasIndex(c => c.IsPublished);
+
+        // Index for the catalog's level and goal filters
+        builder.HasIndex(c => new { c.Level, c.Goal });
 
         // Relationship: Course optionally belongs to one Category
         builder.HasOne(c => c.Category)

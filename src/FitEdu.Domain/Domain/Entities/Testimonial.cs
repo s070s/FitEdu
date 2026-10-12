@@ -12,9 +12,15 @@ public class Testimonial
 
     public string? RoleOrTitle { get; set; }
 
+    /// <summary>Greek role or title. Falls back to RoleOrTitle when null.</summary>
+    public string? RoleOrTitleEl { get; set; }
+
     public string? CompanyOrContext { get; set; }
 
     public required string QuoteText { get; set; }
+
+    /// <summary>Greek quote. Falls back to QuoteText when null.</summary>
+    public string? QuoteTextEl { get; set; }
 
     /// <summary>Relative file path within App_Data/Uploads (e.g. "testimonials/avatars/file.jpg"). Null = no avatar.</summary>
     public string? AvatarPath { get; set; }

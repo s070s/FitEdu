@@ -30,6 +30,14 @@ public class SubscriptionPlan
     }
 
     /// <summary>
+    /// Optional marketing description (Greek). Falls back to Description when null.
+    /// </summary>
+    public string? DescriptionEl
+    {
+        get; set;
+    }
+
+    /// <summary>
     /// Price in base currency units (e.g. EUR cents or smallest unit).
     /// Zero for free tier.
     /// </summary>

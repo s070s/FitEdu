@@ -64,6 +64,49 @@ public class Course : AuditableEntity
         get; set;
     }
 
+    /// <summary>
+    /// Difficulty of the programme. Stored as int.
+    /// </summary>
+    public CourseLevel Level { get; set; } = CourseLevel.Beginner;
+
+    /// <summary>
+    /// Main training goal of the programme. Stored as int.
+    /// </summary>
+    public FitnessGoal Goal { get; set; } = FitnessGoal.GeneralFitness;
+
+    /// <summary>
+    /// Comma-joined equipment codes (none, dumbbells, barbell, kettlebell, bands, mat, bike,
+    /// chair, cables, machine). Null means not specified.
+    /// </summary>
+    public string? Equipment
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Suggested programme length in weeks.
+    /// </summary>
+    public int? EstimatedWeeks
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Suggested number of workouts per week.
+    /// </summary>
+    public int? SessionsPerWeek
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Slug of the exercise whose first photo is used as the course cover. Null = default cover.
+    /// </summary>
+    public string? CoverExerciseSlug
+    {
+        get; set;
+    }
+
     // Navigation: one Course has many Modules
     public ICollection<Module> Modules { get; set; } = [];
 

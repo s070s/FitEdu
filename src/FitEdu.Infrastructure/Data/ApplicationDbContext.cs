@@ -56,6 +56,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Module> Modules => Set<Module>();
     public DbSet<Lesson> Lessons => Set<Lesson>();
+    public DbSet<Exercise> Exercises => Set<Exercise>();
+    public DbSet<LessonExercise> LessonExercises => Set<LessonExercise>();
     public DbSet<AssessmentDefinition> AssessmentDefinitions => Set<AssessmentDefinition>();
     public DbSet<AssessmentSubmission> AssessmentSubmissions => Set<AssessmentSubmission>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
@@ -155,8 +157,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
                       d => d.HasValue ? DateOnly.FromDateTime(d.Value) : null)
                   .HasColumnType("date");
 
-            // Store Status as int
+            // Store Status (training level) and Goal as int
             entity.Property(u => u.Status)
+                  .HasConversion<int>();
+            entity.Property(u => u.Goal)
                   .HasConversion<int>();
 
             entity.Property(u => u.FirstName).HasMaxLength(100);
@@ -231,6 +235,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
         builder.Entity<LearningPathStep>()
             .HasQueryFilter(s => !s.Course!.IsDeleted);
+
+        builder.Entity<LessonExercise>()
+            .HasQueryFilter(le => !le.Lesson.IsDeleted && !le.Exercise.IsDeleted);
     }
 
     // ---------------------------------------------------------------------------

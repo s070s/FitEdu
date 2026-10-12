@@ -249,6 +249,83 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public async Task Exercise_DuplicateSlug_ThrowsOnSave()
+    {
+        // The slug is the exercise's public key (/exercises/{slug}, image folder, seed JSON), so the
+        // unique index must exist at the DB level — SQLite enforces it, InMemory would not.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        db.Exercises.Add(NewExercise("push-ups", "Push-Ups"));
+        db.Exercises.Add(NewExercise("push-ups", "Duplicate"));
+
+        await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
+
+    [Fact]
+    public async Task LessonExercise_LessonDeleted_CascadesPrescriptions()
+    {
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var lesson = SeedLessonWithExercise(db, NewExercise("squat", "Squat"));
+        await db.SaveChangesAsync();
+
+        db.Lessons.Remove(lesson);
+        await db.SaveChangesAsync();
+
+        (await db.LessonExercises.CountAsync()).ShouldBe(0);
+        (await db.Exercises.CountAsync()).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task LessonExercise_ExerciseUsedByLesson_CannotBeDeleted()
+    {
+        // Exercise → LessonExercise is Restrict: removing library data must never silently strip
+        // a prescription out of a published lesson.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var exercise = NewExercise("plank", "Plank");
+        SeedLessonWithExercise(db, exercise);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        db.Exercises.Remove(await db.Exercises.SingleAsync(e => e.Id == exercise.Id));
+
+        await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
+
+    private static Exercise NewExercise(string slug, string nameEn) => new()
+    {
+        Id = Guid.NewGuid(),
+        Slug = slug,
+        NameEn = nameEn,
+        Category = "strength",
+        Level = "beginner",
+        PrimaryMuscles = "chest",
+        SecondaryMuscles = "",
+        InstructionsEn = "Lower.\nPush."
+    };
+
+    private static Lesson SeedLessonWithExercise(ApplicationDbContext db, Exercise exercise)
+    {
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        var module = new Module { Id = Guid.NewGuid(), TitleEn = "M", CourseId = course.Id };
+        var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "L", ModuleId = module.Id };
+        var prescription = new LessonExercise
+        {
+            Id = Guid.NewGuid(),
+            LessonId = lesson.Id,
+            ExerciseId = exercise.Id,
+            SortOrder = 1,
+            Sets = 3,
+            Reps = "8-12",
+            RestSeconds = 60
+        };
+        db.Courses.Add(course);
+        db.Modules.Add(module);
+        db.Lessons.Add(lesson);
+        db.Exercises.Add(exercise);
+        db.LessonExercises.Add(prescription);
+        return lesson;
+    }
+
+    [Fact]
     public async Task DateTimeProperty_MaterializesWithUtcKind()
     {
         // DB-6: was Kind=Unspecified on read (only *.UtcNow-by-convention, nothing pinned the
