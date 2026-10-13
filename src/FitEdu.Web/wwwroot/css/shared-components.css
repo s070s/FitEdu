@@ -373,6 +373,13 @@ th.sort-active {
     color: var(--color-success);
 }
 
+/* Admin hints ("save it first, then ..."): a quiet note on the dark surface, not Bootstrap's light grey box. */
+.alert-secondary {
+    background-color: var(--bg-neutral-subtle);
+    border-color: var(--border-subtle);
+    color: var(--text-light-normal);
+}
+
 /* Inputs in auth/profile pages */
 
 
