@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -65,6 +66,19 @@ public class ProfilePageTests : BunitContext
         page.Find(".profile-hero__email").TextContent.ShouldBe("alice@fitedu.local");
         page.Find(".profile-hero .chip--lime").TextContent.ShouldContain(GlobalRes.StatusIntermediate);
         page.Find(".profile-hero .chip--teal").TextContent.ShouldContain(CourseRes.Goal_Strength);
+    }
+
+    [Fact]
+    public void RejectedAvatar_DoesNotKeepShowingTheFileName()
+    {
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        page.FindComponent<InputFile>().UploadFiles(
+            InputFileContent.CreateFromText("not an image", "notes.txt", contentType: "text/plain"));
+
+        page.Markup.ShouldContain(ProfileRes.InvalidImageType);
+        page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
     }
 
     [Fact]

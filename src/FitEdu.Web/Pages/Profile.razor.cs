@@ -6,6 +6,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Web.Services;
+using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -38,6 +39,7 @@ public partial class Profile
     private string? avatarDataUrl;
     private string? _loadError;
     private bool _uploadingAvatar;
+    private FilePicker? _avatarPicker;
     private bool _showDeleteConfirm;
     private bool _isDeleting;
     private string? _deleteError;
@@ -191,13 +193,13 @@ public partial class Profile
         var file = e.File;
         if (file == null || file.Size >= 5 * 1024 * 1024)
         {
-            message = ProfileRes.FileTooLarge;
+            RejectAvatar(ProfileRes.FileTooLarge);
             return;
         }
 
         if (!AllowedAvatarTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
         {
-            message = ProfileRes.InvalidImageType;
+            RejectAvatar(ProfileRes.InvalidImageType);
             return;
         }
 
@@ -214,17 +216,24 @@ public partial class Profile
             }
             else
             {
-                message = ProfileRes.ErrorUploadingAvatar;
+                RejectAvatar(ProfileRes.ErrorUploadingAvatar);
             }
         }
         catch (Exception ex)
         {
-            message = string.Format(ProfileRes.ErrorUploadingAvatarFormat, ex.Message);
+            RejectAvatar(string.Format(ProfileRes.ErrorUploadingAvatarFormat, ex.Message));
         }
         finally
         {
             _uploadingAvatar = false;
         }
+    }
+
+    /// <summary>Shows why the avatar was not saved; the picker stops naming the file it did not keep.</summary>
+    private void RejectAvatar(string reason)
+    {
+        message = reason;
+        _avatarPicker?.ClearFileName();
     }
 
     private async Task UpdateProfile()

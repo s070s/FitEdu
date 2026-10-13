@@ -81,7 +81,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="profile-avatar">@ProfileRes.LabelAvatar</label>
                             <div>
-                                <FilePicker Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" Disabled="_uploadingAvatar" />
+                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" Disabled="_uploadingAvatar" />
                                 @if (_uploadingAvatar)
                                 {
                                     <div class="mt-2 d-flex align-items-center gap-2">

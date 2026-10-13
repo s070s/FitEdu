@@ -91,7 +91,7 @@
                     </div>
                 }
 
-                <FilePicker Id="t-avatar" OnChange="OnAvatarFileSelected" Accept="image/*" />
+                <FilePicker @ref="_avatarPicker" Id="t-avatar" OnChange="OnAvatarFileSelected" Accept="image/*" />
                 <div class="form-text">@AdminRes.AvatarHint</div>
             </div>
         }

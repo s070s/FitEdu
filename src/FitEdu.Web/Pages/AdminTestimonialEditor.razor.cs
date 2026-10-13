@@ -4,6 +4,7 @@ using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
+using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Pages;
@@ -35,6 +36,7 @@ public partial class AdminTestimonialEditor
     // Avatar state
     private string? _avatarPath;
     private string? _avatarPreviewUrl;
+    private FilePicker? _avatarPicker;
 
     /// <summary>Fallback initials shown when no avatar is set.</summary>
     private string Initials => string.IsNullOrWhiteSpace(_fullName)
@@ -84,6 +86,7 @@ public partial class AdminTestimonialEditor
             else
             {
                 _error = AdminRes.AvatarUploadFailed;
+                _avatarPicker?.ClearFileName();
             }
         }
         finally
@@ -103,6 +106,7 @@ public partial class AdminTestimonialEditor
             {
                 _avatarPath = null;
                 _avatarPreviewUrl = null;
+                _avatarPicker?.ClearFileName();
             }
             else
             {

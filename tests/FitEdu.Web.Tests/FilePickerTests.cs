@@ -66,6 +66,17 @@ public class FilePickerTests : BunitContext
     }
 
     [Fact]
+    public void ClearFileName_ShowsTheNoFileTextAgain()
+    {
+        var picker = Render<FilePicker>(parameters => parameters.Add(p => p.Id, PickerId));
+        picker.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromText("image", "me.png"));
+
+        picker.InvokeAsync(() => picker.Instance.ClearFileName());
+
+        picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+    }
+
+    [Fact]
     public void Disabled_DisablesTheInputAndPassesTheAcceptList()
     {
         var picker = Render<FilePicker>(parameters => parameters

@@ -91,7 +91,7 @@
                 </div>
             }
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <FilePicker Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*" />
+                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*" />
                 @if (!_isEditMode)
                 {
                     <small class="form-text">@AdminRes.CoverUploadHint</small>

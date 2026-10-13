@@ -31,6 +31,16 @@
 
     private string FileNameId => $"{Id}-file-name";
 
+    /// <summary>
+    /// Shows "no file chosen" again. The parent calls it (through @ref) when it rejects the file or
+    /// removes it, so the picker never names a file the form did not keep.
+    /// </summary>
+    public void ClearFileName()
+    {
+        _fileName = null;
+        StateHasChanged();
+    }
+
     private async Task HandleChangeAsync(InputFileChangeEventArgs args)
     {
         _fileName = args.File.Name;
