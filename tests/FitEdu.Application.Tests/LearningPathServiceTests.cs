@@ -28,7 +28,7 @@ public class LearningPathServiceTests
         var courseC = NewCourse("Course C");
         db.Courses.AddRange(courseA, courseB, courseC);
 
-        var path = new LearningPath { Id = Guid.NewGuid(), TitleEn = "Career Starter", IsPublished = true };
+        var path = new LearningPath { Id = Guid.NewGuid(), TitleEn = "Mobility Starter", IsPublished = true };
         db.LearningPaths.Add(path);
         db.LearningPathSteps.AddRange(
             new LearningPathStep { LearningPathId = path.Id, CourseId = courseA.Id, StepOrder = 1 },

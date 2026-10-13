@@ -129,7 +129,7 @@ public class CourseServiceTests
     public async Task GetPublishedCourses_FiltersByCategoryId()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var category = new Category { Id = Guid.NewGuid(), NameEn = "Career" };
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
         db.Categories.Add(category);
         var matching = CourseWithLessons("Matching", 0);
         matching.CategoryId = category.Id;
@@ -142,7 +142,7 @@ public class CourseServiceTests
 
         result.TotalCount.ShouldBe(1);
         result.Items.Single().Title.ShouldBe("Matching");
-        result.Items.Single().CategoryName.ShouldBe("Career");
+        result.Items.Single().CategoryName.ShouldBe("Strength");
     }
 
     [Fact]

@@ -268,14 +268,14 @@ public class AdminCourseServiceTests
     public async Task CreateCourse_WithExistingCategoryId_AssignsCategory()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var category = new Category { Id = Guid.NewGuid(), NameEn = "Career" };
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
         db.Categories.Add(category);
         await db.SaveChangesAsync();
 
         var dto = (await NewService(db).CreateCourseAsync(Request(categoryId: category.Id), Admin)).Value!;
 
         dto.CategoryId.ShouldBe(category.Id);
-        dto.CategoryNameEn.ShouldBe("Career");
+        dto.CategoryNameEn.ShouldBe("Strength");
     }
 
     [Fact]

@@ -226,10 +226,10 @@ public class ApplicationDbContextTests
         // check-then-insert in AdminCategoryService — verify it actually exists and fires,
         // against SQLite (the same provider the earlier "breaks SQLite" rationale doubted).
         await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await db.SaveChangesAsync();
 
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
     }
 
@@ -239,13 +239,13 @@ public class ApplicationDbContextTests
         // The filter is `[IsDeleted] = 0` — a soft-deleted category must not block reusing
         // its name for a new, active one.
         await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career", IsDeleted = true });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength", IsDeleted = true });
         await db.SaveChangesAsync();
 
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await db.SaveChangesAsync();
 
-        (await db.Categories.IgnoreQueryFilters().CountAsync(c => c.NameEn == "Career")).ShouldBe(2);
+        (await db.Categories.IgnoreQueryFilters().CountAsync(c => c.NameEn == "Strength")).ShouldBe(2);
     }
 
     [Fact]

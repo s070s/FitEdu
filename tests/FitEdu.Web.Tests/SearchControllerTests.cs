@@ -35,7 +35,7 @@ public class SearchControllerTests : IClassFixture<CustomWebAppFactory>
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/api/search?q=career");
+        var response = await client.GetAsync("/api/search?q=strength");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
