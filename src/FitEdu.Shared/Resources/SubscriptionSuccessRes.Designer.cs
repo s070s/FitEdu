@@ -142,7 +142,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your subscription is now active. Enjoy your new features..
+        ///   Looks up a localized string similar to Your subscription is now active. Time to train..
         /// </summary>
         public static string SubscriptionActive {
             get {
@@ -156,6 +156,15 @@ namespace FitEdu.Shared.Resources {
         public static string UnableToLoad {
             get {
                 return ResourceManager.GetString("UnableToLoad", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription confirmed.
+        /// </summary>
+        public static string Eyebrow {
+            get {
+                return ResourceManager.GetString("Eyebrow", resourceCulture);
             }
         }
     }

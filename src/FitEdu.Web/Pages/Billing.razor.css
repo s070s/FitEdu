@@ -1,91 +1,127 @@
-﻿
+/* Billing: mobile first. The plan card stacks its actions on phones; the history table turns
+   into labelled cards below 768 px (shared .table-responsive rules, data-label on each cell). */
 .billing-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+    max-width: 60rem;
+    padding-block: var(--space-5) var(--space-6);
 }
 
-    .billing-page h1 {
-        margin-bottom: 2rem;
+.billing-header {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-5);
+}
+
+    .billing-header h1 {
+        margin: 0;
     }
 
 .billing-section {
-    margin-bottom: 2.5rem;
+    margin-bottom: var(--space-6);
 }
 
     .billing-section h2 {
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border-subtle);
+        margin-bottom: var(--space-4);
+        font-size: var(--fs-4);
     }
 
 /* ── Current Plan Card ── */
 .current-plan-card {
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 1.5rem;
-    background: var(--bg-surface);
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-4);
+    background:
+        radial-gradient(90% 120% at 100% 0%, rgba(var(--text-strong-accent-rgb), 0.1), transparent 60%),
+        var(--bg-surface);
 }
 
 .plan-name-row {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
 }
 
 .plan-name {
-    font-size: 1.5rem;
-    font-weight: 700;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-2);
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
 }
 
-.plan-dates p {
-    margin: 0.25rem 0;
-    font-size: 0.95rem;
+.plan-dates {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
 }
+
+    .plan-dates > div {
+        display: grid;
+        gap: 0.125rem;
+    }
+
+    .plan-dates dt {
+        color: var(--text-light-muted);
+        font-size: var(--fs-6);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .plan-dates dd {
+        margin: 0;
+        color: var(--text-strong-normal);
+        font-variant-numeric: tabular-nums;
+    }
 
 .plan-features-summary {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
 }
 
-.feature-tag {
-    background: var(--bg-info-subtle);
-    color: var(--text-accent);
-    padding: 0.25rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-}
+    .feature-tag .bi {
+        color: var(--text-strong-accent);
+    }
 
 .plan-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
+    display: grid;
+    gap: var(--space-3);
 }
 
-@media (max-width: 767.98px) {
+.btn-cancel-plan {
+    color: var(--color-attention);
+}
+
+    .btn-cancel-plan:hover:not(:disabled) {
+        border-color: rgba(var(--color-attention-rgb), 0.6);
+        background-color: rgba(var(--color-attention-rgb), 0.1);
+        color: var(--color-attention);
+    }
+
+@media (min-width: 576px) {
+    .plan-dates {
+        grid-template-columns: repeat(2, max-content);
+        column-gap: var(--space-6);
+    }
+
     .plan-actions {
-        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
     }
+}
 
-    .plan-actions > .btn {
-        width: 100%;
-    }
-
-    .billing-page {
-        padding: 1rem 0;
+@media (min-width: 768px) {
+    .current-plan-card {
+        padding: var(--space-5);
     }
 }
 
 .cancel-msg {
-    margin-top: 1rem;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
 }
 
 .msg-success {
@@ -142,8 +178,8 @@
 }
 
 .tx-type-upgrade {
-    background: var(--bg-info-subtle);
-    color: var(--text-accent);
+    background: rgba(var(--text-strong-accent-rgb), 0.15);
+    color: var(--text-strong-accent);
 }
 
 .tx-type-downgrade {
@@ -161,13 +197,26 @@
     color: var(--color-success);
 }
 
+.tx-type-planswitch {
+    background: var(--bg-info-subtle);
+    color: var(--color-info);
+}
+
+.tx-type-expired {
+    background: var(--bg-neutral-subtle);
+    color: var(--text-light-normal);
+}
+
 .tx-type-refund {
     background: var(--bg-error-subtle);
     color: var(--color-error);
 }
 
 .amount-charge {
-    font-weight: 600;
+    color: var(--text-strong-normal);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .amount-zero {

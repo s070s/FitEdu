@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
+using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 
 namespace FitEdu.Web.Pages;
 
@@ -123,4 +126,32 @@ public partial class Billing
     private void CloseCancelDialog() => _showCancelConfirm = false;
 
     private void GoToPricing() => Navigation.NavigateTo("/pricing");
+
+    /// <summary>Lime for Pro, teal for Plus, the neutral chip for Free.</summary>
+    private static string TierChipClass(SubscriptionTier? tier) => tier switch
+    {
+        SubscriptionTier.Pro => "chip--lime",
+        SubscriptionTier.Plus => "chip--teal",
+        _ => string.Empty
+    };
+
+    /// <summary>The localized name of a transaction type; the API sends the enum name.</summary>
+    private static string TransactionTypeLabel(string type)
+    {
+        if (!Enum.TryParse<BillingTransactionType>(type, ignoreCase: true, out var transactionType))
+            return type;
+
+        return transactionType switch
+        {
+            BillingTransactionType.Purchase => BillingRes.TxType_Purchase,
+            BillingTransactionType.Upgrade => BillingRes.TxType_Upgrade,
+            BillingTransactionType.Downgrade => BillingRes.TxType_Downgrade,
+            BillingTransactionType.Renewal => BillingRes.TxType_Renewal,
+            BillingTransactionType.Refund => BillingRes.TxType_Refund,
+            BillingTransactionType.FreePlanAssignment => BillingRes.TxType_FreePlanAssignment,
+            BillingTransactionType.PlanSwitch => BillingRes.TxType_PlanSwitch,
+            BillingTransactionType.Expired => BillingRes.TxType_Expired,
+            _ => type
+        };
+    }
 }
