@@ -10,6 +10,7 @@ using FitEdu.Domain.Enums;
 using FitEdu.Infrastructure.Data;
 using FitEdu.TestSupport;
 using Shouldly;
+using System.Text.Json;
 using Xunit;
 
 namespace FitEdu.Application.Tests;
@@ -130,5 +131,57 @@ public class AssessmentServiceTests
             UserId, assessment.Id, new SubmitAssessmentRequest("""{"anything":"goes"}""", null));
 
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    // ---- GetAssessmentAsync: language resolution ------------------------------
+
+    private const string SectionedSchemaJson =
+        """{"id":"x","title":"Check","titleEl":"Έλεγχος","version":"1.0","sections":[{"id":"s1","title":"Energy","titleEl":"Ενέργεια","questions":[{"id":"q1","type":"rating","label":"How rested?","labelEl":"Πόσο ξεκούραστος;","min":1,"max":5,"minLabel":"Tired","minLabelEl":"Κουρασμένος","maxLabel":"Fresh","maxLabelEl":"Φρέσκος","required":true}]},{"id":"s2","title":"Habits","questions":[{"id":"q2","type":"multiselect","label":"Which?","options":["a","b"],"optionsEl":["α","β"]}]}]}""";
+
+    private static async Task<JsonElement> ResolvedSchemaAsync(string lang)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var assessment = Published(SectionedSchemaJson);
+        db.AssessmentDefinitions.Add(assessment);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).GetAssessmentAsync(UserId, assessment.Id, lang);
+
+        result.IsSuccess.ShouldBeTrue();
+        return JsonDocument.Parse(result.Value!.SchemaJson).RootElement.Clone();
+    }
+
+    [Fact]
+    public async Task GetAssessment_Greek_ResolvesSectionTitlesAndRatingLabels()
+    {
+        var schema = await ResolvedSchemaAsync("el");
+
+        var sections = schema.GetProperty("sections");
+        sections.GetArrayLength().ShouldBe(2);
+        sections[0].GetProperty("title").GetString().ShouldBe("Ενέργεια");
+        sections[0].GetProperty("questionIds")[0].GetString().ShouldBe("q1");
+        // A section without titleEl falls back to the English title.
+        sections[1].GetProperty("title").GetString().ShouldBe("Habits");
+
+        var rating = schema.GetProperty("questions")[0];
+        rating.GetProperty("label").GetString().ShouldBe("Πόσο ξεκούραστος;");
+        rating.GetProperty("minLabel").GetString().ShouldBe("Κουρασμένος");
+        rating.GetProperty("maxLabel").GetString().ShouldBe("Φρέσκος");
+        rating.TryGetProperty("minLabelEl", out _).ShouldBeFalse();
+        schema.GetProperty("questions")[1].GetProperty("options")[0].GetString().ShouldBe("α");
+        schema.GetProperty("title").GetString().ShouldBe("Έλεγχος");
+    }
+
+    [Fact]
+    public async Task GetAssessment_English_KeepsEnglishTextAndFlatQuestions()
+    {
+        var schema = await ResolvedSchemaAsync("en");
+
+        schema.GetProperty("sections")[0].GetProperty("title").GetString().ShouldBe("Energy");
+        var questions = schema.GetProperty("questions");
+        questions.GetArrayLength().ShouldBe(2);
+        questions[0].GetProperty("minLabel").GetString().ShouldBe("Tired");
+        questions[1].GetProperty("type").GetString().ShouldBe("multiselect");
+        questions[1].GetProperty("options")[1].GetString().ShouldBe("b");
     }
 }
