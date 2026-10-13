@@ -174,12 +174,14 @@ public class ExercisesControllerTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
-    public async Task Robots_AllowsTheExerciseLibrary()
+    public async Task Robots_AllowsTheExerciseLibraryAndTheCatalogue()
     {
         var client = _factory.CreateClient();
 
         var robots = await client.GetStringAsync("/robots.txt");
 
         robots.ShouldContain("Allow: /exercises");
+        robots.ShouldContain("Allow: /courses");
+        robots.ShouldNotContain("Disallow: /courses");
     }
 }

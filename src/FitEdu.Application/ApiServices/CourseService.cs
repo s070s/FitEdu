@@ -122,6 +122,16 @@ public class CourseService(
         return new PagedResult<CourseListItemDto>(items, totalCount, page, pageSize);
     }
 
+    public async Task<IReadOnlyList<Guid>> GetPublishedCourseIdsAsync(CancellationToken cancellationToken = default)
+    {
+        return await db.Courses
+            .AsNoTracking()
+            .Where(c => c.IsPublished)
+            .OrderBy(c => c.TitleEn)
+            .Select(c => c.Id)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<CourseDetailDto?> GetCourseDetailAsync(string userId, Guid courseId, string lang, CancellationToken cancellationToken = default)
     {
         var isEl = Localized.IsEl(lang);

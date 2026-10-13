@@ -2,12 +2,12 @@ User-agent: *
 Allow: /
 Allow: /blog/
 Allow: /exercises
+Allow: /courses
 Disallow: /admin
 Disallow: /api/
 Disallow: /login
 Disallow: /register
 Disallow: /profile
-Disallow: /courses
 Disallow: /billing
 Disallow: /chat
 Disallow: /assessments

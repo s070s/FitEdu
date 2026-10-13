@@ -13,6 +13,8 @@ public interface ICourseService
         string userId, int page, int pageSize, string lang, Guid? categoryId = null, string? search = null,
         FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null,
         CancellationToken cancellationToken = default);
+    /// <summary>Every published course id, for the sitemap.</summary>
+    Task<IReadOnlyList<Guid>> GetPublishedCourseIdsAsync(CancellationToken cancellationToken = default);
     Task<CourseDetailDto?> GetCourseDetailAsync(string userId, Guid courseId, string lang, CancellationToken cancellationToken = default);
     Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default);
     Task<ServiceResult<LessonDetailDto>> GetLessonDetailAsync(string userId, Guid lessonId, string lang, CancellationToken cancellationToken = default);
