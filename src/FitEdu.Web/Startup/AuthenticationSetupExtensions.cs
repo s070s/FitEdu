@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.Data;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Web.Services;
 using System.Security.Claims;
 using System.Text;
 
@@ -42,7 +43,9 @@ public static class AuthenticationSetupExtensions
             options.SignIn.RequireConfirmedEmail = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders()
+        // Password-rule and email errors in the member's language instead of Identity's English.
+        .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
         // --- Authentication: MultiAuth policy (Cookie for Blazor pages, JWT for API/SignalR) ---
         var jwtKey = config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");

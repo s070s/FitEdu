@@ -3,12 +3,13 @@
 @using System.Globalization
 @using FitEdu.Web.Extensions
 
-<PageTitle>@NotificationRes.PageTitle</PageTitle>
+<AppPageTitle Text="@NotificationRes.PageTitle" />
 
 <div class="page notifications-page">
     <header class="notifications-head">
         <div class="notifications-head__text">
-            <h1>@NotificationRes.PageTitle</h1>
+            <span class="eyebrow"><span class="bi @AppIcons.Notification" aria-hidden="true"></span> @NavMenuRes.Notifications</span>
+            <h1>@NotificationRes.Heading</h1>
             <p class="notifications-head__lead">@NotificationRes.Subtitle</p>
         </div>
 
@@ -60,7 +61,7 @@
                         </p>
                         <p class="notification-row__meta">
                             <time datetime="@notification.CreatedAt.ToString("o", CultureInfo.InvariantCulture)"
-                                  title="@notification.CreatedAt.ToLocalTime().ToString("g")">@RelativeTimeFormatter.NotificationAge(notification.CreatedAt)</time>
+                                  title="@SiteClock.ToSiteTime(notification.CreatedAt).ToString("g")">@RelativeTimeFormatter.NotificationAge(notification.CreatedAt)</time>
                             @if (!notification.IsRead)
                             {
                                 <span class="notification-row__unread">@NotificationRes.StatusUnread</span>

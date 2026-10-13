@@ -5,7 +5,7 @@
 @* Every state sets a title: App.razor has no static fallback. *@
 @if (_loading)
 {
-    <PageTitle>@HomeRes.BlogIndexTitle</PageTitle>
+    <AppPageTitle Text="@HomeRes.BlogIndexTitle" />
     <div class="page blog-article-page" aria-hidden="true">
         <div class="blog-article-skeleton">
             <SkeletonBlock Height="1rem" Width="8rem" />
@@ -18,7 +18,7 @@
 }
 else if (_notFound || _article is null)
 {
-    <PageTitle>@HomeRes.BlogNotFoundTitle</PageTitle>
+    <AppPageTitle Text="@HomeRes.BlogNotFoundTitle" />
     <div class="page blog-article-page">
         <h1 class="visually-hidden">@HomeRes.BlogNotFoundTitle</h1>
         <EmptyState Icon="@AppIcons.BlogArticle"
@@ -30,7 +30,7 @@ else if (_notFound || _article is null)
 }
 else
 {
-    <PageTitle>@_article.Title</PageTitle>
+    <AppPageTitle Text="@_article.Title" />
     <SeoHead Title="@_article.Title"
              Description="@_article.Summary"
              CanonicalUrl="@($"/blog/{_article.Slug}")"
@@ -68,7 +68,7 @@ else
                     </span>
                     @if (_article.PublishedAt is { } publishedAt)
                     {
-                        var localDate = publishedAt.ToLocalTime();
+                        var localDate = SiteClock.ToSiteTime(publishedAt);
                         <time datetime="@localDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@localDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)</time>
                     }
                     <span><span class="bi bi-clock" aria-hidden="true"></span> @string.Format(HomeRes.BlogReadingTimeFormat, _readingMinutes)</span>

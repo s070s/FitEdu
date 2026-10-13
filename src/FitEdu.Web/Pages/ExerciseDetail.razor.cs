@@ -21,6 +21,9 @@ public partial class ExerciseDetail : IDisposable
     [Inject] private IExerciseConsumer ExerciseConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
 
+    // Present only while prerendering, so a missing item can answer 404.
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
     private ExerciseDetailDto? _exercise;
     private IReadOnlyList<LessonUsingExerciseDto> _lessons = [];
     private List<ExerciseFact> _facts = [];
@@ -58,7 +61,11 @@ public partial class ExerciseDetail : IDisposable
         var lessonsTask = ExerciseConsumer.GetLessonsUsingExerciseAsync(Slug, CurrentLang);
         await Task.WhenAll(exerciseTask, lessonsTask);
 
-        Show(await exerciseTask, await lessonsTask);
+        // A failed request still shows the "not found" view, but answers 503 instead of 404.
+        var lookup = await exerciseTask;
+        Show(lookup.Item, await lessonsTask);
+        if (lookup.Item is null)
+            PrerenderStatus.SetMissing(HttpContext, lookup.RequestFailed);
     }
 
     private void Show(ExerciseDetailDto? exercise, IReadOnlyList<LessonUsingExerciseDto> lessons)
@@ -69,15 +76,17 @@ public partial class ExerciseDetail : IDisposable
         _loading = false;
     }
 
-    /// <summary>The "at a glance" tiles; a value the source data leaves empty gets no tile.</summary>
+    /// <summary>
+    /// The "at a glance" tiles; a value the source data leaves empty gets no tile. The category is
+    /// the page's eyebrow, so it has no tile of its own.
+    /// </summary>
     private static List<ExerciseFact> BuildFacts(ExerciseDetailDto exercise)
     {
         ExerciseFact[] candidates =
         [
             new("bi-tools", ExerciseRes.Equipment, ExerciseLabels.Equipment(exercise.Equipment)),
             new("bi-arrow-left-right", ExerciseRes.Force, ExerciseLabels.Force(exercise.Force)),
-            new("bi-diagram-3", ExerciseRes.Mechanic, ExerciseLabels.Mechanic(exercise.Mechanic)),
-            new("bi-grid", ExerciseRes.Category, ExerciseLabels.Category(exercise.Category))
+            new("bi-diagram-3", ExerciseRes.Mechanic, ExerciseLabels.Mechanic(exercise.Mechanic))
         ];
 
         return candidates.Where(fact => !string.IsNullOrWhiteSpace(fact.Value)).ToList();

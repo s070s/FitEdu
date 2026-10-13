@@ -73,6 +73,20 @@ public class MemberPagesTests : BunitContext
     }
 
     [Fact]
+    public void MyCertificates_KeptCertificatesOnAPlanWithoutCertificates_SaysTheyStayTheMembers()
+    {
+        var certificate = new CertificateDto(Guid.NewGuid(), Guid.NewGuid(), "Alice Johnson", "Couch to 5K", DateTime.UtcNow, "Active");
+        _certificateConsumer.GetMyCertificatesAsync(Arg.Any<string>()).Returns([certificate]);
+        _subscriptionConsumer.GetStatusAsync().Returns(new UserSubscriptionStatusDto(
+            SubscriptionTier.Free, "Free", DateTime.UtcNow, null, false, new PlanFeaturesDto { CertificateAccess = false }));
+
+        var page = Render<MyCertificates>();
+
+        page.Find(".certificates-head__lead").TextContent.ShouldBe(CertificateRes.SubtitleKeptCertificates);
+        page.FindAll(".certificate-card").Count.ShouldBe(1);
+    }
+
+    [Fact]
     public void Notifications_UnreadRow_IsMarkedAndOffersMarkRead()
     {
         ReturnNotifications(Notification(isRead: false), Notification(isRead: true));
@@ -93,6 +107,34 @@ public class MemberPagesTests : BunitContext
         page.Find("#notification-sort").Change("unread");
 
         _notificationConsumer.Received().GetNotificationsAsync(1, Arg.Any<int>(), "isread", "asc");
+    }
+
+    [Fact]
+    public void Notifications_ShowsAnEyebrowWithTheBellIcon()
+    {
+        ReturnNotifications(Notification(isRead: false));
+
+        var page = Render<Notifications>();
+
+        var eyebrow = page.Find(".notifications-head__text .eyebrow");
+        eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Notifications);
+        eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-bell");
+        // The heading says something of its own instead of repeating the eyebrow.
+        page.Find("h1").TextContent.ShouldBe(NotificationRes.Heading);
+        NotificationRes.Heading.ShouldNotBe(NavMenuRes.Notifications);
+    }
+
+    [Fact]
+    public void Search_ShowsAnEyebrowWithTheSearchIcon()
+    {
+        var page = Render<Search>();
+
+        var eyebrow = page.Find(".search-head__text .eyebrow");
+        eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Search);
+        eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-search");
+        // Without a query the heading asks a question instead of repeating the eyebrow.
+        page.Find("h1").TextContent.ShouldBe(SearchRes.Heading);
+        SearchRes.Heading.ShouldNotBe(NavMenuRes.Search);
     }
 
     [Fact]

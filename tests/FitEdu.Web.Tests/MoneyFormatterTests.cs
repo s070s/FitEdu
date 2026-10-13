@@ -2,6 +2,7 @@ using System.Globalization;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
+using FitEdu.TestSupport;
 
 namespace FitEdu.Web.Tests;
 
@@ -26,7 +27,7 @@ public class MoneyFormatterTests
     [Fact]
     public void Format_NoCulture_FollowsTheCurrentCulture()
     {
-        CultureInfo.CurrentCulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         MoneyFormatter.Format(19.99m).ShouldBe("19,99 €");
     }

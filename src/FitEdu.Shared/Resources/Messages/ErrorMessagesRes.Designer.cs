@@ -268,6 +268,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Administrators cannot join programmes..
+        /// </summary>
+        public static string AdminCannotEnroll {
+            get {
+                return ResourceManager.GetString("AdminCannotEnroll", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Course not found.
         /// </summary>
         public static string CourseNotFound {
@@ -583,6 +592,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Exercise is not published.
+        /// </summary>
+        public static string Exercise_NotPublished {
+            get {
+                return ResourceManager.GetString("Exercise_NotPublished", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unknown equipment code.
         /// </summary>
         public static string Course_UnknownEquipmentCode {
@@ -597,6 +615,105 @@ namespace FitEdu.Shared.Resources.Messages {
         public static string Lesson_ModifiedConcurrently {
             get {
                 return ResourceManager.GetString("Lesson_ModifiedConcurrently", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate not found..
+        /// </summary>
+        public static string Certificate_NotFound {
+            get {
+                return ResourceManager.GetString("Certificate_NotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This certificate has been revoked..
+        /// </summary>
+        public static string Certificate_Revoked {
+            get {
+                return ResourceManager.GetString("Certificate_Revoked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The certificate PDF isn't available right now. Please try again later..
+        /// </summary>
+        public static string Certificate_PdfUnavailable {
+            get {
+                return ResourceManager.GetString("Certificate_PdfUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least {0} characters..
+        /// </summary>
+        public static string IdentityPasswordTooShortFormat {
+            get {
+                return ResourceManager.GetString("IdentityPasswordTooShortFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one digit (0-9)..
+        /// </summary>
+        public static string IdentityPasswordRequiresDigit {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresDigit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one lowercase letter (a-z)..
+        /// </summary>
+        public static string IdentityPasswordRequiresLower {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresLower", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one uppercase letter (A-Z)..
+        /// </summary>
+        public static string IdentityPasswordRequiresUpper {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresUpper", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one symbol, such as ! or #..
+        /// </summary>
+        public static string IdentityPasswordRequiresNonAlphanumeric {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresNonAlphanumeric", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least {0} different characters..
+        /// </summary>
+        public static string IdentityPasswordRequiresUniqueCharsFormat {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresUniqueCharsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The email {0} is already registered..
+        /// </summary>
+        public static string IdentityDuplicateEmailFormat {
+            get {
+                return ResourceManager.GetString("IdentityDuplicateEmailFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The email {0} is not valid..
+        /// </summary>
+        public static string IdentityInvalidEmailFormat {
+            get {
+                return ResourceManager.GetString("IdentityInvalidEmailFormat", resourceCulture);
             }
         }
     }

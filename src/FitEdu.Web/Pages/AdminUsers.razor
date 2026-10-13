@@ -3,7 +3,7 @@
 @using FitEdu.Web.Shared.Components.Data
 @using FitEdu.Web.Extensions
 
-<PageTitle>@AdminRes.UserManagement</PageTitle>
+<AppPageTitle Text="@AdminRes.UserManagement" />
 
 <div class="admin-container">
     <h1 class="h2">@AdminRes.UserManagement</h1>
@@ -77,9 +77,9 @@
                                 <span class="bi @(user.EmailConfirmed ? "bi-check-lg text-success" : "bi-x-lg text-light-muted")" aria-hidden="true"></span>
                                 <span class="visually-hidden">@(user.EmailConfirmed ? AdminRes.Yes : AdminRes.No)</span>
                             </td>
-                            <td data-label="@AdminRes.ColTier">@user.SubscriptionTier</td>
+                            <td data-label="@AdminRes.ColTier">@TierLabels.Name(user.SubscriptionTier)</td>
                             <td data-label="@AdminRes.ColRoles">@string.Join(", ", user.Roles.Select(RoleLabels.Label))</td>
-                            <td data-label="@AdminRes.ColCreated">@user.CreatedAt.ToLocalTime().ToString("d")</td>
+                            <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(user.CreatedAt).ToString("d")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 @if (user.Roles.Contains("Student"))
                                 {
@@ -149,7 +149,7 @@
         </div>
     </Body>
     <Footer>
-        <button class="btn btn-secondary" @onclick="CloseResetPasswordModal" disabled="@_resetPwdBusy">
+        <button class="btn-cta btn-cta--ghost" @onclick="CloseResetPasswordModal" disabled="@_resetPwdBusy">
             @AdminRes.Cancel
         </button>
         <button class="btn btn-primary" @onclick="SubmitResetPassword" disabled="@_resetPwdBusy">

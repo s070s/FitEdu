@@ -58,11 +58,10 @@ public class CourseService(
             .ToListAsync(cancellationToken);
 
         // Two batched queries replace per-row correlated subqueries.
-        var enrolledCourseIds = await db.Enrollments
+        var enrolmentStatusByCourseId = await db.Enrollments
             .AsNoTracking()
             .Where(e => e.UserId == userId && pageIds.Contains(e.CourseId))
-            .Select(e => e.CourseId)
-            .ToHashSetAsync(cancellationToken);
+            .ToDictionaryAsync(e => e.CourseId, e => e.Status, cancellationToken);
 
         var lessonCountById = await db.Lessons
             .AsNoTracking()
@@ -99,11 +98,12 @@ public class CourseService(
         var items = courses.Select(c =>
         {
             var rating = ratingsById.GetValueOrDefault(c.Id);
+            var isEnrolled = enrolmentStatusByCourseId.TryGetValue(c.Id, out var enrolmentStatus);
             return new CourseListItemDto(
                 c.Id,
                 Localized.Pick(isEl, c.TitleEn, c.TitleEl),
                 Localized.Pick(isEl, c.DescriptionEn, c.DescriptionEl),
-                enrolledCourseIds.Contains(c.Id),
+                isEnrolled,
                 lessonCountById.GetValueOrDefault(c.Id, 0),
                 c.RequiredTier,
                 c.CategoryId,
@@ -115,11 +115,22 @@ public class CourseService(
                 c.Equipment,
                 c.EstimatedWeeks,
                 c.SessionsPerWeek,
-                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug)
+                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug),
+                IsCompleted: isEnrolled && enrolmentStatus == EnrollmentStatus.Completed
             );
         }).ToList();
 
         return new PagedResult<CourseListItemDto>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<IReadOnlyList<Guid>> GetPublishedCourseIdsAsync(CancellationToken cancellationToken = default)
+    {
+        return await db.Courses
+            .AsNoTracking()
+            .Where(c => c.IsPublished)
+            .OrderBy(c => c.TitleEn)
+            .Select(c => c.Id)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<CourseDetailDto?> GetCourseDetailAsync(string userId, Guid courseId, string lang, CancellationToken cancellationToken = default)
@@ -197,6 +208,9 @@ public class CourseService(
             .Select(group => new { LessonId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.LessonId, row => row.Count, cancellationToken);
 
+    public Task<int> CountEnrollmentsAsync(string userId, CancellationToken cancellationToken = default) =>
+        db.Enrollments.CountAsync(enrollment => enrollment.UserId == userId, cancellationToken);
+
     public async Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default)
     {
         var course = await db.Courses.FirstOrDefaultAsync(c => c.Id == courseId && c.IsPublished, cancellationToken);
@@ -208,7 +222,7 @@ public class CourseService(
         {
             return ServiceResult<EnrollmentResultDto>.Forbidden(new EnrollmentResultDto(
                 false,
-                string.Format(ErrorMessagesRes.CourseRequiresTierFormat, course.RequiredTier),
+                string.Format(ErrorMessagesRes.CourseRequiresTierFormat, TierLabels.Name(course.RequiredTier)),
                 null));
         }
 
@@ -218,12 +232,12 @@ public class CourseService(
             // Note: count-then-insert is a TOCTOU — two concurrent requests for *different* courses
             // can both pass this gate and briefly exceed the limit. Fixing that requires serializable
             // isolation; the rare over-count is accepted here as a benign soft-limit edge case.
-            var enrollmentCount = await db.Enrollments.CountAsync(e => e.UserId == userId, cancellationToken);
+            var enrollmentCount = await CountEnrollmentsAsync(userId, cancellationToken);
             if (enrollmentCount >= maxCourses)
             {
                 return ServiceResult<EnrollmentResultDto>.Forbidden(new EnrollmentResultDto(
                     false,
-                    string.Format(ErrorMessagesRes.CourseEnrollmentLimitReachedFormat, userStatus.PlanName, maxCourses),
+                    string.Format(ErrorMessagesRes.CourseEnrollmentLimitReachedFormat, TierLabels.Name(userStatus.Tier), maxCourses),
                     null));
             }
         }

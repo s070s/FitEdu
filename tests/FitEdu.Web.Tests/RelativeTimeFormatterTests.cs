@@ -1,17 +1,17 @@
 using System.Globalization;
+using FitEdu.Application.Common;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
 
 namespace FitEdu.Web.Tests;
 
-public class RelativeTimeFormatterTests
+public sealed class RelativeTimeFormatterTests : IDisposable
 {
-    public RelativeTimeFormatterTests()
-    {
-        // Pin the UI culture so the neutral (English) resources resolve regardless of runner locale.
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
-    }
+    // Pin the culture so the neutral (English) resources resolve regardless of runner locale;
+    // Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new("en");
 
     [Fact]
     public void LastSeen_UnderOneMinute_SaysJustNow()
@@ -52,6 +52,9 @@ public class RelativeTimeFormatterTests
 
         var result = RelativeTimeFormatter.LastSeen(lastSeen);
 
-        result.ShouldBe($"last seen {lastSeen.ToLocalTime().ToString("d", CultureInfo.CurrentCulture)}");
+        // The date is the members' day (SiteClock), not the day in the test machine's zone.
+        result.ShouldBe($"last seen {SiteClock.ToSiteTime(lastSeen).ToString("d", CultureInfo.CurrentCulture)}");
     }
+
+    public void Dispose() => _cultureScope.Dispose();
 }

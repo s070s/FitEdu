@@ -95,6 +95,21 @@ public class ConsumerTests
     }
 
     [Fact]
+    public async Task CourseConsumer_LookupCourse_TellsNotFoundFromAFailedRequest()
+    {
+        var (missingClient, _) = TestHttp.Json(HttpStatusCode.NotFound);
+        var (failingClient, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+
+        var missing = await new CourseConsumer(missingClient, TokenProvider()).LookupCourseAsync(Guid.NewGuid());
+        var failed = await new CourseConsumer(failingClient, TokenProvider()).LookupCourseAsync(Guid.NewGuid());
+
+        missing.Item.ShouldBeNull();
+        missing.RequestFailed.ShouldBeFalse();
+        failed.Item.ShouldBeNull();
+        failed.RequestFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task CourseConsumer_GetCourse_NotFound_ReturnsNull()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.NotFound);
@@ -115,6 +130,25 @@ public class ConsumerTests
 
         result!.Success.ShouldBeFalse();
         result.Message.ShouldBe("Upgrade required");
+    }
+
+    [Fact]
+    public async Task CourseConsumer_CountEnrollments_ReadsTheCount()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK, 4);
+        var consumer = new CourseConsumer(client, TokenProvider());
+
+        (await consumer.CountEnrollmentsAsync()).ShouldBe(4);
+        handler.LastRequest!.RequestUri!.AbsolutePath.ShouldBe("/api/courses/enrolment-count");
+    }
+
+    [Fact]
+    public async Task CourseConsumer_CountEnrollments_ServerError_ReturnsNull()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new CourseConsumer(client, TokenProvider());
+
+        (await consumer.CountEnrollmentsAsync()).ShouldBeNull();
     }
 
     [Fact]
@@ -158,12 +192,27 @@ public class ConsumerTests
     }
 
     [Fact]
-    public async Task BlogConsumer_GetBySlug_NotFound_ReturnsNull()
+    public async Task BlogConsumer_GetBySlug_NotFound_ReportsNotFound()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.NotFound);
         var consumer = new BlogConsumer(client, TokenProvider());
 
-        (await consumer.GetBySlugAsync("missing")).ShouldBeNull();
+        var lookup = await consumer.GetBySlugAsync("missing");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task BlogConsumer_GetBySlug_ServerError_ReportsAFailedRequest()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.ServiceUnavailable);
+        var consumer = new BlogConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("progressive-overload");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeTrue();
     }
 
     // ---- ExerciseConsumer ----------------------------------------------------
@@ -220,13 +269,43 @@ public class ConsumerTests
     }
 
     [Fact]
-    public async Task ExerciseConsumer_GetBySlug_NotFound_ReturnsNull()
+    public async Task ExerciseConsumer_GetBySlug_NotFound_ReportsNotFound()
     {
         var (client, handler) = TestHttp.Json(HttpStatusCode.NotFound);
         var consumer = new ExerciseConsumer(client, TokenProvider());
 
-        (await consumer.GetBySlugAsync("pushups", "el")).ShouldBeNull();
+        var lookup = await consumer.GetBySlugAsync("pushups", "el");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeFalse();
         handler.LastRequest!.RequestUri!.PathAndQuery.ShouldBe("/api/exercises/pushups?lang=el");
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetBySlug_ServerError_ReportsAFailedRequest()
+    {
+        // A 500 says nothing about whether the exercise exists, so it must not read as "not found".
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("pushups");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetBySlug_Found_ReturnsTheExercise()
+    {
+        var exercise = new ExerciseDetailDto(Guid.NewGuid(), "pushups", "Pushups", "strength", "beginner", "body only",
+            ["chest"], "/0.webp", "/1.webp", [], null, null, []);
+        var (client, _) = TestHttp.Json(HttpStatusCode.OK, exercise);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("pushups");
+
+        lookup.Item!.Slug.ShouldBe("pushups");
+        lookup.RequestFailed.ShouldBeFalse();
     }
 
     [Fact]

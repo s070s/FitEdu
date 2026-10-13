@@ -95,7 +95,28 @@ public class CourseServiceTests
         var item = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items.Single();
 
         item.IsEnrolled.ShouldBeTrue();
+        item.IsCompleted.ShouldBeFalse();
         item.TotalLessons.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_SetsCompletedFlagForAFinishedProgramme()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var finished = CourseWithLessons("Finished", 1);
+        var started = CourseWithLessons("Started", 1);
+        db.Courses.AddRange(finished, started);
+        db.Enrollments.AddRange(
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = finished.Id, Status = EnrollmentStatus.Completed },
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = started.Id, Status = EnrollmentStatus.Active },
+            new Enrollment { Id = Guid.NewGuid(), UserId = "someone-else", CourseId = started.Id, Status = EnrollmentStatus.Completed });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var items = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items;
+
+        items.Single(item => item.Id == finished.Id).IsCompleted.ShouldBeTrue();
+        items.Single(item => item.Id == started.Id).IsCompleted.ShouldBeFalse();
     }
 
     [Fact]
@@ -479,6 +500,40 @@ public class CourseServiceTests
         result.IsSuccess.ShouldBeTrue();
         var enrollment = await db.Enrollments.SingleAsync(e => e.UserId == UserId && e.CourseId == course.Id);
         enrollment.Status.ShouldBe(EnrollmentStatus.Active);
+    }
+
+    // ---- CountEnrollmentsAsync -----------------------------------------------
+
+    [Fact]
+    public async Task CountEnrollments_CountsEveryEnrolmentOfThatMemberOnly()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var first = CourseWithLessons("First", 0);
+        var second = CourseWithLessons("Second", 0, published: false);
+        db.Courses.AddRange(first, second);
+        db.Enrollments.AddRange(
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = first.Id },
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = second.Id, Status = EnrollmentStatus.Completed },
+            new Enrollment { Id = Guid.NewGuid(), UserId = "someone-else", CourseId = first.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.CountEnrollmentsAsync(UserId)).ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Enroll_CapCountsEnrolmentsInUnpublishedCoursesToo()
+    {
+        // The plan limit and the count on the catalogue share one rule: every enrolment counts.
+        await using var db = DbContextFactory.CreateInMemory();
+        var retired = CourseWithLessons("Retired", 0, published: false);
+        var target = CourseWithLessons("Target", 0);
+        db.Courses.AddRange(retired, target);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = retired.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, Status(SubscriptionTier.Free, maxCourses: 1));
+
+        (await svc.EnrollAsync(UserId, target.Id)).StatusCode.ShouldBe(403);
     }
 
     // ---- GetLessonDetailAsync ------------------------------------------------

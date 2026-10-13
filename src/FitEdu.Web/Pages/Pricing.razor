@@ -1,7 +1,7 @@
 @page "/pricing"
 @using FitEdu.Web.Extensions
 
-<PageTitle>@PricingRes.PageTitle</PageTitle>
+<AppPageTitle Text="@PricingRes.PageTitle" />
 <SeoHead Title="@PricingRes.PageTitle"
          Description="@PricingRes.Subtitle"
          CanonicalUrl="/pricing" />
@@ -19,7 +19,7 @@
             {
                 <div class="current-plan-banner">
                     <span class="bi bi-patch-check-fill" aria-hidden="true"></span>
-                    <span>@PricingRes.CurrentPlanLabel <strong>@_currentStatus.PlanName</strong></span>
+                    <span>@PricingRes.CurrentPlanLabel <strong>@TierLabels.Name(_currentStatus.Tier)</strong></span>
                 </div>
             }
         </Authorized>
@@ -47,7 +47,7 @@
                     {
                         <div class="plan-badge"><span class="bi bi-lightning-charge-fill" aria-hidden="true"></span> @PricingRes.MostPopular</div>
                     }
-                    <h2 class="plan-name" id="plan-name-@plan.Id">@plan.Name</h2>
+                    <h2 class="plan-name" id="plan-name-@plan.Id">@TierLabels.Name(plan.Tier)</h2>
                     <div class="plan-price">
                         <span class="price-amount">@MoneyFormatter.Format(plan.Price)</span>
                         <span class="price-period">@(plan.Price == 0 ? PricingRes.PeriodForever : PeriodLabel(plan.BillingPeriod))</span>
@@ -56,7 +56,7 @@
 
                     @if (plan.Features is not null)
                     {
-                        <ul class="plan-features" aria-label="@string.Format(PricingRes.FeaturesListLabel, plan.Name)">
+                        <ul class="plan-features" aria-label="@string.Format(PricingRes.FeaturesListLabel, TierLabels.Name(plan.Tier))">
                             <li class="feature-item">
                                 <span class="feature-icon bi bi-check-lg" aria-hidden="true"></span>
                                 <span>@CourseAccessLabel(plan.Tier)</span>
@@ -136,10 +136,10 @@
                       OnConfirm="CancelSubscription"
                       OnCancel="CloseCancelDialog">
             <BodyContent>
-                <p>@string.Format(BillingRes.CancelConfirmBody, _currentStatus?.PlanName)</p>
+                <p>@string.Format(BillingRes.CancelConfirmBody, CurrentPlanName)</p>
                 @if (_currentStatus?.ExpiresAt is not null)
                 {
-                    <p class="mb-0">@string.Format(BillingRes.CancelConfirmAccessUntil, _currentStatus.ExpiresAt.Value.ToLocalTime().ToString("d"))</p>
+                    <p class="mb-0">@string.Format(BillingRes.CancelConfirmAccessUntil, SiteClock.ToSiteTime(_currentStatus.ExpiresAt.Value).ToString("d"))</p>
                 }
             </BodyContent>
         </ConfirmModal>

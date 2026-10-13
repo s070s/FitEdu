@@ -4,9 +4,10 @@ namespace FitEdu.Infrastructure.ApiServices;
 
 /// <summary>
 /// Stub email service for development.
-/// Logs emails instead of sending them — no message is ever delivered. This is the only
-/// IEmailService registered, and only in Development; production registration fails fast in
-/// Program.cs until a real provider (SendGrid/SMTP) is implemented and wired in.
+/// Logs emails instead of sending them — no message is ever delivered. It is registered only in
+/// Development when no SMTP host is configured (otherwise <see cref="SmtpEmailService"/> sends
+/// real mail); outside Development a missing SMTP host fails fast at startup. The logged subject
+/// comes from <see cref="EmailTemplates"/> in the sending request's UI language (English or Greek).
 ///
 /// LOG-2: the logged confirmation/reset links embed live Identity tokens and the recipient's
 /// email — i.e. usable credentials sitting in plaintext in <c>Logs/</c> until they expire or are
@@ -30,7 +31,7 @@ public class StubEmailService : IEmailService
             "To: {Email}\n" +
             "Subject: {Subject}\n" +
             "Link: {ConfirmationLink}",
-            email, EmailTemplates.EmailConfirmationSubject, confirmationLink);
+            email, EmailTemplates.EmailConfirmation(confirmationLink).Subject, confirmationLink);
 
         return Task.CompletedTask;
     }
@@ -42,7 +43,7 @@ public class StubEmailService : IEmailService
             "To: {Email}\n" +
             "Subject: {Subject}\n" +
             "Link: {ResetLink}",
-            email, EmailTemplates.PasswordResetSubject, resetLink);
+            email, EmailTemplates.PasswordReset(resetLink).Subject, resetLink);
 
         return Task.CompletedTask;
     }

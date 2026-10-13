@@ -1,4 +1,5 @@
 @inject IHttpContextAccessor HttpContextAccessor
+@inject FitEdu.Web.Services.StaticAssetVersions AssetVersions
 @{
     var cultureFeature = HttpContextAccessor.HttpContext?.Features
         .Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
@@ -19,8 +20,9 @@
 
     <!-- Critical CSS (needed for first paint) -->
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="css/shared-components.css" />
+    <!-- The own stylesheets carry a content version (?v=), so returning visitors get a changed file at once. -->
+    <link rel="stylesheet" href="@AssetVersions.WithVersion("css/app.css")" />
+    <link rel="stylesheet" href="@AssetVersions.WithVersion("css/shared-components.css")" />
     <!-- Bootstrap Icons used in NavMenu (above fold) — load synchronously to prevent
          icon FOIT from changing navbar height and causing a layout shift on the hero. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
@@ -29,7 +31,7 @@
     <link rel="icon" type="image/png" sizes="64x64" href="favicon.png" />
     <link rel="apple-touch-icon" href="icon-192.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link href="FitEdu.Web.styles.css" rel="stylesheet" />
+    <link href="@AssetVersions.WithVersion("FitEdu.Web.styles.css")" rel="stylesheet" />
 
     <!-- Non-critical CSS deferred until after first paint. media="print" defers application
          without blocking render; js/lazy-css.js (external, not inline — SEC-5/CSP) flips
@@ -59,6 +61,7 @@
     <script defer src="js/webrtc-interop.js"></script>
     <script defer src="js/cert-interop.js"></script>
     <script defer src="js/modal-interop.js"></script>
+    <script defer src="js/scroll-regions.js"></script>
     <script src="_framework/blazor.web.js"></script>
 </body>
 

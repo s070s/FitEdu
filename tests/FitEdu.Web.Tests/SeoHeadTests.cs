@@ -136,6 +136,31 @@ public class SeoHeadTests : BunitContext
     }
 
     [Fact]
+    public void PricingPage_TabTitleEndsWithTheSiteName_AndOgTitleDoesNotRepeatIt()
+    {
+        UseSiteBaseUrl(SiteBaseUrl);
+        var head = RenderHeadOutlet();
+
+        Render<Pricing>();
+
+        head.Find("title").TextContent.ShouldBe(PricingRes.PageTitle + " - FitEdu");
+        Attribute(head, "meta[property='og:title']", "content").ShouldBe(PricingRes.PageTitle);
+        Attribute(head, "meta[property='og:title']", "content").ShouldNotContain("FitEdu");
+        Attribute(head, "meta[property='og:site_name']", "content").ShouldBe("FitEdu");
+    }
+
+    [Fact]
+    public void AppPageTitle_AddsTheSiteNameOnce()
+    {
+        UseSiteBaseUrl(SiteBaseUrl);
+        var head = RenderHeadOutlet();
+
+        Render<AppPageTitle>(parameters => parameters.Add(title => title.Text, "Exercise library"));
+
+        head.Find("title").TextContent.ShouldBe("Exercise library - FitEdu");
+    }
+
+    [Fact]
     public void HomePage_SharesTheSiteRootAndTheHomeImage()
     {
         UseSiteBaseUrl(SiteBaseUrl);
@@ -152,6 +177,8 @@ public class SeoHeadTests : BunitContext
 
         Attribute(head, "link[rel=canonical]", "href").ShouldBe("https://tests.local/");
         Attribute(head, "meta[property='og:image']", "content").ShouldBe("https://tests.local/images/og-home.jpg");
+        // The home page alone keeps its own title, which starts with the site name.
+        head.Find("title").TextContent.ShouldBe(HomeRes.PageTitle);
         // A guest lands on the hero, so its photo is preloaded.
         Attribute(head, "link[rel=preload][as=image]", "href").ShouldBe("/images/hero-home.webp");
     }

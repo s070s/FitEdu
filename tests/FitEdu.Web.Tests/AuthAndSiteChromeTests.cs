@@ -5,10 +5,14 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.TestSupport;
 using FitEdu.Web.Pages;
+using FitEdu.Web.Services;
 using FitEdu.Web.Shared.Components.Data;
 using FitEdu.Web.Shared.Components.Layout;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -23,21 +27,27 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class AuthAndSiteChromeTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string ValidPassword = "Password1";
+    private const string RegisterEmail = "maria@fitedu.local";
 
     private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly IWebHostEnvironment _environment = Substitute.For<IWebHostEnvironment>();
+    private readonly LocalizedIdentityErrorDescriber _errorDescriber = new();
 
     public AuthAndSiteChromeTests()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en");
         CultureInfo.CurrentUICulture = new CultureInfo("en");
 
-        var environment = Substitute.For<IWebHostEnvironment>();
-        environment.EnvironmentName.Returns("Production");
+        _environment.EnvironmentName.Returns("Production");
 
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
-        Services.AddSingleton(environment);
+        Services.AddSingleton(_environment);
+        Services.AddSingleton<IdentityErrorDescriber>(_errorDescriber);
         // Register scrolls its result into view after a submit.
         JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
         Services.AddSingleton(Substitute.For<IHttpClientFactory>());
@@ -56,6 +66,74 @@ public class AuthAndSiteChromeTests : BunitContext
         page.FindAll("#password").Count.ShouldBe(1);
         page.FindAll("button[type=submit]").Count.ShouldBe(1);
         page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/register");
+    }
+
+    [Theory]
+    [InlineData("/courses/42", "%2Fcourses%2F42")]
+    [InlineData(null, "%2F")]
+    [InlineData("https://evil.example/", "%2F")]
+    [InlineData("//evil.example/", "%2F")]
+    public void Login_Success_ReturnsOnlyToALocalPath(string? returnUrl, string expectedReturnUrl)
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto { Success = true, Token = "ticket" });
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        navigation.NavigateTo(returnUrl is null ? "/login" : "/login?returnUrl=" + Uri.EscapeDataString(returnUrl));
+        var page = Render<Login>();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        navigation.Uri.ShouldEndWith("/auth/complete?ticket=ticket&returnUrl=" + expectedReturnUrl);
+    }
+
+    [Fact]
+    public void Login_WithReturnUrl_TheRegisterLinkKeepsIt()
+    {
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/login?returnUrl=%2Fcourses%2F42");
+
+        var page = Render<Login>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/register?returnUrl=%2Fcourses%2F42");
+    }
+
+    [Fact]
+    public void Register_WithReturnUrl_TheLoginLinksComeBackToIt()
+    {
+        // A guest who signs up from a programme page lands on that programme after logging in.
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/register?returnUrl=%2Fcourses%2F42");
+        var page = Render<Register>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/login?returnUrl=%2Fcourses%2F42");
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find(".register-success__login").GetAttribute("href").ShouldBe("/login?returnUrl=%2Fcourses%2F42");
+    }
+
+    [Fact]
+    public void Register_ReturnUrlToAnotherSite_LinksToThePlainLogin()
+    {
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/register?returnUrl=%2F%2Fevil.example%2F");
+
+        var page = Render<Register>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/login");
+    }
+
+    [Theory]
+    [InlineData("/courses/42", "/courses/42")]
+    [InlineData("/", "/")]
+    [InlineData(null, "/")]
+    [InlineData("", "/")]
+    [InlineData("courses", "/")]
+    [InlineData("//evil.example", "/")]
+    [InlineData(@"/\evil.example", "/")]
+    [InlineData("https://evil.example", "/")]
+    public void Login_LocalReturnPath_KeepsOnlyLocalPaths(string? returnUrl, string expected)
+    {
+        Login.LocalReturnPath(returnUrl).ShouldBe(expected);
     }
 
     [Fact]
@@ -125,10 +203,27 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_InDevelopment_ShowsTheTranslatedResultNotTheServerMessage()
+    {
+        _environment.EnvironmentName.Returns("Development");
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = true, Message = "Raw server message" });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var result = page.Find(".register-success .alert-success").TextContent;
+        result.ShouldContain(SuccessMessagesRes.RegistrationSuccess);
+        result.ShouldNotContain("Raw server message");
+    }
+
+    [Fact]
     public void Register_ServerError_ShowsAnAlertRightAboveTheSubmitButton()
     {
+        var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
         _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
-            new AuthResponseDto { Success = false, Message = "failed", Errors = ["Email 'maria@fitedu.local' is already taken."] });
+            new AuthResponseDto { Success = false, Message = "failed", Errors = [emailTaken] });
         var page = Render<Register>();
 
         FillRequiredRegisterFields(page);
@@ -137,10 +232,27 @@ public class AuthAndSiteChromeTests : BunitContext
         var feedback = page.Find("form .register-errors");
         feedback.GetAttribute("role").ShouldBe("alert");
         feedback.TextContent.ShouldContain(ErrorMessagesRes.EmailTakenError);
-        feedback.TextContent.ShouldNotContain("already taken");
+        feedback.TextContent.ShouldNotContain(emailTaken);
         feedback.NextElementSibling!.GetAttribute("type").ShouldBe("submit");
         // The phone user tapped at the bottom edge, so the alert is scrolled into view.
         JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+    }
+
+    [Fact]
+    public void Register_EmailTakenInGreek_ShowsTheShortGreekMessage()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Errors = [emailTaken] });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var feedback = page.Find("form .register-errors").TextContent;
+        feedback.ShouldContain("Η διεύθυνση email είναι ήδη εγγεγραμμένη");
+        feedback.ShouldNotContain(emailTaken);
     }
 
     [Fact]
@@ -226,9 +338,15 @@ public class AuthAndSiteChromeTests : BunitContext
     {
         page.Find("#firstName").Change("Maria");
         page.Find("#lastName").Change("Papadopoulou");
-        page.Find("#email").Change("maria@fitedu.local");
+        page.Find("#email").Change(RegisterEmail);
         page.Find("#password").Change(ValidPassword);
         page.Find("#confirmPassword").Change(ValidPassword);
         page.Find("#gdprConsent").Change(true);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

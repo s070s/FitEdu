@@ -5,9 +5,12 @@ using Xunit;
 
 namespace FitEdu.Infrastructure.Tests;
 
-public class StubEmailServiceTests
+public sealed class StubEmailServiceTests : IDisposable
 {
     private readonly RecordingLogger<StubEmailService> _logger = new();
+
+    // English unless a test says otherwise; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new("en-GB");
 
     private StubEmailService NewService() => new(_logger);
 
@@ -32,4 +35,26 @@ public class StubEmailServiceTests
         entry.ShouldContain("Subject: Reset your FitEdu password", Case.Sensitive);
         entry.ShouldContain("Link: https://reset", Case.Sensitive);
     }
+
+    [Fact]
+    public async Task SendEmailConfirmation_InGreek_LogsTheGreekSubject()
+    {
+        using var cultureScope = new CultureScope("el-GR");
+
+        await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm");
+
+        _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Καλώς ήρθες στο FitEdu — ώρα για κίνηση", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task SendPasswordReset_InGreek_LogsTheGreekSubject()
+    {
+        using var cultureScope = new CultureScope("el-GR");
+
+        await NewService().SendPasswordResetAsync("u@x.com", "https://reset");
+
+        _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού σου στο FitEdu", Case.Sensitive);
+    }
+
+    public void Dispose() => _cultureScope.Dispose();
 }

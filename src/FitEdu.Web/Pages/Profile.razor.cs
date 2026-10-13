@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Globalization;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Web.Services;
+using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -34,10 +36,15 @@ public partial class Profile
     private string confirmPassword = string.Empty;
     private bool isSaving = false;
     private bool isChangingPassword = false;
+    // Bootstrap alert types for the page message: green for a saved change, red for a problem.
+    private const string SuccessAlert = "success";
+    private const string ErrorAlert = "danger";
     private string message = string.Empty;
+    private string messageType = SuccessAlert;
     private string? avatarDataUrl;
     private string? _loadError;
     private bool _uploadingAvatar;
+    private FilePicker? _avatarPicker;
     private bool _showDeleteConfirm;
     private bool _isDeleting;
     private string? _deleteError;
@@ -191,13 +198,13 @@ public partial class Profile
         var file = e.File;
         if (file == null || file.Size >= 5 * 1024 * 1024)
         {
-            message = ProfileRes.FileTooLarge;
+            RejectAvatar(ProfileRes.FileTooLarge);
             return;
         }
 
         if (!AllowedAvatarTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
         {
-            message = ProfileRes.InvalidImageType;
+            RejectAvatar(ProfileRes.InvalidImageType);
             return;
         }
 
@@ -210,21 +217,40 @@ public partial class Profile
                 profile = await ProfileConsumer.GetProfileAsync();
                 await LoadAvatarAsync();
                 AvatarNotifier.Notify();
-                message = ProfileRes.AvatarUploadedSuccess;
+                ShowSuccess(ProfileRes.AvatarUploadedSuccess);
             }
             else
             {
-                message = ProfileRes.ErrorUploadingAvatar;
+                RejectAvatar(ProfileRes.ErrorUploadingAvatar);
             }
         }
         catch (Exception ex)
         {
-            message = string.Format(ProfileRes.ErrorUploadingAvatarFormat, ex.Message);
+            RejectAvatar(ResourceFormat.Fill(ProfileRes.ErrorUploadingAvatarFormat, ex.Message));
         }
         finally
         {
             _uploadingAvatar = false;
         }
+    }
+
+    private void ShowSuccess(string text)
+    {
+        message = text;
+        messageType = SuccessAlert;
+    }
+
+    private void ShowError(string text)
+    {
+        message = text;
+        messageType = ErrorAlert;
+    }
+
+    /// <summary>Shows why the avatar was not saved; the picker stops naming the file it did not keep.</summary>
+    private void RejectAvatar(string reason)
+    {
+        ShowError(reason);
+        _avatarPicker?.ClearFileName();
     }
 
     private async Task UpdateProfile()
@@ -252,16 +278,16 @@ public partial class Profile
                 profile = updated;
                 profileStatus = updated.Status;
                 profileGoal = updated.Goal;
-                message = ProfileRes.ProfileUpdatedSuccess;
+                ShowSuccess(ProfileRes.ProfileUpdatedSuccess);
             }
             else
             {
-                message = ProfileRes.ErrorUpdatingProfile;
+                ShowError(ProfileRes.ErrorUpdatingProfile);
             }
         }
         catch (Exception ex)
         {
-            message = string.Format(ProfileRes.ErrorFormat, ex.Message);
+            ShowError(string.Format(ProfileRes.ErrorFormat, ex.Message));
         }
         finally
         {
@@ -273,13 +299,13 @@ public partial class Profile
     {
         if (string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword))
         {
-            message = ProfileRes.FillAllPasswordFields;
+            ShowError(ProfileRes.FillAllPasswordFields);
             return;
         }
 
         if (newPassword != confirmPassword)
         {
-            message = ProfileRes.PasswordsDoNotMatch;
+            ShowError(ProfileRes.PasswordsDoNotMatch);
             return;
         }
 
@@ -293,19 +319,19 @@ public partial class Profile
 
             if (success)
             {
-                message = ProfileRes.PasswordChangedSuccess;
+                ShowSuccess(ProfileRes.PasswordChangedSuccess);
                 currentPassword = string.Empty;
                 newPassword = string.Empty;
                 confirmPassword = string.Empty;
             }
             else
             {
-                message = ProfileRes.ErrorChangingPassword;
+                ShowError(ProfileRes.ErrorChangingPassword);
             }
         }
         catch (Exception ex)
         {
-            message = string.Format(ProfileRes.ErrorFormat, ex.Message);
+            ShowError(string.Format(ProfileRes.ErrorFormat, ex.Message));
         }
         finally
         {

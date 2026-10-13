@@ -11,7 +11,7 @@ public class BlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider 
         int count = 6, string lang = "en", CancellationToken ct = default)
         => GetAsync<IReadOnlyList<BlogArticleSummaryDto>>($"api/blog/summaries?count={count}&lang={lang}", ct);
 
-    public Task<BlogArticleDto?> GetBySlugAsync(
+    public Task<ApiLookup<BlogArticleDto>> GetBySlugAsync(
         string slug, string lang = "en", CancellationToken ct = default)
-        => GetAsync<BlogArticleDto>($"api/blog/{slug}?lang={lang}", ct);
+        => GetLookupAsync<BlogArticleDto>($"api/blog/{slug}?lang={lang}", ct);
 }

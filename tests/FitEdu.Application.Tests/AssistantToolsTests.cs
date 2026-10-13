@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiServices;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
@@ -29,7 +30,7 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
         _library = library;
     }
 
-    private static AssistantTools NewTools(ApplicationDbContext db) => new(db, new ExerciseService(db));
+    private static AssistantTools NewTools(ApplicationDbContext db) => new(db, new ExerciseService(db, new MemoryCache(new MemoryCacheOptions())));
 
     private static Course NewCourse(string titleEn, string? titleEl = null, bool published = true,
         Category? category = null, params int[] lessonsPerModule)
@@ -217,7 +218,7 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
     public async Task SearchExercisesTool_Description_ListsExactlyTheRealLibraryMuscleAndEquipmentValues()
     {
         // The filters match whole English values only, so the model must be told the real vocabulary.
-        var facets = await new ExerciseService(_library.Db).GetFacetsAsync();
+        var facets = await new ExerciseService(_library.Db, new MemoryCache(new MemoryCacheOptions())).GetFacetsAsync();
 
         AssistantTools.MuscleFilterValues.ShouldBe(facets.Muscles.Select(facet => facet.Value));
         AssistantTools.EquipmentFilterValues.ShouldBe(facets.Equipment.Select(facet => facet.Value));

@@ -122,6 +122,9 @@
 	<data name="EnrollInThisCourse" xml:space="preserve">
 		<value>Join the programme</value>
 	</data>
+	<data name="GuestStartCta" xml:space="preserve">
+		<value>Sign up free to start</value>
+	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>min</value>
 	</data>
@@ -186,7 +189,7 @@
 		<value>Join the programme to open its lessons.</value>
 	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
-		<value>Programmes - FitEdu</value>
+		<value>Programmes</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
 		<value>Find your next programme</value>
@@ -331,5 +334,8 @@
 	</data>
 	<data name="NoMatchingCoursesHint" xml:space="preserve">
 		<value>Try another goal, level or piece of equipment, or clear the filters.</value>
+	</data>
+	<data name="PlanCourseUsageFormat" xml:space="preserve">
+		<value>{0} of {1} programmes used</value>
 	</data>
 </root>

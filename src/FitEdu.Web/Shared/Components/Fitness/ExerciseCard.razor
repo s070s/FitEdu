@@ -132,7 +132,8 @@
                     @if (!string.IsNullOrWhiteSpace(prescription.Reps))
                     {
                         <div class="exercise-card__dose-item">
-                            <dt>@LessonRes.Reps</dt>
+                            @* A timed value ("20 s") is a time, not a number of repetitions. *@
+                            <dt>@(ExerciseLabels.IsDuration(prescription.Reps) ? LessonRes.Time : LessonRes.Reps)</dt>
                             <dd>@prescription.Reps</dd>
                         </div>
                     }

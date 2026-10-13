@@ -1,21 +1,18 @@
 @page "/exercises"
 
-<PageTitle>@ExerciseRes.PageTitle</PageTitle>
+<AppPageTitle Text="@ExerciseRes.PageTitle" />
 <SeoHead Title="@ExerciseRes.PageTitle" Description="@ExerciseRes.Subtitle" CanonicalUrl="/exercises" />
 
 <section class="page exercise-library">
     <header class="exercise-library__hero">
-        @if (LibraryTotal > 0)
-        {
-            <p class="eyebrow">@LibraryTotalText</p>
-        }
+        <p class="eyebrow">@ExerciseRes.LibraryEyebrow</p>
         <h1>@ExerciseRes.Library</h1>
         <p class="exercise-library__lead">@ExerciseRes.Subtitle</p>
     </header>
 
     <div class="exercise-filters card-surface" role="region" aria-label="@ExerciseRes.FiltersLabel">
         <div class="card-surface__body exercise-filters__body">
-            <form class="exercise-filters__search" role="search" @onsubmit="SubmitSearchAsync" @onsubmit:preventDefault>
+            <form class="exercise-filters__search" role="search" @onsubmit="SubmitSearch" @onsubmit:preventDefault>
                 <span class="bi bi-search exercise-filters__search-icon" aria-hidden="true"></span>
                 <input type="search" class="form-control" autocomplete="off"
                        placeholder="@ExerciseRes.SearchPlaceholder" aria-label="@ExerciseRes.SearchPlaceholder"
@@ -27,7 +24,7 @@
                 <div class="exercise-filters__chips" role="group" aria-label="@ExerciseRes.Muscle">
                     <button type="button" class="filter-chip @(_filter.Muscle is null ? "is-selected" : "")"
                             aria-pressed="@(_filter.Muscle is null ? "true" : "false")"
-                            @onclick="() => SelectMuscleAsync(null)">
+                            @onclick="() => SelectMuscle(null)">
                         @ExerciseRes.AllMuscles
                     </button>
                     @foreach (var muscle in _muscleOptions)
@@ -35,7 +32,7 @@
                         var isSelected = _filter.Muscle == muscle.Value;
                         <button type="button" class="filter-chip @(isSelected ? "is-selected" : "")" @key="muscle.Value"
                                 aria-pressed="@(isSelected ? "true" : "false")"
-                                @onclick="() => SelectMuscleAsync(muscle.Value)">
+                                @onclick="() => SelectMuscle(muscle.Value)">
                             @muscle.Label <span class="filter-chip__count">@muscle.Count</span>
                         </button>
                     }
@@ -43,9 +40,9 @@
             }
 
             <div class="exercise-filters__selects">
-                @FacetSelect("exercise-level", ExerciseRes.Level, ExerciseRes.AllLevels, _levelOptions, _filter.Level, OnLevelChangedAsync)
-                @FacetSelect("exercise-category", ExerciseRes.Category, ExerciseRes.AllCategories, _categoryOptions, _filter.Category, OnCategoryChangedAsync)
-                @FacetSelect("exercise-equipment", ExerciseRes.Equipment, ExerciseRes.AllEquipment, _equipmentOptions, _filter.Equipment, OnEquipmentChangedAsync)
+                @FacetSelect("exercise-level", ExerciseRes.Level, ExerciseRes.AllLevels, _levelOptions, _filter.Level, OnLevelChanged)
+                @FacetSelect("exercise-category", ExerciseRes.Category, ExerciseRes.AllCategories, _categoryOptions, _filter.Category, OnCategoryChanged)
+                @FacetSelect("exercise-equipment", ExerciseRes.Equipment, ExerciseRes.AllEquipment, _equipmentOptions, _filter.Equipment, OnEquipmentChanged)
             </div>
         </div>
     </div>
@@ -67,7 +64,7 @@
             </h2>
             @if (_filter.IsActive)
             {
-                <button type="button" class="btn-cta btn-cta--ghost exercise-library__clear" @onclick="ClearFiltersAsync">
+                <button type="button" class="btn-cta btn-cta--ghost exercise-library__clear" @onclick="ClearFilters">
                     <span class="bi bi-x-lg" aria-hidden="true"></span> @ExerciseRes.ClearFilters
                 </button>
             }
@@ -88,13 +85,13 @@
                                HasPreviousPage="_result.HasPreviousPage"
                                HasNextPage="_result.HasNextPage"
                                AriaLabel="@ExerciseRes.PagesLabel"
-                               OnPageChanged="GoToPageAsync" />
+                               OnPageChanged="GoToPage" />
             </div>
         }
         else if (_filter.IsActive)
         {
             <EmptyState Icon="bi-search" Title="@ExerciseRes.NoResults" Text="@ExerciseRes.NoResultsHint">
-                <button type="button" class="btn-cta empty-state__action" @onclick="ClearFiltersAsync">@ExerciseRes.ClearFilters</button>
+                <button type="button" class="btn-cta empty-state__action" @onclick="ClearFilters">@ExerciseRes.ClearFilters</button>
             </EmptyState>
         }
         else
@@ -114,7 +111,7 @@
     private const int SkeletonCardCount = 6;
 
     private RenderFragment FacetSelect(string id, string label, string allLabel, List<FacetOption> options,
-        string? selectedValue, Func<ChangeEventArgs, Task> onChange) =>
+        string? selectedValue, Action<ChangeEventArgs> onChange) =>
         @<div class="exercise-filters__field">
             <label class="form-label" for="@id">@label</label>
             <select id="@id" class="form-select" @onchange="onChange">

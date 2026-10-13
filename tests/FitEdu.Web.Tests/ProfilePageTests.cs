@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -8,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
@@ -23,6 +25,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class ProfilePageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private readonly IProfileConsumer _profileConsumer = Substitute.For<IProfileConsumer>();
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
     private readonly ICertificateConsumer _certificateConsumer = Substitute.For<ICertificateConsumer>();
@@ -65,6 +70,19 @@ public class ProfilePageTests : BunitContext
         page.Find(".profile-hero__email").TextContent.ShouldBe("alice@fitedu.local");
         page.Find(".profile-hero .chip--lime").TextContent.ShouldContain(GlobalRes.StatusIntermediate);
         page.Find(".profile-hero .chip--teal").TextContent.ShouldContain(CourseRes.Goal_Strength);
+    }
+
+    [Fact]
+    public void RejectedAvatar_DoesNotKeepShowingTheFileName()
+    {
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        page.FindComponent<InputFile>().UploadFiles(
+            InputFileContent.CreateFromText("not an image", "notes.txt", contentType: "text/plain"));
+
+        page.Markup.ShouldContain(ProfileRes.InvalidImageType);
+        page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
     }
 
     [Fact]
@@ -155,5 +173,40 @@ public class ProfilePageTests : BunitContext
         page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
 
         _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request => request.Goal == null));
+    }
+
+    [Fact]
+    public void SaveProfile_Success_ShowsASuccessMessage()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns(AliceProfile);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-goal"));
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        var alert = page.Find(".alert[role=alert]");
+        alert.TextContent.ShouldContain(ProfileRes.ProfileUpdatedSuccess);
+        alert.ClassList.ShouldContain("alert-success");
+    }
+
+    [Fact]
+    public void SaveProfile_Failure_ShowsAnErrorMessage()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns((ProfileDto?)null);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-goal"));
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        var alert = page.Find(".alert[role=alert]");
+        alert.TextContent.ShouldContain(ProfileRes.ErrorUpdatingProfile);
+        alert.ClassList.ShouldContain("alert-danger");
+        alert.ClassList.ShouldNotContain("alert-info");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

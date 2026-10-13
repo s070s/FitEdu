@@ -11,6 +11,9 @@ namespace FitEdu.Web.Services;
 /// </summary>
 public static class NotificationMessageFormatter
 {
+    // The most placeholders any notification template uses: {0} English and {1} Greek title.
+    private const int MaxTemplateArguments = 2;
+
     public static string Format(NotificationDto notification)
     {
         var template = NotificationRes.ResourceManager.GetString(notification.TitleKey, CultureInfo.CurrentUICulture);
@@ -19,11 +22,28 @@ public static class NotificationMessageFormatter
 
         try
         {
-            return string.Format(template, notification.BodyArgs.Cast<object>().ToArray());
+            return string.Format(CultureInfo.CurrentCulture, template, PadArguments(notification.BodyArgs));
         }
         catch (FormatException)
         {
             return template;
         }
+    }
+
+    /// <summary>
+    /// Rows stored before the Greek title was added hold only the English title, so repeat the
+    /// last argument up to the template count: a Greek {1} then falls back to the stored title.
+    /// </summary>
+    private static object[] PadArguments(List<string> bodyArgs)
+    {
+        var arguments = new List<object>(bodyArgs);
+        if (arguments.Count == 0)
+            return [];
+
+        var lastArgument = arguments[^1];
+        while (arguments.Count < MaxTemplateArguments)
+            arguments.Add(lastArgument);
+
+        return [.. arguments];
     }
 }

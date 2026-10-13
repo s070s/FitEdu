@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @implements IAsyncDisposable
 
-<PageTitle>@ChatRes.PageTitle</PageTitle>
+<AppPageTitle Text="@ChatRes.PageTitle" />
 
 @* UX-15: FocusOnNavigate moves focus to the h1; the chat layout has no visible title. *@
 <h1 class="visually-hidden">@ChatRes.PageTitle</h1>

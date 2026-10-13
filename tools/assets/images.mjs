@@ -1,46 +1,10 @@
-// Shared helpers for the asset scripts: start headless Chrome through playwright-core and encode
-// images with the browser's canvas (no image library needed).
-//
-// playwright-core is not a dependency of this repo. Point PLAYWRIGHT_CORE at an existing copy of
-// the package folder and CHROME_PATH at a Chrome or Chromium executable (see README.md).
-import { createRequire } from 'node:module';
-import { existsSync, readFileSync } from 'node:fs';
-import { extname, join } from 'node:path';
-
-const DEFAULT_PLAYWRIGHT_CORE = 'C:/Users/GS/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright-core';
-const DEFAULT_CHROME_PATH = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+// Image helpers for the asset scripts: they decode and encode images with the canvas of a page in
+// headless Chrome (tools/shared/browser.mjs starts it), so no image library is needed.
+import { readFileSync } from 'node:fs';
+import { extname } from 'node:path';
+import { fail } from '../shared/browser.mjs';
 
 const MIME_TYPES = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
-
-export const playwrightCoreFolder = process.env.PLAYWRIGHT_CORE || DEFAULT_PLAYWRIGHT_CORE;
-export const chromePath = process.env.CHROME_PATH || DEFAULT_CHROME_PATH;
-
-/** Stops the script with a readable message instead of a stack trace. */
-export function fail(message) {
-    console.error(`error: ${message}`);
-    process.exit(1);
-}
-
-function loadChromium() {
-    const entryFile = join(playwrightCoreFolder, 'index.js');
-    if (!existsSync(entryFile)) {
-        fail(`playwright-core not found at "${playwrightCoreFolder}". Set PLAYWRIGHT_CORE to the playwright-core package folder.`);
-    }
-
-    const require = createRequire(import.meta.url);
-    return require(entryFile).chromium;
-}
-
-/** Starts headless Chrome. Call browser.close() when done. */
-export async function launchBrowser() {
-    if (!existsSync(chromePath)) {
-        fail(`Chrome not found at "${chromePath}". Set CHROME_PATH to a Chrome or Chromium executable.`);
-    }
-
-    const chromium = loadChromium();
-    // File access lets HTML templates opened from disk load the images next to them.
-    return chromium.launch({ executablePath: chromePath, headless: true, args: ['--allow-file-access-from-files'] });
-}
 
 /** Reads an image file into a data: URL so the page can decode it without file:// access. */
 export function fileToDataUrl(filePath) {

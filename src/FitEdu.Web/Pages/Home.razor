@@ -81,6 +81,11 @@ else
             {
                 <StatTile Value="@Number(_landing.MemberCount)" Label="@HomeRes.StatsMembers" Icon="bi-people" />
             }
+            else if (_landing.AssessmentCount > 0)
+            {
+                @* Keeps the strip at four tiles while the member count is still too small to show. *@
+                <StatTile Value="@Number(_landing.AssessmentCount)" Label="@HomeRes.StatsAssessments" Icon="bi-clipboard2-pulse" />
+            }
         </section>
     }
 
@@ -136,8 +141,10 @@ else
                     @HomeRes.FeaturedSeeAll <span class="bi bi-arrow-right" aria-hidden="true"></span>
                 </a>
             </div>
-            @* A swipeable row on phones like the member stories, so the landing stays short. *@
-            <div class="featured-grid" role="region" tabindex="0" aria-labelledby="featured-title">
+            @* A swipeable row on phones like the member stories, so the landing stays short.
+               It starts as a tab stop, so it is one before scripts run; js/scroll-regions.js then
+               keeps the tab stop only while the row scrolls sideways. *@
+            <div class="featured-grid" role="region" data-scroll-region tabindex="0" aria-labelledby="featured-title">
                 @foreach (var course in _landing.FeaturedCourses)
                 {
                     <CourseCard Course="course" @key="course.Id" />
@@ -161,8 +168,9 @@ else
             <h2 id="stories-title" class="section-title">
                 @HomeRes.TestimonialsTitle <span class="text-volt">@HomeRes.TestimonialsTitleHighlight</span>
             </h2>
-            @* A swipeable row on phones, so keyboard users can scroll it too (focusable region). *@
-            <div class="testimonials-grid" role="region" tabindex="0" aria-labelledby="stories-title">
+            @* A swipeable row on phones, a tab stop so keyboard users can scroll it too;
+               js/scroll-regions.js removes the tab stop while the row does not scroll sideways. *@
+            <div class="testimonials-grid" role="region" data-scroll-region tabindex="0" aria-labelledby="stories-title">
                 @foreach (var testimonial in _testimonials)
                 {
                     <TestimonialCard Testimonial="testimonial" @key="testimonial.Id" />

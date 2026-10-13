@@ -277,7 +277,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Billing &amp; Transactions - FitEdu.
+        ///   Looks up a localized string similar to Billing &amp; Transactions.
         /// </summary>
         public static string PageTitle {
             get {

@@ -82,7 +82,9 @@ public class AdminAssessmentsController : ControllerBase
                 a.Submissions.Count,
                 a.CreatedAt,
                 a.Category != null ? a.Category.NameEn : null,
-                a.RequiredTier
+                a.RequiredTier,
+                a.TitleEl,
+                a.Category != null ? a.Category.NameEl : null
             ))
             .ToListAsync();
 

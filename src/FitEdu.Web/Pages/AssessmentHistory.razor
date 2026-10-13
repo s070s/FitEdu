@@ -1,7 +1,8 @@
 @page "/assessments/mine"
 @attribute [Authorize(Roles = "Student")]
+@using FitEdu.Application.Common
 
-<PageTitle>@AssessmentRes.HistoryTitle</PageTitle>
+<AppPageTitle Text="@AssessmentRes.HistoryTitle" />
 
 <div class="page assessment-history-page">
     <a class="assessment-history__back" href="/assessments">
@@ -39,7 +40,7 @@
                         <h2 id="latest-submission-title" class="latest-submission__title">@latestSubmission.AssessmentTitle</h2>
                         <p class="latest-submission__meta">
                             <span class="bi bi-calendar-check" aria-hidden="true"></span>
-                            @AssessmentRes.SubmittedLabel @latestSubmission.SubmittedAt.ToLocalTime().ToString("g")
+                            @AssessmentRes.SubmittedLabel @SiteClock.ToSiteTime(latestSubmission.SubmittedAt).ToString("g")
                         </p>
                     </div>
                     <button type="button" class="btn-cta btn-cta--ghost latest-submission__action" @onclick="() => ViewSubmission(latestSubmission.Id)">@AssessmentRes.ViewDetails</button>
@@ -67,7 +68,7 @@
                 <tr @key="submission.Id">
                     <td data-label="@AssessmentRes.AssessmentHeader">@submission.AssessmentTitle</td>
                     <td data-label="@AssessmentRes.CategoryHeader">@(submission.CategoryName ?? "—")</td>
-                    <td data-label="@AssessmentRes.SubmittedHeader">@submission.SubmittedAt.ToLocalTime().ToString("g")</td>
+                    <td data-label="@AssessmentRes.SubmittedHeader">@SiteClock.ToSiteTime(submission.SubmittedAt).ToString("g")</td>
                     <td class="table-actions" data-label="@AssessmentRes.Actions">
                         <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewSubmission(submission.Id)">@AssessmentRes.ViewButton</button>
                     </td>
@@ -96,7 +97,7 @@
     <Body>
         @if (selectedSubmission != null)
         {
-            <p><strong>@AssessmentRes.SubmittedLabel</strong> @selectedSubmission.SubmittedAt.ToLocalTime().ToString("g")</p>
+            <p><strong>@AssessmentRes.SubmittedLabel</strong> @SiteClock.ToSiteTime(selectedSubmission.SubmittedAt).ToString("g")</p>
             <h6>@AssessmentRes.YourAnswers</h6>
             var parsed = ParseAnswers(selectedSubmission.AnswersJson);
             @if (parsed.Count > 0)
@@ -105,7 +106,7 @@
                     @foreach (var kv in parsed)
                     {
                         <dt class="col-sm-5 text-truncate">@ResolveLabel(selectedSubmission.AssessmentDefinitionId, kv.Key)</dt>
-                        <dd class="col-sm-7">@(string.IsNullOrEmpty(kv.Value) ? "—" : kv.Value)</dd>
+                        <dd class="col-sm-7">@(string.IsNullOrEmpty(kv.Value) ? "—" : MultiSelectAnswer.ToDisplayText(kv.Value))</dd>
                     }
                 </dl>
             }
@@ -122,7 +123,7 @@
         }
     </Body>
     <Footer>
-        <button type="button" class="btn btn-secondary" @onclick="CloseModal">@AssessmentRes.Close</button>
+        <button type="button" class="btn-cta btn-cta--ghost" @onclick="CloseModal">@AssessmentRes.Close</button>
     </Footer>
 </FormModal>
 

@@ -1,7 +1,7 @@
 @page "/lessons/{LessonId:guid}"
 @attribute [Authorize]
 
-<PageTitle>@(_lesson?.Title ?? LessonRes.LessonDefault) - FitEdu</PageTitle>
+<AppPageTitle Text="@(_lesson?.Title ?? LessonRes.LessonDefault)" />
 
 @if (_loading)
 {
@@ -30,7 +30,7 @@ else
                 <span class="bi bi-arrow-left" aria-hidden="true"></span>
                 <span>@_lesson.CourseTitle</span>
             </a>
-            <span class="breadcrumb-separator" aria-hidden="true">/</span>
+            <span class="breadcrumb-separator bi bi-chevron-right" aria-hidden="true"></span>
             <span class="module-name">@_lesson.ModuleTitle</span>
         </nav>
 
@@ -173,12 +173,18 @@ else
             }
             else
             {
+                var showDockedNext = _completionResult is not null && _lesson.NextLessonId is not null;
                 <span class="completed-indicator">
                     <span class="bi bi-check-circle-fill" aria-hidden="true"></span>
                     <span class="completed-indicator__label">@LessonRes.CompletedIndicator</span>
+                    @if (showDockedNext)
+                    {
+                        @* The phone dock swaps in this short word beside the next button (CSS). *@
+                        <span class="completed-indicator__short" aria-hidden="true">@LessonRes.CompletedShort</span>
+                    }
                 </span>
                 @* Right after a completion the phone dock offers the next lesson; the full links follow below. *@
-                @if (_completionResult is not null && _lesson.NextLessonId is { } dockedNextLessonId)
+                @if (showDockedNext && _lesson.NextLessonId is { } dockedNextLessonId)
                 {
                     <a class="btn btn-success lesson-actions__next" href="@LessonHref(dockedNextLessonId)">
                         @LessonRes.NextLesson <span class="bi bi-arrow-right" aria-hidden="true"></span>

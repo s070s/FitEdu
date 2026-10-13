@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Shared.Resources;
@@ -26,7 +27,8 @@ public partial class AdminSessions
     private string _formTitleEn = string.Empty;
     private string? _formTitleEl;
     private Guid? _formCourseId;
-    private DateTime _formStartsAtLocal = DateTime.Now.AddHours(1);
+    // The start time as typed in the form: wall-clock time in the members' time zone (SiteClock).
+    private DateTime _formStartsAtLocal = DefaultStartsAtLocal();
     private int _formDurationMinutes = 30;
     private int _formMaxParticipants = ScheduledSession.MaxParticipantsLimit;
     private bool _isSaving;
@@ -95,7 +97,7 @@ public partial class AdminSessions
         _formTitleEn = string.Empty;
         _formTitleEl = null;
         _formCourseId = null;
-        _formStartsAtLocal = DateTime.Now.AddHours(1);
+        _formStartsAtLocal = DefaultStartsAtLocal();
         _formDurationMinutes = 30;
         _formMaxParticipants = ScheduledSession.MaxParticipantsLimit;
         _formError = null;
@@ -108,7 +110,7 @@ public partial class AdminSessions
         _formTitleEn = session.TitleEn;
         _formTitleEl = session.TitleEl;
         _formCourseId = session.CourseId;
-        _formStartsAtLocal = session.StartsAtUtc.ToLocalTime().DateTime;
+        _formStartsAtLocal = SiteClock.ToSiteTime(session.StartsAtUtc).DateTime;
         _formDurationMinutes = session.DurationMinutes;
         _formMaxParticipants = session.MaxParticipants;
         _formError = null;
@@ -116,6 +118,9 @@ public partial class AdminSessions
     }
 
     private void CloseFormModal() => _formModalVisible = false;
+
+    /// <summary>A new class starts an hour from now by default, in the members' time zone.</summary>
+    private static DateTime DefaultStartsAtLocal() => SiteClock.ToSiteTime(DateTimeOffset.UtcNow).DateTime.AddHours(1);
 
     private void OnCourseChanged(ChangeEventArgs e)
     {
@@ -129,7 +134,8 @@ public partial class AdminSessions
         _formError = null;
         try
         {
-            var startsAtUtc = new DateTimeOffset(DateTime.SpecifyKind(_formStartsAtLocal, DateTimeKind.Local).ToUniversalTime(), TimeSpan.Zero);
+            // Back to UTC with the same zone the form was filled in.
+            var startsAtUtc = SiteClock.FromSiteTime(_formStartsAtLocal);
             var request = new SaveScheduledSessionRequest(
                 _formTitleEn.Trim(),
                 string.IsNullOrWhiteSpace(_formTitleEl) ? null : _formTitleEl.Trim(),

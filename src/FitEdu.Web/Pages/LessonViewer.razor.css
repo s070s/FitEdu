@@ -40,6 +40,7 @@
 
 .breadcrumb-separator {
     color: var(--text-light-muted);
+    font-size: 0.75rem;
 }
 
 .module-name {
@@ -340,6 +341,11 @@
     font-weight: 700;
 }
 
+/* Only the phone dock shows the short word (below); everywhere else the full one reads. */
+.completed-indicator__short {
+    display: none;
+}
+
 /* Below the completion bar, in the flow. */
 .progress-update {
     margin: calc(-1 * var(--space-2)) 0 var(--space-5);
@@ -415,16 +421,23 @@
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.45);
     }
 
+    /* A finished programme's card needs the whole width: it sits above the assistant launcher
+       instead of beside it, on an opaque background so the page never shows through. */
     .lesson-actions--docked:has(.course-celebration) {
+        bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 0.75rem + var(--assistant-launcher-room));
+        margin-right: 0;
         padding: var(--space-3);
+        background-color: var(--bg-surface);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
 
     .lesson-actions--docked:has(.completed-indicator) {
         padding: var(--space-2) var(--space-3);
     }
 
-    /* With the next-lesson button beside it the indicator shrinks to its tick (the word stays for
-       screen readers), so the dock keeps to one line in either language. */
+    /* With the next-lesson button beside it the indicator shows its tick and a short word (the full
+       word stays for screen readers), so the dock keeps to one line in either language. */
     .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator__label {
         position: absolute;
         width: 1px;
@@ -434,8 +447,17 @@
         white-space: nowrap;
     }
 
+    .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator__short {
+        display: inline;
+    }
+
     .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator {
-        font-size: 1.5rem;
+        gap: var(--space-1);
+        font-size: 1rem;
+    }
+
+    .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator .bi {
+        font-size: 1.375rem;
     }
 
     .lesson-actions--docked:has(.lesson-actions__next) {

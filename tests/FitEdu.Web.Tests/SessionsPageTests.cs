@@ -1,24 +1,31 @@
+using System.Globalization;
 using Bunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Web.Pages;
+using FitEdu.Web.Startup;
 using Shouldly;
 using Xunit;
 
 namespace FitEdu.Web.Tests;
 
 /// <summary>
-/// bUnit tests for the live-classes schedule: classes are grouped under one heading per local day
-/// (today and tomorrow are named), a live class offers the join button and an empty list shows
+/// bUnit tests for the live-classes schedule: classes are grouped under one heading per day in the
+/// members' time zone, Europe/Athens (today and tomorrow are named), a live class offers the join button and an empty list shows
 /// the empty state.
 /// </summary>
 public class SessionsPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const int MiddayHour = 12;
     private const int DaysAhead = 5;
 
@@ -76,6 +83,33 @@ public class SessionsPageTests : BunitContext
     }
 
     [Fact]
+    public void StartTime_IsShownInTheMembersTimeZone()
+    {
+        CultureInfo.CurrentCulture = new CultureInfo("en-GB");
+        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+        // 18:00 UTC on 20 October is 21:00 in Athens (UTC+3), whatever the zone of the test machine.
+        ReturnSessions(Session("Evening stretch", new DateTimeOffset(2026, 10, 20, 18, 0, 0, TimeSpan.Zero)));
+
+        var page = Render<Sessions>();
+
+        page.Find(".session-time__start").TextContent.ShouldBe("21:00");
+    }
+
+    [Fact]
+    public void Greek_ShowsTheStartTimeOnA24HourClock()
+    {
+        // The site's Greek culture, as the request localization hands it to the page.
+        var greek = ServiceRegistrationExtensions.CreateGreekCulture();
+        CultureInfo.CurrentCulture = greek;
+        CultureInfo.CurrentUICulture = greek;
+        ReturnSessions(Session("Evening stretch", new DateTimeOffset(2026, 10, 20, 18, 0, 0, TimeSpan.Zero)));
+
+        var page = Render<Sessions>();
+
+        page.Find(".session-time__start").TextContent.ShouldBe("21:00");
+    }
+
+    [Fact]
     public void NoSessions_ShowsEmptyState()
     {
         ReturnSessions();
@@ -89,11 +123,20 @@ public class SessionsPageTests : BunitContext
     private void ReturnSessions(params ScheduledSessionListItemDto[] sessions) =>
         _sessionConsumer.GetUpcomingAsync(Arg.Any<string>()).Returns(sessions);
 
-    // Midday local time keeps every class on the intended local day in any time zone.
-    private static DateTimeOffset LocalMidday(int daysFromToday) =>
-        new(DateTime.Today.AddDays(daysFromToday).AddHours(MiddayHour));
+    // Midday in the members' time zone keeps every class on the intended day of that zone.
+    private static DateTimeOffset LocalMidday(int daysFromToday)
+    {
+        var siteToday = SiteClock.ToSiteTime(DateTimeOffset.UtcNow).Date;
+        return SiteClock.FromSiteTime(siteToday.AddDays(daysFromToday).AddHours(MiddayHour));
+    }
 
     private static ScheduledSessionListItemDto Session(string title, DateTimeOffset startsAt) => new(
         Guid.NewGuid(), title, "Coach Maria", null, startsAt.ToUniversalTime(), 45, 6, 2, "Scheduled",
         IsHost: false, IsRegistered: false, CallSessionId: null, OtherParticipantUserIds: ["other-user"]);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

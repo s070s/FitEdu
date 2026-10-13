@@ -133,6 +133,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Sign up free to start.
+        /// </summary>
+        public static string GuestStartCta {
+            get {
+                return ResourceManager.GetString("GuestStartCta", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to min.
         /// </summary>
         public static string MinutesShort {
@@ -322,7 +331,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Courses - FitEdu.
+        ///   Looks up a localized string similar to Courses.
         /// </summary>
         public static string CoursesPageTitle {
             get {
@@ -759,6 +768,15 @@ namespace FitEdu.Shared.Resources {
         public static string NoMatchingCoursesHint {
             get {
                 return ResourceManager.GetString("NoMatchingCoursesHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} programmes used.
+        /// </summary>
+        public static string PlanCourseUsageFormat {
+            get {
+                return ResourceManager.GetString("PlanCourseUsageFormat", resourceCulture);
             }
         }
     }

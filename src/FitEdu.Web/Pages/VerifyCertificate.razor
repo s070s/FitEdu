@@ -1,6 +1,6 @@
 @page "/certificate/{VerificationId:guid}"
 
-<PageTitle>@CertificateRes.VerificationTitle</PageTitle>
+<AppPageTitle Text="@CertificateRes.VerificationTitle" />
 
 @if (_loading)
 {
@@ -34,7 +34,7 @@ else if (_result.IsValid)
                 </div>
                 <div>
                     <dt>@CertificateRes.FieldIssuedOn</dt>
-                    <dd>@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
+                    <dd>@(_result.IssuedAt is { } issuedAt ? SiteClock.ToSiteTime(issuedAt).ToString("d") : null)</dd>
                 </div>
             </dl>
         </ChildContent>

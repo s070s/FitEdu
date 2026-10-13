@@ -143,4 +143,16 @@ public class AdminLessonExercisesIntegrationTests : IClassFixture<CustomWebAppFa
         created.Goal.ShouldBe(FitnessGoal.Strength);
         created.CoverExerciseSlug.ShouldBe(coverSlug);
     }
+
+    [Fact]
+    public async Task PublishLesson_EndpointIsGone_LessonsFollowTheirCourse()
+    {
+        // Students see every lesson of a published course, so a per-lesson publish flag has no effect.
+        var lesson = await SeedLessonAsync();
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var response = await client.PostAsync($"/api/admin/lessons/{lesson.Id}/publish", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
 }

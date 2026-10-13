@@ -373,6 +373,14 @@ th.sort-active {
     color: var(--color-success);
 }
 
+/* Every .alert-secondary in the app, like the two alerts above: a quiet note on the dark surface,
+   not Bootstrap's light grey box. Today only the admin hints ("save it first, then ...") use it. */
+.alert-secondary {
+    background-color: var(--bg-neutral-subtle);
+    border-color: var(--border-subtle);
+    color: var(--text-light-normal);
+}
+
 /* Inputs in auth/profile pages */
 
 
@@ -663,19 +671,6 @@ input[type="date"].form-control:focus {
 
     .table-responsive > table tbody td[colspan]::before {
         display: none;
-    }
-}
-
-/* ================================================
-   Touch target sizing (WCAG 2.5.5 / 2.5.8)
-   On coarse pointers (touch), raise dense pagination controls to 44px.
-   ================================================ */
-@media (pointer: coarse) {
-    .pagination-controls .btn,
-    .pagination-toolbar-admin .btn,
-    .page-size-select,
-    .page-size-selector .form-select {
-        min-height: 44px;
     }
 }
 

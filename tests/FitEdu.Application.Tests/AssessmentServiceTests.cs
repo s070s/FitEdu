@@ -117,6 +117,22 @@ public class AssessmentServiceTests
         result.StatusCode.ShouldBe(400);
     }
 
+    [Theory]
+    [InlineData("""{"q1":"[]"}""", 400)]                                   // a multi-select with nothing ticked
+    [InlineData("""{"q1":"[\"Chest pain, pressure or discomfort\"]"}""", 200)] // a JSON-array multi-select answer
+    public async Task Submit_RequiredMultiSelectAnswer_CountsAnEmptyListAsMissing(string answersJson, int expectedStatus)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var assessment = Published();
+        db.AssessmentDefinitions.Add(assessment);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).SubmitAssessmentAsync(
+            UserId, assessment.Id, new SubmitAssessmentRequest(answersJson, null));
+
+        result.StatusCode.ShouldBe(expectedStatus);
+    }
+
     [Fact]
     public async Task Submit_CorruptStoredSchema_DoesNotBlockSubmission()
     {

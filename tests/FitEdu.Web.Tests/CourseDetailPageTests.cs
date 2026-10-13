@@ -1,9 +1,13 @@
 using System.Globalization;
 using Bunit;
+using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources.Messages;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -14,17 +18,24 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// The course page: hero chips, the outline (lesson kind, minutes and exercise count), the
-/// "What you'll train" list and the action card for each enrolment state.
+/// "What you'll train" list and the action card for each enrolment state. The tests run as a
+/// signed-in member unless they say otherwise; a guest gets sign-up and log-in links instead.
 /// </summary>
 public class CourseDetailPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid CourseId = Guid.Parse("0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0");
 
     private readonly ICourseConsumer _courseService = Substitute.For<ICourseConsumer>();
     private readonly ISubscriptionConsumer _subscriptionService = Substitute.For<ISubscriptionConsumer>();
+    private readonly BunitAuthorizationContext _authorization;
 
     public CourseDetailPageTests()
     {
+        _authorization = AddAuthorization();
+        _authorization.SetAuthorized("alice.johnson@fitedu.local");
         Services.AddSingleton(_courseService);
         Services.AddSingleton(_subscriptionService);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
@@ -88,6 +99,22 @@ public class CourseDetailPageTests : BunitContext
 
         page.FindAll(".course-outcomes__item").Select(item => item.TextContent.Trim())
             .ShouldBe(["Outcome 1", "Outcome 3", "Outcome 4", "Outcome 5"]);
+    }
+
+    [Fact]
+    public void Outline_LeavesOutTheDescriptionsAlreadyListedAsOutcomes()
+    {
+        UseCulture("en");
+        var modules = Enumerable.Range(1, 6)
+            .Select(number => Module($"Module {number}", $"Outcome {number}", Lesson($"Lesson {number}")))
+            .ToArray();
+        UseCourse(Course(modules: modules));
+
+        var page = RenderPage();
+
+        // Modules 1-4 are the outcomes; only 5 and 6 keep their description in the outline.
+        page.FindAll(".module-description").Select(description => description.TextContent.Trim())
+            .ShouldBe(["Outcome 5", "Outcome 6"]);
     }
 
     [Fact]
@@ -231,7 +258,8 @@ public class CourseDetailPageTests : BunitContext
     public void Enrol_Succeeds_ReloadsTheCourseAsEnrolled()
     {
         UseCulture("en");
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>()).Returns(Course(), Course(enrolled: true));
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>())
+            .Returns(ApiLookup.Found(Course()), ApiLookup.Found(Course(enrolled: true)));
         _courseService.EnrollAsync(CourseId).Returns(new EnrollmentResultDto(true, null, Guid.NewGuid()));
         var page = RenderPage();
 
@@ -256,20 +284,101 @@ public class CourseDetailPageTests : BunitContext
         notice.QuerySelector("a")!.GetAttribute("href").ShouldBe("/pricing");
     }
 
+    [Fact]
+    public void Guest_GetsSignUpAndLogInInPlaceOfJoin()
+    {
+        UseCulture("en");
+        _authorization.SetNotAuthorized();
+        UseCourse(Course(tier: SubscriptionTier.Pro));
+        var review = new CourseReviewDto(Guid.NewGuid(), "Maria", 5, "Great plan", DateTimeOffset.UtcNow);
+        _courseService.GetReviewsAsync(CourseId)
+            .Returns(new CourseReviewsResponseDto([review], new CourseRatingSummaryDto(5, 1), null));
+
+        var page = RenderPage();
+
+        var signUp = page.Find("a.course-cta__signup");
+        signUp.TextContent.Trim().ShouldBe("Sign up free to start");
+        // Both keep the programme as the return address, so the guest comes back here.
+        signUp.GetAttribute("href").ShouldBe($"/register?returnUrl=%2Fcourses%2F{CourseId}");
+        page.Find("a.course-cta__login").GetAttribute("href").ShouldBe($"/login?returnUrl=%2Fcourses%2F{CourseId}");
+        page.FindAll(".course-cta__enrol").ShouldBeEmpty();
+        page.FindAll(".enroll-upgrade-notice").ShouldBeEmpty();
+        page.FindAll("a.lesson-item[href]").ShouldBeEmpty();
+        page.FindAll(".review-form, .review-open").ShouldBeEmpty();
+        page.Find(".review-list .review-body").TextContent.ShouldBe("Great plan");
+        _subscriptionService.DidNotReceive().GetStatusAsync();
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public void Dock_KeepsRoomForTheAssistantLauncherOnlyForMembers(bool signedIn, bool expectGuestDock)
+    {
+        // The assistant launcher sits at the dock's right end, but only signed-in users get it.
+        UseCulture("en");
+        if (!signedIn)
+            _authorization.SetNotAuthorized();
+        UseCourse(Course());
+
+        var page = RenderPage();
+
+        page.Find("aside.course-cta").ClassList.Contains("course-cta--guest").ShouldBe(expectGuestDock);
+    }
+
+    [Fact]
+    public void Guest_Greek_SignUpTextIsGreek()
+    {
+        UseCulture("el");
+        _authorization.SetNotAuthorized();
+        UseCourse(Course());
+
+        var page = RenderPage();
+
+        page.Find("a.course-cta__signup").TextContent.Trim().ShouldBe("Κάνε δωρεάν εγγραφή για να ξεκινήσεις");
+        page.Find("a.course-cta__login").TextContent.Trim().ShouldBe("Σύνδεση");
+    }
+
     // ---- Load states --------------------------------------------------------------------------
 
     [Fact]
     public void LoadFails_ShowsTheErrorWithTryAgainAndBackLinks()
     {
         UseCulture("en");
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>())
-            .Returns(Task.FromException<CourseDetailDto?>(new HttpRequestException("boom")));
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.Failure<CourseDetailDto>());
 
         var page = RenderPage();
 
-        page.Find(".course-state .text-danger").TextContent.ShouldNotBeNullOrWhiteSpace();
+        page.Find(".course-state .text-danger").TextContent.ShouldBe(ErrorMessagesRes.FailedToLoadCourse);
         page.Find(".course-state button").TextContent.ShouldNotBeNullOrWhiteSpace();
         page.Find(".course-state a").GetAttribute("href").ShouldBe("/courses");
+    }
+
+    [Fact]
+    public void Missing_SaysTheProgrammeWasNotFound()
+    {
+        UseCulture("en");
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.NotFound<CourseDetailDto>());
+
+        var page = RenderPage();
+
+        page.Find(".course-state .text-danger").TextContent.ShouldBe(ErrorMessagesRes.CourseNotFound);
+    }
+
+    [Theory]
+    [InlineData(false, StatusCodes.Status404NotFound)]
+    [InlineData(true, StatusCodes.Status503ServiceUnavailable)]
+    public async Task Prerender_Answers404OnlyWhenTheProgrammeIsReallyMissing(bool requestFailed, int expectedStatus)
+    {
+        var missing = requestFailed ? ApiLookup.Failure<CourseDetailDto>() : ApiLookup.NotFound<CourseDetailDto>();
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(missing);
+        var (httpContext, response) = PrerenderHttpContext.Create();
+
+        Render<CourseDetail>(parameters => parameters
+            .Add(page => page.CourseId, CourseId)
+            .AddCascadingValue(httpContext));
+        await response.StartAsync();
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatus);
     }
 
     // ---- Helpers ------------------------------------------------------------------------------
@@ -278,7 +387,7 @@ public class CourseDetailPageTests : BunitContext
         Render<CourseDetail>(parameters => parameters.Add(page => page.CourseId, CourseId));
 
     private void UseCourse(CourseDetailDto course) =>
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>()).Returns(course);
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.Found(course));
 
     private void UsePlan(SubscriptionTier tier) =>
         _subscriptionService.GetStatusAsync().Returns(
@@ -346,4 +455,10 @@ public class CourseDetailPageTests : BunitContext
         int exerciseCount = 0,
         ContentType contentType = ContentType.Text) =>
         new(Guid.NewGuid(), title, (int)contentType, minutes, SortOrder: 1, IsCompleted: false, exerciseCount);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

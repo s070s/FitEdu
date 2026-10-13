@@ -17,7 +17,8 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/api/courses");
+        // The course catalogue is public; the profile stays members-only.
+        var response = await client.GetAsync("/api/profile");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
@@ -79,8 +80,10 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         // A bare component fragment has no head: no styles, no navigation and an empty tab title.
-        body.ShouldContain("<title>Page not found</title>");
-        body.ShouldContain("css/app.css");
+        body.ShouldContain("<title>Page not found - FitEdu</title>");
+        // The own stylesheets carry a content version, so a changed file is never served from cache.
+        body.ShouldContain("css/app.css?v=");
+        body.ShouldContain("css/shared-components.css?v=");
         body.ShouldContain("_framework/blazor.web.js");
     }
 

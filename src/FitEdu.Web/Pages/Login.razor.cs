@@ -10,11 +10,17 @@ namespace FitEdu.Web.Pages;
 
 public partial class Login
 {
+    private const string HomePath = "/";
+    private const string RegisterPath = "/register";
+
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IWebHostEnvironment Env { get; set; } = default!;
     [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
     [Inject] private ILogger<Login> Logger { get; set; } = default!;
+
+    /// <summary>Where to go after signing in, e.g. the programme a guest was looking at.</summary>
+    [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
 
     private LoginRequestDto loginRequest = new();
     private string? errorMessage;
@@ -25,6 +31,9 @@ public partial class Login
     // Tracks whether the most recent failure is due to unconfirmed email and which email is pending
     private bool unconfirmedEmailPending;
     private string pendingUnconfirmedEmail = string.Empty;
+
+    /// <summary>The sign-up page, keeping the return address so a new member comes back too.</summary>
+    private string RegisterHref => LinkWithReturnUrl(RegisterPath, ReturnUrl);
 
     private string passwordInputType => showPassword ? "text" : "password";
     private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
@@ -54,7 +63,7 @@ public partial class Login
             {
                 // Navigate forceLoad so the fresh HTTP request can set the auth cookie.
                 Navigation.NavigateTo(
-                    $"/auth/complete?ticket={Uri.EscapeDataString(result.Token!)}&returnUrl=%2F",
+                    $"/auth/complete?ticket={Uri.EscapeDataString(result.Token!)}&returnUrl={Uri.EscapeDataString(LocalReturnPath(ReturnUrl))}",
                     forceLoad: true);
                 return; // navigation is underway — don't touch component state
             }
@@ -87,6 +96,33 @@ public partial class Login
         }
 
         isLoading = false;
+    }
+
+    /// <summary>
+    /// The return address when it is a path on this site, otherwise the home page. "//host" and
+    /// "/\host" are rejected because browsers read both as another site (an open redirect).
+    /// </summary>
+    public static string LocalReturnPath(string? returnUrl)
+    {
+        if (string.IsNullOrEmpty(returnUrl) || !returnUrl.StartsWith('/'))
+            return HomePath;
+
+        var pointsToAnotherSite = returnUrl.StartsWith("//", StringComparison.Ordinal)
+            || returnUrl.StartsWith("/\\", StringComparison.Ordinal);
+        return pointsToAnotherSite ? HomePath : returnUrl;
+    }
+
+    /// <summary>
+    /// A link to <paramref name="pagePath"/> that carries the return address ("/login?returnUrl=%2Fcourses%2F42"),
+    /// or the bare page path when there is no local return address.
+    /// </summary>
+    public static string LinkWithReturnUrl(string pagePath, string? returnUrl)
+    {
+        var localPath = LocalReturnPath(returnUrl);
+        if (localPath == HomePath)
+            return pagePath;
+
+        return $"{pagePath}?returnUrl={Uri.EscapeDataString(localPath)}";
     }
 
     private async Task DevConfirmPendingEmail()

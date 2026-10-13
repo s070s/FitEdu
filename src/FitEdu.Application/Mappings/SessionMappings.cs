@@ -18,5 +18,6 @@ public static class SessionMappings
             !string.IsNullOrWhiteSpace(s.Host!.DisplayName) ? s.Host.DisplayName! : (s.Host.FirstName + " " + s.Host.LastName).Trim(),
             s.CourseId, s.Course != null ? s.Course.TitleEn : null,
             s.StartsAtUtc, s.DurationMinutes, s.MaxParticipants, s.Registrations.Count,
-            s.Status.ToString(), s.CreatedAt);
+            s.Status.ToString(), s.CreatedAt,
+            s.Course != null ? s.Course.TitleEl : null);
 }

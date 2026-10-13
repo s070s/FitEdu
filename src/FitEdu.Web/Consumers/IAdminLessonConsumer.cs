@@ -14,5 +14,4 @@ public interface IAdminLessonConsumer
     Task<bool> DeleteLessonAsync(Guid id);
     Task<string?> UploadPdfAsync(Guid id, IBrowserFile file);
     Task<string?> UploadVideoAsync(Guid id, IBrowserFile file);
-    Task<bool> PublishLessonAsync(Guid id);
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -9,8 +10,13 @@ using FitEdu.Domain.Entities;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="IExerciseService"/>
-public class ExerciseService(IApplicationDbContext db) : IExerciseService
+public class ExerciseService(IApplicationDbContext db, IMemoryCache cache) : IExerciseService
 {
+    public const string FacetsCacheKey = "exercise-facets";
+
+    // The library filter chips change only when an admin edits exercises; a minute-old count is fine.
+    public static readonly TimeSpan FacetsCacheDuration = TimeSpan.FromSeconds(60);
+
     // A muscle filter wraps the column as ", chest, triceps," and looks for ", chest,". It ends on a
     // bare comma, not ", ", because SQL Server's LIKE ignores trailing blanks of the searched text.
     private const string MuscleListEnd = ",";
@@ -45,6 +51,16 @@ public class ExerciseService(IApplicationDbContext db) : IExerciseService
     }
 
     public async Task<ExerciseFacetsDto> GetFacetsAsync(CancellationToken cancellationToken = default)
+    {
+        if (cache.TryGetValue(FacetsCacheKey, out ExerciseFacetsDto? cached) && cached is not null)
+            return cached;
+
+        var facets = await CountFacetsAsync(cancellationToken);
+        cache.Set(FacetsCacheKey, facets, FacetsCacheDuration);
+        return facets;
+    }
+
+    private async Task<ExerciseFacetsDto> CountFacetsAsync(CancellationToken cancellationToken)
     {
         // One query for a few short columns of every exercise (under a thousand rows). The counting
         // runs in memory because the muscles are joined text that SQL cannot group by name.

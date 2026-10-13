@@ -19,8 +19,24 @@ public class AssistantIndexingService(
     ILogger<AssistantIndexingService> logger) : IAssistantIndexingService
 {
     private static readonly string[] Languages = ["en", "el"];
-    private const string ExercisesLabel = "Exercises: ";
     private const string ExerciseListSeparator = "; ";
+    private const string HeaderPartSeparator = " — ";
+    private const string HeaderTextSeparator = "|";
+
+    // Chunk labels in each chunk's own language, so a Greek chunk (and the Greek search snippet
+    // built from it) reads Greek throughout.
+    private const string CourseLabelEn = "Course: ";
+    private const string CourseLabelEl = "Πρόγραμμα: ";
+    private const string ModuleLabelEn = "Module: ";
+    private const string ModuleLabelEl = "Ενότητα: ";
+    private const string LessonLabelEn = "Lesson: ";
+    private const string LessonLabelEl = "Μάθημα: ";
+    private const string AssessmentLabelEn = "Assessment: ";
+    private const string AssessmentLabelEl = "Αξιολόγηση: ";
+    private const string BlogLabelEn = "Blog: ";
+    private const string BlogLabelEl = "Άρθρο: ";
+    private const string ExercisesLabelEn = "Exercises: ";
+    private const string ExercisesLabelEl = "Ασκήσεις: ";
 
     public async Task<AssistantIndexSummary> RunIndexPassAsync(CancellationToken cancellationToken = default)
     {
@@ -107,7 +123,8 @@ public class AssistantIndexingService(
             var key = (sourceType, sourceId, lang);
             touched.Add(key);
 
-            var hash = Sha256Hex(source.Value.Text);
+            // The header is part of every chunk, so a changed header (e.g. a renamed module) re-indexes too.
+            var hash = Sha256Hex(source.Value.Header + HeaderTextSeparator + source.Value.Text);
             var isNew = !existingByKey.TryGetValue(key, out var existingRows);
             if (!isNew && existingRows![0].ContentHash == hash)
             {
@@ -147,19 +164,19 @@ public class AssistantIndexingService(
     private static (string Header, string Text)? BuildCourseSource(Course course, string lang)
     {
         if (lang == "en")
-            return ($"Course: {course.TitleEn}", Join(course.TitleEn, course.DescriptionEn));
+            return (CourseLabelEn + course.TitleEn, Join(course.TitleEn, course.DescriptionEn));
 
         if (string.IsNullOrWhiteSpace(course.TitleEl))
             return null;
 
-        return ($"Course: {course.TitleEl}", Join(course.TitleEl, course.DescriptionEl));
+        return (CourseLabelEl + course.TitleEl, Join(course.TitleEl, course.DescriptionEl));
     }
 
     private static (string Header, string Text)? BuildLessonSource(Lesson lesson, string lang)
     {
         if (lang == "en")
         {
-            var header = $"Course: {lesson.Module.Course.TitleEn} — Module: {lesson.Module.TitleEn} — Lesson: {lesson.TitleEn}";
+            var header = LessonHeader(isEl: false, lesson.Module.Course.TitleEn, lesson.Module.TitleEn, lesson.TitleEn);
             return (header, Join(lesson.TitleEn, lesson.ContentEn, DescribeExercises(lesson, isEl: false)));
         }
 
@@ -168,53 +185,66 @@ public class AssistantIndexingService(
 
         var courseTitleEl = lesson.Module.Course.TitleEl ?? lesson.Module.Course.TitleEn;
         var moduleTitleEl = lesson.Module.TitleEl ?? lesson.Module.TitleEn;
-        var headerEl = $"Course: {courseTitleEl} — Module: {moduleTitleEl} — Lesson: {lesson.TitleEl}";
+        var headerEl = LessonHeader(isEl: true, courseTitleEl, moduleTitleEl, lesson.TitleEl);
         return (headerEl, Join(lesson.TitleEl, lesson.ContentEl, DescribeExercises(lesson, isEl: true)));
+    }
+
+    /// <summary>"Course: … — Module: … — Lesson: …", with the labels in the chunk's language.</summary>
+    private static string LessonHeader(bool isEl, string courseTitle, string moduleTitle, string lessonTitle)
+    {
+        var courseLabel = isEl ? CourseLabelEl : CourseLabelEn;
+        var moduleLabel = isEl ? ModuleLabelEl : ModuleLabelEn;
+        var lessonLabel = isEl ? LessonLabelEl : LessonLabelEn;
+        return courseLabel + courseTitle
+            + HeaderPartSeparator + moduleLabel + moduleTitle
+            + HeaderPartSeparator + lessonLabel + lessonTitle;
     }
 
     /// <summary>
     /// "Exercises: Pushups (chest, triceps); Plank (abdominals)" in list order, so a search for an
-    /// exercise or a muscle finds the workouts that train it. Null for a lesson without exercises.
+    /// exercise or a muscle finds the workouts that train it. Null for a lesson without published exercises.
     /// </summary>
     /// <remarks>
-    /// Deliberate choices: every prescribed exercise is listed, published or not, because the lesson
-    /// page shows them all (CourseService does not filter them). The Greek chunk keeps the English
-    /// label like its English header labels, and the English muscle values, which are the fixed
-    /// library vocabulary the coach's search_exercises filter takes; the embedding model is multilingual.
+    /// Deliberate choices: only published exercises are listed, because the lesson page leaves the
+    /// others out (CourseService.PublishedPrescriptions). The Greek chunk has a Greek label but keeps
+    /// the English muscle values, which are the fixed library vocabulary the coach's search_exercises
+    /// filter takes; the embedding model is multilingual.
     /// </remarks>
     private static string? DescribeExercises(Lesson lesson, bool isEl)
     {
-        if (lesson.Exercises.Count == 0)
-            return null;
-
         var descriptions = lesson.Exercises
             .OrderBy(prescription => prescription.SortOrder)
             .Select(prescription => prescription.Exercise)
-            .Select(exercise => $"{Localized.Pick(isEl, exercise.NameEn, exercise.NameEl)} ({exercise.PrimaryMuscles})");
+            .Where(exercise => exercise.IsPublished)
+            .Select(exercise => $"{Localized.Pick(isEl, exercise.NameEn, exercise.NameEl)} ({exercise.PrimaryMuscles})")
+            .ToList();
+        if (descriptions.Count == 0)
+            return null;
 
-        return ExercisesLabel + string.Join(ExerciseListSeparator, descriptions);
+        var label = isEl ? ExercisesLabelEl : ExercisesLabelEn;
+        return label + string.Join(ExerciseListSeparator, descriptions);
     }
 
     private static (string Header, string Text)? BuildAssessmentSource(AssessmentDefinition assessment, string lang)
     {
         if (lang == "en")
-            return ($"Assessment: {assessment.TitleEn}", Join(assessment.TitleEn, assessment.DescriptionEn));
+            return (AssessmentLabelEn + assessment.TitleEn, Join(assessment.TitleEn, assessment.DescriptionEn));
 
         if (string.IsNullOrWhiteSpace(assessment.TitleEl))
             return null;
 
-        return ($"Assessment: {assessment.TitleEl}", Join(assessment.TitleEl, assessment.DescriptionEl));
+        return (AssessmentLabelEl + assessment.TitleEl, Join(assessment.TitleEl, assessment.DescriptionEl));
     }
 
     private static (string Header, string Text)? BuildBlogSource(BlogArticle article, string lang)
     {
         if (lang == "en")
-            return ($"Blog: {article.TitleEn}", Join(article.TitleEn, article.SummaryEn, article.ContentEn));
+            return (BlogLabelEn + article.TitleEn, Join(article.TitleEn, article.SummaryEn, article.ContentEn));
 
         if (string.IsNullOrWhiteSpace(article.TitleEl))
             return null;
 
-        return ($"Blog: {article.TitleEl}", Join(article.TitleEl, article.SummaryEl, article.ContentEl));
+        return (BlogLabelEl + article.TitleEl, Join(article.TitleEl, article.SummaryEl, article.ContentEl));
     }
 
     private static string Join(params string?[] parts) =>

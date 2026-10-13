@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 using System.Text.Json;
 
@@ -44,7 +45,7 @@ public partial class AdminAssessmentSubmissions
 
             if (definition != null)
             {
-                assessmentTitle = definition.TitleEn;
+                assessmentTitle = AdminText.Pick(definition.TitleEn, definition.TitleEl);
                 BuildQuestionLabels(definition.SchemaJson);
             }
         }

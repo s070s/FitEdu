@@ -18,10 +18,11 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
         Guid courseId, CancellationToken cancellationToken = default)
     {
         // Author name computed inline (not via a helper method) so EF can translate the whole
-        // projection to SQL instead of falling back to client evaluation.
+        // projection to SQL instead of falling back to client evaluation. Published courses only:
+        // the read is open to guests, and a hidden programme must not show its reviews.
         return await db.CourseReviews
             .AsNoTracking()
-            .Where(r => r.CourseId == courseId && r.Status == ReviewStatus.Approved)
+            .Where(r => r.CourseId == courseId && r.Status == ReviewStatus.Approved && r.Course!.IsPublished)
             .OrderByDescending(r => r.CreatedAt)
             .Select(r => new CourseReviewDto(
                 r.Id,
@@ -45,7 +46,8 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
 
         var rows = await db.CourseReviews
             .AsNoTracking()
-            .Where(r => r.CourseId != null && ids.Contains(r.CourseId.Value) && r.Status == ReviewStatus.Approved)
+            .Where(r => r.CourseId != null && ids.Contains(r.CourseId.Value) && r.Status == ReviewStatus.Approved
+                && r.Course!.IsPublished)
             .GroupBy(r => r.CourseId!.Value)
             .Select(g => new { CourseId = g.Key, Average = g.Average(r => r.Rating), Count = g.Count() })
             .ToListAsync(cancellationToken);
@@ -115,7 +117,7 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
             .Select(r => new AdminCourseReviewDto(
                 r.Id, r.CourseId!.Value, r.Course!.TitleEn,
                 !string.IsNullOrWhiteSpace(r.User!.DisplayName) ? r.User.DisplayName! : (r.User.FirstName + " " + r.User.LastName).Trim(),
-                r.Rating, r.Body, r.Status.ToString(), r.CreatedAt))
+                r.Rating, r.Body, r.Status.ToString(), r.CreatedAt, r.Course.TitleEl))
             .ToListAsync(cancellationToken);
 
         return new PagedResult<AdminCourseReviewDto>(items, totalCount, page, pageSize, sortBy, sortDir);
@@ -131,11 +133,13 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
         review.UpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
 
+        var titleEn = review.Course?.TitleEn ?? string.Empty;
+        var titleEl = review.Course?.TitleEl ?? titleEn;
         try
         {
             await notifications.DispatchAsync(
                 review.UserId, NotificationType.ReviewApproved, "ReviewApproved",
-                [review.Course?.TitleEn ?? string.Empty], $"courses/{review.CourseId}", cancellationToken);
+                [titleEn, titleEl], $"courses/{review.CourseId}", cancellationToken); // {0} English, {1} Greek title
         }
         catch (Exception ex)
         {

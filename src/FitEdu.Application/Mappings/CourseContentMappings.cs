@@ -25,7 +25,7 @@ public static class CourseContentMappings
     /// <summary>For IQueryable.Select. The exercise rows keep their lesson order.</summary>
     public static readonly Expression<Func<Lesson, AdminLessonDto>> LessonAdminProjection =
         l => new AdminLessonDto(l.Id, l.TitleEn, l.TitleEl, l.ContentEn, l.ContentEl,
-            l.PdfPath, l.VideoPath, l.DurationMinutes, l.SortOrder, l.ModuleId, l.IsPublished,
+            l.PdfPath, l.VideoPath, l.DurationMinutes, l.SortOrder, l.ModuleId,
             l.Exercises
                 .OrderBy(x => x.SortOrder)
                 .Select(x => new LessonExerciseEditDto(x.Exercise.Slug, x.Sets, x.Reps, x.RestSeconds,
@@ -35,7 +35,7 @@ public static class CourseContentMappings
     /// <summary>Materialized variant; requires Exercises and each row's Exercise to be loaded.</summary>
     public static AdminLessonDto ToAdminDto(this Lesson l) =>
         new(l.Id, l.TitleEn, l.TitleEl, l.ContentEn, l.ContentEl,
-            l.PdfPath, l.VideoPath, l.DurationMinutes, l.SortOrder, l.ModuleId, l.IsPublished,
+            l.PdfPath, l.VideoPath, l.DurationMinutes, l.SortOrder, l.ModuleId,
             l.Exercises
                 .OrderBy(x => x.SortOrder)
                 .Select(x => x.ToEditDto())

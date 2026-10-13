@@ -59,10 +59,16 @@ public class Certificate
     public CertificateStatus Status { get; set; } = CertificateStatus.Active;
 
     /// <summary>
-    /// Relative file path to the generated PDF via IFileStorage.
-    /// Null until the PDF has been generated.
+    /// Relative file path to the English PDF via IFileStorage.
+    /// Null until the English PDF has been generated.
     /// </summary>
     public string? PdfPath { get; set; }
+
+    /// <summary>
+    /// Relative file path to the Greek PDF via IFileStorage.
+    /// Null until the Greek PDF has been generated.
+    /// </summary>
+    public string? PdfPathEl { get; set; }
 
     // --- Foreign keys ---
 

@@ -18,8 +18,3 @@
     font-size: 1.5rem;
     font-weight: 700;
 }
-
-/* InputFile is a child component, so its input only takes this page's styles through ::deep. */
-::deep .avatar-file-input {
-    max-width: 20rem;
-}

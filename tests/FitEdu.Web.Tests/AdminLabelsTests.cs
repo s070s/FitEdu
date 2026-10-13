@@ -1,7 +1,7 @@
-using System.Globalization;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
+using FitEdu.TestSupport;
 
 namespace FitEdu.Web.Tests;
 
@@ -18,7 +18,7 @@ public class AdminLabelsTests
     [InlineData("Cancelled", "Ακυρώθηκε")]
     public void SessionStatus_Greek_ReturnsTheTranslatedLabel(string statusName, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         SessionLabels.Status(statusName).ShouldBe(expected);
     }
@@ -29,7 +29,7 @@ public class AdminLabelsTests
     [InlineData("NotAStatus", "NotAStatus")]
     public void SessionStatus_English_ReturnsTheLabelOrTheNameItself(string statusName, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         SessionLabels.Status(statusName).ShouldBe(expected);
     }
@@ -40,7 +40,7 @@ public class AdminLabelsTests
     [InlineData("Coach", "Coach")]
     public void Role_Greek_ReturnsTheTranslatedLabelOrTheNameItself(string roleName, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         RoleLabels.Label(roleName).ShouldBe(expected);
     }
@@ -50,7 +50,7 @@ public class AdminLabelsTests
     [InlineData("Student", "Member")]
     public void Role_English_ReturnsTheMemberFacingName(string roleName, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         RoleLabels.Label(roleName).ShouldBe(expected);
     }

@@ -358,7 +358,7 @@
     <value>Αποθήκευση προγράμματος</value>
   </data>
   <data name="SaveCourseFirstHint" xml:space="preserve">
-    <value>Αποθήκευσε πρώτα το πρόγραμμα. Μετά μπορείς να προσθέσεις &lt;strong&gt;Ενότητες&lt;/strong&gt; και &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
+    <value>Αποθήκευσε πρώτα το πρόγραμμα. Μετά μπορείς να προσθέσεις &lt;strong&gt;ενότητες&lt;/strong&gt; και &lt;strong&gt;μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
   </data>
   <data name="ModulesAndLessons" xml:space="preserve">
     <value>Ενότητες &amp; μαθήματα</value>
@@ -398,9 +398,6 @@
   </data>
   <data name="LessonTypeText" xml:space="preserve">
     <value>Κείμενο</value>
-  </data>
-  <data name="StatusLive" xml:space="preserve">
-    <value>Ενεργό</value>
   </data>
   <data name="CourseStructurePreview" xml:space="preserve">
     <value>Προεπισκόπηση δομής προγράμματος</value>

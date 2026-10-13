@@ -133,6 +133,58 @@ public class SiteSearchServiceTests
         result.Hits.ShouldContain(h => h.SourceType == "BlogArticle" && h.Title == "5 Strength Tips");
     }
 
+    [Fact]
+    public async Task SearchAsync_Ready_AddsExerciseNameMatchesToTheSemanticHits()
+    {
+        // The semantic index has no exercises, so a name match must still reach the results.
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Exercises.Add(PublishedExercise("barbell-squat", "Barbell Squat"));
+        await db.SaveChangesAsync();
+        var (svc, retrieval, _) = NewService(db);
+        retrieval.SearchGroupedAsync("Squat", "en", 8, Arg.Any<CancellationToken>())
+            .Returns([new AssistantSearchHit(AssistantSourceType.Course, "Leg Day", "courses/1", "Course: Leg Day\nSquat deep.")]);
+
+        var result = await svc.SearchAsync("Squat", "en", 8);
+
+        result.SemanticSearchUsed.ShouldBeTrue();
+        result.Hits.Select(hit => hit.Url).ShouldBe(["courses/1", "exercises/barbell-squat"]);
+    }
+
+    [Fact]
+    public async Task SearchAsync_Ready_ShortLimit_SharesThePlacesWithExercisesWithoutRepeatingAUrl()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Exercises.AddRange(PublishedExercise("power-clean", "Power Clean"), PublishedExercise("power-snatch", "Power Snatch"));
+        await db.SaveChangesAsync();
+        var (svc, retrieval, _) = NewService(db);
+        retrieval.SearchGroupedAsync("Power", "en", 3, Arg.Any<CancellationToken>())
+            .Returns([
+                new AssistantSearchHit(AssistantSourceType.Course, "Power Course", "courses/1", "c"),
+                new AssistantSearchHit(AssistantSourceType.BlogArticle, "Power Tips", "blog/power-tips", "b"),
+                new AssistantSearchHit(AssistantSourceType.Assessment, "Power Check", "assessments/1", "a")
+            ]);
+
+        var result = await svc.SearchAsync("Power", "en", 3);
+
+        result.Hits.Count.ShouldBe(3);
+        result.Hits.Select(hit => hit.Url).ShouldBe(["courses/1", "blog/power-tips", "exercises/power-clean"]);
+        result.Hits.Select(hit => hit.Url).ShouldBeUnique();
+    }
+
+    [Fact]
+    public async Task SearchAsync_Ready_SnippetLeavesOutTheChunkHeaderLine()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var (svc, retrieval, _) = NewService(db);
+        retrieval.SearchGroupedAsync("ισχύς", "el", 8, Arg.Any<CancellationToken>())
+            .Returns([new AssistantSearchHit(AssistantSourceType.Lesson, "Μάθημα 1", "courses/1/lessons/2",
+                "Πρόγραμμα: Δύναμη — Ενότητα: Εβδομάδα 1 — Μάθημα: Μάθημα 1\nΖεσταίνεσαι πρώτα.")]);
+
+        var result = await svc.SearchAsync("ισχύς", "el", 8);
+
+        result.Hits.ShouldHaveSingleItem().Snippet.ShouldBe("Ζεσταίνεσαι πρώτα.");
+    }
+
     private static Exercise PublishedExercise(string slug, string nameEn, string? nameEl = null) =>
         new()
         {

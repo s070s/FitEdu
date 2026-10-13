@@ -79,7 +79,7 @@ public class AdminUserService(
                 user.IsEnabled,
                 user.Status.ToString(),
                 [.. roles],
-                tier.ToString(),
+                tier,
                 user.CreatedAt,
                 user.LastSeenAt
             );

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -11,6 +13,7 @@ namespace FitEdu.Web.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/search")]
+[EnableRateLimiting(PublicRateLimit.PolicyName)]
 [Tags("Search")]
 [Produces("application/json", "application/problem+json")]
 public class SearchController(ISiteSearchService search) : ControllerBase

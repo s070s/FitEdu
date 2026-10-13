@@ -224,4 +224,10 @@
 	<data name="UpgradeToPro" xml:space="preserve">
 		<value>Upgrade to Pro</value>
 	</data>
+	<data name="CompletedShort" xml:space="preserve">
+		<value>Done</value>
+	</data>
+	<data name="Time" xml:space="preserve">
+		<value>Time</value>
+	</data>
 </root>

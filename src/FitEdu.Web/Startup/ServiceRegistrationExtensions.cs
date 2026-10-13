@@ -1,7 +1,9 @@
+using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.AI;
@@ -39,6 +41,18 @@ public static class ServiceRegistrationExtensions
     /// interactive.
     /// </summary>
     public const int CircuitMessageLimitBytes = 128 * 1024;
+
+    /// <summary>
+    /// Greek as the site shows it: el-GR with a 24-hour clock ("21:00"), since the framework's Greek
+    /// time pattern prints "9:00 μ.μ.", which Greek timetables do not use.
+    /// </summary>
+    public static CultureInfo CreateGreekCulture()
+    {
+        var greek = (CultureInfo)CultureInfo.GetCultureInfo("el-GR").Clone();
+        greek.DateTimeFormat.ShortTimePattern = "HH:mm";
+        greek.DateTimeFormat.LongTimePattern = "HH:mm:ss";
+        return greek;
+    }
 
     public static WebApplicationBuilder AddFitEduServices(this WebApplicationBuilder builder)
     {
@@ -123,6 +137,10 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<ILandingService, LandingService>();
         // The clock for date-based rules (the training streak); tests swap in a fixed one.
         builder.Services.TryAddSingleton(TimeProvider.System);
+        // The members' time zone (Site:TimeZone): "today" and every shown date and time follow it,
+        // not UTC or the server's own zone. An unknown zone id stops startup.
+        var siteOptions = config.GetSection(SiteOptions.SectionName).Get<SiteOptions>() ?? new SiteOptions();
+        SiteClock.UseTimeZone(siteOptions.TimeZone);
         builder.Services.AddScoped<IAssessmentService, AssessmentService>();
         builder.Services.AddScoped<AvatarChangedNotifier>();
         // Circuit-scoped bearer-token provider used by ApiClientBase so consumers authenticate
@@ -226,10 +244,13 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddLocalization();
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            var supportedCultures = new[] { "en-GB", "el-GR" };
-            options.SetDefaultCulture("en-GB")
-                .AddSupportedCultures(supportedCultures)
-                .AddSupportedUICultures(supportedCultures);
+            // The middleware hands out these very instances, so the Greek one's 24-hour clock is
+            // what the pages format with.
+            var english = new CultureInfo("en-GB");
+            var greek = CreateGreekCulture();
+            options.DefaultRequestCulture = new RequestCulture(english);
+            options.SupportedCultures = [english, greek];
+            options.SupportedUICultures = [english, greek];
         });
 
         // SCALE-7: this IMemoryCache is process-local. The short-TTL entries backed by it
@@ -237,6 +258,9 @@ public static class ServiceRegistrationExtensions
         // within this process — correct for a single instance, but the invalidation would NOT
         // propagate to a second node. Keep TTLs short and move to a shared cache (Redis) before
         // scaling out; see the accepted-limitations note in docs/plans/35-audit-scalability.md.
+        // The landing overview ("landing:{lang}") and the exercise facets ("exercise-facets") are
+        // not invalidated at all: each simply expires after 60 s, so every node is at most a
+        // minute behind an admin's edit.
         builder.Services.AddMemoryCache();
         builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes);
         builder.Services.AddControllers();
@@ -294,6 +318,8 @@ public static class ServiceRegistrationExtensions
                         QueueLimit = 0
                     });
             });
+            // Per caller IP on the anonymous reads; the app's own loopback calls are exempt (see PublicRateLimit).
+            options.AddPolicy(PublicRateLimit.PolicyName, PublicRateLimit.PartitionFor);
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
 
@@ -339,6 +365,10 @@ public static class ServiceRegistrationExtensions
             })
             // Only the circuit hub gets the larger limit; the app's own hubs keep AppHubMessageLimitBytes.
             .AddHubOptions(options => options.MaximumReceiveMessageSize = CircuitMessageLimitBytes);
+
+        // App.razor links the own stylesheets with a content version, so a deploy is never hidden by the browser cache.
+        builder.Services.AddSingleton(services =>
+            new StaticAssetVersions(services.GetRequiredService<IWebHostEnvironment>().WebRootFileProvider));
 
         // Suppress noisy info-level authorization logs
         builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Warning);
@@ -390,6 +420,15 @@ public static class ServiceRegistrationExtensions
         // than any request timeout, so it keeps the default (unbounded-enough) timeout — its bespoke
         // StreamChatAsync already catches connection failures itself.
         void ConfigureStreaming(HttpClient c) => c.BaseAddress = new Uri(selfBase);
+
+        // ConfigureHttpClientDefaults adds the handler to every IHttpClientFactory client in the app,
+        // not only the ones below. That is right today: every factory client calls this app's own API,
+        // which then answers (messages, Identity errors) in the language of the page. The Ollama
+        // assistant makes its own HttpClient, so it is not affected. A future factory client for an
+        // outside service would send the member's language too; add it to the loopback clients by
+        // name instead if that matters.
+        builder.Services.AddTransient<AcceptLanguageHandler>();
+        builder.Services.ConfigureHttpClientDefaults(http => http.AddHttpMessageHandler<AcceptLanguageHandler>());
 
         // Named client for dev-only endpoints (no auth handler needed)
         builder.Services.AddHttpClient("SelfClient", Configure);

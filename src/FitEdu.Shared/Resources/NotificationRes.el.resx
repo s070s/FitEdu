@@ -134,7 +134,7 @@
     <value>Ο/Η {0} σου έστειλε μήνυμα</value>
   </data>
   <data name="CertificateIssued" xml:space="preserve">
-    <value>Το πιστοποιητικό σου για το "{0}" είναι έτοιμο</value>
+    <value>Το πιστοποιητικό σου για το "{1}" είναι έτοιμο</value>
   </data>
   <data name="SubscriptionActivated" xml:space="preserve">
     <value>Η συνδρομή σου στο {0} είναι πλέον ενεργή</value>
@@ -146,9 +146,12 @@
     <value>Η συνδρομή σου στο {0} έληξε — είσαι πλέον στο δωρεάν πλάνο</value>
   </data>
   <data name="ReviewApproved" xml:space="preserve">
-    <value>Η κριτική σου για το "{0}" εγκρίθηκε</value>
+    <value>Η κριτική σου για το "{1}" εγκρίθηκε</value>
   </data>
   <data name="SessionReminder" xml:space="preserve">
-    <value>Το "{0}" ξεκινά σε 15 λεπτά</value>
+    <value>Το "{1}" ξεκινά σε 15 λεπτά</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Οι ειδοποιήσεις σου</value>
   </data>
 </root>

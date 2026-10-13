@@ -13,8 +13,11 @@
 </section>
 
 @code {
-    [Parameter] public string PlanName { get; set; } = "Plus";
+    /// <summary>The lowest plan that unlocks the feature; its name is shown in the member's language.</summary>
+    [Parameter] public SubscriptionTier Tier { get; set; } = SubscriptionTier.Plus;
     [Parameter] public string Description { get; set; } = "";
     [Parameter] public string PricingPath { get; set; } = "/pricing";
     [Parameter] public string UpgradeButtonText { get; set; } = PricingRes.UpgradeNow;
+
+    private string PlanName => TierLabels.Name(Tier);
 }

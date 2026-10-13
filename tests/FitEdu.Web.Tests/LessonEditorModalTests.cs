@@ -10,6 +10,7 @@ using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Shared.Components.Forms;
 using Shouldly;
@@ -23,6 +24,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class LessonEditorModalTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private readonly IAdminLessonConsumer _lessonConsumer = Substitute.For<IAdminLessonConsumer>();
     private readonly IExerciseConsumer _exerciseConsumer = Substitute.For<IExerciseConsumer>();
     private readonly Guid _moduleId = Guid.NewGuid();
@@ -45,7 +49,7 @@ public class LessonEditorModalTests : BunitContext
     }
 
     private AdminLessonDto Lesson(List<LessonExerciseEditDto> exercises) => new(
-        Guid.NewGuid(), "Leg day", null, null, null, null, null, 30, 1, _moduleId, false, exercises);
+        Guid.NewGuid(), "Leg day", null, null, null, null, null, 30, 1, _moduleId, exercises);
 
     private static ExerciseListItemDto ListItem(string slug, string name) => new(
         Guid.NewGuid(), slug, name, "strength", "beginner", "body only", ["chest"],
@@ -291,5 +295,11 @@ public class LessonEditorModalTests : BunitContext
             .Select(invocation => invocation.Arguments[2] as string)
             .ToList();
         placeholders.ShouldBe(["Write the content here...", "Γράψε το περιεχόμενο εδώ..."]);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

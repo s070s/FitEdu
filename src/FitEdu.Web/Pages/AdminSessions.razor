@@ -3,7 +3,7 @@
 @using FitEdu.Domain.Entities
 @using FitEdu.Web.Extensions
 
-<PageTitle>@SessionRes.AdminPageTitle</PageTitle>
+<AppPageTitle Text="@SessionRes.AdminPageTitle" />
 
 <div class="admin-container">
     <div class="section-head">
@@ -45,10 +45,10 @@
             </HeaderRow>
             <RowTemplate Context="session">
                 <tr @key="session.Id">
-                    <td data-label="@SessionRes.ColTitle">@session.TitleEn</td>
+                    <td data-label="@SessionRes.ColTitle">@AdminText.Pick(session.TitleEn, session.TitleEl)</td>
                     <td data-label="@SessionRes.ColHost">@session.HostName</td>
-                    <td data-label="@SessionRes.ColCourse">@(session.CourseTitle ?? "—")</td>
-                    <td data-label="@SessionRes.ColWhen">@session.StartsAtUtc.ToLocalTime().ToString("g")</td>
+                    <td data-label="@SessionRes.ColCourse">@(AdminText.Pick(session.CourseTitle, session.CourseTitleEl) ?? "—")</td>
+                    <td data-label="@SessionRes.ColWhen">@SiteClock.ToSiteTime(session.StartsAtUtc).ToString("g")</td>
                     <td data-label="@SessionRes.ColParticipants">@session.RegisteredCount / @session.MaxParticipants</td>
                     <td data-label="@SessionRes.ColStatus">@SessionLabels.Status(session.Status)</td>
                     <td class="table-actions" data-label="@SessionRes.ColActions">
@@ -98,7 +98,7 @@
                 <option value="">@SessionRes.NoCourse</option>
                 @foreach (var course in _courses)
                 {
-                    <option value="@course.Id">@course.TitleEn</option>
+                    <option value="@course.Id">@AdminText.Pick(course.TitleEn, course.TitleEl)</option>
                 }
             </select>
         </div>
@@ -118,7 +118,7 @@
         </div>
     </Body>
     <Footer>
-        <button class="btn btn-secondary" @onclick="CloseFormModal" disabled="@_isSaving">@SessionRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="CloseFormModal" disabled="@_isSaving">@SessionRes.Cancel</button>
         <button class="btn btn-primary" @onclick="SubmitForm" disabled="@(_isSaving || string.IsNullOrWhiteSpace(_formTitleEn))">
             @if (_isSaving)
             {
@@ -131,7 +131,7 @@
 
 <ConfirmModal IsVisible="@(_pendingCancel is not null)"
               Title="@SessionRes.CancelSession"
-              Message="@(_pendingCancel is not null ? string.Format(SessionRes.CancelConfirmFormat, _pendingCancel.TitleEn) : "")"
+              Message="@(_pendingCancel is not null ? string.Format(SessionRes.CancelConfirmFormat, AdminText.Pick(_pendingCancel.TitleEn, _pendingCancel.TitleEl)) : "")"
               ConfirmLabel="@SessionRes.CancelSession"
               CancelLabel="@SessionRes.Cancel"
               OnConfirm="ConfirmCancel"

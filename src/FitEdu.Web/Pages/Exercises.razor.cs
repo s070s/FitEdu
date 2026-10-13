@@ -9,23 +9,50 @@ namespace FitEdu.Web.Pages;
 
 /// <summary>
 /// Public exercise library: a grid of exercise cards with muscle chips, level / equipment / type
-/// selects, a debounced search and pages. The prerendered first page is handed to the interactive
-/// render, so the grid does not flash or load twice.
+/// selects, a debounced search and pages. The filters and the page live in the address
+/// (?search=squat&amp;muscle=chest&amp;level=beginner&amp;page=2), so a link, a reload or Back shows the
+/// same list. The prerendered first page is handed to the interactive render, so the grid does not
+/// flash or load twice.
 /// </summary>
 public partial class Exercises : IDisposable
 {
     private const int SearchDebounceMilliseconds = 300;
-    private const int FirstPage = 1;
     private const string PersistKey = "exercise-library";
+    private const string SearchQueryName = "search";
+    private const string MuscleQueryName = "muscle";
+    private const string EquipmentQueryName = "equipment";
+    private const string LevelQueryName = "level";
+    private const string CategoryQueryName = "category";
+    private const string PageQueryName = "page";
 
     // The facets endpoint sorts values alphabetically; the level select lists them by difficulty.
     private static readonly string[] LevelOrder = ["beginner", "intermediate", "expert"];
 
     [Inject] private IExerciseConsumer ExerciseConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = SearchQueryName)]
+    public string? SearchQuery { get; set; }
+
+    [SupplyParameterFromQuery(Name = MuscleQueryName)]
+    public string? MuscleQuery { get; set; }
+
+    [SupplyParameterFromQuery(Name = EquipmentQueryName)]
+    public string? EquipmentQuery { get; set; }
+
+    [SupplyParameterFromQuery(Name = LevelQueryName)]
+    public string? LevelQuery { get; set; }
+
+    [SupplyParameterFromQuery(Name = CategoryQueryName)]
+    public string? CategoryQuery { get; set; }
+
+    // Text, not int: a malformed page number is ignored instead of failing the page.
+    [SupplyParameterFromQuery(Name = PageQueryName)]
+    public string? PageQuery { get; set; }
 
     private LibraryFilter _filter = LibraryFilter.None;
-    private int _page = FirstPage;
+    private int _page = QueryValues.FirstPage;
     private string _searchText = string.Empty;
 
     private ExerciseFacetsDto _facets = ExerciseFacetsDto.Empty;
@@ -46,20 +73,15 @@ public partial class Exercises : IDisposable
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
-    private int LibraryTotal => _facets.Levels.Sum(level => level.Count);
-
-    private string LibraryTotalText => ExerciseCountText(LibraryTotal);
-
-    private string ResultCountText => ExerciseCountText(_result?.TotalCount ?? 0);
-
-    private static string ExerciseCountText(int count) =>
-        ResourceFormat.Count(count, ExerciseRes.ResultCountOne, ExerciseRes.ResultsFormat);
+    private string ResultCountText =>
+        ResourceFormat.Count(_result?.TotalCount ?? 0, ExerciseRes.ResultCountOne, ExerciseRes.ResultsFormat);
 
     private bool HasResults => _result is { Items.Count: > 0 };
 
     protected override async Task OnInitializedAsync()
     {
         _persistSubscription = ApplicationState.RegisterOnPersisting(PersistSnapshot);
+        ApplyQuery();
 
         if (ApplicationState.TryTakeFromJson<LibrarySnapshot>(PersistKey, out var snapshot) && snapshot is not null)
         {
@@ -72,12 +94,54 @@ public partial class Exercises : IDisposable
         await ReloadAsync();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        // Also runs right after OnInitializedAsync, which already read the address.
+        var previousPage = _page;
+        if (!ApplyQuery())
+            return;
+
+        await LoadExercisesAsync();
+
+        // After a page change the results heading takes focus, which also scrolls the grid back into view.
+        _focusResults = _page != previousPage;
+    }
+
+    /// <summary>Reads the filters and the page from the address. True when any of them changed.</summary>
+    private bool ApplyQuery()
+    {
+        var filter = new LibraryFilter(
+            QueryValues.Text(SearchQuery),
+            FacetValue(MuscleQuery),
+            FacetValue(LevelQuery),
+            FacetValue(EquipmentQuery),
+            FacetValue(CategoryQuery));
+        var page = QueryValues.PageNumber(PageQuery);
+
+        var changed = filter != _filter || page != _page;
+        _filter = filter;
+        _page = page;
+
+        // While a newer search is still waiting, the box keeps what the reader is typing. It also
+        // keeps a trailing space when the address holds the same search, so the next word stays apart.
+        var boxMatchesAddress = QueryValues.Text(_searchText) == filter.Search;
+        if (_searchDebounce is null && !boxMatchesAddress)
+            _searchText = filter.Search ?? string.Empty;
+
+        return changed;
+    }
+
+    /// <summary>
+    /// A filter value from the address in lower case, as the facet values are, so a hand-typed
+    /// ?level=Beginner still selects its option and chip; null when blank.
+    /// </summary>
+    private static string? FacetValue(string? value) => QueryValues.Text(value)?.ToLowerInvariant();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!_focusResults)
             return;
 
-        // After a page change the results heading takes focus, which also scrolls the grid back into view.
         _focusResults = false;
         await _resultsHeading.FocusAsync();
     }
@@ -131,27 +195,27 @@ public partial class Exercises : IDisposable
 
     // ---- Filter events ----------------------------------------------------------------------
 
-    private Task SelectMuscleAsync(string? muscle)
+    private void SelectMuscle(string? muscle)
     {
         // Tapping the selected chip again clears it.
         var next = muscle == _filter.Muscle ? null : muscle;
-        return ApplyFilterAsync(_filter with { Muscle = next });
+        ApplyFilter(_filter with { Muscle = next });
     }
 
-    private Task OnLevelChangedAsync(ChangeEventArgs args) =>
-        ApplyFilterAsync(_filter with { Level = SelectedValue(args) });
+    private void OnLevelChanged(ChangeEventArgs args) =>
+        ApplyFilter(_filter with { Level = SelectedValue(args) });
 
-    private Task OnEquipmentChangedAsync(ChangeEventArgs args) =>
-        ApplyFilterAsync(_filter with { Equipment = SelectedValue(args) });
+    private void OnEquipmentChanged(ChangeEventArgs args) =>
+        ApplyFilter(_filter with { Equipment = SelectedValue(args) });
 
-    private Task OnCategoryChangedAsync(ChangeEventArgs args) =>
-        ApplyFilterAsync(_filter with { Category = SelectedValue(args) });
+    private void OnCategoryChanged(ChangeEventArgs args) =>
+        ApplyFilter(_filter with { Category = SelectedValue(args) });
 
-    private Task ClearFiltersAsync()
+    private void ClearFilters()
     {
         CancelPendingSearch();
         _searchText = string.Empty;
-        return ApplyFilterAsync(LibraryFilter.None);
+        ApplyFilter(LibraryFilter.None);
     }
 
     private async Task OnSearchInputAsync(ChangeEventArgs args)
@@ -171,23 +235,25 @@ public partial class Exercises : IDisposable
             return;
         }
 
-        await ApplySearchAsync();
+        // The wait is over, so the address may fill the search box again.
+        CancelPendingSearch();
+        ApplySearch();
     }
 
     // Enter in the search box searches at once instead of waiting for the debounce.
-    private Task SubmitSearchAsync()
+    private void SubmitSearch()
     {
         CancelPendingSearch();
-        return ApplySearchAsync();
+        ApplySearch();
     }
 
-    private Task ApplySearchAsync()
+    private void ApplySearch()
     {
-        var search = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText.Trim();
+        var search = QueryValues.Text(_searchText);
         if (search == _filter.Search)
-            return Task.CompletedTask;
+            return;
 
-        return ApplyFilterAsync(_filter with { Search = search });
+        ApplyFilter(_filter with { Search = search });
     }
 
     private async Task ReloadAsync()
@@ -197,18 +263,23 @@ public partial class Exercises : IDisposable
         ShowFacets(await facetsTask);
     }
 
-    private async Task ApplyFilterAsync(LibraryFilter filter)
-    {
-        _filter = filter;
-        _page = FirstPage;
-        await LoadExercisesAsync();
-    }
+    // The address holds the filters: OnParametersSetAsync reloads once the router applies it.
+    private void ApplyFilter(LibraryFilter filter) => SetAddress(filter, QueryValues.FirstPage);
 
-    private async Task GoToPageAsync(int page)
+    private void GoToPage(int page) => SetAddress(_filter, page);
+
+    private void SetAddress(LibraryFilter filter, int page)
     {
-        _page = page;
-        await LoadExercisesAsync();
-        _focusResults = true;
+        var uri = Navigation.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            [SearchQueryName] = filter.Search,
+            [MuscleQueryName] = filter.Muscle,
+            [EquipmentQueryName] = filter.Equipment,
+            [LevelQueryName] = filter.Level,
+            [CategoryQueryName] = filter.Category,
+            [PageQueryName] = QueryValues.PageParameter(page)
+        });
+        Navigation.NavigateTo(uri, replace: true);
     }
 
     private void CancelPendingSearch()

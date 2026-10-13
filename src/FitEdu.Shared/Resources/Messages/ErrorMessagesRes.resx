@@ -186,6 +186,9 @@
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
     <value>This assessment requires a {0} subscription or higher.</value>
   </data>
+  <data name="AdminCannotEnroll" xml:space="preserve">
+    <value>Administrators cannot join programmes.</value>
+  </data>
   <data name="CourseNotFound" xml:space="preserve">
     <value>Programme not found</value>
   </data>
@@ -291,10 +294,46 @@
   <data name="Exercise_UnknownSlug" xml:space="preserve">
     <value>Unknown exercise slug</value>
   </data>
+  <data name="Exercise_NotPublished" xml:space="preserve">
+    <value>Exercise is not published</value>
+  </data>
   <data name="Course_UnknownEquipmentCode" xml:space="preserve">
     <value>Unknown equipment code</value>
   </data>
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
     <value>This lesson was modified by someone else. Reload and try again.</value>
+  </data>
+  <data name="Certificate_NotFound" xml:space="preserve">
+    <value>Certificate not found.</value>
+  </data>
+  <data name="Certificate_Revoked" xml:space="preserve">
+    <value>This certificate has been revoked.</value>
+  </data>
+  <data name="Certificate_PdfUnavailable" xml:space="preserve">
+    <value>The certificate PDF isn't available right now. Please try again later.</value>
+  </data>
+  <data name="IdentityPasswordTooShortFormat" xml:space="preserve">
+    <value>Your password needs at least {0} characters.</value>
+  </data>
+  <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
+    <value>Your password needs at least one digit (0-9).</value>
+  </data>
+  <data name="IdentityPasswordRequiresLower" xml:space="preserve">
+    <value>Your password needs at least one lowercase letter (a-z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresUpper" xml:space="preserve">
+    <value>Your password needs at least one uppercase letter (A-Z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Your password needs at least one symbol, such as ! or #.</value>
+  </data>
+  <data name="IdentityPasswordRequiresUniqueCharsFormat" xml:space="preserve">
+    <value>Your password needs at least {0} different characters.</value>
+  </data>
+  <data name="IdentityDuplicateEmailFormat" xml:space="preserve">
+    <value>The email {0} is already registered.</value>
+  </data>
+  <data name="IdentityInvalidEmailFormat" xml:space="preserve">
+    <value>The email {0} is not valid.</value>
   </data>
 </root>

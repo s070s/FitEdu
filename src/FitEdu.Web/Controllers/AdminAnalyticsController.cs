@@ -51,17 +51,18 @@ public class AdminAnalyticsController : ControllerBase
 
         // GroupBy pushed into SQL — avoids loading every row into memory.
         var courseStats = await _db.Enrollments
-            .GroupBy(e => new { e.CourseId, CourseTitle = e.Course.TitleEn })
+            .GroupBy(e => new { e.CourseId, CourseTitle = e.Course.TitleEn, CourseTitleEl = e.Course.TitleEl })
             .Select(g => new CourseStatDto(
                 g.Key.CourseTitle,
                 g.Count(),
-                g.Count(e => e.Status == EnrollmentStatus.Completed)
+                g.Count(e => e.Status == EnrollmentStatus.Completed),
+                g.Key.CourseTitleEl
             ))
             .ToListAsync();
 
         var assessmentStats = await _db.AssessmentSubmissions
-            .GroupBy(s => new { s.AssessmentDefinitionId, AssessmentTitle = s.AssessmentDefinition.TitleEn })
-            .Select(g => new AssessmentStatDto(g.Key.AssessmentTitle, g.Count()))
+            .GroupBy(s => new { s.AssessmentDefinitionId, AssessmentTitle = s.AssessmentDefinition.TitleEn, AssessmentTitleEl = s.AssessmentDefinition.TitleEl })
+            .Select(g => new AssessmentStatDto(g.Key.AssessmentTitle, g.Count(), g.Key.AssessmentTitleEl))
             .ToListAsync();
 
         var dto = new AnalyticsSummaryDto(

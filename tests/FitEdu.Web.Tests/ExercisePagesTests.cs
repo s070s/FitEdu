@@ -2,8 +2,11 @@ using System.Globalization;
 using Bunit;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -19,6 +22,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class ExercisePagesTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string Slug = "barbell-squat";
 
     private static readonly ExerciseFacetsDto Facets = new(
@@ -35,6 +41,7 @@ public class ExercisePagesTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddBunitPersistentComponentState();
         UseCulture("en");
+        NavigateTo("/exercises"); // the library keeps its filters in this address
 
         _exerciseConsumer.GetFacetsAsync().Returns(Facets);
         _exerciseConsumer.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
@@ -51,7 +58,8 @@ public class ExercisePagesTests : BunitContext
         page.FindAll(".exercise-card").Count.ShouldBe(2);
         page.Find(".exercise-card a.stretched-link").GetAttribute("href").ShouldBe("/exercises/barbell-squat");
         page.Find(".exercise-library__count").TextContent.Trim().ShouldBe("2 exercises");
-        page.Find(".exercise-library__hero .eyebrow").TextContent.ShouldBe("100 exercises");
+        // A fixed eyebrow: the total would only repeat the results heading below.
+        page.Find(".exercise-library__hero .eyebrow").TextContent.ShouldBe("Public-domain library");
         page.Find(".exercise-source").TextContent.ShouldContain(ExerciseRes.Source);
     }
 
@@ -92,9 +100,56 @@ public class ExercisePagesTests : BunitContext
         selectedChip.GetAttribute("aria-pressed").ShouldBe("true");
         selectedChip.TextContent.ShouldContain(ExerciseRes.Muscle_abdominals);
 
+        CurrentUri().ShouldEndWith("/exercises?muscle=abdominals");
+
         selectedChip.Click();
 
         page.Find("button.filter-chip.is-selected").TextContent.Trim().ShouldBe(ExerciseRes.AllMuscles);
+        CurrentUri().ShouldEndWith("/exercises");
+    }
+
+    [Fact]
+    public void Library_AddressFilters_AreSentToTheApiAndShown()
+    {
+        _exerciseConsumer.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
+            .Returns(Page(totalCount: 60, ListItem("barbell-squat", "Barbell squat")));
+        NavigateTo("/exercises?search=squat&muscle=chest&level=expert&equipment=barbell&category=strength&page=2");
+
+        var page = Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(2, ExerciseLibraryPaging.DefaultPageSize, "en",
+            new ExerciseFilterDto("squat", "chest", "barbell", "expert", "strength"));
+        page.Find(".exercise-filters__search input").GetAttribute("value").ShouldBe("squat");
+        page.Find("button.filter-chip.is-selected").TextContent.ShouldContain(ExerciseRes.Muscle_chest);
+        page.Find("#exercise-level option[value='expert']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-equipment option[value='barbell']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-category option[value='strength']").HasAttribute("selected").ShouldBeTrue();
+        page.Find(".exercise-library__clear").ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Library_HandTypedCapitalisedFilters_MatchTheLowerCaseFacets()
+    {
+        NavigateTo("/exercises?muscle=Chest&level=EXPERT&equipment=Body%20Only&category=Strength");
+
+        var page = Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
+            new ExerciseFilterDto(null, "chest", "body only", "expert", "strength"));
+        page.Find("button.filter-chip.is-selected").TextContent.ShouldContain(ExerciseRes.Muscle_chest);
+        page.Find("#exercise-level option[value='expert']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-equipment option[value='body only']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-category option[value='strength']").HasAttribute("selected").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Library_MalformedAddressPage_StartsOnPageOne()
+    {
+        NavigateTo("/exercises?page=zero");
+
+        Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en", Arg.Any<ExerciseFilterDto?>());
     }
 
     [Fact]
@@ -121,8 +176,23 @@ public class ExercisePagesTests : BunitContext
 
         page.WaitForAssertion(() => _exerciseConsumer.Received(1).ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
             Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "squat")));
+        CurrentUri().ShouldEndWith("/exercises?search=squat");
         _exerciseConsumer.DidNotReceive().ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(),
             Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "squ"));
+    }
+
+    [Fact]
+    public void Library_Search_KeepsTheTrailingSpaceInTheBoxOnceTypingStops()
+    {
+        var page = Render<Exercises>();
+
+        page.Find(".exercise-filters__search input").Input("push ");
+
+        // The address holds the trimmed search, but the box keeps the space so the next word stays apart.
+        page.WaitForAssertion(() => _exerciseConsumer.Received(1).ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
+            Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "push")));
+        CurrentUri().ShouldEndWith("/exercises?search=push");
+        page.Find(".exercise-filters__search input").GetAttribute("value").ShouldBe("push ");
     }
 
     [Fact]
@@ -136,6 +206,7 @@ public class ExercisePagesTests : BunitContext
         pageButtons[pageButtons.Count - 1].Click();
 
         _exerciseConsumer.Received().ListAsync(2, ExerciseLibraryPaging.DefaultPageSize, "en", Arg.Any<ExerciseFilterDto?>());
+        CurrentUri().ShouldEndWith("/exercises?page=2");
     }
 
     [Fact]
@@ -150,9 +221,11 @@ public class ExercisePagesTests : BunitContext
 
         page.FindAll(".exercise-card").ShouldBeEmpty();
         page.Find(".empty-state__title").TextContent.ShouldBe(ExerciseRes.NoResults);
+        CurrentUri().ShouldEndWith("/exercises?level=expert");
         page.Find(".empty-state button").Click();
         page.FindAll(".exercise-card").Count.ShouldBe(2);
         page.FindAll(".exercise-library__clear").ShouldBeEmpty();
+        CurrentUri().ShouldEndWith("/exercises");
     }
 
     [Fact]
@@ -173,7 +246,7 @@ public class ExercisePagesTests : BunitContext
     public void Detail_RendersPhotosFactsMusclesStepsWorkoutsAndCredit()
     {
         var courseId = Guid.NewGuid();
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail(["Stand tall.", " ", "Sit back and down."]));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail(["Stand tall.", " ", "Sit back and down."])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en")
             .Returns([new LessonUsingExerciseDto(Guid.NewGuid(), "Leg day", courseId, "Strength basics")]);
 
@@ -184,7 +257,7 @@ public class ExercisePagesTests : BunitContext
         page.FindAll(".exercise-media img").ShouldAllBe(image => image.GetAttribute("loading") == "eager");
         page.Find(".level-badge").TextContent.ShouldContain(ExerciseRes.Level_beginner);
         page.FindAll(".exercise-facts__item dd").Select(value => value.TextContent).ShouldBe([
-            ExerciseRes.Equipment_barbell, ExerciseRes.Force_push, ExerciseRes.Mechanic_compound, ExerciseRes.Category_strength
+            ExerciseRes.Equipment_barbell, ExerciseRes.Force_push, ExerciseRes.Mechanic_compound
         ]);
         page.FindAll(".muscle-chips").Count.ShouldBe(2);
         page.FindAll(".exercise-steps li").Select(step => step.TextContent).ShouldBe(["Stand tall.", "Sit back and down."]);
@@ -199,7 +272,7 @@ public class ExercisePagesTests : BunitContext
     public void Detail_InGreek_ShowsGreekLabelsAndAsksForGreekContent()
     {
         UseCulture("el");
-        _exerciseConsumer.GetBySlugAsync(Slug, "el").Returns(Detail(["Στάσου όρθιος."]));
+        _exerciseConsumer.GetBySlugAsync(Slug, "el").Returns(ApiLookup.Found(Detail(["Στάσου όρθιος."])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "el").Returns([]);
 
         var page = RenderDetail();
@@ -212,7 +285,7 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_WithoutInstructions_ShowsANoteInsteadOfAnEmptyList()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail([]));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
@@ -225,19 +298,31 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_WithoutForceOrMechanics_LeavesThoseTilesOut()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail([]) with { Force = null, Mechanic = null, Equipment = null });
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([]) with { Force = null, Mechanic = null }));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
 
         page.FindAll(".exercise-facts__item dt").Select(label => label.TextContent.Trim())
-            .ShouldBe([ExerciseRes.Category]);
+            .ShouldBe([ExerciseRes.Equipment]);
+    }
+
+    [Fact]
+    public void Detail_ShowsTheCategoryOnceAsTheEyebrowNotAsATile()
+    {
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([]) with { Force = null, Mechanic = null, Equipment = null }));
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+
+        var page = RenderDetail();
+
+        page.Find(".exercise-detail__header .eyebrow").TextContent.ShouldBe(ExerciseRes.Category_strength);
+        page.FindAll(".exercise-facts").ShouldBeEmpty();
     }
 
     [Fact]
     public void Detail_UnknownSlug_ShowsNotFoundWithALinkToTheLibrary()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns((ExerciseDetailDto?)null);
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.NotFound<ExerciseDetailDto>());
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
@@ -246,10 +331,34 @@ public class ExercisePagesTests : BunitContext
         page.Find(".empty-state a").GetAttribute("href").ShouldBe("/exercises");
     }
 
+    [Theory]
+    [InlineData(false, StatusCodes.Status404NotFound)]
+    [InlineData(true, StatusCodes.Status503ServiceUnavailable)]
+    public async Task Detail_Prerender_Answers404OnlyWhenTheExerciseIsReallyMissing(bool requestFailed, int expectedStatus)
+    {
+        // An API outage must not tell crawlers that a real exercise page is gone.
+        var missing = requestFailed ? ApiLookup.Failure<ExerciseDetailDto>() : ApiLookup.NotFound<ExerciseDetailDto>();
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(missing);
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+        var (httpContext, response) = PrerenderHttpContext.Create();
+
+        Render<ExerciseDetail>(parameters => parameters
+            .Add(component => component.Slug, Slug)
+            .AddCascadingValue(httpContext));
+        await response.StartAsync();
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatus);
+    }
+
     // ---- Helpers ------------------------------------------------------------------------------
 
     private IRenderedComponent<ExerciseDetail> RenderDetail() =>
         Render<ExerciseDetail>(parameters => parameters.Add(component => component.Slug, Slug));
+
+    private void NavigateTo(string relativeUri) =>
+        Services.GetRequiredService<NavigationManager>().NavigateTo(relativeUri);
+
+    private string CurrentUri() => Services.GetRequiredService<NavigationManager>().Uri;
 
     private static void UseCulture(string culture)
     {
@@ -268,4 +377,10 @@ public class ExercisePagesTests : BunitContext
         Guid.NewGuid(), Slug, "Barbell squat", "strength", "beginner", "barbell", ["quadriceps"],
         $"/images/exercises/{Slug}/0.webp", $"/images/exercises/{Slug}/1.webp",
         SecondaryMuscles: ["glutes", "hamstrings"], Force: "push", Mechanic: "compound", instructions);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

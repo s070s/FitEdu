@@ -13,6 +13,8 @@ public static class CourseLabels
     /// <summary>CourseRes holds one key per equipment code: Equipment_none, Equipment_bands, …</summary>
     public const string EquipmentPrefix = "Equipment_";
 
+    private const string ScheduleSeparator = " · ";
+
     public static string Level(CourseLevel level) => level switch
     {
         CourseLevel.Beginner => CourseRes.Level_Beginner,
@@ -33,6 +35,21 @@ public static class CourseLabels
         FitnessGoal.Nutrition => CourseRes.Goal_Nutrition,
         _ => goal.ToString()
     };
+
+    /// <summary>
+    /// The programme's schedule, "8 weeks · 3× per week", either half alone, or null when the course
+    /// has neither. The course card and the course page both show it.
+    /// </summary>
+    public static string? Schedule(int? weeks, int? sessionsPerWeek)
+    {
+        var parts = new List<string>();
+        if (weeks is { } weekCount)
+            parts.Add(ResourceFormat.Count(weekCount, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
+        if (sessionsPerWeek is { } sessions)
+            parts.Add(ResourceFormat.Fill(CourseRes.SessionsPerWeekFormat, sessions));
+
+        return parts.Count == 0 ? null : string.Join(ScheduleSeparator, parts);
+    }
 
     /// <summary>The label of one stored equipment code ("bands" → "Bands"); an unknown code is shown as it is.</summary>
     public static string Equipment(string code)

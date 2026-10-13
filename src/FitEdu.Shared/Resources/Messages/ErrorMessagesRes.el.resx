@@ -124,7 +124,7 @@
     <value>Σφάλμα</value>
   </data>
   <data name="EmailTakenError" xml:space="preserve">
-    <value>Η διεύθυνση email είναι ήδη εγγεγραμένη</value>
+    <value>Η διεύθυνση email είναι ήδη εγγεγραμμένη</value>
   </data>
   <data name="LoginError" xml:space="preserve">
     <value>Σφάλμα κατά τη σύνδεση.</value>
@@ -185,6 +185,9 @@
   </data>
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
     <value>Αυτή η αξιολόγηση απαιτεί συνδρομή {0} ή ανώτερη.</value>
+  </data>
+  <data name="AdminCannotEnroll" xml:space="preserve">
+    <value>Οι διαχειριστές δεν μπορούν να γραφτούν σε προγράμματα.</value>
   </data>
   <data name="CourseNotFound" xml:space="preserve">
     <value>Το πρόγραμμα δεν βρέθηκε</value>
@@ -291,10 +294,46 @@
   <data name="Exercise_UnknownSlug" xml:space="preserve">
     <value>Άγνωστο slug άσκησης</value>
   </data>
+  <data name="Exercise_NotPublished" xml:space="preserve">
+    <value>Η άσκηση δεν έχει δημοσιευτεί</value>
+  </data>
   <data name="Course_UnknownEquipmentCode" xml:space="preserve">
     <value>Άγνωστος κωδικός εξοπλισμού</value>
   </data>
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
     <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά και δοκίμασε πάλι.</value>
+  </data>
+  <data name="Certificate_NotFound" xml:space="preserve">
+    <value>Το πιστοποιητικό δεν βρέθηκε.</value>
+  </data>
+  <data name="Certificate_Revoked" xml:space="preserve">
+    <value>Αυτό το πιστοποιητικό έχει ανακληθεί.</value>
+  </data>
+  <data name="Certificate_PdfUnavailable" xml:space="preserve">
+    <value>Το PDF του πιστοποιητικού δεν είναι διαθέσιμο αυτή τη στιγμή. Δοκίμασε ξανά αργότερα.</value>
+  </data>
+  <data name="IdentityPasswordTooShortFormat" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} χαρακτήρες.</value>
+  </data>
+  <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα ψηφίο (0-9).</value>
+  </data>
+  <data name="IdentityPasswordRequiresLower" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα πεζό γράμμα (a-z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresUpper" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα κεφαλαίο γράμμα (A-Z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα σύμβολο, όπως ! ή #.</value>
+  </data>
+  <data name="IdentityPasswordRequiresUniqueCharsFormat" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} διαφορετικούς χαρακτήρες.</value>
+  </data>
+  <data name="IdentityDuplicateEmailFormat" xml:space="preserve">
+    <value>Το email {0} είναι ήδη εγγεγραμμένο.</value>
+  </data>
+  <data name="IdentityInvalidEmailFormat" xml:space="preserve">
+    <value>Το email {0} δεν είναι έγκυρο.</value>
   </data>
 </root>

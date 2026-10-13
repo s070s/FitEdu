@@ -10,7 +10,8 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// <summary>
 /// Sends transactional email over SMTP using MailKit. Provider-agnostic: works against a local
 /// Papercut/Mailhog catcher in development and any relay (SES, SendGrid SMTP, Mailgun, O365) in
-/// production. Configured via <see cref="EmailOptions"/> (section "Email").
+/// production. Configured via <see cref="EmailOptions"/> (section "Email"). The wording comes from
+/// <see cref="EmailTemplates"/>, picked at send time in the request's UI language (English or Greek).
 /// </summary>
 public sealed class SmtpEmailService : IEmailService
 {

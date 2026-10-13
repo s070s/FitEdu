@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -18,6 +19,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class AdminCategoriesPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private readonly IAdminCategoryConsumer _categoryConsumer = Substitute.For<IAdminCategoryConsumer>();
 
     public AdminCategoriesPageTests()
@@ -74,5 +78,11 @@ public class AdminCategoriesPageTests : BunitContext
         var message = OpenDeleteConfirm(Render<AdminCategories>());
 
         message.ShouldContain("'Strength'");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

@@ -540,15 +540,18 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
-        public static string DetailPageTitleFormat {
-            get {
-                return ResourceManager.GetString("DetailPageTitleFormat", resourceCulture);
-            }
-        }
-
         public static string LoadFailed {
             get {
                 return ResourceManager.GetString("LoadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Public-domain library.
+        /// </summary>
+        public static string LibraryEyebrow {
+            get {
+                return ResourceManager.GetString("LibraryEyebrow", resourceCulture);
             }
         }
     }

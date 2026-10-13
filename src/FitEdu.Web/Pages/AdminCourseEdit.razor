@@ -4,7 +4,7 @@
 @using FitEdu.Web.Extensions
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)</PageTitle>
+<AppPageTitle Text="@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)" />
 
 <div class="admin-editor">
     <header class="section-head">
@@ -60,7 +60,7 @@
                                        value="@tier"
                                        checked="@(courseRequiredTier == tier)"
                                        @onchange="() => courseRequiredTier = tier" />
-                                @tier
+                                @TierLabels.Name(tier)
                             </label>
                         }
                     </div>
@@ -75,7 +75,7 @@
                         <option value="none">@CategoryRes.NoneCategory</option>
                         @foreach (var cat in categories)
                         {
-                            <option value="@cat.Id">@cat.NameEn</option>
+                            <option value="@cat.Id">@AdminText.Pick(cat.NameEn, cat.NameEl)</option>
                         }
                         <option value="new">@CategoryRes.NewCategoryOption</option>
                     </select>
@@ -114,6 +114,7 @@
                                class="form-control @(unknownEquipmentCode is not null ? "is-invalid" : "")"
                                maxlength="120"
                                @bind="courseEquipment"
+                               @bind:after="ClearEquipmentError"
                                aria-invalid="@(unknownEquipmentCode is not null ? "true" : null)"
                                aria-describedby="@EquipmentDescribedBy" />
                         @if (unknownEquipmentCode is not null)
@@ -138,6 +139,7 @@
                            class="form-control @(coverExerciseSlugInvalid ? "is-invalid" : "")"
                            maxlength="120"
                            @bind="courseCoverExerciseSlug"
+                           @bind:after="ClearCoverExerciseError"
                            aria-invalid="@(coverExerciseSlugInvalid ? "true" : null)"
                            aria-describedby="@CoverExerciseDescribedBy" />
                     @if (coverExerciseSlugInvalid)
@@ -193,7 +195,7 @@
                                      @onclick="() => ToggleModule(module.Id)"
                                      @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
                                     <div class="module-header__text">
-                                        <span class="module-header__title">@module.TitleEn</span>
+                                        <span class="module-header__title">@AdminText.Pick(module.TitleEn, module.TitleEl)</span>
                                         <span class="chip-row">
                                             <span class="chip chip--teal">@ResourceFormat.Count(module.LessonCount, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
                                             <span class="chip">@string.Format(AdminRes.OrderFormat, module.SortOrder)</span>
@@ -239,7 +241,6 @@
                                                             <th>@AdminRes.FieldTitle</th>
                                                             <th style="width:80px">@AdminRes.FieldType</th>
                                                             <th style="width:70px">@AdminRes.ColMins</th>
-                                                            <th style="width:80px">@AdminRes.ColStatus</th>
                                                             <th style="width:120px">@AdminRes.ColActions</th>
                                                         </tr>
                                                     </thead>
@@ -248,7 +249,7 @@
                                                         {
                                                             <tr @key="lesson.Id">
                                                                 <td data-label="#">@lesson.SortOrder</td>
-                                                                <td data-label="@AdminRes.FieldTitle">@lesson.TitleEn</td>
+                                                                <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(lesson.TitleEn, lesson.TitleEl)</td>
                                                                 <td data-label="@AdminRes.FieldType">
                                                                     @if (!string.IsNullOrEmpty(lesson.VideoPath))
                                                                     {
@@ -264,11 +265,6 @@
                                                                     }
                                                                 </td>
                                                                 <td data-label="@AdminRes.ColMins">@(lesson.DurationMinutes?.ToString() ?? "—")</td>
-                                                                <td data-label="@AdminRes.ColStatus">
-                                                                    <StatusBadge IsActive="lesson.IsPublished"
-                                                                                 ActiveText="@AdminRes.StatusLive"
-                                                                                 InactiveText="@AdminRes.StatusDraft" />
-                                                                </td>
                                                                 <td class="table-actions" data-label="@AdminRes.ColActions">
                                                                     <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
                                                                     <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)" title="@AdminRes.Delete" aria-label="@AdminRes.Delete"><span class="bi bi-x-lg" aria-hidden="true"></span></button>

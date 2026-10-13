@@ -56,6 +56,11 @@
     margin: 0;
 }
 
+/* Two tiles per row: an odd last tile (three facts) takes the whole row. */
+.exercise-facts__item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
 .exercise-facts__item {
     display: grid;
     align-content: start;
@@ -226,12 +231,20 @@
     .exercise-facts {
         grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
     }
+
+    .exercise-facts__item:last-child:nth-child(odd) {
+        grid-column: auto;
+    }
 }
 
 @media (min-width: 992px) {
     /* Beside the photos the column is narrow: two tiles per row. */
     .exercise-facts {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .exercise-facts__item:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
     }
 
     .exercise-detail__layout {

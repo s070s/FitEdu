@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Web.Extensions;
+using FitEdu.Web.Startup;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
 
 /// <summary>
 /// API endpoints for course discovery, enrollment, and consumption.
-/// All endpoints require authentication.
+/// The catalogue reads (list, detail, reviews) are public, so guests can browse programmes;
+/// joining, lessons, completion and writing a review require authentication.
 /// </summary>
 [ApiController]
 [Route("api/courses")]
@@ -24,11 +28,18 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)
         ?? throw new UnauthorizedAccessException("User ID not found in claims");
 
+    // Null for a guest on the public catalogue reads.
+    private string? OptionalUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    private bool IsSignedIn => OptionalUserId is not null;
+
     /// <summary>
     /// Get a paged list of all published courses with enrollment status. Optional filters:
     /// category, search text, goal and level (enum names) and one equipment code.
     /// </summary>
     [HttpGet]
+    [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<PagedResult<CourseListItemDto>>> GetCourses(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -43,20 +54,34 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
         (page, pageSize) = PagingParams.Normalize(page, pageSize);
 
         var result = await courseService.GetPublishedCoursesAsync(
-            UserId, page, pageSize, lang, categoryId, search, goal, level, equipment, cancellationToken);
+            OptionalUserId ?? AnonymousUser.Id, page, pageSize, lang, categoryId, search, goal, level, equipment, cancellationToken);
         return Ok(result);
     }
 
     /// <summary>
-    /// Get full course detail including modules, lessons, and progress.
+    /// Get full course detail including modules, lessons, and progress. A guest gets the outline
+    /// (lesson titles, kinds, minutes and exercise counts) without progress; lesson content stays
+    /// behind the lesson endpoint.
     /// </summary>
     [HttpGet("{courseId:guid}")]
+    [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<CourseDetailDto>> GetCourse(Guid courseId, [FromQuery] string lang = "en", CancellationToken cancellationToken = default)
     {
-        var dto = await courseService.GetCourseDetailAsync(UserId, courseId, lang, cancellationToken);
+        var dto = await courseService.GetCourseDetailAsync(OptionalUserId ?? AnonymousUser.Id, courseId, lang, cancellationToken);
         return dto is not null
             ? Ok(dto)
-            : Problem(detail: "Course not found", statusCode: StatusCodes.Status404NotFound);
+            : Problem(detail: ErrorMessagesRes.CourseNotFound, statusCode: StatusCodes.Status404NotFound);
+    }
+
+    /// <summary>
+    /// How many programmes the current user has joined, counted the same way as the plan limit.
+    /// </summary>
+    [HttpGet("enrolment-count")]
+    public async Task<ActionResult<int>> GetEnrolmentCount(CancellationToken cancellationToken = default)
+    {
+        var count = await courseService.CountEnrollmentsAsync(UserId, cancellationToken);
+        return Ok(count);
     }
 
     /// <summary>
@@ -67,7 +92,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     public async Task<ActionResult<EnrollmentResultDto>> Enroll(Guid courseId, CancellationToken cancellationToken = default)
     {
         if (User.IsInRole("Admin"))
-            return StatusCode(403, new EnrollmentResultDto(false, "Administrators cannot enroll in courses", null));
+            return StatusCode(403, new EnrollmentResultDto(false, ErrorMessagesRes.AdminCannotEnroll, null));
 
         var result = await courseService.EnrollAsync(UserId, courseId, cancellationToken);
         return result.ToEmbeddedActionResult();
@@ -95,14 +120,18 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
 
     /// <summary>
     /// Get approved reviews, the aggregate rating, and (for the signed-in user) their own
-    /// review at any moderation status — everything the course page needs in one call.
+    /// review at any moderation status — everything the course page needs in one call. Guests get
+    /// the approved reviews and the rating with no review of their own.
     /// </summary>
     [HttpGet("{courseId:guid}/reviews")]
+    [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<CourseReviewsResponseDto>> GetReviews(Guid courseId, CancellationToken cancellationToken = default)
     {
         var reviews = await reviewService.GetApprovedForCourseAsync(courseId, cancellationToken);
         var summary = await reviewService.GetRatingSummaryAsync(courseId, cancellationToken);
-        var mine = User.IsInRole("Admin") ? null : await reviewService.GetMyReviewAsync(UserId, courseId, cancellationToken);
+        var canHaveOwnReview = IsSignedIn && !User.IsInRole("Admin");
+        var mine = canHaveOwnReview ? await reviewService.GetMyReviewAsync(UserId, courseId, cancellationToken) : null;
 
         return Ok(new CourseReviewsResponseDto([.. reviews], summary, mine));
     }

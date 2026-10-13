@@ -113,6 +113,23 @@ public class CourseReviewServiceTests
     }
 
     [Fact]
+    public async Task UnpublishedCourse_ShowsNoReviewsAndNoRating()
+    {
+        // The reviews read is open to guests, so a hidden programme must not leak its reviews.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = NewCourse("Hidden");
+        course.IsPublished = false;
+        db.Courses.Add(course);
+        db.Users.Add(AppUser(UserId, "Author"));
+        db.CourseReviews.Add(new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "great", Status = ReviewStatus.Approved });
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+
+        (await service.GetApprovedForCourseAsync(course.Id)).ShouldBeEmpty();
+        (await service.GetRatingSummaryAsync(course.Id)).ShouldBeNull();
+    }
+
+    [Fact]
     public async Task GetRatingSummaryAsync_AveragesOnlyApproved_RoundedToOneDecimal()
     {
         await using var db = DbContextFactory.CreateInMemory();
@@ -188,6 +205,7 @@ public class CourseReviewServiceTests
     {
         await using var db = DbContextFactory.CreateInMemory();
         var course = NewCourse("Strength Basics");
+        course.TitleEl = "Βασικά δύναμης";
         db.Courses.Add(course);
         var review = new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "great", Status = ReviewStatus.Pending };
         db.CourseReviews.Add(review);
@@ -198,8 +216,11 @@ public class CourseReviewServiceTests
 
         result.IsSuccess.ShouldBeTrue();
         (await db.CourseReviews.FindAsync(review.Id))!.Status.ShouldBe(ReviewStatus.Approved);
+        // Both titles are stored so each language's template can show its own.
         await notifications.Received(1).DispatchAsync(
-            UserId, NotificationType.ReviewApproved, "ReviewApproved", Arg.Any<IReadOnlyList<string>>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+            UserId, NotificationType.ReviewApproved, "ReviewApproved",
+            Arg.Is<IReadOnlyList<string>>(args => args.Count == 2 && args[0] == "Strength Basics" && args[1] == "Βασικά δύναμης"),
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -262,5 +283,23 @@ public class CourseReviewServiceTests
         pending.TotalCount.ShouldBe(1);
         pending.Items.ShouldHaveSingleItem().Status.ShouldBe("Pending");
         all.TotalCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task GetPagedAsync_CarriesTheGreekCourseTitle_ForTheGreekAdminList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = NewCourse("Strength 101");
+        course.TitleEl = "Δύναμη 101";
+        db.Courses.Add(course);
+        db.Users.Add(AppUser(UserId, "Author"));
+        db.CourseReviews.Add(new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "a", Status = ReviewStatus.Pending });
+        await db.SaveChangesAsync();
+
+        var page = await NewService(db).GetPagedAsync(1, 10, "createdat", "desc", null);
+
+        var row = page.Items.ShouldHaveSingleItem();
+        row.CourseTitle.ShouldBe("Strength 101");
+        row.CourseTitleEl.ShouldBe("Δύναμη 101");
     }
 }

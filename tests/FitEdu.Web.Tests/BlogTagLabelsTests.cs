@@ -1,5 +1,5 @@
-using System.Globalization;
 using FitEdu.Application.DTOs;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
@@ -18,7 +18,7 @@ public class BlogTagLabelsTests
     [Fact]
     public void Greek_EverySeededTag_HasAGreekLabel()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         var seededTags = BlogSeedData.SeedArticles.SelectMany(article => article.Tags ?? []).Distinct();
 
@@ -31,7 +31,7 @@ public class BlogTagLabelsTests
     [InlineData("el", " Beginners ", "Αρχάριοι")]
     public void Label_ReturnsTheLabelOfTheCurrentLanguage(string culture, string tag, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         BlogTagLabels.Label(tag).ShouldBe(expected);
     }
@@ -39,7 +39,7 @@ public class BlogTagLabelsTests
     [Fact]
     public void Label_UnknownTag_IsShownAsItIs()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         BlogTagLabels.Label("Kettlebells").ShouldBe("Kettlebells");
     }

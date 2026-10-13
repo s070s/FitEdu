@@ -614,5 +614,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("BlogTag_Beginners", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Self-checks.
+        /// </summary>
+        public static string StatsAssessments {
+            get {
+                return ResourceManager.GetString("StatsAssessments", resourceCulture);
+            }
+        }
     }
 }

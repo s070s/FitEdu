@@ -37,6 +37,7 @@ public partial class AdminBlogEditor
     // Shared fields
     private string _slug = string.Empty;
     private string? _coverImageUrl;
+    private FilePicker? _coverPicker;
     private string _authorName = string.Empty;
     private string _tagsInput = string.Empty;
     private bool _isPublished;
@@ -102,7 +103,10 @@ public partial class AdminBlogEditor
                 if (path is not null)
                     _coverImageUrl = path;
                 else
+                {
                     _error = AdminRes.CoverImageUploadFailed;
+                    _coverPicker?.ClearFileName();
+                }
             }
             finally
             {
@@ -121,6 +125,7 @@ public partial class AdminBlogEditor
     {
         _coverImageUrl = null;
         _pendingCoverFile = null;
+        _coverPicker?.ClearFileName();
     }
 
     private async Task Save()

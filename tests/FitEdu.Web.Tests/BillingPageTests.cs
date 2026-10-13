@@ -6,6 +6,7 @@ using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -24,8 +25,7 @@ public class BillingPageTests : BunitContext
     private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
 
     // Each test switches the thread culture, so the originals are put back after it.
-    private readonly CultureInfo _originalCulture = CultureInfo.CurrentCulture;
-    private readonly CultureInfo _originalUICulture = CultureInfo.CurrentUICulture;
+    private readonly CultureScope _cultureScope = new();
 
     public BillingPageTests()
     {
@@ -33,7 +33,7 @@ public class BillingPageTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddAuthorization();
 
-        var upgrade = new BillingTransactionDto(Guid.NewGuid(), "Pro", 19.99m, "eur",
+        var upgrade = new BillingTransactionDto(Guid.NewGuid(), "Pro", SubscriptionTier.Pro, 19.99m, "eur",
             nameof(BillingTransactionType.Upgrade), EnglishDescription, StripeSessionId: null, DateTime.UtcNow);
         var overview = new BillingOverviewDto
         {
@@ -53,8 +53,7 @@ public class BillingPageTests : BunitContext
 
     protected override void Dispose(bool disposing)
     {
-        CultureInfo.CurrentCulture = _originalCulture;
-        CultureInfo.CurrentUICulture = _originalUICulture;
+        _cultureScope.Dispose();
         base.Dispose(disposing);
     }
 

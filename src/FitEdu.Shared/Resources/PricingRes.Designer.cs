@@ -205,7 +205,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pricing - FitEdu.
+        ///   Looks up a localized string similar to Pricing.
         /// </summary>
         public static string PageTitle {
             get {
@@ -399,6 +399,33 @@ namespace FitEdu.Shared.Resources {
         public static string PeriodForever {
             get {
                 return ResourceManager.GetString("PeriodForever", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Free.
+        /// </summary>
+        public static string TierFree {
+            get {
+                return ResourceManager.GetString("TierFree", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plus.
+        /// </summary>
+        public static string TierPlus {
+            get {
+                return ResourceManager.GetString("TierPlus", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pro.
+        /// </summary>
+        public static string TierPro {
+            get {
+                return ResourceManager.GetString("TierPro", resourceCulture);
             }
         }
     }

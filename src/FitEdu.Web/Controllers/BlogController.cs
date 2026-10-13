@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -9,6 +11,7 @@ namespace FitEdu.Web.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/blog")]
+[EnableRateLimiting(PublicRateLimit.PolicyName)]
 [Tags("Blog")]
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -8,25 +9,41 @@ using FitEdu.Domain.Entities;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="ILandingService"/>
-public class LandingService(IApplicationDbContext db, ICourseService courseService, IFileStorage fileStorage) : ILandingService
+public class LandingService(
+    IApplicationDbContext db, ICourseService courseService, IFileStorage fileStorage, IMemoryCache cache) : ILandingService
 {
     public const int FeaturedCourseCount = 6;
 
+    // Every guest's home page asks for the same numbers; a minute-old count is fine for them.
+    public static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(60);
+
     private const string MemberRoleName = "Student";
 
-    // Nobody is signed in on the public page, so no course reads as enrolled.
-    private const string NoUserId = "";
+    // Keyed by the two page languages only, so odd ?lang= values cannot fill the cache.
+    public static string CacheKey(string lang) => Localized.IsEl(lang) ? "landing:el" : "landing:en";
 
     public async Task<LandingOverviewDto> GetOverviewAsync(string lang, CancellationToken cancellationToken = default)
+    {
+        if (cache.TryGetValue(CacheKey(lang), out LandingOverviewDto? cached) && cached is not null)
+            return cached;
+
+        var overview = await LoadOverviewAsync(lang, cancellationToken);
+        cache.Set(CacheKey(lang), overview, CacheDuration);
+        return overview;
+    }
+
+    private async Task<LandingOverviewDto> LoadOverviewAsync(string lang, CancellationToken cancellationToken)
     {
         var courseCount = await db.Courses.CountAsync(c => c.IsPublished, cancellationToken);
         var lessonCount = await db.Lessons.CountAsync(l => l.Module.Course.IsPublished, cancellationToken);
         var exerciseCount = await db.Exercises.CountAsync(e => e.IsPublished, cancellationToken);
         var memberCount = await CountMembersAsync(cancellationToken);
+        var assessmentCount = await db.AssessmentDefinitions.CountAsync(a => a.IsPublished, cancellationToken);
         var featuredCourses = await GetFeaturedCoursesAsync(lang, cancellationToken);
         var hasCustomHeroImage = await HasCustomHeroImageAsync(cancellationToken);
 
-        return new LandingOverviewDto(courseCount, lessonCount, exerciseCount, memberCount, featuredCourses, hasCustomHeroImage);
+        return new LandingOverviewDto(
+            courseCount, lessonCount, exerciseCount, memberCount, assessmentCount, featuredCourses, hasCustomHeroImage);
     }
 
     private Task<int> CountMembersAsync(CancellationToken cancellationToken)
@@ -41,8 +58,9 @@ public class LandingService(IApplicationDbContext db, ICourseService courseServi
     /// </summary>
     private async Task<IReadOnlyList<CourseListItemDto>> GetFeaturedCoursesAsync(string lang, CancellationToken cancellationToken)
     {
+        // Nobody is signed in on the public page, so no course reads as enrolled.
         var catalog = await courseService.GetPublishedCoursesAsync(
-            NoUserId, page: 1, PagingParams.MaxPageSize, lang, cancellationToken: cancellationToken);
+            AnonymousUser.Id, page: 1, PagingParams.MaxPageSize, lang, cancellationToken: cancellationToken);
 
         var enrolmentCountByCourseId = await db.Enrollments
             .AsNoTracking()

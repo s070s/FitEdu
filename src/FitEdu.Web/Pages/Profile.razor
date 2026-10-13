@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @using FitEdu.Web.Extensions
 
-<PageTitle>@ProfileRes.PageTitle</PageTitle>
+<AppPageTitle Text="@ProfileRes.PageTitle" />
 
 <div class="profile-container page">
 
@@ -81,7 +81,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="profile-avatar">@ProfileRes.LabelAvatar</label>
                             <div>
-                                <InputFile id="profile-avatar" OnChange="HandleAvatarUpload" class="form-control" accept="image/*" disabled="@_uploadingAvatar" />
+                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" Disabled="_uploadingAvatar" />
                                 @if (_uploadingAvatar)
                                 {
                                     <div class="mt-2 d-flex align-items-center gap-2">
@@ -170,10 +170,7 @@
                     </ChildContent>
                 </FormCardSection>
 
-                @if (!string.IsNullOrEmpty(message))
-                {
-                    <div class="alert alert-info">@message</div>
-                }
+                <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
                 @if (!_isImpersonating)
                 {

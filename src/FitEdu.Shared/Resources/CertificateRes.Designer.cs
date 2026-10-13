@@ -79,6 +79,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate.
+        /// </summary>
+        public static string PdfFileNamePrefix {
+            get {
+                return ResourceManager.GetString("PdfFileNamePrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load certificates..
         /// </summary>
         public static string FailedToLoad {
@@ -193,7 +202,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Certificates - FitEdu.
+        ///   Looks up a localized string similar to My Certificates.
         /// </summary>
         public static string PageTitle {
             get {
@@ -360,6 +369,15 @@ namespace FitEdu.Shared.Resources {
         public static string PdfVerificationIdFormat {
             get {
                 return ResourceManager.GetString("PdfVerificationIdFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your certificates stay yours. Upgrade to Pro to earn new ones..
+        /// </summary>
+        public static string SubtitleKeptCertificates {
+            get {
+                return ResourceManager.GetString("SubtitleKeptCertificates", resourceCulture);
             }
         }
     }

@@ -1,7 +1,9 @@
 @page "/courses"
-@attribute [Authorize]
+@using FitEdu.Web.Extensions
 
-<PageTitle>@CourseRes.CoursesPageTitle</PageTitle>
+<AppPageTitle Text="@CourseRes.CoursesPageTitle" />
+@* The filters live in the address; the canonical link leaves them out, so the sitemap's /courses is the one address. *@
+<SeoHead Title="@CourseRes.CoursesPageTitle" Description="@CourseRes.CatalogueIntro" CanonicalUrl="/courses" />
 
 <div class="page courses-page">
     <header class="courses-head">
@@ -21,7 +23,11 @@
             <div class="plan-limit-banner @(IsPlanFull ? "plan-limit-full" : "")">
                 <span class="plan-limit-banner__icon bi @(IsPlanFull ? "bi-exclamation-circle" : "bi-stars")" aria-hidden="true"></span>
                 <p class="plan-limit-banner__text">
-                    <span>@string.Format(CourseRes.PlanCourseLimitFormat, _userStatus!.PlanName, _maxCourses)</span>
+                    <span>@ResourceFormat.Fill(CourseRes.PlanCourseLimitFormat, TierLabels.Name(_userStatus!.Tier), _maxCourses)</span>
+                    @if (HasEnrolledCount)
+                    {
+                        <span class="plan-limit-banner__usage">@ResourceFormat.Fill(CourseRes.PlanCourseUsageFormat, _enrolledCount, _maxCourses)</span>
+                    }
                     @if (IsPlanFull)
                     {
                         <span class="slots-full-label">@CourseRes.CourseSlotsFullNotice</span>
@@ -100,7 +106,7 @@
                 <div class="pagination-toolbar courses-toolbar">
                     <div class="courses-toolbar__summary">
                         <p class="courses-toolbar__count" role="status">
-                            @string.Format(CourseRes.TotalCoursesFormat, _pagedResult.TotalCount)
+                            @ResourceFormat.Fill(CourseRes.TotalCoursesFormat, _pagedResult.TotalCount)
                         </p>
                         @if (HasActiveFilter)
                         {

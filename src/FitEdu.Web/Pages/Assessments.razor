@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "Student")]
 @using FitEdu.Shared.Resources
 
-<PageTitle>@AssessmentRes.AssessmentsPageTitle</PageTitle>
+<AppPageTitle Text="@AssessmentRes.AssessmentsPageTitle" />
 
 <div class="page assessments-page">
     <header class="section-head assessments-head">
@@ -32,7 +32,7 @@
     }
     else if (!_assessmentAccess)
     {
-        <UpgradePrompt PlanName="Plus"
+        <UpgradePrompt Tier="SubscriptionTier.Plus"
                        Description="@AssessmentRes.UpgradeDescription" />
     }
     else if (_error is not null)

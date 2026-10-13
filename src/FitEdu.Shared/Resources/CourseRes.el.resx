@@ -122,6 +122,9 @@
 	<data name="EnrollInThisCourse" xml:space="preserve">
 		<value>Γράψου στο πρόγραμμα</value>
 	</data>
+	<data name="GuestStartCta" xml:space="preserve">
+		<value>Κάνε δωρεάν εγγραφή για να ξεκινήσεις</value>
+	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>λεπ.</value>
 	</data>
@@ -186,7 +189,7 @@
 		<value>Γράψου στο πρόγραμμα για να ανοίξεις τα μαθήματά του.</value>
 	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
-		<value>Προγράμματα - FitEdu</value>
+		<value>Προγράμματα</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
 		<value>Βρες το επόμενο πρόγραμμά σου</value>
@@ -331,5 +334,8 @@
 	</data>
 	<data name="NoMatchingCoursesHint" xml:space="preserve">
 		<value>Δοκίμασε άλλον στόχο, επίπεδο ή εξοπλισμό, ή καθάρισε τα φίλτρα.</value>
+	</data>
+	<data name="PlanCourseUsageFormat" xml:space="preserve">
+		<value>{0} από {1} προγράμματα σε χρήση</value>
 	</data>
 </root>

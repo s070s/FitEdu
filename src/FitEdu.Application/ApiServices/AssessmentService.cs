@@ -107,7 +107,7 @@ public class AssessmentService(
         if (userStatus.Features?.AssessmentAccess != true)
             return ServiceResult<AssessmentSubmissionDto>.Forbidden(error: ErrorMessagesRes.AssessmentAccessRequiresPlus);
         if (userStatus.Tier < assessment.RequiredTier)
-            return ServiceResult<AssessmentSubmissionDto>.Forbidden(error: string.Format(ErrorMessagesRes.AssessmentRequiresTierFormat, assessment.RequiredTier));
+            return ServiceResult<AssessmentSubmissionDto>.Forbidden(error: string.Format(ErrorMessagesRes.AssessmentRequiresTierFormat, TierLabels.Name(assessment.RequiredTier)));
 
         // DQ-2: reject answers that aren't well-formed JSON, reference a question id that
         // doesn't exist on this assessment, or leave a required question unanswered — instead of
@@ -392,9 +392,10 @@ public class AssessmentService(
 
         foreach (var requiredId in requiredIds)
         {
+            // A multi-select answer is a JSON array of options; an empty one is no answer.
             if (!answersRoot.TryGetProperty(requiredId, out var value) ||
                 value.ValueKind != JsonValueKind.String ||
-                string.IsNullOrWhiteSpace(value.GetString()))
+                MultiSelectAnswer.IsBlank(value.GetString()))
                 return false;
         }
 

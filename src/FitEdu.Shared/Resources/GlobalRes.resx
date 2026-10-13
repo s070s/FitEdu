@@ -375,4 +375,10 @@
   <data name="Label_GoToLogin" xml:space="preserve">
     <value>Go to login</value>
   </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Choose file</value>
+  </data>
+  <data name="NoFileChosen" xml:space="preserve">
+    <value>No file chosen</value>
+  </data>
 </root>

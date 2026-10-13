@@ -2,6 +2,7 @@ using System.Globalization;
 using Bunit;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Shared.Components.Cards;
 using FitEdu.Web.Shared.Components.Layout;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class CardComponentTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid CourseId = Guid.Parse("6f9619ff-8b86-d011-b42d-00c04fc964ff");
 
     public CardComponentTests()
@@ -360,4 +364,10 @@ public class CardComponentTests : BunitContext
         CategoryName: "Κινητικότητα",
         stepCount,
         completedSteps);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

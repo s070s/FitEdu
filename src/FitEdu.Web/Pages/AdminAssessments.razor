@@ -1,7 +1,8 @@
 @page "/admin/assessments"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
-<PageTitle>@AdminRes.AssessmentManagement</PageTitle>
+<AppPageTitle Text="@AdminRes.AssessmentManagement" />
 
 <h1 class="h2">@AdminRes.AssessmentManagement</h1>
 
@@ -49,17 +50,17 @@ else
         </HeaderRow>
         <RowTemplate Context="assessment">
             <tr @key="assessment.Id">
-                <td data-label="@AdminRes.FieldTitle">@assessment.Title</td>
+                <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(assessment.Title, assessment.TitleEl)</td>
                 <td data-label="@AdminRes.FieldKey">@assessment.Key</td>
-                <td data-label="@AdminRes.ColCategory">@(assessment.CategoryNameEn ?? "—")</td>
-                <td data-label="@AdminRes.ColTier">@assessment.RequiredTier</td>
+                <td data-label="@AdminRes.ColCategory">@(AdminText.Pick(assessment.CategoryNameEn, assessment.CategoryNameEl) ?? "—")</td>
+                <td data-label="@AdminRes.ColTier">@TierLabels.Name(assessment.RequiredTier)</td>
                 <td data-label="@AdminRes.ColStatus">
                     <StatusBadge IsActive="assessment.IsPublished"
                                  ActiveText="@AdminRes.StatusPublished"
                                  InactiveText="@AdminRes.StatusDraft" />
                 </td>
                 <td data-label="@AdminRes.ColSubmissions">@assessment.SubmissionCount</td>
-                <td data-label="@AdminRes.ColCreated">@assessment.CreatedAt.ToLocalTime().ToString("d")</td>
+                <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(assessment.CreatedAt).ToString("d")</td>
                 <td class="table-actions" data-label="@AdminRes.ColActions">
                     <button class="btn btn-sm btn-primary" @onclick="() => EditAssessment(assessment.Id)">@AdminRes.Edit</button>
                     @if (assessment.IsPublished)

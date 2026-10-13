@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Exercise Library - FitEdu</value>
+    <value>Exercise Library</value>
   </data>
   <data name="Library" xml:space="preserve">
     <value>Exercise library</value>
@@ -298,10 +298,10 @@
   <data name="DetailDescriptionFormat" xml:space="preserve">
     <value>How to do {0}: the muscles it works, the equipment you need and step-by-step instructions.</value>
   </data>
-  <data name="DetailPageTitleFormat" xml:space="preserve">
-    <value>{0} - FitEdu</value>
-  </data>
   <data name="LoadFailed" xml:space="preserve">
     <value>We couldn't load the exercise library right now.</value>
+  </data>
+  <data name="LibraryEyebrow" xml:space="preserve">
+    <value>Public-domain library</value>
   </data>
 </root>

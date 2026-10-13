@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "Student")]
 @using FitEdu.Web.Extensions
 
-<PageTitle>@(assessment?.Title ?? AssessmentRes.AssessmentsPageTitle)</PageTitle>
+<AppPageTitle Text="@(assessment?.Title ?? AssessmentRes.AssessmentsPageTitle)" />
 
 <div class="page assessment-form-page">
     <a class="assessment-form__back" href="/assessments">

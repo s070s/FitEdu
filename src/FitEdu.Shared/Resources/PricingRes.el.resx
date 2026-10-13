@@ -40,7 +40,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Τιμολόγηση - FitEdu</value>
+		<value>Τιμολόγηση</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
 		<value>Διάλεξε το πλάνο σου</value>
@@ -152,5 +152,14 @@
 	</data>
 	<data name="PeriodForever" xml:space="preserve">
 		<value>για πάντα</value>
+	</data>
+	<data name="TierFree" xml:space="preserve">
+		<value>Δωρεάν</value>
+	</data>
+	<data name="TierPlus" xml:space="preserve">
+		<value>Plus</value>
+	</data>
+	<data name="TierPro" xml:space="preserve">
+		<value>Pro</value>
 	</data>
 </root>

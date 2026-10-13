@@ -6,6 +6,7 @@ using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -20,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class HomeLandingTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string HomeRazorPath = "src/FitEdu.Web/Pages/Home.razor";
 
     private readonly ITestimonialConsumer _testimonialConsumer = Substitute.For<ITestimonialConsumer>();
@@ -97,15 +101,38 @@ public class HomeLandingTests : BunitContext
     }
 
     [Fact]
-    public void StatsStrip_HidesTheMemberTileWhileTheCountIsSmall()
+    public void StatsStrip_ShowsTheSelfChecksInPlaceOfASmallMemberCount()
     {
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
 
         var page = Render<Home>();
 
         var labels = page.FindAll(".stats-strip .stat-tile__label").Select(label => label.TextContent).ToList();
-        labels.Count.ShouldBe(3);
+        labels.Count.ShouldBe(4);
         labels.ShouldNotContain(HomeRes.StatsMembers);
+        labels[3].ShouldBe("Self-checks");
+        page.FindAll(".stats-strip .stat-tile__value")[3].TextContent.ShouldBe("19");
+    }
+
+    [Fact]
+    public void StatsStrip_InGreek_NamesTheSelfChecks()
+    {
+        UseCulture("el");
+        _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
+
+        var page = Render<Home>();
+
+        page.FindAll(".stats-strip .stat-tile__label")[3].TextContent.ShouldBe("Αυτοαξιολογήσεις");
+    }
+
+    [Fact]
+    public void StatsStrip_WithoutSelfChecksOrManyMembers_ShowsThreeTiles()
+    {
+        _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11, assessmentCount: 0));
+
+        var page = Render<Home>();
+
+        page.FindAll(".stats-strip .stat-tile").Count.ShouldBe(3);
     }
 
     [Fact]
@@ -147,10 +174,16 @@ public class HomeLandingTests : BunitContext
 
         page.FindAll(".section-featured .course-card").Count.ShouldBe(2);
         page.Find(".section-featured a.course-card-link").TextContent.ShouldBe("Strength basics");
-        // The swipe row on phones is a focusable, named region so keyboard users can scroll it.
+        // The swipe row on phones is a named region and a tab stop from the first (prerendered)
+        // paint; scroll-regions.js removes the tab stop once it sees the row does not scroll.
         var row = page.Find(".section-featured .featured-grid");
+        row.HasAttribute("data-scroll-region").ShouldBeTrue();
         row.GetAttribute("tabindex").ShouldBe("0");
+        row.GetAttribute("role").ShouldBe("region");
         row.GetAttribute("aria-labelledby").ShouldBe("featured-title");
+        var storiesRow = page.Find(".testimonials-grid");
+        storiesRow.HasAttribute("data-scroll-region").ShouldBeTrue();
+        storiesRow.GetAttribute("tabindex").ShouldBe("0");
     }
 
     [Fact]
@@ -197,11 +230,12 @@ public class HomeLandingTests : BunitContext
         markup.ShouldNotContain("onerror=");
     }
 
-    private static LandingOverviewDto Overview(bool hasCustomHero = false, int memberCount = 1240) => new(
+    private static LandingOverviewDto Overview(bool hasCustomHero = false, int memberCount = 1240, int assessmentCount = 19) => new(
         CourseCount: 19,
         LessonCount: 131,
         ExerciseCount: 873,
         MemberCount: memberCount,
+        AssessmentCount: assessmentCount,
         FeaturedCourses:
         [
             new(Guid.NewGuid(), "Strength basics", "Build a base.", false, 12, Level: CourseLevel.Beginner),
@@ -213,5 +247,11 @@ public class HomeLandingTests : BunitContext
     {
         CultureInfo.CurrentCulture = new CultureInfo(culture);
         CultureInfo.CurrentUICulture = new CultureInfo(culture);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

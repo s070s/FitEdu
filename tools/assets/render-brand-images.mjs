@@ -1,18 +1,19 @@
-// Renders the brand images with headless Chrome (see browser.mjs):
+// Renders the brand images with headless Chrome (see ../shared/browser.mjs):
 //   favicon.svg          -> favicon.png (64 px), icon-192.png (192 px)
 //   og-template.html     -> images/og-home.jpg (1200x630)
 //   blog-cover-template  -> images/blog/<article slug>.webp (1200x675)
 //
 //   node tools/assets/render-brand-images.mjs [--photos <download>/exercises] [icons] [og] [blog]
 //
-// No job name renders all three. Photos are turned into a charcoal/lime duotone (browser.mjs)
+// No job name renders all three. Photos are turned into a charcoal/lime duotone (images.mjs)
 // before they go into a template. The OG collage uses the converted exercise photos
 // (convert-exercise-images.mjs). Blog covers are full-width, so they use the larger original
 // JPGs from the Free Exercise DB download, passed with --photos.
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { encodeWebp, fail, fileToDataUrl, launchBrowser, toDuotone } from './browser.mjs';
+import { fail, launchBrowser } from '../shared/browser.mjs';
+import { encodeWebp, fileToDataUrl, toDuotone } from './images.mjs';
 
 const TOOLS_FOLDER = dirname(fileURLToPath(import.meta.url));
 const WEB_ROOT = resolve(TOOLS_FOLDER, '../../src/FitEdu.Web/wwwroot');

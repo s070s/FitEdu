@@ -478,6 +478,10 @@ namespace FitEdu.Infrastructure.Data.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
+                    b.Property<string>("PdfPathEl")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
                     b.Property<string>("RecipientName")
                         .IsRequired()
                         .HasMaxLength(256)

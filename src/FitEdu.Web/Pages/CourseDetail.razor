@@ -1,12 +1,11 @@
 @page "/courses/{CourseId:guid}"
-@attribute [Authorize]
 @using FitEdu.Web.Extensions
 @* Course page: cover hero with the programme chips, "What you'll train", the module outline
    (one <details> per module, lessons with their kind, minutes and exercise count) and the reviews.
    The action card (.course-cta) comes last: a dock pinned above the tab bar on phones, a sticky
    side card from 768 px. *@
 
-<PageTitle>@(_course?.Title ?? CourseRes.CourseDefault) - FitEdu</PageTitle>
+<AppPageTitle Text="@(_course?.Title ?? CourseRes.CourseDefault)" />
 
 @if (_loading)
 {
@@ -31,6 +30,11 @@ else if (_error is not null || _course is null)
 }
 else
 {
+    <SeoHead Title="@_course.Title"
+             Description="@_metaDescription"
+             CanonicalUrl="@(CoursePathPrefix + _course.Id)"
+             ImageUrl="@_course.CoverImageUrl" />
+
     <div class="page course-page">
         @* The hero parts are direct children of .course-page so the grid from 768 px can put the
            cover and the action card together in the side column. *@
@@ -42,7 +46,7 @@ else
             <CourseCover ImageUrl="@_course.CoverImageUrl" CategoryName="@_course.CategoryName" Eager="true">
                 @if (_course.RequiredTier != SubscriptionTier.Free)
                 {
-                    <span class="tier-badge course-hero__tier tier-@_course.RequiredTier.ToString().ToLowerInvariant()">@_course.RequiredTier</span>
+                    <span class="tier-badge course-hero__tier tier-@_course.RequiredTier.ToString().ToLowerInvariant()">@TierLabels.Name(_course.RequiredTier)</span>
                 }
             </CourseCover>
         </div>
@@ -63,7 +67,7 @@ else
                     <span class="bi bi-bullseye" aria-hidden="true"></span>
                     <span class="visually-hidden">@CourseRes.Goal: </span>@CourseLabels.Goal(_course.Goal)
                 </span>
-                @if (ScheduleText() is { } schedule)
+                @if (CourseLabels.Schedule(_course.EstimatedWeeks, _course.SessionsPerWeek) is { } schedule)
                 {
                     <span class="chip">
                         <span class="bi bi-calendar-week" aria-hidden="true"></span> @schedule
@@ -173,7 +177,8 @@ else
                             </summary>
 
                             <div class="module__body">
-                                @if (!string.IsNullOrEmpty(module.Description))
+                                @* A description already listed under "What you'll train" is not repeated here. *@
+                                @if (!string.IsNullOrEmpty(module.Description) && !_outcomeModuleIds.Contains(module.Id))
                                 {
                                     <div class="module-description">@((MarkupString)module.Description)</div>
                                 }
@@ -311,7 +316,7 @@ else
                                     <StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" />
                                 </div>
                                 <p class="review-body">@review.Body</p>
-                                <span class="review-date">@review.CreatedAt.ToLocalTime().ToString("d")</span>
+                                <span class="review-date">@SiteClock.ToSiteTime(review.CreatedAt).ToString("d")</span>
                             </article>
                         }
                     </div>
@@ -323,7 +328,7 @@ else
             </section>
         </div>
 
-        <aside class="course-cta card-surface sticky-bottom-bar" aria-labelledby="course-cta-title">
+        <aside class="course-cta card-surface sticky-bottom-bar@(_isGuest ? " course-cta--guest" : "")" aria-labelledby="course-cta-title">
             <h2 id="course-cta-title" class="course-cta__title">@(_course.IsEnrolled ? CourseRes.ProgressTitle : CourseRes.StartTitle)</h2>
 
             @if (_course.IsEnrolled)
@@ -356,11 +361,16 @@ else
                     </a>
                 }
             }
+            else if (_isGuest)
+            {
+                <a class="btn-cta course-cta__action course-cta__signup" href="@RegisterHref">@CourseRes.GuestStartCta</a>
+                <a class="btn-cta btn-cta--ghost course-cta__action course-cta__login" href="@LoginHref">@NavMenuRes.Login</a>
+            }
             else if (NeedsUpgrade)
             {
                 <div class="enroll-upgrade-notice">
                     <span class="bi bi-lock-fill" aria-hidden="true"></span>
-                    <p>@string.Format(CourseRes.RequiresPlanFormat, _course.RequiredTier)</p>
+                    <p>@string.Format(CourseRes.RequiresPlanFormat, TierLabels.Name(_course.RequiredTier))</p>
                 </div>
                 <a class="btn-cta course-cta__action" href="/pricing">@CourseRes.UpgradePlan</a>
             }
@@ -382,20 +392,4 @@ else
             }
         </aside>
     </div>
-}
-
-@code {
-    // Resource formats are filled in here, in the markup file, next to the text they build.
-
-    /// <summary>"8 weeks · 3× per week", either half alone, or null when the course has neither (as on CourseCard).</summary>
-    private string? ScheduleText()
-    {
-        var parts = new List<string>();
-        if (_course?.EstimatedWeeks is { } weeks)
-            parts.Add(ResourceFormat.Count(weeks, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
-        if (_course?.SessionsPerWeek is { } sessions)
-            parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
-
-        return parts.Count == 0 ? null : string.Join(" · ", parts);
-    }
 }

@@ -1,0 +1,12 @@
+@* The browser tab title of a page: the page's own name, then the site name ("Pricing - FitEdu").
+   Resource texts hold only the page name, so SeoHead's og:title never repeats the site name.
+   The home page keeps its own title ("FitEdu | ...") and does not use this. *@
+<PageTitle>@Text - @SiteName</PageTitle>
+
+@code {
+    /// <summary>The site name, also SeoHead's og:site_name.</summary>
+    public const string SiteName = "FitEdu";
+
+    /// <summary>The page's own name, without the site name.</summary>
+    [Parameter, EditorRequired] public string Text { get; set; } = string.Empty;
+}

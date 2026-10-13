@@ -318,4 +318,7 @@
   <data name="BlogTag_Beginners" xml:space="preserve">
     <value>Αρχάριοι</value>
   </data>
+  <data name="StatsAssessments" xml:space="preserve">
+    <value>Αυτοαξιολογήσεις</value>
+  </data>
 </root>

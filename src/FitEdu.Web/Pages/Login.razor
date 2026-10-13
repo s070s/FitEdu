@@ -1,6 +1,6 @@
 @page "/login"
 
-<PageTitle>@GlobalRes.Label_Login</PageTitle>
+<AppPageTitle Text="@GlobalRes.Label_Login" />
 
 <AuthCard Title="@GlobalRes.Label_Login" Subtitle="@GlobalRes.AuthLoginSubtitle">
     <ChildContent>
@@ -66,6 +66,6 @@
         </EditForm>
     </ChildContent>
     <Footer>
-        @GlobalRes.Label_NoAccount <a href="/register">@GlobalRes.Label_Register</a>
+        @GlobalRes.Label_NoAccount <a href="@RegisterHref">@GlobalRes.Label_Register</a>
     </Footer>
 </AuthCard>

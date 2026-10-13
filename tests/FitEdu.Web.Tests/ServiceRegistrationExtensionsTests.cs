@@ -1,11 +1,41 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using FitEdu.Web.Startup;
 using Shouldly;
 using Xunit;
 
 namespace FitEdu.Web.Tests;
 
-public class ServiceRegistrationExtensionsTests
+public class ServiceRegistrationExtensionsTests : IClassFixture<CustomWebAppFactory>
 {
+    private readonly CustomWebAppFactory _factory;
+
+    public ServiceRegistrationExtensionsTests(CustomWebAppFactory factory) => _factory = factory;
+
+    [Fact]
+    public void GreekCulture_UsesA24HourClock()
+    {
+        var greek = ServiceRegistrationExtensions.CreateGreekCulture();
+        var ninePm = new DateTime(2026, 10, 20, 21, 0, 0);
+
+        greek.Name.ShouldBe("el-GR");
+        ninePm.ToString("t", greek).ShouldBe("21:00");
+        ninePm.ToString("T", greek).ShouldBe("21:00:00");
+    }
+
+    [Fact]
+    public void RequestLocalization_OffersTheGreekCultureWithTheTwentyFourHourClock()
+    {
+        var options = _factory.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+
+        var greek = options.SupportedCultures.ShouldNotBeNull().Single(culture => culture.Name == "el-GR");
+        greek.DateTimeFormat.ShortTimePattern.ShouldBe("HH:mm");
+        options.SupportedUICultures.ShouldNotBeNull().ShouldContain(greek);
+        options.DefaultRequestCulture.Culture.Name.ShouldBe("en-GB");
+    }
+
     [Fact]
     public void ResolveSelfBaseUrl_Development_DefaultsToLocalhost_WhenUnset()
     {

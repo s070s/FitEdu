@@ -94,4 +94,7 @@
   <data name="EnterQuery" xml:space="preserve">
     <value>Type what you're looking for: programmes, exercises, assessments or articles.</value>
   </data>
+  <data name="Heading" xml:space="preserve">
+    <value>What are you looking for?</value>
+  </data>
 </root>

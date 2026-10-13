@@ -21,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class FitnessComponentTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string StartUrl = "/images/exercises/bodyweight-squat/0.webp";
     private const string EndUrl = "/images/exercises/bodyweight-squat/1.webp";
 
@@ -179,6 +182,20 @@ public class FitnessComponentTests : BunitContext
         card.FindAll(".exercise-card__steps li").Count.ShouldBe(2);
         card.FindAll(".muscle-chips li").Count.ShouldBe(3); // a workout card lists every muscle
         card.FindAll(".level-badge").ShouldBeEmpty(); // prescriptions carry no level
+    }
+
+    [Theory]
+    [InlineData("en", "Time")]
+    [InlineData("el", "Χρόνος")]
+    public void ExerciseCard_TimedPrescription_LabelsTheValueTime(string culture, string expectedLabel)
+    {
+        UseCulture(culture);
+
+        var card = Render<ExerciseCard>(parameters => parameters
+            .Add(component => component.Prescription, Prescription() with { Reps = "20 s" }));
+
+        card.FindAll(".exercise-card__dose dt")[1].TextContent.ShouldBe(expectedLabel);
+        card.FindAll(".exercise-card__dose dd")[1].TextContent.ShouldBe("20 s");
     }
 
     [Fact]
@@ -522,4 +539,10 @@ public class FitnessComponentTests : BunitContext
         StartUrl,
         EndUrl,
         Instructions: ["Stand tall with your feet shoulder-width apart.", "Sit back and down, then stand up."]);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

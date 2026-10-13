@@ -143,6 +143,7 @@ public partial class AdminCourseEdit
                 courseSessionsPerWeek = course.SessionsPerWeek;
                 courseCoverExerciseSlug = course.CoverExerciseSlug;
                 coverExerciseSlugInvalid = false;
+                unknownEquipmentCode = null;
             }
         }
         catch (Exception)
@@ -195,18 +196,34 @@ public partial class AdminCourseEdit
         ? "course-cover-exercise-error course-cover-exercise-hint"
         : "course-cover-exercise-hint";
 
+    private enum CoverExerciseCheck
+    {
+        Valid,
+        UnknownSlug,
+        LookupFailed
+    }
+
     /// <summary>
-    /// True when no cover is set or the slug names a library exercise. Checked before saving so the
+    /// Valid when no cover is set or the slug names a library exercise. Checked before saving so the
     /// admin gets a message on the field; the API refuses an unknown slug too, but only with a generic error.
+    /// A failed lookup is reported apart, because it says nothing about the slug.
     /// </summary>
-    private async Task<bool> CoverExerciseExistsAsync(string? slug)
+    private async Task<CoverExerciseCheck> CheckCoverExerciseAsync(string? slug)
     {
         if (slug is null)
-            return true;
+            return CoverExerciseCheck.Valid;
 
-        var exercise = await ExerciseConsumer.GetBySlugAsync(slug);
-        return exercise is not null;
+        var lookup = await ExerciseConsumer.GetBySlugAsync(slug);
+        if (lookup.RequestFailed)
+            return CoverExerciseCheck.LookupFailed;
+
+        return lookup.Item is null ? CoverExerciseCheck.UnknownSlug : CoverExerciseCheck.Valid;
     }
+
+    // The field errors describe the value at the last Save, so editing the field clears them.
+    private void ClearCoverExerciseError() => coverExerciseSlugInvalid = false;
+
+    private void ClearEquipmentError() => unknownEquipmentCode = null;
 
     private async Task LoadModulesAndLessons()
     {
@@ -269,9 +286,17 @@ public partial class AdminCourseEdit
 
             // Same normal form as the API, so the page checks exactly the slug the server will.
             var coverExerciseSlug = SlugHelper.NormalizeTypedSlug(courseCoverExerciseSlug);
-            coverExerciseSlugInvalid = !await CoverExerciseExistsAsync(coverExerciseSlug);
+            var coverCheck = await CheckCoverExerciseAsync(coverExerciseSlug);
+            coverExerciseSlugInvalid = coverCheck == CoverExerciseCheck.UnknownSlug;
             // Same check as the API, so a typo names the bad code instead of a generic save failure.
             unknownEquipmentCode = EquipmentCodeList.FindUnknownCode(courseEquipment);
+            if (coverCheck == CoverExerciseCheck.LookupFailed)
+            {
+                message = ErrorMessagesRes.UnexpectedErrorTryAgain;
+                messageType = "danger";
+                return;
+            }
+
             if (coverExerciseSlugInvalid || unknownEquipmentCode is not null)
                 return;
 

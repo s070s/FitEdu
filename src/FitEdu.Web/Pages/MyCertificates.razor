@@ -2,13 +2,13 @@
 @attribute [Authorize(Roles = "Student")]
 @using System.Globalization
 
-<PageTitle>@CertificateRes.PageTitle</PageTitle>
+<AppPageTitle Text="@CertificateRes.PageTitle" />
 
 <div class="page certificates-page">
     <header class="certificates-head">
         <span class="eyebrow"><span class="bi @AppIcons.Certificate" aria-hidden="true"></span> @NavMenuRes.Certificates</span>
         <h1>@CertificateRes.Heading</h1>
-        <p class="certificates-head__lead">@(_certificateAccess ? CertificateRes.Subtitle : CertificateRes.SubtitleNoAccess)</p>
+        <p class="certificates-head__lead">@LeadText</p>
     </header>
 
     @if (_loading)
@@ -18,7 +18,7 @@
     else if (HasNoCertificates && !_certificateAccess)
     {
         @* Only Pro issues certificates, so Free and Plus members learn why the list stays empty. *@
-        <UpgradePrompt PlanName="@CertificatePlanName"
+        <UpgradePrompt Tier="CertificateTier"
                        Description="@CertificateRes.UpgradeDescription"
                        UpgradeButtonText="@LessonRes.UpgradeToPro" />
     }
@@ -35,7 +35,7 @@
             @foreach (var cert in _certificates)
             {
                 // The machine-readable date and the shown date are the same local day.
-                var issuedLocal = cert.IssuedAt.ToLocalTime();
+                var issuedLocal = SiteClock.ToSiteTime(cert.IssuedAt);
                 <li class="card-surface certificate-card" @key="cert.Id">
                     <div class="certificate-card__band">
                         <span class="certificate-card__seal" aria-hidden="true"><span class="bi bi-award-fill"></span></span>

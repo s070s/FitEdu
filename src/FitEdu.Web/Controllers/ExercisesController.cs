@@ -1,17 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
 /// <summary>
 /// Public exercise library — no authentication required, like <see cref="BlogController"/>.
-/// Only published exercises are visible.
+/// Only published exercises are visible. The "used in lessons" list is public too: it shows only
+/// lesson and course titles, which the public course catalogue (<see cref="CoursesController"/>)
+/// already shows to guests.
 /// </summary>
 [ApiController]
 [Route("api/exercises")]
+[EnableRateLimiting(PublicRateLimit.PolicyName)]
 [Tags("Exercises")]
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status404NotFound)]

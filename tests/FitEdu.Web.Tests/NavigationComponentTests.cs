@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Layout;
 using FitEdu.Web.Shared.Components.Assistant;
@@ -25,6 +26,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class NavigationComponentTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string GuestRole = "";
     private const string SoftHyphen = "­";
 
@@ -234,5 +238,11 @@ public class NavigationComponentTests : BunitContext
         searchBox.Find(".site-search-input").KeyDown(new KeyboardEventArgs { Key = "Escape" });
 
         searchBox.FindAll(".site-search--expanded").ShouldBeEmpty();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

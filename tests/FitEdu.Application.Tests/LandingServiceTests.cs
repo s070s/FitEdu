@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.ApiInterfaces;
@@ -12,7 +13,8 @@ using Xunit;
 namespace FitEdu.Application.Tests;
 
 /// <summary>
-/// The public home page's numbers count only published content and members, the showcase lists
+/// The public home page's numbers count only published content (courses, lessons, exercises and
+/// self-checks) and members, the showcase lists
 /// the most-enrolled courses first, and the admin's hero photo counts only when its file exists.
 /// </summary>
 public class LandingServiceTests
@@ -27,7 +29,7 @@ public class LandingServiceTests
         var reviews = new CourseReviewService(_db, Substitute.For<INotificationDispatcher>(), NullLogger<CourseReviewService>.Instance);
         var courses = new CourseService(_db, Substitute.For<ISubscriptionService>(), Substitute.For<ICertificateService>(),
             reviews, NullLogger<CourseService>.Instance);
-        return new LandingService(_db, courses, _fileStorage);
+        return new LandingService(_db, courses, _fileStorage, new MemoryCache(new MemoryCacheOptions()));
     }
 
     [Fact]
@@ -49,6 +51,19 @@ public class LandingServiceTests
         overview.LessonCount.ShouldBe(3);
         overview.ExerciseCount.ShouldBe(2);
         overview.MemberCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Counts_PublishedAssessmentsOnly()
+    {
+        _db.AssessmentDefinitions.Add(Assessment("readiness", published: true));
+        _db.AssessmentDefinitions.Add(Assessment("goals", published: true));
+        _db.AssessmentDefinitions.Add(Assessment("draft", published: false));
+        await _db.SaveChangesAsync();
+
+        var overview = await NewService().GetOverviewAsync("en");
+
+        overview.AssessmentCount.ShouldBe(2);
     }
 
     [Fact]
@@ -98,6 +113,24 @@ public class LandingServiceTests
     }
 
     [Fact]
+    public async Task Overview_IsServedFromTheCachePerLanguage()
+    {
+        AddCourse("First", published: true, lessonCount: 1);
+        await _db.SaveChangesAsync();
+        var service = NewService();
+        var firstEnglish = await service.GetOverviewAsync("en");
+
+        AddCourse("Second", published: true, lessonCount: 1);
+        await _db.SaveChangesAsync();
+        var cachedEnglish = await service.GetOverviewAsync("en");
+        var freshGreek = await service.GetOverviewAsync("el");
+
+        firstEnglish.CourseCount.ShouldBe(1);
+        cachedEnglish.CourseCount.ShouldBe(1);
+        freshGreek.CourseCount.ShouldBe(2);
+    }
+
+    [Fact]
     public async Task CustomHeroImage_IsOffWhenNoneWasUploaded()
     {
         var overview = await NewService().GetOverviewAsync("en");
@@ -118,6 +151,15 @@ public class LandingServiceTests
         _db.Courses.Add(course);
         return course;
     }
+
+    private static AssessmentDefinition Assessment(string key, bool published) => new()
+    {
+        Id = Guid.NewGuid(),
+        Key = key,
+        TitleEn = key,
+        SchemaJson = "{}",
+        IsPublished = published
+    };
 
     private static Exercise Exercise(string slug, bool published = true) => new()
     {

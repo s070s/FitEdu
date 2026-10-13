@@ -8,12 +8,12 @@ import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { launchBrowser } from '../assets/browser.mjs';
+import { launchBrowser } from '../shared/browser.mjs';
 import { PAGES_BY_ROLE, PARAMETER_SOURCES, fillTemplate, findUncoveredRoutes, readPageRoutes } from './routes.mjs';
 import { measure, scrollThroughPage, waitForRender } from './page-checks.mjs';
 import { writeReports } from './report.mjs';
 
-const DEFAULT_BASE_URL = 'http://localhost:5090';
+const DEFAULT_BASE_URL = 'http://127.0.0.1:5090';
 const BASE_URL = (process.argv[2] || DEFAULT_BASE_URL).replace(/\/$/, '');
 const OUTPUT_FOLDER = process.argv[3] || join(tmpdir(), 'fitedu-responsive-check');
 const SCREENSHOT_FOLDER = join(OUTPUT_FOLDER, 'screenshots');

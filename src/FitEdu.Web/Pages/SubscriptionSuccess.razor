@@ -1,7 +1,7 @@
 @page "/subscription/success"
 @attribute [Authorize]
 
-<PageTitle>@SubscriptionSuccessRes.PageTitle</PageTitle>
+<AppPageTitle Text="@SubscriptionSuccessRes.PageTitle" />
 
 <div class="success-page page">
     @if (_loading)
@@ -13,23 +13,23 @@
         <section class="success-card card-surface" aria-labelledby="success-heading">
             <div class="success-icon" aria-hidden="true"><span class="bi bi-trophy-fill"></span></div>
             <span class="eyebrow">@SubscriptionSuccessRes.Eyebrow</span>
-            <h1 id="success-heading">@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, _status.PlanName)</h1>
+            <h1 id="success-heading">@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, TierLabels.Name(_status.Tier))</h1>
             <p class="success-lead">@SubscriptionSuccessRes.SubscriptionActive</p>
 
             <dl class="plan-details">
                 <div>
                     <dt>@SubscriptionSuccessRes.LabelPlan</dt>
-                    <dd>@_status.PlanName</dd>
+                    <dd>@TierLabels.Name(_status.Tier)</dd>
                 </div>
                 <div>
                     <dt>@SubscriptionSuccessRes.LabelStarted</dt>
-                    <dd>@_status.StartedAt.ToLocalTime().ToString("d")</dd>
+                    <dd>@SiteClock.ToSiteTime(_status.StartedAt).ToString("d")</dd>
                 </div>
                 @if (_status.ExpiresAt.HasValue)
                 {
                     <div>
                         <dt>@SubscriptionSuccessRes.LabelRenews</dt>
-                        <dd>@_status.ExpiresAt.Value.ToLocalTime().ToString("d")</dd>
+                        <dd>@SiteClock.ToSiteTime(_status.ExpiresAt.Value).ToString("d")</dd>
                     </div>
                 }
             </dl>

@@ -2,6 +2,18 @@
 
 A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-check assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
 
+## Screenshots
+
+<p>
+  <img src="docs/assets/screenshots/home-guest-375.webp" width="250" alt="Guest Home page on a phone: the hero with the Start free and Browse exercises buttons above the bottom tab bar">
+  <img src="docs/assets/screenshots/course-detail-375.webp" width="250" alt="Course detail page on a phone: the Bodyweight Basics programme with its level, goal and schedule chips and a Continue training bar">
+  <img src="docs/assets/screenshots/workout-lesson-375.webp" width="250" alt="Workout lesson on a phone: The Push-Up, Done Right, with its exercise count, progress bar and coaching text">
+</p>
+
+<img src="docs/assets/screenshots/dashboard-1280.webp" alt="Student dashboard on a desktop: today's planned workout with a Continue workout button and four progress stat tiles">
+
+Phone shots are 375 px wide and the dashboard is 1280 px, all in English with the Development seed data (student Alice). They are the first-screen captures of the [responsive sweep](#responsive-sweep-local), converted to WebP with `tools/assets/convert-exercise-images.mjs --single <capture> <output.webp> <width> 0.8`.
+
 ---
 
 ## Quickstart
@@ -80,11 +92,11 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Video calls | Self-hosted WebRTC (P2P mesh, up to 6 participants) with SignalR signaling |
 | API docs | OpenAPI (`Microsoft.AspNetCore.OpenApi`) + Swagger UI — `/swagger` (Development only) |
 | PDF | QuestPDF 2026.8.0 (certificates: one landscape page in the brand palette with the dumbbell mark) |
-| Localization | English + Greek (`.resx`) |
+| Localization | English + Greek (`.resx`); the Greek culture uses a 24-hour clock (`21:00`), and the loopback API calls carry the page language as `Accept-Language` |
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | CI | GitHub Actions (`.github/workflows/tests.yml`) |
 | Logging | Custom daily file logger |
-| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates` (English) |
+| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek by the UI language of the request that sends the email |
 | Security | HSTS · `X-Content-Type-Options` · `X-Frame-Options` · `Referrer-Policy` · `Permissions-Policy` |
 | AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:1.7b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
 
@@ -103,7 +115,8 @@ FitEdu.sln
 ├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
 ├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
-└── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
+├── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
+└── tools/shared/                        Headless Chrome launcher both tool folders use (needs PLAYWRIGHT_CORE)
 ```
 
 > Adding a field to an entity touches several layers (entity → EF config → migration → DTO → mapping helper → controller → consumer → page → resx). Follow the checklist in [docs/ADDING-A-FIELD.md](docs/ADDING-A-FIELD.md) so no step is missed — a skipped step surfaces as a silently blank value, not an error.
@@ -137,7 +150,7 @@ npx playwright test
 
 ### Responsive sweep (local)
 
-[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, visible error messages, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. When the student is enrolled nowhere it first enrols them in a free programme, so the lesson page itself is checked. It needs no `npm install` (it borrows an existing `playwright-core` and the installed Chrome). With the app running, pass the seeded passwords in `FITEDU_STUDENT_PASSWORD` and `FITEDU_ADMIN_PASSWORD` and run `node tools/responsive-check/check-pages.mjs http://localhost:5090 <output-folder>` (keep the folder outside the repo); it writes `report.md`, `report.json` and two screenshots per visit, and exits non-zero on any defect. The 2026-10-13 sweep visited 65 role and page pairs at both sizes in both languages (260 visits) with no defects.
+[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, visible error messages, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. When the student is enrolled nowhere it first enrols them in a free programme, so the lesson page itself is checked. It needs no `npm install` (it borrows an existing `playwright-core`, named by the required `PLAYWRIGHT_CORE` variable, and the installed Chrome). With the app running, pass the seeded passwords in `FITEDU_STUDENT_PASSWORD` and `FITEDU_ADMIN_PASSWORD` and run `node tools/responsive-check/check-pages.mjs http://127.0.0.1:5090 <output-folder>` (keep the folder outside the repo); it writes `report.md`, `report.json` and two screenshots per visit, and exits non-zero on any defect. The 2026-10-13 sweep visited 65 role and page pairs at both sizes in both languages (260 visits) with no defects.
 
 ### Monitoring & diagnostics
 
@@ -209,28 +222,31 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | `POST` | `api/profile/avatar` | Upload avatar | Yes |
 | `GET` | `api/profile/avatar` | Get avatar | Yes |
 | `POST` | `api/profile/change-password` | Change password | Yes |
-| `GET` | `api/profile/training-stats` | Home dashboard stats: workouts completed, minutes trained, daily streak (UTC days), the programme to continue, goal and level | Yes |
+| `GET` | `api/profile/training-stats` | Home dashboard stats: workouts completed, minutes trained, daily streak (days of the members' time zone, `Site:TimeZone`), the programme to continue, goal and level | Yes |
 
 ### Courses — `api/courses`
 
+The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member. The catalogue keeps its filters and page number in the address (`/courses?category={id}&search=core&goal=FatLoss&level=Beginner&equipment=none&page=2`), so other pages can link to a filtered list and Back returns to it. The pages `/courses` and `/courses/{id}` are open to guests too: a guest sees no plan banner, paid programmes link to `/pricing`, and a programme page offers **Sign up free to start** (`/register?returnUrl=/courses/{id}`) and **Log in** (`/login?returnUrl=/courses/{id}`) in place of Join. Both bring them back to the programme: the sign-up page passes the return address on to its log-in links, and the log-in page to its sign-up link; an address that points to another site is dropped.
+
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week and a cover image URL | Yes |
-| `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | Yes |
+| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week, a cover image URL and, for a member, whether they joined (`isEnrolled`) and finished (`isCompleted`) it | No |
+| `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | No |
+| `GET` | `api/courses/enrolment-count` | How many programmes the member has joined, counted the same way as the plan limit (the catalogue's plan banner shows it) | Yes |
 | `POST` | `api/courses/{courseId}/enroll` | Enroll in a course | Yes |
 | `GET` | `api/courses/lessons/{lessonId}` | Lesson detail, including the prescribed exercises (sets, reps, rest, notes, photos) in lesson order | Yes |
 | `POST` | `api/courses/lessons/{lessonId}/complete` | Mark lesson complete | Yes |
-| `GET` | `api/courses/{courseId}/reviews` | Approved reviews, aggregate rating, and the caller's own review — see [Course Reviews](#course-reviews) | Yes |
+| `GET` | `api/courses/{courseId}/reviews` | Approved reviews and aggregate rating of a published course (none for an unpublished one), and the caller's own review (none for a guest) — see [Course Reviews](#course-reviews) | No |
 | `POST` | `api/courses/{courseId}/reviews` | Create/update own review (enrolled only; edits reset it to Pending for moderation) | Yes |
 
 ### Exercises — `api/exercises`
 
-The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position). The public pages `/exercises` (library grid with muscle, level, type and equipment filters, search and pages) and `/exercises/{slug}` (photos, muscles, steps and the workouts that use it) read these endpoints.
+The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position). The public pages `/exercises` (library grid with muscle, level, type and equipment filters, search and pages, all kept in the address such as `/exercises?muscle=chest&page=2`, so a link or Back shows the same list) and `/exercises/{slug}` (photos, muscles, steps and the workouts that use it) read these endpoints.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
 | `GET` | `api/exercises` | Paged list ordered by name (`?page=1&pageSize=24&lang=en`; optional `search`, `muscle`, `equipment`, `level`, `category` filters) | No |
-| `GET` | `api/exercises/facets` | Every muscle, equipment, level and category value with its exercise count (drives the filter chips) | No |
+| `GET` | `api/exercises/facets` | Every muscle, equipment, level and category value with its exercise count (drives the filter chips; cached for 60 s) | No |
 | `GET` | `api/exercises/{slug}` | Exercise detail with muscles, force, mechanic and step-by-step instructions (`?lang=en`) | No |
 | `GET` | `api/exercises/{slug}/lessons` | Lessons of published courses that prescribe the exercise (`?lang=en`) | No |
 
@@ -246,14 +262,14 @@ The public exercise library (published exercises only). Photos are served from `
 |--------|-------|-------------|------|
 | `GET` | `api/assessments` | List published assessments (paged; optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories)) | Yes |
 | `GET` | `api/assessments/{id}` | Assessment detail | Yes |
-| `POST` | `api/assessments/{id}/submit` | Submit answers (`AnswersJson` max 50 000 chars) | Yes |
+| `POST` | `api/assessments/{id}/submit` | Submit answers (`AnswersJson` max 50 000 chars; a multi-select answer is a JSON array of the ticked options, since options may contain commas) | Yes |
 | `GET` | `api/assessments/mine` | Current user's submissions | Yes |
 
 ### Categories — `api/categories`
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips) | Yes |
+| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips). Public for both scopes because the guest course catalogue shows the chips; for assessments a guest learns only category names and counts, while the assessments stay members-only | No |
 
 ### Certificates — `api/certificates`
 
@@ -261,7 +277,7 @@ The public exercise library (published exercises only). Photos are served from `
 |--------|-------|-------------|------|
 | `GET` | `api/certificates/my` | List current user's certificates | Yes |
 | `POST` | `api/certificates/issue/{courseId}` | Issue certificate for completed course (certificate-enabled plan required) | Yes |
-| `GET` | `api/certificates/{certificateId}/download` | Download certificate PDF, printed in English or Greek to match the member's language when it is first rendered | Yes |
+| `GET` | `api/certificates/{certificateId}/download` | Download certificate PDF in the member's language (English or Greek); each language is rendered on its own first download and kept | Yes |
 | `GET` | `api/certificates/verify/{verificationId}` | Public certificate verification | No |
 
 ### Learning Paths — `api/paths`
@@ -275,11 +291,11 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 
 ### Landing — `api/landing`
 
-Numbers and showcase for the guest home page, which cannot read the member-only course catalog.
+Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-checks take the fourth place).
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/landing` | Published course and lesson counts, exercise and member counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`) | No |
+| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-check (assessment) counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
 
 ### Scheduled Sessions — `api/sessions`
 
@@ -352,7 +368,7 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/search` | Site-wide search over published courses, assessments, blog articles and exercises (`?q=&limit=8&lang=en`; empty `q` returns no results; exercises are matched by name in the title search, which gives every source a hit before any source gets a second) | No |
+| `GET` | `api/search` | Site-wide search over published courses, assessments, blog articles and exercises (`?q=&limit=8&lang=en`; empty `q` returns no results; exercises are matched by name, in the title search, which gives every source a hit before any source gets a second, and beside the AI index's meaning-based hits, which hold no exercises; those hits show a snippet of the matching text in the search language) | No |
 
 ### Site Settings — `api/site`
 
@@ -414,11 +430,10 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `GET` | `api/admin/lessons/module/{moduleId}` | List lessons for a module | Admin |
 | `GET` | `api/admin/lessons/{id}` | Lesson detail, including its exercise rows in order | Admin |
 | `POST` | `api/admin/lessons` | Create lesson, optionally with its exercises (slug, sets, reps, rest, notes EN/EL) | Admin |
-| `PUT` | `api/admin/lessons/{id}` | Update lesson; an `exercises` list replaces the lesson's exercises wholesale in list order (omit it to keep them; an unknown slug returns 400) | Admin |
+| `PUT` | `api/admin/lessons/{id}` | Update lesson; an `exercises` list replaces the lesson's exercises wholesale in list order (omit it to keep them; an unknown or unpublished slug returns 400) | Admin |
 | `DELETE` | `api/admin/lessons/{id}` | Delete lesson | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/pdf` | Upload PDF | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/video` | Upload video | Admin |
-| `POST` | `api/admin/lessons/{id}/publish` | Publish lesson | Admin |
 
 ### Admin — Assessments — `api/admin/assessments`
 
@@ -552,7 +567,8 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 | `SelfBaseUrl` | `.env` | The app's own real bound base address (used for its self-calling loopback API consumers). Defaults to `https://localhost:7090` in Development only — **startup throws** outside Development if unset or still pointing at localhost. |
 | `Email__Smtp__Host` (+ `Port`/`Username`/`Password`/`FromAddress`) | `.env` | SMTP relay for real email via `SmtpEmailService` (MailKit). Set it to send real mail; leave unset in Development to use the logging stub. **Required outside Development** — startup throws without it. |
 | `Assistant__Enabled` / `Assistant__BaseUrl` | `.env` or `appsettings.json` | Toggle the local AI assistant (default on) and point it at a non-default Ollama host. |
-| `Sitemap:BaseUrl` | `appsettings.json` | Public site address (default `https://fitedu.com`). `/sitemap.xml` lists the public pages (home, exercises, paths, blog, pricing, privacy, terms), every published blog article, learning path and exercise under it, and `SeoHead` builds each page's canonical, Open Graph and Twitter URLs from it. **Required** — startup throws without it. |
+| `Site:TimeZone` | `appsettings.json` | The members' time zone as an IANA id (default `Europe/Athens`). The dashboard date, the training-streak day boundary and every date and time the pages show use it (`SiteClock`), never UTC or the server's own zone; admins type class start times in it too. **Startup throws** on an unknown id. |
+| `Sitemap:BaseUrl` | `appsettings.json` | Public site address (default `https://fitedu.com`). `/sitemap.xml` lists the public pages (home, programmes, exercises, paths, blog, pricing, privacy, terms), every published blog article, programme, learning path and exercise under it (a missing exercise, article or programme page answers 404 with its friendly not-found view, so crawlers drop dead addresses; when the API could not be asked it answers 503 instead, so an outage never makes a real page look gone), and `SeoHead` builds each page's canonical, Open Graph and Twitter URLs from it. **Required** — startup throws without it. |
 
 `appsettings.Development.json`: `SeedData:Enabled`, `SeedData:BulkStudentCount`, `SeedData:JsonPaths:*`, `Payment:MockEnabled`, dev connection string.
 
@@ -580,6 +596,8 @@ The email transport is selected at startup from configuration:
 - **No SMTP host, Development** → `StubEmailService` logs all emails to file instead of sending them — find links in `Logs/log-YYYY-MM-DD.txt` (search `STUB EMAIL`).
 - **No SMTP host, Production** → the application **throws at startup**, so emails are never silently swallowed.
 
+The confirmation and password-reset emails come in English or Greek (`EmailTemplates`), chosen at send time by the UI language of the request. The pages' loopback API calls send the member's language as `Accept-Language`, so a member on the Greek site gets the Greek email.
+
 Dev shortcuts for bypassing email confirmation:
 
 | Endpoint | Purpose |
@@ -598,7 +616,7 @@ The app ships 873 exercises from [Free Exercise DB](https://github.com/yuhonas/f
 - **Data:** each exercise has a slug, name, category, level, force, mechanic, equipment, primary and secondary muscles and numbered steps, in English and Greek. The English text is the upstream `exercises.json`, trimmed as described in [its README](src/FitEdu.Shared/JSON/Exercises/README.md); `exercises.el.json` adds the Greek name and steps. The full slug list is [docs/assets/exercise-slugs.txt](docs/assets/exercise-slugs.txt).
 - **Photos:** a start and an end photo per exercise, converted to 480 px WebP by [`tools/assets/`](tools/assets/README.md) and served from `/images/exercises/{slug}/0.webp` and `1.webp`. The UI loops between the two to show the movement; when the visitor asks for reduced motion it shows both photos side by side instead.
 - **Pages:** `/exercises` is the public library (search, muscle, level, type and equipment filters, pages); `/exercises/{slug}` shows the photos, muscles, steps and the workouts that use the exercise.
-- **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400) and fails `SeedContentIntegrityTests`.
+- **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400, which also refuses an unpublished exercise, since members never see one) and fails `SeedContentIntegrityTests`.
 
 ## Assets & Licences
 
@@ -667,7 +685,7 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 - **What triggers one:** a new chat message, a subscription activating or nearing expiry, an approaching scheduled-session reminder, a certificate being issued, and a course review being approved.
 - **Inbox:** a paged, sortable history (`api/notifications`) with an unread count for the badge, plus mark-one-read and mark-all-read. New notifications arrive live without a refresh, falling back to the stored history on reconnect.
-- **Bilingual:** titles and bodies are resource-keyed (EN/EL) and formatted with per-notification arguments, and each carries a deep link to the relevant page.
+- **Bilingual:** titles and bodies are resource-keyed (EN/EL) and formatted with per-notification arguments, and each carries a deep link to the relevant page. Certificate, review and session-reminder notifications store both the English and the Greek title, so each language shows its own (older rows hold only the English title, which both languages then show).
 
 ---
 
@@ -742,7 +760,9 @@ You can install or start Ollama **after** the app is already running — it keep
 | JWT tokens | HS256, 15-min expiry, security-stamp validated on every request, key ≥ 32 bytes enforced at startup |
 | Refresh tokens | SHA-256-hashed, single-use rotation; revoked token chain tracked |
 | XSS prevention | All rich-text inputs sanitised with Ganss.Xss (`IHtmlSanitizer`) |
-| Rate limiting | `"auth"` policy (global) on register / login / confirm-email / forgot-password / reset-password; `"assistant"` and `"sensitive"` policies (per-user) on the AI chat endpoint and on state-changing account actions (password change, avatar upload, checkout, assessment submission, account delete/export) |
+| Rate limiting | `"auth"` policy (global) on register / login / confirm-email / forgot-password / reset-password; `"assistant"` and `"sensitive"` policies (per-user) on the AI chat endpoint and on state-changing account actions (password change, avatar upload, checkout, assessment submission, account delete/export); `"public"` policy (per caller IP, 120 requests a minute) on the anonymous reads (exercises, landing, the course list/detail/reviews, categories, paths, blog, testimonials, search). The app's own loopback calls are exempt from `"public"`, because every guest's Blazor page reaches the API through them; behind a reverse proxy set `ForwardedHeaders:KnownProxies` so each visitor counts as their own address |
+| Anonymous reads | Open without signing in: `GET api/exercises/*`, `api/landing`, `api/courses`, `api/courses/{id}`, `api/courses/{id}/reviews`, `api/categories`, `api/paths/*`, `api/blog/*`, `api/testimonials`, `api/search`, `api/subscriptions/plans` and `api/certificates/verify/{id}`. A guest gets no enrolment, progress or own review, and never lesson content; an unpublished programme shows no reviews or rating. The two that every guest page asks for, `api/landing` (one entry per language) and `api/exercises/facets`, are served from a 60-second in-memory cache, so a burst of visitors costs one set of queries a minute |
+| Login return address | `/login?returnUrl=` only follows a path on this site (starts with `/`, not `//` or `/\`); anything else goes to the home page, so the link cannot redirect to another site |
 | HSTS | Enabled in Production; skipped in Development |
 | Security headers | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (`camera`/`microphone`/`display-capture` allowed same-origin for video calls; `geolocation` denied) |
 | File uploads | Content-type allowlist enforced per upload type (image / PDF / video); extension allowlist on media serve |

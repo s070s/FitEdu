@@ -290,15 +290,20 @@
     font-size: 0.875rem;
 }
 
-/* The link is stretched over the whole step card (shared .card-surface rules). */
+/* The link is stretched over the whole step card (shared .card-surface rules). In the narrow
+   columns of the 992-1199 px timeline the Greek label wraps; the arrow then follows the last word. */
 .step-link.stretched-link {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
     min-height: var(--tap-min);
     margin-top: auto;
     color: var(--text-strong-accent);
     font-weight: 700;
+}
+
+/* An icon may start a new line on its own; nowrap keeps it with the no-break space before it. */
+.step-link__arrow {
+    white-space: nowrap;
 }
 
 @media (min-width: 992px) {

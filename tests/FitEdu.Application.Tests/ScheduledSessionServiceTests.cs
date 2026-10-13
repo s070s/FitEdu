@@ -254,4 +254,23 @@ public class ScheduledSessionServiceTests
 
         (await NewService(db).CancelAsync(Guid.NewGuid())).ShouldBeFalse();
     }
+
+    [Fact]
+    public async Task GetAllForAdminAsync_CarriesTheGreekCourseTitle_ForTheGreekAdminList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Strength 101", TitleEl = "Δύναμη 101" };
+        var session = NewSession();
+        session.CourseId = course.Id;
+        db.Users.Add(AppUser(HostId));
+        db.Courses.Add(course);
+        db.ScheduledSessions.Add(session);
+        await db.SaveChangesAsync();
+
+        var page = await NewService(db).GetAllForAdminAsync(1, 10, "startsat", "asc");
+
+        var row = page.Items.ShouldHaveSingleItem();
+        row.CourseTitle.ShouldBe("Strength 101");
+        row.CourseTitleEl.ShouldBe("Δύναμη 101");
+    }
 }

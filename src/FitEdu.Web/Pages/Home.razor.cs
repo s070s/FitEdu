@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Layout;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -77,10 +78,10 @@ public partial class Home : IDisposable
     private string HeroImageUrl => _landing?.HasCustomHeroImage == true ? CustomHeroImageUrl : DefaultHeroImageUrl;
 
     /// <summary>
-    /// Today's date for the dashboard eyebrow ("Tuesday 13 October"). It is the UTC day, the same day
-    /// the training streak counts, so the two never disagree around midnight.
+    /// Today's date for the dashboard eyebrow ("Tuesday 13 October") in the members' time zone: the
+    /// same day the training streak counts, so the two never disagree around midnight.
     /// </summary>
-    private string TodayLabel => TimeProvider.GetUtcNow().ToString(TodayFormat, CultureInfo.CurrentCulture);
+    private string TodayLabel => SiteClock.Today(TimeProvider).ToString(TodayFormat, CultureInfo.CurrentCulture);
 
     private bool ShowMemberCount => _landing?.MemberCount >= MinimumMemberCountShown;
 
@@ -277,15 +278,17 @@ public partial class Home : IDisposable
             todayPlan,
             enrolled.Count,
             enrolled.Take(EnrolledCourseCount).ToList(),
-            Recommend(catalog, stats));
+            Recommend(catalog, stats),
+            FinishedEveryProgramme: enrolled.Count > 0 && enrolled.All(course => course.IsCompleted));
     }
 
     /// <summary>
-    /// Why there is no next workout: a member who joined programmes but has none in progress has
-    /// finished them all, which deserves different words than never having joined one.
+    /// Why there is no next workout: a member who finished every programme they joined deserves
+    /// different words. Anything else (never joined one, or the next workout could not be loaded)
+    /// gets the plain invitation to pick a programme.
     /// </summary>
     private static string TodayPlanEmptyText(DashboardData? dashboard) =>
-        dashboard?.EnrolledCount > 0 ? HomeRes.TodayPlanAllDone : HomeRes.TodayPlanEmpty;
+        dashboard?.FinishedEveryProgramme == true ? HomeRes.TodayPlanAllDone : HomeRes.TodayPlanEmpty;
 
     /// <summary>The first lesson not yet completed in the programme the member is following.</summary>
     private async Task<TodayPlan?> FindTodayPlanAsync(Guid? courseId)
@@ -364,5 +367,6 @@ public partial class Home : IDisposable
         TodayPlan? Today,
         int EnrolledCount,
         List<CourseListItemDto> EnrolledCourses,
-        List<CourseListItemDto> RecommendedCourses);
+        List<CourseListItemDto> RecommendedCourses,
+        bool FinishedEveryProgramme);
 }

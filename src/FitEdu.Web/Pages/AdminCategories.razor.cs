@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Application.DTOs;
@@ -150,18 +149,8 @@ public partial class AdminCategories
                 return string.Empty;
 
             return ResourceFormat.Fill(CategoryRes.DeleteConfirmFormat,
-                DisplayName(_pendingDelete), _pendingDelete.CourseCount, _pendingDelete.AssessmentCount);
+                AdminText.Pick(_pendingDelete.NameEn, _pendingDelete.NameEl), _pendingDelete.CourseCount, _pendingDelete.AssessmentCount);
         }
-    }
-
-    /// <summary>The Greek name under the Greek UI when one is set, otherwise the English name.</summary>
-    private static string DisplayName(AdminCategoryDto category)
-    {
-        var isGreek = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
-        if (isGreek && !string.IsNullOrWhiteSpace(category.NameEl))
-            return category.NameEl;
-
-        return category.NameEn;
     }
 
     private void CancelDelete() => _pendingDelete = null;

@@ -1,7 +1,8 @@
 @page "/admin/assessments/{AssessmentId:guid}/submissions"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Application.Common
 
-<PageTitle>@AdminRes.AssessmentSubmissions</PageTitle>
+<AppPageTitle Text="@AdminRes.AssessmentSubmissions" />
 
 <div class="mb-3">
     <button type="button" class="btn-cta btn-cta--ghost" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToAssessments</button>
@@ -17,7 +18,7 @@
 }
 else if (_pagedResult.TotalCount == 0)
 {
-    <div class="alert alert-info">@AdminRes.NoSubmissions</div>
+    <EmptyState Icon="@AppIcons.Assessment" Title="@AdminRes.NoSubmissions" />
 }
 else
 {
@@ -61,7 +62,7 @@ else
                                     @foreach (var kv in parsed)
                                     {
                                         <dt class="col-sm-4">@ResolveLabel(kv.Key)</dt>
-                                        <dd class="col-sm-8">@(string.IsNullOrEmpty(kv.Value) ? "—" : kv.Value)</dd>
+                                        <dd class="col-sm-8">@(string.IsNullOrEmpty(kv.Value) ? "—" : MultiSelectAnswer.ToDisplayText(kv.Value))</dd>
                                     }
                                 </dl>
                             }

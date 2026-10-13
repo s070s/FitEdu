@@ -606,6 +606,18 @@
     overflow-wrap: break-word;
 }
 
+/* A guest's two links each take a full row of the dock: the sign-up text is too long to share one. */
+.course-cta__signup,
+.course-cta__login {
+    flex-basis: 100%;
+    line-height: 1.25;
+}
+
+/* Guests get no assistant launcher, so their dock needs no room for it on the right. */
+.course-cta--guest {
+    padding-right: var(--space-3);
+}
+
 /* Small phones: the plan notice takes its own line above the button. */
 @media (max-width: 419.98px) {
     .enroll-upgrade-notice {

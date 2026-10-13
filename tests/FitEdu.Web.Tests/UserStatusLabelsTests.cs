@@ -1,6 +1,6 @@
-using System.Globalization;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
@@ -33,7 +33,7 @@ public class UserStatusLabelsTests
     [InlineData(UserStatus.Unknown, "Not set")]
     public void Label_English_ReturnsTrainingLevelName(UserStatus status, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         UserStatusLabels.Label(status).ShouldBe(expected);
     }
@@ -46,7 +46,7 @@ public class UserStatusLabelsTests
     [InlineData(UserStatus.Unknown, "Δεν ορίστηκε")]
     public void Label_Greek_ReturnsTrainingLevelName(UserStatus status, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         UserStatusLabels.Label(status).ShouldBe(expected);
     }
@@ -58,7 +58,7 @@ public class UserStatusLabelsTests
     public void Label_StoredName_ReturnsTheLocalizedLabelOrTheNameItself(string statusName, string expected)
     {
         // The admin user list receives the level as its enum name (AdminUserDto.Status).
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         UserStatusLabels.Label(statusName).ShouldBe(expected);
     }
@@ -68,7 +68,7 @@ public class UserStatusLabelsTests
     [InlineData("el", "Επίπεδο προπόνησης")]
     public void StatusFieldLabel_IsTrainingLevel(string culture, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         GlobalRes.Label_Info_Status.ShouldBe(expected);
     }

@@ -215,4 +215,10 @@
   <data name="Language" xml:space="preserve">
     <value>Γλώσσα</value>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Ειδοποιήσεις</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
 </root>

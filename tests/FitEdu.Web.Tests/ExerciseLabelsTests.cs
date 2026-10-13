@@ -52,7 +52,7 @@ public class ExerciseLabelsTests
     [InlineData("el", "Κάτω πλάτη")]
     public void Muscle_MultiWordValue_ReturnsTheLabelOfTheCurrentLanguage(string culture, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         ExerciseLabels.Muscle("lower back").ShouldBe(expected);
     }
@@ -62,7 +62,7 @@ public class ExerciseLabelsTests
     [InlineData("el", "Μπάρα E-Z")]
     public void Equipment_HyphenatedValue_ReturnsTheLabelOfTheCurrentLanguage(string culture, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         ExerciseLabels.Equipment("e-z curl bar").ShouldBe(expected);
     }
@@ -70,7 +70,7 @@ public class ExerciseLabelsTests
     [Fact]
     public void Category_GreekCulture_ReturnsGreekLabel()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         ExerciseLabels.Category("olympic weightlifting").ShouldBe("Ολυμπιακή άρση βαρών");
     }
@@ -78,7 +78,7 @@ public class ExerciseLabelsTests
     [Fact]
     public void Label_UnknownValue_FallsBackToTheRawValue()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         ExerciseLabels.Equipment("suspension trainer").ShouldBe("suspension trainer");
     }
@@ -90,6 +90,25 @@ public class ExerciseLabelsTests
     public void Label_MissingValue_ReturnsEmptyText(string? value)
     {
         ExerciseLabels.Force(value).ShouldBe(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("20 s", true)]
+    [InlineData("30-45 s", true)]
+    [InlineData("30–45 s", true)]
+    [InlineData("45 sec", true)]
+    [InlineData("1 min + 1 min", true)]
+    [InlineData("30–35 min @ RPE 5–6", true)]
+    [InlineData("8-12", false)]
+    [InlineData("8–12", false)]
+    [InlineData("10 each side", false)]
+    [InlineData("15 m", false)]
+    [InlineData("5 sets", false)]
+    [InlineData(null, false)]
+    [InlineData("  ", false)]
+    public void IsDuration_TellsTimedValuesFromRepetitionCounts(string? reps, bool expected)
+    {
+        ExerciseLabels.IsDuration(reps).ShouldBe(expected);
     }
 
     private static List<ExerciseSeedDto> LoadExerciseLibrary()

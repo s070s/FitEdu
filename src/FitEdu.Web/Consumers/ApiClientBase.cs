@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FitEdu.Web.Services;
@@ -58,7 +59,8 @@ public abstract class ApiClientBase
         Func<HttpResponseMessage, CancellationToken, Task<T?>> read,
         bool retryable,
         T? fallback,
-        CancellationToken ct)
+        CancellationToken ct,
+        bool readNotFound = false)
     {
         for (var attempt = 1; ; attempt++)
         {
@@ -66,7 +68,9 @@ public abstract class ApiClientBase
             {
                 await EnsureAuthorizationAsync();
                 using var response = await send(ct);
-                return response.IsSuccessStatusCode ? await read(response, ct) : fallback;
+                var isReadable = response.IsSuccessStatusCode
+                    || (readNotFound && response.StatusCode == HttpStatusCode.NotFound);
+                return isReadable ? await read(response, ct) : fallback;
             }
             catch (HttpRequestException) when (retryable && attempt < MaxGetAttempts)
             {
@@ -102,6 +106,26 @@ public abstract class ApiClientBase
     protected Task<T?> GetAsync<T>(string url, CancellationToken ct = default) =>
         ExecuteAsync(c => Http.GetAsync(url, c),
             (r, c) => r.Content.ReadFromJsonAsync<T>(cancellationToken: c), retryable: true, fallback: default, ct);
+
+    /// <summary>
+    /// GET for one item that tells a 404 (<see cref="ApiLookup.NotFound{T}"/>) apart from a failed
+    /// request (<see cref="ApiLookup.Failure{T}"/>), for callers that must not treat an outage as "missing".
+    /// </summary>
+    protected async Task<ApiLookup<T>> GetLookupAsync<T>(string url, CancellationToken ct = default) where T : class
+    {
+        var lookup = await ExecuteAsync(c => Http.GetAsync(url, c), ReadLookupAsync<T>,
+            retryable: true, fallback: ApiLookup.Failure<T>(), ct, readNotFound: true);
+        return lookup ?? ApiLookup.Failure<T>();
+    }
+
+    private static async Task<ApiLookup<T>?> ReadLookupAsync<T>(HttpResponseMessage response, CancellationToken ct) where T : class
+    {
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return ApiLookup.NotFound<T>();
+
+        var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: ct);
+        return item is null ? ApiLookup.Failure<T>() : ApiLookup.Found(item);
+    }
 
     protected Task<byte[]?> GetBytesAsync(string url, CancellationToken ct = default) =>
         ExecuteAsync<byte[]?>(c => Http.GetAsync(url, c),

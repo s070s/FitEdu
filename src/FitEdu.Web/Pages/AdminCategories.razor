@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "Admin")]
 @using FitEdu.Web.Shared.Components.Data
 
-<PageTitle>@CategoryRes.CategoriesPageTitle</PageTitle>
+<AppPageTitle Text="@CategoryRes.CategoriesPageTitle" />
 
 <div class="admin-container">
     <div class="section-head">
@@ -51,7 +51,7 @@
                     <td data-label="@CategoryRes.ColNameEl">@(category.NameEl ?? "—")</td>
                     <td data-label="@CategoryRes.ColCourseCount">@category.CourseCount</td>
                     <td data-label="@CategoryRes.ColAssessmentCount">@category.AssessmentCount</td>
-                    <td data-label="@CategoryRes.ColCreated">@category.CreatedAt.ToLocalTime().ToString("d")</td>
+                    <td data-label="@CategoryRes.ColCreated">@SiteClock.ToSiteTime(category.CreatedAt).ToString("d")</td>
                     <td class="table-actions" data-label="@CategoryRes.ColActions">
                         <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditModal(category)">@CategoryRes.Rename</button>
                         <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(category)">@AdminRes.Delete</button>
@@ -92,7 +92,7 @@
         </div>
     </Body>
     <Footer>
-        <button class="btn btn-secondary" @onclick="CloseFormModal" disabled="@_isSaving">@AdminRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="CloseFormModal" disabled="@_isSaving">@AdminRes.Cancel</button>
         <button class="btn btn-primary" @onclick="SubmitForm" disabled="@(_isSaving || string.IsNullOrWhiteSpace(_formNameEn))">
             @if (_isSaving)
             {

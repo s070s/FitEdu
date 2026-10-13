@@ -30,7 +30,7 @@ public class SiteSearchService(
             {
                 var hits = await retrieval.SearchGroupedAsync(query, language, limit, cancellationToken);
                 if (hits.Count > 0)
-                    return new SiteSearchResultDto(ToHitDtos(hits), SemanticSearchUsed: true);
+                    return new SiteSearchResultDto(await WithExerciseHitsAsync(ToHitDtos(hits), query, language, limit, cancellationToken), SemanticSearchUsed: true);
             }
             catch (Exception ex)
             {
@@ -42,7 +42,32 @@ public class SiteSearchService(
     }
 
     private static List<SiteSearchHitDto> ToHitDtos(IReadOnlyList<AssistantSearchHit> hits) =>
-        hits.Select(h => new SiteSearchHitDto(h.SourceType.ToString(), h.Title, Truncate(h.Snippet), h.Url)).ToList();
+        hits.Select(h => new SiteSearchHitDto(h.SourceType.ToString(), h.Title, Truncate(WithoutHeader(h.Snippet)), h.Url)).ToList();
+
+    /// <summary>
+    /// The semantic index holds no exercises (AssistantSourceType has no Exercise), so their name
+    /// matches are added to the semantic hits: shared out fairly, without a repeated URL, within the limit.
+    /// </summary>
+    private async Task<List<SiteSearchHitDto>> WithExerciseHitsAsync(
+        List<SiteSearchHitDto> semanticHits, string query, string language, int limit, CancellationToken cancellationToken)
+    {
+        var semanticUrls = semanticHits.Select(hit => hit.Url).ToHashSet();
+        var exerciseHits = (await ExerciseTitleSearchAsync(query, language, limit, cancellationToken))
+            .Where(hit => !semanticUrls.Contains(hit.Url))
+            .ToList();
+
+        return TakeFairly([semanticHits, exerciseHits], limit);
+    }
+
+    /// <summary>
+    /// A chunk starts with its metadata header line ("Course: … — Module: …", see AssistantChunker.Chunk);
+    /// the hit already shows the title, so the snippet starts at the content.
+    /// </summary>
+    private static string WithoutHeader(string chunkText)
+    {
+        var headerEnd = chunkText.IndexOf(HeaderLineEnd);
+        return headerEnd < 0 ? chunkText : chunkText[(headerEnd + 1)..];
+    }
 
     private async Task<List<SiteSearchHitDto>> TitleSearchAsync(
         string query, string language, int limit, CancellationToken cancellationToken)
@@ -73,15 +98,23 @@ public class SiteSearchService(
             .Select(a => new SiteSearchHitDto("BlogArticle", isEl ? (a.TitleEl ?? a.TitleEn) : a.TitleEn, null, $"blog/{a.Slug}"))
             .ToListAsync(cancellationToken);
 
-        var exercises = await db.Exercises.AsNoTracking()
+        var exercises = await ExerciseTitleSearchAsync(query, language, limit, cancellationToken);
+
+        // Each source may fill the whole limit on its own; TakeFairly then shares the places out.
+        return TakeFairly([courses, assessments, articles, exercises], limit);
+    }
+
+    /// <summary>Published exercises whose English or Greek name contains the query, linking to their page.</summary>
+    private async Task<List<SiteSearchHitDto>> ExerciseTitleSearchAsync(
+        string query, string language, int limit, CancellationToken cancellationToken)
+    {
+        var isEl = Localized.IsEl(language);
+        return await db.Exercises.AsNoTracking()
             .Where(e => e.IsPublished && (e.NameEn.Contains(query) || (e.NameEl != null && e.NameEl.Contains(query))))
             .OrderBy(e => e.NameEn)
             .Take(limit)
             .Select(e => new SiteSearchHitDto("Exercise", isEl ? (e.NameEl ?? e.NameEn) : e.NameEn, null, $"exercises/{e.Slug}"))
             .ToListAsync(cancellationToken);
-
-        // Each source may fill the whole limit on its own; TakeFairly then shares the places out.
-        return TakeFairly([courses, assessments, articles, exercises], limit);
     }
 
     /// <summary>
@@ -100,6 +133,7 @@ public class SiteSearchService(
             .ToList();
 
     private const int MaxSnippetLength = 160;
+    private const char HeaderLineEnd = '\n';
 
     private static string Truncate(string text) =>
         text.Length <= MaxSnippetLength ? text : text[..MaxSnippetLength] + "…";

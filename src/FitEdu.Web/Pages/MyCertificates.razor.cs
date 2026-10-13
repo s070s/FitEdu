@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using System.Globalization;
 
@@ -9,7 +10,7 @@ namespace FitEdu.Web.Pages;
 public partial class MyCertificates
 {
     /// <summary>The plan that includes certificates (SubscriptionPlanSeeder).</summary>
-    private const string CertificatePlanName = "Pro";
+    private const SubscriptionTier CertificateTier = SubscriptionTier.Pro;
 
     [Inject] private ICertificateConsumer CertificateConsumer { get; set; } = default!;
     [Inject] private ISubscriptionConsumer SubscriptionConsumer { get; set; } = default!;
@@ -23,6 +24,18 @@ public partial class MyCertificates
     private bool _certificateAccess = true;
 
     private bool HasNoCertificates => _certificates is null || _certificates.Count == 0;
+
+    // Without Pro, a member who already earned certificates is told they keep them, not "certificates come with Pro".
+    private string LeadText
+    {
+        get
+        {
+            if (_certificateAccess)
+                return CertificateRes.Subtitle;
+
+            return HasNoCertificates ? CertificateRes.SubtitleNoAccess : CertificateRes.SubtitleKeptCertificates;
+        }
+    }
 
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";

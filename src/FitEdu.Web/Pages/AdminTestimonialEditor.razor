@@ -2,7 +2,7 @@
 @page "/admin/testimonials/{Id:guid}"
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)</PageTitle>
+<AppPageTitle Text="@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)" />
 
 <div class="admin-editor admin-editor--narrow">
     <header class="section-head">
@@ -91,14 +91,15 @@
                     </div>
                 }
 
-                <InputFile id="t-avatar" OnChange="OnAvatarFileSelected" accept="image/*" class="form-control avatar-file-input" />
+                <FilePicker @ref="_avatarPicker" Id="t-avatar" OnChange="OnAvatarFileSelected" Accept="image/*" />
                 <div class="form-text">@AdminRes.AvatarHint</div>
             </div>
         }
         else
         {
             <div class="col-12">
-                <div class="alert alert-info py-2">
+                <div class="alert alert-secondary py-2">
+                    <span class="bi bi-info-circle" aria-hidden="true"></span>
                     @AdminRes.AvatarSaveFirstHint
                 </div>
             </div>

@@ -99,7 +99,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>My Certificates - FitEdu</value>
+		<value>My Certificates</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
 		<value>My Certificates</value>
@@ -127,6 +127,10 @@
 	</data>
 	<data name="DownloadPdf" xml:space="preserve">
 		<value>Download PDF</value>
+	</data>
+	<data name="PdfFileNamePrefix" xml:space="preserve">
+		<value>Certificate</value>
+		<comment>Start of the downloaded PDF's file name: "Certificate - {name} - {programme}.pdf".</comment>
 	</data>
 	<data name="Verify" xml:space="preserve">
 		<value>Verify</value>
@@ -202,5 +206,8 @@
 	</data>
 	<data name="PdfVerificationIdFormat" xml:space="preserve">
 		<value>Verification ID: {0}</value>
+	</data>
+	<data name="SubtitleKeptCertificates" xml:space="preserve">
+		<value>Your certificates stay yours. Upgrade to Pro to earn new ones.</value>
 	</data>
 </root>

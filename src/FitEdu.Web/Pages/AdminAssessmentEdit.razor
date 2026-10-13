@@ -4,7 +4,7 @@
 @using FitEdu.Web.Extensions
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(IsNew ? AdminRes.CreateAssessment : AdminRes.EditAssessment)</PageTitle>
+<AppPageTitle Text="@(IsNew ? AdminRes.CreateAssessment : AdminRes.EditAssessment)" />
 
 <div class="admin-editor">
     <header class="section-head">
@@ -55,7 +55,7 @@
                         <option value="none">@CategoryRes.NoneCategory</option>
                         @foreach (var cat in categories)
                         {
-                            <option value="@cat.Id">@cat.NameEn</option>
+                            <option value="@cat.Id">@AdminText.Pick(cat.NameEn, cat.NameEl)</option>
                         }
                         <option value="new">@CategoryRes.NewCategoryOption</option>
                     </select>

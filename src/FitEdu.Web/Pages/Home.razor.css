@@ -112,7 +112,13 @@
     color: var(--text-strong-normal);
     font-size: var(--fs-1);
     font-weight: 800;
+    text-wrap: balance;
     animation: home-rise 0.5s var(--ease-out) 0.05s both;
+}
+
+/* Greek words run longer: a wider measure keeps them from breaking one word per line. */
+.hero-title:lang(el) {
+    max-width: 19ch;
 }
 
 .hero-title .text-volt {
@@ -161,7 +167,8 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-/* The member tile only shows past a threshold; an odd last tile takes the whole row. */
+/* The fourth tile is the members past a threshold, otherwise the self-checks; when there are
+   none of either, the odd last tile takes the whole row. */
 .stats-strip ::deep .stat-tile:last-child:nth-child(odd) {
     grid-column: 1 / -1;
 }
@@ -591,6 +598,24 @@
     /* Dashboard course rows: even columns, so a short row never leaves an empty track. */
     .dashboard-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* A lone programme takes the whole row as one wide card, cover beside the text, so the row
+       is never mostly empty. */
+    .dashboard-grid ::deep .course-card:only-child {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    }
+
+    .dashboard-grid ::deep .course-card:only-child .course-cover {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 10rem;
+    }
+
+    .dashboard-grid ::deep .course-card:only-child .course-card__body {
+        justify-content: center;
     }
 }
 

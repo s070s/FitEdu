@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
@@ -134,6 +135,10 @@ public partial class Billing
     /// <summary>How many courses the current plan lets the member run at once.</summary>
     private static string CourseLimitLabel(int maxCourses) =>
         CourseLimitText.Describe(maxCourses, BillingRes.UnlimitedCourses, BillingRes.OneCourse, BillingRes.CoursesCountFormat);
+
+    /// <summary>The current plan's name in the member's language; empty while nothing is loaded.</summary>
+    private string CurrentPlanName =>
+        _overview?.CurrentSubscription is { } subscription ? TierLabels.Name(subscription.Tier) : string.Empty;
 
     /// <summary>Lime for Pro, teal for Plus, the neutral chip for Free.</summary>
     private static string TierChipClass(SubscriptionTier? tier) => tier switch

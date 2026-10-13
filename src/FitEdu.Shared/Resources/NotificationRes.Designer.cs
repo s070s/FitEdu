@@ -323,5 +323,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("SessionReminder", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your notifications.
+        /// </summary>
+        public static string Heading {
+            get {
+                return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
     }
 }

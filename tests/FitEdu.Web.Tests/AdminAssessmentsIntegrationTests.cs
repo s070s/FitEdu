@@ -66,4 +66,20 @@ public class AdminAssessmentsIntegrationTests : IClassFixture<CustomWebAppFactor
 
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
     }
+
+    [Fact]
+    public async Task ListAssessments_CarriesTheGreekTitle_ForTheGreekAdminList()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var request = Request($"greek-{Guid.NewGuid():N}", "{\"questions\":[{\"id\":\"q1\",\"type\":\"text\"}]}")
+            with { TitleEl = "Έλεγχος ετοιμότητας" };
+        var created = await (await client.PostAsJsonAsync("/api/admin/assessments", request))
+            .Content.ReadFromJsonAsync<AdminAssessmentDefinitionDto>();
+
+        var list = await client.GetFromJsonAsync<PagedResult<AssessmentDefinitionListItemDto>>("/api/admin/assessments?pageSize=100");
+
+        var row = list!.Items.Single(item => item.Id == created!.Id);
+        row.Title.ShouldBe("Title");
+        row.TitleEl.ShouldBe("Έλεγχος ετοιμότητας");
+    }
 }

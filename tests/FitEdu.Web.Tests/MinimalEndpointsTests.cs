@@ -52,15 +52,18 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
-    public async Task Sitemap_ListsThePublicPagesAndEachPublishedPath()
+    public async Task Sitemap_ListsThePublicPagesAndEachPublishedPathAndProgramme()
     {
         // The only sitemap request in this class (the XML is cached for 30 minutes), so the paths
-        // seeded here are always in it.
+        // and programmes seeded here are always in it.
         var published = new LearningPath { TitleEn = "Sitemap Beginner Start", IsPublished = true };
         var draft = new LearningPath { TitleEn = "Sitemap Draft Path", IsPublished = false };
+        var publishedCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Sitemap Programme", IsPublished = true };
+        var draftCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Sitemap Draft Programme", IsPublished = false };
         await _factory.SeedAsync(async db =>
         {
             db.LearningPaths.AddRange(published, draft);
+            db.Courses.AddRange(publishedCourse, draftCourse);
             await db.SaveChangesAsync();
         });
         var client = _factory.CreateClient();
@@ -70,11 +73,13 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Content.Headers.ContentType!.MediaType.ShouldBe("application/xml");
-        string[] publicPages = ["/", "/exercises", "/paths", "/blog", "/pricing", "/privacy", "/terms"];
+        string[] publicPages = ["/", "/courses", "/exercises", "/paths", "/blog", "/pricing", "/privacy", "/terms"];
         foreach (var page in publicPages)
             xml.ShouldContain($"<loc>https://tests.local{page}</loc>", Case.Sensitive);
         xml.ShouldContain($"<loc>https://tests.local/paths/{published.Id}</loc>", Case.Sensitive);
         xml.ShouldNotContain(draft.Id.ToString());
+        xml.ShouldContain($"<loc>https://tests.local/courses/{publishedCourse.Id}</loc>", Case.Sensitive);
+        xml.ShouldNotContain(draftCourse.Id.ToString());
     }
 
     [Fact]

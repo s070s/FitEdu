@@ -7,6 +7,10 @@ using FitEdu.Domain.Enums;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Mappings;
+using FitEdu.Infrastructure.ApiServices;
+using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
@@ -108,19 +112,22 @@ public class CertificatesController : ControllerBase
             .FirstOrDefaultAsync(c => c.Id == certificateId && c.UserId == userId);
 
         if (certificate is null)
-            return Problem(detail: "Certificate not found.", statusCode: StatusCodes.Status404NotFound);
+            return Problem(detail: ErrorMessagesRes.Certificate_NotFound, statusCode: StatusCodes.Status404NotFound);
 
         if (certificate.Status == CertificateStatus.Revoked)
-            return Problem(detail: "This certificate has been revoked.", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.Certificate_Revoked, statusCode: StatusCodes.Status400BadRequest);
 
-        // Render the PDF now if it hasn't been generated yet (PERF-4: deferred from issuance).
+        // Render the PDF in the member's language now if it hasn't been generated yet (PERF-4: deferred from issuance).
         certificate = await _certificateService.EnsurePdfAsync(certificateId);
 
-        if (string.IsNullOrEmpty(certificate.PdfPath) || !_storage.FileExists(certificate.PdfPath))
-            return Problem(detail: "Certificate PDF is not available.", statusCode: StatusCodes.Status404NotFound);
+        var culture = CultureInfo.CurrentUICulture;
+        var pdfPath = CertificateService.PdfPathFor(certificate, culture);
+        if (string.IsNullOrEmpty(pdfPath) || !_storage.FileExists(pdfPath))
+            return Problem(detail: ErrorMessagesRes.Certificate_PdfUnavailable, statusCode: StatusCodes.Status404NotFound);
 
-        var (stream, contentType) = await _storage.GetFileAsync(certificate.PdfPath);
-        var fileName = ToSafeFileName($"Certificate - {certificate.RecipientName} - {certificate.CourseTitleEn}") + ".pdf";
+        var (stream, contentType) = await _storage.GetFileAsync(pdfPath);
+        var courseTitle = CertificateService.ResolveCourseTitle(certificate.CourseTitleEn, certificate.CourseTitleEl, culture);
+        var fileName = ToSafeFileName($"{CertificateRes.PdfFileNamePrefix} - {certificate.RecipientName} - {courseTitle}") + ".pdf";
         return File(stream, contentType, fileName);
     }
 

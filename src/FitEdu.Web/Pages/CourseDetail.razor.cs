@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
@@ -9,11 +10,20 @@ using System.Globalization;
 
 namespace FitEdu.Web.Pages;
 
+/// <summary>
+/// One programme's page. Guests can open it: they see the outline and the approved reviews, and
+/// the action card offers sign-up and log-in (which brings them back here) in place of Join.
+/// </summary>
 public partial class CourseDetail
 {
     // "What you'll train" lists the first module summaries, enough to scan at a glance.
     private const int MaxOutcomes = 4;
+    // Search engines show about 160 characters of a page description.
+    private const int MetaDescriptionLength = 160;
     private const string LessonPathPrefix = "/lessons/";
+    private const string CoursePathPrefix = "/courses/";
+    private const string LoginPath = "/login";
+    private const string RegisterPath = "/register";
 
     [Parameter]
     public Guid CourseId
@@ -25,8 +35,14 @@ public partial class CourseDetail
     [Inject] private ISubscriptionConsumer SubscriptionService { get; set; } = default!;
     [Inject] private ILogger<CourseDetail> _logger { get; set; } = default!;
 
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    // Present only while prerendering, so a missing item can answer 404.
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
     private CourseDetailDto? _course;
     private SubscriptionTier _userTier = SubscriptionTier.Free;
+    private bool _isGuest;
     private bool _loading = true;
     private bool _enrolling;
     private string? _error;
@@ -35,11 +51,13 @@ public partial class CourseDetail
     // View data prepared once per load (PrepareView).
     private List<ModuleDto> _modules = [];
     private List<string> _outcomes = [];
+    private HashSet<Guid> _outcomeModuleIds = [];
     private IReadOnlyList<string> _equipmentLabels = [];
     private LessonSummaryDto? _firstLesson;
     private LessonSummaryDto? _nextLesson;
     private Guid? _openModuleId;
     private int _totalMinutes;
+    private string _metaDescription = string.Empty;
 
     private CourseReviewsResponseDto? _reviewsData;
     private bool _showReviewForm;
@@ -61,6 +79,12 @@ public partial class CourseDetail
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
     private bool NeedsUpgrade => _course is { IsEnrolled: false } && _userTier < _course.RequiredTier;
+
+    /// <summary>The log-in page, set to come back to this programme afterwards.</summary>
+    private string LoginHref => Login.LinkWithReturnUrl(LoginPath, CoursePathPrefix + CourseId);
+
+    /// <summary>The sign-up page, set to come back to this programme after the first log-in.</summary>
+    private string RegisterHref => Login.LinkWithReturnUrl(RegisterPath, CoursePathPrefix + CourseId);
 
     private int ProgressPercentRounded => _course is null ? 0 : (int)Math.Round(_course.ProgressPercent);
 
@@ -85,7 +109,10 @@ public partial class CourseDetail
 
     private async Task LoadAllAsync()
     {
-        var tierTask = SubscriptionService.GetStatusAsync();
+        _isGuest = !await AuthenticationStateTask.IsSignedInAsync();
+
+        // A guest has no subscription to ask about.
+        var tierTask = _isGuest ? Task.FromResult<UserSubscriptionStatusDto?>(null) : SubscriptionService.GetStatusAsync();
         await Task.WhenAll(LoadCourse(), LoadReviewsAsync(), tierTask);
 
         var status = await tierTask;
@@ -154,9 +181,14 @@ public partial class CourseDetail
 
         try
         {
-            _course = await CourseService.GetCourseAsync(CourseId, CurrentLang);
+            var lookup = await CourseService.LookupCourseAsync(CourseId, CurrentLang);
+            _course = lookup.Item;
             if (_course is null)
-                _error = ErrorMessagesRes.CourseNotFound;
+            {
+                // A failed request offers Try again and answers 503, so crawlers keep the address.
+                _error = lookup.RequestFailed ? ErrorMessagesRes.FailedToLoadCourse : ErrorMessagesRes.CourseNotFound;
+                PrerenderStatus.SetMissing(HttpContext, lookup.RequestFailed);
+            }
             else
                 PrepareView(_course);
         }
@@ -174,6 +206,7 @@ public partial class CourseDetail
     /// <summary>Sorts the outline once and works out the totals, the outcomes and the next lesson.</summary>
     private void PrepareView(CourseDetailDto course)
     {
+        _metaDescription = HtmlText.Summary(course.Description, MetaDescriptionLength);
         _modules = course.Modules
             .OrderBy(module => module.SortOrder)
             .Select(module => module with { Lessons = module.Lessons.OrderBy(lesson => lesson.SortOrder).ToList() })
@@ -185,13 +218,14 @@ public partial class CourseDetail
         _totalMinutes = lessons.Sum(lesson => lesson.DurationMinutes ?? 0);
         _equipmentLabels = CourseLabels.EquipmentList(course.Equipment);
 
-        // Module descriptions are the sanitized rich text the module body shows too.
-        _outcomes = _modules
-            .Select(module => module.Description)
-            .OfType<string>()
-            .Where(description => !string.IsNullOrWhiteSpace(description))
+        // The outcomes are the first module descriptions (sanitized rich text); the outline leaves
+        // those modules' descriptions out, so the page does not say the same thing twice.
+        var outcomeModules = _modules
+            .Where(module => !string.IsNullOrWhiteSpace(module.Description))
             .Take(MaxOutcomes)
             .ToList();
+        _outcomes = outcomeModules.Select(module => module.Description!).ToList();
+        _outcomeModuleIds = outcomeModules.Select(module => module.Id).ToHashSet();
 
         // Open the module the member trains next, or the first one.
         var nextModule = _modules.FirstOrDefault(module => module.Lessons.Any(lesson => lesson.Id == _nextLesson?.Id));

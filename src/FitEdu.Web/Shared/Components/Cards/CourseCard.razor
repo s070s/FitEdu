@@ -15,14 +15,14 @@
         }
         @if (Course.RequiredTier != SubscriptionTier.Free)
         {
-            <span class="tier-badge course-card__tier tier-@Course.RequiredTier.ToString().ToLowerInvariant()">@Course.RequiredTier</span>
+            <span class="tier-badge course-card__tier tier-@Course.RequiredTier.ToString().ToLowerInvariant()">@TierLabels.Name(Course.RequiredTier)</span>
         }
     </CourseCover>
 
     <div class="card-surface__body course-card__body">
         <div class="course-card__chips">
             <LevelBadge Level="@Course.Level" />
-            @if (ScheduleText is { } schedule)
+            @if (CourseLabels.Schedule(Course.EstimatedWeeks, Course.SessionsPerWeek) is { } schedule)
             {
                 <span class="chip">
                     <span class="bi bi-calendar-week" aria-hidden="true"></span>
@@ -62,7 +62,7 @@
             {
                 @* A visual label only: the stretched title link already leads to /pricing. *@
                 <span class="locked-badge">
-                    <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, Course.RequiredTier)
+                    <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, TierLabels.Name(Course.RequiredTier))
                 </span>
             }
         </div>
@@ -82,19 +82,4 @@
     [Parameter] public bool Compact { get; set; }
 
     private string Href => IsLocked ? PricingPath : CoursePathPrefix + Course.Id;
-
-    /// <summary>"8 weeks · 3× per week", either half alone, or null when the course has neither.</summary>
-    private string? ScheduleText
-    {
-        get
-        {
-            var parts = new List<string>();
-            if (Course.EstimatedWeeks is { } weeks)
-                parts.Add(ResourceFormat.Count(weeks, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
-            if (Course.SessionsPerWeek is { } sessions)
-                parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
-
-            return parts.Count == 0 ? null : string.Join(" · ", parts);
-        }
-    }
 }

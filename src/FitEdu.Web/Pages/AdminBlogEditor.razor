@@ -4,7 +4,7 @@
 @using FitEdu.Web.Shared
 @using FitEdu.Web.Extensions
 
-<PageTitle>@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)</PageTitle>
+<AppPageTitle Text="@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)" />
 
 <div class="admin-editor">
     <header class="section-head">
@@ -91,7 +91,7 @@
                 </div>
             }
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <InputFile id="blog-cover-file" OnChange="OnCoverFileSelected" accept="image/*" class="form-control cover-file-input" />
+                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*" />
                 @if (!_isEditMode)
                 {
                     <small class="form-text">@AdminRes.CoverUploadHint</small>

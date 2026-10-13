@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
@@ -26,17 +27,17 @@ public partial class Sessions
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
-    /// <summary>The upcoming classes grouped by their local calendar day, earliest day and class first.</summary>
+    /// <summary>The upcoming classes grouped by their calendar day in the members' time zone, earliest day and class first.</summary>
     private IEnumerable<IGrouping<DateTime, ScheduledSessionListItemDto>> ScheduleDays =>
         _sessions
             .OrderBy(session => session.StartsAtUtc)
-            .GroupBy(session => session.StartsAtUtc.ToLocalTime().Date)
+            .GroupBy(session => SiteClock.ToSiteTime(session.StartsAtUtc).Date)
             .OrderBy(day => day.Key);
 
     /// <summary>"Today" or "Tomorrow" for the two nearest days, null for any other day.</summary>
     private static string? RelativeDayLabel(DateTime day)
     {
-        var today = DateTime.Now.Date;
+        var today = SiteClock.ToSiteTime(DateTimeOffset.UtcNow).Date;
         if (day == today)
             return SessionRes.Today;
         if (day == today.AddDays(1))

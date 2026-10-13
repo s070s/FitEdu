@@ -1,8 +1,9 @@
 @page "/admin/testimonials"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 @using FitEdu.Web.Shared.Components.Data
 
-<PageTitle>@AdminRes.TestimonialsPageTitle</PageTitle>
+<AppPageTitle Text="@AdminRes.TestimonialsPageTitle" />
 
 <div class="admin-container">
     <h1 class="h2">@AdminRes.TestimonialsPageTitle</h1>
@@ -63,10 +64,11 @@
                             </td>
                             <td data-label="@AdminRes.ColName">@item.FullName</td>
                             <td data-label="@AdminRes.ColRoleCompany">
-                                @if (!string.IsNullOrEmpty(item.RoleOrTitle) || !string.IsNullOrEmpty(item.CompanyOrContext))
+                                @{ var roleOrTitle = AdminText.Pick(item.RoleOrTitle, item.RoleOrTitleEl); }
+                                @if (!string.IsNullOrEmpty(roleOrTitle) || !string.IsNullOrEmpty(item.CompanyOrContext))
                                 {
-                                    <span>@item.RoleOrTitle</span>
-                                    @if (!string.IsNullOrEmpty(item.RoleOrTitle) && !string.IsNullOrEmpty(item.CompanyOrContext))
+                                    <span>@roleOrTitle</span>
+                                    @if (!string.IsNullOrEmpty(roleOrTitle) && !string.IsNullOrEmpty(item.CompanyOrContext))
                                     {
                                         <span class="text-light-muted"> · </span>
                                     }
@@ -82,7 +84,7 @@
                                              ActiveText="@AdminRes.StatusActive"
                                              InactiveText="@AdminRes.StatusInactive" />
                             </td>
-                            <td data-label="@AdminRes.ColCreated">@item.CreatedAt.ToLocalTime().ToString("d")</td>
+                            <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(item.CreatedAt).ToString("d")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 <button class="btn btn-sm btn-primary me-1" @onclick="() => EditTestimonial(item.Id)">@AdminRes.Edit</button>
                                 @if (item.IsActive)
