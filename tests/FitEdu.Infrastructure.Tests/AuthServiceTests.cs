@@ -248,6 +248,29 @@ public class AuthServiceTests
         createdUser!.Status.ShouldBe(UserStatus.Beginner);
     }
 
+    [Fact]
+    public async Task Register_WithGoal_SavesGoalOnCreatedUser()
+    {
+        var h = Build();
+        ApplicationUser? createdUser = null;
+        h.Um.CreateAsync(Arg.Do<ApplicationUser>(u => createdUser = u), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.AddToRoleAsync(Arg.Any<ApplicationUser>(), "Student").Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+
+        await h.Svc.RegisterAsync(new RegisterRequestDto
+        {
+            Email = "u@x.com",
+            Password = "Password1",
+            ConfirmPassword = "Password1",
+            FirstName = "F",
+            LastName = "L",
+            GdprConsent = true,
+            Goal = FitnessGoal.Mobility
+        });
+
+        createdUser!.Goal.ShouldBe(FitnessGoal.Mobility);
+    }
+
     // ---- Forgot / Reset ------------------------------------------------------
 
     [Fact]

@@ -57,4 +57,11 @@ public class RegisterRequestDto
     /// </summary>
     /// <example>Beginner</example>
     public UserStatus Status { get; set; } = UserStatus.Beginner;
+
+    /// <summary>
+    /// Optional main training goal. Null means "not sure yet"; a value outside
+    /// <see cref="FitnessGoal"/> is dropped server-side.
+    /// </summary>
+    /// <example>Strength</example>
+    public FitnessGoal? Goal { get; set; }
 }

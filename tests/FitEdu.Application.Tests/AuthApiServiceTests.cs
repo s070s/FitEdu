@@ -145,6 +145,21 @@ public class AuthApiServiceTests
         createdUser!.Status.ShouldBe(UserStatus.Beginner);
     }
 
+    [Fact]
+    public async Task Register_WithGoal_SavesGoalOnCreatedUser()
+    {
+        var h = Build();
+        ApplicationUser? createdUser = null;
+        h.Um.CreateAsync(Arg.Do<ApplicationUser>(u => createdUser = u), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+
+        var request = RegisterRequest();
+        request.Goal = FitnessGoal.Strength;
+        await h.Svc.RegisterAsync(request, (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+
+        createdUser!.Goal.ShouldBe(FitnessGoal.Strength);
+    }
+
     // ---- RefreshAsync: baseline behaviour -------------------------------------
 
     [Fact]
