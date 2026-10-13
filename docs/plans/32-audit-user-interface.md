@@ -35,7 +35,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 
 ### UI-11: Static inline styles scattered through markup instead of scoped CSS  [Low] [Effort: S]
 - **Evidence (rechecked 2026-10-13):** 17 `style="` occurrences in `.razor` files. Eight are dynamic (`style="@..."`, e.g. progress widths and `ScrollableTable`'s parameterized height); nine are static offenders: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AvatarDropdown.razor:27` (`cursor:default`), `AdminCourseEdit.razor:238` and `:240-243` (five lesson-table column widths) and `AdminPaginationToolbar.razor:9` (`width:auto` on the page-size select).
-- **Impact:** Bypasses the documented consolidation rule and the token system, so theme adjustments (like the deferred hardcoded-value token sweep — see the plan-13 note in 00-INDEX.md) miss these; `#444` is invisible against the dark card in practice.
+- **Impact:** Bypasses the documented consolidation rule and the token system, so theme adjustments (like the deferred hardcoded-value token sweep — see the plan-13 note in 00-INDEX.md) miss these.
 - **Recommendation:** Fold each static style into the owning component's `.razor.css`; do it alongside the deferred token sweep to avoid touching the same lines twice.
 - **Progress:** D11 removed `BlogArticle.razor`'s container padding (now in `BlogArticle.razor.css`) and `ConversationSidebar.razor`'s list max-height (the list already fills the sidebar through its scoped CSS).
 - **Progress (D13):** the static styles in `AdminTestimonialEditor` (avatar preview, file input, form width), `VerifyCertificate`, `AdminLearningPathEditor` and `AdminBlogEditor` moved into scoped CSS.
