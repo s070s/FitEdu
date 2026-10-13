@@ -50,9 +50,10 @@ Greek text is kept out of `exercises.json` so the upstream copy stays untouched.
 1. `exercises.el.json` in this folder, if it exists, then
 2. every `el/*.el.json` file, in ordinal file-name order.
 
-`exercises.el.json` holds one row for each of the 140 exercises the seed courses use (a course
-exercise without a Greek name fails `SeedContentIntegrityTests`). `el/` is empty and takes extra
-fragment files when more exercises are translated.
+`exercises.el.json` holds one row for every one of the 873 exercises, sorted by slug, with as
+many Greek steps as English ones; `SeedContentIntegrityTests` fails when an exercise has no Greek
+name or a different step count. `el/` is empty and takes extra fragment files, for example a
+batch of new translations before it is merged into `exercises.el.json`.
 
 Each file is a JSON array of rows:
 
@@ -64,7 +65,8 @@ Each file is a JSON array of rows:
 
 Names use sentence case, as Greek does: only the first word of the name and of any brackets
 starts with a capital (`Πιέσεις ώμων με αλτήρες (Dumbbell shoulder press)`), proper nouns such as
-Arnold aside; `SeedContentIntegrityTests` checks it.
+Arnold or Smith and letter names such as EZ, SMR, T-bar or V-up aside; `SeedContentIntegrityTests`
+checks it. Commands address the reader as εσύ and use the imperative (`Επίστρεψε`, `Κράτα`).
 
 The first row for a slug wins; later rows for the same slug are skipped with a warning. A row whose
 slug is not in `exercises.json` is skipped with a warning, and so is a row whose name or joined

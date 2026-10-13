@@ -223,6 +223,27 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
+    public void ExerciseLibrary_EveryExerciseHasAGreekName_AndAsManyGreekStepsAsEnglishOnes()
+    {
+        var greekRowsBySlug = SeedJsonFiles.LoadGreekOverlay().ToDictionary(row => row.Slug, StringComparer.Ordinal);
+        var problems = new List<string>();
+
+        foreach (var exercise in SeedJsonFiles.LoadExerciseLibrary())
+        {
+            var slug = SlugHelper.FromExerciseId(exercise.Id);
+            if (!greekRowsBySlug.TryGetValue(slug, out var greekRow))
+            {
+                problems.Add($"{slug}: no Greek row");
+                continue;
+            }
+
+            problems.AddRange(FindGreekRowProblems(slug, exercise, greekRow));
+        }
+
+        problems.ShouldBeEmpty("exercises.el.json needs a Greek name and one Greek step per English step");
+    }
+
+    [Fact]
     public void GreekOverlay_ExerciseNamesUseSentenceCase()
     {
         var problems = SeedJsonFiles.LoadGreekOverlay()
@@ -466,6 +487,15 @@ public partial class SeedContentIntegrityTests
         return !withoutUnits.Any(char.IsLetter) && !DecimalNumberRegex().IsMatch(reps);
     }
 
+    private static IEnumerable<string> FindGreekRowProblems(string slug, ExerciseSeedDto exercise, ExerciseGreekSeedDto greekRow)
+    {
+        if (greekRow.NameEl is null || !GreekLetterRegex().IsMatch(greekRow.NameEl))
+            yield return $"{slug}: nameEl '{greekRow.NameEl}' has no Greek letters";
+
+        if (greekRow.InstructionsEl.Count != exercise.Instructions.Count)
+            yield return $"{slug}: {greekRow.InstructionsEl.Count} Greek steps for {exercise.Instructions.Count} English ones";
+    }
+
     private static bool HasTextWithoutGreek(string? english, string? greek) =>
         !string.IsNullOrWhiteSpace(english) && string.IsNullOrWhiteSpace(greek);
 
@@ -641,9 +671,14 @@ public partial class SeedContentIntegrityTests
     private static partial Regex GreekFormalImperativeRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
-    // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Romanian) keep theirs.
-    [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian)\b)[A-ZΆΈ-ΏΑ-Ϋ]", RegexOptions.CultureInvariant)]
+    // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and
+    // the letter or acronym names of equipment and moves (EZ bar, SMR, T-bar, V-up) keep theirs.
+    [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
+        RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
+
+    [GeneratedRegex(@"\p{IsGreekandCoptic}", RegexOptions.CultureInvariant)]
+    private static partial Regex GreekLetterRegex();
 
     // The brand and the terms the Greek UI keeps in English.
     [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]

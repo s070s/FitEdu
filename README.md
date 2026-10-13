@@ -45,7 +45,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 >
 > | Folder under `src/FitEdu.Shared/JSON/` | What it seeds |
 > |---|---|
-> | `Exercises/` | 873 public-domain exercises with photos ([source, licence and Greek format](src/FitEdu.Shared/JSON/Exercises/README.md)). `exercises.el.json` gives the Greek name and steps of the 140 exercises the courses use; the others show in English. |
+> | `Exercises/` | 873 public-domain exercises with photos ([source, licence and Greek format](src/FitEdu.Shared/JSON/Exercises/README.md)). `exercises.el.json` gives the Greek name and steps of all 873. |
 > | `Courses/` | 19 fitness courses: 51 modules, 131 lessons and 382 exercise prescriptions linked by slug ([file format](src/FitEdu.Shared/JSON/Courses/README.md)). Seven categories (Strength, Cardio, Mobility, Core, Nutrition, Recovery, Performance), Beginner to Advanced, 9 Free, 5 Plus and 5 Pro. |
 > | `Assessments/` | 19 self-check questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
 > | `Students/` | The 10 demo students (`first.last@fitedu.local`). |
