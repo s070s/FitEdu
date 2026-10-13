@@ -1,5 +1,6 @@
-/* Two stacked 3:2 photos; the finish frame fades in and out over the start frame.
-   One loop: hold start, fade, hold finish, fade back (transform/opacity only). */
+/* Two stacked 3:2 photos. Loop mode fades the finish frame in and out over the start frame
+   (one loop: hold start, fade, hold finish, fade back; opacity only). Still mode shows the start
+   frame and lets a parent card fade the finish frame in on hover (see ExerciseCard). */
 .exercise-media {
     position: relative;
     margin: 0;
@@ -22,13 +23,10 @@
     object-fit: cover;
 }
 
+/* The finish photo and its tag start hidden; the loop, or the parent's hover, shows them. */
 .exercise-media__frame--end,
 .exercise-media__phase--end {
-    animation: exercise-media-show-end 3.2s var(--ease-in-out) infinite;
-}
-
-.exercise-media__phase--start {
-    animation: exercise-media-show-start 3.2s var(--ease-in-out) infinite;
+    opacity: 0;
 }
 
 /* A soft charcoal fade at the top keeps the phase tag readable on bright photos. */
@@ -69,9 +67,22 @@
     color: var(--text-strong-accent);
 }
 
+/* ---- Loop (workout cards, detail pages) ---- */
+.exercise-media--loop .exercise-media__frame--end,
+.exercise-media--loop .exercise-media__phase--end {
+    animation: exercise-media-show-end 3.2s var(--ease-in-out) infinite;
+}
+
+.exercise-media--loop .exercise-media__phase--start {
+    animation: exercise-media-show-start 3.2s var(--ease-in-out) infinite;
+}
+
+/* Paused: freeze the loop and round a half-done fade to the nearer whole photo. Two steps turn
+   each fade into a jump at its midpoint, so a tap never leaves both photos half showing. */
 .exercise-media--paused .exercise-media__frame--end,
 .exercise-media--paused .exercise-media__phase {
     animation-play-state: paused;
+    animation-timing-function: steps(2, jump-none);
 }
 
 /* The whole photo is the pause button; the round icon in the corner shows its state. */
@@ -118,6 +129,24 @@
     }
 }
 
+/* ---- Still (library thumbnails): no loop, no tag until the finish photo shows ---- */
+.exercise-media--still .exercise-media__phase--start {
+    display: none;
+}
+
+.exercise-media--still .exercise-media__frame--end,
+.exercise-media--still .exercise-media__phase--end {
+    transition: opacity var(--duration-slow) var(--ease-in-out);
+}
+
+/* Touch screens have no hover, so the finish photo would never show: keeping it out of the layout
+   also means its lazy image is never downloaded. */
+@media (hover: none) {
+    .exercise-media--still .exercise-media__frame--end {
+        display: none;
+    }
+}
+
 @keyframes exercise-media-show-end {
     0%, 37.5% { opacity: 0; }
     50%, 87.5% { opacity: 1; }
@@ -130,37 +159,43 @@
     100% { opacity: 1; }
 }
 
-/* Reduced motion: no loop. Start and finish sit side by side, each with its own tag. */
+/* Reduced motion: no loop. Start and finish sit side by side, each with its own tag; a still
+   photo swaps to the finish frame without a fade. */
 @media (prefers-reduced-motion: reduce) {
-    .exercise-media__frames {
+    .exercise-media--loop .exercise-media__frames {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 2px;
         aspect-ratio: auto;
     }
 
-    .exercise-media__frame {
+    .exercise-media--loop .exercise-media__frame {
         position: static;
         aspect-ratio: 3 / 2;
     }
 
-    .exercise-media__frame,
-    .exercise-media__phase {
+    .exercise-media--loop .exercise-media__frame,
+    .exercise-media--loop .exercise-media__phase {
         animation: none;
         opacity: 1;
     }
 
-    .exercise-media__phases {
+    .exercise-media--loop .exercise-media__phases {
         right: var(--space-2);
         grid-template-columns: 1fr 1fr;
         column-gap: calc(var(--space-4) + 2px);
     }
 
-    .exercise-media__phase--end {
+    .exercise-media--loop .exercise-media__phase--end {
         grid-area: 1 / 2;
     }
 
     .exercise-media__toggle {
         display: none;
+    }
+
+    .exercise-media--still .exercise-media__frame--end,
+    .exercise-media--still .exercise-media__phase--end {
+        transition: none;
     }
 }

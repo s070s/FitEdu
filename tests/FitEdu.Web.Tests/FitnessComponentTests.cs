@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Bunit;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Fitness;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +23,9 @@ public class FitnessComponentTests : BunitContext
 {
     private const string StartUrl = "/images/exercises/bodyweight-squat/0.webp";
     private const string EndUrl = "/images/exercises/bodyweight-squat/1.webp";
+
+    private static readonly string ExerciseMediaCssPath = Path.Combine(
+        RepoPaths.RepoRoot, "src", "FitEdu.Web", "Shared", "Components", "Fitness", "ExerciseMedia.razor.css");
 
     public FitnessComponentTests()
     {
@@ -44,6 +49,9 @@ public class FitnessComponentTests : BunitContext
         frames[1].GetAttribute("alt").ShouldBe("Bodyweight squat — finish position");
         frames.ShouldAllBe(frame => frame.GetAttribute("loading") == "lazy"
             && frame.GetAttribute("width") == "480" && frame.GetAttribute("height") == "320");
+        // The decorative phase tags are not a figcaption: the photos' alt text already names them.
+        media.FindAll("figcaption").ShouldBeEmpty();
+        media.Find(".exercise-media__phases").GetAttribute("aria-hidden").ShouldBe("true");
     }
 
     [Fact]
@@ -51,6 +59,7 @@ public class FitnessComponentTests : BunitContext
     {
         UseCulture("en");
         var media = RenderMedia(interactive: true);
+        media.Find("figure").ClassList.ShouldContain("exercise-media--loop");
 
         media.Find(".exercise-media__toggle").Click();
 
@@ -65,12 +74,36 @@ public class FitnessComponentTests : BunitContext
     }
 
     [Fact]
-    public void ExerciseMedia_NotInteractive_HasNoPauseButton()
+    public void ExerciseMedia_NotInteractive_IsAStillPhotoWithNoLoopOrPauseButton()
     {
         var media = RenderMedia(interactive: false);
 
+        var figure = media.Find("figure");
+        figure.ClassList.ShouldContain("exercise-media--still");
+        figure.ClassList.ShouldNotContain("exercise-media--loop");
         media.FindAll(".exercise-media__toggle").ShouldBeEmpty();
-        media.FindAll("img.exercise-media__frame").Count.ShouldBe(2);
+        media.FindAll("img.exercise-media__frame").Count.ShouldBe(2); // the finish photo stays for the hover preview
+    }
+
+    [Fact]
+    public void ExerciseMediaCss_OnlyTheLoopModeAnimatesForever()
+    {
+        // WCAG 2.2.2 (pause, stop, hide): a grid of still library cards must never loop.
+        var endlessRules = Regex.Matches(ExerciseMediaCss(), @"([^{}]+)\{[^{}]*\binfinite\b[^{}]*\}");
+
+        endlessRules.ShouldNotBeEmpty();
+        var selectors = endlessRules.SelectMany(rule => rule.Groups[1].Value.Split(','));
+        selectors.ShouldAllBe(selector => selector.Contains(".exercise-media--loop"));
+    }
+
+    [Fact]
+    public void ExerciseMediaCss_PauseRoundsAHalfDoneFadeToAWholePhoto()
+    {
+        var pausedRule = Regex.Match(ExerciseMediaCss(), @"\.exercise-media--paused \.exercise-media__frame--end[^{]*\{([^}]*)\}");
+
+        pausedRule.Success.ShouldBeTrue();
+        pausedRule.Groups[1].Value.ShouldContain("animation-play-state: paused");
+        pausedRule.Groups[1].Value.ShouldContain("steps(2, jump-none)");
     }
 
     [Fact]
@@ -110,7 +143,10 @@ public class FitnessComponentTests : BunitContext
             .Add(component => component.Exercise, LibraryExercise()));
 
         card.Find("article").ClassList.ShouldContain("exercise-card--library");
-        card.Find("a.exercise-card__link").GetAttribute("href").ShouldBe("/exercises/bodyweight-squat");
+        card.Find("figure").ClassList.ShouldContain("exercise-media--still"); // a grid of cards never loops
+        var link = card.Find("a.exercise-card__link");
+        link.GetAttribute("href").ShouldBe("/exercises/bodyweight-squat");
+        link.ClassList.ShouldContain("stretched-link");
         card.Find(".exercise-card__name").TextContent.Trim().ShouldBe("Bodyweight squat");
         card.Find(".level-badge").TextContent.ShouldContain("Beginner");
         card.Find(".exercise-card__equipment").TextContent.ShouldContain("Bodyweight");
@@ -130,8 +166,11 @@ public class FitnessComponentTests : BunitContext
             .Add(component => component.Position, 1));
 
         card.Find("article").ClassList.ShouldContain("exercise-card--workout");
+        card.Find("figure").ClassList.ShouldContain("exercise-media--loop");
         card.Find(".exercise-card__position").TextContent.ShouldBe("01");
-        card.Find("a.exercise-card__link").GetAttribute("href").ShouldBe("/exercises/bodyweight-squat");
+        var link = card.Find("a.exercise-card__link");
+        link.GetAttribute("href").ShouldBe("/exercises/bodyweight-squat");
+        link.ClassList.ShouldNotContain("stretched-link"); // the pause button and the steps stay usable
         card.FindAll(".exercise-media__toggle").Count.ShouldBe(1);
         card.FindAll(".exercise-card__dose dt").Select(label => label.TextContent).ShouldBe(["Sets", "Reps", "Rest"]);
         card.FindAll(".exercise-card__dose dd").Select(value => value.TextContent).ShouldBe(["3", "10–12", "60 s"]);
@@ -445,6 +484,10 @@ public class FitnessComponentTests : BunitContext
         CultureInfo.CurrentCulture = new CultureInfo(culture);
         CultureInfo.CurrentUICulture = new CultureInfo(culture);
     }
+
+    /// <summary>ExerciseMedia.razor.css without its comments.</summary>
+    private static string ExerciseMediaCss() =>
+        Regex.Replace(File.ReadAllText(ExerciseMediaCssPath), @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
 
     private IRenderedComponent<ExerciseMedia> RenderMedia(bool interactive, string name = "Bodyweight squat") =>
         Render<ExerciseMedia>(parameters => parameters

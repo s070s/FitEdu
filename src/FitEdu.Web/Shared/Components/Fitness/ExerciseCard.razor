@@ -1,7 +1,8 @@
 @using FitEdu.Web.Extensions
 @* One exercise as a card. Library mode (Exercise): the whole card links to the exercise page and shows
-   level, equipment and muscles. Workout mode (Prescription): the photos can be paused, and the card
-   adds sets x reps, rest, the coach's note and the steps in an expandable <details>. *@
+   level, equipment and muscles over a still start photo (the finish photo fades in on hover). Workout
+   mode (Prescription): the photos loop and can be paused, and the card adds sets x reps, rest, the
+   coach's note and the steps in an expandable <details>. *@
 
 @if (_content is not null)
 {
@@ -16,8 +17,8 @@
                     {
                         <span class="exercise-card__position" aria-hidden="true">@position.ToString("00")</span>
                     }
-                    <h3 class="exercise-card__name">
-                        <a class="exercise-card__link" href="@ExercisePageUrl">@_content.Name</a>
+                    <h3 class="exercise-card__name @NameClampClass">
+                        <a class="exercise-card__link @LinkStretchClass" href="@ExercisePageUrl">@_content.Name</a>
                     </h3>
                 </div>
 
@@ -63,6 +64,11 @@
     private bool IsWorkout => Prescription is not null;
 
     private string ModeClass => IsWorkout ? "exercise-card--workout" : "exercise-card--library card-surface--interactive";
+
+    // A library card is one link (Bootstrap's stretched link over the whole card) with a two-line name.
+    private string LinkStretchClass => IsWorkout ? "" : "stretched-link";
+
+    private string NameClampClass => IsWorkout ? "" : "line-clamp-2";
 
     private string ExercisePageUrl => ExercisePagePrefix + _content?.Slug;
 

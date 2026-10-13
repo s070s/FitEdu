@@ -71,43 +71,38 @@
     gap: 0.35rem;
 }
 
-/* ---- Library card: one stretched link over the whole card ---- */
-.exercise-card--library .exercise-card__name {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+/* ---- Library card: one stretched link (shared .card-surface .stretched-link rules) ---- */
+/* The photo stays still; hovering or focusing the card fades the finish photo in once, so a grid
+   of cards never loops or flashes. Touch screens keep the still start photo. */
+@media (hover: hover) {
+    .exercise-card--library:is(:hover, :focus-within) ::deep .exercise-media__frame--end,
+    .exercise-card--library:is(:hover, :focus-within) ::deep .exercise-media__phase--end {
+        opacity: 1;
+    }
 }
 
-.exercise-card--library .exercise-card__link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-}
-
-.exercise-card--library .exercise-card__link:focus-visible {
-    outline: none;
-}
-
-.exercise-card--library:has(.exercise-card__link:focus-visible) {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
+/* ---- Workout card: the name link is a full-height tap target ---- */
+.exercise-card--workout .exercise-card__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
 }
 
 /* ---- Workout card: the dose strip, the coach's note and the steps ---- */
-/* One equal column per value (sets, reps, rest), so two or three always share the row. */
+/* One column per value (sets, reps, rest), equal when they fit; a column never gets narrower than
+   its label, so on a 320 px phone "Επαναλήψεις" takes a little of its neighbours' space. */
 .exercise-card__dose {
     display: grid;
-    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-columns: minmax(min-content, 1fr);
     grid-auto-flow: column;
     gap: var(--space-2);
     margin: 0;
 }
 
-/* Tight padding and a small label keep the longest Greek label ("Επαναλήψεις") whole on a phone. */
+/* Values stay top-aligned when one of them (a long rest time) wraps to a second line. */
 .exercise-card__dose-item {
     display: grid;
+    align-content: start;
     gap: 0.15rem;
     padding: var(--space-2);
     border: 1px solid rgba(var(--border-subtle-rgb), 0.14);
@@ -116,11 +111,9 @@
 }
 
 .exercise-card__dose-item dt {
-    overflow: hidden;
     color: var(--text-light-muted);
     font-size: 0.6875rem;
     font-weight: 600;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

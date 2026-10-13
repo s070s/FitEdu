@@ -1,7 +1,9 @@
-@* Two-frame exercise demo: the start photo and the finish photo crossfade in a loop. A tap anywhere
-   on the photo pauses or resumes it; with reduced motion the two frames sit side by side instead. *@
+@* Two-frame exercise demo. Interactive (workout cards, detail pages): the start photo and the finish
+   photo crossfade in a loop, and a tap anywhere on the photo pauses or resumes it; with reduced
+   motion the two frames sit side by side instead. Not interactive (library grid): a still start
+   photo with no loop, so a page of cards never flashes; the card shows the finish photo on hover. *@
 
-<figure class="exercise-media @(_paused ? "exercise-media--paused" : "")">
+<figure class="exercise-media @ModeClass @(_paused ? "exercise-media--paused" : "")">
     <div class="exercise-media__frames">
         <img class="exercise-media__frame exercise-media__frame--start" src="@StartUrl"
              alt="@string.Format(ExerciseRes.StartPositionAltFormat, Name)"
@@ -12,10 +14,10 @@
     </div>
 
     @* The phase tags are decorative: each photo's alt text already names its position. *@
-    <figcaption class="exercise-media__phases" aria-hidden="true">
+    <div class="exercise-media__phases" aria-hidden="true">
         <span class="exercise-media__phase exercise-media__phase--start">@LessonRes.StartPosition</span>
         <span class="exercise-media__phase exercise-media__phase--end">@LessonRes.EndPosition</span>
-    </figcaption>
+    </div>
 
     @if (Interactive)
     {
@@ -43,8 +45,8 @@
     [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// False inside a card that is itself one link (the library grid): the photos still play,
-    /// but there is no pause button to compete with the link.
+    /// True: the photos loop with a pause button. False inside a card that is itself one link (the
+    /// library grid): a still start photo with no loop and no button to compete with the link.
     /// </summary>
     [Parameter] public bool Interactive { get; set; } = true;
 
@@ -52,6 +54,8 @@
     [Parameter] public bool Eager { get; set; }
 
     private bool _paused;
+
+    private string ModeClass => Interactive ? "exercise-media--loop" : "exercise-media--still";
 
     private string LoadingMode => Eager ? "eager" : "lazy";
 
