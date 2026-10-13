@@ -354,7 +354,7 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/search` | Site-wide search over published courses, assessments, blog articles and exercises (`?q=&limit=8&lang=en`; empty `q` returns no results; exercises are matched by name in the title search, which gives every source a hit before any source gets a second) | No |
+| `GET` | `api/search` | Site-wide search over published courses, assessments, blog articles and exercises (`?q=&limit=8&lang=en`; empty `q` returns no results; exercises are matched by name, in the title search, which gives every source a hit before any source gets a second, and beside the AI index's meaning-based hits, which hold no exercises; those hits show a snippet of the matching text in the search language) | No |
 
 ### Site Settings — `api/site`
 
