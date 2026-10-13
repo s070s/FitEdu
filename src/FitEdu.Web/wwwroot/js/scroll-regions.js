@@ -1,10 +1,11 @@
 // Swipe rows (marked data-scroll-region) are a keyboard tab stop only while they really scroll.
 // On phones such a row scrolls sideways, so a keyboard user must be able to focus it to scroll it
 // with the arrow keys; on wider screens the row wraps into a grid and a tab stop there leads nowhere.
-// Blazor adds and replaces these rows as pages render, so rows added later are watched too.
+// Blazor adds and replaces these rows as pages render, so rows added later are watched too, and
+// rows it removes are let go so the observer does not keep them alive.
 (function () {
     var regionSelector = '[data-scroll-region]';
-    var watchedRegions = new WeakSet();
+    var watchedRegions = new Set();
     var scanScheduled = false;
 
     function updateTabStop(region) {
@@ -23,8 +24,21 @@
         });
     });
 
+    // Rows that left the page are no longer watched; the rest are re-checked, because cards added
+    // to or removed from a row change whether it scrolls without changing the row's own size.
+    function refreshWatchedRegions() {
+        watchedRegions.forEach(function (region) {
+            if (!region.isConnected) {
+                resizeObserver.unobserve(region);
+                watchedRegions.delete(region);
+                return;
+            }
+
+            updateTabStop(region);
+        });
+    }
+
     function watchNewRegions() {
-        scanScheduled = false;
         document.querySelectorAll(regionSelector).forEach(function (region) {
             if (watchedRegions.has(region)) {
                 return;
@@ -35,6 +49,12 @@
         });
     }
 
+    function scanPage() {
+        scanScheduled = false;
+        refreshWatchedRegions();
+        watchNewRegions();
+    }
+
     // Many page updates can arrive in one frame; one scan per frame is enough.
     function scheduleScan() {
         if (scanScheduled) {
@@ -42,9 +62,9 @@
         }
 
         scanScheduled = true;
-        requestAnimationFrame(watchNewRegions);
+        requestAnimationFrame(scanPage);
     }
 
-    watchNewRegions();
+    scanPage();
     new MutationObserver(scheduleScan).observe(document.body, { childList: true, subtree: true });
 })();
