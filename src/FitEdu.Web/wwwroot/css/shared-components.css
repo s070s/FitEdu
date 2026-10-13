@@ -674,19 +674,6 @@ input[type="date"].form-control:focus {
 }
 
 /* ================================================
-   Touch target sizing (WCAG 2.5.5 / 2.5.8)
-   On coarse pointers (touch), raise dense pagination controls to 44px.
-   ================================================ */
-@media (pointer: coarse) {
-    .pagination-controls .btn,
-    .pagination-toolbar-admin .btn,
-    .page-size-select,
-    .page-size-selector .form-select {
-        min-height: 44px;
-    }
-}
-
-/* ================================================
    Category chip — rendered on course/assessment cards
    and the admin course/assessment editor. Modeled on .tier-badge.
    ================================================ */
