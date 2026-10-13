@@ -34,22 +34,23 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 ## 3. Findings
 
 ### UI-11: Static inline styles scattered through markup instead of scoped CSS  [Low] [Effort: S]
-- **Evidence:** ~34 `style="` occurrences in `.razor` files. Legitimately dynamic ones aside (progress width `CourseDetail.razor:40`, parameterized `ScrollableTable.razor:6`), the static offenders include: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AdminCourseEdit.razor:162-167` (five column widths).
+- **Evidence (rechecked 2026-10-13):** 17 `style="` occurrences in `.razor` files, nearly all dynamic (`style="@..."`, e.g. progress widths and `ScrollableTable`'s parameterized height). Four static offenders remain: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AvatarDropdown.razor:27` (`cursor:default`) and `AdminCourseEdit.razor:238` (one column width; the other four went in the fitness redesign).
 - **Impact:** Bypasses the documented consolidation rule and the token system, so theme adjustments (like the deferred hardcoded-value token sweep — see the plan-13 note in 00-INDEX.md) miss these; `#444` is invisible against the dark card in practice.
 - **Recommendation:** Fold each static style into the owning component's `.razor.css`; do it alongside the deferred token sweep to avoid touching the same lines twice.
 - **Progress:** D11 removed `BlogArticle.razor`'s container padding (now in `BlogArticle.razor.css`) and `ConversationSidebar.razor`'s list max-height (the list already fills the sidebar through its scoped CSS).
 - **Progress (D13):** the static styles in `AdminTestimonialEditor` (avatar preview, file input, form width), `VerifyCertificate`, `AdminLearningPathEditor` and `AdminBlogEditor` moved into scoped CSS.
 
 ### UI-12: Data tables have no caption or accessible name  [Low] [Effort: S]
-- **Evidence:** `ScrollableTable.razor:6-18` renders a bare `<table>` with no `<caption>`, `aria-label`, or `aria-labelledby` parameter; no `<caption>` exists anywhere in the repo (grep). Every ScrollableTable consumer (now including Billing) is affected; AdminAnalytics' two inline tables are now named by their panel headings (`aria-labelledby`, D13).
+- **Evidence:** `ScrollableTable.razor:6-18` renders a bare `<table>` with no `<caption>`, `aria-label`, or `aria-labelledby` parameter; no `<caption>` exists anywhere in the repo (grep). Every ScrollableTable consumer was affected; AdminAnalytics' two inline tables are now named by their panel headings (`aria-labelledby`, D13).
 - **Impact:** Screen-reader table navigation announces an anonymous table.
 - **Recommendation:** Add an optional `AriaLabel`/`Caption` parameter to ScrollableTable (visually-hidden `<caption>`) and pass the page heading string at each call site.
-- **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Still open: Billing, Notifications and AssessmentHistory (the AdminAnalytics inline tables are named by their panel headings, D13).
+- **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Notifications no longer renders a table (it became a card list in the fitness redesign). Still open: Billing and AssessmentHistory (the AdminAnalytics inline tables are named by their panel headings, D13).
 
 ### UI-14: Bootstrap default palette leaks into the themed UI  [Low] [Effort: S]
-- **Evidence:** `AssessmentHistory.razor:22` — `card-header bg-primary text-white` renders Bootstrap's stock blue header on the otherwise volt-lime (`--text-strong-accent`) theme; `AdminCourseEdit.razor:124` — `badge bg-light text-dark`; `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).
-- **Impact:** The one blue element in the app reads as foreign; light badges are near-white blobs on dark cards.
-- **Recommendation:** Replace `bg-primary text-white` with the themed card-header (already styled globally at `shared-components.css:68-72`) plus a border accent; use `--bg-neutral-subtle` badges as elsewhere.
+- **Evidence:** `AdminCourseEdit.razor:263` — `badge bg-light text-dark` (the "Text" lesson-type badge); `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).
+- **Impact:** Light badges are near-white blobs on dark cards.
+- **Recommendation:** Use `--bg-neutral-subtle` badges as elsewhere.
+- **Progress (fitness redesign, D9):** the stock blue `card-header bg-primary text-white` on `AssessmentHistory` is gone; the page uses the palette classes.
 
 ### UI-15: `role="menu"` dropdown without arrow-key or Escape handling  [Info] [Effort: S]
 - **Evidence:** `src/FitEdu.Web/Layout/AvatarDropdown.razor:5-38` — declares `aria-haspopup="menu"`/`role="menu"`/`role="menuitem"` and closes on focus-out, but implements no ArrowUp/ArrowDown/Escape/Home/End keyboard model that the `menu` role promises.
@@ -62,7 +63,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 |----|----------|--------|--------|
 | UI-11 | Low | S | Fold static inline styles into scoped CSS (with the deferred token sweep) |
 | UI-12 | Low | S | Add caption/aria-label parameter to ScrollableTable and pass at call sites |
-| UI-14 | Low | S | Purge `bg-primary text-white` / `bg-light text-dark` leaks |
+| UI-14 | Low | S | Purge the remaining `bg-light text-dark` badge in AdminCourseEdit |
 | UI-15 | Info | S | Downgrade AvatarDropdown to the disclosure pattern (or implement menu keys) |
 
 ## 5. Related Findings Elsewhere

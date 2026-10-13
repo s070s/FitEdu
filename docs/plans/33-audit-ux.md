@@ -25,32 +25,26 @@ Static analysis only — no app launch or browser. Examined:
 | Critical | 0 |
 | High | 0 |
 | Medium | 0 |
-| Low | 2 |
+| Low | 1 |
 | Info | 1 |
 
 The flow fundamentals are strong where they were done deliberately: the localization system is exemplary (18 EN/EL resx pairs with perfect key parity, localized relative-time formatting, culture-aware `PaginationShowingFormat`), most list pages have real empty states with calls to action, several consumer pages implement the full loading → error → retry chain (`Courses`, `Billing`, `CourseDetail`, `Profile`, `LessonViewer`, and now `AssessmentForm` all offer a localized error state), and destructive actions are gated by the shared `ConfirmModal` (now including Pricing), and action feedback is now localized end-to-end (UX-1, fixed — the ~100 hardcoded strings were swept into the resx pattern).
 
-All nine Medium findings have been resolved: action feedback is now typed and repositioned (UX-5), load-failure states offer error+retry (UX-6), the authenticated home is a real dashboard with a public `/blog` index and a global footer (UX-7), role-denied messaging distinguishes needs-login from lacks-role (UX-8), admin editors guard unsaved work on navigation (UX-9), deletes converge on the shared `ConfirmModal` (UX-10), auth/profile validation is localized and aligned with the Identity policy (UX-11), dates are culture-aware with uniform `ToLocalTime()` (UX-12), and the two largest admin tables gained debounced search (UX-13). Only two Low items and one Info item remain (below).
+All nine Medium findings have been resolved: action feedback is now typed and repositioned (UX-5), load-failure states offer error+retry (UX-6), the authenticated home is a real dashboard with a public `/blog` index and a global footer (UX-7), role-denied messaging distinguishes needs-login from lacks-role (UX-8), admin editors guard unsaved work on navigation (UX-9), deletes converge on the shared `ConfirmModal` (UX-10), auth/profile validation is localized and aligned with the Identity policy (UX-11), dates are culture-aware with uniform `ToLocalTime()` (UX-12), and the two largest admin tables gained debounced search (UX-13). The fitness redesign (2026-10-13) also fixed UX-15 (every auth, profile and chat page now has an `h1`: the shared `AuthCard` heading, the profile heading, and Chat's visually-hidden `h1`) and the tab-title half of UX-14. One Low item and one Info item remain (below).
 
 ## 3. Findings
 
-> The nine Medium findings (UX-5 through UX-13) are resolved and have been removed from this list; see §2 for the summary and the git history (`Fix UX-5` … `Fix UX-13`) for the changes. The remaining open items are two Low and one Info.
+> The nine Medium findings (UX-5 through UX-13) are resolved and have been removed from this list; see §2 for the summary and the git history (`Fix UX-5` … `Fix UX-13`) for the changes. UX-15 is resolved too (see §2). The remaining open items are one Low and one Info.
 
-### UX-14: Two student pages have no browser tab title  [Low] [Effort: S]
-- **Evidence:** `<PageTitle>` exists on 30 of 32 pages; missing on `AssessmentHistory.razor` and `AssessmentForm.razor` (grep). `AssessmentForm.razor:4` also renders its `<h1>` as empty while the assessment loads (`@assessment?.Title`).
-- **Impact:** The tab keeps the previous page's title during and after navigation — confusing with multiple tabs and hurting history/bookmarks; the empty `<h1>` gives `FocusOnNavigate` (Routes.razor:8) a blank announcement target.
-- **Recommendation:** Add `<PageTitle>@AssessmentRes.HistoryTitle` / assessment title with localized fallback (`LessonViewer.razor:4` shows the fallback pattern).
-
-### UX-15: Auth/profile/chat pages have no `h1`, so post-navigation focus is never moved there  [Low] [Effort: S]
-- **Evidence:** `Routes.razor:8` — `<FocusOnNavigate Selector="h1"/>`. Login (`Login.razor:6`), Register (`Register.razor:7`), ForgotPassword (`ForgotPassword.razor:6`), Profile (`Profile.razor:7`) use `<h2>` as their top heading; Chat (`Chat.razor`) has no heading element at all. All other 27 pages have an `h1`.
-- **Impact:** Keyboard/screen-reader users navigating to these five pages get no focus move and no announced page context (the mechanism works everywhere else); document outline starts at h2.
-- **Recommendation:** Promote the top heading to `<h1 class="h2">` (the admin pages' exact idiom, e.g. `AdminUsers.razor:8`) and give Chat a visually-hidden `h1` with `ChatRes.PageTitle`.
-- **Progress:** Chat now has a visually-hidden `h1` with `ChatRes.PageTitle` (D11); the auth/profile pages remain.
+### UX-14: AssessmentForm's `h1` is empty while the assessment loads  [Low] [Effort: S]
+- **Evidence:** `AssessmentForm.razor:19` renders `<h1>@assessment?.Title</h1>`, which is empty until the assessment arrives. The missing tab titles of the original finding are fixed: every page now has a `<PageTitle>`, and `AssessmentForm.razor:5` falls back to `AssessmentRes.AssessmentsPageTitle` (fitness redesign, 2026-10-13).
+- **Impact:** The empty `<h1>` gives `FocusOnNavigate` (`Routes.razor:28`) a blank announcement target during the load.
+- **Recommendation:** Use the same fallback in the heading (`@(assessment?.Title ?? AssessmentRes.AssessmentsPageTitle)`).
 
 ### UX-16: Mock-checkout success on Pricing gives no confirmation feedback  [Info] [Effort: S]
-- **Evidence:** `Pricing.razor.cs:52-56` — when checkout returns no redirect URL (the mock/dev path), the code silently reloads `_currentStatus`; the only visible change is the button flipping to "Current plan". The real-checkout path lands on `SubscriptionSuccess` with a full celebration screen (`SubscriptionSuccess.razor:13-31`).
+- **Evidence:** `Pricing.razor.cs:91-96` — when checkout returns no redirect URL (the mock/dev path), the code silently reloads `_currentStatus`; the only visible change is the button flipping to "Current plan". The real-checkout path lands on `SubscriptionSuccess` with a full celebration screen (`SubscriptionSuccess.razor`).
 - **Impact:** Dev/demo users (the project's actual audience per 00-INDEX) upgrade a plan and get no explicit "you're now on X" acknowledgment.
-- **Recommendation:** Set a localized success message (the `_cancelMessage` slot at `Pricing.razor:119-124` already renders both severities) or navigate to `/subscription/success`.
+- **Recommendation:** Set a localized success message (the `_cancelMessage` slot at `Pricing.razor:123-127` already renders both severities) or navigate to `/subscription/success`.
 
 ## 4. Prioritized Action List
 
@@ -58,8 +52,7 @@ All nine Medium items (UX-5 through UX-13) are resolved. The remaining backlog:
 
 | ID | Severity | Effort | Action |
 |----|----------|--------|--------|
-| UX-14 | Low | S | Add PageTitle to AssessmentHistory and AssessmentForm |
-| UX-15 | Low | S | Promote h2→h1 on auth/profile pages (Chat done) |
+| UX-14 | Low | S | Give AssessmentForm's `h1` the localized fallback title while loading |
 | UX-16 | Info | S | Acknowledge mock-checkout success on Pricing |
 
 ## 5. Related Findings Elsewhere
