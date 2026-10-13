@@ -19,6 +19,7 @@
     font-size: 1.75rem;
 }
 
+/* A section heading that keeps the card-title size, not the page's h2 size. */
 .empty-state__title {
     margin: 0;
     color: var(--text-strong-normal);
