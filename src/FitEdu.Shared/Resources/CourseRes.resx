@@ -327,7 +327,7 @@
 		<value>Structured plans for every goal and level. Pick by what you want to achieve, how experienced you are and the kit you have.</value>
 	</data>
 	<data name="SearchCoursesPlaceholder" xml:space="preserve">
-		<value>Search programmes</value>
+		<value>Search</value>
 	</data>
 	<data name="NoMatchingCoursesHint" xml:space="preserve">
 		<value>Try another goal, level or piece of equipment, or clear the filters.</value>

@@ -269,6 +269,9 @@
 	<data name="ColStatus" xml:space="preserve">
 		<value>Status</value>
 	</data>
+	<data name="ColTrainingLevel" xml:space="preserve">
+		<value>Training level</value>
+	</data>
 	<data name="ColOnline" xml:space="preserve">
 		<value>Online</value>
 	</data>

@@ -116,13 +116,13 @@
     <value>τώρα</value>
   </data>
   <data name="TimeMinutesFormat" xml:space="preserve">
-    <value>{0}λ</value>
+    <value>{0} λεπ.</value>
   </data>
   <data name="TimeHoursFormat" xml:space="preserve">
-    <value>{0}ω</value>
+    <value>{0} ώρ.</value>
   </data>
   <data name="TimeDaysFormat" xml:space="preserve">
-    <value>{0}η</value>
+    <value>{0} ημ.</value>
   </data>
   <data name="StatusRead" xml:space="preserve">
     <value>Αναγνωσμένο</value>

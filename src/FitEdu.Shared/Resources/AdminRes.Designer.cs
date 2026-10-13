@@ -430,6 +430,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Training level.
+        /// </summary>
+        public static string ColTrainingLevel {
+            get {
+                return ResourceManager.GetString("ColTrainingLevel", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
         public static string ColOnline {

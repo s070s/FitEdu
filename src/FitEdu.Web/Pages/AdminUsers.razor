@@ -41,7 +41,7 @@
                             <SortableColumnHeader ColumnKey="firstname" Label="@AdminRes.ColName"
                                                   CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
                                                   OnSort="OnSort" />
-                            <th>@AdminRes.ColStatus</th>
+                            <th>@AdminRes.ColTrainingLevel</th>
                             <SortableColumnHeader ColumnKey="lastseenat" Label="@AdminRes.ColOnline"
                                                   CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
                                                   OnSort="OnSort" />
@@ -65,7 +65,7 @@
                         <tr @key="user.Id">
                             <td data-label="@AdminRes.ColEmail">@user.Email</td>
                             <td data-label="@AdminRes.ColName">@user.FirstName @user.LastName</td>
-                            <td data-label="@AdminRes.ColStatus">@UserStatusLabels.Label(user.Status)</td>
+                            <td data-label="@AdminRes.ColTrainingLevel">@UserStatusLabels.Label(user.Status)</td>
                             <td data-label="@AdminRes.ColOnline">
                                 <PresenceIndicator UserId="@user.Id" LastSeenAt="@user.LastSeenAt" ShowLabel="true" />
                             </td>

@@ -49,7 +49,7 @@
 		<value>Είσαι πλέον στο πλάνο {0}!</value>
 	</data>
 	<data name="SubscriptionActive" xml:space="preserve">
-		<value>Η συνδρομή σου είναι πλέον ενεργή. Ώρα για προπόνηση.</value>
+		<value>Η συνδρομή σου είναι ενεργή. Ώρα για προπόνηση.</value>
 	</data>
 	<data name="LabelPlan" xml:space="preserve">
 		<value>Πλάνο:</value>

@@ -346,7 +346,7 @@
     <value>Πρόοδος</value>
   </data>
     <data name="Label_Info_Goal" xml:space="preserve">
-      <value>Κύριος στόχος (προαιρετικό)</value>
+      <value>Κύριος στόχος (προαιρετικός)</value>
     </data>
     <data name="GoalNotSureYet" xml:space="preserve">
       <value>Δεν ξέρω ακόμα</value>
