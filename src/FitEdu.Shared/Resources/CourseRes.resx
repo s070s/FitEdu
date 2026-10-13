@@ -189,7 +189,7 @@
 		<value>Courses - FitEdu</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
-		<value>Available Courses</value>
+		<value>Find your next programme</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
 		<value>Loading courses...</value>
@@ -225,7 +225,7 @@
 		<value>Upgrade Plan</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>You are on the {0} plan — up to {1} course(s).</value>
+		<value>Course limit on the {0} plan: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
 		<value>You have used all your course slots.</value>
@@ -316,5 +316,17 @@
 	</data>
 	<data name="AllEquipment" xml:space="preserve">
 		<value>Any equipment</value>
+	</data>
+	<data name="CatalogueEyebrow" xml:space="preserve">
+		<value>Training programmes</value>
+	</data>
+	<data name="CatalogueIntro" xml:space="preserve">
+		<value>Structured plans for every goal and level. Pick by what you want to achieve, how experienced you are and the kit you have.</value>
+	</data>
+	<data name="SearchCoursesPlaceholder" xml:space="preserve">
+		<value>Search courses</value>
+	</data>
+	<data name="NoMatchingCoursesHint" xml:space="preserve">
+		<value>Try another goal, level or piece of equipment, or clear the filters.</value>
 	</data>
 </root>

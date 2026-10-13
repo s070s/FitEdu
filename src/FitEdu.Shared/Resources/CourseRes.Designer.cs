@@ -331,7 +331,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Available Courses.
+        ///   Looks up a localized string similar to Find your next programme.
         /// </summary>
         public static string AvailableCourses {
             get {
@@ -439,7 +439,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You are on the {0} plan — up to {1} course(s).
+        ///   Looks up a localized string similar to Course limit on the {0} plan: {1}.
         /// </summary>
         public static string PlanCourseLimitFormat {
             get {
@@ -714,6 +714,42 @@ namespace FitEdu.Shared.Resources {
         public static string AllEquipment {
             get {
                 return ResourceManager.GetString("AllEquipment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Training programmes.
+        /// </summary>
+        public static string CatalogueEyebrow {
+            get {
+                return ResourceManager.GetString("CatalogueEyebrow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Structured plans for every goal and level. Pick by what you want to achieve, how experienced you are and the kit you have..
+        /// </summary>
+        public static string CatalogueIntro {
+            get {
+                return ResourceManager.GetString("CatalogueIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search courses.
+        /// </summary>
+        public static string SearchCoursesPlaceholder {
+            get {
+                return ResourceManager.GetString("SearchCoursesPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Try another goal, level or piece of equipment, or clear the filters..
+        /// </summary>
+        public static string NoMatchingCoursesHint {
+            get {
+                return ResourceManager.GetString("NoMatchingCoursesHint", resourceCulture);
             }
         }
     }

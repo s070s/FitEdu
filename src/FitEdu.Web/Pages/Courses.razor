@@ -3,126 +3,141 @@
 
 <PageTitle>@CourseRes.CoursesPageTitle</PageTitle>
 
-<h1>@CourseRes.AvailableCourses</h1>
+<div class="page courses-page">
+    <header class="courses-head">
+        <span class="eyebrow">@CourseRes.CatalogueEyebrow</span>
+        <h1 class="courses-head__title">@CourseRes.AvailableCourses</h1>
+        <p class="courses-head__intro">@CourseRes.CatalogueIntro</p>
+    </header>
 
-@if (_loading)
-{
-    <SkeletonBlock Rows="4" Height="7rem" Gap="1rem" />
-}
-else if (_error is not null)
-{
-    <p class="text-danger">@_error</p>
-    <button class="btn btn-secondary" @onclick="LoadCoursesAsync">@GlobalRes.TryAgain</button>
-}
-else if (_pagedResult is null || (_pagedResult.TotalCount == 0 && !HasActiveFilter))
-{
-    <p>@CourseRes.NoCoursesAvailable</p>
-}
-else
-{
-    @if (_maxCourses != int.MaxValue)
+    @if (IsCatalogueEmpty)
     {
-        <div class="plan-limit-banner @(_enrolledCount >= _maxCourses ? "plan-limit-full" : "")">
-            <span>@string.Format(CourseRes.PlanCourseLimitFormat, _userStatus?.PlanName ?? "Free", _maxCourses)</span>
-            @if (_enrolledCount >= _maxCourses)
-            {
-                <span class="slots-full-label">@CourseRes.CourseSlotsFullNotice</span>
-            }
-            <button class="btn btn-sm btn-outline-primary" @onclick="GoToPricing">@CourseRes.UpgradePlan</button>
-        </div>
-    }
-
-    <CategoryFilterBar Categories="_categories"
-                        SelectedCategoryId="_selectedCategoryId"
-                        OnCategorySelected="OnCategorySelected"
-                        SearchText="@_search"
-                        OnSearchChanged="OnSearchChanged"
-                        SearchPlaceholder="@CategoryRes.SearchPlaceholder" />
-
-    @if (_pagedResult.TotalCount == 0)
-    {
-        <p>@CategoryRes.NoMatchingResults</p>
+        <EmptyState Icon="bi-activity" Title="@CourseRes.NoCoursesAvailable" />
     }
     else
     {
-        <div class="pagination-toolbar">
-            <span class="pagination-info">
-                @string.Format(CourseRes.TotalCoursesFormat, _pagedResult.TotalCount)
-            </span>
-            <div class="page-size-selector">
-                <label for="pageSizeSelect">@CourseRes.PerPage</label>
-                <select id="pageSizeSelect" class="form-select form-select-sm"
-                        value="@_pageSize"
-                        @onchange="e => ChangePageSize(int.Parse(e.Value!.ToString()!))">
-                    @foreach (var size in PageSizeOptions)
+        @if (ShowPlanBanner)
+        {
+            <div class="plan-limit-banner @(IsPlanFull ? "plan-limit-full" : "")">
+                <span class="plan-limit-banner__icon bi @(IsPlanFull ? "bi-exclamation-circle" : "bi-stars")" aria-hidden="true"></span>
+                <p class="plan-limit-banner__text">
+                    <span>@string.Format(CourseRes.PlanCourseLimitFormat, _userStatus!.PlanName, _maxCourses)</span>
+                    @if (IsPlanFull)
                     {
-                        <option value="@size" selected="@(_pageSize == size)">@size</option>
+                        <span class="slots-full-label">@CourseRes.CourseSlotsFullNotice</span>
                     }
-                </select>
+                </p>
+                @* Lime only when the plan is full: then upgrading is the one way forward. *@
+                <a class="btn-cta plan-limit-banner__action @(IsPlanFull ? "" : "btn-cta--ghost")" href="/pricing">
+                    @CourseRes.UpgradePlan
+                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                </a>
             </div>
-        </div>
+        }
 
-        <div class="courses-list stagger">
-            @foreach (var course in _pagedResult.Items)
+        <CategoryFilterBar Categories="_categories"
+                           SelectedCategoryId="_selectedCategoryId"
+                           OnCategorySelected="OnCategorySelected"
+                           SearchText="@_search"
+                           OnSearchChanged="OnSearchChanged"
+                           SearchPlaceholder="@CourseRes.SearchCoursesPlaceholder"
+                           ExtraFilterCount="ExtraFilterCount">
+            <ExtraFilters>
+                <FilterChipGroup Label="@CourseRes.Goal"
+                                 AllLabel="@CourseRes.AllGoals"
+                                 Options="_goalOptions"
+                                 SelectedValue="@_goal?.ToString()"
+                                 OnSelected="OnGoalSelected" />
+                <FilterChipGroup Label="@CourseRes.Level"
+                                 AllLabel="@CourseRes.AllLevels"
+                                 Options="_levelOptions"
+                                 SelectedValue="@_level?.ToString()"
+                                 OnSelected="OnLevelSelected" />
+                <FilterChipGroup Label="@CourseRes.Equipment"
+                                 AllLabel="@CourseRes.AllEquipment"
+                                 Options="_equipmentOptions"
+                                 SelectedValue="@_equipment"
+                                 OnSelected="OnEquipmentSelected" />
+            </ExtraFilters>
+        </CategoryFilterBar>
+
+        <div class="courses-results" aria-busy="@(ShowSkeleton ? "true" : "false")">
+            @if (ShowSkeleton)
             {
-                var isLocked = _userTier < course.RequiredTier && !course.IsEnrolled;
+                <p class="visually-hidden" role="status">@CourseRes.LoadingCourses</p>
+                <div class="courses-grid grid-auto skeleton-grid" aria-hidden="true">
+                    @for (var index = 0; index < SkeletonCardCount; index++)
+                    {
+                        <div class="card-surface course-skeleton">
+                            <SkeletonBlock CssClass="course-skeleton__cover" Height="auto" />
+                            <div class="card-surface__body course-skeleton__body">
+                                <SkeletonBlock CssClass="course-skeleton__chip" Width="6.5rem" Height="1.75rem" />
+                                <SkeletonBlock Width="80%" Height="1.25rem" />
+                                <SkeletonBlock Rows="2" Height="0.85rem" />
+                                <SkeletonBlock Width="55%" Height="0.85rem" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else if (_error is not null)
+            {
+                <EmptyState Icon="bi-wifi-off" Title="@_error">
+                    <button type="button" class="btn-cta btn-cta--ghost" @onclick="LoadCoursesAsync">@GlobalRes.TryAgain</button>
+                </EmptyState>
+            }
+            else if (_pagedResult is null || _pagedResult.TotalCount == 0)
+            {
+                <EmptyState Icon="bi-funnel" Title="@CategoryRes.NoMatchingResults" Text="@CourseRes.NoMatchingCoursesHint">
+                    <button type="button" class="btn-cta btn-cta--ghost courses-clear-filters" @onclick="ClearFiltersAsync">
+                        <span class="bi bi-x-lg" aria-hidden="true"></span>
+                        @CategoryRes.ClearFilters
+                    </button>
+                </EmptyState>
+            }
+            else
+            {
+                <div class="pagination-toolbar courses-toolbar">
+                    <div class="courses-toolbar__summary">
+                        <p class="courses-toolbar__count" role="status">
+                            @string.Format(CourseRes.TotalCoursesFormat, _pagedResult.TotalCount)
+                        </p>
+                        @if (HasActiveFilter)
+                        {
+                            <button type="button" class="courses-toolbar__clear courses-clear-filters" @onclick="ClearFiltersAsync">
+                                <span class="bi bi-x-lg" aria-hidden="true"></span>
+                                @CategoryRes.ClearFilters
+                            </button>
+                        }
+                    </div>
+                    <div class="page-size-selector">
+                        <label for="pageSizeSelect">@CourseRes.PerPage</label>
+                        <select id="pageSizeSelect" class="form-select form-select-sm" @onchange="OnPageSizeChanged">
+                            @foreach (var size in PageSizeOptions)
+                            {
+                                <option value="@size" selected="@(_pageSize == size)">@size</option>
+                            }
+                        </select>
+                    </div>
+                </div>
 
-                <div class="course-card @(isLocked ? "course-locked" : "")" @key="course.Id">
-                    <div class="course-card-header">
-                        <h3>
-                            <a class="course-card-link" href="@(isLocked ? "/pricing" : $"/courses/{course.Id}")">@course.Title</a>
-                        </h3>
-                        <div class="d-flex align-items-center gap-2">
-                            @if (course.CategoryName is not null)
-                            {
-                                <span class="category-chip">@course.CategoryName</span>
-                            }
-                            @if (course.RequiredTier != SubscriptionTier.Free)
-                            {
-                                <span class="tier-badge tier-@course.RequiredTier.ToString().ToLowerInvariant()">
-                                    @course.RequiredTier
-                                </span>
-                            }
-                        </div>
-                    </div>
-                    @if (course.AverageRating is { } rating)
+                <div class="courses-grid grid-auto stagger">
+                    @foreach (var course in _pagedResult.Items)
                     {
-                        <div class="course-card-rating">
-                            <StarRating Value="rating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, rating, course.ReviewCount)" />
-                            <span class="rating-count">(@course.ReviewCount)</span>
-                        </div>
+                        <CourseCard Course="course" IsLocked="IsLocked(course)" @key="course.Id" />
                     }
-                    @if (!string.IsNullOrEmpty(course.Description))
-                    {
-                        <div class="description">@((MarkupString)course.Description)</div>
-                    }
-                    <div class="meta">
-                        <span class="lessons">@string.Format(CourseRes.LessonsCountFormat, course.TotalLessons)</span>
-                        @if (course.IsEnrolled)
-                        {
-                            <span class="enrolled-badge"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @CourseRes.Enrolled</span>
-                        }
-                        @if (isLocked)
-                        {
-                            @* Visual label only — the whole card already links to /pricing for locked courses. *@
-                            <span class="locked-badge">
-                                <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, course.RequiredTier)
-                            </span>
-                        }
-                    </div>
+                </div>
+
+                <div class="courses-pagination">
+                    <PaginationNav CurrentPage="_page"
+                                   TotalPages="_pagedResult.TotalPages"
+                                   HasPreviousPage="_pagedResult.HasPreviousPage"
+                                   HasNextPage="_pagedResult.HasNextPage"
+                                   PreviousLabel="@CourseRes.Previous"
+                                   NextLabel="@CourseRes.Next"
+                                   OnPageChanged="GoToPage" />
                 </div>
             }
         </div>
-
-        <PaginationNav CurrentPage="_page"
-                        TotalPages="_pagedResult.TotalPages"
-                        HasPreviousPage="_pagedResult.HasPreviousPage"
-                        HasNextPage="_pagedResult.HasNextPage"
-                        PreviousLabel="@CourseRes.Previous"
-                        NextLabel="@CourseRes.Next"
-                        AriaLabel="Course pages"
-                        OnPageChanged="GoToPage" />
     }
-}
-
-
+</div>

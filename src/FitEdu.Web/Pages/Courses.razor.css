@@ -1,106 +1,166 @@
-﻿
-.courses-list {
+/* Course catalogue. Mobile first; the cards are CourseCard (Shared/Components/Cards) and the
+   filters CategoryFilterBar, so this file only lays out the page around them. */
+
+/* ---- Page head ---------------------------------------------------------------------------- */
+.courses-head {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+}
+
+.courses-head__title {
+    margin: 0;
+}
+
+.courses-head__intro {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--text-light-normal);
+    text-wrap: pretty;
+}
+
+/* ---- Plan limit banner (Free and Plus members) -------------------------------------------- */
+.plan-limit-banner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid rgba(var(--text-strong-accent-rgb), 0.35);
+    border-radius: var(--radius-lg);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.08);
+    font-size: 0.9375rem;
+}
+
+.plan-limit-banner.plan-limit-full {
+    border-color: var(--color-attention-border);
+    background-color: rgba(var(--color-attention-rgb), 0.12);
+}
+
+.plan-limit-banner__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.15);
+    color: var(--text-strong-accent);
+    font-size: 1.1rem;
+}
+
+.plan-limit-full .plan-limit-banner__icon {
+    background-color: rgba(var(--color-attention-rgb), 0.18);
+    color: var(--color-attention);
+}
+
+.plan-limit-banner__text {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0;
+    color: var(--text-strong-normal);
+}
+
+.slots-full-label {
+    color: var(--color-attention);
+    font-weight: 700;
+}
+
+/* Phones: the button gets its own full-width row under the text. */
+.plan-limit-banner__action {
+    grid-column: 1 / -1;
+    min-height: var(--tap-min);
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9375rem;
+}
+
+@media (min-width: 576px) {
+    .plan-limit-banner {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .plan-limit-banner__action {
+        grid-column: auto;
+    }
+}
+
+/* ---- Results ------------------------------------------------------------------------------ */
+/* Keeps the footer from jumping while the grid swaps between skeleton and cards. */
+.courses-results {
+    min-height: 24rem;
+}
+
+.courses-toolbar {
+    margin: 0 0 var(--space-4);
+}
+
+.courses-toolbar__summary {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-    max-width: 860px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
 }
 
-.course-card {
-    position: relative; /* anchor for the stretched .course-card-link overlay */
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: box-shadow 0.2s, border-color 0.2s;
+.courses-toolbar__count {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-weight: 700;
 }
 
-    .course-card:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-color: var(--text-accent);
-    }
-
-    /* The card itself is no longer focusable — the real focus target is the title link,
-       so mirror its focus ring onto the whole card for the same visual affordance. */
-    .course-card:has(.course-card-link:focus-visible) {
-        outline: 2px solid var(--text-accent);
-        outline-offset: 2px;
-    }
-
-    .course-card h3 {
-        margin: 0 0 0.5rem 0;
-    }
-
-    .course-card-link {
-        color: var(--text-light-normal);
-        text-decoration: none;
-    }
-
-        .course-card-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Stretch the link's hit area over the entire card (the card-link a11y pattern):
-           one real link navigates, screen readers announce just the course title. */
-        .course-card-link::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-        }
-
-    /* Keep any links inside the rich-text description clickable above the stretched overlay. */
-    .course-card .description a {
-        position: relative;
-        z-index: 1;
-    }
-
-    .course-card .description {
-        color: var(--text-light-normal);
-        margin-bottom: 1rem;
-    }
-
-    .course-card .meta {
-        display: flex;
-        gap: 1rem;
-        font-size: 0.9rem;
-        color: var(--text-light-muted);
-    }
-
-.enrolled-badge {
-    color: var(--color-success);
-    font-weight: bold;
-}
-
-.course-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
-
-.course-card-rating {
-    display: flex;
+.courses-toolbar__clear {
+    display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin-top: 0.25rem;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: none;
+    color: var(--text-strong-accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-    .course-card-rating .rating-count {
-        color: var(--text-light-muted);
-        font-size: 0.8rem;
+    .courses-toolbar__clear:hover {
+        background-color: rgba(var(--text-strong-accent-rgb), 0.1);
     }
 
-.course-locked {
-    opacity: 0.7;
-    border-style: dashed;
+/* Wider cards than the shared 17rem grid: three columns at 1200 px, two on tablets. */
+.courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
 }
 
-/* A plain visual label now — the whole card links to /pricing for locked courses. */
-.locked-badge {
-    color: var(--color-error);
-    font-weight: bold;
-    font-size: 0.85rem;
+.courses-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
 }
 
-/* Pagination styles are in shared-components.css */
+@media (min-width: 768px) {
+    .courses-grid {
+        gap: var(--space-5);
+    }
+}
+
+/* ---- Loading skeleton: the outline of a course card ---------------------------------------- */
+/* The shared shimmer is tuned for the page background; on a card surface it needs to be lighter. */
+.course-skeleton ::deep .skeleton-block {
+    background-image: linear-gradient(90deg,
+        rgba(var(--border-subtle-rgb), 0.08) 25%,
+        rgba(var(--text-accent-rgb), 0.12) 50%,
+        rgba(var(--border-subtle-rgb), 0.08) 75%);
+}
+
+.course-skeleton ::deep .course-skeleton__cover {
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+}
+
+.course-skeleton__body {
+    gap: var(--space-3);
+}
+
+.course-skeleton ::deep .course-skeleton__chip {
+    border-radius: var(--radius-pill);
+}

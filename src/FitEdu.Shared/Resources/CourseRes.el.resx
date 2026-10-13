@@ -189,7 +189,7 @@
 		<value>Μαθήματα - FitEdu</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
-		<value>Διαθέσιμα Μαθήματα</value>
+		<value>Βρες το επόμενο πρόγραμμά σου</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
 		<value>Φόρτωση μαθημάτων...</value>
@@ -207,7 +207,7 @@
 		<value>Αναβάθμιση σε {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
-		<value>{0} μαθήματα</value>
+		<value>{0} προγράμματα</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Ανά σελίδα:</value>
@@ -225,10 +225,10 @@
 		<value>Αναβάθμιση Πλάνου</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>Βρίσκεστε στο πλάνο {0} — έως {1} μάθημα/τα.</value>
+		<value>Όριο προγραμμάτων στο πλάνο {0}: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
-		<value>Έχετε χρησιμοποιήσει όλα τα διαθέσιμά σας μαθήματα.</value>
+		<value>Έχεις φτάσει το όριο του πλάνου σου.</value>
 	</data>
 	<data name="Level" xml:space="preserve">
 		<value>Επίπεδο</value>
@@ -316,5 +316,17 @@
 	</data>
 	<data name="AllEquipment" xml:space="preserve">
 		<value>Οποιοσδήποτε εξοπλισμός</value>
+	</data>
+	<data name="CatalogueEyebrow" xml:space="preserve">
+		<value>Προγράμματα προπόνησης</value>
+	</data>
+	<data name="CatalogueIntro" xml:space="preserve">
+		<value>Οργανωμένα προγράμματα για κάθε στόχο και επίπεδο. Διάλεξε με βάση τι θέλεις να πετύχεις, την εμπειρία σου και τον εξοπλισμό που έχεις.</value>
+	</data>
+	<data name="SearchCoursesPlaceholder" xml:space="preserve">
+		<value>Αναζήτηση</value>
+	</data>
+	<data name="NoMatchingCoursesHint" xml:space="preserve">
+		<value>Δοκίμασε άλλον στόχο, επίπεδο ή εξοπλισμό, ή καθάρισε τα φίλτρα.</value>
 	</data>
 </root>
