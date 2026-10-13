@@ -73,28 +73,28 @@ else
                         <MuscleChips Muscles="@_exercise.SecondaryMuscles" Secondary="true" />
                     </div>
                 }
+
+                <section class="exercise-detail__section" aria-labelledby="exercise-steps-title">
+                    <h2 id="exercise-steps-title">@ExerciseRes.Instructions</h2>
+                    @if (_exercise.Instructions.Any(step => !string.IsNullOrWhiteSpace(step)))
+                    {
+                        <ol class="exercise-steps">
+                            @foreach (var step in _exercise.Instructions.Where(step => !string.IsNullOrWhiteSpace(step)))
+                            {
+                                <li>@step</li>
+                            }
+                        </ol>
+                    }
+                    else
+                    {
+                        <p class="exercise-steps__empty">
+                            <span class="bi bi-info-circle" aria-hidden="true"></span>
+                            <span>@ExerciseRes.NoInstructions</span>
+                        </p>
+                    }
+                </section>
             </div>
         </div>
-
-        <section class="exercise-detail__section" aria-labelledby="exercise-steps-title">
-            <h2 id="exercise-steps-title">@ExerciseRes.Instructions</h2>
-            @if (_exercise.Instructions.Any(step => !string.IsNullOrWhiteSpace(step)))
-            {
-                <ol class="exercise-steps">
-                    @foreach (var step in _exercise.Instructions.Where(step => !string.IsNullOrWhiteSpace(step)))
-                    {
-                        <li>@step</li>
-                    }
-                </ol>
-            }
-            else
-            {
-                <p class="exercise-steps__empty">
-                    <span class="bi bi-info-circle" aria-hidden="true"></span>
-                    <span>@ExerciseRes.NoInstructions</span>
-                </p>
-            }
-        </section>
 
         @if (_lessons.Count > 0)
         {

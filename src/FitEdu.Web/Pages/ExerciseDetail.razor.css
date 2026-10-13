@@ -1,5 +1,5 @@
-/* Exercise page. Phone first: photos, then the summary, the steps and the workouts that use it.
-   From 992 px the photos and the summary sit side by side and the photos stay in view.
+/* Exercise page. Phone first: photos, then the summary with the steps, and the workouts that use it.
+   From 992 px the photos sit beside the summary and its steps, and stay in view while they scroll.
    The page frame (main.content) already pads the top and the bottom. */
 .exercise-detail__back {
     display: inline-flex;
@@ -102,6 +102,11 @@
 
 .exercise-detail__section > h2 {
     margin: 0 0 var(--space-4);
+}
+
+/* Inside the summary the column gap spaces the steps; a little more marks them as their own section. */
+.exercise-detail__summary > .exercise-detail__section {
+    margin-top: var(--space-3);
 }
 
 .exercise-steps {
