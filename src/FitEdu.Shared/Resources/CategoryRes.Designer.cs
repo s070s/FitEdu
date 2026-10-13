@@ -142,7 +142,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Delete '{0}'? {1} course(s) and {2} assessment(s) will become uncategorized..
+        ///   Looks up a localized string similar to Delete '{0}'? These will be left without a category. Programmes: {1} · Assessments: {2}.
         /// </summary>
         public static string DeleteConfirmFormat {
             get {

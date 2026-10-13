@@ -50,7 +50,7 @@ public class AdminCategoriesPageTests : BunitContext
 
         var message = OpenDeleteConfirm(Render<AdminCategories>());
 
-        message.ShouldContain("'Δύναμη'");
+        message.ShouldContain("«Δύναμη»");
         message.ShouldNotContain("Strength");
     }
 
@@ -62,7 +62,7 @@ public class AdminCategoriesPageTests : BunitContext
 
         var message = OpenDeleteConfirm(Render<AdminCategories>());
 
-        message.ShouldContain("'Strength'");
+        message.ShouldContain("«Strength»");
     }
 
     [Fact]
