@@ -49,6 +49,7 @@ public class PathPagesTests : BunitContext
         var page = Render<Paths>();
 
         page.Find("h1").TextContent.ShouldBe(PathRes.PathsTitle);
+        page.Find("h2.visually-hidden").TextContent.ShouldBe(PathRes.PathsListHeading); // no skip from h1 to the card h3s
         page.Find(".paths-list").ClassList.ShouldContain("grid-auto");
         page.FindAll(".paths-list .path-card").Count.ShouldBe(2);
         page.FindAll(".empty-state").ShouldBeEmpty();
@@ -100,6 +101,32 @@ public class PathPagesTests : BunitContext
         steps[0].QuerySelector("a.step-link")!.GetAttribute("href").ShouldBe($"/courses/{FirstCourseId}");
         steps[1].QuerySelectorAll("a").ShouldBeEmpty();
         steps[1].QuerySelector(".step-hint")!.TextContent.ShouldBe(PathRes.StepLockedHint);
+    }
+
+    [Fact]
+    public void CompletedAndLocked_KeepsTheCourseLinkWithoutTheLockHint()
+    {
+        // Courses are shared between paths: one finished through another path can be locked here.
+        _authorization.SetAuthorized("alice@fitedu.local");
+        ReturnPath(Step(FirstCourseId, 1, isNext: true), Step(SecondCourseId, 2, isCompleted: true, isLocked: true));
+
+        var page = RenderDetail();
+
+        var step = page.FindAll("li.path-step")[1];
+        step.QuerySelector(".step-marker .bi-check-lg").ShouldNotBeNull();
+        step.QuerySelector(".badge-completed").ShouldNotBeNull();
+        step.QuerySelector("a.step-link")!.GetAttribute("href").ShouldBe($"/courses/{SecondCourseId}");
+        step.QuerySelector(".step-hint").ShouldBeNull();
+    }
+
+    [Fact]
+    public void StepLink_NamesItsCourseForScreenReaders()
+    {
+        ReturnPath(Step(FirstCourseId, 1));
+
+        var page = RenderDetail();
+
+        page.Find("a.step-link .visually-hidden").TextContent.ShouldContain("Course 1");
     }
 
     [Fact]

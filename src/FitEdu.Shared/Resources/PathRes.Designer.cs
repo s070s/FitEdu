@@ -287,5 +287,9 @@ namespace FitEdu.Shared.Resources {
         public static string StepLockedHint {
             get { return ResourceManager.GetString("StepLockedHint", resourceCulture); }
         }
+
+        public static string PathsListHeading {
+            get { return ResourceManager.GetString("PathsListHeading", resourceCulture); }
+        }
     }
 }

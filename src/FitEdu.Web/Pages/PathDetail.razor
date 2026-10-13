@@ -38,7 +38,7 @@
                     }
                     <span class="chip path-hero__count">
                         <span class="bi bi-signpost-split" aria-hidden="true"></span>
-                        @string.Format(PathRes.StepsCountFormat, _path.Steps.Count)
+                        @StepsCountText
                     </span>
                 </div>
                 <h1 class="path-hero__title">@_path.Title</h1>
@@ -50,10 +50,9 @@
 
             <AuthorizeView>
                 <Authorized>
-                    @{ var progressText = string.Format(PathRes.ProgressFormat, CompletedCount, StepCount); }
                     <div class="path-hero__progress">
-                        <ProgressRing Value="@PercentComplete" Size="HeroRingSize" Label="@RingLabel" AriaLabel="@progressText" />
-                        <span class="path-hero__progress-label">@progressText</span>
+                        <ProgressRing Value="@PercentComplete" Size="HeroRingSize" Label="@RingLabel" AriaLabel="@ProgressText" />
+                        <span class="path-hero__progress-label">@ProgressText</span>
                         @if (NextStep is not null)
                         {
                             <a class="btn-cta path-hero__cta" href="@CourseUrl(NextStep)">
@@ -100,10 +99,10 @@
                             @step.StepOrder
                         }
                     </span>
-                    <div class="step-body card-surface @(step.IsLocked ? "" : "card-surface--interactive")">
+                    <div class="step-body card-surface @(IsStepOpen(step) ? "card-surface--interactive" : "")">
                         <div class="card-surface__body">
                             <div class="step-title-row">
-                                <span class="step-kicker">@string.Format(PathRes.StepNumberFormat, step.StepOrder)</span>
+                                <span class="step-kicker">@StepNumberText(step)</span>
                                 @if (step.IsCompleted)
                                 {
                                     <span class="step-badge badge-completed chip chip--lime">@PathRes.StepCompleted</span>
@@ -118,16 +117,16 @@
                                 }
                             </div>
                             <h3 class="step-title">@step.CourseTitle</h3>
-                            @if (step.IsLocked)
+                            @if (IsStepOpen(step))
                             {
-                                <p class="step-hint">@PathRes.StepLockedHint</p>
+                                <a class="step-link stretched-link" href="@CourseUrl(step)">
+                                    @PathRes.GoToCourse<span class="visually-hidden">: @step.CourseTitle</span>
+                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                                </a>
                             }
                             else
                             {
-                                <a class="step-link stretched-link" href="@CourseUrl(step)">
-                                    @PathRes.GoToCourse
-                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
-                                </a>
+                                <p class="step-hint">@PathRes.StepLockedHint</p>
                             }
                         </div>
                     </div>

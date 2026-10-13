@@ -227,6 +227,9 @@
     <value>Step {0}</value>
   </data>
   <data name="StepLockedHint" xml:space="preserve">
-    <value>Finish the previous course to unlock it.</value>
+    <value>Finish the previous course to unlock this one.</value>
+  </data>
+  <data name="PathsListHeading" xml:space="preserve">
+    <value>All training paths</value>
   </data>
 </root>

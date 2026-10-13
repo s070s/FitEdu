@@ -203,7 +203,7 @@
     <value>Αποτυχία αποθήκευσης της διαδρομής προπόνησης. Δοκιμάστε ξανά.</value>
   </data>
   <data name="PathsEyebrow" xml:space="preserve">
-    <value>Βήμα βήμα</value>
+    <value>Βήμα προς βήμα</value>
   </data>
   <data name="PathsSubtitle" xml:space="preserve">
     <value>Προγράμματα στη σωστή σειρά, από την πρώτη σου προπόνηση μέχρι τον στόχο σου. Κάθε πρόγραμμα που ολοκληρώνεις ξεκλειδώνει το επόμενο.</value>
@@ -227,6 +227,9 @@
     <value>Βήμα {0}</value>
   </data>
   <data name="StepLockedHint" xml:space="preserve">
-    <value>Ολοκλήρωσε το προηγούμενο πρόγραμμα για να το ξεκλειδώσεις.</value>
+    <value>Ολοκλήρωσε το προηγούμενο πρόγραμμα για να ανοίξει αυτό το πρόγραμμα.</value>
+  </data>
+  <data name="PathsListHeading" xml:space="preserve">
+    <value>Όλες οι διαδρομές προπόνησης</value>
   </data>
 </root>
