@@ -104,8 +104,8 @@
 	<data name="LoadingLesson" xml:space="preserve">
 		<value>Loading lesson...</value>
 	</data>
-	<data name="Back" xml:space="preserve">
-		<value>Back</value>
+	<data name="LessonUnavailableTitle" xml:space="preserve">
+		<value>Lesson not available</value>
 	</data>
 	<data name="LessonNotFound" xml:space="preserve">
 		<value>Lesson not found.</value>

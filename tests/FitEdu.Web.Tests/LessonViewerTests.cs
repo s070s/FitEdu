@@ -111,7 +111,14 @@ public class LessonViewerTests : BunitContext
 
         var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
 
-        cut.Find(".text-danger").TextContent.ShouldNotBeNullOrWhiteSpace();
+        cut.Find(".page h1").TextContent.ShouldBe(LessonRes.LessonUnavailableTitle);
+        cut.Find(".empty-state__title").TextContent.ShouldBe(LessonRes.LessonUnavailableTitle);
+        cut.Find(".empty-state__text").TextContent.ShouldBe(LessonRes.LessonNotFoundOrNotEnrolled);
+        cut.Find(".empty-state__icon .bi").ClassList.ShouldContain("bi-search");
+        var backLink = cut.Find("a.empty-state__action");
+        backLink.GetAttribute("href").ShouldBe("/courses");
+        backLink.TextContent.ShouldBe(CourseRes.BackToCourses);
+        cut.FindAll(".text-danger").ShouldBeEmpty();
     }
 
     [Fact]
@@ -122,7 +129,10 @@ public class LessonViewerTests : BunitContext
 
         var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
 
-        cut.Find(".text-danger").ShouldNotBeNull();
+        cut.Find(".empty-state__title").TextContent.ShouldBe(LessonRes.LessonUnavailableTitle);
+        cut.Find(".empty-state__text").TextContent.ShouldBe(LessonRes.FailedToLoadLesson);
+        cut.Find(".empty-state__icon .bi").ClassList.ShouldContain("bi-wifi-off");
+        cut.Find("a.empty-state__action").GetAttribute("href").ShouldBe("/courses");
     }
 
     [Fact]

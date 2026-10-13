@@ -7,15 +7,17 @@
 {
     <LoadingSpinner Label="@LessonRes.LoadingLesson" />
 }
-else if (_error is not null)
+else if (_error is not null || _lesson is null)
 {
-    <p class="text-danger">@_error</p>
-    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.Back</button>
-}
-else if (_lesson is null)
-{
-    <p>@LessonRes.LessonNotFound</p>
-    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.Back</button>
+    @* Without the lesson the course is unknown, so the way out is the programme list. *@
+    <div class="page lesson-container">
+        <h1 class="visually-hidden">@LessonRes.LessonUnavailableTitle</h1>
+        <EmptyState Icon="@(_loadFailed ? "bi-wifi-off" : "bi-search")"
+                    Title="@LessonRes.LessonUnavailableTitle"
+                    Text="@(_error ?? LessonRes.LessonNotFound)"
+                    ActionHref="/courses"
+                    ActionLabel="@CourseRes.BackToCourses" />
+    </div>
 }
 else
 {

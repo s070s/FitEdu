@@ -61,11 +61,11 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back.
+        ///   Looks up a localized string similar to Lesson not available.
         /// </summary>
-        public static string Back {
+        public static string LessonUnavailableTitle {
             get {
-                return ResourceManager.GetString("Back", resourceCulture);
+                return ResourceManager.GetString("LessonUnavailableTitle", resourceCulture);
             }
         }
         

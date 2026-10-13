@@ -104,8 +104,8 @@
 	<data name="LoadingLesson" xml:space="preserve">
 		<value>Φόρτωση μαθήματος...</value>
 	</data>
-	<data name="Back" xml:space="preserve">
-		<value>Πίσω</value>
+	<data name="LessonUnavailableTitle" xml:space="preserve">
+		<value>Το μάθημα δεν είναι διαθέσιμο</value>
 	</data>
 	<data name="LessonNotFound" xml:space="preserve">
 		<value>Το μάθημα δεν βρέθηκε.</value>

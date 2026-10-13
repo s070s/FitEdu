@@ -40,6 +40,7 @@ public partial class LessonViewer
     private bool _loading = true;
     private bool _completing;
     private string? _error;
+    private bool _loadFailed;
     private string? _completionError;
     private bool _mediaError;
     private string? _assetToken;
@@ -91,6 +92,7 @@ public partial class LessonViewer
     {
         _loading = true;
         _error = null;
+        _loadFailed = false;
         _completionResult = null;
         _completionError = null;
         _mediaError = false;
@@ -110,6 +112,7 @@ public partial class LessonViewer
         catch (Exception ex)
         {
             _error = LessonRes.FailedToLoadLesson;
+            _loadFailed = true;
             LogLessonLoadFailed(_logger, ex, LessonId);
         }
         finally
@@ -177,11 +180,6 @@ public partial class LessonViewer
     private void OnMediaError()
     {
         _mediaError = true;
-    }
-
-    private void GoBack()
-    {
-        Navigation.NavigateTo("/courses");
     }
 
     private static string LessonHref(Guid lessonId) => $"/lessons/{lessonId}";
