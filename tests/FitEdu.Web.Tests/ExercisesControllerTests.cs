@@ -2,7 +2,9 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using FitEdu.Application.ApiServices;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Infrastructure.Data;
@@ -121,6 +123,8 @@ public class ExercisesControllerTests : IClassFixture<CustomWebAppFactory>
         var client = _factory.CreateClient();
         var muscle = UniqueSlug("muscle");
         await SeedExerciseAsync(UniqueSlug("facet"), primaryMuscles: muscle);
+        // The facets are cached for a minute; drop any copy an earlier test made so the seed counts.
+        _factory.Services.GetRequiredService<IMemoryCache>().Remove(ExerciseService.FacetsCacheKey);
 
         var facets = await client.GetFromJsonAsync<ExerciseFacetsDto>("/api/exercises/facets");
 

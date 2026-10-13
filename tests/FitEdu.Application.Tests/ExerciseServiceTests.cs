@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiServices;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
@@ -15,7 +16,7 @@ namespace FitEdu.Application.Tests;
 /// </summary>
 public class ExerciseServiceTests
 {
-    private static ExerciseService NewService(ApplicationDbContext db) => new(db);
+    private static ExerciseService NewService(ApplicationDbContext db) => new(db, new MemoryCache(new MemoryCacheOptions()));
 
     private static Exercise NewExercise(string slug, string nameEn) =>
         new()
@@ -282,6 +283,23 @@ public class ExerciseServiceTests
         Joined(facets.Equipment.Select(f => $"{f.Value}={f.Count}")).ShouldBe("body only=1|dumbbell=1");
         Joined(facets.Levels.Select(f => $"{f.Value}={f.Count}")).ShouldBe("beginner=2|intermediate=1");
         Joined(facets.Categories.Select(f => $"{f.Value}={f.Count}")).ShouldBe("strength=2|stretching=1");
+    }
+
+    [Fact]
+    public async Task GetFacets_IsServedFromTheCache()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Exercises.Add(NewExercise("squat", "Squat"));
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+        var first = await service.GetFacetsAsync();
+
+        db.Exercises.Add(NewExercise("lunge", "Lunge"));
+        await db.SaveChangesAsync();
+        var second = await service.GetFacetsAsync();
+
+        first.Levels.ShouldHaveSingleItem().Count.ShouldBe(1);
+        second.Levels.ShouldHaveSingleItem().Count.ShouldBe(1);
     }
 
     // ---- GetPublishedSlugsAsync ------------------------------------------------

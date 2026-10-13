@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.ApiInterfaces;
@@ -21,13 +22,14 @@ public class LandingServiceTests
 
     private readonly ApplicationDbContext _db = DbContextFactory.CreateInMemory();
     private readonly IFileStorage _fileStorage = Substitute.For<IFileStorage>();
+    private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
     private LandingService NewService()
     {
         var reviews = new CourseReviewService(_db, Substitute.For<INotificationDispatcher>(), NullLogger<CourseReviewService>.Instance);
         var courses = new CourseService(_db, Substitute.For<ISubscriptionService>(), Substitute.For<ICertificateService>(),
             reviews, NullLogger<CourseService>.Instance);
-        return new LandingService(_db, courses, _fileStorage);
+        return new LandingService(_db, courses, _fileStorage, _cache);
     }
 
     [Fact]
@@ -95,6 +97,24 @@ public class LandingServiceTests
         var overview = await NewService().GetOverviewAsync("en");
 
         overview.HasCustomHeroImage.ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task Overview_IsServedFromTheCachePerLanguage()
+    {
+        AddCourse("First", published: true, lessonCount: 1);
+        await _db.SaveChangesAsync();
+        var service = NewService();
+        var firstEnglish = await service.GetOverviewAsync("en");
+
+        AddCourse("Second", published: true, lessonCount: 1);
+        await _db.SaveChangesAsync();
+        var cachedEnglish = await service.GetOverviewAsync("en");
+        var freshGreek = await service.GetOverviewAsync("el");
+
+        firstEnglish.CourseCount.ShouldBe(1);
+        cachedEnglish.CourseCount.ShouldBe(1);
+        freshGreek.CourseCount.ShouldBe(2);
     }
 
     [Fact]

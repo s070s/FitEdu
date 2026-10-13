@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -8,13 +9,30 @@ using FitEdu.Domain.Entities;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="ILandingService"/>
-public class LandingService(IApplicationDbContext db, ICourseService courseService, IFileStorage fileStorage) : ILandingService
+public class LandingService(
+    IApplicationDbContext db, ICourseService courseService, IFileStorage fileStorage, IMemoryCache cache) : ILandingService
 {
     public const int FeaturedCourseCount = 6;
 
+    // Every guest's home page asks for the same numbers; a minute-old count is fine for them.
+    public static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(60);
+
     private const string MemberRoleName = "Student";
 
+    // Keyed by the two page languages only, so odd ?lang= values cannot fill the cache.
+    public static string CacheKey(string lang) => Localized.IsEl(lang) ? "landing:el" : "landing:en";
+
     public async Task<LandingOverviewDto> GetOverviewAsync(string lang, CancellationToken cancellationToken = default)
+    {
+        if (cache.TryGetValue(CacheKey(lang), out LandingOverviewDto? cached) && cached is not null)
+            return cached;
+
+        var overview = await LoadOverviewAsync(lang, cancellationToken);
+        cache.Set(CacheKey(lang), overview, CacheDuration);
+        return overview;
+    }
+
+    private async Task<LandingOverviewDto> LoadOverviewAsync(string lang, CancellationToken cancellationToken)
     {
         var courseCount = await db.Courses.CountAsync(c => c.IsPublished, cancellationToken);
         var lessonCount = await db.Lessons.CountAsync(l => l.Module.Course.IsPublished, cancellationToken);

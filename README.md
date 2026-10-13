@@ -232,7 +232,7 @@ The public exercise library (published exercises only). Photos are served from `
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
 | `GET` | `api/exercises` | Paged list ordered by name (`?page=1&pageSize=24&lang=en`; optional `search`, `muscle`, `equipment`, `level`, `category` filters) | No |
-| `GET` | `api/exercises/facets` | Every muscle, equipment, level and category value with its exercise count (drives the filter chips) | No |
+| `GET` | `api/exercises/facets` | Every muscle, equipment, level and category value with its exercise count (drives the filter chips; cached for 60 s) | No |
 | `GET` | `api/exercises/{slug}` | Exercise detail with muscles, force, mechanic and step-by-step instructions (`?lang=en`) | No |
 | `GET` | `api/exercises/{slug}/lessons` | Lessons of published courses that prescribe the exercise (`?lang=en`) | No |
 
@@ -281,7 +281,7 @@ Numbers and showcase for the guest home page in one call.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/landing` | Published course and lesson counts, exercise and member counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`) | No |
+| `GET` | `api/landing` | Published course and lesson counts, exercise and member counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
 
 ### Scheduled Sessions — `api/sessions`
 
@@ -745,7 +745,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Refresh tokens | SHA-256-hashed, single-use rotation; revoked token chain tracked |
 | XSS prevention | All rich-text inputs sanitised with Ganss.Xss (`IHtmlSanitizer`) |
 | Rate limiting | `"auth"` policy (global) on register / login / confirm-email / forgot-password / reset-password; `"assistant"` and `"sensitive"` policies (per-user) on the AI chat endpoint and on state-changing account actions (password change, avatar upload, checkout, assessment submission, account delete/export); `"public"` policy (per caller IP, 120 requests a minute) on the anonymous reads (exercises, landing, the course list/detail/reviews, categories, paths, blog, testimonials, search). The app's own loopback calls are exempt from `"public"`, because every guest's Blazor page reaches the API through them; behind a reverse proxy set `ForwardedHeaders:KnownProxies` so each visitor counts as their own address |
-| Anonymous reads | Open without signing in: `GET api/exercises/*`, `api/landing`, `api/courses`, `api/courses/{id}`, `api/courses/{id}/reviews`, `api/categories`, `api/paths/*`, `api/blog/*`, `api/testimonials`, `api/search`, `api/subscriptions/plans` and `api/certificates/verify/{id}`. A guest gets no enrolment, progress or own review, and never lesson content |
+| Anonymous reads | Open without signing in: `GET api/exercises/*`, `api/landing`, `api/courses`, `api/courses/{id}`, `api/courses/{id}/reviews`, `api/categories`, `api/paths/*`, `api/blog/*`, `api/testimonials`, `api/search`, `api/subscriptions/plans` and `api/certificates/verify/{id}`. A guest gets no enrolment, progress or own review, and never lesson content. The two that every guest page asks for, `api/landing` (one entry per language) and `api/exercises/facets`, are served from a 60-second in-memory cache, so a burst of visitors costs one set of queries a minute |
 | HSTS | Enabled in Production; skipped in Development |
 | Security headers | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (`camera`/`microphone`/`display-capture` allowed same-origin for video calls; `geolocation` denied) |
 | File uploads | Content-type allowlist enforced per upload type (image / PDF / video); extension allowlist on media serve |

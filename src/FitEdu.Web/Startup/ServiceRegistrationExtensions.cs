@@ -237,6 +237,9 @@ public static class ServiceRegistrationExtensions
         // within this process — correct for a single instance, but the invalidation would NOT
         // propagate to a second node. Keep TTLs short and move to a shared cache (Redis) before
         // scaling out; see the accepted-limitations note in docs/plans/35-audit-scalability.md.
+        // The landing overview ("landing:{lang}") and the exercise facets ("exercise-facets") are
+        // not invalidated at all: each simply expires after 60 s, so every node is at most a
+        // minute behind an admin's edit.
         builder.Services.AddMemoryCache();
         builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes);
         builder.Services.AddControllers();
