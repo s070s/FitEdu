@@ -2507,5 +2507,113 @@ namespace FitEdu.Shared.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Article title.
+        /// </summary>
+        public static string BlogTitlePlaceholder {
+            get {
+                return ResourceManager.GetString("BlogTitlePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short description for the article card.
+        /// </summary>
+        public static string BlogSummaryPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogSummaryPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. FitEdu Coaching Team.
+        /// </summary>
+        public static string BlogAuthorPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogAuthorPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Or paste an image URL.
+        /// </summary>
+        public static string CoverUrlPlaceholder {
+            get {
+                return ResourceManager.GetString("CoverUrlPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover preview.
+        /// </summary>
+        public static string CoverPreviewAlt {
+            get {
+                return ResourceManager.GetString("CoverPreviewAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Maria Papadopoulou.
+        /// </summary>
+        public static string TestimonialNamePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Personal trainer.
+        /// </summary>
+        public static string TestimonialRolePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialRolePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Home workouts.
+        /// </summary>
+        public static string TestimonialContextPlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialContextPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What the member says about training with FitEdu (max 1000 characters).
+        /// </summary>
+        public static string TestimonialQuotePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialQuotePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Avatar preview.
+        /// </summary>
+        public static string AvatarPreviewAlt {
+            get {
+                return ResourceManager.GetString("AvatarPreviewAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no label).
+        /// </summary>
+        public static string QuestionNoLabel {
+            get {
+                return ResourceManager.GetString("QuestionNoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Option 1 Option 2 Option 3.
+        /// </summary>
+        public static string OptionsPlaceholder {
+            get {
+                return ResourceManager.GetString("OptionsPlaceholder", resourceCulture);
+            }
+        }
+        
     }
 }

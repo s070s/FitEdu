@@ -4,8 +4,10 @@
 
 <PageTitle>@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)</PageTitle>
 
-<div class="admin-container">
-    <h1 class="h2">@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)</h1>
+<div class="admin-editor admin-editor--narrow">
+    <header class="section-head">
+        <h1>@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)</h1>
+    </header>
 
     @if (_error is not null)
     {
@@ -14,18 +16,18 @@
 
     <UnsavedChangesGuard IsDirty="_isDirty" />
 
-    <div class="row g-3" style="max-width: 700px;" @oninput="MarkDirty" @onchange="MarkDirty">
+    <div class="row g-3" @oninput="MarkDirty" @onchange="MarkDirty">
 
         <div class="col-12">
             <label class="form-label" for="t-fullname">@AdminRes.FieldFullName <span class="text-danger" aria-hidden="true">*</span></label>
             <input id="t-fullname" type="text" class="form-control" @bind="_fullName" maxlength="150"
-                   placeholder="e.g. Maria Papadopoulou" />
+                   placeholder="@AdminRes.TestimonialNamePlaceholder" />
         </div>
 
         <div class="col-md-6">
             <label class="form-label" for="t-role">@AdminRes.FieldRoleTitle</label>
             <input id="t-role" type="text" class="form-control" @bind="_roleOrTitle" maxlength="150"
-                   placeholder="e.g. Personal trainer" />
+                   placeholder="@AdminRes.TestimonialRolePlaceholder" />
         </div>
 
         <div class="col-md-6">
@@ -36,13 +38,13 @@
         <div class="col-md-6">
             <label class="form-label" for="t-company">@AdminRes.FieldCompanyContext</label>
             <input id="t-company" type="text" class="form-control" @bind="_companyOrContext" maxlength="150"
-                   placeholder="e.g. Home workouts" />
+                   placeholder="@AdminRes.TestimonialContextPlaceholder" />
         </div>
 
         <div class="col-12">
             <label class="form-label" for="t-quote">@AdminRes.FieldQuote <span class="text-danger" aria-hidden="true">*</span></label>
             <textarea id="t-quote" class="form-control" rows="4" @bind="_quoteText" maxlength="1000"
-                      placeholder="The testimonial quote (max 1000 characters)"></textarea>
+                      placeholder="@AdminRes.TestimonialQuotePlaceholder"></textarea>
             <div class="form-text">@(_quoteText?.Length ?? 0) / 1000</div>
         </div>
 
@@ -58,7 +60,7 @@
             <div class="form-text">@AdminRes.DisplayOrderHint</div>
         </div>
 
-        <div class="col-md-4 align-self-end">
+        <div class="col-md-8 align-self-end">
             <div class="form-check mb-2">
                 <input type="checkbox" class="form-check-input" id="isActive" @bind="_isActive" />
                 <label class="form-check-label" for="isActive">@AdminRes.FieldActiveLandingLabel</label>
@@ -70,13 +72,12 @@
         {
             <div class="col-12">
                 <hr class="my-2" />
-                <label class="form-label">@AdminRes.FieldAvatarPhoto</label>
+                <label class="form-label" for="t-avatar">@AdminRes.FieldAvatarPhoto</label>
 
                 @if (!string.IsNullOrEmpty(_avatarPreviewUrl))
                 {
-                    <div class="mb-2 d-flex align-items-center gap-3">
-                        <img src="@_avatarPreviewUrl" alt="Avatar preview"
-                             style="width:80px;height:80px;object-fit:cover;border-radius:50%;border:2px solid #444;" />
+                    <div class="mb-2 d-flex flex-wrap align-items-center gap-3">
+                        <img src="@_avatarPreviewUrl" alt="@AdminRes.AvatarPreviewAlt" class="avatar-preview" width="80" height="80" />
                         <button type="button" class="btn btn-sm btn-outline-danger" @onclick="RemoveAvatar"
                                 disabled="@_isBusy">@AdminRes.Remove</button>
                     </div>
@@ -90,8 +91,7 @@
                     </div>
                 }
 
-                <InputFile OnChange="OnAvatarFileSelected" accept="image/*" class="form-control"
-                           style="max-width:300px;" aria-label="@AdminRes.FieldAvatarPhoto" />
+                <InputFile id="t-avatar" OnChange="OnAvatarFileSelected" accept="image/*" class="form-control avatar-file-input" />
                 <div class="form-text">@AdminRes.AvatarHint</div>
             </div>
         }
@@ -106,11 +106,11 @@
 
     </div>
 
-    <div class="d-flex gap-2 mt-4">
+    <div class="form-actions sticky-bottom-bar">
         <button class="btn btn-primary" @onclick="Save" disabled="@_isBusy">
             @if (_isBusy)
             {
-                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             }
             @AdminRes.Save
         </button>

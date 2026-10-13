@@ -178,7 +178,7 @@ public partial class AdminBlogEditor
             _isDirty = false;
             Navigation.NavigateTo("/admin/blog");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _error = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }

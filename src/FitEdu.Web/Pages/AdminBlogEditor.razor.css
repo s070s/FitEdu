@@ -1,10 +1,36 @@
+/* Language column titles and the shared-fields title: small and quiet, with a language chip. */
+.blog-lang-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    color: var(--text-light-muted);
+    font-size: var(--fs-5);
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.cover-preview-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
 .cover-preview {
-    max-width: 320px;
-    max-height: 180px;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-subtle);
     display: block;
-    margin-bottom: 0.5rem;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+/* InputFile is a child component, so its input only takes this page's styles through ::deep. */
+::deep .cover-file-input {
+    max-width: 20rem;
 }

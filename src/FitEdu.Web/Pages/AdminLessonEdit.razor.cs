@@ -66,7 +66,7 @@ public partial class AdminLessonEdit
         {
             lessons = await LessonConsumer.GetLessonsByModuleAsync(ModuleId);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -199,7 +199,7 @@ public partial class AdminLessonEdit
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -245,7 +245,7 @@ public partial class AdminLessonEdit
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

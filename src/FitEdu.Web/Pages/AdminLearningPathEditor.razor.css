@@ -1,27 +1,65 @@
 .step-list {
     list-style: none;
-    margin: 0.5rem 0 0;
+    margin: var(--space-2) 0 0;
     padding: 0;
-    max-width: 700px;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
 }
 
+/* Step row: move buttons, number and course title; Remove stays right and wraps under on phones. */
 .step-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-2) var(--space-3);
     border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-surface);
+    padding: var(--space-2) var(--space-3);
+}
+
+.step-row__move {
+    display: flex;
+    gap: var(--space-1);
 }
 
 .step-order {
-    font-weight: 600;
-    color: var(--text-light-muted);
+    font-weight: 700;
+    color: var(--text-strong-accent);
+    font-variant-numeric: tabular-nums;
 }
 
 .step-course-title {
+    flex: 1 1 10rem;
+    min-width: 0;
     color: var(--text-light-normal);
+    overflow-wrap: anywhere;
+}
+
+.step-row__remove {
+    margin-left: auto;
+}
+
+/* Course picker and Add button: one row from 576 px, stacked on phones. */
+.step-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+    .step-add .form-select {
+        flex: 1 1 16rem;
+        min-width: 0;
+    }
+
+    .step-add .btn {
+        flex: 0 0 auto;
+    }
+
+@media (max-width: 575.98px) {
+    .step-add .btn {
+        flex: 1 1 100%;
+    }
 }

@@ -196,7 +196,7 @@
     <value>+ Προσθήκη Ενότητας</value>
   </data>
   <data name="NoQuestions" xml:space="preserve">
-    <value>Δεν υπάρχουν ερωτήσεις ακόμα. Κάντε κλικ στο «Προσθήκη Ερώτησης» για να ξεκινήσετε.</value>
+    <value>Δεν υπάρχουν ερωτήσεις ακόμα. Πάτησε «Προσθήκη ερώτησης» για να ξεκινήσεις.</value>
   </data>
   <data name="QuestionNumber" xml:space="preserve">
     <value>Ερώτηση {0}</value>
@@ -217,7 +217,7 @@
     <value>Βαθμολόγηση (κλίμακα)</value>
   </data>
   <data name="TypeChoice" xml:space="preserve">
-    <value>Επιλογή (επιλέξτε ένα)</value>
+    <value>Επιλογή (διάλεξε ένα)</value>
   </data>
   <data name="TypeMultiSelect" xml:space="preserve">
     <value>Πολλαπλή επιλογή (επίλεξε όσα θέλεις)</value>
@@ -235,7 +235,7 @@
     <value>Ετικέτα / Κείμενο Ερώτησης</value>
   </data>
   <data name="QuestionLabelPlaceholder" xml:space="preserve">
-    <value>Εισάγετε το κείμενο της ερώτησης...</value>
+    <value>Γράψε το κείμενο της ερώτησης…</value>
   </data>
   <data name="FieldMin" xml:space="preserve">
     <value>Ελάχιστο</value>
@@ -355,7 +355,7 @@
     <value>Αποθήκευση Μαθήματος</value>
   </data>
   <data name="SaveCourseFirstHint" xml:space="preserve">
-    <value>Αποθηκεύστε πρώτα το μάθημα, και στη συνέχεια μπορείτε να προσθέσετε &lt;strong&gt;Ενότητες&lt;/strong&gt;, &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή WYSIWYG, βίντεο, PDF), να προεπισκοπήσετε τη δομή και να δημοσιεύσετε.</value>
+    <value>Αποθήκευσε πρώτα το μάθημα. Μετά μπορείς να προσθέσεις &lt;strong&gt;Ενότητες&lt;/strong&gt; και &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
   </data>
   <data name="ModulesAndLessons" xml:space="preserve">
     <value>Ενότητες &amp; Μαθήματα</value>
@@ -367,7 +367,7 @@
     <value>Φόρτωση ενοτήτων...</value>
   </data>
   <data name="NoModules" xml:space="preserve">
-    <value>Δεν υπάρχουν ενότητες ακόμα. Προσθέστε μία για να ξεκινήσετε.</value>
+    <value>Δεν υπάρχουν ενότητες ακόμα. Πρόσθεσε μία για να ξεκινήσεις.</value>
   </data>
   <data name="LessonsCountFormat" xml:space="preserve">
     <value>{0} μάθημα/τα</value>
@@ -430,7 +430,7 @@
     <value>URL Βίντεο (YouTube embed ή απευθείας σύνδεσμος)</value>
   </data>
   <data name="VideoUrlHint" xml:space="preserve">
-    <value>Επικολλήστε URL YouTube embed ή απευθείας σύνδεσμο βίντεο. Αυτό έχει προτεραιότητα έναντι αρχείων και κειμένου.</value>
+    <value>Επικόλλησε ένα URL ενσωμάτωσης YouTube ή έναν απευθείας σύνδεσμο βίντεο. Έχει προτεραιότητα έναντι αρχείων και κειμένου.</value>
   </data>
   <data name="UploadPdf" xml:space="preserve">
     <value>Μεταφόρτωση PDF</value>
@@ -682,7 +682,7 @@
     <value>JPEG, PNG, GIF ή WebP · Μέγ. 5 MB</value>
   </data>
   <data name="AvatarSaveFirstHint" xml:space="preserve">
-    <value>Αποθηκεύστε πρώτα το Testimonial και έπειτα ανεβάστε avatar από τη φόρμα επεξεργασίας.</value>
+    <value>Αποθήκευσε πρώτα τη μαρτυρία και μετά ανέβασε φωτογραφία από τη φόρμα επεξεργασίας.</value>
   </data>
   <data name="RequiredTier" xml:space="preserve">
     <value>Απαιτούμενο πακέτο συνδρομής</value>
@@ -814,7 +814,7 @@
     <value>Απέτυχε η μεταφόρτωση της εικόνας εξωφύλλου.</value>
   </data>
   <data name="SlugInUse" xml:space="preserve">
-    <value>Το slug χρησιμοποιείται ήδη. Επιλέξτε διαφορετικό slug.</value>
+    <value>Το slug χρησιμοποιείται ήδη. Διάλεξε άλλο.</value>
   </data>
   <data name="TestimonialDeleted" xml:space="preserve">
     <value>Η μαρτυρία διαγράφηκε.</value>
@@ -832,7 +832,7 @@
     <value>Η μαρτυρία απενεργοποιήθηκε.</value>
   </data>
   <data name="TestimonialSaveFailed" xml:space="preserve">
-    <value>Απέτυχε η αποθήκευση της μαρτυρίας. Δοκιμάστε ξανά.</value>
+    <value>Η αποθήκευση της μαρτυρίας απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="AvatarUploadFailed" xml:space="preserve">
     <value>Απέτυχε η μεταφόρτωση της εικόνας. Ελέγξτε τον τύπο και το μέγεθος του αρχείου (έως 5 MB).</value>
@@ -932,5 +932,43 @@
   </data>
   <data name="Notes" xml:space="preserve">
     <value>Σημειώσεις</value>
+  </data>
+  <data name="BlogTitlePlaceholder" xml:space="preserve">
+    <value>Τίτλος άρθρου</value>
+  </data>
+  <data name="BlogSummaryPlaceholder" xml:space="preserve">
+    <value>Σύντομη περιγραφή για την κάρτα του άρθρου</value>
+  </data>
+  <data name="BlogAuthorPlaceholder" xml:space="preserve">
+    <value>π.χ. Ομάδα προπονητών FitEdu</value>
+  </data>
+  <data name="CoverUrlPlaceholder" xml:space="preserve">
+    <value>Ή επικόλλησε τη διεύθυνση μιας εικόνας</value>
+  </data>
+  <data name="CoverPreviewAlt" xml:space="preserve">
+    <value>Προεπισκόπηση εξωφύλλου</value>
+  </data>
+  <data name="TestimonialNamePlaceholder" xml:space="preserve">
+    <value>π.χ. Μαρία Παπαδοπούλου</value>
+  </data>
+  <data name="TestimonialRolePlaceholder" xml:space="preserve">
+    <value>π.χ. Προσωπικός γυμναστής</value>
+  </data>
+  <data name="TestimonialContextPlaceholder" xml:space="preserve">
+    <value>π.χ. Προπόνηση στο σπίτι</value>
+  </data>
+  <data name="TestimonialQuotePlaceholder" xml:space="preserve">
+    <value>Τι λέει το μέλος για την προπόνηση με το FitEdu (έως 1000 χαρακτήρες)</value>
+  </data>
+  <data name="AvatarPreviewAlt" xml:space="preserve">
+    <value>Προεπισκόπηση φωτογραφίας</value>
+  </data>
+  <data name="QuestionNoLabel" xml:space="preserve">
+    <value>(χωρίς ετικέτα)</value>
+  </data>
+  <data name="OptionsPlaceholder" xml:space="preserve">
+    <value>Επιλογή 1
+Επιλογή 2
+Επιλογή 3</value>
   </data>
 </root>

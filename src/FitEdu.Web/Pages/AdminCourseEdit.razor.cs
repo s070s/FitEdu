@@ -142,7 +142,7 @@ public partial class AdminCourseEdit
                 coverExerciseSlugInvalid = false;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -206,7 +206,7 @@ public partial class AdminCourseEdit
                 await Task.WhenAll(modules.Select(m => LoadLessonsForModule(m.Id)));
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -292,7 +292,7 @@ public partial class AdminCourseEdit
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -393,7 +393,7 @@ public partial class AdminCourseEdit
                     messageType = "danger";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 message = ErrorMessagesRes.UnexpectedErrorTryAgain;
                 messageType = "danger";
@@ -419,7 +419,7 @@ public partial class AdminCourseEdit
                     messageType = "danger";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 message = ErrorMessagesRes.UnexpectedErrorTryAgain;
                 messageType = "danger";
@@ -448,7 +448,7 @@ public partial class AdminCourseEdit
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -466,7 +466,7 @@ public partial class AdminCourseEdit
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

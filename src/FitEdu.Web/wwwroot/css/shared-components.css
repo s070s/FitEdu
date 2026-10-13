@@ -972,3 +972,41 @@ a.card-surface {
         text-align: center;
     }
 }
+
+/* ================================================================
+   FitEdu admin editors (Phase D13): one capped column, a wrapping
+   page head (.section-head) and wrapping action rows
+   ================================================================ */
+
+/* Editor page frame: wide enough for the EN/EL column pairs, never a full 1440 px line. */
+.admin-editor {
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+}
+
+/* Single-column forms (testimonial, learning path) read better narrower. */
+.admin-editor--narrow {
+    max-width: 46rem;
+}
+
+/* FormCardSection headers: the title and its buttons wrap instead of pushing past 375 px. */
+.admin-editor .card-header {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Save / cancel row. Add .sticky-bottom-bar on long forms so Save stays in reach on phones. */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block: var(--space-4);
+}
+
+@media (max-width: 575.98px) {
+    .form-actions > .btn {
+        flex: 1 1 8rem;
+    }
+}

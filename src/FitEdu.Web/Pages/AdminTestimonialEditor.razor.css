@@ -1,0 +1,25 @@
+/* Avatar: the uploaded photo in a lime-ringed circle, or the initials when there is none. */
+.avatar-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(var(--text-strong-accent-rgb), 0.5);
+}
+
+.avatar-placeholder-initials {
+    display: inline-grid;
+    place-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* InputFile is a child component, so its input only takes this page's styles through ::deep. */
+::deep .avatar-file-input {
+    max-width: 20rem;
+}

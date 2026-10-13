@@ -914,4 +914,42 @@
   <data name="Notes" xml:space="preserve">
     <value>Notes</value>
   </data>
+  <data name="BlogTitlePlaceholder" xml:space="preserve">
+    <value>Article title</value>
+  </data>
+  <data name="BlogSummaryPlaceholder" xml:space="preserve">
+    <value>Short description for the article card</value>
+  </data>
+  <data name="BlogAuthorPlaceholder" xml:space="preserve">
+    <value>e.g. FitEdu Coaching Team</value>
+  </data>
+  <data name="CoverUrlPlaceholder" xml:space="preserve">
+    <value>Or paste an image URL</value>
+  </data>
+  <data name="CoverPreviewAlt" xml:space="preserve">
+    <value>Cover preview</value>
+  </data>
+  <data name="TestimonialNamePlaceholder" xml:space="preserve">
+    <value>e.g. Maria Papadopoulou</value>
+  </data>
+  <data name="TestimonialRolePlaceholder" xml:space="preserve">
+    <value>e.g. Personal trainer</value>
+  </data>
+  <data name="TestimonialContextPlaceholder" xml:space="preserve">
+    <value>e.g. Home workouts</value>
+  </data>
+  <data name="TestimonialQuotePlaceholder" xml:space="preserve">
+    <value>What the member says about training with FitEdu (max 1000 characters)</value>
+  </data>
+  <data name="AvatarPreviewAlt" xml:space="preserve">
+    <value>Avatar preview</value>
+  </data>
+  <data name="QuestionNoLabel" xml:space="preserve">
+    <value>(no label)</value>
+  </data>
+  <data name="OptionsPlaceholder" xml:space="preserve">
+    <value>Option 1
+Option 2
+Option 3</value>
+  </data>
 </root>

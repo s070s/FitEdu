@@ -1,0 +1,28 @@
+/* Question card: a lime edge marks each question inside its section card. */
+.question-card {
+    border-left: 3px solid rgba(var(--text-strong-accent-rgb), 0.7);
+}
+
+/* Question header: number and label preview on the left, move/remove buttons and chevron on the
+   right. The preview text shrinks and wraps, so the buttons never push past a 375 px screen. */
+.card-header.question-header {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.question-header__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.question-header__actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--space-1);
+}

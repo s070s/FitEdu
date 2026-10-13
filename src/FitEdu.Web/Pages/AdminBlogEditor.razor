@@ -5,8 +5,10 @@
 
 <PageTitle>@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)</PageTitle>
 
-<div class="admin-container">
-    <h1 class="h2">@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)</h1>
+<div class="admin-editor">
+    <header class="section-head">
+        <h1>@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)</h1>
+    </header>
 
     @if (_error is not null)
     {
@@ -18,52 +20,52 @@
     <div @oninput="MarkDirty" @onchange="MarkDirty">
     <div class="row g-4">
         <!-- Left column: English content -->
-        <div class="col-md-6">
-            <h5 class="text-light-muted mb-3"><span aria-hidden="true">🇬🇧</span> @AdminRes.BlogLangEnglish</h5>
+        <section class="col-lg-6" aria-labelledby="blog-lang-en">
+            <h2 id="blog-lang-en" class="blog-lang-title"><span class="chip chip--lime" aria-hidden="true">EN</span> @AdminRes.BlogLangEnglish</h2>
 
             <div class="mb-3">
                 <label class="form-label" for="blog-title-en">@AdminRes.FieldTitle <span class="text-danger" aria-hidden="true">*</span></label>
                 <input id="blog-title-en" type="text" class="form-control" value="@_titleEn"
-                       @oninput="OnTitleEnInput" placeholder="Article title" />
+                       @oninput="OnTitleEnInput" placeholder="@AdminRes.BlogTitlePlaceholder" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label" for="blog-summary-en">@AdminRes.FieldSummary <span class="text-danger" aria-hidden="true">*</span></label>
                 <textarea id="blog-summary-en" class="form-control" rows="3" maxlength="500"
-                          @bind="_summaryEn" placeholder="Short description shown on the landing page card"></textarea>
+                          @bind="_summaryEn" placeholder="@AdminRes.BlogSummaryPlaceholder"></textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">@AdminRes.FieldContent <span class="text-danger" aria-hidden="true">*</span></label>
                 <QuillEditor @ref="_editorEn" Content="@_contentEn" MinHeight="400px" />
             </div>
-        </div>
+        </section>
 
         <!-- Right column: Greek content -->
-        <div class="col-md-6">
-            <h5 class="text-light-muted mb-3"><span aria-hidden="true">🇬🇷</span> @AdminRes.BlogLangGreek</h5>
+        <section class="col-lg-6" aria-labelledby="blog-lang-el">
+            <h2 id="blog-lang-el" class="blog-lang-title"><span class="chip chip--teal" aria-hidden="true">EL</span> @AdminRes.BlogLangGreek</h2>
 
             <div class="mb-3">
-                <label class="form-label">Τίτλος</label>
-                <input type="text" class="form-control" @bind="_titleEl" placeholder="Τίτλος άρθρου" />
+                <label class="form-label" for="blog-title-el">@AdminRes.FieldTitle</label>
+                <input id="blog-title-el" type="text" class="form-control" lang="el" @bind="_titleEl" placeholder="@AdminRes.BlogTitlePlaceholder" />
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Σύνοψη</label>
-                <textarea class="form-control" rows="3" maxlength="500"
-                          @bind="_summaryEl" placeholder="Σύντομη περιγραφή για την κάρτα στην αρχική σελίδα"></textarea>
+                <label class="form-label" for="blog-summary-el">@AdminRes.FieldSummary</label>
+                <textarea id="blog-summary-el" class="form-control" rows="3" maxlength="500" lang="el"
+                          @bind="_summaryEl" placeholder="@AdminRes.BlogSummaryPlaceholder"></textarea>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Περιεχόμενο</label>
+                <label class="form-label">@AdminRes.FieldContent</label>
                 <QuillEditor @ref="_editorEl" Content="@_contentEl" MinHeight="400px" />
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Shared fields -->
     <hr class="my-4" />
-    <h5 class="text-light-muted mb-3">@AdminRes.SharedFields</h5>
+    <h2 class="blog-lang-title">@AdminRes.SharedFields</h2>
 
     <div class="row g-3">
         <div class="col-md-6">
@@ -75,27 +77,27 @@
 
         <div class="col-md-6">
             <label class="form-label" for="blog-author">@AdminRes.FieldAuthorName <span class="text-danger" aria-hidden="true">*</span></label>
-            <input id="blog-author" type="text" class="form-control" @bind="_authorName" placeholder="e.g. FitEdu Team" />
+            <input id="blog-author" type="text" class="form-control" @bind="_authorName" placeholder="@AdminRes.BlogAuthorPlaceholder" />
         </div>
 
         <div class="col-md-8">
-            <label class="form-label">@AdminRes.FieldCoverImage</label>
+            <label class="form-label" for="blog-cover-file">@AdminRes.FieldCoverImage</label>
             @if (!string.IsNullOrEmpty(_coverImageUrl))
             {
-                <div class="mb-2">
-                    <img src="@_coverImageUrl" alt="Cover preview" class="cover-preview" />
-                    <button type="button" class="btn btn-sm btn-outline-danger ms-2" @onclick="RemoveCover">@AdminRes.Remove</button>
+                <div class="cover-preview-row">
+                    <img src="@_coverImageUrl" alt="@AdminRes.CoverPreviewAlt" class="cover-preview" width="320" height="180" />
+                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="RemoveCover">@AdminRes.Remove</button>
                 </div>
             }
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <InputFile OnChange="OnCoverFileSelected" accept="image/*" class="form-control" style="max-width:280px;" aria-label="@AdminRes.FieldCoverImage" />
+                <InputFile id="blog-cover-file" OnChange="OnCoverFileSelected" accept="image/*" class="form-control cover-file-input" />
                 @if (!_isEditMode)
                 {
                     <small class="form-text">@AdminRes.CoverUploadHint</small>
                 }
             </div>
             <div class="mt-2">
-                <input type="text" class="form-control form-control-sm" @bind="_coverImageUrl" placeholder="Or paste an image URL" />
+                <input type="text" class="form-control form-control-sm" @bind="_coverImageUrl" placeholder="@AdminRes.CoverUrlPlaceholder" aria-label="@AdminRes.CoverUrlPlaceholder" />
             </div>
         </div>
 
@@ -115,11 +117,11 @@
     </div>
     </div>
 
-    <div class="d-flex gap-2 mt-4">
+    <div class="form-actions sticky-bottom-bar">
         <button class="btn btn-primary" @onclick="Save" disabled="@_isBusy">
             @if (_isBusy)
             {
-                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             }
             @AdminRes.Save
         </button>

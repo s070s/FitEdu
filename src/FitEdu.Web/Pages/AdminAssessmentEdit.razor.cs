@@ -93,7 +93,7 @@ public partial class AdminAssessmentEdit
                 schema = AssessmentSchemaMapper.Parse(assessment.SchemaJson);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
@@ -243,7 +243,7 @@ public partial class AdminAssessmentEdit
             else
                 message = AdminRes.AssessmentSaveFailed;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }

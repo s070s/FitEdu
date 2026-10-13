@@ -158,7 +158,7 @@ public partial class AdminTestimonialEditor
             _isDirty = false;
             Navigation.NavigateTo("/admin/testimonials");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _error = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
