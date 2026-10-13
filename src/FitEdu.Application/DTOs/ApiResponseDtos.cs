@@ -29,7 +29,8 @@ public record AdminUserDetailDto(
     DateTime? GdprConsentDate,
     bool ParentalConsentGiven,
     DateTime CreatedAt,
-    IReadOnlyList<string> Roles);
+    IReadOnlyList<string> Roles,
+    string? Goal = null);
 
 /// <summary>Lightweight user match returned by <c>GET /api/admin/users/search</c>.</summary>
 public record AdminUserSearchResultDto(

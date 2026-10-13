@@ -49,7 +49,7 @@
 		<value>Όνομα (EL)</value>
 	</data>
 	<data name="ColCourseCount" xml:space="preserve">
-		<value>Μαθήματα</value>
+		<value>Προγράμματα</value>
 	</data>
 	<data name="ColAssessmentCount" xml:space="preserve">
 		<value>Αξιολογήσεις</value>
@@ -61,13 +61,13 @@
 		<value>Ενέργειες</value>
 	</data>
 	<data name="AddCategory" xml:space="preserve">
-		<value>Προσθήκη Κατηγορίας</value>
+		<value>Προσθήκη κατηγορίας</value>
 	</data>
 	<data name="Rename" xml:space="preserve">
 		<value>Μετονομασία</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Διαγραφή '{0}'; {1} μάθημα/τα και {2} αξιολόγηση/εις θα μείνουν χωρίς κατηγορία.</value>
+		<value>Διαγραφή «{0}»; Θα μείνουν χωρίς κατηγορία. Προγράμματα: {1} · Αξιολογήσεις: {2}</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>Δεν υπάρχουν ακόμα κατηγορίες.</value>
@@ -88,7 +88,7 @@
 		<value>Αναζήτηση...</value>
 	</data>
 	<data name="NoMatchingResults" xml:space="preserve">
-		<value>Κανένα αποτέλεσμα δεν ταιριάζει με τα φίλτρα σας.</value>
+		<value>Κανένα αποτέλεσμα δεν ταιριάζει με τα φίλτρα σου.</value>
 	</data>
 	<data name="NoneCategory" xml:space="preserve">
 		<value>— Καμία —</value>
@@ -113,5 +113,11 @@
 	</data>
 	<data name="ErrorDeletingCategory" xml:space="preserve">
 		<value>Σφάλμα κατά τη διαγραφή της κατηγορίας</value>
+	</data>
+	<data name="Filters" xml:space="preserve">
+		<value>Φίλτρα</value>
+	</data>
+	<data name="ClearFilters" xml:space="preserve">
+		<value>Καθαρισμός φίλτρων</value>
 	</data>
 </root>

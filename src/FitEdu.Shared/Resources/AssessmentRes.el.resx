@@ -102,43 +102,43 @@
 		<value>Φόρτωση...</value>
 	</data>
 	<data name="SubmittedTitle" xml:space="preserve">
-		<value>Η Αξιολόγηση Υποβλήθηκε Επιτυχώς!</value>
+		<value>Η αξιολόγηση υποβλήθηκε επιτυχώς!</value>
 	</data>
 	<data name="SubmittedMessage" xml:space="preserve">
-		<value>Ευχαριστούμε που συμπληρώσατε την αξιολόγηση.</value>
+		<value>Ευχαριστούμε που συμπλήρωσες την αξιολόγηση.</value>
 	</data>
 	<data name="ViewSubmissions" xml:space="preserve">
-		<value>Δείτε τις Υποβολές μου</value>
+		<value>Οι υποβολές μου</value>
 	</data>
 	<data name="SelectPlaceholder" xml:space="preserve">
-		<value>-- Επιλέξτε --</value>
+		<value>-- Επίλεξε --</value>
 	</data>
 	<data name="SubmitAssessment" xml:space="preserve">
-		<value>Υποβολή Αξιολόγησης</value>
+		<value>Υποβολή αξιολόγησης</value>
 	</data>
 	<data name="HistoryTitle" xml:space="preserve">
-		<value>Οι Υποβολές Αξιολόγησης μου</value>
+		<value>Οι αξιολογήσεις μου</value>
 	</data>
 	<data name="NoSubmissionsMessage" xml:space="preserve">
-		<value>Δεν έχετε υποβάλει αξιολογήσεις ακόμα.</value>
+		<value>Δεν έχεις υποβάλει ακόμα καμία αξιολόγηση.</value>
 	</data>
 	<data name="TakeAssessment" xml:space="preserve">
-		<value>Κάντε μια Αξιολόγηση</value>
+		<value>Κάνε μια αξιολόγηση</value>
 	</data>
 	<data name="LatestSubmission" xml:space="preserve">
-		<value>Τελευταία Υποβολή</value>
+		<value>Τελευταία υποβολή</value>
 	</data>
 	<data name="SubmittedLabel" xml:space="preserve">
 		<value>Υποβλήθηκε:</value>
 	</data>
 	<data name="ViewDetails" xml:space="preserve">
-		<value>Προβολή Λεπτομερειών</value>
+		<value>Προβολή λεπτομερειών</value>
 	</data>
 	<data name="SubmissionsItemLabel" xml:space="preserve">
 		<value>υποβολές</value>
 	</data>
 	<data name="AllSubmissions" xml:space="preserve">
-		<value>Όλες οι Υποβολές</value>
+		<value>Όλες οι υποβολές</value>
 	</data>
 	<data name="AssessmentHeader" xml:space="preserve">
 		<value>Αξιολόγηση</value>
@@ -156,7 +156,7 @@
 		<value>Προβολή</value>
 	</data>
 	<data name="YourAnswers" xml:space="preserve">
-		<value>Οι Απαντήσεις σας:</value>
+		<value>Οι απαντήσεις σου:</value>
 	</data>
 	<data name="SummaryLabel" xml:space="preserve">
 		<value>Σύνοψη:</value>
@@ -168,7 +168,7 @@
 		<value>Αξιολογήσεις - FitEdu</value>
 	</data>
 	<data name="AvailableAssessments" xml:space="preserve">
-		<value>Διαθέσιμες Αξιολογήσεις</value>
+		<value>Διαθέσιμες αξιολογήσεις</value>
 	</data>
 	<data name="LoadingAssessments" xml:space="preserve">
 		<value>Φόρτωση αξιολογήσεων...</value>
@@ -189,27 +189,81 @@
 		<value>Επόμ.</value>
 	</data>
 	<data name="FailedToLoad" xml:space="preserve">
-		<value>Αποτυχία φόρτωσης αξιολογήσεων. Δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση των αξιολογήσεων. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="UpgradeDescription" xml:space="preserve">
-		<value>Οι αξιολογήσεις είναι διαθέσιμες στο πλάνο Plus και άνω. Αναβαθμίστε για να ξεκλειδώσετε όλες τις αξιολογήσεις.</value>
+		<value>Οι αξιολογήσεις είναι διαθέσιμες στο πλάνο Plus και πάνω. Αναβάθμισε για να ξεκλειδώσεις όλες τις αξιολογήσεις.</value>
 	</data>
 	<data name="Start" xml:space="preserve">
 		<value>Έναρξη</value>
 	</data>
 	<data name="Back" xml:space="preserve">
-		<value>← Πίσω</value>
+		<value>Πίσω</value>
 	</data>
 	<data name="FailedToLoadAssessment" xml:space="preserve">
-		<value>Αποτυχία φόρτωσης αυτής της αξιολόγησης. Δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση αυτής της αξιολόγησης. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="AssessmentNotFound" xml:space="preserve">
 		<value>Αυτή η αξιολόγηση δεν βρέθηκε.</value>
 	</data>
 	<data name="SubmitFailed" xml:space="preserve">
-		<value>Αποτυχία υποβολής της αξιολόγησής σας. Δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η υποβολή της αξιολόγησής σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="RequiredQuestionMissing" xml:space="preserve">
-		<value>Παρακαλώ απαντήστε σε όλες τις υποχρεωτικές ερωτήσεις πριν την υποβολή.</value>
+		<value>Απάντησε σε όλες τις υποχρεωτικές ερωτήσεις πριν την υποβολή.</value>
+	</data>
+	<data name="AssessmentsEyebrow" xml:space="preserve">
+		<value>Αυτοαξιολογήσεις</value>
+	</data>
+	<data name="AssessmentsIntro" xml:space="preserve">
+		<value>Σύντομοι έλεγχοι για την προπόνηση, την αποκατάσταση και τις συνήθειές σου. Οι απαντήσεις σου σε βοηθούν να διαλέξεις από πού να ξεκινήσεις.</value>
+	</data>
+	<data name="CompletedCountFormat" xml:space="preserve">
+		<value>{0} από {1} ολοκληρωμένες</value>
+	</data>
+	<data name="QuestionsCountFormat" xml:space="preserve">
+		<value>{0} ερωτήσεις</value>
+	</data>
+	<data name="QuestionCountOne" xml:space="preserve">
+		<value>1 ερώτηση</value>
+	</data>
+	<data name="EstimatedMinutesFormat" xml:space="preserve">
+		<value>~{0} λεπτά</value>
+	</data>
+	<data name="CompletedBadge" xml:space="preserve">
+		<value>Ολοκληρωμένη</value>
+	</data>
+	<data name="Retake" xml:space="preserve">
+		<value>Επανάληψη</value>
+	</data>
+	<data name="SectionOfFormat" xml:space="preserve">
+		<value>Ενότητα {0} από {1}</value>
+	</data>
+	<data name="NextSection" xml:space="preserve">
+		<value>Επόμενη ενότητα</value>
+	</data>
+	<data name="PreviousSection" xml:space="preserve">
+		<value>Προηγούμενη ενότητα</value>
+	</data>
+	<data name="AnsweredCountFormat" xml:space="preserve">
+		<value>{0} από {1} απαντημένες</value>
+	</data>
+	<data name="RequiredLabel" xml:space="preserve">
+		<value>υποχρεωτική</value>
+	</data>
+	<data name="RequiredLegend" xml:space="preserve">
+		<value>Οι ερωτήσεις με * είναι υποχρεωτικές.</value>
+	</data>
+	<data name="AllAssessments" xml:space="preserve">
+		<value>Όλες οι αξιολογήσεις</value>
+	</data>
+	<data name="HistoryIntro" xml:space="preserve">
+		<value>Όλες οι αυτοαξιολογήσεις που έχεις στείλει. Άνοιξε μία για να δεις ξανά τις απαντήσεις σου.</value>
+	</data>
+	<data name="QuestionRequired" xml:space="preserve">
+		<value>Απάντησε σε αυτή την ερώτηση.</value>
+	</data>
+	<data name="PaginationAriaLabel" xml:space="preserve">
+		<value>Σελίδες αξιολογήσεων</value>
 	</data>
 </root>

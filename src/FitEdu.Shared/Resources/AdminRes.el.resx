@@ -118,28 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Πίνακας Στατιστικών</value>
+    <value>Πίνακας στατιστικών</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Φόρτωση...</value>
   </data>
   <data name="TotalUsers" xml:space="preserve">
-    <value>Συνολικοί Χρήστες</value>
+    <value>Συνολικοί χρήστες</value>
   </data>
   <data name="ActiveUsers" xml:space="preserve">
-    <value>Ενεργοί Χρήστες</value>
+    <value>Ενεργοί χρήστες</value>
   </data>
   <data name="TotalEnrollments" xml:space="preserve">
-    <value>Συνολικές Εγγραφές</value>
+    <value>Συνολικές εγγραφές</value>
   </data>
   <data name="CompletedCourses" xml:space="preserve">
-    <value>Ολοκληρωμένα Μαθήματα</value>
+    <value>Ολοκληρωμένα προγράμματα</value>
   </data>
   <data name="CourseEnrollmentStats" xml:space="preserve">
-    <value>Στατιστικά Εγγραφών Μαθημάτων</value>
+    <value>Εγγραφές ανά πρόγραμμα</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Μάθημα</value>
+    <value>Πρόγραμμα</value>
   </data>
   <data name="ColEnrollments" xml:space="preserve">
     <value>Εγγραφές</value>
@@ -148,10 +148,10 @@
     <value>Ολοκληρώσεις</value>
   </data>
   <data name="NoCourseData" xml:space="preserve">
-    <value>Δεν υπάρχουν διαθέσιμα δεδομένα μαθημάτων</value>
+    <value>Δεν υπάρχουν ακόμη δεδομένα προγραμμάτων</value>
   </data>
   <data name="AssessmentStats" xml:space="preserve">
-    <value>Στατιστικά Αξιολογήσεων</value>
+    <value>Στατιστικά αξιολογήσεων</value>
   </data>
   <data name="ColAssessment" xml:space="preserve">
     <value>Αξιολόγηση</value>
@@ -163,22 +163,22 @@
     <value>Δεν υπάρχουν διαθέσιμα δεδομένα αξιολογήσεων</value>
   </data>
   <data name="CreateAssessment" xml:space="preserve">
-    <value>Δημιουργία Αξιολόγησης</value>
+    <value>Δημιουργία αξιολόγησης</value>
   </data>
   <data name="EditAssessment" xml:space="preserve">
-    <value>Επεξεργασία Αξιολόγησης</value>
+    <value>Επεξεργασία αξιολόγησης</value>
   </data>
   <data name="BackToAssessments" xml:space="preserve">
-    <value>← Πίσω στις Αξιολογήσεις</value>
+    <value>Πίσω στις αξιολογήσεις</value>
   </data>
   <data name="AssessmentDetails" xml:space="preserve">
-    <value>Λεπτομέρειες Αξιολόγησης</value>
+    <value>Λεπτομέρειες αξιολόγησης</value>
   </data>
   <data name="FieldKey" xml:space="preserve">
     <value>Κλειδί</value>
   </data>
   <data name="FieldKeyHint" xml:space="preserve">
-    <value>μοναδικό αναγνωριστικό, π.χ. career_clarity_v1</value>
+    <value>μοναδικό αναγνωριστικό, π.χ. training_readiness_v1</value>
   </data>
   <data name="FieldTitle" xml:space="preserve">
     <value>Τίτλος</value>
@@ -190,16 +190,22 @@
     <value>Ερωτήσεις</value>
   </data>
   <data name="AddQuestion" xml:space="preserve">
-    <value>+ Προσθήκη Ερώτησης</value>
+    <value>+ Προσθήκη ερώτησης</value>
+  </data>
+  <data name="AddSection" xml:space="preserve">
+    <value>+ Προσθήκη ενότητας</value>
   </data>
   <data name="NoQuestions" xml:space="preserve">
-    <value>Δεν υπάρχουν ερωτήσεις ακόμα. Κάντε κλικ στο «Προσθήκη Ερώτησης» για να ξεκινήσετε.</value>
+    <value>Δεν υπάρχουν ερωτήσεις ακόμα. Πάτησε «Προσθήκη ερώτησης» για να ξεκινήσεις.</value>
   </data>
   <data name="QuestionNumber" xml:space="preserve">
     <value>Ερώτηση {0}</value>
   </data>
+  <data name="SectionNumber" xml:space="preserve">
+    <value>Ενότητα {0}</value>
+  </data>
   <data name="QuestionId" xml:space="preserve">
-    <value>ID Ερώτησης</value>
+    <value>ID ερώτησης</value>
   </data>
   <data name="FieldType" xml:space="preserve">
     <value>Τύπος</value>
@@ -211,7 +217,10 @@
     <value>Βαθμολόγηση (κλίμακα)</value>
   </data>
   <data name="TypeChoice" xml:space="preserve">
-    <value>Επιλογή (επιλέξτε ένα)</value>
+    <value>Επιλογή (διάλεξε ένα)</value>
+  </data>
+  <data name="TypeMultiSelect" xml:space="preserve">
+    <value>Πολλαπλή επιλογή (επίλεξε όσα θέλεις)</value>
   </data>
   <data name="FieldRequired" xml:space="preserve">
     <value>Υποχρεωτικό</value>
@@ -223,16 +232,22 @@
     <value>Όχι</value>
   </data>
   <data name="QuestionLabel" xml:space="preserve">
-    <value>Ετικέτα / Κείμενο Ερώτησης</value>
+    <value>Ετικέτα / κείμενο ερώτησης</value>
   </data>
   <data name="QuestionLabelPlaceholder" xml:space="preserve">
-    <value>Εισάγετε το κείμενο της ερώτησης...</value>
+    <value>Γράψε το κείμενο της ερώτησης…</value>
   </data>
   <data name="FieldMin" xml:space="preserve">
     <value>Ελάχιστο</value>
   </data>
   <data name="FieldMax" xml:space="preserve">
     <value>Μέγιστο</value>
+  </data>
+  <data name="FieldMinLabel" xml:space="preserve">
+    <value>Ετικέτα ελάχιστης τιμής</value>
+  </data>
+  <data name="FieldMaxLabel" xml:space="preserve">
+    <value>Ετικέτα μέγιστης τιμής</value>
   </data>
   <data name="FieldOptions" xml:space="preserve">
     <value>Επιλογές</value>
@@ -241,13 +256,13 @@
     <value>μία ανά γραμμή</value>
   </data>
   <data name="SchemaPreview" xml:space="preserve">
-    <value>Προεπισκόπηση Σχήματος</value>
+    <value>Προεπισκόπηση σχήματος</value>
   </data>
   <data name="Saving" xml:space="preserve">
     <value>Αποθήκευση...</value>
   </data>
   <data name="SaveAssessment" xml:space="preserve">
-    <value>Αποθήκευση Αξιολόγησης</value>
+    <value>Αποθήκευση αξιολόγησης</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Ακύρωση</value>
@@ -259,19 +274,22 @@
     <value>Μετακίνηση κάτω</value>
   </data>
   <data name="ResetSortToReorder" xml:space="preserve">
-    <value>Επαναφέρετε την ταξινόμηση στη σειρά εμφάνισης για αναδιάταξη</value>
+    <value>Για να αλλάξεις τη σειρά, επανάφερε πρώτα την προεπιλεγμένη ταξινόμηση</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Αφαίρεση</value>
   </data>
   <data name="AssessmentManagement" xml:space="preserve">
-    <value>Διαχείριση Αξιολογήσεων</value>
+    <value>Διαχείριση αξιολογήσεων</value>
   </data>
   <data name="CreateNewAssessment" xml:space="preserve">
-    <value>Δημιουργία Νέας Αξιολόγησης</value>
+    <value>Δημιουργία νέας αξιολόγησης</value>
   </data>
   <data name="ColStatus" xml:space="preserve">
     <value>Κατάσταση</value>
+  </data>
+  <data name="ColTrainingLevel" xml:space="preserve">
+    <value>Επίπεδο προπόνησης</value>
   </data>
   <data name="ColOnline" xml:space="preserve">
     <value>Σε σύνδεση</value>
@@ -289,7 +307,7 @@
     <value>Επεξεργασία</value>
   </data>
   <data name="Unpublish" xml:space="preserve">
-    <value>Κατάργηση Δημοσίευσης</value>
+    <value>Κατάργηση δημοσίευσης</value>
   </data>
   <data name="Publish" xml:space="preserve">
     <value>Δημοσίευση</value>
@@ -298,7 +316,7 @@
     <value>Διαγραφή</value>
   </data>
   <data name="AssessmentSubmissions" xml:space="preserve">
-    <value>Υποβολές Αξιολόγησης</value>
+    <value>Υποβολές αξιολόγησης</value>
   </data>
   <data name="SubmissionsWithTitle" xml:space="preserve">
     <value>Υποβολές — {0}</value>
@@ -313,58 +331,55 @@
     <value>Email</value>
   </data>
   <data name="ColSubmittedAt" xml:space="preserve">
-    <value>Ημερομηνία Υποβολής</value>
+    <value>Ημερομηνία υποβολής</value>
   </data>
   <data name="HideAnswers" xml:space="preserve">
-    <value>Απόκρυψη Απαντήσεων</value>
+    <value>Απόκρυψη απαντήσεων</value>
   </data>
   <data name="ViewAnswers" xml:space="preserve">
-    <value>Προβολή Απαντήσεων</value>
+    <value>Προβολή απαντήσεων</value>
   </data>
   <data name="Summary" xml:space="preserve">
     <value>Σύνοψη</value>
   </data>
   <data name="CreateCourse" xml:space="preserve">
-    <value>Δημιουργία Μαθήματος</value>
+    <value>Δημιουργία προγράμματος</value>
   </data>
   <data name="EditCourse" xml:space="preserve">
-    <value>Επεξεργασία Μαθήματος</value>
+    <value>Επεξεργασία προγράμματος</value>
   </data>
   <data name="BackToCourses" xml:space="preserve">
-    <value>← Πίσω στα Μαθήματα</value>
+    <value>Πίσω στα προγράμματα</value>
   </data>
   <data name="CourseDetails" xml:space="preserve">
-    <value>Λεπτομέρειες Μαθήματος</value>
+    <value>Λεπτομέρειες προγράμματος</value>
   </data>
   <data name="SaveCourse" xml:space="preserve">
-    <value>Αποθήκευση Μαθήματος</value>
+    <value>Αποθήκευση προγράμματος</value>
   </data>
   <data name="SaveCourseFirstHint" xml:space="preserve">
-    <value>Αποθηκεύστε πρώτα το μάθημα, και στη συνέχεια μπορείτε να προσθέσετε &lt;strong&gt;Ενότητες&lt;/strong&gt;, &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή WYSIWYG, βίντεο, PDF), να προεπισκοπήσετε τη δομή και να δημοσιεύσετε.</value>
+    <value>Αποθήκευσε πρώτα το πρόγραμμα. Μετά μπορείς να προσθέσεις &lt;strong&gt;Ενότητες&lt;/strong&gt; και &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
   </data>
   <data name="ModulesAndLessons" xml:space="preserve">
-    <value>Ενότητες &amp; Μαθήματα</value>
+    <value>Ενότητες &amp; μαθήματα</value>
   </data>
   <data name="AddModule" xml:space="preserve">
-    <value>+ Προσθήκη Ενότητας</value>
+    <value>+ Προσθήκη ενότητας</value>
   </data>
   <data name="LoadingModules" xml:space="preserve">
     <value>Φόρτωση ενοτήτων...</value>
   </data>
   <data name="NoModules" xml:space="preserve">
-    <value>Δεν υπάρχουν ενότητες ακόμα. Προσθέστε μία για να ξεκινήσετε.</value>
-  </data>
-  <data name="LessonsCountFormat" xml:space="preserve">
-    <value>{0} μάθημα/τα</value>
+    <value>Δεν υπάρχουν ενότητες ακόμα. Πρόσθεσε μία για να ξεκινήσεις.</value>
   </data>
   <data name="OrderFormat" xml:space="preserve">
     <value>Σειρά: {0}</value>
   </data>
   <data name="EditModule" xml:space="preserve">
-    <value>Επεξεργασία Ενότητας</value>
+    <value>Επεξεργασία ενότητας</value>
   </data>
   <data name="AddLesson" xml:space="preserve">
-    <value>+ Προσθήκη Μαθήματος</value>
+    <value>+ Προσθήκη μαθήματος</value>
   </data>
   <data name="LoadingLessons" xml:space="preserve">
     <value>Φόρτωση μαθημάτων...</value>
@@ -388,22 +403,22 @@
     <value>Ενεργό</value>
   </data>
   <data name="CourseStructurePreview" xml:space="preserve">
-    <value>Προεπισκόπηση Δομής Μαθήματος</value>
+    <value>Προεπισκόπηση δομής προγράμματος</value>
   </data>
   <data name="PublishCourse" xml:space="preserve">
-    <value>Δημοσίευση Μαθήματος</value>
+    <value>Δημοσίευση προγράμματος</value>
   </data>
   <data name="UnpublishCourse" xml:space="preserve">
-    <value>Κατάργηση Δημοσίευσης Μαθήματος</value>
+    <value>Κατάργηση δημοσίευσης προγράμματος</value>
   </data>
   <data name="SortOrder" xml:space="preserve">
-    <value>Σειρά Ταξινόμησης</value>
+    <value>Σειρά ταξινόμησης</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Αποθήκευση</value>
   </data>
   <data name="EditLesson" xml:space="preserve">
-    <value>Επεξεργασία Μαθήματος</value>
+    <value>Επεξεργασία μαθήματος</value>
   </data>
   <data name="DurationMinutes" xml:space="preserve">
     <value>Διάρκεια (λεπτά)</value>
@@ -412,43 +427,43 @@
     <value>Περιεχόμενο</value>
   </data>
   <data name="VideoUrlLabel" xml:space="preserve">
-    <value>URL Βίντεο (YouTube embed ή απευθείας σύνδεσμος)</value>
+    <value>URL βίντεο (YouTube embed ή απευθείας σύνδεσμος)</value>
   </data>
   <data name="VideoUrlHint" xml:space="preserve">
-    <value>Επικολλήστε URL YouTube embed ή απευθείας σύνδεσμο βίντεο. Αυτό έχει προτεραιότητα έναντι αρχείων και κειμένου.</value>
+    <value>Επικόλλησε ένα URL ενσωμάτωσης YouTube ή έναν απευθείας σύνδεσμο βίντεο. Έχει προτεραιότητα έναντι αρχείων και κειμένου.</value>
   </data>
   <data name="UploadPdf" xml:space="preserve">
     <value>Μεταφόρτωση PDF</value>
   </data>
   <data name="UploadVideo" xml:space="preserve">
-    <value>Μεταφόρτωση Αρχείου Βίντεο</value>
+    <value>Μεταφόρτωση αρχείου βίντεο</value>
   </data>
   <data name="Current" xml:space="preserve">
     <value>Τρέχον:</value>
   </data>
   <data name="SaveLesson" xml:space="preserve">
-    <value>Αποθήκευση Μαθήματος</value>
+    <value>Αποθήκευση μαθήματος</value>
   </data>
   <data name="CourseManagement" xml:space="preserve">
-    <value>Διαχείριση Μαθημάτων</value>
+    <value>Διαχείριση προγραμμάτων</value>
   </data>
   <data name="CreateNewCourse" xml:space="preserve">
-    <value>Δημιουργία Νέου Μαθήματος</value>
+    <value>Δημιουργία νέου προγράμματος</value>
   </data>
   <data name="NoCourses" xml:space="preserve">
-    <value>Δεν βρέθηκαν μαθήματα.</value>
+    <value>Δεν βρέθηκαν προγράμματα.</value>
   </data>
   <data name="ManageLessons" xml:space="preserve">
-    <value>Διαχείριση Παραδόσεων</value>
+    <value>Διαχείριση μαθημάτων</value>
   </data>
   <data name="BackToCourse" xml:space="preserve">
-    <value>← Πίσω στο Μάθημα</value>
+    <value>Πίσω στο πρόγραμμα</value>
   </data>
   <data name="MinutesFormat" xml:space="preserve">
     <value> · {0} λεπ.</value>
   </data>
   <data name="UserManagement" xml:space="preserve">
-    <value>Διαχείριση Χρηστών</value>
+    <value>Διαχείριση χρηστών</value>
   </data>
   <data name="SearchByEmailOrName" xml:space="preserve">
     <value>Αναζήτηση με email ή όνομα...</value>
@@ -475,19 +490,19 @@
     <value>Σύνδεση ως</value>
   </data>
   <data name="ResetPassword" xml:space="preserve">
-    <value>Επαναφορά Κωδικού</value>
+    <value>Επαναφορά κωδικού</value>
   </data>
   <data name="ResetPasswordFor" xml:space="preserve">
     <value>Επαναφορά κωδικού για {0}</value>
   </data>
   <data name="NewPassword" xml:space="preserve">
-    <value>Νέος Κωδικός</value>
+    <value>Νέος κωδικός</value>
   </data>
   <data name="ConfirmPasswordLabel" xml:space="preserve">
-    <value>Επιβεβαίωση Κωδικού</value>
+    <value>Επιβεβαίωση κωδικού</value>
   </data>
   <data name="SetPassword" xml:space="preserve">
-    <value>Ορισμός Κωδικού</value>
+    <value>Ορισμός κωδικού</value>
   </data>
   <data name="PasswordUpdated" xml:space="preserve">
     <value>Ο κωδικός ενημερώθηκε επιτυχώς</value>
@@ -502,37 +517,37 @@
     <value>Ενεργοποίηση</value>
   </data>
   <data name="ConfirmDelete" xml:space="preserve">
-    <value>Επιβεβαίωση Διαγραφής</value>
+    <value>Επιβεβαίωση διαγραφής</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>Δεν έχετε πρόσβαση. Απαιτείται ρόλος Διαχειριστή.</value>
+    <value>Δεν έχεις πρόσβαση. Απαιτείται ρόλος διαχειριστή.</value>
   </data>
   <data name="ImpersonationAdminView" xml:space="preserve">
-    <value>👁 Προβολή Admin:</value>
+    <value>Προβολή διαχειριστή:</value>
   </data>
   <data name="ImpersonationLoggedInAs" xml:space="preserve">
     <value>συνδεδεμένος ως</value>
   </data>
   <data name="ImpersonationExit" xml:space="preserve">
-    <value>✕ Έξοδος από Impersonation</value>
+    <value>Έξοδος από την προβολή χρήστη</value>
   </data>
   <data name="ImpersonationFailed" xml:space="preserve">
     <value>Η προσομοίωση απέτυχε.</value>
   </data>
   <data name="TestimonialsPageTitle" xml:space="preserve">
-    <value>Ευχαριστημένοι Χρήστες</value>
+    <value>Ευχαριστημένοι χρήστες</value>
   </data>
   <data name="NewTestimonial" xml:space="preserve">
-    <value>Νέα Μαρτυρία</value>
+    <value>Νέα μαρτυρία</value>
   </data>
   <data name="NoTestimonialsFound" xml:space="preserve">
-    <value>Δεν βρέθηκαν μαρτυρίες χρηστών. Προσθέστε μία για να εμφανιστεί στην αρχική σελίδα.</value>
+    <value>Δεν βρέθηκαν μαρτυρίες χρηστών. Πρόσθεσε μία για να εμφανιστεί στην αρχική σελίδα.</value>
   </data>
   <data name="ColOrder" xml:space="preserve">
     <value>Σειρά</value>
   </data>
   <data name="ColRoleCompany" xml:space="preserve">
-    <value>Ρόλος / Εταιρεία</value>
+    <value>Ρόλος / πλαίσιο</value>
   </data>
   <data name="StatusActive" xml:space="preserve">
     <value>Ενεργό</value>
@@ -562,7 +577,7 @@
     <value>Αναζήτηση με τίτλο ή κλειδί...</value>
   </data>
   <data name="NewArticle" xml:space="preserve">
-    <value>Νέο Άρθρο</value>
+    <value>Νέο άρθρο</value>
   </data>
   <data name="NoBlogArticlesFound" xml:space="preserve">
     <value>Δεν βρέθηκαν άρθρα blog.</value>
@@ -580,22 +595,22 @@
     <value>Επιβεβαίωση</value>
   </data>
   <data name="ConfirmDeleteCourse" xml:space="preserve">
-    <value>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το μάθημα και όλες τις ενότητες/τα μαθήματά του;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτό το πρόγραμμα και όλες τις ενότητες και τα μαθήματά του;</value>
   </data>
   <data name="ConfirmDeleteAssessment" xml:space="preserve">
-    <value>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν την αξιολόγηση;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτή την αξιολόγηση;</value>
   </data>
   <data name="ConfirmDeleteLesson" xml:space="preserve">
     <value>Διαγραφή αυτού του μαθήματος;</value>
   </data>
   <data name="ConfirmDeleteUser" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον χρήστη; Αυτό αφαιρεί οριστικά τις εγγραφές, τις υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών/κλήσεών του.</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτόν τον χρήστη; Έτσι αφαιρούνται οριστικά οι εγγραφές, οι υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών/κλήσεών του.</value>
   </data>
   <data name="ConfirmDeleteArticle" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το άρθρο;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτό το άρθρο;</value>
   </data>
   <data name="ConfirmDeleteTestimonial" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη μαρτυρία;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτή τη μαρτυρία;</value>
   </data>
   <data name="EditArticle" xml:space="preserve">
     <value>Επεξεργασία άρθρου</value>
@@ -631,19 +646,25 @@
     <value>Η εικόνα θα μεταφορτωθεί μετά την αποθήκευση του άρθρου.</value>
   </data>
   <data name="EditTestimonial" xml:space="preserve">
-    <value>Επεξεργασία Testimonial</value>
+    <value>Επεξεργασία μαρτυρίας</value>
   </data>
   <data name="FieldFullName" xml:space="preserve">
     <value>Ονοματεπώνυμο</value>
   </data>
   <data name="FieldRoleTitle" xml:space="preserve">
-    <value>Ρόλος / Τίτλος</value>
+    <value>Ρόλος / τίτλος</value>
+  </data>
+  <data name="FieldRoleTitleEl" xml:space="preserve">
+    <value>Ρόλος / τίτλος (στα ελληνικά)</value>
   </data>
   <data name="FieldCompanyContext" xml:space="preserve">
-    <value>Εταιρεία / Πλαίσιο</value>
+    <value>Γυμναστήριο / πλαίσιο</value>
   </data>
   <data name="FieldQuote" xml:space="preserve">
     <value>Παράθεση</value>
+  </data>
+  <data name="FieldQuoteEl" xml:space="preserve">
+    <value>Παράθεση (στα ελληνικά)</value>
   </data>
   <data name="FieldDisplayOrder" xml:space="preserve">
     <value>Σειρά εμφάνισης</value>
@@ -661,13 +682,13 @@
     <value>JPEG, PNG, GIF ή WebP · Μέγ. 5 MB</value>
   </data>
   <data name="AvatarSaveFirstHint" xml:space="preserve">
-    <value>Αποθηκεύστε πρώτα το Testimonial και έπειτα ανεβάστε avatar από τη φόρμα επεξεργασίας.</value>
+    <value>Αποθήκευσε πρώτα τη μαρτυρία και μετά ανέβασε φωτογραφία από τη φόρμα επεξεργασίας.</value>
   </data>
   <data name="RequiredTier" xml:space="preserve">
     <value>Απαιτούμενο πακέτο συνδρομής</value>
   </data>
   <data name="RequiredTierHint" xml:space="preserve">
-    <value>Οι χρήστες πρέπει να έχουν αυτό το πακέτο ή ανώτερο για να εγγραφούν σε αυτό το μάθημα.</value>
+    <value>Τα μέλη χρειάζονται αυτό το πλάνο ή ανώτερο για να γραφτούν σε αυτό το πρόγραμμα.</value>
   </data>
   <data name="ColCreated" xml:space="preserve">
     <value>Δημιουργήθηκε</value>
@@ -682,16 +703,16 @@
     <value>Επιβεβαιωμένο Email</value>
   </data>
   <data name="ColModulesLessons" xml:space="preserve">
-    <value>Ενότητες / Μαθήματα</value>
+    <value>Ενότητες / μαθήματα</value>
   </data>
   <data name="ColCompletionRate" xml:space="preserve">
-    <value>% Ολοκλήρωσης</value>
+    <value>% ολοκλήρωσης</value>
   </data>
   <data name="ItemLabelUsers" xml:space="preserve">
     <value>χρήστες</value>
   </data>
   <data name="ItemLabelCourses" xml:space="preserve">
-    <value>μαθήματα</value>
+    <value>προγράμματα</value>
   </data>
   <data name="ItemLabelAssessments" xml:space="preserve">
     <value>αξιολογήσεις</value>
@@ -709,19 +730,19 @@
     <value>διαδρομές</value>
   </data>
   <data name="ItemLabelSessions" xml:space="preserve">
-    <value>συνεδρίες</value>
+    <value>ζωντανά μαθήματα</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
-    <value>Το μάθημα αποθηκεύτηκε επιτυχώς.</value>
+    <value>Το πρόγραμμα αποθηκεύτηκε.</value>
   </data>
   <data name="CourseSaveFailed" xml:space="preserve">
-    <value>Σφάλμα κατά την αποθήκευση του μαθήματος.</value>
+    <value>Σφάλμα κατά την αποθήκευση του προγράμματος.</value>
   </data>
   <data name="CoursePublished" xml:space="preserve">
-    <value>Το μάθημα δημοσιεύτηκε.</value>
+    <value>Το πρόγραμμα δημοσιεύτηκε.</value>
   </data>
   <data name="CourseUnpublished" xml:space="preserve">
-    <value>Η δημοσίευση του μαθήματος αναιρέθηκε.</value>
+    <value>Η δημοσίευση του προγράμματος αναιρέθηκε.</value>
   </data>
   <data name="ArticlePublished" xml:space="preserve">
     <value>Το άρθρο δημοσιεύτηκε.</value>
@@ -730,10 +751,10 @@
     <value>Η δημοσίευση του άρθρου αναιρέθηκε.</value>
   </data>
   <data name="CourseDeleted" xml:space="preserve">
-    <value>Το μάθημα διαγράφηκε.</value>
+    <value>Το πρόγραμμα διαγράφηκε.</value>
   </data>
   <data name="CourseDeleteFailed" xml:space="preserve">
-    <value>Σφάλμα κατά τη διαγραφή του μαθήματος.</value>
+    <value>Σφάλμα κατά τη διαγραφή του προγράμματος.</value>
   </data>
   <data name="PublishStatusUpdateFailed" xml:space="preserve">
     <value>Απέτυχε η ενημέρωση της κατάστασης δημοσίευσης.</value>
@@ -793,7 +814,7 @@
     <value>Απέτυχε η μεταφόρτωση της εικόνας εξωφύλλου.</value>
   </data>
   <data name="SlugInUse" xml:space="preserve">
-    <value>Το slug χρησιμοποιείται ήδη. Επιλέξτε διαφορετικό slug.</value>
+    <value>Το slug χρησιμοποιείται ήδη. Διάλεξε άλλο.</value>
   </data>
   <data name="TestimonialDeleted" xml:space="preserve">
     <value>Η μαρτυρία διαγράφηκε.</value>
@@ -811,10 +832,10 @@
     <value>Η μαρτυρία απενεργοποιήθηκε.</value>
   </data>
   <data name="TestimonialSaveFailed" xml:space="preserve">
-    <value>Απέτυχε η αποθήκευση της μαρτυρίας. Δοκιμάστε ξανά.</value>
+    <value>Η αποθήκευση της μαρτυρίας απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="AvatarUploadFailed" xml:space="preserve">
-    <value>Απέτυχε η μεταφόρτωση της εικόνας. Ελέγξτε τον τύπο και το μέγεθος του αρχείου (έως 5 MB).</value>
+    <value>Απέτυχε η μεταφόρτωση της εικόνας. Έλεγξε τον τύπο και το μέγεθος του αρχείου (έως 5 MB).</value>
   </data>
   <data name="AvatarRemoveFailed" xml:space="preserve">
     <value>Απέτυχε η αφαίρεση της εικόνας.</value>
@@ -841,15 +862,137 @@
     <value>Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</value>
   </data>
   <data name="PasswordUpdateFailed" xml:space="preserve">
-    <value>Απέτυχε η ενημέρωση του κωδικού πρόσβασης. Ελέγξτε τις απαιτήσεις κωδικού.</value>
+    <value>Απέτυχε η ενημέρωση του κωδικού πρόσβασης. Έλεγξε τις απαιτήσεις κωδικού.</value>
   </data>
   <data name="TitleEnglishRequired" xml:space="preserve">
     <value>Ο τίτλος (Αγγλικά) είναι υποχρεωτικός.</value>
   </data>
   <data name="PathSaveFailed" xml:space="preserve">
-    <value>Απέτυχε η αποθήκευση της διαδρομής μάθησης.</value>
+    <value>Απέτυχε η αποθήκευση της διαδρομής προπόνησης.</value>
   </data>
   <data name="ModuleSaveFailed" xml:space="preserve">
     <value>Σφάλμα κατά την αποθήκευση της ενότητας.</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Επίπεδο</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Στόχος</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Εξοπλισμός</value>
+  </data>
+  <data name="EquipmentHintFormat" xml:space="preserve">
+    <value>Κωδικοί χωρισμένοι με κόμμα: {0}.</value>
+  </data>
+  <data name="EstimatedWeeks" xml:space="preserve">
+    <value>Εκτιμώμενες εβδομάδες</value>
+  </data>
+  <data name="SessionsPerWeek" xml:space="preserve">
+    <value>Προπονήσεις ανά εβδομάδα</value>
+  </data>
+  <data name="CoverExercise" xml:space="preserve">
+    <value>Άσκηση εξωφύλλου (slug)</value>
+  </data>
+  <data name="CoverExerciseHint" xml:space="preserve">
+    <value>Ένα slug άσκησης από τη βιβλιοθήκη, π.χ. barbell-squat. Η φωτογραφία έναρξης γίνεται το εξώφυλλο.</value>
+  </data>
+  <data name="UnknownExerciseSlug" xml:space="preserve">
+    <value>Δεν υπάρχει άσκηση με αυτό το slug</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Ασκήσεις</value>
+  </data>
+  <data name="AddExercise" xml:space="preserve">
+    <value>Προσθήκη άσκησης</value>
+  </data>
+  <data name="RemoveExercise" xml:space="preserve">
+    <value>Αφαίρεση</value>
+  </data>
+  <data name="SearchExercises" xml:space="preserve">
+    <value>Αναζήτηση ασκήσεων με όνομα</value>
+  </data>
+  <data name="NoExercisesFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν ασκήσεις.</value>
+  </data>
+  <data name="LessonExerciseLimit" xml:space="preserve">
+    <value>Ένα μάθημα χωράει έως {0} ασκήσεις.</value>
+  </data>
+  <data name="NoLessonExercises" xml:space="preserve">
+    <value>Δεν υπάρχουν ακόμη ασκήσεις σε αυτό το μάθημα.</value>
+  </data>
+  <data name="Sets" xml:space="preserve">
+    <value>Σετ</value>
+  </data>
+  <data name="Reps" xml:space="preserve">
+    <value>Επαναλήψεις</value>
+  </data>
+  <data name="RestSeconds" xml:space="preserve">
+    <value>Διάλειμμα (δευτ.)</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Σημειώσεις</value>
+  </data>
+  <data name="BlogTitlePlaceholder" xml:space="preserve">
+    <value>Τίτλος άρθρου</value>
+  </data>
+  <data name="BlogSummaryPlaceholder" xml:space="preserve">
+    <value>Σύντομη περιγραφή για την κάρτα του άρθρου</value>
+  </data>
+  <data name="BlogSlugPlaceholder" xml:space="preserve">
+    <value>π.χ. beginner-strength-guide</value>
+  </data>
+  <data name="BlogTagsPlaceholder" xml:space="preserve">
+    <value>Δύναμη, Διατροφή, Αποκατάσταση</value>
+  </data>
+  <data name="BlogAuthorPlaceholder" xml:space="preserve">
+    <value>π.χ. Ομάδα προπονητών FitEdu</value>
+  </data>
+  <data name="CoverUrlPlaceholder" xml:space="preserve">
+    <value>Ή επικόλλησε τη διεύθυνση μιας εικόνας</value>
+  </data>
+  <data name="CoverPreviewAlt" xml:space="preserve">
+    <value>Προεπισκόπηση εξωφύλλου</value>
+  </data>
+  <data name="TestimonialNamePlaceholder" xml:space="preserve">
+    <value>π.χ. Μαρία Παπαδοπούλου</value>
+  </data>
+  <data name="TestimonialRolePlaceholder" xml:space="preserve">
+    <value>π.χ. Προσωπικός γυμναστής</value>
+  </data>
+  <data name="TestimonialContextPlaceholder" xml:space="preserve">
+    <value>π.χ. Προπόνηση στο σπίτι</value>
+  </data>
+  <data name="TestimonialQuotePlaceholder" xml:space="preserve">
+    <value>Τι λέει το μέλος για την προπόνηση με το FitEdu (έως 1000 χαρακτήρες)</value>
+  </data>
+  <data name="AvatarPreviewAlt" xml:space="preserve">
+    <value>Προεπισκόπηση φωτογραφίας</value>
+  </data>
+  <data name="QuestionNoLabel" xml:space="preserve">
+    <value>(χωρίς ετικέτα)</value>
+  </data>
+  <data name="OptionsPlaceholder" xml:space="preserve">
+    <value>Επιλογή 1
+Επιλογή 2
+Επιλογή 3</value>
+  </data>
+  <data name="UnknownEquipmentCodeFormat" xml:space="preserve">
+    <value>Άγνωστος κωδικός εξοπλισμού: «{0}». Χρησιμοποίησε μόνο τους κωδικούς που φαίνονται κάτω από το πεδίο.</value>
+  </data>
+  <data name="RoleAdmin" xml:space="preserve">
+    <value>Διαχειριστής</value>
+  </data>
+  <data name="RoleStudent" xml:space="preserve">
+    <value>Μέλος</value>
+  </data>
+  <data name="PdfUploadFailed" xml:space="preserve">
+    <value>Το ανέβασμα του PDF απέτυχε.</value>
+  </data>
+  <data name="VideoUploadFailed" xml:space="preserve">
+    <value>Το ανέβασμα του βίντεο απέτυχε.</value>
+  </data>
+  <data name="EditorPlaceholder" xml:space="preserve">
+    <value>Γράψε το περιεχόμενο εδώ...</value>
   </data>
 </root>

@@ -1,0 +1,56 @@
+@using FitEdu.Web.Extensions
+@* Course cover: the cover exercise's photo under the duotone wash, or the category icon on a tinted
+   panel when the course has no photo (or it fails to load). ChildContent sits on top, e.g. badges.
+   The photo is decorative: the course title always sits next to the cover. *@
+
+<div class="course-cover @(ShowPhoto ? "duotone" : "course-cover--icon")">
+    @if (ShowPhoto)
+    {
+        <img class="course-cover__photo" src="@ImageUrl" alt="" width="@PhotoWidth" height="@PhotoHeight"
+             loading="@(Eager ? "eager" : "lazy")" decoding="async" @onerror="OnPhotoError" />
+    }
+    else
+    {
+        <span class="course-cover__icon bi @CategoryIcons.For(CategoryName)" aria-hidden="true"></span>
+    }
+
+    @if (ChildContent is not null)
+    {
+        <div class="course-cover__overlay">@ChildContent</div>
+    }
+</div>
+
+@code {
+    // Cover photos are library exercise frames (480 x 320).
+    private const int PhotoWidth = 480;
+    private const int PhotoHeight = 320;
+
+    /// <summary>Cover photo URL (CourseListItemDto.CoverImageUrl); null shows the category icon.</summary>
+    [Parameter] public string? ImageUrl { get; set; }
+
+    /// <summary>Category name in either language; picks the fallback icon.</summary>
+    [Parameter] public string? CategoryName { get; set; }
+
+    /// <summary>True for a cover at the top of the page, so it is not lazy-loaded.</summary>
+    [Parameter] public bool Eager { get; set; }
+
+    /// <summary>Content laid over the cover (chips, badges).</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool _photoFailed;
+    private string? _lastImageUrl;
+
+    private bool ShowPhoto => !string.IsNullOrWhiteSpace(ImageUrl) && !_photoFailed;
+
+    protected override void OnParametersSet()
+    {
+        // A new photo gets a fresh chance to load.
+        if (ImageUrl == _lastImageUrl)
+            return;
+
+        _lastImageUrl = ImageUrl;
+        _photoFailed = false;
+    }
+
+    private void OnPhotoError() => _photoFailed = true;
+}

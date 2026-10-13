@@ -4,8 +4,8 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
+using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
-using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
 using System.Security.Cryptography;
@@ -27,24 +27,7 @@ public class AuthApiService(
 {
     public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request, Func<string, string, string?> buildConfirmUrl)
     {
-        // Map incoming DateTime? to DateOnly? used by ApplicationUser
-        DateOnly? dob = null;
-        if (request.DateOfBirth.HasValue)
-        {
-            dob = DateOnly.FromDateTime(request.DateOfBirth.Value.Date);
-        }
-
-        var user = new ApplicationUser
-        {
-            UserName = request.Email,
-            Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            DateOfBirth = dob,
-            Status = request.Status == UserStatus.Unknown ? UserStatus.Student : request.Status,
-            GdprConsentGiven = request.GdprConsent,
-            GdprConsentDate = request.GdprConsent ? DateTime.UtcNow : null
-        };
+        var user = request.ToNewUser();
 
         // Parental consent placeholder: if under 18, flag for future handling
         if (user.Age.HasValue && user.Age < 18)

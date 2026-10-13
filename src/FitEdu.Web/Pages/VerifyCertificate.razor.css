@@ -1,0 +1,31 @@
+/* The certificate facts: label left, value right, wrapping under each other on narrow phones. */
+.certificate-details {
+    display: grid;
+    width: 100%;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-table-odd);
+    text-align: left;
+}
+
+    .certificate-details > div {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: var(--space-1) var(--space-3);
+    }
+
+    .certificate-details dt {
+        color: var(--text-light-muted);
+        font-weight: 600;
+    }
+
+    .certificate-details dd {
+        min-width: 0;
+        margin: 0;
+        color: var(--text-strong-normal);
+        overflow-wrap: anywhere;
+    }

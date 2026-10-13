@@ -1,0 +1,103 @@
+/* Certificates: a card grid (shared .grid-auto + .card-surface). Each card has a lime seal band,
+   the course title, the issue date and verification ID, and the download / verify actions. */
+
+.certificates-page {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.certificates-head {
+    display: grid;
+    gap: var(--space-2);
+    max-width: var(--prose-max);
+}
+
+.certificates-head h1,
+.certificates-head__lead {
+    margin: 0;
+}
+
+.certificates-head__lead {
+    color: var(--text-light-normal);
+}
+
+.certificate-grid {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.certificate-card__band {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background:
+        radial-gradient(120% 140% at 100% 0%, rgba(var(--text-strong-accent-rgb), 0.2), transparent 60%),
+        var(--bg-table-header);
+    border-bottom: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+}
+
+.certificate-card__seal {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgba(var(--text-strong-accent-rgb), 0.45);
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+    font-size: 1.4rem;
+}
+
+.certificate-card__body {
+    gap: var(--space-4);
+}
+
+.certificate-card__title {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+.certificate-card__facts {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.certificate-card__facts dt {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.certificate-card__facts dd {
+    margin: 0.15rem 0 0;
+    color: var(--text-strong-normal);
+}
+
+/* A GUID is long: monospace and allowed to break anywhere, so it never widens the card. */
+.certificate-card__id {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 0.8125rem;
+    word-break: break-all;
+}
+
+.certificate-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: auto;
+}
+
+.certificate-card__actions .btn-cta {
+    flex: 1 1 10rem;
+    min-height: var(--tap-min);
+    padding: 0.55rem 1rem;
+    font-size: 0.9375rem;
+}

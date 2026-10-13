@@ -64,9 +64,30 @@ public class EnumValueTests
     public void UserStatus_HasStableValues()
     {
         ((int)UserStatus.Unknown).ShouldBe(0);
-        ((int)UserStatus.Student).ShouldBe(1);
-        ((int)UserStatus.Graduate).ShouldBe(2);
-        ((int)UserStatus.NEET).ShouldBe(3);
+        ((int)UserStatus.Beginner).ShouldBe(1);
+        ((int)UserStatus.Intermediate).ShouldBe(2);
+        ((int)UserStatus.Advanced).ShouldBe(3);
         ((int)UserStatus.Other).ShouldBe(99);
+    }
+
+    [Fact]
+    public void CourseLevel_HasStableValues()
+    {
+        ((int)CourseLevel.Beginner).ShouldBe(0);
+        ((int)CourseLevel.Intermediate).ShouldBe(1);
+        ((int)CourseLevel.Advanced).ShouldBe(2);
+    }
+
+    [Fact]
+    public void FitnessGoal_HasStableValues()
+    {
+        ((int)FitnessGoal.GeneralFitness).ShouldBe(0);
+        ((int)FitnessGoal.Strength).ShouldBe(1);
+        ((int)FitnessGoal.MuscleGain).ShouldBe(2);
+        ((int)FitnessGoal.FatLoss).ShouldBe(3);
+        ((int)FitnessGoal.Endurance).ShouldBe(4);
+        ((int)FitnessGoal.Mobility).ShouldBe(5);
+        ((int)FitnessGoal.Recovery).ShouldBe(6);
+        ((int)FitnessGoal.Nutrition).ShouldBe(7);
     }
 }

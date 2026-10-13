@@ -45,6 +45,13 @@
     flex-shrink: 0;
 }
 
+/* Phones: above the bottom tab bar (BottomNav.razor). */
+@media (max-width: 767.98px) {
+    .incoming-call-toast {
+        bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 0.75rem);
+    }
+}
+
 @media (max-width: 480px) {
     .incoming-call-toast {
         left: 1rem;

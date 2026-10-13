@@ -17,11 +17,17 @@ public class TestimonialConfiguration : IEntityTypeConfiguration<Testimonial>
         builder.Property(t => t.RoleOrTitle)
             .HasMaxLength(150);
 
+        builder.Property(t => t.RoleOrTitleEl)
+            .HasMaxLength(150);
+
         builder.Property(t => t.CompanyOrContext)
             .HasMaxLength(150);
 
         builder.Property(t => t.QuoteText)
             .IsRequired()
+            .HasMaxLength(1000);
+
+        builder.Property(t => t.QuoteTextEl)
             .HasMaxLength(1000);
 
         builder.Property(t => t.AvatarPath)

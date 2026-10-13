@@ -1,449 +1,301 @@
 @page "/"
+@using FitEdu.Web.Extensions
 
 <PageTitle>@HomeRes.PageTitle</PageTitle>
-<SeoHead Title="@HomeRes.PageTitle"
-         Description="@HomeRes.HeroSubtitle"
-         CanonicalUrl="https://fitedu.com/"
-         ImageUrl="https://fitedu.com/images/og-home.jpg" />
+@* The default description (hero subtitle) and share image are the home ones. *@
+@* Guests see the hero photo first, so the browser fetches it before anything else. *@
+<SeoHead Title="@HomeRes.PageTitle" CanonicalUrl="/" PreloadImageUrl="@(_isAuthenticated ? null : HeroImageUrl)" />
 
 @if (_isAuthenticated)
 {
-    <div class="authenticated-home">
-        <h1>@string.Format(HomeRes.WelcomeUser, _authenticatedUserName)</h1>
+    <div class="page dashboard">
+        <header class="dashboard-head">
+            <p class="eyebrow">@TodayLabel</p>
+            <h1 class="dashboard-title">@string.Format(HomeRes.WelcomeUser, _authenticatedUserName)</h1>
+        </header>
 
-        <AuthorizeView Roles="Student">
-            @* Continue learning — the student's enrolled courses *@
-            <section class="dashboard-section">
-                <h2 class="h4">@HomeRes.DashboardContinueLearning</h2>
-                @if (_coursesLoading)
-                {
-                    <SkeletonBlock Rows="2" Height="5rem" Gap="1rem" />
-                }
-                else if (_enrolledCourses is { Count: > 0 })
-                {
-                    <div class="dashboard-course-grid">
-                        @foreach (var course in _enrolledCourses)
+        @if (_isStudent)
+        {
+            @if (_dashboardLoading)
+            {
+                <SkeletonBlock Rows="2" Height="9rem" Gap="1rem" />
+            }
+            else
+            {
+                @StudentDashboard
+            }
+        }
+
+        <AuthorizeView>
+            <Authorized>
+                <section class="dashboard-section" aria-labelledby="explore-title">
+                    <h2 id="explore-title" class="dashboard-section__title">@HomeRes.DashboardExplore</h2>
+                    <ul class="explore-grid">
+                        @foreach (var item in ExploreItems(context.User))
                         {
-                            <a class="dashboard-course-card" href="/courses/@course.Id" @key="course.Id">
-                                <span class="dashboard-course-title">@course.Title</span>
-                                <span class="dashboard-course-meta">@string.Format(CourseRes.LessonsCountFormat, course.TotalLessons)</span>
-                            </a>
+                            <li>
+                                <a class="explore-tile" href="@item.Href">
+                                    <span class="explore-tile__icon bi @item.Icon" aria-hidden="true"></span>
+                                    <span class="explore-tile__label">@item.Label()</span>
+                                </a>
+                            </li>
                         }
-                    </div>
-                }
-                else
-                {
-                    <p class="text-light-muted">@HomeRes.DashboardNoEnrollments</p>
-                    <a href="/courses" class="btn-cta">@HomeRes.DashboardBrowseCourses</a>
-                }
-            </section>
-
-            @* Explore — shortcuts to the main student areas *@
-            <section class="dashboard-section">
-                <h2 class="h4">@HomeRes.DashboardExplore</h2>
-                <div class="dashboard-tiles">
-                    <a class="dashboard-tile" href="/courses"><span class="bi bi-book" aria-hidden="true"></span> @NavMenuRes.Courses</a>
-                    <a class="dashboard-tile" href="/assessments"><span class="bi bi-list-check" aria-hidden="true"></span> @NavMenuRes.Assessments</a>
-                    <a class="dashboard-tile" href="/my-certificates"><span class="bi bi-award" aria-hidden="true"></span> @NavMenuRes.Certificates</a>
-                    <a class="dashboard-tile" href="/blog"><span class="bi bi-newspaper" aria-hidden="true"></span> @NavMenuRes.Blog</a>
-                    <a class="dashboard-tile" href="/pricing"><span class="bi bi-credit-card" aria-hidden="true"></span> @NavMenuRes.Pricing</a>
-                </div>
-            </section>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="Admin">
-            <p>@((MarkupString)HomeRes.AuthenticatedMessage)</p>
-            <section class="dashboard-section">
-                <h2 class="h4">@HomeRes.DashboardExplore</h2>
-                <div class="dashboard-tiles">
-                    <a class="dashboard-tile" href="/admin/users"><span class="bi bi-people" aria-hidden="true"></span> @NavMenuRes.Users</a>
-                    <a class="dashboard-tile" href="/admin/courses"><span class="bi bi-book" aria-hidden="true"></span> @NavMenuRes.Courses</a>
-                    <a class="dashboard-tile" href="/admin/analytics"><span class="bi bi-bar-chart" aria-hidden="true"></span> @NavMenuRes.Analytics</a>
-                    <a class="dashboard-tile" href="/admin/blog"><span class="bi bi-newspaper" aria-hidden="true"></span> @NavMenuRes.Blog</a>
-                </div>
-            </section>
+                    </ul>
+                </section>
+            </Authorized>
         </AuthorizeView>
     </div>
 }
 else
 {
-        <!-- Hero Section -->
-        <section class="hero-section" style="@heroBackgroundStyle">
-            <div class="hero-bg-overlay"></div>
-            
-            <div class="container hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title">
-                        @HomeRes.HeroTitleLine1<br>
-                        <span class="text-gradient">@HomeRes.HeroTitleLine2</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        @HomeRes.HeroSubtitle
-                    </p>
-                    <div class="hero-cta">
-                        <button class="btn-cta" @onclick="NavigateToRegister">
-                            @HomeRes.HeroCtaButton
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"></path>
-                                <path d="m12 5 7 7-7 7"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="scroll-indicator">
-                <div class="scroll-mouse">
-                    <div class="scroll-dot"></div>
-                </div>
-            </div>
-        </section>
+    <section class="hero-section" aria-labelledby="hero-title">
+        <img class="hero-section__photo" src="@HeroImageUrl" alt="" width="1920" height="1440"
+             fetchpriority="high" decoding="async" />
+        <div class="hero-section__shade" aria-hidden="true"></div>
 
-        <!-- Problem Section -->
-        <section class="section section-problem">
-            <div class="container">
-                <div class="section-content">
-                    <h2 class="section-title">
-                        @HomeRes.ProblemTitle <span class="text-gradient">@HomeRes.ProblemTitleHighlight</span>
-                    </h2>
-                    
-                    <div class="problem-grid">
-                        <div class="problem-card">
-                            <div class="problem-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                </svg>
-                            </div>
-                            <p>@HomeRes.ProblemCard1</p>
-                        </div>
-                        
-                        <div class="problem-card">
-                            <div class="problem-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                </svg>
-                            </div>
-                            <p>@HomeRes.ProblemCard2</p>
-                        </div>
-                        
-                        <div class="problem-card">
-                            <div class="problem-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                </svg>
-                            </div>
-                            <p>@HomeRes.ProblemCard3</p>
-                        </div>
-                        
-                        <div class="problem-card">
-                            <div class="problem-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                </svg>
-                            </div>
-                            <p>@HomeRes.ProblemCard4</p>
-                        </div>
-                    </div>
-                    
-                    <p class="problem-conclusion">
-                        @HomeRes.ProblemConclusion <span class="text-gradient font-bold">@HomeRes.ProblemConclusionHighlight</span>
-                    </p>
-                </div>
+        <div class="page hero-content">
+            <p class="eyebrow hero-eyebrow">@HomeRes.HeroEyebrow</p>
+            <h1 id="hero-title" class="hero-title">
+                @HomeRes.HeroTitleLine1
+                <span class="text-volt">@HomeRes.HeroTitleLine2</span>
+            </h1>
+            <p class="hero-subtitle">@HomeRes.HeroSubtitle</p>
+            <div class="hero-cta">
+                <a class="btn-cta btn-cta--large" href="/register">
+                    @HomeRes.HeroCtaButton <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                </a>
+                <a class="btn-cta btn-cta--ghost btn-cta--large" href="/exercises">
+                    <span class="bi bi-activity" aria-hidden="true"></span> @HomeRes.HeroCtaSecondary
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Solution Section -->
-        <section class="section section-solution">
-            <div class="container">
-                <h2 class="section-title">
-                    @HomeRes.SolutionTitle <span class="text-gradient">@HomeRes.SolutionTitleHighlight</span>
+    @if (_landing is not null)
+    {
+        <section class="page stats-strip" aria-label="@HomeRes.StatsAriaLabel">
+            <StatTile Value="@Number(_landing.CourseCount)" Label="@HomeRes.StatsCourses" Icon="bi-collection-play" />
+            <StatTile Value="@Number(_landing.ExerciseCount)" Label="@HomeRes.StatsExercises" Icon="bi-activity" />
+            <StatTile Value="@Number(_landing.LessonCount)" Label="@HomeRes.StatsLessons" Icon="bi-stopwatch" />
+            @if (ShowMemberCount)
+            {
+                <StatTile Value="@Number(_landing.MemberCount)" Label="@HomeRes.StatsMembers" Icon="bi-people" />
+            }
+        </section>
+    }
+
+    <section class="page home-section" aria-labelledby="goals-title">
+        <h2 id="goals-title" class="section-title">
+            @HomeRes.GoalsTitle <span class="text-volt">@HomeRes.GoalsTitleHighlight</span>
+        </h2>
+        <ul class="goal-grid">
+            @foreach (var choice in GoalChoices)
+            {
+                <li>
+                    <a class="goal-card" href="@GoalUrl(choice.Goal)">
+                        <span class="goal-card__icon bi @choice.Icon" aria-hidden="true"></span>
+                        <span class="goal-card__label">@CourseLabels.Goal(choice.Goal)</span>
+                        <span class="goal-card__arrow bi bi-arrow-right" aria-hidden="true"></span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </section>
+
+    <section class="page home-section" aria-labelledby="how-title">
+        <h2 id="how-title" class="section-title">
+            @HomeRes.HowTitle <span class="text-volt">@HomeRes.HowTitleHighlight</span>
+        </h2>
+        <ol class="how-steps">
+            <li class="how-step">
+                <span class="how-step__icon bi bi-clipboard2-pulse" aria-hidden="true"></span>
+                <h3 class="how-step__title">@HomeRes.HowStep1Title</h3>
+                <p class="how-step__text">@HomeRes.HowStep1Text</p>
+            </li>
+            <li class="how-step">
+                <span class="how-step__icon bi bi-list-check" aria-hidden="true"></span>
+                <h3 class="how-step__title">@HomeRes.HowStep2Title</h3>
+                <p class="how-step__text">@HomeRes.HowStep2Text</p>
+            </li>
+            <li class="how-step">
+                <span class="how-step__icon bi bi-graph-up-arrow" aria-hidden="true"></span>
+                <h3 class="how-step__title">@HomeRes.HowStep3Title</h3>
+                <p class="how-step__text">@HomeRes.HowStep3Text</p>
+            </li>
+        </ol>
+    </section>
+
+    @if (_landing is { FeaturedCourses.Count: > 0 })
+    {
+        <section class="page home-section section-featured" aria-labelledby="featured-title">
+            <div class="section-head">
+                <h2 id="featured-title" class="section-title">
+                    @HomeRes.FeaturedTitle <span class="text-volt">@HomeRes.FeaturedTitleHighlight</span>
                 </h2>
-                
-                <div class="solution-grid">
-                    <div class="solution-card">
-                        <div class="solution-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 7v14"></path>
-                                <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
-                            </svg>
-                        </div>
-                        <h3>@HomeRes.SolutionCard1Title</h3>
-                        <p>@HomeRes.SolutionCard1Text</p>
-                    </div>
-                    
-                    <div class="solution-card">
-                        <div class="solution-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                            </svg>
-                        </div>
-                        <h3>@HomeRes.SolutionCard2Title</h3>
-                        <p>@HomeRes.SolutionCard2Text</p>
-                    </div>
-                    
-                    <div class="solution-card">
-                        <div class="solution-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <h3>@HomeRes.SolutionCard3Title</h3>
-                        <p>@HomeRes.SolutionCard3Text</p>
-                    </div>
-                </div>
+                <a class="section-link" href="/courses">
+                    @HomeRes.FeaturedSeeAll <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                </a>
+            </div>
+            @* A swipeable row on phones like the member stories, so the landing stays short. *@
+            <div class="featured-grid" role="region" tabindex="0" aria-labelledby="featured-title">
+                @foreach (var course in _landing.FeaturedCourses)
+                {
+                    <CourseCard Course="course" @key="course.Id" />
+                }
             </div>
         </section>
+    }
 
-        <!-- Method Section -->
-        <section class="section section-method">
-            <div class="method-glow method-glow-1"></div>
-            <div class="method-glow method-glow-2"></div>
-            
-            <div class="container">
-                <h2 class="section-title">
-                    @HomeRes.MethodTitleFrom <span class="text-light-muted">@HomeRes.MethodTitleZeroState</span> @HomeRes.MethodTitleTo <span class="text-gradient">@HomeRes.MethodTitleHeroState</span>
+    @if (_testimonialsLoading)
+    {
+        <section class="page home-section section-story" aria-labelledby="stories-title">
+            <h2 id="stories-title" class="section-title">
+                @HomeRes.TestimonialsTitle <span class="text-volt">@HomeRes.TestimonialsTitleHighlight</span>
+            </h2>
+            <SkeletonBlock Height="14rem" />
+        </section>
+    }
+    else if (_testimonials is { Count: > 0 })
+    {
+        <section class="page home-section section-story" aria-labelledby="stories-title">
+            <h2 id="stories-title" class="section-title">
+                @HomeRes.TestimonialsTitle <span class="text-volt">@HomeRes.TestimonialsTitleHighlight</span>
+            </h2>
+            @* A swipeable row on phones, so keyboard users can scroll it too (focusable region). *@
+            <div class="testimonials-grid" role="region" tabindex="0" aria-labelledby="stories-title">
+                @foreach (var testimonial in _testimonials)
+                {
+                    <TestimonialCard Testimonial="testimonial" @key="testimonial.Id" />
+                }
+            </div>
+        </section>
+    }
+
+    @if (_blogLoading)
+    {
+        <section class="page home-section section-blog" aria-labelledby="blog-title">
+            <h2 id="blog-title" class="section-title">
+                @HomeRes.BlogTitle <span class="text-volt">@HomeRes.BlogTitleHighlight</span>
+            </h2>
+            <div class="blog-grid">
+                <SkeletonBlock Height="22rem" />
+                <SkeletonBlock Height="22rem" />
+                <SkeletonBlock Height="22rem" />
+            </div>
+        </section>
+    }
+    else if (_blogSummaries is { Count: > 0 })
+    {
+        <section class="page home-section section-blog" aria-labelledby="blog-title">
+            <div class="section-head">
+                <h2 id="blog-title" class="section-title">
+                    @HomeRes.BlogTitle <span class="text-volt">@HomeRes.BlogTitleHighlight</span>
                 </h2>
-                
-                <div class="method-grid">
-                    <div class="state-card zero-state">
-                        <div class="state-header">
-                            <span class="state-dot zero-dot"></span>
-                            <h3>@HomeRes.ZeroStateTitle</h3>
-                        </div>
-                        <ul class="state-list">
-                            <li><span class="bullet zero-bullet"></span>@HomeRes.ZeroState1</li>
-                            <li><span class="bullet zero-bullet"></span>@HomeRes.ZeroState2</li>
-                            <li><span class="bullet zero-bullet"></span>@HomeRes.ZeroState3</li>
-                            <li><span class="bullet zero-bullet"></span>@HomeRes.ZeroState4</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="arrow-container">
-                        <div class="arrow-line"></div>
-                        <div class="arrow-circle">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"></path>
-                                <path d="m12 5 7 7-7 7"></path>
-                            </svg>
-                        </div>
-                        <div class="arrow-line"></div>
-                    </div>
-                    
-                    <div class="state-card hero-state">
-                        <div class="state-header">
-                            <span class="state-dot hero-dot"></span>
-                            <h3 class="text-gradient">@HomeRes.HeroStateTitle</h3>
-                        </div>
-                        <ul class="state-list">
-                            <li><span class="bullet hero-bullet"></span>@HomeRes.HeroState1</li>
-                            <li><span class="bullet hero-bullet"></span>@HomeRes.HeroState2</li>
-                            <li><span class="bullet hero-bullet"></span>@HomeRes.HeroState3</li>
-                            <li><span class="bullet hero-bullet"></span>@HomeRes.HeroState4</li>
-                            <li><span class="bullet hero-bullet"></span>@HomeRes.HeroState5</li>
-                        </ul>
-                    </div>
-                </div>
+                <a class="section-link" href="/blog">
+                    @HomeRes.BlogSeeAll <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="blog-grid">
+                @foreach (var article in _blogSummaries)
+                {
+                    <BlogCard Article="article" @key="article.Id" />
+                }
             </div>
         </section>
+    }
 
-        <!-- Story Section -->
-        <section class="section section-story">
-            <div class="container">
-                <h2 class="section-title">
-                    @HomeRes.StoryTitle <span class="text-gradient">@HomeRes.StoryTitleHighlight</span>
-                </h2>
-
-                <div class="story-card">
-                    <div class="quote-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
-                            <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
-                        </svg>
-                    </div>
-
-                    <blockquote>
-                        «@HomeRes.StoryQuote»
-                    </blockquote>
-
-                    <div class="author">
-                        <div class="author-avatar">
-                            <span class="text-gradient">@HomeRes.StoryAuthorInitials</span>
-                        </div>
-                        <div class="author-info">
-                            <p class="author-name">@HomeRes.StoryAuthorName</p>
-                            <p class="author-title">@HomeRes.StoryAuthorTitle</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        @if (_testimonialsLoading)
-        {
-            <section class="section section-story">
-                <div class="container">
-                    <h2 class="section-title">
-                        @HomeRes.TestimonialsTitle <span class="text-gradient">@HomeRes.TestimonialsTitleHighlight</span>
-                    </h2>
-                    <div class="story-card">
-                        <div class="placeholder-glow">
-                            <span class="placeholder col-10 mb-2" style="height:1.2rem;display:block;"></span>
-                            <span class="placeholder col-8 mb-2" style="height:1rem;display:block;"></span>
-                            <span class="placeholder col-4" style="height:1rem;display:block;"></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        }
-        else if (_testimonials is { Count: > 0 })
-        {
-            <section class="section section-story">
-                <div class="container">
-                    <h2 class="section-title">
-                        @HomeRes.TestimonialsTitle <span class="text-gradient">@HomeRes.TestimonialsTitleHighlight</span>
-                    </h2>
-
-                    <div class="testimonials-grid">
-                        @foreach (var t in _testimonials)
-                        {
-                            <div class="story-card" @key="t.Id">
-                                <div class="quote-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
-                                        <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
-                                    </svg>
-                                </div>
-
-                                <blockquote>«@t.QuoteText»</blockquote>
-
-                                <div class="author">
-                                    <div class="author-avatar">
-                                        @if (!string.IsNullOrEmpty(t.AvatarUrl))
-                                        {
-                                            <img src="@t.AvatarUrl" alt="@t.FullName"
-                                                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
-                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                                            <span class="text-gradient" style="display:none;">@TestimonialInitials(t.FullName)</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-gradient">@TestimonialInitials(t.FullName)</span>
-                                        }
-                                    </div>
-                                    <div class="author-info">
-                                        <p class="author-name">@t.FullName</p>
-                                        @if (!string.IsNullOrEmpty(t.RoleOrTitle) || !string.IsNullOrEmpty(t.CompanyOrContext))
-                                        {
-                                            <p class="author-title">
-                                                @t.RoleOrTitle
-                                                @if (!string.IsNullOrEmpty(t.RoleOrTitle) && !string.IsNullOrEmpty(t.CompanyOrContext))
-                                                {
-                                                    <span> · </span>
-                                                }
-                                                @t.CompanyOrContext
-                                            </p>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </section>
-        }
-
-        <!-- Blog Section -->
-        @if (_blogLoading)
-        {
-            <section class="section section-blog">
-                <div class="container">
-                    <h2 class="section-title">@HomeRes.BlogTitle <span class="text-gradient">@HomeRes.BlogTitleHighlight</span></h2>
-                    <div class="blog-grid">
-                        <div class="blog-card blog-card-skeleton"></div>
-                        <div class="blog-card blog-card-skeleton"></div>
-                        <div class="blog-card blog-card-skeleton"></div>
-                    </div>
-                </div>
-            </section>
-        }
-        else if (_blogSummaries is { Count: > 0 })
-        {
-            <section class="section section-blog">
-                <div class="container">
-                    <h2 class="section-title">@HomeRes.BlogTitle <span class="text-gradient">@HomeRes.BlogTitleHighlight</span></h2>
-                    <div class="blog-grid">
-                        @foreach (var article in _blogSummaries)
-                        {
-                            <div class="blog-card" @key="article.Id">
-                                @if (!string.IsNullOrWhiteSpace(article.CoverImageUrl))
-                                {
-                                    <div class="blog-card-cover">
-                                        <img src="@article.CoverImageUrl" alt="@article.Title" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="blog-card-cover blog-card-cover-placeholder"></div>
-                                }
-                                @if (article.Tags.Length > 0)
-                                {
-                                    <div class="blog-card-tags">
-                                        @foreach (var tag in article.Tags)
-                                        {
-                                            <span class="blog-tag">@tag</span>
-                                        }
-                                    </div>
-                                }
-                                <h3 class="blog-card-title">@article.Title</h3>
-                                <p class="blog-card-summary">@article.Summary</p>
-                                <div class="blog-card-meta">
-                                    <span>@article.AuthorName</span>
-                                    @if (article.PublishedAt.HasValue)
-                                    {
-                                        <span>@article.PublishedAt.Value.ToLocalTime().ToString("d")</span>
-                                    }
-                                </div>
-                                <a href="/blog/@article.Slug" class="btn-cta blog-card-cta">@HomeRes.BlogReadMore</a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </section>
-        }
-
-        <!-- CTA Section -->
-        <section class="section section-cta">
-            <div class="cta-glow"></div>
-            
-            <div class="container">
-                <div class="cta-card">
-                    <h2 class="cta-title">
-                        @HomeRes.CtaTitle <span class="text-gradient">@HomeRes.CtaTitleHighlight</span>
-                    </h2>
-                    <p class="cta-text">
-                        @HomeRes.CtaText
-                    </p>
-                    <button class="btn-cta btn-cta-large" @onclick="NavigateToRegister">
-                        @HomeRes.CtaButton
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"></path>
-                            <path d="m12 5 7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </section>
+    <section class="page home-section section-cta" aria-labelledby="cta-title">
+        <div class="cta-card">
+            <h2 id="cta-title" class="cta-title">
+                @HomeRes.CtaTitle <span class="text-volt">@HomeRes.CtaTitleHighlight</span>
+            </h2>
+            <p class="cta-text">@HomeRes.CtaText</p>
+            <a class="btn-cta btn-cta--large" href="/register">
+                @HomeRes.CtaButton <span class="bi bi-arrow-right" aria-hidden="true"></span>
+            </a>
+        </div>
+    </section>
 }
 
+@code {
+    /// <summary>Today's workout, the training numbers, the member's programmes and recommendations.</summary>
+    private RenderFragment StudentDashboard => __builder =>
+    {
+        var dashboard = _dashboard;
+
+        @if (dashboard?.Today is { } plan)
+        {
+            <section class="today-plan card-surface" aria-labelledby="today-title">
+                <CourseCover ImageUrl="@plan.CoverImageUrl" Eager="true" />
+                <div class="card-surface__body today-plan__body">
+                    <span class="chip chip--lime today-plan__eyebrow">
+                        <span class="bi bi-calendar-check" aria-hidden="true"></span> @HomeRes.TodayPlanTitle
+                    </span>
+                    <h2 id="today-title" class="today-plan__lesson">@plan.LessonTitle</h2>
+                    <p class="today-plan__course">
+                        @plan.CourseTitle
+                        @if (plan.DurationMinutes is { } minutes)
+                        {
+                            <span class="today-plan__minutes">
+                                <span class="bi bi-stopwatch" aria-hidden="true"></span> @minutes @CourseRes.MinutesShort
+                            </span>
+                        }
+                    </p>
+                    <div class="today-plan__footer">
+                        <div class="today-plan__progress">
+                            <ProgressRing Value="@PercentDone(plan)" Size="48"
+                                          AriaLabel="@string.Format(HomeRes.TodayPlanProgressFormat, plan.CompletedLessons, plan.TotalLessons)" />
+                            <span>@string.Format(HomeRes.TodayPlanProgressFormat, plan.CompletedLessons, plan.TotalLessons)</span>
+                        </div>
+                        <a class="btn-cta today-plan__cta" href="/lessons/@plan.LessonId">
+                            @HomeRes.TodayPlanContinue <span class="bi bi-play-fill" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        }
+        else
+        {
+            <section class="today-plan today-plan--empty card-surface" aria-label="@HomeRes.TodayPlanTitle">
+                <EmptyState Icon="bi-calendar-plus" Title="@HomeRes.TodayPlanTitle" Text="@TodayPlanEmptyText(dashboard)"
+                            ActionHref="/courses" ActionLabel="@HomeRes.DashboardBrowseCourses" />
+            </section>
+        }
+
+        @if (dashboard?.Stats is { } stats)
+        {
+            <section class="dashboard-stats" aria-label="@HomeRes.StatsAriaLabel">
+                <StatTile Value="@Number(stats.WorkoutsCompleted)" Label="@ProfileRes.WorkoutsCompleted" Icon="bi-check2-circle" />
+                <StatTile Value="@Number(stats.MinutesTrained)" Label="@ProfileRes.MinutesTrained" Icon="bi-stopwatch" />
+                <StatTile Value="@Number(stats.CurrentStreak)" Label="@HomeRes.StatsStreakDays" Icon="bi-fire" />
+                <StatTile Value="@Number(dashboard.EnrolledCount)" Label="@HomeRes.DashboardContinueLearning" Icon="bi-collection-play" />
+            </section>
+        }
+
+        @if (dashboard is { EnrolledCourses.Count: > 0 })
+        {
+            <section class="dashboard-section" aria-labelledby="programmes-title">
+                <h2 id="programmes-title" class="dashboard-section__title">@HomeRes.DashboardContinueLearning</h2>
+                <div class="grid-auto dashboard-grid">
+                    @foreach (var course in dashboard.EnrolledCourses)
+                    {
+                        <CourseCard Course="course" Compact="true" @key="course.Id" />
+                    }
+                </div>
+            </section>
+        }
+
+        @if (dashboard is { RecommendedCourses.Count: > 0 })
+        {
+            <section class="dashboard-section" aria-labelledby="recommended-title">
+                <h2 id="recommended-title" class="dashboard-section__title">@HomeRes.RecommendedTitle</h2>
+                <div class="grid-auto dashboard-grid">
+                    @foreach (var course in dashboard.RecommendedCourses)
+                    {
+                        <CourseCard Course="course" Compact="true" @key="course.Id" />
+                    }
+                </div>
+            </section>
+        }
+    };
+}

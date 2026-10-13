@@ -1,0 +1,201 @@
+/* Two stacked 3:2 photos. Loop mode fades the finish frame in and out over the start frame
+   (one loop: hold start, fade, hold finish, fade back; opacity only). Still mode shows the start
+   frame and lets a parent card fade the finish frame in on hover (see ExerciseCard). */
+.exercise-media {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-table-header);
+    isolation: isolate;
+}
+
+.exercise-media__frames {
+    position: relative;
+    aspect-ratio: 3 / 2;
+}
+
+.exercise-media__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The finish photo and its tag start hidden; the loop, or the parent's hover, shows them. */
+.exercise-media__frame--end,
+.exercise-media__phase--end {
+    opacity: 0;
+}
+
+/* A soft charcoal fade at the top keeps the phase tag readable on bright photos. */
+.exercise-media__frames::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 40%;
+    background: linear-gradient(rgba(var(--bg-primary-rgb), 0.45), transparent);
+    pointer-events: none;
+}
+
+.exercise-media__phases {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 1;
+    display: grid;
+}
+
+/* Both tags share one grid cell, so they crossfade in place. */
+.exercise-media__phase {
+    grid-area: 1 / 1;
+    justify-self: start;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background-color: rgba(var(--bg-primary-rgb), 0.72);
+    color: var(--text-strong-normal);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.exercise-media__phase--end {
+    color: var(--text-strong-accent);
+}
+
+/* ---- Loop (workout cards, detail pages) ---- */
+.exercise-media--loop .exercise-media__frame--end,
+.exercise-media--loop .exercise-media__phase--end {
+    animation: exercise-media-show-end 3.2s var(--ease-in-out) infinite;
+}
+
+.exercise-media--loop .exercise-media__phase--start {
+    animation: exercise-media-show-start 3.2s var(--ease-in-out) infinite;
+}
+
+/* Paused: freeze the loop and round a half-done fade to the nearer whole photo. Two steps turn
+   each fade into a jump at its midpoint, so a tap never leaves both photos half showing. */
+.exercise-media--paused .exercise-media__frame--end,
+.exercise-media--paused .exercise-media__phase {
+    animation-play-state: paused;
+    animation-timing-function: steps(2, jump-none);
+}
+
+/* The whole photo is the pause button; the round icon in the corner shows its state. */
+.exercise-media__toggle {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: var(--space-2);
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+
+.exercise-media__toggle:focus-visible {
+    outline-offset: -3px;
+}
+
+.exercise-media__toggle-icon {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border-radius: 50%;
+    background-color: rgba(var(--bg-primary-rgb), 0.72);
+    color: var(--text-strong-normal);
+    font-size: 1.25rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.exercise-media--paused .exercise-media__toggle-icon {
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+}
+
+@media (hover: hover) {
+    .exercise-media__toggle:hover .exercise-media__toggle-icon {
+        transform: scale(1.06);
+    }
+}
+
+/* ---- Still (library thumbnails): no loop, no tag until the finish photo shows ---- */
+.exercise-media--still .exercise-media__phase--start {
+    display: none;
+}
+
+.exercise-media--still .exercise-media__frame--end,
+.exercise-media--still .exercise-media__phase--end {
+    transition: opacity var(--duration-slow) var(--ease-in-out);
+}
+
+/* Touch screens have no hover, so the finish photo would never show: keeping it out of the layout
+   also means its lazy image is never downloaded. */
+@media (hover: none) {
+    .exercise-media--still .exercise-media__frame--end {
+        display: none;
+    }
+}
+
+@keyframes exercise-media-show-end {
+    0%, 37.5% { opacity: 0; }
+    50%, 87.5% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes exercise-media-show-start {
+    0%, 37.5% { opacity: 1; }
+    50%, 87.5% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Reduced motion: no loop. Start and finish sit side by side, each with its own tag; a still
+   photo swaps to the finish frame without a fade. */
+@media (prefers-reduced-motion: reduce) {
+    .exercise-media--loop .exercise-media__frames {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+        aspect-ratio: auto;
+    }
+
+    .exercise-media--loop .exercise-media__frame {
+        position: static;
+        aspect-ratio: 3 / 2;
+    }
+
+    .exercise-media--loop .exercise-media__frame,
+    .exercise-media--loop .exercise-media__phase {
+        animation: none;
+        opacity: 1;
+    }
+
+    .exercise-media--loop .exercise-media__phases {
+        right: var(--space-2);
+        grid-template-columns: 1fr 1fr;
+        column-gap: calc(var(--space-4) + 2px);
+    }
+
+    .exercise-media--loop .exercise-media__phase--end {
+        grid-area: 1 / 2;
+    }
+
+    .exercise-media__toggle {
+        display: none;
+    }
+
+    .exercise-media--still .exercise-media__frame--end,
+    .exercise-media--still .exercise-media__phase--end {
+        transition: none;
+    }
+}

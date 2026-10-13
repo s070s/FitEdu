@@ -65,3 +65,30 @@
     color: var(--text-light-normal);
     border: 1px solid var(--border-subtle);
 }
+
+/* Phones: a two-column grid of portrait tiles from the top, scrolling when there are more than
+   fit; the bottom padding keeps the last row clear of the controls and the home indicator. */
+@media (max-width: 767.98px) {
+    .active-call-overlay {
+        justify-content: flex-start;
+        padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) calc(5.5rem + env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+    }
+
+    .active-call-grid {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+        gap: 0.5rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow-y: auto;
+    }
+
+    .local-tile {
+        aspect-ratio: 3 / 4;
+    }
+
+    .call-status-banner {
+        top: max(0.75rem, env(safe-area-inset-top));
+        max-width: calc(100% - 1.5rem);
+    }
+}

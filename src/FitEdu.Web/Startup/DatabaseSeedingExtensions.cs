@@ -9,8 +9,9 @@ namespace FitEdu.Web.Startup;
 /// <summary>
 /// Startup migration + seed: pre-warms LocalDB in Development, migrates the relational
 /// database, and seeds roles, subscription plans, and the admin user unconditionally, plus
-/// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven course/assessment/
-/// student sample data — none of which belongs in a real deployment.
+/// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven exercise-library/
+/// course/assessment/student/learning-path/testimonial/live-class sample data — none of which
+/// belongs in a real deployment.
 /// </summary>
 public static class DatabaseSeedingExtensions
 {
@@ -120,8 +121,9 @@ public static class DatabaseSeedingExtensions
             {
                 UserName = adminEmail,
                 Email = adminEmail,
-                FirstName = "System",
-                LastName = "Administrator",
+                // Members see this name as the host of every live class the admin runs.
+                FirstName = "FitEdu",
+                LastName = "Coach",
                 EmailConfirmed = true,
                 IsEnabled = true,
                 GdprConsentGiven = true,
@@ -151,6 +153,11 @@ public static class DatabaseSeedingExtensions
         {
             await BlogArticleSeeder.SeedAsync(db, startupLogger);
 
+            // Exercises before courses, so course lessons can link exercises by slug.
+            var exerciseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Exercises")
+                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Exercises");
+            await ExerciseSeeder.SeedFromJsonAsync(db, exerciseJsonPath, startupLogger);
+
             var jsonSeedPath = config.GetValue<string>("SeedData:JsonPaths:Courses")
                                ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Courses");
             await CourseSeeder.SeedFromJsonAsync(db, jsonSeedPath, startupLogger);
@@ -165,6 +172,18 @@ public static class DatabaseSeedingExtensions
                 ?? throw new InvalidOperationException(
                     "SeedData:StudentPassword is required when SeedData:Enabled=true. Set it via User Secrets.");
             await StudentSeeder.SeedFromJsonAsync(userManager, studentJsonPath, studentPassword, startupLogger);
+
+            // Path steps name their courses by English title, so paths seed after the courses.
+            var pathJsonPath = config.GetValue<string>("SeedData:JsonPaths:Paths")
+                               ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Paths");
+            await LearningPathSeeder.SeedFromJsonAsync(db, pathJsonPath, startupLogger);
+
+            // Testimonials and live classes; the admin account seeded above hosts the classes.
+            var showcaseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Showcase")
+                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Showcase");
+            var liveClassHost = await userManager.FindByEmailAsync(adminEmail)
+                ?? throw new InvalidOperationException($"Admin user '{adminEmail}' not found; it hosts the seeded live classes.");
+            await ShowcaseSeeder.SeedFromJsonAsync(db, showcaseJsonPath, liveClassHost.Id, TimeProvider.System, startupLogger);
         }
     }
 }

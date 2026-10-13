@@ -1,6 +1,6 @@
 # docs/plans — Open Audit Backlog Index
 
-Created: 2026-07-11 · Codebase snapshot: commit `b2dd9bd` (master) · Pruned to open findings: 2026-07-14 · Medium backlog cleared: 2026-07-15 · DEP backlog closed: 2026-09-05 · Completed-work sweep: 2026-09-08 · Cleanup sweep: 2026-09-22
+Created: 2026-07-11 · Codebase snapshot: commit `b2dd9bd` (master) · Pruned to open findings: 2026-07-14 · Medium backlog cleared: 2026-07-15 · DEP backlog closed: 2026-09-05 · Completed-work sweep: 2026-09-08 · Cleanup sweep: 2026-09-22 · Fitness-redesign recheck of UI/UX: 2026-10-13
 
 This folder holds the **open backlog** from the 2026-07-11 audit suite (originally 4 implementation plans,
 25 audit reports, a Critical/High synthesis, and 255 findings). Everything completed has been removed:
@@ -49,9 +49,12 @@ of what was fixed lives in git (`git log docs/plans/`).
 > consciously deferred to keep the phase bounded and are the only outstanding polish — zero-risk, pick up any time:
 > - Mechanical sweep of hardcoded px/ms/hex literals → design tokens across the ~28 remaining `.razor.css`
 >   files (plus `shared-components.css`); do it file-by-file with a visual diff.
-> - Two micro-interactions: card hover (`translateY(-2px)` + shadow crossfade) and nav-link underline scale-in.
-> - `SkeletonBlock` swap on the ~14 list pages still using `LoadingSpinner` (spinner is correct for sub-second
->   loads per the plan's Decision 5, but several are paged lists that would benefit); grep `LoadingSpinner` under `Pages/`.
+> - One micro-interaction: nav-link underline scale-in. (A partial card hover shipped with the fitness redesign,
+>   2026-10-13: a 2px lift plus a border-colour change, only on `a.card-surface` and `.card-surface--interactive`
+>   in `shared-components.css`; no shadow crossfade, and legacy `.card` surfaces still have no hover.)
+> - `SkeletonBlock` swap on the list pages still using `LoadingSpinner` (spinner is correct for sub-second
+>   loads per the plan's Decision 5, but several are paged lists that would benefit); 13 pages use `SkeletonBlock`
+>   as of 2026-10-13 — grep `LoadingSpinner` under `Pages/` for the rest.
 > - Formal Lighthouse scoring + DevTools paint-flashing / FPS traces (never run; the transform/opacity-only
 >   performance rule was instead verified by reading every animated CSS rule).
 
@@ -108,8 +111,8 @@ Severity is judged in context: this is a university certificate project, not a p
 | COMP (29) | 0 | 0 | 0 | 3 | 1 | 4 |
 | DB (30) | 0 | 0 | 0 | 5 | 2 | 7 |
 | API (31) | 0 | 0 | 0 | 5 | 2 | 7 |
-| UI (32) | 0 | 0 | 0 | 4 | 1 | 5 |
-| UX (33) | 0 | 0 | 0 | 2 | 1 | 3 |
+| UI (32) | 0 | 0 | 0 | 3 | 1 | 4 |
+| UX (33) | 0 | 0 | 0 | 1 | 1 | 2 |
 | PERF (34) | 0 | 0 | 0 | 5 | 1 | 6 |
 | SCALE (35) | 0 | 0 | 0 | 2 | 1 | 3 |
 | AVAIL (36) | 0 | 0 | 0 | 2 | 1 | 3 |
@@ -122,6 +125,6 @@ Severity is judged in context: this is a university certificate project, not a p
 | DEP (43) | 0 | 0 | 0 | 2 | 1 | 3 |
 | DOC (44) | 0 | 0 | 0 | 2 | 2 | 4 |
 | GOV (45) | 0 | 0 | 0 | 3 | 3 | 6 |
-| **Total** | **0** | **0** | **0** | **85** | **28** | **113** |
+| **Total** | **0** | **0** | **0** | **83** | **28** | **111** |
 
 Counts reflect **open** findings only — fixed findings were removed from their reports as the work landed, downgraded findings (still open, less severe) sit in their new severity row, and consciously **accepted** findings are excluded (like fixed ones) though their bodies may be retained with an acceptance note. Of the original 255 findings, all 31 Critical/High are resolved and, as of 2026-07-15, so is the entire **Medium** backlog: every Medium is fixed except three consciously accepted as large-effort or externally-blocked — MAINT-2 and MAINT-3 (Effort-M structural refactors, see [23-audit-maintainability.md](23-audit-maintainability.md)) and BIZ-3 (real payments, blocked on a live Stripe account, see [27-audit-business-logic.md](27-audit-business-logic.md)). The earlier accepted Critical/High cluster (Redis/architecture — ARCH-1, PERF-1, SCALE-1/2/3, AVAIL-4) is recorded in the "Accepted since audit" banners in reports 21/34/35/36. What remains open is the Low/Info backlog. The record of every fix lives in git history.

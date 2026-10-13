@@ -6,12 +6,11 @@
 
 <PageTitle>@GlobalRes.NotFoundTitle</PageTitle>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-            <h1 class="h2 mb-4">@GlobalRes.NotFoundTitle</h1>
-            <p class="lead">@GlobalRes.NotFoundMessage</p>
-            <a href="/" class="btn btn-primary mt-3">@GlobalRes.BackToHome</a>
-        </div>
-    </div>
-</div>
+<StatusPanel Icon="bi-signpost-split"
+             Eyebrow="404"
+             Title="@GlobalRes.NotFoundTitle"
+             Lead="@GlobalRes.NotFoundMessage">
+    <Actions>
+        <a href="/" class="btn-cta">@GlobalRes.BackToHome</a>
+    </Actions>
+</StatusPanel>

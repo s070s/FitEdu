@@ -138,16 +138,6 @@ public partial class NotificationBell : IAsyncDisposable
         }
     }
 
-    private static string RelativeTime(DateTimeOffset createdAt)
-    {
-        var span = DateTimeOffset.UtcNow - createdAt;
-        if (span < TimeSpan.FromMinutes(1)) return NotificationRes.TimeJustNow;
-        if (span < TimeSpan.FromHours(1)) return string.Format(NotificationRes.TimeMinutesFormat, (int)span.TotalMinutes);
-        if (span < TimeSpan.FromDays(1)) return string.Format(NotificationRes.TimeHoursFormat, (int)span.TotalHours);
-        if (span < TimeSpan.FromDays(7)) return string.Format(NotificationRes.TimeDaysFormat, (int)span.TotalDays);
-        return createdAt.ToLocalTime().ToString("M");
-    }
-
     public async ValueTask DisposeAsync()
     {
         if (_hub is not null)

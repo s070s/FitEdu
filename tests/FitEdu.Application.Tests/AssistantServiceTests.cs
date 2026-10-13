@@ -93,14 +93,14 @@ public class AssistantServiceTests
         var (svc, chatClient, retrieval, _) = NewService(db);
         retrieval.SearchAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<IReadOnlyList<AssistantRetrievedChunk>>(
-                [new AssistantRetrievedChunk("Career Discovery is a course about finding your path.", "Career Discovery", "courses/abc")]));
+                [new AssistantRetrievedChunk("Strength Foundations teaches the squat, hinge, push and pull.", "Strength Foundations", "courses/abc")]));
 
         db.Enrollments.Add(new Domain.Entities.Enrollment
         {
             Id = Guid.NewGuid(),
             UserId = UserId,
             CourseId = Guid.NewGuid(),
-            Course = new Domain.Entities.Course { Id = Guid.NewGuid(), TitleEn = "Interview Mastery", IsPublished = true }
+            Course = new Domain.Entities.Course { Id = Guid.NewGuid(), TitleEn = "Couch to 5K Running", IsPublished = true }
         });
         await db.SaveChangesAsync();
 
@@ -118,11 +118,39 @@ public class AssistantServiceTests
         var systemMessage = captured![0];
         systemMessage.Role.ShouldBe(ChatRole.System);
         systemMessage.Text.ShouldContain("Greek");
+        systemMessage.Text.ShouldContain("address the member informally (εσύ)");
         systemMessage.Text.ShouldContain("Pro");
-        systemMessage.Text.ShouldContain("Interview Mastery");
-        systemMessage.Text.ShouldContain("Career Discovery is a course about finding your path.");
+        systemMessage.Text.ShouldContain("Couch to 5K Running");
+        systemMessage.Text.ShouldContain("Strength Foundations teaches the squat, hinge, push and pull.");
         captured[1].Role.ShouldBe(ChatRole.User);
         captured[1].Text.ShouldBe("What should I take next?");
+    }
+
+    [Fact]
+    public async Task StreamChatAsync_SystemPromptIsTheFitnessCoachWithMedicalBoundaries()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var (svc, chatClient, _, _) = NewService(db);
+
+        List<ChatMessage>? captured = null;
+        chatClient.GetStreamingResponseAsync(Arg.Any<IEnumerable<ChatMessage>>(), Arg.Any<ChatOptions>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                captured = callInfo.Arg<IEnumerable<ChatMessage>>().ToList();
+                return Updates("ok");
+            });
+
+        await Collect(svc.StreamChatAsync(UserId, OneUserMessage("How do I start?"), "en"));
+
+        var prompt = captured.ShouldNotBeNull()[0].Text;
+        prompt.ShouldContain("You are FitEdu Coach");
+        prompt.ShouldContain("exercise library");
+        prompt.ShouldContain("consult a doctor or physiotherapist");
+        prompt.ShouldContain("Never prescribe diets or supplements");
+        prompt.ShouldContain("seek professional help"); // serious distress, e.g. disordered eating
+        prompt.ShouldNotContain("career", Case.Insensitive);
+        prompt.ShouldNotContain("counsel", Case.Insensitive);
+        prompt.ShouldNotContain("εσύ"); // the Greek-only address rule
     }
 
     [Fact]

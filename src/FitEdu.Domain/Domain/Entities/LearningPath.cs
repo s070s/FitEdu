@@ -1,7 +1,7 @@
 namespace FitEdu.Domain.Entities;
 
 /// <summary>
-/// An ordered sequence of courses ("Career Change Starter → CV Lab → Interview Mastery").
+/// An ordered sequence of courses ("Bodyweight Basics → Mobility &amp; Flexibility → Strength Foundations").
 /// Publish workflow reuses <see cref="AuditableEntity"/> (IsPublished), same as Course.
 /// </summary>
 public class LearningPath : AuditableEntity

@@ -1,0 +1,17 @@
+@* Phone tab bar (below 768 px): the role's main destinations, one tap away. The spacer keeps the
+   end of the page (the footer) from hiding behind the fixed bar. *@
+@if (_tabs.Count > 0)
+{
+    <div class="bottom-nav-spacer" aria-hidden="true"></div>
+    <nav class="bottom-nav" aria-label="@NavMenuRes.QuickNavigation">
+        @foreach (var item in _tabs)
+        {
+            <NavLink class="bottom-nav__link" href="@item.Href" Match="@item.Match" aria-label="@item.Label()">
+                <span class="bottom-nav__icon-wrap" aria-hidden="true">
+                    <span class="bi @item.Icon bottom-nav__icon"></span>
+                </span>
+                <span class="bottom-nav__label">@item.CompactLabel</span>
+            </NavLink>
+        }
+    </nav>
+}

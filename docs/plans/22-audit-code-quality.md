@@ -59,11 +59,6 @@ Micro-level quality is high and — more unusually — *improving on record*: a 
 - **Impact:** None functionally; minor "where do I put/find the interface?" friction, and the `ApiInterfaces` name under-describes its contents.
 - **Recommendation:** Fold `Web/Interfaces` into the folders of their implementations (matching the Consumers convention), or leave as-is — only worth doing opportunistically.
 
-### CQ-10: Isolated style stragglers: one block-scoped namespace, one unprefixed private field  [Info]
-- **Evidence:** `src/FitEdu.Infrastructure/Data/DesignTimeDbContextFactory.cs:4` is the only hand-written file using a block-scoped namespace (everything else is file-scoped; `.editorconfig:30` sets `file_scoped:warning`). `src/FitEdu.Web/Pages/Home.razor.cs:33` declares `private string? backgroundImageUrl` (no `_` prefix, unlike sibling fields `_isAuthenticated`, `_blogSummaries` in the same class); it is also assigned a constant and never mutated, making the null-check in `heroBackgroundStyle` (line 34-36) a dead branch.
-- **Impact:** Cosmetic; listed for completeness because the codebase is otherwise consistent enough that these stand out.
-- **Recommendation:** File-scope the factory namespace; rename to `_backgroundImageUrl` or inline the constant and delete the dead conditional.
-
 ## 4. Prioritized Action List
 
 | ID | Severity | Effort | Action |
@@ -74,7 +69,6 @@ Micro-level quality is high and — more unusually — *improving on record*: a 
 | CQ-7 | Low | S | Remove the `SortBy="email"` default from generic `PagedResult<T>` |
 | CQ-8 | Low | S | Fix 4 residual spaced-paren lines; add a format verification step to CI |
 | CQ-9 | Info | S | (Opportunistic) unify interface placement in Web |
-| CQ-10 | Info | S | (Opportunistic) file-scope DesignTimeDbContextFactory; clean Home.razor.cs field |
 
 ## 5. Related Findings Elsewhere
 

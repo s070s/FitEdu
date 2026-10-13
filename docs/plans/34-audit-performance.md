@@ -53,8 +53,8 @@ All five Medium findings have been resolved: blog summaries now project in SQL i
 - **Impact:** Needless snapshot/change-tracking allocations on hot read paths — the chat history query runs on every conversation open and page change.
 - **Recommendation:** Add `AsNoTracking()`, matching the 50+ existing correct usages across the same services.
 
-### PERF-12: No response compression and no cache headers on locally served static assets  [Low] [Effort: S]
-- **Evidence:** `Program.cs:78` — bare `app.UseStaticFiles()` (no cache-control configuration); no `AddResponseCompression`/`UseResponseCompression` or output caching anywhere (verified by search). `App.razor:22-29` serves bootstrap.min.css, app.css, shared-components.css and the scoped-CSS bundle locally on every page load. `MediaController.cs:71` shows the intended caching pattern (`public, max-age=86400`) applied only to uploaded media.
+### PERF-12: No response compression; cache headers only on shipped images  [Low] [Effort: S]
+- **Evidence:** `Program.cs` — `app.UseStaticFiles(StaticFileCaching.CreateOptions())` now sends `Cache-Control: public,max-age=604800` for `/images/**` (Phase D1, `Startup/StaticFileCaching.cs`, covered by `StaticFileCachingTests`); CSS, JS and the other static files still use the default; no `AddResponseCompression`/`UseResponseCompression` or output caching anywhere (verified by search). `App.razor:22-29` serves bootstrap.min.css, app.css, shared-components.css and the scoped-CSS bundle locally on every page load. `MediaController.cs:71` shows the intended caching pattern (`public, max-age=86400`) applied only to uploaded media.
 - **Impact:** Full-page loads (first visit, post-logout, circuit-reload) re-negotiate every static asset with at best 304 revalidations and no gzip/brotli for the SSR HTML. Modest, but it is the entire anonymous-visitor experience (Home/blog/pricing).
 - **Recommendation:** Add `UseResponseCompression` (or rely on a fronting proxy when one exists — CLOUD 41's call) and set `StaticFileOptions.OnPrepareResponse` cache headers with the fingerprinted-asset awareness .NET 10's `MapStaticAssets` provides out of the box.
 
@@ -73,7 +73,7 @@ All five Medium items (PERF-3 through PERF-7) are resolved. The remaining backlo
 | PERF-9 | Low | S | Collapse the duplicate paged query in `GetPublishedCoursesAsync` |
 | PERF-10 | Low | S | Diff assistant index on projected hashes, not full rows |
 | PERF-11 | Low | S | Add `AsNoTracking` to the remaining read-only queries |
-| PERF-12 | Low | S | Add response compression + static-asset cache headers |
+| PERF-12 | Low | S | Add response compression + cache headers for CSS/JS (images done) |
 
 ## 5. Related Findings Elsewhere
 

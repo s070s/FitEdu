@@ -1,0 +1,35 @@
+@* Friendly "nothing here yet" block: an icon in a tinted circle, a title, an optional line of text
+   and an optional call to action (a link, or any ChildContent such as a button). The title is an h2,
+   so the page around it needs an h1 (a visually hidden one on a page that shows only this block). *@
+
+<div class="empty-state">
+    <span class="empty-state__icon" aria-hidden="true"><span class="bi @Icon"></span></span>
+    <h2 class="empty-state__title">@Title</h2>
+    @if (!string.IsNullOrWhiteSpace(Text))
+    {
+        <p class="empty-state__text">@Text</p>
+    }
+    @if (HasAction)
+    {
+        <a class="btn-cta empty-state__action" href="@ActionHref">@ActionLabel</a>
+    }
+    @ChildContent
+</div>
+
+@code {
+    /// <summary>Bootstrap Icons class shown in the circle.</summary>
+    [Parameter] public string Icon { get; set; } = "bi-inbox";
+
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+
+    [Parameter] public string? Text { get; set; }
+
+    /// <summary>Link target of the call to action; shown only together with <see cref="ActionLabel"/>.</summary>
+    [Parameter] public string? ActionHref { get; set; }
+
+    [Parameter] public string? ActionLabel { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool HasAction => !string.IsNullOrWhiteSpace(ActionHref) && !string.IsNullOrWhiteSpace(ActionLabel);
+}

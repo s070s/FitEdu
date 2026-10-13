@@ -48,7 +48,7 @@ public class MigrationChainTests(ITestOutputHelper output)
             return;
         }
 
-        var dbName = "RyfMigrationChainTest_" + Guid.NewGuid().ToString("N");
+        var dbName = "FitEduMigrationChainTest_" + Guid.NewGuid().ToString("N");
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlServer($"{LocalDbServer}Database={dbName};")
             .Options;

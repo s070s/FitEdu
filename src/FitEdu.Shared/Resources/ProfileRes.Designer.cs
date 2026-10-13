@@ -419,5 +419,95 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("DownloadMyData", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Training goal.
+        /// </summary>
+        public static string Goal {
+            get {
+                return ResourceManager.GetString("Goal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Workouts completed.
+        /// </summary>
+        public static string WorkoutsCompleted {
+            get {
+                return ResourceManager.GetString("WorkoutsCompleted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes trained.
+        /// </summary>
+        public static string MinutesTrained {
+            get {
+                return ResourceManager.GetString("MinutesTrained", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Current streak.
+        /// </summary>
+        public static string CurrentStreak {
+            get {
+                return ResourceManager.GetString("CurrentStreak", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days.
+        /// </summary>
+        public static string StreakDaysFormat {
+            get {
+                return ResourceManager.GetString("StreakDaysFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your training at a glance.
+        /// </summary>
+        public static string StatsHeading {
+            get {
+                return ResourceManager.GetString("StatsHeading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Courses joined.
+        /// </summary>
+        public static string StatsCourses {
+            get {
+                return ResourceManager.GetString("StatsCourses", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates earned.
+        /// </summary>
+        public static string StatsCertificates {
+            get {
+                return ResourceManager.GetString("StatsCertificates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Self-assessments done.
+        /// </summary>
+        public static string StatsAssessments {
+            get {
+                return ResourceManager.GetString("StatsAssessments", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not chosen yet.
+        /// </summary>
+        public static string GoalNotSet {
+            get {
+                return ResourceManager.GetString("GoalNotSet", resourceCulture);
+            }
+        }
     }
 }

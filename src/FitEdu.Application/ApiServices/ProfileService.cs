@@ -15,7 +15,8 @@ public class ProfileService(
     UserManager<ApplicationUser> userManager,
     IFileStorage fileStorage,
     IApplicationDbContext db,
-    ILogger<ProfileService> logger) : IProfileService
+    ILogger<ProfileService> logger,
+    TimeProvider timeProvider) : IProfileService
 {
     public async Task<ProfileDto?> GetProfileAsync(string userId)
     {
@@ -33,7 +34,8 @@ public class ProfileService(
         user.LastName = request.LastName.Trim();
         user.DisplayName = request.DisplayName?.Trim();
         user.DateOfBirth = request.DateOfBirth;
-        user.Status = request.Status == UserStatus.Unknown ? UserStatus.Student : request.Status;
+        user.Status = request.Status == UserStatus.Unknown ? UserStatus.Beginner : request.Status;
+        user.Goal = request.Goal;
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
@@ -110,7 +112,8 @@ public class ProfileService(
             user.CreatedAt,
             user.GdprConsentGiven,
             user.GdprConsentDate,
-            user.ParentalConsentGiven);
+            user.ParentalConsentGiven,
+            user.Goal?.ToString());
 
         var enrollments = await db.Enrollments
             .AsNoTracking()
@@ -152,6 +155,60 @@ public class ProfileService(
         return new MyDataExportDto(profile, enrollments, submissions, certificates, billing, chatMessages);
     }
 
+    public async Task<TrainingStatsDto> GetTrainingStatsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var completions = await db.LessonCompletions
+            .AsNoTracking()
+            .Where(c => c.UserId == userId)
+            .Select(c => new { c.CompletedAt, c.Lesson.DurationMinutes })
+            .ToListAsync(cancellationToken);
+
+        var minutesTrained = completions.Sum(c => c.DurationMinutes ?? 0);
+        var todayUtc = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
+        var currentStreak = CountStreakDays(completions.Select(c => c.CompletedAt), todayUtc);
+
+        // The programme to continue: the newest enrolment that is neither finished nor dropped.
+        var currentCourseId = await db.Enrollments
+            .AsNoTracking()
+            .Where(e => e.UserId == userId && e.Status == EnrollmentStatus.Active && e.Course.IsPublished)
+            .OrderByDescending(e => e.EnrolledAt)
+            .Select(e => (Guid?)e.CourseId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var user = await userManager.FindByIdAsync(userId);
+        var level = user is null ? null : CourseLevelFor(user.Status);
+
+        return new TrainingStatsDto(completions.Count, minutesTrained, currentStreak, currentCourseId, user?.Goal, level);
+    }
+
+    /// <summary>
+    /// Consecutive UTC calendar days with at least one completion, counting back from today. A streak
+    /// whose last day is yesterday still counts, because today's workout may be still to come.
+    /// </summary>
+    private static int CountStreakDays(IEnumerable<DateTime> completedAtUtc, DateOnly todayUtc)
+    {
+        var trainingDays = completedAtUtc.Select(DateOnly.FromDateTime).ToHashSet();
+        var day = trainingDays.Contains(todayUtc) ? todayUtc : todayUtc.AddDays(-1);
+
+        var streak = 0;
+        while (trainingDays.Contains(day))
+        {
+            streak++;
+            day = day.AddDays(-1);
+        }
+
+        return streak;
+    }
+
+    /// <summary>The self-reported training level as a course level; unknown or other picks none.</summary>
+    private static CourseLevel? CourseLevelFor(UserStatus status) => status switch
+    {
+        UserStatus.Beginner => CourseLevel.Beginner,
+        UserStatus.Intermediate => CourseLevel.Intermediate,
+        UserStatus.Advanced => CourseLevel.Advanced,
+        _ => null
+    };
+
     private static ProfileDto ToDto(ApplicationUser user) => new(
         user.Id,
         user.Email ?? "",
@@ -160,6 +217,7 @@ public class ProfileService(
         user.DisplayName,
         user.AvatarPath,
         user.DateOfBirth,
-        user.Status
+        user.Status,
+        user.Goal
     );
 }

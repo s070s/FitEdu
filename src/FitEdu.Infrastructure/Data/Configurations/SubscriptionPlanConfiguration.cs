@@ -20,6 +20,9 @@ public class SubscriptionPlanConfiguration : IEntityTypeConfiguration<Subscripti
         builder.Property(sp => sp.Description)
             .HasMaxLength(1000);
 
+        builder.Property(sp => sp.DescriptionEl)
+            .HasMaxLength(1000);
+
         // Price with precision for currency
         builder.Property(sp => sp.Price)
             .HasPrecision(18, 2);

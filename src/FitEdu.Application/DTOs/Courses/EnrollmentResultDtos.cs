@@ -13,7 +13,9 @@ public record EnrollmentResultDto(
 /// Response for lesson completion. <c>CertificatePending</c> is true when the course just
 /// completed and certificate auto-generation (REL-5) failed — the completion itself still
 /// succeeded, but the UI should tell the user their certificate is pending rather than staying
-/// silent; <c>IssueCertificate</c> retries generation on demand.
+/// silent; <c>IssueCertificate</c> retries generation on demand. <c>CertificateIncluded</c> is
+/// true when the course just completed on a plan with certificates, so the UI can offer the
+/// certificate, or an upgrade when it is false.
 /// </summary>
 public record LessonCompletionResultDto(
     bool Success,
@@ -22,5 +24,6 @@ public record LessonCompletionResultDto(
     int TotalLessons,
     double ProgressPercent,
     bool CourseCompleted,
-    bool CertificatePending = false
+    bool CertificatePending = false,
+    bool CertificateIncluded = false
 );

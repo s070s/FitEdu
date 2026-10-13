@@ -151,7 +151,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assessment access.
+        ///   Looks up a localized string similar to Fitness self-assessments.
         /// </summary>
         public static string FeatureAssessmentAccess {
             get {
@@ -160,7 +160,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificates.
+        ///   Looks up a localized string similar to Completion certificates.
         /// </summary>
         public static string FeatureCertificates {
             get {
@@ -214,15 +214,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free.
-        /// </summary>
-        public static string PriceFree {
-            get {
-                return ResourceManager.GetString("PriceFree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Processing....
         /// </summary>
         public static string Processing {
@@ -232,7 +223,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlock your full potential with the right plan for you..
+        ///   Looks up a localized string similar to Train smarter with the plan that fits your goals..
         /// </summary>
         public static string Subtitle {
             get {
@@ -241,7 +232,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited courses.
+        ///   Looks up a localized string similar to Unlimited active courses.
         /// </summary>
         public static string UnlimitedCourses {
             get {
@@ -250,7 +241,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Up to {0} course(s).
+        ///   Looks up a localized string similar to Up to {0} active courses at a time.
         /// </summary>
         public static string UpToCoursesFormat {
             get {
@@ -273,6 +264,141 @@ namespace FitEdu.Shared.Resources {
         public static string UpgradeNow {
             get {
                 return ResourceManager.GetString("UpgradeNow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Full exercise library.
+        /// </summary>
+        public static string FeatureExerciseLibrary {
+            get {
+                return ResourceManager.GetString("FeatureExerciseLibrary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live classes.
+        /// </summary>
+        public static string FeatureLiveClasses {
+            get {
+                return ResourceManager.GetString("FeatureLiveClasses", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Membership.
+        /// </summary>
+        public static string Eyebrow {
+            get {
+                return ResourceManager.GetString("Eyebrow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to / month.
+        /// </summary>
+        public static string PeriodMonthly {
+            get {
+                return ResourceManager.GetString("PeriodMonthly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to / quarter.
+        /// </summary>
+        public static string PeriodQuarterly {
+            get {
+                return ResourceManager.GetString("PeriodQuarterly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to / year.
+        /// </summary>
+        public static string PeriodYearly {
+            get {
+                return ResourceManager.GetString("PeriodYearly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to one-off.
+        /// </summary>
+        public static string PeriodLifetime {
+            get {
+                return ResourceManager.GetString("PeriodLifetime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every free course.
+        /// </summary>
+        public static string FeatureCoursesFree {
+            get {
+                return ResourceManager.GetString("FeatureCoursesFree", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every Free and Plus course.
+        /// </summary>
+        public static string FeatureCoursesPlus {
+            get {
+                return ResourceManager.GetString("FeatureCoursesPlus", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every course, including the advanced Pro programmes.
+        /// </summary>
+        public static string FeatureCoursesPro {
+            get {
+                return ResourceManager.GetString("FeatureCoursesPro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What the {0} plan includes.
+        /// </summary>
+        public static string FeaturesListLabel {
+            get {
+                return ResourceManager.GetString("FeaturesListLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not included:.
+        /// </summary>
+        public static string FeatureNotIncluded {
+            get {
+                return ResourceManager.GetString("FeatureNotIncluded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exercise library and live classes are open to every member. Switch or cancel any time..
+        /// </summary>
+        public static string Footnote {
+            get {
+                return ResourceManager.GetString("Footnote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 active course at a time.
+        /// </summary>
+        public static string OneCourseAtATime {
+            get {
+                return ResourceManager.GetString("OneCourseAtATime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to forever.
+        /// </summary>
+        public static string PeriodForever {
+            get {
+                return ResourceManager.GetString("PeriodForever", resourceCulture);
             }
         }
     }

@@ -43,13 +43,43 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
         var client = await _factory.CreateAuthenticatedClientAsync("Student");
 
         var response = await client.PutAsJsonAsync("/api/profile",
-            new UpdateProfileRequest("UpdatedFirst", "UpdatedLast", "Nick", null, UserStatus.Graduate));
+            new UpdateProfileRequest("UpdatedFirst", "UpdatedLast", "Nick", null, UserStatus.Intermediate));
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var dto = await response.Content.ReadFromJsonAsync<ProfileDto>();
         dto!.FirstName.ShouldBe("UpdatedFirst");
         dto.DisplayName.ShouldBe("Nick");
-        dto.Status.ShouldBe(UserStatus.Graduate);
+        dto.Status.ShouldBe(UserStatus.Intermediate);
+    }
+
+    [Fact]
+    public async Task UpdateProfile_SavesTheGoalAndANullGoalClearsIt()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var saved = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Goal", "Setter", null, null, UserStatus.Advanced, FitnessGoal.Endurance)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+        var reloaded = await client.GetFromJsonAsync<ProfileDto>("/api/profile");
+        var cleared = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Goal", "Setter", null, null, UserStatus.Advanced, Goal: null)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+
+        saved!.Goal.ShouldBe(FitnessGoal.Endurance);
+        reloaded!.Goal.ShouldBe(FitnessGoal.Endurance);
+        reloaded.Status.ShouldBe(UserStatus.Advanced);
+        cleared!.Goal.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateProfile_UnknownGoalValue_Returns400()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var response = await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Bad", "Goal", null, null, UserStatus.Beginner, (FitnessGoal)42));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -181,5 +211,55 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
         export.Certificates.Single().CourseTitle.ShouldBe("Export Test Course");
         export.BillingTransactions.Single().PlanName.ShouldBe("Pro");
         export.ChatMessages.Single().Content.ShouldBe("Hello export test");
+    }
+
+    [Fact]
+    public async Task ExportMyData_IncludesTheTrainingGoal()
+    {
+        // The goal is personal data like the training level, so the GDPR export carries it too.
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await _factory.SeedAsync(async db =>
+        {
+            var user = await db.Users.SingleAsync(u => u.Id == userId);
+            user.Goal = FitnessGoal.Strength;
+            await db.SaveChangesAsync();
+        });
+
+        var export = await client.GetFromJsonAsync<MyDataExportDto>("/api/profile/export");
+
+        export!.Profile.Goal.ShouldBe(nameof(FitnessGoal.Strength));
+    }
+
+    [Fact]
+    public async Task GetTrainingStats_Anonymous_Returns401()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync("/api/profile/training-stats")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetTrainingStats_CountsTheMembersCompletedWorkouts()
+    {
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await _factory.SeedAsync(async db =>
+        {
+            var course = new Course { Id = Guid.NewGuid(), TitleEn = $"Stats-{Guid.NewGuid():N}", IsPublished = true };
+            var module = new Module { Id = Guid.NewGuid(), TitleEn = "Week 1", SortOrder = 1, CourseId = course.Id };
+            var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "Workout 1", SortOrder = 1, DurationMinutes = 25 };
+            module.Lessons.Add(lesson);
+            course.Modules.Add(module);
+            db.Courses.Add(course);
+            db.Enrollments.Add(new Enrollment { UserId = userId, CourseId = course.Id });
+            db.LessonCompletions.Add(new LessonCompletion { UserId = userId, LessonId = lesson.Id });
+            await db.SaveChangesAsync();
+        });
+
+        var stats = await client.GetFromJsonAsync<TrainingStatsDto>("/api/profile/training-stats");
+
+        stats!.WorkoutsCompleted.ShouldBe(1);
+        stats.MinutesTrained.ShouldBe(25);
+        stats.CurrentStreak.ShouldBe(1);
+        stats.CurrentCourseId.ShouldNotBeNull();
     }
 }

@@ -1,0 +1,12 @@
+/* Moved here from MainLayout.razor.css: scoped styles do not reach another component's markup,
+   so the banner rendered unstyled while the rule lived in the layout. */
+.impersonation-banner {
+    position: relative;
+    z-index: 1001;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    background-color: var(--color-attention);
+    color: var(--bg-primary);
+    font-size: 0.9rem;
+    border-bottom: 2px solid var(--color-attention-border);
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Live Mobility Flow",
+    "titleEl": "Ζωντανή Ροή Κινητικότητας",
+    "courseTitle": "Mobility & Flexibility",
+    "weekdayOffset": 1,
+    "hourUtc": 18,
+    "durationMinutes": 45,
+    "maxParticipants": 6
+  },
+  {
+    "title": "Kettlebell Technique Clinic",
+    "titleEl": "Εργαστήριο Τεχνικής Kettlebell",
+    "courseTitle": "Kettlebell Fundamentals",
+    "weekdayOffset": 2,
+    "hourUtc": 18,
+    "durationMinutes": 60,
+    "maxParticipants": 6
+  },
+  {
+    "title": "Beginner Strength Q&A",
+    "titleEl": "Δύναμη για Αρχάριους: Ερωτήσεις & Απαντήσεις",
+    "courseTitle": "Strength Foundations",
+    "weekdayOffset": 3,
+    "hourUtc": 17,
+    "durationMinutes": 30,
+    "maxParticipants": 6
+  },
+  {
+    "title": "HIIT Express 30",
+    "titleEl": "HIIT Express 30",
+    "courseTitle": "HIIT for Fat Loss",
+    "weekdayOffset": 4,
+    "hourUtc": 18,
+    "durationMinutes": 30,
+    "maxParticipants": 6
+  },
+  {
+    "title": "Desk Reset Break",
+    "titleEl": "Διάλειμμα Επαναφοράς για το Γραφείο",
+    "courseTitle": "Desk Posture Reset",
+    "weekdayOffset": 5,
+    "hourUtc": 17,
+    "durationMinutes": 30,
+    "maxParticipants": 6
+  },
+  {
+    "title": "Recovery & Breathing",
+    "titleEl": "Αποκατάσταση & Αναπνοή",
+    "courseTitle": "Recovery & Sleep",
+    "weekdayOffset": 6,
+    "hourUtc": 18,
+    "durationMinutes": 45,
+    "maxParticipants": 6
+  }
+]

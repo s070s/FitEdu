@@ -3,6 +3,7 @@ using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Pages;
@@ -24,8 +25,10 @@ public partial class AdminTestimonialEditor
     // Form fields
     private string _fullName = string.Empty;
     private string _roleOrTitle = string.Empty;
+    private string _roleOrTitleEl = string.Empty;
     private string _companyOrContext = string.Empty;
     private string _quoteText = string.Empty;
+    private string _quoteTextEl = string.Empty;
     private int _displayOrder = 1;
     private bool _isActive = true;
 
@@ -49,12 +52,14 @@ public partial class AdminTestimonialEditor
             {
                 _fullName = item.FullName;
                 _roleOrTitle = item.RoleOrTitle ?? string.Empty;
+                _roleOrTitleEl = item.RoleOrTitleEl ?? string.Empty;
                 _companyOrContext = item.CompanyOrContext ?? string.Empty;
                 _quoteText = item.QuoteText;
+                _quoteTextEl = item.QuoteTextEl ?? string.Empty;
                 _displayOrder = item.DisplayOrder;
                 _isActive = item.IsActive;
                 _avatarPath = item.AvatarPath;
-                _avatarPreviewUrl = BuildPreviewUrl(item.AvatarPath);
+                _avatarPreviewUrl = MediaUrls.Resolve(item.AvatarPath);
             }
         }
 
@@ -74,7 +79,7 @@ public partial class AdminTestimonialEditor
             if (path is not null)
             {
                 _avatarPath = path;
-                _avatarPreviewUrl = BuildPreviewUrl(path);
+                _avatarPreviewUrl = MediaUrls.Resolve(path);
             }
             else
             {
@@ -130,11 +135,13 @@ public partial class AdminTestimonialEditor
         {
             var request = new SaveTestimonialRequest(
                 FullName: _fullName.Trim(),
-                RoleOrTitle: string.IsNullOrWhiteSpace(_roleOrTitle) ? null : _roleOrTitle.Trim(),
-                CompanyOrContext: string.IsNullOrWhiteSpace(_companyOrContext) ? null : _companyOrContext.Trim(),
+                RoleOrTitle: TrimToNull(_roleOrTitle),
+                CompanyOrContext: TrimToNull(_companyOrContext),
                 QuoteText: _quoteText.Trim(),
                 DisplayOrder: _displayOrder,
-                IsActive: _isActive);
+                IsActive: _isActive,
+                RoleOrTitleEl: TrimToNull(_roleOrTitleEl),
+                QuoteTextEl: TrimToNull(_quoteTextEl));
 
             AdminTestimonialDto? result;
 
@@ -152,7 +159,7 @@ public partial class AdminTestimonialEditor
             _isDirty = false;
             Navigation.NavigateTo("/admin/testimonials");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _error = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
@@ -164,19 +171,7 @@ public partial class AdminTestimonialEditor
 
     private void Cancel() => Navigation.NavigateTo("/admin/testimonials");
 
-    /// <summary>
-    /// Builds a preview URL for the avatar using the API media endpoint.
-    /// IConfiguration is injected globally via _Imports.razor.
-    /// </summary>
-    private string? BuildPreviewUrl(string? path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-            return null;
-
-        if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            return path;
-
-        var apiBase = Configuration["ApiBaseUrl"]?.TrimEnd('/') ?? string.Empty;
-        return $"{apiBase}/api/media/{path.TrimStart('/')}";
-    }
+    /// <summary>Blank text is saved as null, so the public page falls back to the English text.</summary>
+    private static string? TrimToNull(string value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

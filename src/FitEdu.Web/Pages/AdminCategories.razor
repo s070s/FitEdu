@@ -5,9 +5,11 @@
 <PageTitle>@CategoryRes.CategoriesPageTitle</PageTitle>
 
 <div class="admin-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="section-head">
         <h1 class="h2">@CategoryRes.CategoriesPageTitle</h1>
-        <button class="btn btn-success" @onclick="ShowAddModal">@CategoryRes.AddCategory</button>
+        <div class="section-head__actions">
+            <button class="btn-cta" @onclick="ShowAddModal">@CategoryRes.AddCategory</button>
+        </div>
     </div>
 
     <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
@@ -22,7 +24,7 @@
     }
     else
     {
-        <ScrollableTable Items="pagedResult.Items" TItem="AdminCategoryDto">
+        <ScrollableTable Items="pagedResult.Items" TItem="AdminCategoryDto" Caption="@CategoryRes.CategoriesPageTitle">
             <HeaderRow>
                 <tr>
                     <SortableColumnHeader ColumnKey="nameen" Label="@CategoryRes.ColNameEn"
@@ -50,7 +52,7 @@
                     <td data-label="@CategoryRes.ColCourseCount">@category.CourseCount</td>
                     <td data-label="@CategoryRes.ColAssessmentCount">@category.AssessmentCount</td>
                     <td data-label="@CategoryRes.ColCreated">@category.CreatedAt.ToLocalTime().ToString("d")</td>
-                    <td data-label="@CategoryRes.ColActions">
+                    <td class="table-actions" data-label="@CategoryRes.ColActions">
                         <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditModal(category)">@CategoryRes.Rename</button>
                         <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(category)">@AdminRes.Delete</button>
                     </td>
@@ -103,7 +105,7 @@
 
 <ConfirmModal IsVisible="@(_pendingDelete is not null)"
               Title="@AdminRes.ConfirmTitle"
-              Message="@(_pendingDelete is not null ? string.Format(CategoryRes.DeleteConfirmFormat, _pendingDelete.NameEn, _pendingDelete.CourseCount, _pendingDelete.AssessmentCount) : "")"
+              Message="@DeleteConfirmMessage"
               ConfirmLabel="@AdminRes.Delete"
               CancelLabel="@AdminRes.Cancel"
               OnConfirm="ConfirmDelete"

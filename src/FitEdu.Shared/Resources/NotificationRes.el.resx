@@ -71,7 +71,7 @@
     <value>Δεν υπάρχουν ειδοποιήσεις ακόμη.</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Φόρτωση...</value>
+    <value>Φόρτωση…</value>
   </data>
   <data name="MarkAllRead" xml:space="preserve">
     <value>Σήμανση όλων ως αναγνωσμένα</value>
@@ -84,6 +84,21 @@
   </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Ειδοποιήσεις</value>
+  </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Μηνύματα, πιστοποιητικά και υπενθυμίσεις μαθημάτων σε ένα σημείο.</value>
+  </data>
+  <data name="SortLabel" xml:space="preserve">
+    <value>Ταξινόμηση</value>
+  </data>
+  <data name="SortNewest" xml:space="preserve">
+    <value>Πρώτα τα νεότερα</value>
+  </data>
+  <data name="SortOldest" xml:space="preserve">
+    <value>Πρώτα τα παλαιότερα</value>
+  </data>
+  <data name="SortUnreadFirst" xml:space="preserve">
+    <value>Πρώτα τα μη αναγνωσμένα</value>
   </data>
   <data name="ColMessage" xml:space="preserve">
     <value>Μήνυμα</value>
@@ -101,13 +116,13 @@
     <value>τώρα</value>
   </data>
   <data name="TimeMinutesFormat" xml:space="preserve">
-    <value>{0}λ</value>
+    <value>{0} λεπ.</value>
   </data>
   <data name="TimeHoursFormat" xml:space="preserve">
-    <value>{0}ω</value>
+    <value>{0} ώρ.</value>
   </data>
   <data name="TimeDaysFormat" xml:space="preserve">
-    <value>{0}η</value>
+    <value>{0} ημ.</value>
   </data>
   <data name="StatusRead" xml:space="preserve">
     <value>Αναγνωσμένο</value>
@@ -116,22 +131,22 @@
     <value>Μη αναγνωσμένο</value>
   </data>
   <data name="ChatMessageReceived" xml:space="preserve">
-    <value>Ο/Η {0} σας έστειλε μήνυμα</value>
+    <value>Ο/Η {0} σου έστειλε μήνυμα</value>
   </data>
   <data name="CertificateIssued" xml:space="preserve">
-    <value>Το πιστοποιητικό σας για το "{0}" είναι έτοιμο</value>
+    <value>Το πιστοποιητικό σου για το "{0}" είναι έτοιμο</value>
   </data>
   <data name="SubscriptionActivated" xml:space="preserve">
-    <value>Η συνδρομή σας στο {0} είναι πλέον ενεργή</value>
+    <value>Η συνδρομή σου στο {0} είναι πλέον ενεργή</value>
   </data>
   <data name="SubscriptionExpiring" xml:space="preserve">
-    <value>Η συνδρομή σας λήγει σύντομα</value>
+    <value>Η συνδρομή σου λήγει σύντομα</value>
   </data>
   <data name="SubscriptionExpired" xml:space="preserve">
-    <value>Η συνδρομή σας στο {0} έληξε — είστε πλέον στο δωρεάν πλάνο</value>
+    <value>Η συνδρομή σου στο {0} έληξε — είσαι πλέον στο δωρεάν πλάνο</value>
   </data>
   <data name="ReviewApproved" xml:space="preserve">
-    <value>Η κριτική σας για το "{0}" εγκρίθηκε</value>
+    <value>Η κριτική σου για το "{0}" εγκρίθηκε</value>
   </data>
   <data name="SessionReminder" xml:space="preserve">
     <value>Το "{0}" ξεκινά σε 15 λεπτά</value>

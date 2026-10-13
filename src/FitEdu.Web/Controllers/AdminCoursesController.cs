@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Extensions;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
@@ -57,7 +58,11 @@ public class AdminCoursesController(IAdminCourseService adminCourseService) : Co
     [ProducesResponseType<AdminCourseDto>(StatusCodes.Status201Created)]
     public async Task<ActionResult<AdminCourseDto>> CreateCourse([FromBody] SaveCourseRequest request, CancellationToken cancellationToken = default)
     {
-        var dto = await adminCourseService.CreateCourseAsync(request, UserId, cancellationToken);
+        var result = await adminCourseService.CreateCourseAsync(request, UserId, cancellationToken);
+        if (!result.IsSuccess)
+            return result.ToActionResult(this);
+
+        var dto = result.Value!;
         return CreatedAtAction(nameof(GetCourseById), new { id = dto.Id }, dto);
     }
 
@@ -67,8 +72,8 @@ public class AdminCoursesController(IAdminCourseService adminCourseService) : Co
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<AdminCourseDto>> UpdateCourse(Guid id, [FromBody] SaveCourseRequest request, CancellationToken cancellationToken = default)
     {
-        var dto = await adminCourseService.UpdateCourseAsync(id, request, UserId, cancellationToken);
-        return dto is not null ? Ok(dto) : NotFound();
+        var result = await adminCourseService.UpdateCourseAsync(id, request, UserId, cancellationToken);
+        return result.ToActionResult(this);
     }
 
     /// <summary>

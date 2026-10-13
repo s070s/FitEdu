@@ -43,19 +43,19 @@
 		<value>Προφίλ</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
-		<value>Το Προφίλ μου</value>
+		<value>Το προφίλ μου</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
 		<value>Φόρτωση...</value>
 	</data>
 	<data name="BasicInformation" xml:space="preserve">
-		<value>Βασικές Πληροφορίες</value>
+		<value>Βασικές πληροφορίες</value>
 	</data>
 	<data name="LabelAvatar" xml:space="preserve">
 		<value>Εικόνα προφίλ</value>
 	</data>
 	<data name="LabelDisplayName" xml:space="preserve">
-		<value>Εμφανιζόμενο Όνομα</value>
+		<value>Εμφανιζόμενο όνομα</value>
 	</data>
 	<data name="LabelEmail" xml:space="preserve">
 		<value>Email:</value>
@@ -64,25 +64,25 @@
 		<value>Ονοματεπώνυμο:</value>
 	</data>
 	<data name="LabelDateOfBirth" xml:space="preserve">
-		<value>Ημ. Γέννησης:</value>
+		<value>Ημ. γέννησης:</value>
 	</data>
 	<data name="NotSpecified" xml:space="preserve">
 		<value>Δεν έχει οριστεί</value>
 	</data>
 	<data name="BtnSaveProfile" xml:space="preserve">
-		<value>Αποθήκευση Προφίλ</value>
+		<value>Αποθήκευση προφίλ</value>
 	</data>
 	<data name="ChangePassword" xml:space="preserve">
-		<value>Αλλαγή Κωδικού</value>
+		<value>Αλλαγή κωδικού</value>
 	</data>
 	<data name="LabelCurrentPassword" xml:space="preserve">
-		<value>Τρέχων Κωδικός</value>
+		<value>Τρέχων κωδικός</value>
 	</data>
 	<data name="LabelNewPassword" xml:space="preserve">
-		<value>Νέος Κωδικός</value>
+		<value>Νέος κωδικός</value>
 	</data>
 	<data name="LabelConfirmNewPassword" xml:space="preserve">
-		<value>Επιβεβαίωση Νέου Κωδικού</value>
+		<value>Επιβεβαίωση νέου κωδικού</value>
 	</data>
 	<data name="BtnLogout" xml:space="preserve">
 		<value>Αποσύνδεση</value>
@@ -109,7 +109,7 @@
 		<value>Σφάλμα κατά την ενημέρωση προφίλ</value>
 	</data>
 	<data name="FillAllPasswordFields" xml:space="preserve">
-		<value>Παρακαλώ συμπληρώστε όλα τα πεδία κωδικού</value>
+		<value>Συμπλήρωσε όλα τα πεδία κωδικού</value>
 	</data>
 	<data name="PasswordsDoNotMatch" xml:space="preserve">
 		<value>Οι νέοι κωδικοί δεν ταιριάζουν</value>
@@ -118,16 +118,16 @@
 		<value>Ο κωδικός άλλαξε επιτυχώς</value>
 	</data>
 	<data name="ErrorChangingPassword" xml:space="preserve">
-		<value>Σφάλμα αλλαγής κωδικού - ελέγξτε τον τρέχοντα κωδικό</value>
+		<value>Σφάλμα αλλαγής κωδικού - έλεγξε τον τρέχοντα κωδικό σου</value>
 	</data>
 	<data name="ErrorFormat" xml:space="preserve">
 		<value>Σφάλμα: {0}</value>
 	</data>
 	<data name="FailedToLoadProfile" xml:space="preserve">
-		<value>Δεν ήταν δυνατή η φόρτωση του προφίλ σας. Δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση του προφίλ σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="InvalidImageType" xml:space="preserve">
-		<value>Επιλέξτε αρχείο εικόνας (JPEG, PNG, GIF ή WebP).</value>
+		<value>Επίλεξε αρχείο εικόνας (JPEG, PNG, GIF ή WebP).</value>
 	</data>
 	<data name="UploadingAvatar" xml:space="preserve">
 		<value>Μεταφόρτωση…</value>
@@ -139,16 +139,16 @@
 		<value>Διαγραφή λογαριασμού</value>
 	</data>
 	<data name="DeleteAccountDescription" xml:space="preserve">
-		<value>Οριστική διαγραφή του λογαριασμού σας και όλων των σχετικών δεδομένων (εγγραφές, απαντήσεις αξιολογήσεων, πιστοποιητικά, ιστορικό συνομιλιών και κλήσεων, στοιχεία χρέωσης). Αυτή η ενέργεια δεν αναιρείται.</value>
+		<value>Οριστική διαγραφή του λογαριασμού σου και όλων των σχετικών δεδομένων (εγγραφές, απαντήσεις αξιολογήσεων, πιστοποιητικά, ιστορικό συνομιλιών και κλήσεων, στοιχεία χρέωσης). Αυτή η ενέργεια δεν αναιρείται.</value>
 	</data>
 	<data name="DeleteAccountConfirmTitle" xml:space="preserve">
 		<value>Διαγραφή λογαριασμού;</value>
 	</data>
 	<data name="DeleteAccountConfirmBody" xml:space="preserve">
-		<value>Αυτή η ενέργεια διαγράφει οριστικά τον λογαριασμό σας και όλα τα σχετικά δεδομένα. Δεν αναιρείται.</value>
+		<value>Αυτή η ενέργεια διαγράφει οριστικά τον λογαριασμό σου και όλα τα σχετικά δεδομένα. Δεν αναιρείται.</value>
 	</data>
 	<data name="ErrorDeletingAccount" xml:space="preserve">
-		<value>Δεν ήταν δυνατή η διαγραφή του λογαριασμού σας. Δοκιμάστε ξανά ή επικοινωνήστε με την υποστήριξη.</value>
+		<value>Δεν ήταν δυνατή η διαγραφή του λογαριασμού σου. Δοκίμασε ξανά ή επικοινώνησε με την υποστήριξη.</value>
 	</data>
 	<data name="YourData" xml:space="preserve">
 		<value>Τα δεδομένα σου</value>
@@ -158,5 +158,35 @@
 	</data>
 	<data name="DownloadMyData" xml:space="preserve">
 		<value>Λήψη των δεδομένων μου</value>
+	</data>
+	<data name="Goal" xml:space="preserve">
+		<value>Στόχος προπόνησης</value>
+	</data>
+	<data name="WorkoutsCompleted" xml:space="preserve">
+		<value>Ολοκληρωμένες προπονήσεις</value>
+	</data>
+	<data name="MinutesTrained" xml:space="preserve">
+		<value>Λεπτά προπόνησης</value>
+	</data>
+	<data name="CurrentStreak" xml:space="preserve">
+		<value>Τρέχον σερί</value>
+	</data>
+	<data name="StreakDaysFormat" xml:space="preserve">
+		<value>{0} ημέρες</value>
+	</data>
+	<data name="StatsHeading" xml:space="preserve">
+		<value>Η προπόνησή σου με μια ματιά</value>
+	</data>
+	<data name="StatsCourses" xml:space="preserve">
+		<value>Προγράμματα που ακολουθείς</value>
+	</data>
+	<data name="StatsCertificates" xml:space="preserve">
+		<value>Πιστοποιητικά που κέρδισες</value>
+	</data>
+	<data name="StatsAssessments" xml:space="preserve">
+		<value>Αξιολογήσεις που ολοκλήρωσες</value>
+	</data>
+	<data name="GoalNotSet" xml:space="preserve">
+		<value>Δεν έχει επιλεγεί ακόμα</value>
 	</data>
 </root>

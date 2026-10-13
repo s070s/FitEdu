@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Βιβλιοθήκη ασκήσεων - FitEdu</value>
+  </data>
+  <data name="Library" xml:space="preserve">
+    <value>Βιβλιοθήκη ασκήσεων</value>
+  </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Φωτογραφίες κοινού κτήματος για κάθε άσκηση — φιλτράρισμα ανά μυ, εξοπλισμό και επίπεδο.</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Αναζήτηση ασκήσεων…</value>
+  </data>
+  <data name="Muscle" xml:space="preserve">
+    <value>Μυς</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Εξοπλισμός</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Επίπεδο</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Τύπος</value>
+  </data>
+  <data name="AllMuscles" xml:space="preserve">
+    <value>Όλοι οι μύες</value>
+  </data>
+  <data name="PrimaryMuscles" xml:space="preserve">
+    <value>Κύριοι μύες</value>
+  </data>
+  <data name="SecondaryMuscles" xml:space="preserve">
+    <value>Δευτερεύοντες μύες</value>
+  </data>
+  <data name="Instructions" xml:space="preserve">
+    <value>Οδηγίες</value>
+  </data>
+  <data name="UsedInLessons" xml:space="preserve">
+    <value>Χρησιμοποιείται σε αυτές τις προπονήσεις</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>Καμία άσκηση δεν ταιριάζει με τα φίλτρα.</value>
+  </data>
+  <data name="ResultsFormat" xml:space="preserve">
+    <value>{0} ασκήσεις</value>
+  </data>
+  <data name="ResultCountOne" xml:space="preserve">
+    <value>1 άσκηση</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Φωτογραφίες και οδηγίες: Free Exercise DB (κοινό κτήμα).</value>
+  </data>
+  <data name="Force_push" xml:space="preserve">
+    <value>Ώθηση</value>
+  </data>
+  <data name="Force_pull" xml:space="preserve">
+    <value>Έλξη</value>
+  </data>
+  <data name="Force_static" xml:space="preserve">
+    <value>Στατική</value>
+  </data>
+  <data name="Mechanic_compound" xml:space="preserve">
+    <value>Πολυαρθρική</value>
+  </data>
+  <data name="Mechanic_isolation" xml:space="preserve">
+    <value>Μονοαρθρική</value>
+  </data>
+  <data name="Level_beginner" xml:space="preserve">
+    <value>Αρχάριο</value>
+  </data>
+  <data name="Level_intermediate" xml:space="preserve">
+    <value>Μεσαίο</value>
+  </data>
+  <data name="Level_expert" xml:space="preserve">
+    <value>Προχωρημένο</value>
+  </data>
+  <data name="Category_strength" xml:space="preserve">
+    <value>Δύναμη</value>
+  </data>
+  <data name="Category_stretching" xml:space="preserve">
+    <value>Διατάσεις</value>
+  </data>
+  <data name="Category_cardio" xml:space="preserve">
+    <value>Αερόβια</value>
+  </data>
+  <data name="Category_plyometrics" xml:space="preserve">
+    <value>Πλειομετρικές</value>
+  </data>
+  <data name="Category_powerlifting" xml:space="preserve">
+    <value>Δυναμικό τρίαθλο</value>
+  </data>
+  <data name="Category_strongman" xml:space="preserve">
+    <value>Ασκήσεις strongman</value>
+  </data>
+  <data name="Category_olympic_weightlifting" xml:space="preserve">
+    <value>Ολυμπιακή άρση βαρών</value>
+  </data>
+  <data name="Muscle_abdominals" xml:space="preserve">
+    <value>Κοιλιακοί</value>
+  </data>
+  <data name="Muscle_abductors" xml:space="preserve">
+    <value>Απαγωγοί</value>
+  </data>
+  <data name="Muscle_adductors" xml:space="preserve">
+    <value>Προσαγωγοί</value>
+  </data>
+  <data name="Muscle_biceps" xml:space="preserve">
+    <value>Δικέφαλοι</value>
+  </data>
+  <data name="Muscle_calves" xml:space="preserve">
+    <value>Γάμπες</value>
+  </data>
+  <data name="Muscle_chest" xml:space="preserve">
+    <value>Στήθος</value>
+  </data>
+  <data name="Muscle_forearms" xml:space="preserve">
+    <value>Πήχεις</value>
+  </data>
+  <data name="Muscle_glutes" xml:space="preserve">
+    <value>Γλουτοί</value>
+  </data>
+  <data name="Muscle_hamstrings" xml:space="preserve">
+    <value>Οπίσθιοι μηριαίοι</value>
+  </data>
+  <data name="Muscle_lats" xml:space="preserve">
+    <value>Πλατιαίοι</value>
+  </data>
+  <data name="Muscle_lower_back" xml:space="preserve">
+    <value>Κάτω πλάτη</value>
+  </data>
+  <data name="Muscle_middle_back" xml:space="preserve">
+    <value>Μέση πλάτη</value>
+  </data>
+  <data name="Muscle_neck" xml:space="preserve">
+    <value>Αυχένας</value>
+  </data>
+  <data name="Muscle_quadriceps" xml:space="preserve">
+    <value>Τετρακέφαλοι</value>
+  </data>
+  <data name="Muscle_shoulders" xml:space="preserve">
+    <value>Ώμοι</value>
+  </data>
+  <data name="Muscle_traps" xml:space="preserve">
+    <value>Τραπεζοειδείς</value>
+  </data>
+  <data name="Muscle_triceps" xml:space="preserve">
+    <value>Τρικέφαλοι</value>
+  </data>
+  <data name="Equipment_body_only" xml:space="preserve">
+    <value>Βάρος σώματος</value>
+  </data>
+  <data name="Equipment_dumbbell" xml:space="preserve">
+    <value>Αλτήρας</value>
+  </data>
+  <data name="Equipment_barbell" xml:space="preserve">
+    <value>Μπάρα</value>
+  </data>
+  <data name="Equipment_kettlebells" xml:space="preserve">
+    <value>Kettlebell</value>
+  </data>
+  <data name="Equipment_cable" xml:space="preserve">
+    <value>Τροχαλία</value>
+  </data>
+  <data name="Equipment_machine" xml:space="preserve">
+    <value>Μηχάνημα</value>
+  </data>
+  <data name="Equipment_bands" xml:space="preserve">
+    <value>Λάστιχα</value>
+  </data>
+  <data name="Equipment_medicine_ball" xml:space="preserve">
+    <value>Ιατρική μπάλα</value>
+  </data>
+  <data name="Equipment_exercise_ball" xml:space="preserve">
+    <value>Μπάλα γυμναστικής</value>
+  </data>
+  <data name="Equipment_e_z_curl_bar" xml:space="preserve">
+    <value>Μπάρα E-Z</value>
+  </data>
+  <data name="Equipment_foam_roll" xml:space="preserve">
+    <value>Αφρώδης κύλινδρος</value>
+  </data>
+  <data name="Equipment_other" xml:space="preserve">
+    <value>Άλλο</value>
+  </data>
+  <data name="PauseAnimation" xml:space="preserve">
+    <value>Παύση κίνησης</value>
+  </data>
+  <data name="StartPositionAltFormat" xml:space="preserve">
+    <value>{0} — αρχική θέση</value>
+  </data>
+  <data name="EndPositionAltFormat" xml:space="preserve">
+    <value>{0} — τελική θέση</value>
+  </data>
+  <data name="MoreMusclesFormat" xml:space="preserve">
+    <value>+{0} ακόμη</value>
+  </data>
+  <data name="FiltersLabel" xml:space="preserve">
+    <value>Φίλτρα ασκήσεων</value>
+  </data>
+  <data name="AllLevels" xml:space="preserve">
+    <value>Όλα τα επίπεδα</value>
+  </data>
+  <data name="AllEquipment" xml:space="preserve">
+    <value>Όλος ο εξοπλισμός</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Όλοι οι τύποι</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Καθαρισμός φίλτρων</value>
+  </data>
+  <data name="NoResultsHint" xml:space="preserve">
+    <value>Δοκίμασε άλλον μυ ή καθάρισε τα φίλτρα για να δεις όλη τη βιβλιοθήκη.</value>
+  </data>
+  <data name="PagesLabel" xml:space="preserve">
+    <value>Σελίδες ασκήσεων</value>
+  </data>
+  <data name="BackToLibrary" xml:space="preserve">
+    <value>Όλες οι ασκήσεις</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Η άσκηση δεν βρέθηκε</value>
+  </data>
+  <data name="NotFoundText" xml:space="preserve">
+    <value>Η άσκηση ίσως μετονομάστηκε ή αφαιρέθηκε. Βρες τη στη βιβλιοθήκη.</value>
+  </data>
+  <data name="NoInstructions" xml:space="preserve">
+    <value>Δεν υπάρχουν ακόμη οδηγίες βήμα προς βήμα για αυτή την άσκηση. Ακολούθησε τις φωτογραφίες αρχικής και τελικής θέσης και κινήσου αργά και ελεγχόμενα.</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Κίνηση</value>
+  </data>
+  <data name="Mechanic" xml:space="preserve">
+    <value>Αρθρώσεις</value>
+  </data>
+  <data name="AtAGlance" xml:space="preserve">
+    <value>Με μια ματιά</value>
+  </data>
+  <data name="DetailDescriptionFormat" xml:space="preserve">
+    <value>Πώς γίνεται η άσκηση {0}: ποιους μύες δουλεύει, τι εξοπλισμό χρειάζεσαι και οδηγίες βήμα προς βήμα.</value>
+  </data>
+  <data name="DetailPageTitleFormat" xml:space="preserve">
+    <value>{0} - FitEdu</value>
+  </data>
+  <data name="LoadFailed" xml:space="preserve">
+    <value>Δεν μπορέσαμε να φορτώσουμε τη βιβλιοθήκη ασκήσεων αυτή τη στιγμή.</value>
+  </data>
+</root>

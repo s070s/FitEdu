@@ -10,9 +10,9 @@ using Xunit.Abstractions;
 namespace FitEdu.Web.Tests;
 
 /// <summary>
-/// Live smoke test against a locally running Ollama — guarded by RYF_OLLAMA_LIVE=1 so it
+/// Live smoke test against a locally running Ollama — guarded by FITEDU_OLLAMA_LIVE=1 so it
 /// self-passes (effectively skips) in CI and on machines without Ollama. Run with:
-///   RYF_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke
+///   FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke
 /// Boots its own factory with the assistant enabled (the shared "web" host keeps it off),
 /// waits for the bootstrap to reach Ready, then asserts one real chat turn streams tokens
 /// and finishes with a done event.
@@ -20,7 +20,7 @@ namespace FitEdu.Web.Tests;
 public class AssistantLiveSmokeTests(ITestOutputHelper output)
 {
     private static bool LiveEnabled =>
-        Environment.GetEnvironmentVariable("RYF_OLLAMA_LIVE") == "1";
+        Environment.GetEnvironmentVariable("FITEDU_OLLAMA_LIVE") == "1";
 
     private sealed class LiveAssistantFactory : CustomWebAppFactory
     {
@@ -38,7 +38,7 @@ public class AssistantLiveSmokeTests(ITestOutputHelper output)
     {
         if (!LiveEnabled)
         {
-            output.WriteLine("RYF_OLLAMA_LIVE != 1 — live smoke test skipped.");
+            output.WriteLine("FITEDU_OLLAMA_LIVE != 1 — live smoke test skipped.");
             return;
         }
 

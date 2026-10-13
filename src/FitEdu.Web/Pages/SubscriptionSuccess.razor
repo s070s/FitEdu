@@ -3,38 +3,51 @@
 
 <PageTitle>@SubscriptionSuccessRes.PageTitle</PageTitle>
 
-<div class="success-page">
+<div class="success-page page">
     @if (_loading)
     {
         <LoadingSpinner Label="@SubscriptionSuccessRes.LoadingSubscription" />
     }
     else if (_status is not null)
     {
-        <div class="success-card">
-            <div class="success-icon" aria-hidden="true">🎉</div>
-            <h1>@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, _status.PlanName)</h1>
-            <p>@SubscriptionSuccessRes.SubscriptionActive</p>
+        <section class="success-card card-surface" aria-labelledby="success-heading">
+            <div class="success-icon" aria-hidden="true"><span class="bi bi-trophy-fill"></span></div>
+            <span class="eyebrow">@SubscriptionSuccessRes.Eyebrow</span>
+            <h1 id="success-heading">@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, _status.PlanName)</h1>
+            <p class="success-lead">@SubscriptionSuccessRes.SubscriptionActive</p>
 
-            <div class="plan-details">
-                <p><strong>@SubscriptionSuccessRes.LabelPlan</strong> @_status.PlanName</p>
-                <p><strong>@SubscriptionSuccessRes.LabelStarted</strong> @_status.StartedAt.ToLocalTime().ToString("d")</p>
+            <dl class="plan-details">
+                <div>
+                    <dt>@SubscriptionSuccessRes.LabelPlan</dt>
+                    <dd>@_status.PlanName</dd>
+                </div>
+                <div>
+                    <dt>@SubscriptionSuccessRes.LabelStarted</dt>
+                    <dd>@_status.StartedAt.ToLocalTime().ToString("d")</dd>
+                </div>
                 @if (_status.ExpiresAt.HasValue)
                 {
-                    <p><strong>@SubscriptionSuccessRes.LabelRenews</strong> @_status.ExpiresAt.Value.ToLocalTime().ToString("d")</p>
+                    <div>
+                        <dt>@SubscriptionSuccessRes.LabelRenews</dt>
+                        <dd>@_status.ExpiresAt.Value.ToLocalTime().ToString("d")</dd>
+                    </div>
                 }
-            </div>
+            </dl>
 
             <div class="success-actions">
-                <button class="btn btn-primary" @onclick="GoToCourses">@SubscriptionSuccessRes.BtnBrowseCourses</button>
-                <button class="btn btn-secondary" @onclick="GoToPricing">@SubscriptionSuccessRes.BtnViewPlans</button>
+                <button class="btn-cta" @onclick="GoToCourses">@SubscriptionSuccessRes.BtnBrowseCourses</button>
+                <button class="btn-cta btn-cta--ghost" @onclick="GoToPricing">@SubscriptionSuccessRes.BtnViewPlans</button>
             </div>
-        </div>
+        </section>
     }
     else
     {
-        <p>@SubscriptionSuccessRes.UnableToLoad</p>
-        <button class="btn btn-secondary" @onclick="GoToPricing">@SubscriptionSuccessRes.BtnBackToPricing</button>
+        <section class="success-card card-surface success-card--error" aria-labelledby="success-error">
+            <div class="success-icon success-icon--muted" aria-hidden="true"><span class="bi bi-exclamation-circle"></span></div>
+            <p id="success-error" class="success-lead">@SubscriptionSuccessRes.UnableToLoad</p>
+            <div class="success-actions">
+                <button class="btn-cta btn-cta--ghost" @onclick="GoToPricing">@SubscriptionSuccessRes.BtnBackToPricing</button>
+            </div>
+        </section>
     }
 </div>
- 
-

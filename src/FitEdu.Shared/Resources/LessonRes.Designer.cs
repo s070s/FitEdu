@@ -61,16 +61,16 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back.
+        ///   Looks up a localized string similar to Lesson not available.
         /// </summary>
-        public static string Back {
+        public static string LessonUnavailableTitle {
             get {
-                return ResourceManager.GetString("Back", resourceCulture);
+                return ResourceManager.GetString("LessonUnavailableTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back to Course.
+        ///   Looks up a localized string similar to Back to course.
         /// </summary>
         public static string BackToCourse {
             get {
@@ -79,7 +79,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✓ Completed.
+        ///   Looks up a localized string similar to Completed.
         /// </summary>
         public static string CompletedIndicator {
             get {
@@ -88,7 +88,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 🎉 Course Completed!.
+        ///   Looks up a localized string similar to Course completed!.
         /// </summary>
         public static string CourseCompleted {
             get {
@@ -169,7 +169,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✓ Mark as Complete.
+        ///   Looks up a localized string similar to Mark as complete.
         /// </summary>
         public static string MarkAsComplete {
             get {
@@ -187,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next Lesson →.
+        ///   Looks up a localized string similar to Next lesson.
         /// </summary>
         public static string NextLesson {
             get {
@@ -196,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Previous Lesson.
+        ///   Looks up a localized string similar to Previous lesson.
         /// </summary>
         public static string PreviousLesson {
             get {
@@ -219,6 +219,222 @@ namespace FitEdu.Shared.Resources {
         public static string Saving {
             get {
                 return ResourceManager.GetString("Saving", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercises.
+        /// </summary>
+        public static string Exercises {
+            get {
+                return ResourceManager.GetString("Exercises", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sets.
+        /// </summary>
+        public static string Sets {
+            get {
+                return ResourceManager.GetString("Sets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reps.
+        /// </summary>
+        public static string Reps {
+            get {
+                return ResourceManager.GetString("Reps", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rest.
+        /// </summary>
+        public static string Rest {
+            get {
+                return ResourceManager.GetString("Rest", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} s rest.
+        /// </summary>
+        public static string RestSecondsFormat {
+            get {
+                return ResourceManager.GetString("RestSecondsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to How to do it.
+        /// </summary>
+        public static string ShowInstructions {
+            get {
+                return ResourceManager.GetString("ShowInstructions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string StartPosition {
+            get {
+                return ResourceManager.GetString("StartPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Finish.
+        /// </summary>
+        public static string EndPosition {
+            get {
+                return ResourceManager.GetString("EndPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Workout {0} of {1}.
+        /// </summary>
+        public static string WorkoutProgressFormat {
+            get {
+                return ResourceManager.GetString("WorkoutProgressFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} s.
+        /// </summary>
+        public static string SecondsFormat {
+            get {
+                return ResourceManager.GetString("SecondsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Coach's tip.
+        /// </summary>
+        public static string CoachNote {
+            get {
+                return ResourceManager.GetString("CoachNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lesson {0} of {1}.
+        /// </summary>
+        public static string LessonOfFormat {
+            get {
+                return ResourceManager.GetString("LessonOfFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} lessons done.
+        /// </summary>
+        public static string CourseProgressFormat {
+            get {
+                return ResourceManager.GetString("CourseProgressFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Course progress.
+        /// </summary>
+        public static string CourseProgressLabel {
+            get {
+                return ResourceManager.GetString("CourseProgressLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 exercise.
+        /// </summary>
+        public static string ExerciseCountOne {
+            get {
+                return ResourceManager.GetString("ExerciseCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} exercises.
+        /// </summary>
+        public static string ExerciseCountFormat {
+            get {
+                return ResourceManager.GetString("ExerciseCountFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sets in total.
+        /// </summary>
+        public static string TotalSetsFormat {
+            get {
+                return ResourceManager.GetString("TotalSetsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done with this lesson? Mark it complete to save your progress..
+        /// </summary>
+        public static string CompleteHint {
+            get {
+                return ResourceManager.GetString("CompleteHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Breadcrumb.
+        /// </summary>
+        public static string BreadcrumbLabel {
+            get {
+                return ResourceManager.GetString("BreadcrumbLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lesson navigation.
+        /// </summary>
+        public static string LessonNavigationLabel {
+            get {
+                return ResourceManager.GetString("LessonNavigationLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your certificate is ready. You will find it in My Certificates..
+        /// </summary>
+        public static string CertificateReady {
+            get {
+                return ResourceManager.GetString("CertificateReady", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to View certificate.
+        /// </summary>
+        public static string ViewCertificate {
+            get {
+                return ResourceManager.GetString("ViewCertificate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates come with Pro. Upgrade to get one for every programme you finish..
+        /// </summary>
+        public static string CertificateWithPro {
+            get {
+                return ResourceManager.GetString("CertificateWithPro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade to Pro.
+        /// </summary>
+        public static string UpgradeToPro {
+            get {
+                return ResourceManager.GetString("UpgradeToPro", resourceCulture);
             }
         }
     }

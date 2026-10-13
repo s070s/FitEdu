@@ -1,0 +1,13 @@
+/* Phones: no height limit, the stacked row cards scroll with the page. */
+@media (min-width: 768px) {
+    .scrollable-table {
+        max-height: var(--table-max-height, 60vh);
+        overflow-y: auto;
+    }
+
+    .scrollable-table__head {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}

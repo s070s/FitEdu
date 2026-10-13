@@ -40,16 +40,16 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Ενημέρωση Συνδρομής - FitEdu</value>
+		<value>Ενημέρωση συνδρομής - FitEdu</value>
 	</data>
 	<data name="LoadingSubscription" xml:space="preserve">
-		<value>Φόρτωση συνδρομής...</value>
+		<value>Φόρτωση της συνδρομής σου...</value>
 	</data>
 	<data name="PlanHeadingFormat" xml:space="preserve">
-		<value>Έχετε επιλέξει το πλάνο {0}!</value>
+		<value>Είσαι πλέον στο πλάνο {0}!</value>
 	</data>
 	<data name="SubscriptionActive" xml:space="preserve">
-		<value>Η συνδρομή σας είναι πλέον ενεργή. Απολαύστε τα νέα σας χαρακτηριστικά.</value>
+		<value>Η συνδρομή σου είναι ενεργή. Ώρα για προπόνηση.</value>
 	</data>
 	<data name="LabelPlan" xml:space="preserve">
 		<value>Πλάνο:</value>
@@ -61,15 +61,18 @@
 		<value>Ανανέωση:</value>
 	</data>
 	<data name="BtnBrowseCourses" xml:space="preserve">
-		<value>Περιήγηση Μαθημάτων</value>
+		<value>Δες τα προγράμματα</value>
 	</data>
 	<data name="BtnViewPlans" xml:space="preserve">
-		<value>Προβολή Πλάνων</value>
+		<value>Δες τα πλάνα</value>
 	</data>
 	<data name="UnableToLoad" xml:space="preserve">
-		<value>Αδυναμία φόρτωσης λεπτομερειών συνδρομής.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση των στοιχείων της συνδρομής σου.</value>
 	</data>
 	<data name="BtnBackToPricing" xml:space="preserve">
-		<value>Πίσω στις Τιμές</value>
+		<value>Πίσω στα πλάνα</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Η συνδρομή επιβεβαιώθηκε</value>
 	</data>
 </root>

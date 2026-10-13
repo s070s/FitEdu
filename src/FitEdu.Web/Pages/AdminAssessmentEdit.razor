@@ -1,191 +1,243 @@
 @page "/admin/assessments/new"
 @page "/admin/assessments/{AssessmentId:guid}/edit"
 @using FitEdu.Web.Shared
+@using FitEdu.Web.Extensions
 @attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>@(IsNew ? AdminRes.CreateAssessment : AdminRes.EditAssessment)</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h2">@(IsNew ? AdminRes.CreateAssessment : AdminRes.EditAssessment)</h1>
-    <button class="btn btn-secondary" @onclick="GoBack">@AdminRes.BackToAssessments</button>
-</div>
+<div class="admin-editor">
+    <header class="section-head">
+        <h1>@(IsNew ? AdminRes.CreateAssessment : AdminRes.EditAssessment)</h1>
+        <div class="section-head__actions">
+            <button type="button" class="btn-cta btn-cta--ghost" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToAssessments</button>
+        </div>
+    </header>
 
-<DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
+    <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
-<UnsavedChangesGuard IsDirty="_isDirty" />
+    <UnsavedChangesGuard IsDirty="_isDirty" />
 
-@if (!IsNew && loading)
-{
-    <LoadingSpinner Label="@AdminRes.Loading" />
-}
-else
-{
-    <div @oninput="MarkDirty" @onchange="MarkDirty">
-    <FormCardSection Title="@AdminRes.AssessmentDetails">
-        <ChildContent>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">@AdminRes.FieldKey <small class="text-light-muted">(@AdminRes.FieldKeyHint)</small></label>
-                    <input class="form-control" @bind="assessmentKey" placeholder="my_assessment_v1" />
+    @if (!IsNew && loading)
+    {
+        <LoadingSpinner Label="@AdminRes.Loading" />
+    }
+    else
+    {
+        <div @oninput="MarkDirty" @onchange="MarkDirty">
+        <FormCardSection Title="@AdminRes.AssessmentDetails">
+            <ChildContent>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="assessment-key">@AdminRes.FieldKey <small class="text-light-muted">(@AdminRes.FieldKeyHint)</small></label>
+                        <input id="assessment-key" class="form-control" @bind="assessmentKey" placeholder="training_readiness_v1" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="assessment-title-en">@AdminRes.FieldTitle (EN)</label>
+                        <input id="assessment-title-en" class="form-control" @bind="assessmentTitleEn" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="assessment-title-el">@AdminRes.FieldTitle (EL)</label>
+                        <input id="assessment-title-el" class="form-control" lang="el" @bind="assessmentTitleEl" />
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">@AdminRes.FieldTitle (EN)</label>
-                    <input class="form-control" @bind="assessmentTitleEn" />
+                <div class="mb-3">
+                    <label class="form-label">@AdminRes.FieldDescription (EN)</label>
+                    <QuillEditor @ref="descriptionEditorEn" Content="@assessmentDescriptionEn" MinHeight="120px" Placeholder="@ContentLanguageText.English(nameof(AdminRes.EditorPlaceholder))" />
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">@AdminRes.FieldTitle (EL)</label>
-                    <input class="form-control" @bind="assessmentTitleEl" />
+                <div class="mb-3">
+                    <label class="form-label">@AdminRes.FieldDescription (EL)</label>
+                    <QuillEditor @ref="descriptionEditorEl" Content="@assessmentDescriptionEl" MinHeight="120px" Placeholder="@ContentLanguageText.Greek(nameof(AdminRes.EditorPlaceholder))" />
                 </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">@AdminRes.FieldDescription (EN)</label>
-                <QuillEditor @ref="descriptionEditorEn" Content="@assessmentDescriptionEn" MinHeight="120px" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">@AdminRes.FieldDescription (EL)</label>
-                <QuillEditor @ref="descriptionEditorEl" Content="@assessmentDescriptionEl" MinHeight="120px" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="assessment-category">@CategoryRes.CategoryLabel</label>
-                <select id="assessment-category" class="form-select" value="@CategorySelectValue" @onchange="OnCategorySelectChanged">
-                    <option value="none">@CategoryRes.NoneCategory</option>
-                    @foreach (var cat in categories)
+                <div class="mb-3">
+                    <label class="form-label" for="assessment-category">@CategoryRes.CategoryLabel</label>
+                    <select id="assessment-category" class="form-select" value="@CategorySelectValue" @onchange="OnCategorySelectChanged">
+                        <option value="none">@CategoryRes.NoneCategory</option>
+                        @foreach (var cat in categories)
+                        {
+                            <option value="@cat.Id">@cat.NameEn</option>
+                        }
+                        <option value="new">@CategoryRes.NewCategoryOption</option>
+                    </select>
+                    @if (creatingNewCategory)
                     {
-                        <option value="@cat.Id">@cat.NameEn</option>
+                        <input class="form-control mt-2" placeholder="@CategoryRes.NewCategoryNamePlaceholder" @bind="newCategoryName" />
                     }
-                    <option value="new">@CategoryRes.NewCategoryOption</option>
-                </select>
-                @if (creatingNewCategory)
-                {
-                    <input class="form-control mt-2" placeholder="@CategoryRes.NewCategoryNamePlaceholder" @bind="newCategoryName" />
-                }
-            </div>
-        </ChildContent>
-    </FormCardSection>
+                </div>
+            </ChildContent>
+        </FormCardSection>
 
-    <FormCardSection Title="@AdminRes.Questions">
-        <HeaderActions>
-            <button class="btn btn-sm btn-success" @onclick="AddQuestion">@AdminRes.AddQuestion</button>
-        </HeaderActions>
-        <ChildContent>
-            @if (questions.Count == 0)
-            {
-                <p class="text-light-muted">@AdminRes.NoQuestions</p>
-            }
-            else
-            {
-                @for (var i = 0; i < questions.Count; i++)
+        <FormCardSection Title="@AdminRes.Questions">
+            <HeaderActions>
+                <button class="btn-cta" @onclick="AddSection">@AdminRes.AddSection</button>
+            </HeaderActions>
+            <ChildContent>
+                @for (var s = 0; s < schema.Sections.Count; s++)
                 {
-                    var q = questions[i];
-                    var index = i;
-                    var isExpanded = _expandedQuestions.Contains(q.TempId);
-                    var labelPreview = string.IsNullOrWhiteSpace(q.LabelEn)
-                        ? "(no label)"
-                        : (q.LabelEn.Length > 60 ? q.LabelEn[..60] + "…" : q.LabelEn);
+                    var section = schema.Sections[s];
+                    var sectionNumber = s + 1;
 
-                    <div class="card mb-3 border-start border-primary border-3" @key="q.TempId">
-                        <div class="card-header d-flex justify-content-between align-items-center collapsible-header"
-                             role="button"
-                             aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
-                             @onclick="() => ToggleQuestion(q.TempId)">
-                            <div class="d-flex flex-column">
-                                <strong>@string.Format(AdminRes.QuestionNumber, index + 1)</strong>
-                                <small class="text-light-muted">@labelPreview</small>
-                            </div>
-                            <div class="d-flex align-items-center gap-2" @onclick:stopPropagation="true">
-                                @if (index > 0)
-                                {
-                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(index, -1)" title="@AdminRes.MoveUp">↑</button>
-                                }
-                                @if (index < questions.Count - 1)
-                                {
-                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(index, 1)" title="@AdminRes.MoveDown">↓</button>
-                                }
-                                <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveQuestion(index)" title="@AdminRes.Remove">✕</button>
-                                <i class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")"></i>
-                            </div>
+                    <div class="card mb-4" @key="section.TempId">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong>@string.Format(AdminRes.SectionNumber, sectionNumber)</strong>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveSection(section)" title="@AdminRes.Remove" aria-label="@AdminRes.Remove"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
                         </div>
-                        <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
-                            <div class="collapsible-body-inner">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-2">
-                                            <label class="form-label">@AdminRes.QuestionId</label>
-                                            <input class="form-control form-control-sm" @bind="q.Id" placeholder="q1" />
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label">@AdminRes.FieldType</label>
-                                            <select class="form-select form-select-sm" @bind="q.Type">
-                                                <option value="text">@AdminRes.TypeText</option>
-                                                <option value="rating">@AdminRes.TypeRating</option>
-                                                <option value="choice">@AdminRes.TypeChoice</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label">@AdminRes.FieldRequired</label>
-                                            <select class="form-select form-select-sm" @bind="q.Required">
-                                                <option value="true">@AdminRes.Yes</option>
-                                                <option value="false">@AdminRes.No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-2">
-                                        <div class="col-md-6">
-                                            <label class="form-label">@AdminRes.QuestionLabel (EN)</label>
-                                            <input class="form-control form-control-sm" @bind="q.LabelEn" placeholder="@AdminRes.QuestionLabelPlaceholder" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">@AdminRes.QuestionLabel (EL)</label>
-                                            <input class="form-control form-control-sm" @bind="q.LabelEl" />
-                                        </div>
-                                    </div>
-
-                                    @if (q.Type == "rating")
-                                    {
-                                        <div class="row">
-                                            <div class="col-md-6 mb-2">
-                                                <label class="form-label">@AdminRes.FieldMin</label>
-                                                <input type="number" class="form-control form-control-sm" @bind="q.Min" />
-                                            </div>
-                                            <div class="col-md-6 mb-2">
-                                                <label class="form-label">@AdminRes.FieldMax</label>
-                                                <input type="number" class="form-control form-control-sm" @bind="q.Max" />
-                                            </div>
-                                        </div>
-                                    }
-
-                                    @if (q.Type == "choice")
-                                    {
-                                        <div class="row mb-2">
-                                            <div class="col-md-6">
-                                                <label class="form-label">@AdminRes.FieldOptions (EN) <small class="text-light-muted">(@AdminRes.FieldOptionsHint)</small></label>
-                                                <textarea class="form-control form-control-sm" rows="4"
-                                                          @bind="q.OptionsTextEn"
-                                                          placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">@AdminRes.FieldOptions (EL) <small class="text-light-muted">(@AdminRes.FieldOptionsHint)</small></label>
-                                                <textarea class="form-control form-control-sm" rows="4"
-                                                          @bind="q.OptionsTextEl"
-                                                          placeholder="Επιλογή 1&#10;Επιλογή 2&#10;Επιλογή 3"></textarea>
-                                            </div>
-                                        </div>
-                                    }
+                        <div class="card-body">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="@($"s-{section.TempId}-title-en")">@AdminRes.FieldTitle (EN)</label>
+                                    <input id="@($"s-{section.TempId}-title-en")" class="form-control form-control-sm" @bind="section.TitleEn" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="@($"s-{section.TempId}-title-el")">@AdminRes.FieldTitle (EL)</label>
+                                    <input id="@($"s-{section.TempId}-title-el")" class="form-control form-control-sm" lang="el" @bind="section.TitleEl" />
                                 </div>
                             </div>
+
+                            @if (section.Questions.Count == 0)
+                            {
+                                <p class="text-light-muted">@AdminRes.NoQuestions</p>
+                            }
+
+                            @for (var i = 0; i < section.Questions.Count; i++)
+                            {
+                                var q = section.Questions[i];
+                                var index = i;
+                                var isExpanded = _expandedQuestions.Contains(q.TempId);
+                                var labelPreview = string.IsNullOrWhiteSpace(q.LabelEn)
+                                    ? AdminRes.QuestionNoLabel
+                                    : (q.LabelEn.Length > 60 ? q.LabelEn[..60] + "…" : q.LabelEn);
+
+                                <div class="card mb-3 question-card" @key="q.TempId">
+                                    <div class="card-header question-header collapsible-header"
+                                         role="button"
+                                         aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
+                                         @onclick="() => ToggleQuestion(q.TempId)">
+                                        <div class="question-header__text">
+                                            <strong>@string.Format(AdminRes.QuestionNumber, index + 1)</strong>
+                                            <small class="text-light-muted">@labelPreview</small>
+                                        </div>
+                                        <div class="question-header__actions" @onclick:stopPropagation="true">
+                                            @if (index > 0)
+                                            {
+                                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, -1)" title="@AdminRes.MoveUp" aria-label="@AdminRes.MoveUp"><span class="bi bi-arrow-up" aria-hidden="true"></span></button>
+                                            }
+                                            @if (index < section.Questions.Count - 1)
+                                            {
+                                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, 1)" title="@AdminRes.MoveDown" aria-label="@AdminRes.MoveDown"><span class="bi bi-arrow-down" aria-hidden="true"></span></button>
+                                            }
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveQuestion(section, index)" title="@AdminRes.Remove" aria-label="@AdminRes.Remove"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
+                                            <span class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
+                                        <div class="collapsible-body-inner">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label" for="@($"q-{q.TempId}-id")">@AdminRes.QuestionId</label>
+                                                        <input id="@($"q-{q.TempId}-id")" class="form-control form-control-sm" @bind="q.Id" placeholder="q1" />
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3 mb-2">
+                                                        <label class="form-label" for="@($"q-{q.TempId}-type")">@AdminRes.FieldType</label>
+                                                        <select id="@($"q-{q.TempId}-type")" class="form-select form-select-sm" @bind="q.Type">
+                                                            @foreach (var typeOption in TypeOptions(q.Type))
+                                                            {
+                                                                <option value="@typeOption.Value">@typeOption.Label</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3 mb-2">
+                                                        <label class="form-label" for="@($"q-{q.TempId}-required")">@AdminRes.FieldRequired</label>
+                                                        <select id="@($"q-{q.TempId}-required")" class="form-select form-select-sm" @bind="q.RequiredText">
+                                                            <option value="true">@AdminRes.Yes</option>
+                                                            <option value="false">@AdminRes.No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label" for="@($"q-{q.TempId}-label-en")">@AdminRes.QuestionLabel (EN)</label>
+                                                        <input id="@($"q-{q.TempId}-label-en")" class="form-control form-control-sm" @bind="q.LabelEn" placeholder="@AdminRes.QuestionLabelPlaceholder" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label" for="@($"q-{q.TempId}-label-el")">@AdminRes.QuestionLabel (EL)</label>
+                                                        <input id="@($"q-{q.TempId}-label-el")" class="form-control form-control-sm" lang="el" @bind="q.LabelEl" />
+                                                    </div>
+                                                </div>
+
+                                                @if (q.IsRatingScale)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-min")">@AdminRes.FieldMin</label>
+                                                            <input id="@($"q-{q.TempId}-min")" type="number" class="form-control form-control-sm" @bind="q.Min" />
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-max")">@AdminRes.FieldMax</label>
+                                                            <input id="@($"q-{q.TempId}-max")" type="number" class="form-control form-control-sm" @bind="q.Max" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-minlabelen")">@AdminRes.FieldMinLabel (EN)</label>
+                                                            <input id="@($"q-{q.TempId}-minlabelen")" class="form-control form-control-sm" @bind="q.MinLabelEn" />
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-maxlabelen")">@AdminRes.FieldMaxLabel (EN)</label>
+                                                            <input id="@($"q-{q.TempId}-maxlabelen")" class="form-control form-control-sm" @bind="q.MaxLabelEn" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-minlabelel")">@AdminRes.FieldMinLabel (EL)</label>
+                                                            <input id="@($"q-{q.TempId}-minlabelel")" class="form-control form-control-sm" lang="el" @bind="q.MinLabelEl" />
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-maxlabelel")">@AdminRes.FieldMaxLabel (EL)</label>
+                                                            <input id="@($"q-{q.TempId}-maxlabelel")" class="form-control form-control-sm" lang="el" @bind="q.MaxLabelEl" />
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                @if (q.HasOptions)
+                                                {
+                                                    <div class="row mb-2">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-optionstexten")">@AdminRes.FieldOptions (EN) <small class="text-light-muted">(@AdminRes.FieldOptionsHint)</small></label>
+                                                            <textarea id="@($"q-{q.TempId}-optionstexten")" class="form-control form-control-sm" rows="4"
+                                                                      @bind="q.OptionsTextEn"
+                                                                      placeholder="@ContentLanguageText.English(nameof(AdminRes.OptionsPlaceholder))"></textarea>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label" for="@($"q-{q.TempId}-optionstextel")">@AdminRes.FieldOptions (EL) <small class="text-light-muted">(@AdminRes.FieldOptionsHint)</small></label>
+                                                            <textarea id="@($"q-{q.TempId}-optionstextel")" class="form-control form-control-sm" rows="4" lang="el"
+                                                                      @bind="q.OptionsTextEl"
+                                                                      placeholder="@ContentLanguageText.Greek(nameof(AdminRes.OptionsPlaceholder))"></textarea>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <button class="btn btn-sm btn-outline-primary" @onclick="() => AddQuestion(section)">@AdminRes.AddQuestion</button>
                         </div>
                     </div>
                 }
-            }
-        </ChildContent>
-    </FormCardSection>
-    </div>
-    <SaveCancelBar SaveLabel="@AdminRes.SaveAssessment"
-                    SavingLabel="@AdminRes.Saving"
-                    IsSaving="isSaving"
-                    OnSave="SaveAssessment"
-                    CancelLabel="@AdminRes.Cancel"
-                    OnCancel="GoBack" />
-}
+            </ChildContent>
+        </FormCardSection>
+        </div>
+        <SaveCancelBar SaveLabel="@AdminRes.SaveAssessment"
+                       SavingLabel="@AdminRes.Saving"
+                       IsSaving="isSaving"
+                       OnSave="SaveAssessment"
+                       CancelLabel="@AdminRes.Cancel"
+                       OnCancel="GoBack"
+                       CssClass="form-actions sticky-bottom-bar" />
+    }
+</div>
 

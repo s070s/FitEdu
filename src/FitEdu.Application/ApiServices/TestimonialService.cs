@@ -23,15 +23,16 @@ public class TestimonialService : ITestimonialService
     }
 
     public async Task<IReadOnlyList<AdminTestimonialDto>> GetActiveAsync(
-        CancellationToken cancellationToken = default)
+        string lang = "en", CancellationToken cancellationToken = default)
     {
+        var isEl = Localized.IsEl(lang);
         var items = await _db.Testimonials
             .AsNoTracking()
             .Where(t => t.IsActive)
             .OrderBy(t => t.DisplayOrder)
             .ToListAsync(cancellationToken);
 
-        return items.Select(ToAdminDto).ToList();
+        return items.Select(t => ToLocalizedDto(t, isEl)).ToList();
     }
 
     public async Task<PagedResult<AdminTestimonialDto>> GetAllForAdminAsync(
@@ -84,8 +85,10 @@ public class TestimonialService : ITestimonialService
             Id = Guid.NewGuid(),
             FullName = request.FullName,
             RoleOrTitle = request.RoleOrTitle,
+            RoleOrTitleEl = request.RoleOrTitleEl,
             CompanyOrContext = request.CompanyOrContext,
             QuoteText = request.QuoteText,
+            QuoteTextEl = request.QuoteTextEl,
             DisplayOrder = request.DisplayOrder > 0 ? request.DisplayOrder : maxOrder + 1,
             IsActive = request.IsActive,
             CreatedAt = now
@@ -109,8 +112,10 @@ public class TestimonialService : ITestimonialService
 
         testimonial.FullName = request.FullName;
         testimonial.RoleOrTitle = request.RoleOrTitle;
+        testimonial.RoleOrTitleEl = request.RoleOrTitleEl;
         testimonial.CompanyOrContext = request.CompanyOrContext;
         testimonial.QuoteText = request.QuoteText;
+        testimonial.QuoteTextEl = request.QuoteTextEl;
         testimonial.DisplayOrder = request.DisplayOrder;
         testimonial.IsActive = request.IsActive;
         testimonial.UpdatedAt = DateTimeOffset.UtcNow;
@@ -245,5 +250,15 @@ public class TestimonialService : ITestimonialService
              t.DisplayOrder,
              t.IsActive,
              t.CreatedAt,
-             t.UpdatedAt);
+             t.UpdatedAt,
+             t.RoleOrTitleEl,
+             t.QuoteTextEl);
+
+    /// <summary>The landing-page view: role and quote in the requested language, Greek falling back to English.</summary>
+    private static AdminTestimonialDto ToLocalizedDto(Testimonial t, bool isEl) =>
+        ToAdminDto(t) with
+        {
+            RoleOrTitle = Localized.Pick(isEl, t.RoleOrTitle, t.RoleOrTitleEl),
+            QuoteText = Localized.Pick(isEl, t.QuoteText, t.QuoteTextEl)
+        };
 }

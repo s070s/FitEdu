@@ -131,4 +131,15 @@ public class ProfileController(IProfileService profileService, IAdminUserService
         });
         return File(json, "application/json", $"fitedu-my-data-{DateTime.UtcNow:yyyy-MM-dd}.json");
     }
+
+    /// <summary>
+    /// The current user's training stats for the home dashboard: workouts completed, minutes trained,
+    /// the current daily streak and the programme to continue.
+    /// </summary>
+    [HttpGet("training-stats")]
+    public async Task<ActionResult<TrainingStatsDto>> GetTrainingStats(CancellationToken cancellationToken = default)
+    {
+        var stats = await profileService.GetTrainingStatsAsync(UserId, cancellationToken);
+        return Ok(stats);
+    }
 }

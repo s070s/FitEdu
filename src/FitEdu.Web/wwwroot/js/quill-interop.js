@@ -3,8 +3,8 @@
 window.quillInterop = {
     _instances: {},
 
-    // Initialize a Quill editor on the given element.
-    init: function (elementId, initialContent) {
+    // Initialize a Quill editor on the given element. The placeholder comes localised from Blazor.
+    init: function (elementId, initialContent, placeholder) {
         const container = document.getElementById(elementId);
         if (!container) return;
 
@@ -21,7 +21,7 @@ window.quillInterop = {
                     ['clean']
                 ]
             },
-            placeholder: 'Write content here...'
+            placeholder: placeholder || ''
         });
 
         if (initialContent) {

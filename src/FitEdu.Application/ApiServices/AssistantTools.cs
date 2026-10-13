@@ -3,6 +3,8 @@ using Microsoft.Extensions.AI;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
+using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 
 namespace FitEdu.Application.ApiServices;
@@ -14,11 +16,39 @@ namespace FitEdu.Application.ApiServices;
 /// never raw records. The public per-tool methods exist so unit tests can call the data
 /// logic directly without invoking AIFunctions.
 /// </remarks>
-public class AssistantTools(IApplicationDbContext db) : IAssistantTools
+public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseService) : IAssistantTools
 {
     private const int MaxListItems = 10;
     private const int MaxSearchResults = 5;
     private const int MaxDescriptionLength = 200;
+    private const string ExercisePagePrefix = "/exercises/";
+    private const string FilterValueSeparator = ", ";
+
+    /// <summary>
+    /// The library's fixed primary-muscle values (English, lower case). The filter matches whole
+    /// values only, so the small chat model is given the exact list rather than examples.
+    /// </summary>
+    public static readonly IReadOnlyList<string> MuscleFilterValues =
+    [
+        "abdominals", "abductors", "adductors", "biceps", "calves", "chest", "forearms", "glutes", "hamstrings",
+        "lats", "lower back", "middle back", "neck", "quadriceps", "shoulders", "traps", "triceps"
+    ];
+
+    /// <summary>The library's fixed equipment values (English, lower case), matched whole.</summary>
+    public static readonly IReadOnlyList<string> EquipmentFilterValues =
+    [
+        "bands", "barbell", "body only", "cable", "dumbbell", "e-z curl bar", "exercise ball", "foam roll",
+        "kettlebells", "machine", "medicine ball", "other"
+    ];
+
+    // Declared after the two lists: static fields are initialised in the order they are written.
+    private static readonly string SearchExercisesDescription =
+        "Searches the exercise library by a word in the exercise name. muscle and equipment are optional exact filters "
+        + "and always take an English value from these lists, even in a Greek conversation. "
+        + $"muscle is one of: {string.Join(FilterValueSeparator, MuscleFilterValues)}. "
+        + $"equipment is one of: {string.Join(FilterValueSeparator, EquipmentFilterValues)}. "
+        + "For a broad area pick the closest value (for the back: lats, middle back or lower back). "
+        + "query may be empty when a filter is given. maxResults is optional (default 5, max 5).";
 
     public IReadOnlyList<AITool> GetToolsForUser(string userId, string language)
     {
@@ -48,9 +78,18 @@ public class AssistantTools(IApplicationDbContext db) : IAssistantTools
                 "get_subscription_status",
                 "Returns the current user's subscription plan, tier and expiry."),
             AIFunctionFactory.Create(
-                (string query, int? maxResults, CancellationToken ct) => SearchCoursesAsync(query, maxResults, isEl, ct),
+                // Defaults mark an input as optional in the schema the model sees; without one,
+                // a call that leaves the input out fails before the method runs.
+                (string query, int? maxResults = null, CancellationToken ct = default) =>
+                    SearchCoursesAsync(query, maxResults, isEl, ct),
                 "search_courses",
                 "Searches published courses by a keyword in title or description. maxResults is optional (default 5, max 5)."),
+            AIFunctionFactory.Create(
+                (string query = "", string? muscle = null, string? equipment = null, int? maxResults = null,
+                    CancellationToken ct = default) =>
+                    SearchExercisesAsync(query, muscle, equipment, maxResults, language, ct),
+                "search_exercises",
+                SearchExercisesDescription),
             AIFunctionFactory.Create(
                 (CancellationToken ct) => RecommendCoursesAsync(userId, isEl, ct),
                 "recommend_courses",
@@ -141,6 +180,37 @@ public class AssistantTools(IApplicationDbContext db) : IAssistantTools
             .ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Searches the published exercise library by part of the name and/or an exact primary muscle
+    /// and equipment value (the library stores them in lower case). Needs a name or a filter.
+    /// </summary>
+    public async Task<List<ExerciseHit>> SearchExercisesAsync(
+        string query, string? muscle, string? equipment, int? maxResults, string language,
+        CancellationToken cancellationToken = default)
+    {
+        var take = Math.Clamp(maxResults ?? MaxSearchResults, 1, MaxSearchResults);
+        var filter = new ExerciseFilterDto(
+            Search: NormalizeOptional(query),
+            Muscle: NormalizeOptional(muscle)?.ToLowerInvariant(),
+            Equipment: NormalizeOptional(equipment)?.ToLowerInvariant());
+
+        var hasCriteria = filter.Search is not null || filter.Muscle is not null || filter.Equipment is not null;
+        if (!hasCriteria)
+            return [];
+
+        // The library service already reads AsNoTracking and published-only; page 1 is the cap.
+        var page = await exerciseService.GetPublishedExercisesAsync(1, take, language, filter, cancellationToken);
+
+        return page.Items
+            .Select(exercise => new ExerciseHit(
+                exercise.Name,
+                exercise.Level,
+                exercise.Equipment,
+                string.Join(Exercise.MuscleSeparator, exercise.PrimaryMuscles),
+                ExercisePagePrefix + exercise.Slug))
+            .ToList();
+    }
+
     public async Task<List<CourseHit>> RecommendCoursesAsync(string userId, bool isEl, CancellationToken cancellationToken = default)
     {
         var enrolledCourseIds = db.Enrollments
@@ -179,6 +249,9 @@ public class AssistantTools(IApplicationDbContext db) : IAssistantTools
             .ToListAsync(cancellationToken);
     }
 
+    private static string? NormalizeOptional(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
     private static string? Truncate(string? text) =>
         text is null || text.Length <= MaxDescriptionLength ? text : text[..MaxDescriptionLength] + "…";
 
@@ -187,4 +260,5 @@ public class AssistantTools(IApplicationDbContext db) : IAssistantTools
     public sealed record AssessmentResultInfo(string Assessment, string SubmittedOn);
     public sealed record SubscriptionInfo(string Plan, string Tier, string? ExpiresOn);
     public sealed record CourseHit(string Title, string? Description, string RequiredTier);
+    public sealed record ExerciseHit(string Name, string Level, string? Equipment, string PrimaryMuscles, string Page);
 }

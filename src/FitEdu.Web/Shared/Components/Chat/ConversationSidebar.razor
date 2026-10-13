@@ -29,7 +29,7 @@
     }
     else
     {
-        <div class="conversation-list" style="max-height:60vh; overflow-y:auto">
+        <div class="conversation-list">
             <Virtualize Items="Conversations.Items" Context="convo" OverscanCount="10">
                 @{ var isActive = SelectedConversationId == convo.Id; }
                 <div class="conversation-item @(isActive ? "active" : "")"
@@ -72,11 +72,13 @@
                 </select>
                 <button class="btn btn-sm btn-outline-secondary"
                         @onclick="OnPreviousPage"
-                        disabled="@(!Conversations.HasPreviousPage)">‹</button>
+                        disabled="@(!Conversations.HasPreviousPage)"
+                        title="@GlobalRes.PaginationPreviousPage" aria-label="@GlobalRes.PaginationPreviousPage">‹</button>
                 <span class="small">@Conversations.Page/@Conversations.TotalPages</span>
                 <button class="btn btn-sm btn-outline-secondary"
                         @onclick="OnNextPage"
-                        disabled="@(!Conversations.HasNextPage)">›</button>
+                        disabled="@(!Conversations.HasNextPage)"
+                        title="@GlobalRes.PaginationNextPage" aria-label="@GlobalRes.PaginationNextPage">›</button>
             </div>
         </div>
     }

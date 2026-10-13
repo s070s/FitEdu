@@ -3,7 +3,8 @@ using FitEdu.Domain.Enums;
 namespace FitEdu.Application.DTOs;
 
 /// <summary>
-/// Course summary for catalog listing.
+/// Course summary for catalog listing. Equipment holds comma-joined codes; CoverImageUrl is the
+/// cover exercise's start photo, or null when the course has no cover exercise.
 /// </summary>
 public record CourseListItemDto(
     Guid Id,
@@ -15,5 +16,11 @@ public record CourseListItemDto(
     Guid? CategoryId = null,
     string? CategoryName = null,
     double? AverageRating = null,
-    int ReviewCount = 0
+    int ReviewCount = 0,
+    CourseLevel Level = CourseLevel.Beginner,
+    FitnessGoal Goal = FitnessGoal.GeneralFitness,
+    string? Equipment = null,
+    int? EstimatedWeeks = null,
+    int? SessionsPerWeek = null,
+    string? CoverImageUrl = null
 );

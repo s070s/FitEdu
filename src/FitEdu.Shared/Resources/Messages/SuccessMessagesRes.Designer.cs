@@ -70,7 +70,7 @@ namespace FitEdu.Shared.Resources.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Registration Successful ! , please check your email.
+        ///   Looks up a localized string similar to Your account is ready. Please check your email to confirm it..
         /// </summary>
         public static string RegistrationSuccess {
             get {

@@ -1,0 +1,84 @@
+{
+  "allowedLicences": ["Unlicense", "CC0-1.0", "Public domain", "MIT (own work)"],
+  "assets": [
+    {
+      "glob": "images/exercises/**/*.webp",
+      "name": "Free Exercise DB photo pairs (start and end frame per exercise)",
+      "sourceUrl": "https://github.com/yuhonas/free-exercise-db",
+      "licence": "Unlicense",
+      "licenceStatedAt": "https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md",
+      "checkedOn": "2026-10-12",
+      "type": "image/webp",
+      "notes": "873 exercises x 2 frames, converted from the JPG pairs in the main-branch ZIP by tools/assets/convert-exercise-images.mjs (max 480 px wide, WebP quality 0.8). The Unlicense covers the repository as a whole; per-image authorship is not published, so the credit is \"free-exercise-db contributors\""
+    },
+    {
+      "glob": "images/hero-home.webp",
+      "name": "Weight training gear (23673556034).jpg by StockyPics (Wikimedia Commons)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Weight_training_gear_(23673556034).jpg",
+      "licence": "CC0-1.0",
+      "licenceStatedAt": "https://commons.wikimedia.org/wiki/File:Weight_training_gear_(23673556034).jpg#Licensing",
+      "checkedOn": "2026-10-12",
+      "type": "image/webp",
+      "notes": "Home hero, resized from 4896x3672 to 1920 px wide by tools/assets/convert-exercise-images.mjs --single"
+    },
+    {
+      "glob": "images/blog/*.webp",
+      "name": "Blog covers (duotone crops of Free Exercise DB photos)",
+      "sourceUrl": "https://github.com/yuhonas/free-exercise-db",
+      "licence": "Unlicense",
+      "licenceStatedAt": "https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md",
+      "checkedOn": "2026-10-12",
+      "type": "image/webp",
+      "notes": "1200x675, rendered by tools/assets/render-brand-images.mjs --photos from the original Free Exercise DB JPGs of the download (frame 0.jpg; the star-jump cover uses 1.jpg, mid-jump). Repository-wide Unlicense, credit \"free-exercise-db contributors\" (as for images/exercises)"
+    },
+    {
+      "glob": "images/og-home.jpg",
+      "name": "Social preview image rendered from tools/assets/og-template.html",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-12",
+      "type": "image/jpeg",
+      "notes": "1200x630 own layout; the collage frames are Free Exercise DB photos (Unlicense)"
+    },
+    {
+      "glob": "favicon.svg",
+      "name": "FitEdu dumbbell mark",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-12",
+      "type": "image/svg+xml"
+    },
+    {
+      "glob": "favicon.png",
+      "name": "FitEdu dumbbell mark, 64 px",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-12",
+      "type": "image/png",
+      "notes": "rendered from favicon.svg by tools/assets/render-brand-images.mjs"
+    },
+    {
+      "glob": "icon-192.png",
+      "name": "FitEdu dumbbell mark, 192 px",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-12",
+      "type": "image/png",
+      "notes": "rendered from favicon.svg by tools/assets/render-brand-images.mjs"
+    },
+    {
+      "glob": "manifest.webmanifest",
+      "name": "FitEdu web app manifest (name, colours, icon list)",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-13",
+      "type": "application/manifest+json",
+      "notes": "lists icon-192.png and favicon.svg; linked from App.razor"
+    }
+  ]
+}

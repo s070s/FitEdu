@@ -41,8 +41,9 @@ public class SubscriptionService : ISubscriptionService
         _mockPaymentEnabled = environment.IsDevelopment() && paymentOptions.Value.MockEnabled;
     }
 
-    public async Task<List<SubscriptionPlanDto>> GetPlansAsync(CancellationToken cancellationToken = default)
+    public async Task<List<SubscriptionPlanDto>> GetPlansAsync(string lang = "en", CancellationToken cancellationToken = default)
     {
+        var isEl = Localized.IsEl(lang);
         var raw = await _db.SubscriptionPlans
             .AsNoTracking()
             .Where(sp => sp.IsActive)
@@ -53,6 +54,7 @@ public class SubscriptionService : ISubscriptionService
                 sp.Id,
                 sp.Name,
                 sp.Description,
+                sp.DescriptionEl,
                 sp.Price,
                 sp.BillingPeriod,
                 sp.Tier,
@@ -64,7 +66,7 @@ public class SubscriptionService : ISubscriptionService
         var plans = raw.Select(sp => new SubscriptionPlanDto(
             sp.Id,
             sp.Name,
-            sp.Description,
+            Localized.Pick(isEl, sp.Description, sp.DescriptionEl),
             sp.Price,
             sp.BillingPeriod.ToString(),
             sp.Tier,

@@ -32,7 +32,7 @@ public class TokenServiceTests
         UserName = "user@example.com",
         FirstName = "John",
         LastName = "Doe",
-        Status = UserStatus.Student,
+        Status = UserStatus.Beginner,
         IsEnabled = true,
         SecurityStamp = "stamp-1"
     };
@@ -66,7 +66,7 @@ public class TokenServiceTests
         jwt.Claims.ShouldContain(c => c.Type == ClaimTypes.NameIdentifier && c.Value == "user-1");
         jwt.Claims.ShouldContain(c => c.Type == ClaimTypes.Email && c.Value == "user@example.com");
         jwt.Claims.ShouldContain(c => c.Type == "firstName" && c.Value == "John");
-        jwt.Claims.ShouldContain(c => c.Type == "status" && c.Value == ((int)UserStatus.Student).ToString());
+        jwt.Claims.ShouldContain(c => c.Type == "status" && c.Value == ((int)UserStatus.Beginner).ToString());
         jwt.Claims.ShouldContain(c => c.Type == "subscriptionTier" && c.Value == "2");
         jwt.Claims.ShouldContain(c => c.Type == "securityStamp" && c.Value == "stamp-1");
         jwt.Claims.ShouldContain(c => c.Value == "Student");

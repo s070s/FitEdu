@@ -118,163 +118,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>FitEdu | Career Guidance</value>
+    <value>FitEdu | Fitness Programmes &amp; Exercise Library</value>
   </data>
   <data name="WelcomeUser" xml:space="preserve">
     <value>Welcome, {0}!</value>
   </data>
-  <data name="AuthenticatedMessage" xml:space="preserve">
-    <value>You are logged in. Visit your &lt;a href="/profile"&gt;profile&lt;/a&gt; to see your details.</value>
-  </data>
   <data name="HeroTitleLine1" xml:space="preserve">
-    <value>From frustration to clarity</value>
+    <value>Train with a plan.</value>
   </data>
   <data name="HeroTitleLine2" xml:space="preserve">
-    <value>From Zero to Hero</value>
+    <value>Move better every week.</value>
   </data>
   <data name="HeroSubtitle" xml:space="preserve">
-    <value>The first Greek online platform that combines career guidance with psychosocial empowerment for high school students and graduates.</value>
+    <value>Structured fitness programmes, a public-domain exercise library with start-and-finish photos, and self-checks that keep you training safely — in English and Greek.</value>
   </data>
   <data name="HeroCtaButton" xml:space="preserve">
-    <value>Book a free diagnostic session</value>
-  </data>
-  <data name="ProblemTitle" xml:space="preserve">
-    <value>If this sounds familiar,</value>
-  </data>
-  <data name="ProblemTitleHighlight" xml:space="preserve">
-    <value>you're in the right place</value>
-  </data>
-  <data name="ProblemCard1" xml:space="preserve">
-    <value>You didn't achieve the grades you expected</value>
-  </data>
-  <data name="ProblemCard2" xml:space="preserve">
-    <value>You feel lost without a clear direction</value>
-  </data>
-  <data name="ProblemCard3" xml:space="preserve">
-    <value>You feel pressure from parents and society</value>
-  </data>
-  <data name="ProblemCard4" xml:space="preserve">
-    <value>You doubt yourself and your abilities</value>
-  </data>
-  <data name="ProblemConclusion" xml:space="preserve">
-    <value>You're not a failure.</value>
-  </data>
-  <data name="ProblemConclusionHighlight" xml:space="preserve">
-    <value>No one taught you how to handle failure.</value>
-  </data>
-  <data name="SolutionTitle" xml:space="preserve">
-    <value>What is</value>
-  </data>
-  <data name="SolutionTitleHighlight" xml:space="preserve">
-    <value>FitEdu</value>
-  </data>
-  <data name="SolutionCard1Title" xml:space="preserve">
-    <value>Online Courses</value>
-  </data>
-  <data name="SolutionCard1Text" xml:space="preserve">
-    <value>Structured courses on self-awareness, resilience, and decision-making.</value>
-  </data>
-  <data name="SolutionCard2Title" xml:space="preserve">
-    <value>Counseling Sessions</value>
-  </data>
-  <data name="SolutionCard2Text" xml:space="preserve">
-    <value>Individual and group support with a clear action plan.</value>
-  </data>
-  <data name="SolutionCard3Title" xml:space="preserve">
-    <value>Support Community</value>
-  </data>
-  <data name="SolutionCard3Text" xml:space="preserve">
-    <value>You're not alone. Learn and grow together with others.</value>
-  </data>
-  <data name="MethodTitleFrom" xml:space="preserve">
-    <value>From the</value>
-  </data>
-  <data name="MethodTitleZeroState" xml:space="preserve">
-    <value>Zero State</value>
-  </data>
-  <data name="MethodTitleTo" xml:space="preserve">
-    <value>to the</value>
-  </data>
-  <data name="MethodTitleHeroState" xml:space="preserve">
-    <value>Hero State</value>
-  </data>
-  <data name="ZeroStateTitle" xml:space="preserve">
-    <value>Zero State</value>
-  </data>
-  <data name="ZeroState1" xml:space="preserve">
-    <value>Insecurity</value>
-  </data>
-  <data name="ZeroState2" xml:space="preserve">
-    <value>Confusion</value>
-  </data>
-  <data name="ZeroState3" xml:space="preserve">
-    <value>Fear of failure</value>
-  </data>
-  <data name="ZeroState4" xml:space="preserve">
-    <value>Social pressure</value>
-  </data>
-  <data name="HeroStateTitle" xml:space="preserve">
-    <value>Hero State</value>
-  </data>
-  <data name="HeroState1" xml:space="preserve">
-    <value>Self-awareness</value>
-  </data>
-  <data name="HeroState2" xml:space="preserve">
-    <value>Resilience</value>
-  </data>
-  <data name="HeroState3" xml:space="preserve">
-    <value>Hope</value>
-  </data>
-  <data name="HeroState4" xml:space="preserve">
-    <value>Confidence</value>
-  </data>
-  <data name="HeroState5" xml:space="preserve">
-    <value>Action</value>
-  </data>
-  <data name="StoryTitle" xml:space="preserve">
-    <value>The story behind</value>
-  </data>
-  <data name="StoryTitleHighlight" xml:space="preserve">
-    <value>FitEdu</value>
+    <value>Start free</value>
   </data>
   <data name="TestimonialsTitle" xml:space="preserve">
-    <value>Happy</value>
+    <value>Member</value>
   </data>
   <data name="TestimonialsTitleHighlight" xml:space="preserve">
-    <value>Customers</value>
-  </data>
-  <data name="StoryQuote" xml:space="preserve">
-    <value>In 2014, I failed the national exams. I felt lost and without direction. Today, I help students turn failure into strength and an action plan.</value>
-  </data>
-  <data name="StoryAuthorInitials" xml:space="preserve">
-    <value>GK</value>
-  </data>
-  <data name="StoryAuthorName" xml:space="preserve">
-    <value>Georgios Kokkalis</value>
-  </data>
-  <data name="StoryAuthorTitle" xml:space="preserve">
-    <value>Founder</value>
+    <value>stories</value>
   </data>
   <data name="CtaTitle" xml:space="preserve">
-    <value>The next step</value>
+    <value>Ready for your first</value>
   </data>
   <data name="CtaTitleHighlight" xml:space="preserve">
-    <value>starts here</value>
+    <value>workout?</value>
   </data>
   <data name="CtaText" xml:space="preserve">
-    <value>Book a free short diagnostic session and see if FitEdu is for you.</value>
+    <value>Create a free account, pick a goal and follow a programme built around your level.</value>
   </data>
   <data name="CtaButton" xml:space="preserve">
-    <value>Book a free session</value>
+    <value>Create free account</value>
   </data>
   <data name="FooterBrand" xml:space="preserve">
     <value>FitEdu</value>
   </data>
   <data name="FooterAuthorName" xml:space="preserve">
-    <value>Georgios Kokkalis</value>
+    <value>FitEdu Coaching Team</value>
   </data>
   <data name="FooterAuthorRole" xml:space="preserve">
-    <value>Career Guidance Counselor</value>
+    <value>Fitness education platform</value>
   </data>
   <data name="FooterCopyright" xml:space="preserve">
     <value>© 2026 FitEdu</value>
@@ -286,7 +172,7 @@
     <value>Articles</value>
   </data>
   <data name="BlogReadMore" xml:space="preserve">
-    <value>Read More</value>
+    <value>Read more</value>
   </data>
   <data name="BlogIndexTitle" xml:space="preserve">
     <value>Blog</value>
@@ -295,16 +181,13 @@
     <value>No articles have been published yet.</value>
   </data>
   <data name="DashboardContinueLearning" xml:space="preserve">
-    <value>Continue Learning</value>
+    <value>Your programmes</value>
   </data>
   <data name="DashboardExplore" xml:space="preserve">
     <value>Explore</value>
   </data>
-  <data name="DashboardNoEnrollments" xml:space="preserve">
-    <value>You're not enrolled in any courses yet.</value>
-  </data>
   <data name="DashboardBrowseCourses" xml:space="preserve">
-    <value>Browse Courses</value>
+    <value>Browse programmes</value>
   </data>
   <data name="BlogNotFoundTitle" xml:space="preserve">
     <value>Article not found</value>
@@ -312,7 +195,127 @@
   <data name="BlogNotFoundBody" xml:space="preserve">
     <value>The article you're looking for doesn't exist or has been removed.</value>
   </data>
+  <data name="BlogIndexSubtitle" xml:space="preserve">
+    <value>Training, nutrition and recovery, explained simply so you can put it to work this week.</value>
+  </data>
+  <data name="BlogBackToArticles" xml:space="preserve">
+    <value>All articles</value>
+  </data>
+  <data name="BlogReadingTimeFormat" xml:space="preserve">
+    <value>{0} min read</value>
+  </data>
   <data name="BackToHome" xml:space="preserve">
     <value>Back to Home</value>
+  </data>
+  <data name="HeroCtaSecondary" xml:space="preserve">
+    <value>Browse exercises</value>
+  </data>
+  <data name="StatsCourses" xml:space="preserve">
+    <value>Programmes</value>
+  </data>
+  <data name="StatsExercises" xml:space="preserve">
+    <value>Exercises</value>
+  </data>
+  <data name="StatsLessons" xml:space="preserve">
+    <value>Workouts &amp; lessons</value>
+  </data>
+  <data name="StatsMembers" xml:space="preserve">
+    <value>Members</value>
+  </data>
+  <data name="GoalsTitle" xml:space="preserve">
+    <value>Pick your</value>
+  </data>
+  <data name="GoalsTitleHighlight" xml:space="preserve">
+    <value>goal</value>
+  </data>
+  <data name="HowTitle" xml:space="preserve">
+    <value>How FitEdu</value>
+  </data>
+  <data name="HowTitleHighlight" xml:space="preserve">
+    <value>works</value>
+  </data>
+  <data name="HowStep1Title" xml:space="preserve">
+    <value>Check your baseline</value>
+  </data>
+  <data name="HowStep1Text" xml:space="preserve">
+    <value>Short self-assessments show where to start and what to watch out for.</value>
+  </data>
+  <data name="HowStep2Title" xml:space="preserve">
+    <value>Follow a programme</value>
+  </data>
+  <data name="HowStep2Text" xml:space="preserve">
+    <value>Every workout lists its exercises with sets, reps, rest and form cues.</value>
+  </data>
+  <data name="HowStep3Title" xml:space="preserve">
+    <value>Track and progress</value>
+  </data>
+  <data name="HowStep3Text" xml:space="preserve">
+    <value>Mark workouts done, keep your streak and earn a certificate at the end.</value>
+  </data>
+  <data name="FeaturedTitle" xml:space="preserve">
+    <value>Popular</value>
+  </data>
+  <data name="FeaturedTitleHighlight" xml:space="preserve">
+    <value>programmes</value>
+  </data>
+  <data name="TodayPlanTitle" xml:space="preserve">
+    <value>Today's plan</value>
+  </data>
+  <data name="TodayPlanContinue" xml:space="preserve">
+    <value>Continue workout</value>
+  </data>
+  <data name="TodayPlanEmpty" xml:space="preserve">
+    <value>No programme yet — pick one to get your first workout.</value>
+  </data>
+  <data name="TodayPlanAllDone" xml:space="preserve">
+    <value>You've finished every programme you joined — pick your next one to keep the momentum going.</value>
+  </data>
+  <data name="RecommendedTitle" xml:space="preserve">
+    <value>Recommended for you</value>
+  </data>
+    <data name="FooterTagline" xml:space="preserve">
+      <value>Structured training, explained step by step, in English and Greek.</value>
+    </data>
+    <data name="FooterExplore" xml:space="preserve">
+      <value>Explore</value>
+    </data>
+    <data name="FooterLegal" xml:space="preserve">
+      <value>Legal</value>
+    </data>
+    <data name="FooterFollow" xml:space="preserve">
+      <value>Follow us</value>
+    </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>Train at home or in the gym</value>
+  </data>
+  <data name="StatsAriaLabel" xml:space="preserve">
+    <value>FitEdu in numbers</value>
+  </data>
+  <data name="StatsStreakDays" xml:space="preserve">
+    <value>Day streak</value>
+  </data>
+  <data name="FeaturedSeeAll" xml:space="preserve">
+    <value>See all programmes</value>
+  </data>
+  <data name="BlogSeeAll" xml:space="preserve">
+    <value>All articles</value>
+  </data>
+  <data name="TodayPlanProgressFormat" xml:space="preserve">
+    <value>{0} of {1} workouts done</value>
+  </data>
+  <data name="BlogTag_Strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="BlogTag_Nutrition" xml:space="preserve">
+    <value>Nutrition</value>
+  </data>
+  <data name="BlogTag_Recovery" xml:space="preserve">
+    <value>Recovery</value>
+  </data>
+  <data name="BlogTag_Mobility" xml:space="preserve">
+    <value>Mobility</value>
+  </data>
+  <data name="BlogTag_Beginners" xml:space="preserve">
+    <value>Beginners</value>
   </data>
 </root>

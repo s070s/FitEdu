@@ -259,7 +259,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Paths.
+        ///   Looks up a localized string similar to Training paths.
         /// </summary>
         public static string Paths {
             get {
@@ -268,11 +268,83 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Live Sessions.
+        ///   Looks up a localized string similar to Live classes.
         /// </summary>
         public static string Sessions {
             get {
                 return ResourceManager.GetString("Sessions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercises.
+        /// </summary>
+        public static string Exercises {
+            get {
+                return ResourceManager.GetString("Exercises", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Menu.
+        /// </summary>
+        public static string Menu {
+            get {
+                return ResourceManager.GetString("Menu", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Quick navigation.
+        /// </summary>
+        public static string QuickNavigation {
+            get {
+                return ResourceManager.GetString("QuickNavigation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Programmes.
+        /// </summary>
+        public static string CoursesShort {
+            get {
+                return ResourceManager.GetString("CoursesShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assessments.
+        /// </summary>
+        public static string AssessmentsShort {
+            get {
+                return ResourceManager.GetString("AssessmentsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paths.
+        /// </summary>
+        public static string PathsShort {
+            get {
+                return ResourceManager.GetString("PathsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live classes.
+        /// </summary>
+        public static string SessionsShort {
+            get {
+                return ResourceManager.GetString("SessionsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
             }
         }
     }

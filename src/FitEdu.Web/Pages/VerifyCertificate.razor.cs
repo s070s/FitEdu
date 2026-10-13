@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 using System.Globalization;
 
 namespace FitEdu.Web.Pages;
@@ -17,6 +19,13 @@ public partial class VerifyCertificate
 
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
+    // The API message is English-only (it also serves third-party checks), so the page words its
+    // own reason in the visitor's language: an unknown id has no status, a revoked one says so.
+    private string InvalidLead =>
+        _result?.Status == nameof(CertificateStatus.Revoked)
+            ? CertificateRes.VerificationRevokedLead
+            : CertificateRes.VerificationNotFoundLead;
 
     protected override async Task OnInitializedAsync()
     {

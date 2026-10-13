@@ -1,0 +1,61 @@
+@using System.Globalization
+@using FitEdu.Web.Extensions
+@* Magazine card for one blog article: cover photo (uploaded or shipped), tags, title, summary, author
+   and date. The title link is stretched over the whole card. The title is an h2 because the card
+   sits right under the page h1. *@
+
+<article class="blog-card card-surface card-surface--interactive">
+    <div class="blog-card__cover">
+        @if (CoverUrl is not null)
+        {
+            <img src="@CoverUrl" alt="" width="@CoverWidth" height="@CoverHeight" loading="lazy" decoding="async" />
+        }
+        else
+        {
+            <span class="blog-card__cover-icon bi bi-newspaper" aria-hidden="true"></span>
+        }
+    </div>
+
+    <div class="card-surface__body blog-card__body">
+        @if (Article.Tags.Length > 0)
+        {
+            <ul class="chip-row blog-card__tags">
+                @foreach (var tag in Article.Tags.Take(MaxTags))
+                {
+                    <li class="chip chip--lime">@BlogTagLabels.Label(tag)</li>
+                }
+            </ul>
+        }
+
+        <h2 class="blog-card__title line-clamp-2">
+            <a class="blog-card__link stretched-link" href="@ArticleUrl">@Article.Title</a>
+        </h2>
+        <p class="blog-card__summary line-clamp-3">@Article.Summary</p>
+
+        <div class="blog-card__meta card-surface__meta">
+            <span>@Article.AuthorName</span>
+            @if (Article.PublishedAt is { } publishedAt)
+            {
+                var localDate = publishedAt.ToLocalTime();
+                <time datetime="@localDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@localDate.ToString("d MMM yyyy", CultureInfo.CurrentCulture)</time>
+            }
+            <span class="blog-card__more" aria-hidden="true">
+                @HomeRes.BlogReadMore <span class="bi bi-arrow-right"></span>
+            </span>
+        </div>
+    </div>
+</article>
+
+@code {
+    // Shipped covers are 1200 x 675; any 16:9 pair reserves the same box before the photo loads.
+    private const int CoverWidth = 800;
+    private const int CoverHeight = 450;
+    private const int MaxTags = 2;
+    private const string ArticlePathPrefix = "/blog/";
+
+    [Parameter, EditorRequired] public BlogArticleSummaryDto Article { get; set; } = default!;
+
+    private string? CoverUrl => MediaUrls.Resolve(Article.CoverImageUrl);
+
+    private string ArticleUrl => ArticlePathPrefix + Article.Slug;
+}

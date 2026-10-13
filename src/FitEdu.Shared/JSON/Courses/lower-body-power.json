@@ -1,0 +1,265 @@
+{
+  "title": "Lower Body Power",
+  "titleEl": "Δύναμη Κάτω Άκρων",
+  "description": "An 8-week barbell programme for experienced lifters who want stronger, faster legs and hips. Build volume on the squat and deadlift, move to heavy triples, then turn that strength into speed with the power clean and jump squats before a deload and test week. Not medical advice — consult a professional before starting if you have a health condition.",
+  "descriptionEl": "Ένα πρόγραμμα 8 εβδομάδων με μπάρα για έμπειρους αθλούμενους που θέλουν πιο δυνατά και πιο γρήγορα πόδια και ισχία. Χτίζεις όγκο στο squat και στην άρση θανάτου, περνάς σε βαριά σετ των 3 επαναλήψεων και μετά μετατρέπεις τη δύναμη σε ταχύτητα με power clean και άλματα squat, πριν από μια εβδομάδα αποφόρτισης και τεστ. Δεν αποτελεί ιατρική συμβουλή — συμβουλέψου επαγγελματία πριν ξεκινήσεις αν έχεις κάποια πάθηση.",
+  "requiredTier": "Pro",
+  "isPublished": true,
+  "category": "Strength",
+  "categoryEl": "Δύναμη",
+  "level": "Advanced",
+  "goal": "Strength",
+  "equipment": "barbell",
+  "estimatedWeeks": 8,
+  "sessionsPerWeek": 3,
+  "coverExerciseSlug": "barbell-deadlift",
+  "modules": [
+    {
+      "title": "Weeks 1–3: Build the Base",
+      "titleEl": "Εβδομάδες 1–3: Χτίσε τη Βάση",
+      "description": "Tighten technique on the deadlift and full squat, then build working volume at a controlled effort.",
+      "descriptionEl": "Βελτίωσε την τεχνική στην άρση θανάτου και στο βαθύ squat και χτίσε όγκο δουλειάς με ελεγχόμενη προσπάθεια.",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "title": "The Deadlift Under Heavy Load",
+          "titleEl": "Η Άρση Θανάτου με Βαρύ Φορτίο",
+          "durationMinutes": 12,
+          "sortOrder": 1,
+          "content": "# The Deadlift Under Heavy Load\n\nYou already know how to deadlift. This lesson tightens the details that decide whether a heavy pull moves smoothly or breaks down halfway: where the bar sits, how you create tension before it leaves the floor, and how you finish without leaning back.\n\n## What it trains\n\n- **Target:** the glutes, which extend the hips and finish the lift\n- **Synergists:** the hamstrings and adductor magnus help extend the hips, especially from the bottom position, while the quadriceps straighten the knees off the floor\n- **Stabilisers:** the spinal erectors, upper back and lats hold the trunk rigid so the force from the legs reaches the bar; the abdominals and obliques brace against the load, and the forearms and traps hold the bar\n- A compound pulling movement and the most direct test of hip and posterior-chain strength\n\n## Set-up\n\n- Bar over the middle of your foot, about 2–3 cm from the shins, feet roughly hip-width apart\n- Hinge down and grip just outside your shins; use a double overhand grip on warm-ups and a mixed or hook grip when the load demands it\n- Bring the shins to the bar, with the shoulders slightly in front of it and the armpits roughly above it\n\n## Form cues\n\n1. Take a big breath into your belly and brace as if someone is about to push you\n2. Pull the slack out of the bar until you hear the bar click against the plates\n3. Squeeze your armpits down to lock the lats and keep the bar close\n4. Push the floor away with your whole foot instead of yanking with the arms\n5. Let hips and shoulders rise together until the bar passes the knees\n6. Drive the hips forward to stand tall, with ribs stacked over the pelvis\n7. Lower by sending the hips back first, then bend the knees once the bar clears them\n\n## Common errors\n\n1. Hips shooting up first — the legs stop working and the back takes the load; lower the weight and push the floor rather than lifting the hips\n2. Bar drifting forward — re-engage the lats and keep the bar touching the thighs\n3. Leaning back at the top — finish with the glutes, not by over-arching the lower back\n4. Jerking the bar off the floor — build tension first, then accelerate\n\n## Easier and harder versions\n\n- Easier: rack pulls from just below the knee, or Romanian deadlifts to learn the hinge under control\n- Harder: deficit deadlifts standing on a 3–5 cm platform, or a 2-second pause just below the knee\n\n## Safety\n\n- Use collars and a flat, stable floor; never pull on a soft or tilted surface\n- Reset between heavy reps rather than bouncing the plates off the floor\n- Stop the set if your lower back rounds noticeably or you feel sharp pain",
+          "contentEl": "# Η Άρση Θανάτου με Βαρύ Φορτίο\n\nΞέρεις ήδη να κάνεις άρση θανάτου (deadlift). Αυτό το μάθημα δουλεύει τις λεπτομέρειες που κρίνουν αν ένα βαρύ τράβηγμα θα κυλήσει ομαλά ή θα «σπάσει» στη μέση: πού βρίσκεται η μπάρα, πώς δημιουργείς ένταση πριν φύγει από το πάτωμα και πώς ολοκληρώνεις χωρίς να γέρνεις προς τα πίσω.\n\n## Τι δουλεύει\n\n- **Στόχος:** οι γλουτοί, που εκτείνουν το ισχίο και ολοκληρώνουν την άρση\n- **Συνεργοί:** οι οπίσθιοι μηριαίοι και ο μέγας προσαγωγός βοηθούν στην έκταση του ισχίου, ειδικά από την κάτω θέση, ενώ οι τετρακέφαλοι τεντώνουν τα γόνατα στο ξεκίνημα από το πάτωμα\n- **Σταθεροποιητές:** οι ορθωτήρες της σπονδυλικής στήλης, η άνω πλάτη και οι πλατείς ραχιαίοι κρατούν τον κορμό άκαμπτο, ώστε η δύναμη των ποδιών να φτάνει στην μπάρα· οι κοιλιακοί και οι λοξοί σφίγγουν τον κορμό απέναντι στο φορτίο, ενώ οι πήχεις και οι τραπεζοειδείς συγκρατούν την μπάρα\n- Σύνθετη άσκηση έλξης και το πιο άμεσο τεστ δύναμης για το ισχίο και την οπίσθια αλυσίδα\n\n## Τοποθέτηση\n\n- Μπάρα πάνω από το μέσο του πέλματος, περίπου 2–3 εκ. από τις κνήμες, πόδια περίπου στο πλάτος των ισχίων\n- Λύγισε από το ισχίο και πιάσε την μπάρα λίγο έξω από τις κνήμες· χρησιμοποίησε πρηνή λαβή και με τα δύο χέρια στα σετ ζεστάματος και μικτή λαβή ή λαβή hook όταν το φορτίο το απαιτεί\n- Φέρε τις κνήμες στην μπάρα, με τους ώμους λίγο μπροστά της και τις μασχάλες περίπου από πάνω της\n\n## Οδηγίες τεχνικής\n\n1. Πάρε βαθιά ανάσα στην κοιλιά και σφίξε τον κορμό σαν να πρόκειται να σε σπρώξει κάποιος\n2. Τέντωσε την μπάρα («βγάλε τον τζόγο») μέχρι να ακούσεις το «κλικ» της πάνω στους δίσκους\n3. Πίεσε τις μασχάλες προς τα κάτω για να «κλειδώσεις» τους πλατείς και να μείνει η μπάρα κοντά σου\n4. Σπρώξε το πάτωμα μακριά με ολόκληρο το πέλμα αντί να τραβάς απότομα με τα χέρια\n5. Άφησε ισχία και ώμους να ανεβαίνουν μαζί μέχρι η μπάρα να περάσει τα γόνατα\n6. Σπρώξε τα ισχία μπροστά για να σταθείς όρθιος, με τα πλευρά ακριβώς πάνω από τη λεκάνη\n7. Κατέβασε στέλνοντας πρώτα τα ισχία πίσω και λύγισε τα γόνατα μόλις η μπάρα τα περάσει\n\n## Συνηθισμένα λάθη\n\n1. Τα ισχία ανεβαίνουν πρώτα — τα πόδια σταματούν να δουλεύουν και το φορτίο πέφτει στη μέση· μείωσε το βάρος και σπρώξε το πάτωμα αντί να σηκώνεις τα ισχία\n2. Η μπάρα φεύγει μπροστά — ενεργοποίησε ξανά τους πλατείς και κράτα την μπάρα να ακουμπά τους μηρούς\n3. Κλίση προς τα πίσω στο τέλος — ολοκλήρωσε με τους γλουτούς, όχι με υπερέκταση της μέσης\n4. Απότομο τράβηγμα από το πάτωμα — δημιούργησε πρώτα ένταση και μετά επιτάχυνε\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερη: rack pulls από λίγο κάτω από το γόνατο ή ρουμανική άρση θανάτου για να μάθεις το λύγισμα του ισχίου με έλεγχο\n- Δυσκολότερη: άρση θανάτου πατώντας σε πλατφόρμα 3–5 εκ. (deficit deadlift) ή παύση 2 δευτερολέπτων λίγο κάτω από το γόνατο\n\n## Ασφάλεια\n\n- Χρησιμοποίησε κλιπ στην μπάρα και επίπεδο, σταθερό δάπεδο· ποτέ σε μαλακή ή κεκλιμένη επιφάνεια\n- Στήσου ξανά ανάμεσα στις βαριές επαναλήψεις αντί να αφήνεις τους δίσκους να αναπηδούν στο πάτωμα\n- Σταμάτα το σετ αν η μέση σου κυρτώνει εμφανώς ή αν νιώσεις οξύ πόνο",
+          "exercises": [
+            {
+              "slug": "barbell-deadlift",
+              "sets": 4,
+              "reps": "5",
+              "restSeconds": 180,
+              "notes": "Pull the slack out, then push the floor away.",
+              "notesEl": "Τέντωσε πρώτα την μπάρα και μετά σπρώξε το πάτωμα μακριά."
+            }
+          ]
+        },
+        {
+          "title": "The Full Back Squat",
+          "titleEl": "Το Βαθύ Squat με Μπάρα στην Πλάτη",
+          "durationMinutes": 12,
+          "sortOrder": 2,
+          "content": "# The Full Back Squat\n\nThe full squat takes the hips well below the knees. Done with control, deep squats train the legs through their whole range and carry over to jumping, sprinting and the bottom of every lift. The goal here is to own that depth under load, not to bounce into it.\n\n## What it trains\n\n- **Target:** the quadriceps, which straighten the knees\n- **Synergists:** the glutes and adductor magnus extend the hips, especially out of the bottom, and the soleus helps control the shins\n- **Stabilisers:** the hamstrings and calves steady the knee and ankle, while the spinal erectors and abdominals keep the trunk upright and rigid\n- A compound pushing movement for the whole lower body\n\n## Set-up\n\n- Set the bar in the rack at about mid-chest height and the safety arms just below your lowest squat position\n- Place the bar on the upper traps (high bar) or a little lower across the rear shoulders (low bar), and keep the wrists straight\n- Walk out in two or three short steps; feet about shoulder-width, toes turned out 15–30°\n\n## Form cues\n\n1. Breathe into your belly and brace before every rep, then hold that brace on the way down\n2. Grip the floor with a tripod foot: big toe, little toe and heel all in contact\n3. Break at the hips and knees together and sit straight down between your heels\n4. Let the knees travel forward and out in line with the toes; that is normal in a deep squat\n5. Keep the bar over the middle of your foot from top to bottom\n6. Stay tight at the bottom instead of relaxing into the deepest position\n7. Drive up by pushing the floor away, with chest and hips rising at the same rate\n8. Breathe out near the top, take a new breath and brace again for the next rep\n\n## Common errors\n\n1. Knees caving in on the way up — cue \"spread the floor\" and reduce the load\n2. Hips rising faster than the chest — the squat turns into a good morning; slow the descent and strengthen the quads with front squats\n3. Losing the lower-back position at the bottom (often called butt wink) — squat only to the depth you can hold with a neutral spine\n4. Heels lifting — widen the stance slightly, turn the toes out more or work on ankle mobility\n\n## Easier and harder versions\n\n- Easier: box squats to a set depth, or high-bar squats to just below parallel\n- Harder: a 2–3 second pause at the bottom, or a slow 4-second lowering phase\n\n## Safety\n\n- Always squat heavy inside a rack with the safety arms set, or with an experienced spotter\n- Use collars and make sure the bar is centred before you walk out\n- Stop if you feel sharp knee, hip or back pain, and check your technique on video before adding load",
+          "contentEl": "# Το Βαθύ Squat με Μπάρα στην Πλάτη\n\nΣτο βαθύ squat (full squat, βαθύ κάθισμα) τα ισχία κατεβαίνουν αρκετά πιο χαμηλά από τα γόνατα. Με έλεγχο, το βαθύ squat δουλεύει τα πόδια σε όλο τους το εύρος και μεταφέρεται στο άλμα, στο σπριντ και στο κάτω σημείο κάθε άρσης. Ο στόχος εδώ είναι να κατακτήσεις αυτό το βάθος με φορτίο, όχι να «πέφτεις» σε αυτό με αναπήδηση.\n\n## Τι δουλεύει\n\n- **Στόχος:** οι τετρακέφαλοι, που τεντώνουν τα γόνατα\n- **Συνεργοί:** οι γλουτοί και ο μέγας προσαγωγός εκτείνουν το ισχίο, ειδικά στο ανέβασμα από το κάτω σημείο, και ο υποκνημίδιος βοηθά στον έλεγχο των κνημών\n- **Σταθεροποιητές:** οι οπίσθιοι μηριαίοι και οι γάμπες σταθεροποιούν γόνατο και αστράγαλο, ενώ οι ορθωτήρες της σπονδυλικής στήλης και οι κοιλιακοί κρατούν τον κορμό όρθιο και άκαμπτο\n- Σύνθετη άσκηση ώθησης για όλο το κάτω σώμα\n\n## Τοποθέτηση\n\n- Βάλε την μπάρα στον κλωβό (rack) περίπου στο ύψος του μέσου του στήθους και τις μπάρες ασφαλείας λίγο κάτω από το χαμηλότερο σημείο του squat σου\n- Ακούμπησε την μπάρα στο πάνω μέρος των τραπεζοειδών (high bar) ή λίγο χαμηλότερα, στο πίσω μέρος των ώμων (low bar), και κράτα τους καρπούς ίσιους\n- Βγες από τον κλωβό με δύο ή τρία μικρά βήματα· πόδια περίπου στο πλάτος των ώμων, μύτες ανοιχτές 15–30°\n\n## Οδηγίες τεχνικής\n\n1. Πριν από κάθε επανάληψη πάρε ανάσα στην κοιλιά και σφίξε τον κορμό· κράτα αυτό το σφίξιμο σε όλο το κατέβασμα\n2. «Πιάσε» το πάτωμα με τρία σημεία στήριξης: μεγάλο δάχτυλο, μικρό δάχτυλο και φτέρνα\n3. Λύγισε ισχία και γόνατα μαζί και κάτσε ίσια κάτω, ανάμεσα στις φτέρνες\n4. Άφησε τα γόνατα να πάνε μπροστά και έξω, στην ευθεία των δαχτύλων· αυτό είναι φυσιολογικό σε ένα βαθύ squat\n5. Κράτα την μπάρα πάνω από το μέσο του πέλματος από πάνω μέχρι κάτω\n6. Μείνε σφιχτός στο κάτω σημείο αντί να χαλαρώνεις στη βαθύτερη θέση\n7. Ανέβα σπρώχνοντας το πάτωμα μακριά, με το στήθος και τα ισχία να ανεβαίνουν με τον ίδιο ρυθμό\n8. Βγάλε τον αέρα κοντά στο πάνω σημείο, πάρε νέα ανάσα και σφίξε ξανά για την επόμενη επανάληψη\n\n## Συνηθισμένα λάθη\n\n1. Τα γόνατα κλείνουν προς τα μέσα στο ανέβασμα — σκέψου «άνοιξε το πάτωμα» με τα πόδια και μείωσε το φορτίο\n2. Τα ισχία ανεβαίνουν πιο γρήγορα από το στήθος — το squat γίνεται good morning· κατέβαινε πιο αργά και δυνάμωσε τους τετρακέφαλους με μπροστινό squat\n3. Η μέση χάνει τη θέση της στο κάτω σημείο (το λεγόμενο butt wink) — κατέβαινε μόνο μέχρι το βάθος που κρατάς με ουδέτερη σπονδυλική στήλη\n4. Οι φτέρνες σηκώνονται — άνοιξε λίγο τη στάση, γύρισε τις μύτες περισσότερο προς τα έξω ή δούλεψε την κινητικότητα του αστραγάλου\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερη: box squat σε σταθερό βάθος ή high-bar squat λίγο κάτω από την παράλληλη\n- Δυσκολότερη: παύση 2–3 δευτερολέπτων στο κάτω σημείο ή αργό κατέβασμα 4 δευτερολέπτων\n\n## Ασφάλεια\n\n- Κάνε πάντα βαριά squat μέσα σε κλωβό με ρυθμισμένες μπάρες ασφαλείας ή με έμπειρο βοηθό (spotter)\n- Χρησιμοποίησε κλιπ και βεβαιώσου ότι η μπάρα είναι κεντραρισμένη πριν βγεις από τον κλωβό\n- Σταμάτα αν νιώσεις οξύ πόνο σε γόνατο, ισχίο ή μέση και έλεγξε την τεχνική σου σε βίντεο πριν προσθέσεις βάρος",
+          "exercises": [
+            {
+              "slug": "barbell-full-squat",
+              "sets": 4,
+              "reps": "5",
+              "restSeconds": 180,
+              "notes": "Brace first, then sit straight down between your heels.",
+              "notesEl": "Σφίξε πρώτα τον κορμό και μετά κάτσε ίσια κάτω, ανάμεσα στις φτέρνες."
+            }
+          ]
+        },
+        {
+          "title": "Base Session: Volume at RPE 7",
+          "titleEl": "Προπόνηση Βάσης: Όγκος σε RPE 7",
+          "durationMinutes": 45,
+          "sortOrder": 3,
+          "content": "# Base Session: Volume at RPE 7\n\nWeeks 1–3 build the work capacity that the heavier weeks will draw on. The loads are moderate, the sets are many and every rep should look the same as the first. Train three days a week with at least one rest day between sessions.\n\n- **Day 1 and Day 3:** this session as written\n- **Day 2:** the deadlift from lesson 1 for 4 sets of 5, with the same weekly RPE steps as the squat, then the hip thrusts and calf raises from this list\n\n## Warm-up\n\n- 5 minutes on a bike or rower, or brisk walking, until you are breathing a little harder\n- 10 bodyweight squats, 10 hip hinges and 10 walking lunges\n- Ramp up on the first lift: empty bar for 8, then 3–4 sets of 3–5 reps with rising load until you reach your working weight\n\n## The workout\n\n- Squat 4 × 6 at RPE 6–7 in week 1, RPE 7 in week 2 and RPE 7–8 in week 3 (RPE 7 on the 1–10 effort scale means about 3 reps left in reserve)\n- When every set of a lift lands at or below its target RPE, add 2.5–5 kg to that lift the following week\n- Finish all sets of one exercise before moving on; rest 2–3 minutes after squats, 2 minutes after Romanian deadlifts and 60–90 seconds after the other lifts\n- Romanian deadlifts: stop where your hamstrings are fully stretched, usually just below the knee, with a neutral back\n- Walking lunges: take a long enough step that the front shin stays roughly vertical at the bottom\n- Write down every load, rep count and RPE; you need these numbers to plan weeks 4–6\n\n## Cool-down\n\n- 3–5 minutes of easy walking\n- Hold a hip-flexor stretch, a hamstring stretch and a quad stretch for about 30 seconds per side\n- Finish with a minute of slow breathing lying on your back\n\n## Safety\n\n- Squat inside a rack with the safety arms set just below your lowest point\n- Clear the floor around you before walking lunges with a loaded bar\n- If your technique changes on the last reps, end the set there and lower the load next time",
+          "contentEl": "# Προπόνηση Βάσης: Όγκος σε RPE 7\n\nΟι εβδομάδες 1–3 χτίζουν την αντοχή στον όγκο δουλειάς που θα χρειαστείς στις βαρύτερες εβδομάδες. Τα φορτία είναι μέτρια, τα σετ πολλά και κάθε επανάληψη πρέπει να μοιάζει με την πρώτη. Προπονήσου τρεις μέρες την εβδομάδα, με τουλάχιστον μία μέρα ξεκούρασης ανάμεσα στις προπονήσεις.\n\n- **Μέρα 1 και Μέρα 3:** αυτή η προπόνηση όπως είναι γραμμένη\n- **Μέρα 2:** η άρση θανάτου από το μάθημα 1 για 4 σετ των 5, με τα ίδια εβδομαδιαία βήματα RPE όπως στο squat, και μετά τα hip thrust και οι άρσεις γαστροκνημίων από αυτή τη λίστα\n\n## Ζέσταμα\n\n- 5 λεπτά σε ποδήλατο, κωπηλατικό ή γρήγορο περπάτημα, μέχρι να ανεβεί λίγο η αναπνοή σου\n- 10 squat με βάρος σώματος, 10 λυγίσματα ισχίου και 10 προβολές με βάδισμα\n- Ανέβαινε σταδιακά στην πρώτη άσκηση: άδεια μπάρα για 8 και μετά 3–4 σετ των 3–5 επαναλήψεων με αυξανόμενο βάρος μέχρι το βάρος εργασίας\n\n## Η προπόνηση\n\n- Squat 4 × 6 σε RPE 6–7 την εβδομάδα 1, RPE 7 την εβδομάδα 2 και RPE 7–8 την εβδομάδα 3 (RPE 7 στην κλίμακα προσπάθειας 1–10 σημαίνει περίπου 3 επαναλήψεις σε απόθεμα)\n- Όταν όλα τα σετ μιας άσκησης βγαίνουν στο RPE που στοχεύεις ή πιο εύκολα, πρόσθεσε 2,5–5 κιλά σε αυτή την άσκηση την επόμενη εβδομάδα\n- Ολοκλήρωσε όλα τα σετ μιας άσκησης πριν προχωρήσεις· ξεκουράσου 2–3 λεπτά μετά τα squat, 2 λεπτά μετά τη ρουμανική άρση θανάτου και 60–90 δευτερόλεπτα μετά τις υπόλοιπες ασκήσεις\n- Ρουμανική άρση θανάτου: σταμάτα εκεί που οι οπίσθιοι μηριαίοι είναι πλήρως τεντωμένοι, συνήθως λίγο κάτω από το γόνατο, με ουδέτερη πλάτη\n- Προβολές με βάδισμα: κάνε αρκετά μεγάλο βήμα ώστε η μπροστινή κνήμη να μένει περίπου κάθετη στο κάτω σημείο\n- Κατάγραψε κάθε φορτίο, αριθμό επαναλήψεων και RPE· θα χρειαστείς αυτούς τους αριθμούς για να σχεδιάσεις τις εβδομάδες 4–6\n\n## Αποθεραπεία\n\n- 3–5 λεπτά χαλαρό περπάτημα\n- Κράτα μια διάταση καμπτήρων του ισχίου, μια διάταση οπίσθιων μηριαίων και μια διάταση τετρακεφάλων για περίπου 30 δευτερόλεπτα ανά πλευρά\n- Τελείωσε με ένα λεπτό αργής αναπνοής ξαπλωμένος ανάσκελα\n\n## Ασφάλεια\n\n- Κάνε squat μέσα σε κλωβό με τις μπάρες ασφαλείας λίγο κάτω από το χαμηλότερο σημείο σου\n- Άδειασε τον χώρο γύρω σου πριν κάνεις προβολές με βάδισμα με φορτωμένη μπάρα\n- Αν η τεχνική σου αλλάξει στις τελευταίες επαναλήψεις, σταμάτα το σετ εκεί και μείωσε το βάρος την επόμενη φορά",
+          "exercises": [
+            {
+              "slug": "barbell-full-squat",
+              "sets": 4,
+              "reps": "6",
+              "restSeconds": 150,
+              "notes": "Same depth every rep; week 3 tops out at RPE 8.",
+              "notesEl": "Ίδιο βάθος σε κάθε επανάληψη· την εβδομάδα 3 μέχρι RPE 8."
+            },
+            {
+              "slug": "romanian-deadlift",
+              "sets": 3,
+              "reps": "8",
+              "restSeconds": 120,
+              "notes": "Hips back, bar sliding down the thighs.",
+              "notesEl": "Ισχία πίσω, η μπάρα γλιστρά πάνω στους μηρούς."
+            },
+            {
+              "slug": "barbell-walking-lunge",
+              "sets": 3,
+              "reps": "8",
+              "restSeconds": 90,
+              "notes": "Each leg. Rear knee just above the floor, torso tall.",
+              "notesEl": "Σε κάθε πόδι. Πίσω γόνατο λίγο πάνω από το πάτωμα, κορμός όρθιος."
+            },
+            {
+              "slug": "barbell-hip-thrust",
+              "sets": 3,
+              "reps": "10",
+              "restSeconds": 90,
+              "notes": "Chin tucked, ribs down, 1-second squeeze at the top.",
+              "notesEl": "Πηγούνι μέσα, πλευρά κάτω, σφίξιμο 1 δευτερολέπτου στην κορυφή."
+            },
+            {
+              "slug": "standing-barbell-calf-raise",
+              "sets": 3,
+              "reps": "12",
+              "restSeconds": 60,
+              "notes": "Full stretch at the bottom, 1-second hold at the top.",
+              "notesEl": "Πλήρες τέντωμα κάτω, κράτημα 1 δευτερολέπτου πάνω."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 4–6: Heavy Strength",
+      "titleEl": "Εβδομάδες 4–6: Βαριά Δύναμη",
+      "description": "Lower the reps, raise the load and manage fatigue with RPE and longer rests.",
+      "descriptionEl": "Λιγότερες επαναλήψεις, περισσότερο φορτίο και διαχείριση της κούρασης με RPE και μεγαλύτερα διαλείμματα.",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "title": "Heavy Loads, RPE and Recovery",
+          "titleEl": "Βαριά Φορτία, RPE και Αποκατάσταση",
+          "durationMinutes": 10,
+          "sortOrder": 1,
+          "content": "# Heavy Loads, RPE and Recovery\n\nWeeks 4–6 move from building volume to expressing strength. Fewer reps at heavier loads teach your nervous system to recruit more muscle at once and to coordinate the big lifts under real pressure. Heavy work also costs more recovery, so the way you choose loads and rest matters more than before.\n\n## Reps, load and effort\n\n- Maximal strength is usually trained with loads of about 85% of your one-rep max or more, for 1–6 reps per set and 2–6 working sets\n- You do not need a tested max to train this way. Use RPE: on a 1–10 scale, RPE 8 means you could have done about 2 more reps, and RPE 9 about 1 more\n- Use your logs from weeks 1–3. If you squatted 6 reps at RPE 7, a triple at RPE 8 will be noticeably heavier, often by 10–15%\n- Keep 1–2 reps in reserve on most sets. Grinding to failure on heavy squats and deadlifts adds fatigue and risk without adding much strength\n\n## Rest between sets\n\n- Rest 3–5 minutes after heavy sets of the main lifts; the energy system behind short, maximal efforts needs that long to recharge\n- Accessory lifts in the 6–10 rep range need about 90–120 seconds\n- If a set felt harder than planned, take the full 5 minutes before the next one rather than cutting the load straight away\n\n## Progressive overload, the advanced way\n\nAs a beginner you could add weight every session. At an advanced level progress comes week to week instead. A simple rule for this block:\n\n1. **Week 4:** work at RPE 7–8 on every working set\n2. **Week 5:** add 2.5–5 kg to the main lifts and work at RPE 8\n3. **Week 6:** add a small amount again and allow one top set at RPE 8–9, then back-off sets about 10% lighter\n\nIf the bar slows sharply or your technique breaks at the planned RPE, repeat the previous week's load rather than forcing the increase.\n\n## Recovery is part of the programme\n\n- Sleep at least 7 hours a night; strength sessions feel heavier and recovery slows when sleep runs short\n- Eat enough protein, around 1.6 g per kilogram of body weight per day for most lifters, spread over 3–5 meals\n- Eat enough total energy; a large calorie deficit and a heavy strength block rarely mix well\n- Keep hard conditioning or long runs away from the day before a heavy deadlift session\n- Watch for warning signs: performance falling two sessions in a row, poor sleep, aching joints or low motivation. Any of these is a cue to cut volume for a few days\n\n## Breathing under heavy loads\n\nBrace with a deep breath held through the hardest part of each rep, then breathe out near the top. If you have high blood pressure or a heart condition, ask a medical professional whether holding your breath under heavy loads is suitable for you.",
+          "contentEl": "# Βαριά Φορτία, RPE και Αποκατάσταση\n\nΟι εβδομάδες 4–6 περνούν από το χτίσιμο όγκου στην έκφραση της δύναμης. Λιγότερες επαναλήψεις με βαρύτερα φορτία μαθαίνουν το νευρικό σου σύστημα να ενεργοποιεί περισσότερες μυϊκές ίνες ταυτόχρονα και να συντονίζει τις μεγάλες άρσεις υπό πραγματική πίεση. Η βαριά δουλειά όμως απαιτεί και περισσότερη αποκατάσταση, γι' αυτό ο τρόπος που επιλέγεις φορτία και διαλείμματα μετράει περισσότερο από πριν.\n\n## Επαναλήψεις, φορτίο και προσπάθεια\n\n- Η μέγιστη δύναμη προπονείται συνήθως με φορτία γύρω στο 85% της μίας μέγιστης επανάληψης (1RM) ή περισσότερο, για 1–6 επαναλήψεις ανά σετ και 2–6 σετ εργασίας\n- Δεν χρειάζεσαι μετρημένο μέγιστο για να προπονηθείς έτσι. Χρησιμοποίησε το RPE (βαθμό αντιληπτής προσπάθειας): σε κλίμακα 1–10, RPE 8 σημαίνει ότι θα μπορούσες να κάνεις περίπου 2 επαναλήψεις ακόμη και RPE 9 περίπου 1 ακόμη\n- Χρησιμοποίησε τις σημειώσεις σου από τις εβδομάδες 1–3. Αν έκανες 6 επαναλήψεις squat σε RPE 7, ένα σετ των 3 σε RPE 8 θα είναι αισθητά βαρύτερο, συχνά κατά 10–15%\n- Κράτα 1–2 επαναλήψεις σε απόθεμα στα περισσότερα σετ. Το «σπρώξιμο» μέχρι την αποτυχία σε βαριά squat και άρσεις θανάτου προσθέτει κούραση και κίνδυνο χωρίς να προσθέτει πολλή δύναμη\n\n## Διαλείμματα ανάμεσα στα σετ\n\n- Ξεκουράσου 3–5 λεπτά μετά από βαριά σετ στις βασικές ασκήσεις· το ενεργειακό σύστημα που τροφοδοτεί τις σύντομες μέγιστες προσπάθειες χρειάζεται τόσο χρόνο για να αναπληρωθεί\n- Οι βοηθητικές ασκήσεις στο εύρος των 6–10 επαναλήψεων χρειάζονται περίπου 90–120 δευτερόλεπτα\n- Αν ένα σετ ήταν πιο δύσκολο από ό,τι υπολόγιζες, πάρε ολόκληρα τα 5 λεπτά πριν από το επόμενο αντί να μειώσεις αμέσως το βάρος\n\n## Προοδευτική επιβάρυνση για προχωρημένους\n\nΩς αρχάριος μπορούσες να προσθέτεις βάρος σε κάθε προπόνηση. Σε προχωρημένο επίπεδο η πρόοδος έρχεται από εβδομάδα σε εβδομάδα. Ένας απλός κανόνας για αυτή την περίοδο:\n\n1. **Εβδομάδα 4:** δούλεψε σε RPE 7–8 σε κάθε σετ εργασίας\n2. **Εβδομάδα 5:** πρόσθεσε 2,5–5 κιλά στις βασικές ασκήσεις και δούλεψε σε RPE 8\n3. **Εβδομάδα 6:** πρόσθεσε ξανά λίγο βάρος και κάνε ένα κορυφαίο σετ (top set) σε RPE 8–9 και μετά σετ μειωμένου φορτίου (back-off) περίπου 10% ελαφρύτερα\n\nΑν η μπάρα επιβραδύνεται απότομα ή η τεχνική σου χαλάει στο προγραμματισμένο RPE, επανάλαβε το φορτίο της προηγούμενης εβδομάδας αντί να ζορίσεις την αύξηση.\n\n## Η αποκατάσταση είναι μέρος του προγράμματος\n\n- Κοιμήσου τουλάχιστον 7 ώρες τη νύχτα· οι προπονήσεις δύναμης μοιάζουν βαρύτερες και η αποκατάσταση καθυστερεί όταν ο ύπνος δεν φτάνει\n- Φάε αρκετή πρωτεΐνη, γύρω στα 1,6 γρ. ανά κιλό σωματικού βάρους την ημέρα για τους περισσότερους αθλούμενους, μοιρασμένη σε 3–5 γεύματα\n- Φάε αρκετή συνολική ενέργεια· ένα μεγάλο θερμιδικό έλλειμμα και μια βαριά περίοδος δύναμης σπάνια ταιριάζουν\n- Απόφυγε την έντονη καρδιοαναπνευστική προπόνηση ή τα μεγάλα τρεξίματα την παραμονή μιας βαριάς προπόνησης άρσης θανάτου\n- Πρόσεχε τα προειδοποιητικά σημάδια: πτώση της απόδοσης δύο προπονήσεις στη σειρά, κακός ύπνος, πονεμένες αρθρώσεις ή χαμηλό κίνητρο. Οποιοδήποτε από αυτά είναι σήμα να μειώσεις τον όγκο για λίγες μέρες\n\n## Αναπνοή με βαριά φορτία\n\nΣφίξε τον κορμό με μια βαθιά ανάσα που κρατάς στο πιο δύσκολο σημείο κάθε επανάληψης και βγάλε τον αέρα κοντά στο πάνω σημείο. Αν έχεις υψηλή αρτηριακή πίεση ή κάποια καρδιοπάθεια, ρώτα έναν επαγγελματία υγείας αν το κράτημα της αναπνοής με βαριά φορτία είναι κατάλληλο για σένα."
+        },
+        {
+          "title": "Heavy Session: Deadlift and Front Squat",
+          "titleEl": "Βαριά Προπόνηση: Άρση Θανάτου και Μπροστινό Squat",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# Heavy Session: Deadlift and Front Squat\n\nThis is the anchor session of weeks 4–6. The deadlift moves to heavy triples, the front squat trains the quads and upper back in a more upright position, and the accessories strengthen the hinge and each leg on its own. Keep three sessions a week, with a rest day after this one if you can.\n\n- **Day 1:** this session at the planned RPE\n- **Day 2:** back squat for 5 sets of 3 at the same RPE as that week's deadlift, then Romanian deadlifts and hip thrusts from the base session for 3 sets of 6–8\n- **Day 3:** this session again, but deadlift only 3 sets of 3 at RPE 7 and skip the good mornings, to save your back for the next week\n\n## Warm-up\n\n- 5 minutes of easy cardio, then 10 bodyweight squats, 10 glute bridges and 10 hip hinges\n- Deadlift ramp: 2–3 sets of 5 with light plates, then singles or doubles at about 60%, 70% and 80% of your working weight\n- One or two light front-squat sets of 3–5 to settle the rack position; from week 5, add 2 sets of 3 empty-bar hang cleans to prepare for the power phase\n\n## The workout\n\n- Deadlift 5 × 3: RPE 7–8 in week 4, RPE 8 in week 5, and in week 6 one top triple at RPE 8–9 followed by four triples about 10% lighter\n- Front squat 3 × 4 at RPE 7–8; if you lose the elbows-up position, end the set\n- Rest 3–4 minutes after deadlifts, 3 minutes after front squats and 60–90 seconds after the accessories, which drop to 2 sets each in this block so your recovery goes into the heavy lifts\n- Good mornings: start light, about 30–40% of your squat, and hinge only as far as your hamstrings allow with a neutral back\n- Elevated back lunges: step back off a 5–10 cm platform and lower the back knee gently to the floor\n- Note the speed of the last rep of each heavy set (\"fast\", \"steady\" or \"grinding\"); it guides next week's load as much as RPE does\n\n## Cool-down\n\n- 5 minutes of easy walking or cycling\n- 30-second stretches for the hamstrings, hip flexors and calves on each side\n- A few slow breaths lying on your back with your knees bent\n\n## Safety\n\n- Front squat inside a rack with the safety arms set; if you miss a rep, push the bar forward off your shoulders onto the safety arms rather than rounding to save it\n- Save the mixed or hook grip for heavy deadlift sets; with a mixed grip, keep both elbows straight and swap which palm faces forward from session to session\n- Stop and rest if you feel sharp pain or dizziness; do not train through it",
+          "contentEl": "# Βαριά Προπόνηση: Άρση Θανάτου και Μπροστινό Squat\n\nΑυτή είναι η βασική προπόνηση των εβδομάδων 4–6. Η άρση θανάτου περνά σε βαριά σετ των 3, το μπροστινό squat (front squat) δουλεύει τους τετρακέφαλους και την άνω πλάτη σε πιο όρθια θέση και οι βοηθητικές ασκήσεις δυναμώνουν το λύγισμα του ισχίου και κάθε πόδι ξεχωριστά. Κράτα τρεις προπονήσεις την εβδομάδα, με μια μέρα ξεκούρασης μετά από αυτήν αν μπορείς.\n\n- **Μέρα 1:** αυτή η προπόνηση στο προγραμματισμένο RPE\n- **Μέρα 2:** squat με μπάρα στην πλάτη για 5 σετ των 3 στο ίδιο RPE με την άρση θανάτου της εβδομάδας και μετά ρουμανική άρση θανάτου και hip thrust από την προπόνηση βάσης για 3 σετ των 6–8\n- **Μέρα 3:** ξανά αυτή η προπόνηση, αλλά άρση θανάτου μόνο 3 σετ των 3 σε RPE 7 και χωρίς good morning, για να ξεκουραστεί η μέση σου για την επόμενη εβδομάδα\n\n## Ζέσταμα\n\n- 5 λεπτά χαλαρό καρδιο και μετά 10 squat με βάρος σώματος, 10 γέφυρες γλουτών και 10 λυγίσματα ισχίου\n- Κλιμάκωση στην άρση θανάτου: 2–3 σετ των 5 με ελαφριούς δίσκους και μετά μονές ή διπλές επαναλήψεις περίπου στο 60%, 70% και 80% του βάρους εργασίας\n- Ένα ή δύο ελαφριά σετ μπροστινού squat των 3–5 επαναλήψεων για να «κάτσει» η θέση της μπάρας στους ώμους· από την εβδομάδα 5 πρόσθεσε 2 σετ των 3 hang clean με άδεια μπάρα, για να προετοιμαστείς για την περίοδο ισχύος\n\n## Η προπόνηση\n\n- Άρση θανάτου 5 × 3: RPE 7–8 την εβδομάδα 4, RPE 8 την εβδομάδα 5 και την εβδομάδα 6 ένα κορυφαίο σετ των 3 σε RPE 8–9 και μετά τέσσερα σετ των 3 περίπου 10% ελαφρύτερα\n- Μπροστινό squat 3 × 4 σε RPE 7–8· αν χάσεις τη θέση με τους αγκώνες ψηλά, σταμάτα το σετ\n- Ξεκουράσου 3–4 λεπτά μετά την άρση θανάτου, 3 λεπτά μετά το μπροστινό squat και 60–90 δευτερόλεπτα μετά τις βοηθητικές ασκήσεις, που σε αυτή την περίοδο πέφτουν στα 2 σετ η καθεμία, ώστε η αποκατάστασή σου να πηγαίνει στις βαριές άρσεις\n- Good morning: ξεκίνα ελαφριά, περίπου στο 30–40% του squat σου, και λύγισε από το ισχίο μόνο όσο σου επιτρέπουν οι οπίσθιοι μηριαίοι με ουδέτερη πλάτη\n- Προβολές προς τα πίσω από ανύψωση: κάνε βήμα πίσω από μια πλατφόρμα 5–10 εκ. και κατέβασε απαλά το πίσω γόνατο στο πάτωμα\n- Σημείωσε την ταχύτητα της τελευταίας επανάληψης κάθε βαριού σετ («γρήγορη», «σταθερή» ή «με κόπο»)· καθορίζει το φορτίο της επόμενης εβδομάδας όσο και το RPE\n\n## Αποθεραπεία\n\n- 5 λεπτά χαλαρό περπάτημα ή ποδήλατο\n- Διατάσεις 30 δευτερολέπτων για οπίσθιους μηριαίους, καμπτήρες του ισχίου και γάμπες σε κάθε πλευρά\n- Μερικές αργές ανάσες ξαπλωμένος ανάσκελα με λυγισμένα γόνατα\n\n## Ασφάλεια\n\n- Κάνε μπροστινό squat μέσα σε κλωβό με ρυθμισμένες μπάρες ασφαλείας· αν αποτύχεις σε μια επανάληψη, σπρώξε την μπάρα μπροστά από τους ώμους σου, πάνω στις μπάρες ασφαλείας, αντί να κυρτώσεις για να τη σώσεις\n- Κράτα τη μικτή λαβή ή τη λαβή hook για τα βαριά σετ άρσης θανάτου· με μικτή λαβή κράτα και τους δύο αγκώνες τεντωμένους και άλλαζε από προπόνηση σε προπόνηση ποια παλάμη κοιτάζει μπροστά\n- Σταμάτα και ξεκουράσου αν νιώσεις οξύ πόνο ή ζάλη· μη συνεχίζεις την προπόνηση παρά τα συμπτώματα",
+          "exercises": [
+            {
+              "slug": "barbell-deadlift",
+              "sets": 5,
+              "reps": "3",
+              "restSeconds": 210,
+              "notes": "Week 6: one top triple at RPE 8–9, then lighter triples.",
+              "notesEl": "Εβδομάδα 6: ένα κορυφαίο σετ των 3 σε RPE 8–9 και μετά ελαφρύτερα σετ."
+            },
+            {
+              "slug": "front-squat-clean-grip",
+              "sets": 3,
+              "reps": "4",
+              "restSeconds": 180,
+              "notes": "Elbows high; sit down between your heels.",
+              "notesEl": "Αγκώνες ψηλά· κάτσε κάτω ανάμεσα στις φτέρνες."
+            },
+            {
+              "slug": "good-morning",
+              "sets": 2,
+              "reps": "6",
+              "restSeconds": 90,
+              "notes": "Hips back, soft knees, neutral back.",
+              "notesEl": "Ισχία πίσω, γόνατα μαλακά, ουδέτερη πλάτη."
+            },
+            {
+              "slug": "elevated-back-lunge",
+              "sets": 2,
+              "reps": "6",
+              "restSeconds": 90,
+              "notes": "Each leg. Front shin near vertical; lower the back knee gently.",
+              "notesEl": "Σε κάθε πόδι. Μπροστινή κνήμη σχεδόν κάθετη· κατέβασε απαλά το πίσω γόνατο."
+            },
+            {
+              "slug": "standing-barbell-calf-raise",
+              "sets": 2,
+              "reps": "10",
+              "restSeconds": 60,
+              "notes": "Pause 1 second at the stretch and at the top.",
+              "notesEl": "Παύση 1 δευτερολέπτου στο τέντωμα και στην κορυφή."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 7–8: Power and Peak",
+      "titleEl": "Εβδομάδες 7–8: Ισχύς και Κορύφωση",
+      "description": "Turn strength into speed with the power clean and jump squats, then deload and test your lifts.",
+      "descriptionEl": "Μετάτρεψε τη δύναμη σε ταχύτητα με power clean και άλματα squat και μετά κάνε αποφόρτιση και τεστ στις άρσεις σου.",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "title": "The Power Clean",
+          "titleEl": "Το Power Clean",
+          "durationMinutes": 15,
+          "sortOrder": 1,
+          "content": "# The Power Clean\n\nPower is force produced quickly. A heavy squat or deadlift can take two to four seconds, while a jump or sprint gives your muscles a fraction of a second. The power clean trains exactly that: you lift the bar from the floor to your shoulders in one fast pull and catch it in a quarter squat.\n\n## What it trains\n\n- **Target:** the glutes, quadriceps and calves, which extend the hips, knees and ankles explosively (often called triple extension)\n- **Synergists:** the traps and shoulders keep the bar rising after the legs finish, and the arms guide you under it\n- **Stabilisers:** the hamstrings and spinal erectors hold the back angle during the first pull from the floor, and the core and upper back hold the catch\n- A compound, whole-body pulling movement driven by the legs\n\n## Set-up\n\n- Feet about hip-width, bar over the balls of the feet and close to the shins\n- Grip just outside the legs; a hook grip, with the thumb wrapped under the fingers, holds best once loads rise\n- Chest up, back flat, shoulders slightly in front of the bar, arms straight and relaxed like ropes\n\n## Form cues\n\n1. Lift the bar off the floor at a controlled speed, keeping your back angle the same until it passes the knees\n2. Keep the bar close; it should brush the thighs, not swing away from them\n3. When the bar reaches mid-thigh, jump hard: drive the hips through and push the floor away\n4. Shrug at the top of the extension, keeping the arms long until the legs are done\n5. Pull yourself under the bar with the elbows high and outside it while the bar keeps rising\n6. Whip the elbows forward and catch the bar on the front of the shoulders\n7. Land in a quarter squat with flat feet, then stand up tall\n8. Lower the bar to the thighs first, then to the floor, bending the hips and knees to absorb it\n\n## Common errors\n\n1. Pulling early with the arms — the arms bend before the legs finish and power is lost; think \"jump first, then pull\"\n2. Bar looping away from the body — keep the lats engaged and the bar close to the thighs\n3. Catching on the toes or with the elbows down — practise the front rack and the drop under the bar with an empty bar\n4. Rushing the floor phase — the fastest part of the lift happens above the knee, not below it\n\n## Easier and harder versions\n\n- Easier: the hang clean from mid-thigh, which removes the floor phase and teaches the jump and the catch\n- Harder: power cleans from the floor as clusters of singles with 20–30 seconds between reps, or the full squat clean\n\n## Safety\n\n- Learn with an empty bar or light technique plates, ideally with feedback from a qualified weightlifting coach\n- Use bumper plates and a platform so a missed lift can be dropped safely; step back and let the bar fall in front of you\n- Keep the reps low, 1–3 per set, so every rep stays fast and crisp",
+          "contentEl": "# Το Power Clean\n\nΙσχύς είναι η δύναμη που παράγεται γρήγορα. Ένα βαρύ squat ή μια βαριά άρση θανάτου μπορεί να διαρκέσει δύο με τέσσερα δευτερόλεπτα, ενώ σε ένα άλμα ή ένα σπριντ οι μύες σου έχουν μόνο ένα κλάσμα του δευτερολέπτου. Το power clean (σήκωμα της μπάρας στους ώμους με ημικάθισμα) εξασκεί ακριβώς αυτό: σηκώνεις την μπάρα από το πάτωμα στους ώμους με ένα γρήγορο τράβηγμα και την «πιάνεις» σε ένα ρηχό squat, περίπου στο ένα τέταρτο της διαδρομής.\n\n## Τι δουλεύει\n\n- **Στόχος:** οι γλουτοί, οι τετρακέφαλοι και οι γάμπες, που εκτείνουν εκρηκτικά ισχία, γόνατα και αστραγάλους (η λεγόμενη τριπλή έκταση)\n- **Συνεργοί:** οι τραπεζοειδείς και οι ώμοι συνεχίζουν να ανεβάζουν την μπάρα αφού τελειώσουν τα πόδια και τα χέρια σε οδηγούν κάτω από αυτήν\n- **Σταθεροποιητές:** οι οπίσθιοι μηριαίοι και οι ορθωτήρες της σπονδυλικής στήλης κρατούν τη γωνία της πλάτης στο πρώτο τράβηγμα από το πάτωμα, ενώ ο κορμός και η άνω πλάτη κρατούν τη θέση υποδοχής\n- Σύνθετη άσκηση έλξης για όλο το σώμα, με κινητήρια δύναμη τα πόδια\n\n## Τοποθέτηση\n\n- Πόδια περίπου στο πλάτος των ισχίων, μπάρα πάνω από τα μετατάρσια και κοντά στις κνήμες\n- Λαβή λίγο έξω από τα πόδια· η λαβή hook, με τον αντίχειρα τυλιγμένο κάτω από τα δάχτυλα, κρατά καλύτερα όταν ανεβαίνουν τα φορτία\n- Στήθος ψηλά, πλάτη επίπεδη, ώμοι λίγο μπροστά από την μπάρα, χέρια τεντωμένα και χαλαρά σαν σχοινιά\n\n## Οδηγίες τεχνικής\n\n1. Σήκωσε την μπάρα από το πάτωμα με ελεγχόμενη ταχύτητα, κρατώντας ίδια τη γωνία της πλάτης μέχρι να περάσει τα γόνατα\n2. Κράτα την μπάρα κοντά· πρέπει να «χαϊδεύει» τους μηρούς, όχι να απομακρύνεται από αυτούς\n3. Όταν η μπάρα φτάσει στο μέσο του μηρού, πήδα δυνατά: σπρώξε τα ισχία μπροστά και το πάτωμα μακριά\n4. Ανασήκωσε τους ώμους (shrug) στο τέλος της έκτασης, κρατώντας τα χέρια τεντωμένα μέχρι να τελειώσουν τα πόδια\n5. Τράβηξε το σώμα σου κάτω από την μπάρα με τους αγκώνες ψηλά και έξω από αυτήν, ενώ η μπάρα συνεχίζει να ανεβαίνει\n6. Γύρισε γρήγορα τους αγκώνες μπροστά και πιάσε την μπάρα στο μπροστινό μέρος των ώμων\n7. Προσγειώσου σε ημικάθισμα με τα πέλματα επίπεδα και μετά σήκω όρθιος\n8. Κατέβασε την μπάρα πρώτα στους μηρούς και μετά στο πάτωμα, λυγίζοντας ισχία και γόνατα για να απορροφήσεις το βάρος\n\n## Συνηθισμένα λάθη\n\n1. Πρόωρο τράβηγμα με τα χέρια — τα χέρια λυγίζουν πριν τελειώσουν τα πόδια και χάνεται ισχύς· σκέψου «πρώτα πήδα, μετά τράβα»\n2. Η μπάρα κάνει τόξο μακριά από το σώμα — κράτα ενεργούς τους πλατείς και την μπάρα κοντά στους μηρούς\n3. Υποδοχή στις μύτες ή με χαμηλούς αγκώνες — εξασκήσου στη θέση της μπάρας στους ώμους και στο «βούτηγμα» κάτω από την μπάρα με άδεια μπάρα\n4. Βιασύνη στη φάση από το πάτωμα — το πιο γρήγορο κομμάτι της άρσης γίνεται πάνω από το γόνατο, όχι κάτω από αυτό\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερη: το hang clean από το μέσο του μηρού, που αφαιρεί τη φάση από το πάτωμα και διδάσκει το άλμα και την υποδοχή\n- Δυσκολότερη: power clean από το πάτωμα σε ομάδες μονών επαναλήψεων (clusters) με 20–30 δευτερόλεπτα ανάμεσα ή το πλήρες clean με βαθύ κάθισμα\n\n## Ασφάλεια\n\n- Μάθε την κίνηση με άδεια μπάρα ή ελαφριούς δίσκους τεχνικής, ιδανικά με καθοδήγηση από πιστοποιημένο προπονητή άρσης βαρών\n- Χρησιμοποίησε λαστιχένιους δίσκους (bumper) και πλατφόρμα, ώστε μια αποτυχημένη άρση να μπορεί να αφεθεί με ασφάλεια· κάνε βήμα πίσω και άφησε την μπάρα να πέσει μπροστά σου\n- Κράτα λίγες επαναλήψεις, 1–3 ανά σετ, ώστε κάθε επανάληψη να μένει γρήγορη και καθαρή",
+          "exercises": [
+            {
+              "slug": "hang-clean",
+              "sets": 3,
+              "reps": "3",
+              "restSeconds": 90,
+              "notes": "Start at mid-thigh: jump, shrug, then pull under.",
+              "notesEl": "Ξεκίνα από το μέσο του μηρού: άλμα, shrug και μετά βούτα κάτω από την μπάρα."
+            },
+            {
+              "slug": "power-clean",
+              "sets": 5,
+              "reps": "2",
+              "restSeconds": 120,
+              "notes": "Controlled off the floor, explosive above the knee.",
+              "notesEl": "Ελεγχόμενα από το πάτωμα, εκρηκτικά πάνω από το γόνατο."
+            }
+          ]
+        },
+        {
+          "title": "Power Session, Deload and Test",
+          "titleEl": "Προπόνηση Ισχύος, Αποφόρτιση και Τεστ",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# Power Session, Deload and Test\n\nWeek 7 pairs fast lifts with heavy ones so the strength from weeks 4–6 shows up as speed. Week 8 then lowers the fatigue so you can test what you have built. Lift every rep in this session with intent: move the bar as fast as you can while keeping good positions.\n\n- **Week 7, all three days:** this session; on Day 2 replace the squats with 3 deadlift singles at RPE 8, each still followed by a set of jump squats\n- **Week 8, Days 1 and 2 (deload):** this session with half the sets and loads about 10–15% lighter\n- **Week 8, Day 3 (test):** after a full warm-up, work up to a heavy single or triple at about RPE 9 (roughly one rep left in reserve) on the squat and the deadlift, with spotters or safety arms; do not chase a grinding all-out max\n\n## Warm-up\n\n- 5 minutes of easy cardio, then 10 bodyweight squats, 10 walking lunges and 5 easy vertical jumps\n- 3 sets of 3 hang cleans with the empty bar, then 2–3 lighter power-clean sets to reach your working weight\n- Ramp up the squat as in earlier weeks before the heavy sets\n\n## The workout\n\n- Power clean 5 × 2 at a load you can move fast on every rep, about RPE 7; if the catch gets slow or low, it is too heavy\n- Squat 3 × 3 at RPE 8, then one set of jump squats about 60–90 seconds later; rest 3 minutes before the next squat set\n- Jump squats: use a light load, roughly 20–30% of your squat max, and land softly with the knees tracking over the toes\n- Romanian deadlifts 2 × 5 and hip thrusts 2 × 6, fewer sets than before so you stay fresh: lower under control, then drive up fast\n- Rest 2–3 minutes after power cleans and 90–120 seconds between accessory sets\n- End any explosive set when the speed visibly drops; power training rewards quality, not fatigue\n\n## Cool-down\n\n- 5 minutes of easy walking or cycling\n- 30-second stretches for the hamstrings, hip flexors, quads and calves on each side\n- After the test day, write down your results and how each lift felt; they set the starting loads for your next block\n\n## Safety\n\n- Clean only with bumper plates on a platform or a floor that is safe to drop on\n- Skip the jump squats if your knees or ankles are sore and do an extra squat set instead\n- Test only after the deload sessions, with collars on, safety arms set and a spotter for the squat",
+          "contentEl": "# Προπόνηση Ισχύος, Αποφόρτιση και Τεστ\n\nΗ εβδομάδα 7 συνδυάζει γρήγορες άρσεις με βαριές, ώστε η δύναμη των εβδομάδων 4–6 να εμφανιστεί ως ταχύτητα. Μετά, η εβδομάδα 8 μειώνει την κούραση, για να μπορέσεις να μετρήσεις αυτό που έχτισες. Κάνε κάθε επανάληψη σε αυτή την προπόνηση με πρόθεση: κίνησε την μπάρα όσο πιο γρήγορα μπορείς, κρατώντας σωστές θέσεις.\n\n- **Εβδομάδα 7, και τις τρεις μέρες:** αυτή η προπόνηση· τη Μέρα 2 αντικατέστησε τα squat με 3 μονές επαναλήψεις άρσης θανάτου σε RPE 8, και μετά από καθεμία, όπως πάντα, ένα σετ με άλματα squat\n- **Εβδομάδα 8, Μέρες 1 και 2 (αποφόρτιση):** αυτή η προπόνηση με τα μισά σετ και φορτία περίπου 10–15% ελαφρύτερα\n- **Εβδομάδα 8, Μέρα 3 (τεστ):** μετά από πλήρες ζέσταμα, ανέβα σε ένα βαρύ σετ της 1 ή των 3 επαναλήψεων περίπου σε RPE 9 (με περίπου μία επανάληψη σε απόθεμα) στο squat και στην άρση θανάτου, με βοηθούς ή μπάρες ασφαλείας· μην κυνηγάς ένα απόλυτο μέγιστο που βγαίνει με αγώνα\n\n## Ζέσταμα\n\n- 5 λεπτά χαλαρό καρδιο και μετά 10 squat με βάρος σώματος, 10 προβολές με βάδισμα και 5 εύκολα κάθετα άλματα\n- 3 σετ των 3 hang clean με άδεια μπάρα και μετά 2–3 ελαφρύτερα σετ power clean μέχρι το βάρος εργασίας\n- Κλιμάκωσε το squat όπως τις προηγούμενες εβδομάδες πριν από τα βαριά σετ\n\n## Η προπόνηση\n\n- Power clean 5 × 2 με φορτίο που κινείς γρήγορα σε κάθε επανάληψη, περίπου σε RPE 7· αν η υποδοχή γίνεται αργή ή χαμηλή, το βάρος είναι πολύ μεγάλο\n- Squat 3 × 3 σε RPE 8 και μετά, περίπου 60–90 δευτερόλεπτα αργότερα, ένα σετ με άλματα squat (jump squat)· ξεκουράσου 3 λεπτά πριν από το επόμενο σετ squat\n- Άλματα squat: χρησιμοποίησε ελαφρύ φορτίο, περίπου 20–30% του μέγιστου squat σου, και προσγειώσου απαλά με τα γόνατα στην ευθεία των δαχτύλων\n- Ρουμανική άρση θανάτου 2 × 5 και hip thrust 2 × 6, λιγότερα σετ από πριν για να μένεις ξεκούραστος: κατέβασε με έλεγχο και ανέβα γρήγορα\n- Ξεκουράσου 2–3 λεπτά μετά τα power clean και 90–120 δευτερόλεπτα ανάμεσα στα σετ των βοηθητικών ασκήσεων\n- Σταμάτα κάθε εκρηκτικό σετ όταν η ταχύτητα πέφτει εμφανώς· η προπόνηση ισχύος ανταμείβει την ποιότητα, όχι την κούραση\n\n## Αποθεραπεία\n\n- 5 λεπτά χαλαρό περπάτημα ή ποδήλατο\n- Διατάσεις 30 δευτερολέπτων για οπίσθιους μηριαίους, καμπτήρες του ισχίου, τετρακέφαλους και γάμπες σε κάθε πλευρά\n- Μετά τη μέρα του τεστ, κατάγραψε τα αποτελέσματα και πώς ένιωσες σε κάθε άσκηση· αυτά ορίζουν τα αρχικά φορτία του επόμενου κύκλου σου\n\n## Ασφάλεια\n\n- Κάνε clean μόνο με λαστιχένιους δίσκους (bumper) σε πλατφόρμα ή σε δάπεδο όπου μπορείς να αφήσεις την μπάρα να πέσει\n- Παράλειψε τα άλματα squat αν πονούν τα γόνατα ή οι αστράγαλοί σου και κάνε στη θέση τους ένα επιπλέον σετ squat\n- Κάνε τεστ μόνο μετά τις προπονήσεις αποφόρτισης, με κλιπ στην μπάρα, ρυθμισμένες μπάρες ασφαλείας και βοηθό στο squat",
+          "exercises": [
+            {
+              "slug": "power-clean",
+              "sets": 5,
+              "reps": "2",
+              "restSeconds": 120,
+              "notes": "Jump first, then pull under; every rep fast.",
+              "notesEl": "Πρώτα άλμα, μετά βούτα κάτω από την μπάρα· κάθε επανάληψη γρήγορη."
+            },
+            {
+              "slug": "barbell-full-squat",
+              "sets": 3,
+              "reps": "3",
+              "restSeconds": 90,
+              "notes": "RPE 8, then jump squats after 60–90 s.",
+              "notesEl": "RPE 8 και μετά άλματα squat σε 60–90 δευτ."
+            },
+            {
+              "slug": "weighted-jump-squat",
+              "sets": 3,
+              "reps": "4",
+              "restSeconds": 180,
+              "notes": "Light bar; explode up, land softly.",
+              "notesEl": "Ελαφριά μπάρα· εκρηκτικά πάνω, απαλή προσγείωση."
+            },
+            {
+              "slug": "romanian-deadlift",
+              "sets": 2,
+              "reps": "5",
+              "restSeconds": 120,
+              "notes": "Slow down, fast up, neutral back.",
+              "notesEl": "Αργά κάτω, γρήγορα πάνω, ουδέτερη πλάτη."
+            },
+            {
+              "slug": "barbell-hip-thrust",
+              "sets": 2,
+              "reps": "6",
+              "restSeconds": 90,
+              "notes": "Drive up fast, hold the top for a second.",
+              "notesEl": "Ανέβα γρήγορα και κράτα την κορυφή για ένα δευτερόλεπτο."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

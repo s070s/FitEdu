@@ -1,0 +1,51 @@
+/* The card shell is the shared .card-surface primitive (hover lift, focus border). */
+.path-card__body {
+    gap: var(--space-3);
+}
+
+.path-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.path-card__heading {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.path-card__title {
+    margin: 0;
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+/* The title link is a .stretched-link (shared card rules in shared-components.css). */
+.path-card__description {
+    margin: 0;
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.path-card__steps {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.path-card__progress {
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+.path-card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}

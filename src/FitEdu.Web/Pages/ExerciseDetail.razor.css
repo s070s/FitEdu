@@ -1,0 +1,257 @@
+/* Exercise page. Phone first: photos, then the summary with the steps, and the workouts that use it.
+   From 992 px the photos sit beside the summary and its steps, and stay in view while they scroll.
+   The page frame (main.content) already pads the top and the bottom. */
+.exercise-detail__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: var(--tap-min);
+    margin-bottom: var(--space-3);
+    color: var(--text-light-normal);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.exercise-detail__back:hover {
+    color: var(--text-strong-accent);
+}
+
+.exercise-detail__layout {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.exercise-detail ::deep .exercise-detail__skeleton {
+    border-radius: var(--radius-lg);
+}
+
+/* ---- Summary ---- */
+.exercise-detail__summary {
+    display: grid;
+    align-content: start;
+    gap: var(--space-5);
+    min-width: 0;
+}
+
+.exercise-detail__header {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+}
+
+.exercise-detail__header > * {
+    margin: 0;
+}
+
+/* Between the page-title and display sizes: library names run up to 58 characters. */
+.exercise-detail__name {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    overflow-wrap: anywhere;
+}
+
+.exercise-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin: 0;
+}
+
+.exercise-facts__item {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+    padding: var(--space-3);
+    border: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--border-subtle-rgb), 0.05);
+}
+
+.exercise-facts__item dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-light-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.exercise-facts__item dt .bi {
+    color: var(--color-info);
+}
+
+.exercise-facts__item dd {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.exercise-detail__label {
+    margin: 0 0 var(--space-2);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ---- Steps ---- */
+.exercise-detail__section {
+    margin-top: var(--space-6);
+}
+
+.exercise-detail__section > h2 {
+    margin: 0 0 var(--space-4);
+}
+
+/* Inside the summary the column gap spaces the steps; a little more marks them as their own section. */
+.exercise-detail__summary > .exercise-detail__section {
+    margin-top: var(--space-3);
+}
+
+.exercise-steps {
+    display: grid;
+    gap: var(--space-4);
+    max-width: var(--prose-max);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: exercise-step;
+}
+
+/* A round lime number beside each step. */
+.exercise-steps li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-3);
+    color: var(--text-light-normal);
+    line-height: 1.6;
+    counter-increment: exercise-step;
+}
+
+.exercise-steps li::before {
+    content: counter(exercise-step);
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.exercise-steps__empty {
+    display: flex;
+    gap: var(--space-2);
+    max-width: var(--prose-max);
+    margin: 0;
+    padding: var(--space-4);
+    border-left: 3px solid var(--color-info);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background-color: rgba(var(--color-info-rgb), 0.08);
+    color: var(--text-light-normal);
+}
+
+.exercise-steps__empty .bi {
+    flex-shrink: 0;
+    color: var(--color-info);
+}
+
+/* ---- Workouts that use the exercise ---- */
+.used-in-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.used-in-list__link {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+    height: 100%;
+    min-height: 4rem;
+    padding: var(--space-3) var(--space-4);
+}
+
+.used-in-list__icon {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+}
+
+.used-in-list__text {
+    display: grid;
+    flex: 1;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.used-in-list__lesson {
+    color: var(--text-strong-normal);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.used-in-list__course {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    overflow-wrap: anywhere;
+}
+
+.used-in-list__chevron {
+    color: var(--text-light-muted);
+    transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .used-in-list__link:hover .used-in-list__chevron {
+        color: var(--text-strong-accent);
+        transform: translateX(2px);
+    }
+}
+
+@media (min-width: 768px) {
+    .exercise-facts {
+        grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+    /* Beside the photos the column is narrow: two tiles per row. */
+    .exercise-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .exercise-detail__layout {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        align-items: start;
+        gap: var(--space-6);
+    }
+
+    .exercise-detail__media {
+        position: sticky;
+        top: calc(var(--nav-height) + var(--space-4));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .used-in-list__chevron {
+        transition: none;
+    }
+
+    .used-in-list__link:hover .used-in-list__chevron {
+        transform: none;
+    }
+}

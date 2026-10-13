@@ -18,4 +18,7 @@ public interface IProfileService
 
     /// <summary>COMP-4: aggregates the user's own personal data for a GDPR access/portability export.</summary>
     Task<MyDataExportDto?> ExportMyDataAsync(string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>Completed workouts, minutes trained, the current streak and the programme to continue.</summary>
+    Task<TrainingStatsDto> GetTrainingStatsAsync(string userId, CancellationToken cancellationToken = default);
 }

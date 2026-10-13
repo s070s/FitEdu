@@ -53,11 +53,11 @@ public class CategorySearchExtensionsTests
     // Seed (Ids ascending A<B<C; CreatedAt 2020/2021/2022 in order):
     //   A "Arts"    el "Τέχνες",  2 live + 2 deleted courses, 0 assessments
     //   B "Biology" el null,      0 courses,                  2 assessments
-    //   C "Careers" el "Καριέρα", 1 live course,              1 assessment
+    //   C "Cardio"  el "Κάρντιο", 1 live course,              1 assessment
     [Theory]
     [InlineData("nameen", "asc", "A,B,C")]
     [InlineData("nameen", "desc", "C,B,A")]
-    [InlineData("nameel", "asc", "B,C,A")] // null first, then Καριέρα < Τέχνες
+    [InlineData("nameel", "asc", "B,C,A")] // null first, then Κάρντιο < Τέχνες
     [InlineData("nameel", "desc", "A,C,B")]
     [InlineData("coursecount", "asc", "B,C,A")] // deleted courses excluded: A counts 2, not 4
     [InlineData("coursecount", "desc", "A,C,B")]
@@ -72,7 +72,7 @@ public class CategorySearchExtensionsTests
         await using var db = await SeedAsync(
             Cat(1, "Arts", "Τέχνες", courses: 2, deletedCourses: 2),
             Cat(2, "Biology", null, assessments: 2),
-            Cat(3, "Careers", "Καριέρα", courses: 1, assessments: 1));
+            Cat(3, "Cardio", "Κάρντιο", courses: 1, assessments: 1));
 
         var letters = await db.Categories
             .ApplySort(sortBy, sortDir)

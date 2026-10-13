@@ -1,15 +1,19 @@
 @* Renders the upgrade-prompt lock block for subscription-gated features. *@
 
-<div class="upgrade-prompt">
-    <div class="upgrade-icon" aria-hidden="true">🔒</div>
-    <h4>@string.Format(PricingRes.PlanRequired, PlanName)</h4>
-    <p>@Description</p>
-    <a href="@PricingPath" class="btn btn-primary">@UpgradeButtonText</a>
-</div>
+<section class="upgrade-prompt card-surface" aria-labelledby="upgrade-prompt-title">
+    <div class="upgrade-icon" aria-hidden="true"><span class="bi bi-lock"></span></div>
+    <span class="upgrade-prompt__plan chip chip--lime">
+        <span class="bi bi-stars" aria-hidden="true"></span> @PlanName
+    </span>
+    <h2 id="upgrade-prompt-title" class="upgrade-prompt__title">@string.Format(PricingRes.PlanRequired, PlanName)</h2>
+    <p class="upgrade-prompt__text">@Description</p>
+    <a href="@PricingPath" class="btn-cta upgrade-prompt__action">
+        @UpgradeButtonText <span class="bi bi-arrow-right" aria-hidden="true"></span>
+    </a>
+</section>
 
 @code {
     [Parameter] public string PlanName { get; set; } = "Plus";
-    [Parameter] public string FeatureName { get; set; } = GlobalRes.ThisFeature;
     [Parameter] public string Description { get; set; } = "";
     [Parameter] public string PricingPath { get; set; } = "/pricing";
     [Parameter] public string UpgradeButtonText { get; set; } = PricingRes.UpgradeNow;

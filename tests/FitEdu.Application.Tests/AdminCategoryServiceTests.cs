@@ -20,10 +20,10 @@ public class AdminCategoryServiceTests
     {
         await using var db = DbContextFactory.CreateInMemory();
 
-        var result = await NewService(db).CreateCategoryAsync(new SaveCategoryRequest("Career", "Καριέρα"));
+        var result = await NewService(db).CreateCategoryAsync(new SaveCategoryRequest("Strength", "Δύναμη"));
 
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.NameEn.ShouldBe("Career");
+        result.Value!.NameEn.ShouldBe("Strength");
         (await db.Categories.CountAsync()).ShouldBe(1);
     }
 
@@ -32,10 +32,10 @@ public class AdminCategoryServiceTests
     {
         // API-3: 409, not 400 — "retry with a different name" is a conflict, not a bad request.
         await using var db = DbContextFactory.CreateInMemory();
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await db.SaveChangesAsync();
 
-        var result = await NewService(db).CreateCategoryAsync(new SaveCategoryRequest("CAREER", null));
+        var result = await NewService(db).CreateCategoryAsync(new SaveCategoryRequest("STRENGTH", null));
 
         result.StatusCode.ShouldBe(409);
         (await db.Categories.CountAsync()).ShouldBe(1);
@@ -71,12 +71,12 @@ public class AdminCategoryServiceTests
     {
         // API-3: 409, not 400 — "retry with a different name" is a conflict, not a bad request.
         await using var db = DbContextFactory.CreateInMemory();
-        var a = new Category { Id = Guid.NewGuid(), NameEn = "Career" };
+        var a = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
         var b = new Category { Id = Guid.NewGuid(), NameEn = "Mindset" };
         db.Categories.AddRange(a, b);
         await db.SaveChangesAsync();
 
-        var result = await NewService(db).UpdateCategoryAsync(b.Id, new SaveCategoryRequest("career", null));
+        var result = await NewService(db).UpdateCategoryAsync(b.Id, new SaveCategoryRequest("strength", null));
 
         result.StatusCode.ShouldBe(409);
     }
@@ -93,7 +93,7 @@ public class AdminCategoryServiceTests
     public async Task DeleteCategory_SoftDeletes_AndUncategorizesReferencingContent()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var category = new Category { Id = Guid.NewGuid(), NameEn = "Career" };
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
         var course = new Course { Id = Guid.NewGuid(), TitleEn = "C", CategoryId = category.Id };
         var assessment = new AssessmentDefinition
         {

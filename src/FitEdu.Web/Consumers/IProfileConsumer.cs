@@ -14,4 +14,7 @@ public interface IProfileConsumer
     Task<bool> UploadAvatarAsync(IBrowserFile file);
     Task<bool> ChangePasswordAsync(ChangePasswordRequest request);
     Task<bool> DeleteAccountAsync();
+
+    /// <summary>The member's training stats for the home dashboard, or null when unavailable.</summary>
+    Task<TrainingStatsDto?> GetTrainingStatsAsync();
 }

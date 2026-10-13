@@ -13,8 +13,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
+    width: var(--tap-min);
+    height: var(--tap-min);
     transition: box-shadow 0.2s;
 }
 
@@ -68,20 +68,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.6rem 0.9rem;
+    min-height: 3rem;
+    padding: 0.125rem 0.4rem 0.125rem 0.9rem;
     border-bottom: 1px solid var(--border-subtle);
     font-weight: 600;
     color: var(--text-strong-normal);
 }
 
 .mark-all-read-btn {
-    background: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding: 0 0.5rem;
     border: none;
+    border-radius: var(--radius-md);
+    background: none;
     color: var(--text-accent);
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 500;
-    padding: 0;
 }
 
     .mark-all-read-btn:hover {
@@ -141,8 +146,10 @@
 }
 
 .view-all-link {
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tap-min);
     padding: 0.5rem;
     color: var(--text-accent);
     text-decoration: none;
@@ -153,3 +160,33 @@
     .view-all-link:hover {
         background-color: var(--bg-table-header-hover);
     }
+
+/* Phones (below 768 px): the bell is not at the screen edge, so a panel anchored to it would run
+   off the left side. With .notification-bell unpositioned the panel is placed against the header
+   row (.site-header__inner in NavMenu.razor.css) and spans its width instead. */
+@media (max-width: 767.98px) {
+    .notification-bell {
+        position: static;
+    }
+
+    .notification-panel {
+        left: max(var(--page-gutter), env(safe-area-inset-left));
+        right: max(var(--page-gutter), env(safe-area-inset-right));
+        top: calc(100% + var(--space-2));
+        width: auto;
+        max-width: none;
+        max-height: calc(100dvh - var(--nav-height) - var(--bottom-nav-height) - env(safe-area-inset-bottom) - 1.5rem);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .notification-list {
+        max-height: none;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .notification-item {
+        min-height: var(--tap-min);
+    }
+}

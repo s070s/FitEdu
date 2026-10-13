@@ -328,7 +328,9 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
             ["firstName"] = "Maria",
             ["lastName"] = "Papadopoulou",
             ["displayName"] = "Maria P.",
-            ["dateOfBirth"] = "1998-04-12"
+            ["dateOfBirth"] = "1998-04-12",
+            ["status"] = 1,
+            ["goal"] = 1
         },
         [typeof(ChangePasswordRequest)] = () => new JsonObject
         {
@@ -338,7 +340,7 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         [typeof(StartConversationRequest)] = () => new JsonObject
         {
             ["targetUserId"] = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-            ["initialMessage"] = "Hi, I have a question about the resilience course."
+            ["initialMessage"] = "Hi, I have a question about the Strength Foundations programme."
         },
         [typeof(CreateCheckoutRequest)] = () => new JsonObject
         {
@@ -346,68 +348,95 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         },
         [typeof(SubmitAssessmentRequest)] = () => new JsonObject
         {
-            ["answersJson"] = "{\"q1\":\"sometimes\",\"q2\":4}",
-            ["summaryJson"] = "{\"score\":72,\"band\":\"moderate\"}"
+            // Question id -> answer text, as the assessment form sends it (it sends no summary).
+            ["answersJson"] = "{\"q1\":\"4\",\"q2\":\"Regular exercise 1–2 times a week\"}",
+            ["summaryJson"] = null
         },
         [typeof(SaveAssessmentDefinitionRequest)] = () => new JsonObject
         {
-            ["key"] = "burnout-check",
-            ["titleEn"] = "Burnout Self-Check",
-            ["titleEl"] = "Αυτοέλεγχος Εξουθένωσης",
-            ["descriptionEn"] = "A short self-assessment of burnout risk.",
-            ["descriptionEl"] = "Σύντομη αυτοαξιολόγηση κινδύνου εξουθένωσης.",
-            ["schemaJson"] = "{\"questions\":[{\"key\":\"q1\",\"labelEn\":\"How often do you feel exhausted?\"}]}"
+            ["key"] = "training_readiness_v1",
+            ["titleEn"] = "Training Readiness",
+            ["titleEl"] = "Ετοιμότητα για Προπόνηση",
+            ["descriptionEn"] = "A short check of your energy, recovery and training background before you start.",
+            ["descriptionEl"] = "Ένας σύντομος έλεγχος της ενέργειας, της αποκατάστασης και του προπονητικού σου ιστορικού πριν ξεκινήσεις.",
+            // Same shape as the seeded assessments in src/FitEdu.Shared/JSON/Assessments.
+            ["schemaJson"] = "{\"id\":\"training_readiness_v1\",\"version\":\"1.0\",\"title\":\"Training Readiness\",\"titleEl\":\"Ετοιμότητα για Προπόνηση\","
+                + "\"sections\":[{\"id\":\"s1\",\"title\":\"Your week\",\"titleEl\":\"Η εβδομάδα σου\",\"questions\":["
+                + "{\"id\":\"q1\",\"type\":\"rating\",\"label\":\"How much energy do you have on most days?\",\"labelEl\":\"Πόση ενέργεια έχεις τις περισσότερες μέρες;\","
+                + "\"min\":1,\"max\":5,\"minLabel\":\"Very little\",\"maxLabel\":\"Plenty\",\"minLabelEl\":\"Πολύ λίγη\",\"maxLabelEl\":\"Πολλή\",\"required\":true},"
+                + "{\"id\":\"q2\",\"type\":\"choice\",\"label\":\"How active have you been over the last three months?\",\"labelEl\":\"Πόσο δραστήριος ή δραστήρια ήσουν τους τελευταίους τρεις μήνες;\","
+                + "\"options\":[\"Mostly inactive\",\"Regular exercise 1–2 times a week\"],\"optionsEl\":[\"Κυρίως καθιστική ζωή\",\"Τακτική άσκηση 1–2 φορές την εβδομάδα\"],\"required\":true}]}]}"
         },
         [typeof(SaveCourseRequest)] = () => new JsonObject
         {
-            ["titleEn"] = "Foundations of Resilience",
-            ["titleEl"] = "Θεμέλια Ανθεκτικότητας",
-            ["descriptionEn"] = "An introductory course on building personal resilience.",
-            ["descriptionEl"] = "Εισαγωγικό μάθημα για την ανθεκτικότητα.",
-            ["requiredTier"] = 0
+            ["titleEn"] = "Strength Foundations",
+            ["titleEl"] = "Θεμέλια Δύναμης",
+            ["descriptionEn"] = "Learn the squat, hip hinge, push and pull with dumbbells and a barbell, three sessions a week.",
+            ["descriptionEl"] = "Μάθε το squat, το hip hinge, τις πιέσεις και τις έλξεις με αλτήρες και μπάρα, τρεις προπονήσεις την εβδομάδα.",
+            ["requiredTier"] = 0,
+            ["level"] = 0,
+            ["goal"] = 1,
+            ["equipment"] = "dumbbells,mat",
+            ["estimatedWeeks"] = 8,
+            ["sessionsPerWeek"] = 3,
+            ["coverExerciseSlug"] = "barbell-squat"
         },
         [typeof(SaveModuleRequest)] = () => new JsonObject
         {
             ["titleEn"] = "Week 1 — Getting Started",
             ["titleEl"] = "Εβδομάδα 1 — Ξεκινώντας",
-            ["descriptionEn"] = "Orientation and goals.",
-            ["descriptionEl"] = "Προσανατολισμός και στόχοι.",
+            ["descriptionEn"] = "Warm-up routine, technique basics and your first full-body sessions.",
+            ["descriptionEl"] = "Ρουτίνα προθέρμανσης, βασική τεχνική και οι πρώτες σου προπονήσεις για όλο το σώμα.",
             ["sortOrder"] = 1,
             ["courseId"] = "3f2504e0-4f89-11d3-9a0c-0305e82c3301"
         },
         [typeof(SaveLessonRequest)] = () => new JsonObject
         {
-            ["titleEn"] = "What is resilience?",
-            ["titleEl"] = "Τι είναι η ανθεκτικότητα;",
-            ["contentEn"] = "<p>Resilience is the capacity to recover from difficulties.</p>",
-            ["contentEl"] = "<p>Η ανθεκτικότητα είναι η ικανότητα ανάκαμψης.</p>",
-            ["videoUrl"] = "https://videos.example.com/lesson-1.mp4",
-            ["durationMinutes"] = 12,
+            ["titleEn"] = "Full-body workout A",
+            ["titleEl"] = "Προπόνηση όλου του σώματος Α",
+            ["contentEn"] = "Warm up for five minutes, then work through the exercises below with good form.",
+            ["contentEl"] = "Κάνε προθέρμανση για πέντε λεπτά και μετά δούλεψε τις παρακάτω ασκήσεις με σωστή τεχνική.",
+            ["videoUrl"] = "https://videos.example.com/full-body-workout-a.mp4",
+            ["durationMinutes"] = 35,
             ["sortOrder"] = 1,
-            ["moduleId"] = "5a7b9c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d"
+            ["moduleId"] = "5a7b9c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+            ["exercises"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["slug"] = "barbell-squat",
+                    ["sets"] = 3,
+                    ["reps"] = "8–12",
+                    ["restSeconds"] = 90,
+                    ["notesEn"] = "Keep your chest up.",
+                    ["notesEl"] = "Κράτα το στήθος ψηλά."
+                }
+            }
         },
         [typeof(SaveBlogArticleRequest)] = () => new JsonObject
         {
-            ["titleEn"] = "Five habits that build resilience",
-            ["titleEl"] = "Πέντε συνήθειες ανθεκτικότητας",
-            ["slug"] = "five-habits-that-build-resilience",
-            ["summaryEn"] = "Small daily habits that compound into lasting resilience.",
-            ["summaryEl"] = "Μικρές καθημερινές συνήθειες.",
+            ["titleEn"] = "Progressive overload, explained",
+            ["titleEl"] = "Η προοδευτική επιβάρυνση με απλά λόγια",
+            ["slug"] = "progressive-overload-explained",
+            ["summaryEn"] = "Add a little weight, a rep or a set each week and your body keeps adapting.",
+            ["summaryEl"] = "Πρόσθεσε λίγο βάρος, μία επανάληψη ή ένα σετ κάθε εβδομάδα και το σώμα σου συνεχίζει να προσαρμόζεται.",
             ["contentEn"] = "<p>Full article body…</p>",
             ["contentEl"] = "<p>Πλήρες κείμενο…</p>",
-            ["coverImageUrl"] = "blog/covers/resilience.jpg",
-            ["authorName"] = "Dr. A. Mentor",
-            ["tags"] = new JsonArray("mindset", "habits"),
+            ["coverImageUrl"] = "/images/blog/progressive-overload-explained.webp",
+            ["authorName"] = "FitEdu",
+            ["tags"] = new JsonArray("Strength", "Beginners"),
             ["isPublished"] = false
         },
         [typeof(SaveTestimonialRequest)] = () => new JsonObject
         {
-            ["fullName"] = "Alex Doe",
-            ["roleOrTitle"] = "Career Changer",
-            ["companyOrContext"] = "2025 Cohort",
-            ["quoteText"] = "This program completely reset my career direction.",
+            ["fullName"] = "Eleni Papadopoulou",
+            ["roleOrTitle"] = "Ran her first 5K",
+            ["companyOrContext"] = null,
+            ["quoteText"] = "The run-walk weeks built up so gradually that I never dreaded a session.",
             ["displayOrder"] = 1,
-            ["isActive"] = true
+            ["isActive"] = true,
+            ["roleOrTitleEl"] = "Έτρεξε τα πρώτα της 5 χλμ",
+            ["quoteTextEl"] = "Οι εβδομάδες με τρέξιμο και περπάτημα ανέβαιναν τόσο σταδιακά που δεν φοβήθηκα ποτέ καμία προπόνηση."
         },
     };
 

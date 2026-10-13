@@ -52,7 +52,7 @@ public class AssessmentSubmissionSearchExtensionsTests
 
     // Seed (Ids ascending A<B<C):
     //   A: user Zoe Adams  (a@x),  def "Mindset"  cat "Zeta",  2020
-    //   B: user Ann Brown  (b@x),  def "Career"   cat "Echo",  2022
+    //   B: user Ann Brown  (b@x),  def "Cardio"   cat "Echo",  2022
     //   C: user Ann Adams  (c@x),  def "Skills"   no category, 2021
     private static async Task<ApplicationDbContext> SeedAsync()
     {
@@ -62,7 +62,7 @@ public class AssessmentSubmissionSearchExtensionsTests
         var annA = User("c-user", "Ann", "Adams");
         db.AssessmentSubmissions.AddRange(
             Submission(1, zoe, Definition("Mindset", "Zeta"), 2020),
-            Submission(2, annB, Definition("Career", "Echo"), 2022),
+            Submission(2, annB, Definition("Cardio", "Echo"), 2022),
             Submission(3, annA, Definition("Skills"), 2021));
         await db.SaveChangesAsync();
         return db;

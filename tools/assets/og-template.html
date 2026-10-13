@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FitEdu social preview</title>
+    <!-- 1200x630 social preview, screenshot to src/FitEdu.Web/wwwroot/images/og-home.jpg by render-brand-images.mjs -->
+    <link rel="stylesheet" href="brand-templates.css">
+    <style>
+        body {
+            width: 1200px;
+            height: 630px;
+            overflow: hidden;
+        }
+
+        .og {
+            position: relative;
+            width: 1200px;
+            height: 630px;
+            display: grid;
+            grid-template-columns: 1fr 552px;
+            align-items: center;
+            padding: 0 40px 0 72px;
+            background:
+                radial-gradient(circle at 18% 22%, rgba(198, 244, 50, 0.10), transparent 46%),
+                radial-gradient(circle at 8% 95%, rgba(46, 196, 182, 0.12), transparent 40%),
+                var(--charcoal);
+        }
+
+        .brand-mark {
+            width: 72px;
+            height: 72px;
+            display: block;
+            margin-bottom: 28px;
+        }
+
+        .headline {
+            margin: 0;
+            color: var(--lime);
+            font-size: 132px;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -4px;
+        }
+
+        .accent-rule {
+            width: 96px;
+            height: 8px;
+            margin: 30px 0 26px;
+            border-radius: 4px;
+            background: var(--teal);
+        }
+
+        .subline {
+            margin: 0;
+            max-width: 15ch;
+            color: #F3F6F8;
+            font-size: 40px;
+            font-weight: 600;
+            line-height: 1.18;
+        }
+
+        .languages {
+            margin: 26px 0 0;
+            color: var(--text-soft);
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 3px;
+        }
+
+        .collage {
+            display: grid;
+            grid-template-columns: repeat(2, 270px);
+            grid-auto-rows: 180px;
+            gap: 12px;
+        }
+
+        .collage .photo {
+            border-radius: 14px;
+        }
+    </style>
+</head>
+<body>
+    <main class="og">
+        <section>
+            <img class="brand-mark" src="../../src/FitEdu.Web/wwwroot/favicon.svg" alt="">
+            <h1 class="headline">FitEdu</h1>
+            <div class="accent-rule"></div>
+            <p class="subline">Fitness courses &amp; exercise library</p>
+            <!-- Written in capitals by hand: Greek capitals drop the accent, which text-transform would keep here. -->
+            <p class="languages">ENGLISH · ΕΛΛΗΝΙΚΑ</p>
+        </section>
+        <section class="collage">
+            <div class="photo"><img data-exercise="pushups" alt=""></div>
+            <div class="photo"><img data-exercise="barbell-squat" alt=""></div>
+            <div class="photo"><img data-exercise="one-arm-kettlebell-swings" alt=""></div>
+            <div class="photo"><img data-exercise="plank" alt=""></div>
+            <div class="photo"><img data-exercise="mountain-climbers" alt=""></div>
+            <div class="photo"><img data-exercise="pullups" alt=""></div>
+        </section>
+    </main>
+</body>
+</html>

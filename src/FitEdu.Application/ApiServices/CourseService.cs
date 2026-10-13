@@ -3,6 +3,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
+using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
@@ -21,6 +22,7 @@ public class CourseService(
 {
     public async Task<PagedResult<CourseListItemDto>> GetPublishedCoursesAsync(
         string userId, int page, int pageSize, string lang, Guid? categoryId = null, string? search = null,
+        FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null,
         CancellationToken cancellationToken = default)
     {
         var isEl = Localized.IsEl(lang);
@@ -44,7 +46,8 @@ public class CourseService(
                 (c.DescriptionEl != null && EF.Functions.Like(c.DescriptionEl, term)));
         }
 
-        query = query.OrderBy(c => c.TitleEn);
+        query = ApplyFitnessFilters(query, goal, level, equipment)
+            .OrderBy(c => c.TitleEn);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -83,7 +86,13 @@ public class CourseService(
                 c.RequiredTier,
                 c.CategoryId,
                 CategoryNameEn = c.Category != null ? c.Category.NameEn : null,
-                CategoryNameEl = c.Category != null ? c.Category.NameEl : null
+                CategoryNameEl = c.Category != null ? c.Category.NameEl : null,
+                c.Level,
+                c.Goal,
+                c.Equipment,
+                c.EstimatedWeeks,
+                c.SessionsPerWeek,
+                c.CoverExerciseSlug
             })
             .ToListAsync(cancellationToken);
 
@@ -100,7 +109,13 @@ public class CourseService(
                 c.CategoryId,
                 c.CategoryId is null ? null : Localized.Pick(isEl, c.CategoryNameEn, c.CategoryNameEl),
                 rating?.AverageRating,
-                rating?.ReviewCount ?? 0
+                rating?.ReviewCount ?? 0,
+                c.Level,
+                c.Goal,
+                c.Equipment,
+                c.EstimatedWeeks,
+                c.SessionsPerWeek,
+                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug)
             );
         }).ToList();
 
@@ -113,6 +128,7 @@ public class CourseService(
 
         var course = await db.Courses
             .AsNoTracking()
+            .Include(c => c.Category)
             .Include(c => c.Modules.OrderBy(m => m.SortOrder))
                 .ThenInclude(m => m.Lessons.OrderBy(l => l.SortOrder))
             .Include(c => c.Enrollments.Where(e => e.UserId == userId))
@@ -128,6 +144,7 @@ public class CourseService(
             .Where(lc => lc.UserId == userId && allLessonIds.Contains(lc.LessonId))
             .Select(lc => lc.LessonId)
             .ToHashSetAsync(cancellationToken);
+        var exerciseCountByLessonId = await CountPublishedExercisesAsync(allLessonIds, cancellationToken);
 
         var totalLessons = allLessonIds.Count;
         var completedLessons = completedLessonIds.Count;
@@ -153,12 +170,32 @@ public class CourseService(
                     (int)GetContentType(l),
                     l.DurationMinutes,
                     l.SortOrder,
-                    completedLessonIds.Contains(l.Id)
+                    completedLessonIds.Contains(l.Id),
+                    exerciseCountByLessonId.GetValueOrDefault(l.Id, 0)
                 )).ToList()
             )).ToList(),
-            course.RequiredTier
+            course.RequiredTier,
+            course.Level,
+            course.Goal,
+            course.Equipment,
+            course.EstimatedWeeks,
+            course.SessionsPerWeek,
+            ExerciseImagePaths.CourseCoverUrl(course.CoverExerciseSlug),
+            course.Category is null ? null : Localized.Pick(isEl, course.Category.NameEn, course.Category.NameEl)
         );
     }
+
+    /// <summary>
+    /// How many published exercises each lesson prescribes, in one grouped query. Unpublished
+    /// exercises are left out, as on the lesson page (<see cref="PublishedPrescriptions"/>).
+    /// </summary>
+    private async Task<Dictionary<Guid, int>> CountPublishedExercisesAsync(List<Guid> lessonIds, CancellationToken cancellationToken) =>
+        await db.LessonExercises
+            .AsNoTracking()
+            .Where(prescription => lessonIds.Contains(prescription.LessonId) && prescription.Exercise.IsPublished)
+            .GroupBy(prescription => prescription.LessonId)
+            .Select(group => new { LessonId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(row => row.LessonId, row => row.Count, cancellationToken);
 
     public async Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default)
     {
@@ -238,6 +275,8 @@ public class CourseService(
             .AsNoTracking()
             .Include(l => l.Module)
                 .ThenInclude(m => m.Course)
+            .Include(l => l.Exercises.OrderBy(x => x.SortOrder))
+                .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(l => l.Id == lessonId, cancellationToken);
 
         if (lesson is null)
@@ -286,11 +325,19 @@ public class CourseService(
             course.Id,
             Localized.Pick(isEl, course.TitleEn, course.TitleEl),
             previousLessonId,
-            nextLessonId
+            nextLessonId,
+            PublishedPrescriptions(lesson, isEl)
         );
 
         return ServiceResult<LessonDetailDto>.Ok(dto);
     }
+
+    /// <summary>The lesson's prescriptions in order; an unpublished exercise has no public page, so it is left out.</summary>
+    private static List<LessonExerciseDto> PublishedPrescriptions(Lesson lesson, bool isEl) =>
+        lesson.Exercises
+            .Where(prescription => prescription.Exercise.IsPublished)
+            .Select(prescription => prescription.ToLessonExerciseDto(isEl))
+            .ToList();
 
     public async Task<ServiceResult<LessonCompletionResultDto>> CompleteLessonAsync(string userId, Guid lessonId, CancellationToken cancellationToken = default)
     {
@@ -351,10 +398,12 @@ public class CourseService(
         await db.SaveChangesAsync(cancellationToken);
 
         var certificatePending = false;
+        var certificateIncluded = false;
         if (courseCompleted)
         {
             var subStatus = await subscriptionService.GetUserStatusAsync(userId, cancellationToken);
-            if (subStatus.Features?.CertificateAccess == true)
+            certificateIncluded = subStatus.Features?.CertificateAccess == true;
+            if (certificateIncluded)
             {
                 try
                 {
@@ -379,8 +428,32 @@ public class CourseService(
             totalLessons,
             progressPercent,
             courseCompleted,
-            certificatePending
+            certificatePending,
+            certificateIncluded
         ));
+    }
+
+    /// <summary>
+    /// Optional catalog filters. Equipment matches one whole code: the column is wrapped as
+    /// ",mat,kettlebell," and searched for ",kettlebell," so "kettlebells" never matches.
+    /// </summary>
+    private static IQueryable<Course> ApplyFitnessFilters(
+        IQueryable<Course> query, FitnessGoal? goal, CourseLevel? level, string? equipment)
+    {
+        if (goal is { } wantedGoal)
+            query = query.Where(c => c.Goal == wantedGoal);
+
+        if (level is { } wantedLevel)
+            query = query.Where(c => c.Level == wantedLevel);
+
+        if (!string.IsNullOrWhiteSpace(equipment))
+        {
+            var equipmentToken = Course.EquipmentSeparator + equipment.Trim() + Course.EquipmentSeparator;
+            query = query.Where(c => c.Equipment != null &&
+                (Course.EquipmentSeparator + c.Equipment + Course.EquipmentSeparator).Contains(equipmentToken));
+        }
+
+        return query;
     }
 
     private static ContentType GetContentType(Lesson lesson)

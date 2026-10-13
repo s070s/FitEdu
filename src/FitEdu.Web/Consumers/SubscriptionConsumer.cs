@@ -7,8 +7,8 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public class SubscriptionConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider tokenProvider) : ApiClientBase(http, tokenProvider), ISubscriptionConsumer
 {
-    public async Task<List<SubscriptionPlanDto>> GetPlansAsync()
-        => await GetAsync<List<SubscriptionPlanDto>>("api/subscriptions/plans") ?? [];
+    public async Task<List<SubscriptionPlanDto>> GetPlansAsync(string lang = "en")
+        => await GetAsync<List<SubscriptionPlanDto>>($"api/subscriptions/plans?lang={lang}") ?? [];
 
     public Task<UserSubscriptionStatusDto?> GetStatusAsync()
         => GetAsync<UserSubscriptionStatusDto>("api/subscriptions/status");

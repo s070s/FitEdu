@@ -1,0 +1,40 @@
+/* Locked-feature card: a lime lock badge over a faint lime glow, the plan chip, a short
+   explanation and one upgrade call to action. */
+.upgrade-prompt {
+    align-items: center;
+    gap: var(--space-3);
+    max-width: 34rem;
+    margin: var(--space-5) auto;
+    padding: var(--space-6) var(--space-5);
+    background-image: radial-gradient(120% 70% at 50% 0%, rgba(var(--text-strong-accent-rgb), 0.12), transparent 70%);
+    text-align: center;
+}
+
+.upgrade-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid rgba(var(--text-strong-accent-rgb), 0.35);
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.1);
+    color: var(--text-strong-accent);
+    font-size: 1.75rem;
+}
+
+.upgrade-prompt__title {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-3);
+}
+
+.upgrade-prompt__text {
+    max-width: 28rem;
+    margin: 0;
+    color: var(--text-light-normal);
+    text-wrap: pretty;
+}
+
+.upgrade-prompt__action {
+    margin-top: var(--space-2);
+}

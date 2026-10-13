@@ -49,7 +49,7 @@
 		<value>You're on the {0} plan!</value>
 	</data>
 	<data name="SubscriptionActive" xml:space="preserve">
-		<value>Your subscription is now active. Enjoy your new features.</value>
+		<value>Your subscription is now active. Time to train.</value>
 	</data>
 	<data name="LabelPlan" xml:space="preserve">
 		<value>Plan:</value>
@@ -61,7 +61,7 @@
 		<value>Renews:</value>
 	</data>
 	<data name="BtnBrowseCourses" xml:space="preserve">
-		<value>Browse Courses</value>
+		<value>Browse Programmes</value>
 	</data>
 	<data name="BtnViewPlans" xml:space="preserve">
 		<value>View Plans</value>
@@ -71,5 +71,8 @@
 	</data>
 	<data name="BtnBackToPricing" xml:space="preserve">
 		<value>Back to Pricing</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Subscription confirmed</value>
 	</data>
 </root>

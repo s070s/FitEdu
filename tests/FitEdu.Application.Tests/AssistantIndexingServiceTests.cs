@@ -6,6 +6,7 @@ using FitEdu.Application.ApiServices;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Infrastructure.Seeding;
 using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
@@ -27,9 +28,9 @@ public class AssistantIndexingServiceTests
     private static Course PublishedCourse(string titleEl = "Τίτλος") => new()
     {
         Id = Guid.NewGuid(),
-        TitleEn = "Career Discovery",
+        TitleEn = "Strength Foundations",
         TitleEl = titleEl,
-        DescriptionEn = "Find your path.",
+        DescriptionEn = "Squat, hinge, push and pull with good form.",
         IsPublished = true
     };
 
@@ -159,15 +160,26 @@ public class AssistantIndexingServiceTests
     }
 
     [Fact]
-    public async Task RunIndexPassAsync_UnpublishedLessonInPublishedCourse_IsSkipped()
+    public async Task RunIndexPassAsync_WorkoutLesson_AppendsExerciseNamesAndPrimaryMusclesInListOrder()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Course A", IsPublished = true };
-        var module = new Module { Id = Guid.NewGuid(), TitleEn = "Module A", CourseId = course.Id, Course = course };
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Bodyweight Basics", TitleEl = "Βασικές Ασκήσεις", IsPublished = true };
+        var module = new Module { Id = Guid.NewGuid(), TitleEn = "Week 1", CourseId = course.Id, Course = course };
         var lesson = new Lesson
         {
-            Id = Guid.NewGuid(), TitleEn = "Draft Lesson", ModuleId = module.Id, Module = module, IsPublished = false
+            Id = Guid.NewGuid(),
+            TitleEn = "Full-body workout A",
+            TitleEl = "Προπόνηση σώματος Α",
+            ContentEn = "Warm up first.",
+            ContentEl = "Ζεσταίνεσαι πρώτα.",
+            ModuleId = module.Id,
+            Module = module,
+            IsPublished = true
         };
+        var pushUps = NewExercise("pushups", "Pushups", "Κάμψεις", "chest, triceps");
+        var plank = NewExercise("plank", "Plank", nameEl: null, "abdominals");
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = plank, SortOrder = 2 });
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = pushUps, SortOrder = 1 });
         db.Courses.Add(course);
         db.Modules.Add(module);
         db.Lessons.Add(lesson);
@@ -176,6 +188,85 @@ public class AssistantIndexingServiceTests
 
         await svc.RunIndexPassAsync();
 
+        var lessonChunks = (await db.AssistantContentChunks.ToListAsync())
+            .Where(c => c.SourceType == AssistantSourceType.Lesson)
+            .ToDictionary(c => c.Language, c => c.Text);
+        lessonChunks["en"].ShouldContain("Exercises: Pushups (chest, triceps); Plank (abdominals)");
+        lessonChunks["el"].ShouldContain("Exercises: Κάμψεις (chest, triceps); Plank (abdominals)"); // English name when no Greek one
+    }
+
+    private static Exercise NewExercise(string slug, string nameEn, string? nameEl, string primaryMuscles) => new()
+    {
+        Id = Guid.NewGuid(),
+        Slug = slug,
+        NameEn = nameEn,
+        NameEl = nameEl,
+        Category = "strength",
+        Level = "beginner",
+        PrimaryMuscles = primaryMuscles,
+        SecondaryMuscles = string.Empty,
+        InstructionsEn = "Step one.",
+        IsPublished = true
+    };
+
+    [Fact]
+    public async Task RunIndexPassAsync_LessonWithoutItsOwnPublishFlagInPublishedCourse_IsIndexedLikeStudentsSeeIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Lessons.Add(NewLessonInCourse(coursePublished: true, lessonPublished: false));
+        await db.SaveChangesAsync();
+        var (svc, _) = NewService(db);
+
+        await svc.RunIndexPassAsync();
+
+        (await db.AssistantContentChunks.ToListAsync()).ShouldContain(c => c.SourceType == AssistantSourceType.Lesson);
+    }
+
+    [Fact]
+    public async Task RunIndexPassAsync_LessonInUnpublishedCourse_IsSkipped()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Lessons.Add(NewLessonInCourse(coursePublished: false, lessonPublished: true));
+        await db.SaveChangesAsync();
+        var (svc, _) = NewService(db);
+
+        await svc.RunIndexPassAsync();
+
         (await db.AssistantContentChunks.ToListAsync()).ShouldNotContain(c => c.SourceType == AssistantSourceType.Lesson);
+    }
+
+    private static Lesson NewLessonInCourse(bool coursePublished, bool lessonPublished)
+    {
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Course A", IsPublished = coursePublished };
+        var module = new Module { Id = Guid.NewGuid(), TitleEn = "Module A", CourseId = course.Id, Course = course };
+        return new Lesson
+        {
+            Id = Guid.NewGuid(), TitleEn = "Lesson A", ModuleId = module.Id, Module = module, IsPublished = lessonPublished
+        };
+    }
+
+    [Fact]
+    public async Task RunIndexPassAsync_RealSeededCourses_IndexEveryLessonWithItsExercises()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var seedLogger = new RecordingLogger();
+        await ExerciseSeeder.SeedFromJsonAsync(db, RepoPaths.ExerciseSeedFolder, seedLogger);
+        await CourseSeeder.SeedFromJsonAsync(db, RepoPaths.CourseSeedFolder, seedLogger);
+        seedLogger.Errors.ShouldBeEmpty();
+        db.ChangeTracker.Clear();
+        var (svc, _) = NewService(db);
+
+        await svc.RunIndexPassAsync();
+
+        var lessonsStudentsSee = await db.Lessons.CountAsync(l => l.Module.Course.IsPublished);
+        var lessonChunks = await db.AssistantContentChunks
+            .Where(c => c.SourceType == AssistantSourceType.Lesson && c.Language == "en")
+            .ToListAsync();
+        lessonChunks.Select(c => c.SourceId).Distinct().Count().ShouldBe(lessonsStudentsSee);
+
+        // bodyweight-basics.json: the push-up lesson prescribes pushups, then incline-push-up.
+        var pushUpLessonId = await db.Lessons.Where(l => l.TitleEn == "The Push-Up, Done Right").Select(l => l.Id).SingleAsync();
+        var pushUpLessonText = string.Concat(lessonChunks.Where(c => c.SourceId == pushUpLessonId).Select(c => c.Text));
+        pushUpLessonText.ShouldContain("Exercises: Pushups (chest); Incline Push-Up (chest)");
     }
 }

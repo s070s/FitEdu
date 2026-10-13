@@ -139,7 +139,7 @@
     <value>Last Name</value>
   </data>
   <data name="Label_Info_Status" xml:space="preserve">
-    <value>Status</value>
+    <value>Training level</value>
   </data>
   <data name="Label_LoggingIn" xml:space="preserve">
     <value>Logging In...</value>
@@ -228,6 +228,12 @@
   <data name="PaginationPageOfFormat" xml:space="preserve">
     <value>Page {0} of {1}</value>
   </data>
+  <data name="PaginationPreviousPage" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="PaginationNextPage" xml:space="preserve">
+    <value>Next page</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -315,17 +321,20 @@
   <data name="StatusDraft" xml:space="preserve">
     <value>Draft</value>
   </data>
-  <data name="StatusStudent" xml:space="preserve">
-    <value>Student</value>
+  <data name="StatusBeginner" xml:space="preserve">
+    <value>Beginner</value>
   </data>
-  <data name="StatusGraduate" xml:space="preserve">
-    <value>Graduate</value>
+  <data name="StatusIntermediate" xml:space="preserve">
+    <value>Intermediate</value>
   </data>
-  <data name="StatusNEET" xml:space="preserve">
-    <value>NEET (not in education, employment, or training)</value>
+  <data name="StatusAdvanced" xml:space="preserve">
+    <value>Advanced</value>
   </data>
   <data name="StatusOther" xml:space="preserve">
-    <value>Other</value>
+    <value>Prefer not to say</value>
+  </data>
+  <data name="StatusNotSet" xml:space="preserve">
+    <value>Not set</value>
   </data>
   <data name="NavigationMenu" xml:space="preserve">
     <value>Navigation menu</value>
@@ -336,7 +345,34 @@
   <data name="Reload" xml:space="preserve">
     <value>Reload</value>
   </data>
-  <data name="ThisFeature" xml:space="preserve">
-    <value>this feature</value>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+    <data name="Label_Info_Goal" xml:space="preserve">
+      <value>Main goal (optional)</value>
+    </data>
+    <data name="GoalNotSureYet" xml:space="preserve">
+      <value>Not sure yet</value>
+    </data>
+    <data name="GoalHint" xml:space="preserve">
+      <value>We use it to suggest programmes. You can change it any time in your profile.</value>
+    </data>
+    <data name="Label_AboutYou" xml:space="preserve">
+      <value>About you</value>
+    </data>
+    <data name="Label_YourTraining" xml:space="preserve">
+      <value>Your training</value>
+    </data>
+    <data name="AuthLoginSubtitle" xml:space="preserve">
+      <value>Welcome back. Pick up your plan where you left off.</value>
+    </data>
+    <data name="AuthRegisterSubtitle" xml:space="preserve">
+      <value>Joining is free. Your first workout is a few minutes away.</value>
+    </data>
+    <data name="DevResetPasswordHint" xml:space="preserve">
+      <value>Reset the password directly</value>
+    </data>
+  <data name="Label_GoToLogin" xml:space="preserve">
+    <value>Go to login</value>
   </data>
 </root>

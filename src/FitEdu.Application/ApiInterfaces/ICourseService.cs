@@ -1,5 +1,6 @@
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 
 namespace FitEdu.Application.ApiInterfaces;
 
@@ -10,6 +11,7 @@ public interface ICourseService
 {
     Task<PagedResult<CourseListItemDto>> GetPublishedCoursesAsync(
         string userId, int page, int pageSize, string lang, Guid? categoryId = null, string? search = null,
+        FitnessGoal? goal = null, CourseLevel? level = null, string? equipment = null,
         CancellationToken cancellationToken = default);
     Task<CourseDetailDto?> GetCourseDetailAsync(string userId, Guid courseId, string lang, CancellationToken cancellationToken = default);
     Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default);

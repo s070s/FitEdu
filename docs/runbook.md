@@ -68,6 +68,36 @@ pre-update database backup and redeploy the previous binaries. Keep the previous
 
 ---
 
+## Reseeding the demo content (Development only)
+
+The demo content (blog articles, exercise library, courses, assessments, learning paths,
+testimonials, live classes, students) is seeded only in Development with `SeedData:Enabled = true`:
+the blog from `BlogSeedData.cs`, the rest from the JSON folders under `src/FitEdu.Shared/JSON/`.
+Each seeder fills its table **only when the table is empty**, so a changed seed file never updates
+a database that was already seeded.
+
+To pick up changed seed files:
+
+1. Stop the app.
+2. Drop the database (this also deletes every user, enrollment and chat — never do it on a host
+   whose data matters):
+   ```bash
+   sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"
+   ```
+3. Start the app. Migrations recreate the schema and the seeders run in order: blog articles, the
+   exercise library (before the courses, because lessons link exercises by slug), courses,
+   assessments, students, learning paths and the Home showcase.
+4. Check the startup log: a fresh database gets 873 exercises, 19 courses, 19 assessments,
+   4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) and, in the
+   background, the bulk students (`SeedData:BulkStudentCount`, default 10). An unknown exercise slug or
+   course title stops the seed with a `SeedContentException` that names the bad value.
+
+The exercise photos are static files (`wwwroot/images/exercises/<slug>/`), not database rows, so a
+reseed does not touch them. To refresh the library itself from Free Exercise DB, follow
+`src/FitEdu.Shared/JSON/Exercises/README.md` and `tools/assets/README.md`.
+
+---
+
 ## Incident scenarios (OPS-4)
 
 For each: the symptom, then the first diagnostic steps. Most root causes are already documented in

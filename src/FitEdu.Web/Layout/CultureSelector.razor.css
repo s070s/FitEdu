@@ -1,0 +1,44 @@
+/* Segmented EN | EL switch. The active language is a raised neutral segment, so lime stays for
+   the header's call to action (Register) and the active page link. */
+.culture-selector {
+    display: inline-flex;
+    flex-shrink: 0;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background-color: rgba(var(--bg-surface-rgb), 0.6);
+}
+
+.culture-option {
+    min-width: 2.5rem;
+    min-height: 2.25rem;
+    padding: 0 0.6rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-light-normal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.culture-option:hover {
+    color: var(--text-strong-normal);
+    background-color: rgba(var(--border-subtle-rgb), 0.1);
+}
+
+.culture-option[aria-pressed="true"] {
+    color: var(--text-strong-normal);
+    background-color: rgba(var(--border-subtle-rgb), 0.2);
+    box-shadow: inset 0 0 0 1px rgba(var(--border-subtle-rgb), 0.35);
+}
+
+/* Touch screens (WCAG 2.5.8): each segment reaches the 44 px target. */
+@media (pointer: coarse) {
+    .culture-option {
+        min-width: var(--tap-min);
+        min-height: var(--tap-min);
+    }
+}

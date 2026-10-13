@@ -64,16 +64,16 @@
 		<value>No expiry (lifetime)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Unlimited courses</value>
+		<value>Unlimited active programmes</value>
 	</data>
 	<data name="CoursesCountFormat" xml:space="preserve">
-		<value>{0} course(s)</value>
+		<value>Up to {0} active programmes</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
-		<value>Assessments</value>
+		<value>Self-assessments</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Certificates</value>
+		<value>Completion certificates</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
 		<value>Priority support</value>
@@ -122,5 +122,38 @@
 	</data>
 	<data name="KeepSubscription" xml:space="preserve">
 		<value>Keep subscription</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Your membership</value>
+	</data>
+	<data name="TxType_Purchase" xml:space="preserve">
+		<value>Purchase</value>
+	</data>
+	<data name="TxType_Upgrade" xml:space="preserve">
+		<value>Upgrade</value>
+	</data>
+	<data name="TxType_Downgrade" xml:space="preserve">
+		<value>Downgrade</value>
+	</data>
+	<data name="TxType_Renewal" xml:space="preserve">
+		<value>Renewal</value>
+	</data>
+	<data name="TxType_Refund" xml:space="preserve">
+		<value>Refund</value>
+	</data>
+	<data name="TxType_FreePlanAssignment" xml:space="preserve">
+		<value>Free plan</value>
+	</data>
+	<data name="TxType_PlanSwitch" xml:space="preserve">
+		<value>Plan switch</value>
+	</data>
+	<data name="TxType_Expired" xml:space="preserve">
+		<value>Expired</value>
+	</data>
+	<data name="OneCourse" xml:space="preserve">
+		<value>1 active programme</value>
+	</data>
+	<data name="PlanActive" xml:space="preserve">
+		<value>Active</value>
 	</data>
 </root>

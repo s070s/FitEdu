@@ -1,0 +1,96 @@
+/* The card shell is the shared .card-surface primitive (hover lift, focus border). */
+.course-card__body {
+    gap: var(--space-3);
+}
+
+.course-card__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background-color: rgba(var(--bg-primary-rgb), 0.72);
+    color: var(--text-strong-normal);
+    font-size: var(--fs-6);
+    font-weight: 600;
+    white-space: nowrap;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* The shared .tier-badge keeps its text colour; a dark glass backing keeps it readable on photos. */
+.course-card__tier {
+    background-color: rgba(var(--bg-primary-rgb), 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.course-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.course-card__title {
+    margin: 0;
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+/* The title link is a .stretched-link (shared card rules in shared-components.css). */
+.course-card__description {
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+/* Rich-text descriptions: paragraphs read as one clamped block; their links stay clickable
+   above the stretched title link. */
+.course-card__description ::deep p {
+    display: inline;
+    margin: 0;
+}
+
+/* Inline paragraphs would run together ("…week.Next…"): a space keeps the sentences apart. */
+.course-card__description ::deep p + p::before {
+    content: " ";
+}
+
+.course-card__description ::deep a {
+    position: relative;
+    z-index: 3;
+}
+
+.course-card__lessons,
+.course-card__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.course-card__rating-count {
+    color: var(--text-light-muted);
+}
+
+.enrolled-badge {
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+.locked-badge {
+    color: var(--color-warning);
+    font-weight: 700;
+}
+
+.course-locked ::deep .course-cover {
+    opacity: 0.7;
+}
+
+.course-card--compact .course-card__body {
+    gap: var(--space-2);
+}
+
+.course-card--compact ::deep .course-cover {
+    aspect-ratio: 21 / 9;
+}

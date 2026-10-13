@@ -358,7 +358,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ← Back.
+        ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string Back {
             get {
@@ -399,6 +399,168 @@ namespace FitEdu.Shared.Resources {
         public static string RequiredQuestionMissing {
             get {
                 return ResourceManager.GetString("RequiredQuestionMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Self-checks.
+        /// </summary>
+        public static string AssessmentsEyebrow {
+            get {
+                return ResourceManager.GetString("AssessmentsEyebrow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Short check-ins on your training, recovery and habits. Your answers help you choose where to start..
+        /// </summary>
+        public static string AssessmentsIntro {
+            get {
+                return ResourceManager.GetString("AssessmentsIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} completed.
+        /// </summary>
+        public static string CompletedCountFormat {
+            get {
+                return ResourceManager.GetString("CompletedCountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} questions.
+        /// </summary>
+        public static string QuestionsCountFormat {
+            get {
+                return ResourceManager.GetString("QuestionsCountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 question.
+        /// </summary>
+        public static string QuestionCountOne {
+            get {
+                return ResourceManager.GetString("QuestionCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ~{0} min.
+        /// </summary>
+        public static string EstimatedMinutesFormat {
+            get {
+                return ResourceManager.GetString("EstimatedMinutesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        public static string CompletedBadge {
+            get {
+                return ResourceManager.GetString("CompletedBadge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Retake.
+        /// </summary>
+        public static string Retake {
+            get {
+                return ResourceManager.GetString("Retake", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Section {0} of {1}.
+        /// </summary>
+        public static string SectionOfFormat {
+            get {
+                return ResourceManager.GetString("SectionOfFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next section.
+        /// </summary>
+        public static string NextSection {
+            get {
+                return ResourceManager.GetString("NextSection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Previous section.
+        /// </summary>
+        public static string PreviousSection {
+            get {
+                return ResourceManager.GetString("PreviousSection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} answered.
+        /// </summary>
+        public static string AnsweredCountFormat {
+            get {
+                return ResourceManager.GetString("AnsweredCountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to required.
+        /// </summary>
+        public static string RequiredLabel {
+            get {
+                return ResourceManager.GetString("RequiredLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Questions marked * are required..
+        /// </summary>
+        public static string RequiredLegend {
+            get {
+                return ResourceManager.GetString("RequiredLegend", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All assessments.
+        /// </summary>
+        public static string AllAssessments {
+            get {
+                return ResourceManager.GetString("AllAssessments", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every self-check you have sent. Open one to see your answers again..
+        /// </summary>
+        public static string HistoryIntro {
+            get {
+                return ResourceManager.GetString("HistoryIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please answer this question..
+        /// </summary>
+        public static string QuestionRequired {
+            get {
+                return ResourceManager.GetString("QuestionRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assessment pages.
+        /// </summary>
+        public static string PaginationAriaLabel {
+            get {
+                return ResourceManager.GetString("PaginationAriaLabel", resourceCulture);
             }
         }
     }

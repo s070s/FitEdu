@@ -1,0 +1,54 @@
+/* Lesson list on the dark surface (Bootstrap's list-group defaults to white). */
+.list-group {
+    gap: var(--space-2);
+}
+
+/* Each lesson is its own card, so every item keeps a full border and rounded corners. */
+.list-group .list-group-item {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    color: var(--text-light-normal);
+    padding: var(--space-3) var(--space-4);
+}
+
+/* One lesson per row: title and meta on the left, buttons on the right; buttons drop under the
+   title on phones instead of squeezing it. */
+.lesson-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+}
+
+.lesson-row__text {
+    flex: 1 1 14rem;
+    min-width: 0;
+}
+
+.lesson-row__title {
+    margin: 0 0 var(--space-1);
+    color: var(--text-strong-normal);
+    font-size: var(--fs-5);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.lesson-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    color: var(--text-light-muted);
+}
+
+.lesson-row__actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Short labels such as "Edit" still give a full-size touch target. */
+.lesson-row__actions .btn {
+    min-width: var(--tap-min);
+}

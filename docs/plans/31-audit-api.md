@@ -38,7 +38,7 @@ For ~90 endpoints built incrementally, the API surface is in good shape where it
 - **Recommendation:** Converge on: mutation returns the updated resource DTO, or 204 when there's nothing to say. Cheap to do while touching AdminController for API-8.
 
 ### API-11: CancellationToken plumbing is inconsistent across endpoints  [Low] [Effort: S]
-- **Evidence:** Most endpoints accept and forward `CancellationToken`, but whole controllers don't: `AdminModulesController`, `AdminAnalyticsController`, `ProfileController`, and `CertificatesController` (`GetMyCertificates`/`Issue`/`Download` — `CertificatesController.cs:50-135`, note the un-parameterized `ToListAsync()` at line 68), plus scattered actions (`AdminAssessmentsController` GETs, `ChatController.StartConversation`/`GetAvailableUsers`/`GetUnreadCount`, `AdminLessonsController`).
+- **Evidence:** Most endpoints accept and forward `CancellationToken`, but whole controllers don't: `AdminModulesController`, `AdminAnalyticsController`, `ProfileController`, and `CertificatesController` (`GetMyCertificates`/`Issue`/`Download` — `CertificatesController.cs:50-135`, note the un-parameterized `ToListAsync()` at line 68), plus scattered actions (`AdminAssessmentsController` GETs, `ChatController.StartConversation`/`GetAvailableUsers`/`GetUnreadCount`, and in `AdminLessonsController` the two GETs, `DeleteLesson`, the PDF/video uploads and `PublishLesson`; its `CreateLesson`/`UpdateLesson` now forward the token).
 - **Impact:** Abandoned requests (user navigates away mid-list) keep executing their queries; minor at this scale but free to fix and the inconsistency spreads by copy-paste.
 - **Recommendation:** Add `CancellationToken cancellationToken = default` to every async action and thread it to EF/service calls; consider an analyzer (CA2016 is already relevant) in the build.
 
@@ -76,7 +76,7 @@ For ~90 endpoints built incrementally, the API surface is in good shape where it
 
 ## 5. Related Findings Elsewhere
 
-- **30 (DB):** DB-7 — concurrency tokens now exist on every admin-edited aggregate, with `AdminLessonsController` demonstrating the `DbUpdateConcurrencyException` → 409 mapping now used consistently across uniqueness/conflict handling (the other six controllers still need the same three-line wiring); former DB-8 (fixed) — AnswersJson/SchemaJson now have matching DTO/column caps, closing the unbounded-payload gap.
+- **30 (DB):** DB-7 — concurrency tokens now exist on every admin-edited aggregate, with `AdminCourseService.UpdateLessonAsync` (behind `AdminLessonsController.UpdateLesson`) demonstrating the `DbUpdateConcurrencyException` → 409 ProblemDetails mapping now used consistently across uniqueness/conflict handling (the other six controllers still need the same three-line wiring); former DB-8 (fixed) — AnswersJson/SchemaJson now have matching DTO/column caps, closing the unbounded-payload gap.
 - **25 (SEC):** endpoint-level authorization *vulnerabilities* (anonymous Stripe webhook signature-skip when no secret is configured, JWT accepted via query string for `/api/lessons` and hubs, media/asset access rules, impersonation endpoint hardening) and the globally shared fixed-window "auth" rate limiter (one bucket for all clients).
 - **26 (REL):** behavior of the self-calling SSR HttpClient consumers when API responses are non-success (`ApiClientBase` swallowing failures), and rate-limiter availability effects.
 - **27 (BIZ):** correctness of enrollment/checkout/certificate business outcomes those endpoints return (e.g. mock-payment plan assignment).

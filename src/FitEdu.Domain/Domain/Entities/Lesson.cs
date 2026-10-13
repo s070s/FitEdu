@@ -53,4 +53,7 @@ public class Lesson : AuditableEntity
 
     // Navigation: parent Module
     public Module Module { get; set; } = null!;
+
+    // Navigation: exercises prescribed in this lesson, ordered by LessonExercise.SortOrder
+    public ICollection<LessonExercise> Exercises { get; set; } = [];
 }

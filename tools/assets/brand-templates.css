@@ -1,0 +1,34 @@
+/* Shared look for the HTML templates that render-brand-images.mjs screenshots. */
+:root {
+    --charcoal: #0E1116;
+    --charcoal-raised: #161B22;
+    --lime: #C6F432;
+    --teal: #2EC4B6;
+    --text-soft: #C9D1D9;
+    --font-display: 'Segoe UI', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    background: var(--charcoal);
+    font-family: var(--font-display);
+}
+
+/* Photo slot: render-brand-images.mjs fills the <img> with a duotone made by browser.mjs. */
+.photo {
+    position: relative;
+    overflow: hidden;
+    background: var(--charcoal-raised);
+}
+
+.photo > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

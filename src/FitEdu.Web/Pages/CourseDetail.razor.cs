@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Domain.Enums;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
@@ -10,6 +11,10 @@ namespace FitEdu.Web.Pages;
 
 public partial class CourseDetail
 {
+    // "What you'll train" lists the first module summaries, enough to scan at a glance.
+    private const int MaxOutcomes = 4;
+    private const string LessonPathPrefix = "/lessons/";
+
     [Parameter]
     public Guid CourseId
     {
@@ -18,7 +23,6 @@ public partial class CourseDetail
 
     [Inject] private ICourseConsumer CourseService { get; set; } = default!;
     [Inject] private ISubscriptionConsumer SubscriptionService { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private ILogger<CourseDetail> _logger { get; set; } = default!;
 
     private CourseDetailDto? _course;
@@ -27,7 +31,15 @@ public partial class CourseDetail
     private bool _enrolling;
     private string? _error;
     private string? _enrollError;
-    private HashSet<Guid> _expandedModules = new();
+
+    // View data prepared once per load (PrepareView).
+    private List<ModuleDto> _modules = [];
+    private List<string> _outcomes = [];
+    private IReadOnlyList<string> _equipmentLabels = [];
+    private LessonSummaryDto? _firstLesson;
+    private LessonSummaryDto? _nextLesson;
+    private Guid? _openModuleId;
+    private int _totalMinutes;
 
     private CourseReviewsResponseDto? _reviewsData;
     private bool _showReviewForm;
@@ -36,8 +48,35 @@ public partial class CourseDetail
     private string _formBody = string.Empty;
     private string? _reviewError;
 
+    /// <summary>The kinds of lesson the outline tells apart, each with its own icon.</summary>
+    private enum LessonKind
+    {
+        Reading,
+        Video,
+        Pdf,
+        Workout
+    }
+
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
+    private bool NeedsUpgrade => _course is { IsEnrolled: false } && _userTier < _course.RequiredTier;
+
+    private int ProgressPercentRounded => _course is null ? 0 : (int)Math.Round(_course.ProgressPercent);
+
+    /// <summary>Where the main button leads an enrolled member: the next lesson, or the first once all are done.</summary>
+    private LessonSummaryDto? ActionLesson => _nextLesson ?? _firstLesson;
+
+    private string ActionLabel
+    {
+        get
+        {
+            if (_nextLesson is null)
+                return CourseRes.TrainAgain;
+
+            return _course?.CompletedLessons > 0 ? CourseRes.ContinueTraining : CourseRes.StartTraining;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,21 +151,14 @@ public partial class CourseDetail
         _loading = true;
         _error = null;
         _enrollError = null;
-        _expandedModules = new();
 
         try
         {
             _course = await CourseService.GetCourseAsync(CourseId, CurrentLang);
             if (_course is null)
-            {
                 _error = ErrorMessagesRes.CourseNotFound;
-            }
             else
-            {
-                var firstModule = _course.Modules.OrderBy(m => m.SortOrder).FirstOrDefault();
-                if (firstModule is not null)
-                    _expandedModules.Add(firstModule.Id);
-            }
+                PrepareView(_course);
         }
         catch (Exception ex)
         {
@@ -139,10 +171,31 @@ public partial class CourseDetail
         }
     }
 
-    private void ToggleModule(Guid moduleId)
+    /// <summary>Sorts the outline once and works out the totals, the outcomes and the next lesson.</summary>
+    private void PrepareView(CourseDetailDto course)
     {
-        if (!_expandedModules.Remove(moduleId))
-            _expandedModules.Add(moduleId);
+        _modules = course.Modules
+            .OrderBy(module => module.SortOrder)
+            .Select(module => module with { Lessons = module.Lessons.OrderBy(lesson => lesson.SortOrder).ToList() })
+            .ToList();
+
+        var lessons = _modules.SelectMany(module => module.Lessons).ToList();
+        _firstLesson = lessons.FirstOrDefault();
+        _nextLesson = lessons.FirstOrDefault(lesson => !lesson.IsCompleted);
+        _totalMinutes = lessons.Sum(lesson => lesson.DurationMinutes ?? 0);
+        _equipmentLabels = CourseLabels.EquipmentList(course.Equipment);
+
+        // Module descriptions are the sanitized rich text the module body shows too.
+        _outcomes = _modules
+            .Select(module => module.Description)
+            .OfType<string>()
+            .Where(description => !string.IsNullOrWhiteSpace(description))
+            .Take(MaxOutcomes)
+            .ToList();
+
+        // Open the module the member trains next, or the first one.
+        var nextModule = _modules.FirstOrDefault(module => module.Lessons.Any(lesson => lesson.Id == _nextLesson?.Id));
+        _openModuleId = (nextModule ?? _modules.FirstOrDefault())?.Id;
     }
 
     private async Task EnrollInCourse()
@@ -158,7 +211,7 @@ public partial class CourseDetail
             }
             else
             {
-                _enrollError = result?.Message ?? "Failed to enroll. Please try again.";
+                _enrollError = result?.Message ?? ErrorMessagesRes.FailedToEnroll;
             }
         }
         catch (Exception ex)
@@ -172,21 +225,46 @@ public partial class CourseDetail
         }
     }
 
-    private void ViewLesson(Guid lessonId)
+    private static int ModuleMinutes(ModuleDto module) =>
+        module.Lessons.Sum(lesson => lesson.DurationMinutes ?? 0);
+
+    private static int CompletedCount(ModuleDto module) =>
+        module.Lessons.Count(lesson => lesson.IsCompleted);
+
+    private static bool IsModuleDone(ModuleDto module) =>
+        module.Lessons.Count > 0 && module.Lessons.All(lesson => lesson.IsCompleted);
+
+    /// <summary>A lesson with prescribed exercises is a workout; any other follows its content type.</summary>
+    private static LessonKind KindOf(LessonSummaryDto lesson)
     {
-        if (_course?.IsEnrolled == true)
+        if (lesson.ExerciseCount > 0)
+            return LessonKind.Workout;
+
+        return (ContentType)lesson.ContentType switch
         {
-            Navigation.NavigateTo($"/lessons/{lessonId}");
-        }
+            ContentType.Video => LessonKind.Video,
+            ContentType.Pdf => LessonKind.Pdf,
+            _ => LessonKind.Reading
+        };
     }
 
-    private void GoBack()
+    private static string KindIcon(LessonKind kind) => kind switch
     {
-        Navigation.NavigateTo("/courses");
-    }
+        LessonKind.Workout => "bi-lightning-charge-fill",
+        LessonKind.Video => "bi-play-fill",
+        LessonKind.Pdf => "bi-file-earmark-pdf",
+        _ => "bi-book"
+    };
 
-    private void GoToPricing()
+    private static string KindLabel(LessonKind kind) => kind switch
     {
-        Navigation.NavigateTo("/pricing");
-    }
+        LessonKind.Workout => CourseRes.LessonKind_Workout,
+        LessonKind.Video => CourseRes.LessonKind_Video,
+        LessonKind.Pdf => CourseRes.LessonKind_Pdf,
+        _ => CourseRes.LessonKind_Reading
+    };
+
+    /// <summary>Lesson rows link to the lesson once the member is enrolled; before that they are plain text.</summary>
+    private string? LessonHref(LessonSummaryDto lesson) =>
+        _course?.IsEnrolled == true ? LessonPathPrefix + lesson.Id : null;
 }

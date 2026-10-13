@@ -1,13 +1,14 @@
 # End-to-end smoke suite (Playwright)
 
-Five browser-level scenarios covering what no `WebApplicationFactory` test can reach
+Browser-level scenarios covering what no `WebApplicationFactory` test can reach
 (the Blazor circuit, the auth redirect chain, the blank-render-on-API-failure mode,
 and WebRTC):
 
 | Spec | Scenarios |
 |------|-----------|
 | `auth.spec.mjs` | Login lands authenticated; register page links Privacy/Terms from the consent block |
-| `pages.spec.mjs` | Courses page renders seeded course cards (anti-blank-render); Greek culture switch renders Greek |
+| `pages.spec.mjs` | Courses page renders seeded course cards (anti-blank-render); Greek culture switch renders Greek; exercise library cards open their exercise page |
+| `responsive.spec.mjs` | Key public pages at 375×812 (touch) and 1280×800: no sideways scrolling, no broken images after scrolling lazy ones into view, phone tab bar only on the small screen |
 | `call.spec.mjs` | Two isolated browser contexts (two users) place and connect a real video call with fake media, assert `RTCPeerConnection.connectionState === 'connected'` and remote frames flowing, then hang up |
 
 ## Prerequisites

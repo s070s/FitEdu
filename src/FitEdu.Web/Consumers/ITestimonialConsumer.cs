@@ -8,5 +8,6 @@ namespace FitEdu.Web.Consumers;
 /// </summary>
 public interface ITestimonialConsumer
 {
-    Task<IReadOnlyList<TestimonialDto>?> GetActiveAsync(CancellationToken ct = default);
+    /// <summary>Active testimonials with role and quote in <paramref name="lang"/> ("en" or "el").</summary>
+    Task<IReadOnlyList<TestimonialDto>?> GetActiveAsync(string lang = "en", CancellationToken ct = default);
 }

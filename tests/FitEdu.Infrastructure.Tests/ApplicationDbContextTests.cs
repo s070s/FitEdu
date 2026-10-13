@@ -226,10 +226,10 @@ public class ApplicationDbContextTests
         // check-then-insert in AdminCategoryService — verify it actually exists and fires,
         // against SQLite (the same provider the earlier "breaks SQLite" rationale doubted).
         await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await db.SaveChangesAsync();
 
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
     }
 
@@ -239,13 +239,136 @@ public class ApplicationDbContextTests
         // The filter is `[IsDeleted] = 0` — a soft-deleted category must not block reusing
         // its name for a new, active one.
         await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career", IsDeleted = true });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength", IsDeleted = true });
         await db.SaveChangesAsync();
 
-        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Career" });
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
         await db.SaveChangesAsync();
 
-        (await db.Categories.IgnoreQueryFilters().CountAsync(c => c.NameEn == "Career")).ShouldBe(2);
+        (await db.Categories.IgnoreQueryFilters().CountAsync(c => c.NameEn == "Strength")).ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Exercise_DuplicateSlug_ThrowsOnSave()
+    {
+        // The slug is the exercise's public key (/exercises/{slug}, image folder, seed JSON), so the
+        // unique index must exist at the DB level — SQLite enforces it, InMemory would not.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        db.Exercises.Add(NewExercise("push-ups", "Push-Ups"));
+        db.Exercises.Add(NewExercise("push-ups", "Duplicate"));
+
+        await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
+
+    [Fact]
+    public async Task LessonExercise_LessonDeleted_CascadesPrescriptions()
+    {
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var lesson = SeedLessonWithExercise(db, NewExercise("squat", "Squat"));
+        await db.SaveChangesAsync();
+        // Reload the lesson alone: EF then does not track its prescriptions and cannot delete them
+        // itself, so only the database's ON DELETE CASCADE can remove them.
+        db.ChangeTracker.Clear();
+
+        db.Lessons.Remove(await db.Lessons.SingleAsync(l => l.Id == lesson.Id));
+        await db.SaveChangesAsync();
+
+        (await db.LessonExercises.CountAsync()).ShouldBe(0);
+        (await db.Exercises.CountAsync()).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task LessonExercise_ExerciseUsedByLesson_CannotBeDeleted()
+    {
+        // Exercise → LessonExercise is Restrict: removing library data must never silently strip
+        // a prescription out of a published lesson.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var exercise = NewExercise("plank", "Plank");
+        SeedLessonWithExercise(db, exercise);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        db.Exercises.Remove(await db.Exercises.SingleAsync(e => e.Id == exercise.Id));
+
+        await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
+
+    [Fact]
+    public async Task FitnessColumns_ReadBackFromTheDatabase_WithTheirValuesAndDefaults()
+    {
+        // The user goal, the course fitness fields and the Greek testimonial and plan texts are
+        // read back from SQLite after clearing the tracker, so each value really went through its column.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        db.Users.Add(new ApplicationUser { Id = "with-goal", UserName = "a@x.com", FirstName = "A", LastName = "B", Goal = FitnessGoal.MuscleGain });
+        db.Users.Add(new ApplicationUser { Id = "without-goal", UserName = "c@x.com", FirstName = "C", LastName = "D" });
+        var fitnessCourse = new Course
+        {
+            Id = Guid.NewGuid(), TitleEn = "Fitness", Level = CourseLevel.Advanced, Goal = FitnessGoal.Endurance,
+            Equipment = "bands,mat", EstimatedWeeks = 6, SessionsPerWeek = 3, CoverExerciseSlug = "plank"
+        };
+        var plainCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Plain" };
+        db.Courses.AddRange(fitnessCourse, plainCourse);
+        db.Testimonials.Add(new Testimonial { FullName = "Maria", QuoteText = "Great", QuoteTextEl = "Τέλειο", RoleOrTitleEl = "Δρομέας" });
+        db.SubscriptionPlans.Add(new SubscriptionPlan { Id = Guid.NewGuid(), Name = "Pro", Tier = SubscriptionTier.Pro, DescriptionEl = "Όλα τα μαθήματα" });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        var goalsByUser = await db.Users.AsNoTracking().ToDictionaryAsync(user => user.Id, user => user.Goal);
+        var savedFitnessCourse = await db.Courses.AsNoTracking().SingleAsync(course => course.Id == fitnessCourse.Id);
+        var savedPlainCourse = await db.Courses.AsNoTracking().SingleAsync(course => course.Id == plainCourse.Id);
+        var testimonial = await db.Testimonials.AsNoTracking().SingleAsync();
+        var plan = await db.SubscriptionPlans.AsNoTracking().SingleAsync();
+
+        goalsByUser["with-goal"].ShouldBe(FitnessGoal.MuscleGain);
+        goalsByUser["without-goal"].ShouldBeNull();
+        savedFitnessCourse.Level.ShouldBe(CourseLevel.Advanced);
+        savedFitnessCourse.Goal.ShouldBe(FitnessGoal.Endurance);
+        savedFitnessCourse.Equipment.ShouldBe("bands,mat");
+        savedFitnessCourse.EstimatedWeeks.ShouldBe(6);
+        savedFitnessCourse.SessionsPerWeek.ShouldBe(3);
+        savedFitnessCourse.CoverExerciseSlug.ShouldBe("plank");
+        savedPlainCourse.Level.ShouldBe(CourseLevel.Beginner);
+        savedPlainCourse.Goal.ShouldBe(FitnessGoal.GeneralFitness);
+        savedPlainCourse.Equipment.ShouldBeNull();
+        savedPlainCourse.CoverExerciseSlug.ShouldBeNull();
+        testimonial.QuoteTextEl.ShouldBe("Τέλειο");
+        testimonial.RoleOrTitleEl.ShouldBe("Δρομέας");
+        plan.DescriptionEl.ShouldBe("Όλα τα μαθήματα");
+    }
+
+    private static Exercise NewExercise(string slug, string nameEn) => new()
+    {
+        Id = Guid.NewGuid(),
+        Slug = slug,
+        NameEn = nameEn,
+        Category = "strength",
+        Level = "beginner",
+        PrimaryMuscles = "chest",
+        SecondaryMuscles = "",
+        InstructionsEn = "Lower.\nPush."
+    };
+
+    private static Lesson SeedLessonWithExercise(ApplicationDbContext db, Exercise exercise)
+    {
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        var module = new Module { Id = Guid.NewGuid(), TitleEn = "M", CourseId = course.Id };
+        var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "L", ModuleId = module.Id };
+        var prescription = new LessonExercise
+        {
+            Id = Guid.NewGuid(),
+            LessonId = lesson.Id,
+            ExerciseId = exercise.Id,
+            SortOrder = 1,
+            Sets = 3,
+            Reps = "8-12",
+            RestSeconds = 60
+        };
+        db.Courses.Add(course);
+        db.Modules.Add(module);
+        db.Lessons.Add(lesson);
+        db.Exercises.Add(exercise);
+        db.LessonExercises.Add(prescription);
+        return lesson;
     }
 
     [Fact]

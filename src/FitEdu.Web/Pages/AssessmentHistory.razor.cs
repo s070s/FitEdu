@@ -155,12 +155,12 @@ public partial class AssessmentHistory
         selectedSubmission = null;
     }
 
-    private class SchemaRoot
+    private sealed class SchemaRoot
     {
         public List<SchemaQuestion> Questions { get; set; } = new();
     }
 
-    private class SchemaQuestion
+    private sealed class SchemaQuestion
     {
         public string Id { get; set; } = string.Empty;
         public string? Text

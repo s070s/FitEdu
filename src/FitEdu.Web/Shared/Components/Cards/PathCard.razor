@@ -1,0 +1,56 @@
+@using FitEdu.Web.Extensions
+@* One training path: a progress ring with the member's completed courses, the category, title,
+   description and course count. The title link is stretched over the whole card. *@
+
+<article class="path-card card-surface card-surface--interactive">
+    <div class="card-surface__body path-card__body">
+        <div class="path-card__head">
+            <ProgressRing Value="@PercentComplete" AriaLabel="@ProgressText" />
+            <div class="path-card__heading">
+                @if (Path.CategoryName is not null)
+                {
+                    <span class="chip chip--teal">
+                        <span class="bi @CategoryIcons.For(Path.CategoryName)" aria-hidden="true"></span>
+                        @Path.CategoryName
+                    </span>
+                }
+                <h3 class="path-card__title">
+                    <a class="path-card__link stretched-link" href="@PathUrl">@Path.Title</a>
+                </h3>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Path.Description))
+        {
+            <p class="path-card__description line-clamp-3">@Path.Description</p>
+        }
+
+        <div class="path-card__meta card-surface__meta">
+            <span class="path-card__steps">
+                <span class="bi bi-signpost-split" aria-hidden="true"></span>
+                @ResourceFormat.Count(Path.StepCount, PathRes.StepCountOne, PathRes.StepsCountFormat)
+            </span>
+            @if (Path.CompletedSteps > 0)
+            {
+                <span class="path-card__progress">@ProgressText</span>
+            }
+            <span class="path-card__more" aria-hidden="true">
+                @PathRes.ViewPath <span class="bi bi-arrow-right"></span>
+            </span>
+        </div>
+    </div>
+</article>
+
+@code {
+    private const string PathUrlPrefix = "/paths/";
+    private const int FullPercent = 100;
+
+    [Parameter, EditorRequired] public LearningPathListItemDto Path { get; set; } = default!;
+
+    private string PathUrl => PathUrlPrefix + Path.Id;
+
+    private string ProgressText => string.Format(PathRes.ProgressFormat, Path.CompletedSteps, Path.StepCount);
+
+    /// <summary>Completed courses as a whole percentage; a path with no courses is at 0.</summary>
+    private int PercentComplete => Path.StepCount == 0 ? 0 : FullPercent * Path.CompletedSteps / Path.StepCount;
+}

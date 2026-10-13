@@ -104,14 +104,14 @@
 	<data name="LoadingLesson" xml:space="preserve">
 		<value>Loading lesson...</value>
 	</data>
-	<data name="Back" xml:space="preserve">
-		<value>← Back</value>
+	<data name="LessonUnavailableTitle" xml:space="preserve">
+		<value>Lesson not available</value>
 	</data>
 	<data name="LessonNotFound" xml:space="preserve">
 		<value>Lesson not found.</value>
 	</data>
 	<data name="LessonNotFoundOrNotEnrolled" xml:space="preserve">
-		<value>Lesson not found or you are not enrolled in this course.</value>
+		<value>Lesson not found or you are not enrolled in this programme.</value>
 	</data>
 	<data name="FailedToLoadLesson" xml:space="preserve">
 		<value>Failed to load lesson. Please try again.</value>
@@ -123,25 +123,25 @@
 		<value>Saving...</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
-		<value>✓ Mark as Complete</value>
+		<value>Mark as complete</value>
 	</data>
 	<data name="CompletedIndicator" xml:space="preserve">
-		<value>✓ Completed</value>
+		<value>Completed</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
 		<value>Progress: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Course Completed!</value>
+		<value>Programme completed!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
-		<value>← Previous Lesson</value>
+		<value>Previous lesson</value>
 	</data>
 	<data name="NextLesson" xml:space="preserve">
-		<value>Next Lesson →</value>
+		<value>Next lesson</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Back to Course</value>
+		<value>Back to programme</value>
 	</data>
 	<data name="FailedToSaveCompletion" xml:space="preserve">
 		<value>Couldn't save your progress. Please try again.</value>
@@ -151,5 +151,77 @@
 	</data>
 	<data name="CertificatePending" xml:space="preserve">
 		<value>Your certificate is being prepared — check My Certificates in a few minutes.</value>
+	</data>
+	<data name="Exercises" xml:space="preserve">
+		<value>Exercises</value>
+	</data>
+	<data name="Sets" xml:space="preserve">
+		<value>Sets</value>
+	</data>
+	<data name="Reps" xml:space="preserve">
+		<value>Reps</value>
+	</data>
+	<data name="Rest" xml:space="preserve">
+		<value>Rest</value>
+	</data>
+	<data name="RestSecondsFormat" xml:space="preserve">
+		<value>{0} s rest</value>
+	</data>
+	<data name="ShowInstructions" xml:space="preserve">
+		<value>How to do it</value>
+	</data>
+	<data name="StartPosition" xml:space="preserve">
+		<value>Start</value>
+	</data>
+	<data name="EndPosition" xml:space="preserve">
+		<value>Finish</value>
+	</data>
+	<data name="WorkoutProgressFormat" xml:space="preserve">
+		<value>Workout {0} of {1}</value>
+	</data>
+	<data name="SecondsFormat" xml:space="preserve">
+		<value>{0} s</value>
+	</data>
+	<data name="CoachNote" xml:space="preserve">
+		<value>Coach's tip</value>
+	</data>
+	<data name="LessonOfFormat" xml:space="preserve">
+		<value>Lesson {0} of {1}</value>
+	</data>
+	<data name="CourseProgressFormat" xml:space="preserve">
+		<value>{0} of {1} lessons done</value>
+	</data>
+	<data name="CourseProgressLabel" xml:space="preserve">
+		<value>Programme progress</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 exercise</value>
+	</data>
+	<data name="ExerciseCountFormat" xml:space="preserve">
+		<value>{0} exercises</value>
+	</data>
+	<data name="TotalSetsFormat" xml:space="preserve">
+		<value>{0} sets in total</value>
+	</data>
+	<data name="CompleteHint" xml:space="preserve">
+		<value>Done with this lesson? Mark it complete to save your progress.</value>
+	</data>
+	<data name="BreadcrumbLabel" xml:space="preserve">
+		<value>Breadcrumb</value>
+	</data>
+	<data name="LessonNavigationLabel" xml:space="preserve">
+		<value>Lesson navigation</value>
+	</data>
+	<data name="CertificateReady" xml:space="preserve">
+		<value>Your certificate is ready. You will find it in My Certificates.</value>
+	</data>
+	<data name="ViewCertificate" xml:space="preserve">
+		<value>View certificate</value>
+	</data>
+	<data name="CertificateWithPro" xml:space="preserve">
+		<value>Certificates come with Pro. Upgrade to get one for every programme you finish.</value>
+	</data>
+	<data name="UpgradeToPro" xml:space="preserve">
+		<value>Upgrade to Pro</value>
 	</data>
 </root>

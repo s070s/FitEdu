@@ -49,12 +49,20 @@ public record AdminCourseDto(
     int EnrollmentCount,
     SubscriptionTier RequiredTier,
     Guid? CategoryId = null,
-    string? CategoryNameEn = null
+    string? CategoryNameEn = null,
+    CourseLevel Level = CourseLevel.Beginner,
+    FitnessGoal Goal = FitnessGoal.GeneralFitness,
+    string? Equipment = null,
+    int? EstimatedWeeks = null,
+    int? SessionsPerWeek = null,
+    string? CoverExerciseSlug = null
 );
 
 /// <summary>
 /// Request to create/update a course. When <paramref name="NewCategoryName"/> is non-blank it wins
 /// over <paramref name="CategoryId"/> and a category is get-or-created by case-insensitive name match.
+/// <paramref name="Equipment"/> is a comma-separated list of codes (e.g. "dumbbells,mat").
+/// <paramref name="CoverExerciseSlug"/> must name an exercise of the library; blank clears the cover.
 /// </summary>
 public record SaveCourseRequest(
     [Required, MaxLength(200)] string TitleEn,
@@ -63,7 +71,13 @@ public record SaveCourseRequest(
     [MaxLength(1000)] string? DescriptionEl,
     SubscriptionTier RequiredTier,
     Guid? CategoryId = null,
-    [MaxLength(100)] string? NewCategoryName = null
+    [MaxLength(100)] string? NewCategoryName = null,
+    [EnumDataType(typeof(CourseLevel))] CourseLevel Level = CourseLevel.Beginner,
+    [EnumDataType(typeof(FitnessGoal))] FitnessGoal Goal = FitnessGoal.GeneralFitness,
+    [MaxLength(120)] string? Equipment = null,
+    [Range(1, 104)] int? EstimatedWeeks = null,
+    [Range(1, 14)] int? SessionsPerWeek = null,
+    [MaxLength(120)] string? CoverExerciseSlug = null
 );
 
 /// <summary>
@@ -106,11 +120,14 @@ public record AdminLessonDto(
     int? DurationMinutes,
     int SortOrder,
     Guid ModuleId,
-    bool IsPublished
+    bool IsPublished,
+    List<LessonExerciseEditDto>? Exercises = null
 );
 
 /// <summary>
-/// Request to create/update a lesson.
+/// Request to create/update a lesson. <paramref name="Exercises"/> null keeps the lesson's current
+/// exercises; a list (even an empty one) replaces them wholesale, in list order, up to
+/// <see cref="MaxExercises"/> rows.
 /// </summary>
 public record SaveLessonRequest(
     [Required, MaxLength(200)] string TitleEn,
@@ -120,7 +137,27 @@ public record SaveLessonRequest(
     [MaxLength(500)] string? VideoUrl,
     int? DurationMinutes,
     int SortOrder,
-    Guid ModuleId
+    Guid ModuleId,
+    [MaxLength(SaveLessonRequest.MaxExercises)] List<LessonExerciseEditDto>? Exercises = null
+)
+{
+    /// <summary>The most exercise rows one lesson takes; the lesson editor stops adding rows here.</summary>
+    public const int MaxExercises = 50;
+}
+
+/// <summary>
+/// One exercise row of the admin lesson editor. Saves identify the exercise by
+/// <paramref name="Slug"/>; <paramref name="Name"/> (English) is filled on reads for display and
+/// ignored on saves. <paramref name="Reps"/> is free text ("8–12", "30 s", "AMRAP").
+/// </summary>
+public record LessonExerciseEditDto(
+    [Required, MaxLength(120)] string Slug,
+    [Range(1, 100)] int? Sets = null,
+    [MaxLength(40)] string? Reps = null,
+    [Range(0, 3600)] int? RestSeconds = null,
+    [MaxLength(500)] string? NotesEn = null,
+    [MaxLength(500)] string? NotesEl = null,
+    string? Name = null
 );
 
 /// <summary>

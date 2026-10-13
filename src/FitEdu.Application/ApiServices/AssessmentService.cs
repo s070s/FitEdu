@@ -165,9 +165,13 @@ public class AssessmentService(
     }
 
     /// <summary>
-    /// Resolves dual-language schema JSON to a flat single-language format for the student view.
+    /// Resolves dual-language schema JSON to a single-language format for the student view.
     /// Handles both flat {"questions":[...]} and sectioned {"sections":[{"questions":[...]}]} schemas.
-    /// Maps labelEn/labelEl or label/labelEl → label, and optionsEn/optionsEl or options/optionsEl → options.
+    /// The output always carries every question in one flat "questions" array (the submission
+    /// check and the history page read it). A sectioned schema also gets a "sections" array of
+    /// {"id","title","questionIds"} so the form can show one section per step with its title.
+    /// Each Greek key (titleEl, labelEl, optionsEl, minLabelEl, maxLabelEl) replaces its English
+    /// partner when the language is Greek and the Greek value is present.
     /// </summary>
     private string ResolveSchemaJsonByLang(Guid assessmentId, string schemaJson, bool isEl)
     {
@@ -176,69 +180,25 @@ public class AssessmentService(
             using var doc = JsonDocument.Parse(schemaJson);
             var root = doc.RootElement;
 
-            var allQuestions = CollectQuestions(root);
-
             using var ms = new MemoryStream();
             using var writer = new Utf8JsonWriter(ms, new JsonWriterOptions { Indented = false });
             writer.WriteStartObject();
 
-            // Copy non-questions/sections root properties (id, title, version, etc.)
+            // Copy root properties (id, version, etc.); the title is localized, questions are rewritten below.
             foreach (var prop in root.EnumerateObject())
             {
-                if (prop.Name is "questions" or "sections")
+                if (prop.Name is "questions" or "sections" or "title" or "titleEl")
                     continue;
                 prop.WriteTo(writer);
             }
 
-            // Write resolved flat questions array
+            WriteLocalizedString(writer, root, "title", "title", isEl);
+            WriteSectionOutline(writer, root, isEl);
+
             writer.WritePropertyName("questions");
             writer.WriteStartArray();
-            foreach (var q in allQuestions)
-            {
-                writer.WriteStartObject();
-                bool labelEmitted = false;
-                bool optionsEmitted = false;
-
-                foreach (var qProp in q.EnumerateObject())
-                {
-                    // Skip all Greek-only and secondary locale keys — handled below
-                    if (qProp.Name is "labelEl" or "optionsEl" or "titleEl" or "minLabelEl" or "maxLabelEl")
-                        continue;
-
-                    // Resolve label: supports both "labelEn" (admin-edit) and "label" (seed) keys
-                    if (qProp.Name is "labelEn" or "label")
-                    {
-                        if (!labelEmitted)
-                        {
-                            var enLabel = qProp.Value.GetString() ?? "";
-                            var elLabel = isEl && q.TryGetProperty("labelEl", out var elV) ? elV.GetString() : null;
-                            writer.WriteString("label", elLabel ?? enLabel);
-                            labelEmitted = true;
-                        }
-                        continue;
-                    }
-
-                    // Resolve options: supports both "optionsEn" (admin-edit) and "options" (seed) keys
-                    if (qProp.Name is "optionsEn" or "options")
-                    {
-                        if (!optionsEmitted)
-                        {
-                            var useEl = isEl && q.TryGetProperty("optionsEl", out var elOpts) && elOpts.GetArrayLength() > 0;
-                            writer.WritePropertyName("options");
-                            if (useEl)
-                                q.GetProperty("optionsEl").WriteTo(writer);
-                            else
-                                qProp.Value.WriteTo(writer);
-                            optionsEmitted = true;
-                        }
-                        continue;
-                    }
-
-                    qProp.WriteTo(writer);
-                }
-
-                writer.WriteEndObject();
-            }
+            foreach (var question in CollectQuestions(root))
+                WriteResolvedQuestion(writer, question, isEl);
             writer.WriteEndArray();
 
             writer.WriteEndObject();
@@ -253,6 +213,102 @@ public class AssessmentService(
             return schemaJson;
         }
     }
+
+    /// Writes "sections": [{"id","title","questionIds"}] for a sectioned schema; a flat schema has none.
+    private static void WriteSectionOutline(Utf8JsonWriter writer, JsonElement schemaRoot, bool isEl)
+    {
+        if (!schemaRoot.TryGetProperty("sections", out var sections) || sections.ValueKind != JsonValueKind.Array)
+            return;
+
+        writer.WritePropertyName("sections");
+        writer.WriteStartArray();
+        foreach (var section in sections.EnumerateArray())
+        {
+            writer.WriteStartObject();
+            if (section.TryGetProperty("id", out var sectionId))
+            {
+                writer.WritePropertyName("id");
+                sectionId.WriteTo(writer);
+            }
+            WriteLocalizedString(writer, section, "title", "title", isEl);
+            WriteQuestionIds(writer, section);
+            writer.WriteEndObject();
+        }
+        writer.WriteEndArray();
+    }
+
+    private static void WriteQuestionIds(Utf8JsonWriter writer, JsonElement section)
+    {
+        writer.WritePropertyName("questionIds");
+        writer.WriteStartArray();
+        if (section.TryGetProperty("questions", out var questions) && questions.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var question in questions.EnumerateArray())
+            {
+                if (question.TryGetProperty("id", out var questionId) && questionId.ValueKind == JsonValueKind.String)
+                    writer.WriteStringValue(questionId.GetString());
+            }
+        }
+        writer.WriteEndArray();
+    }
+
+    /// Writes one question with its label, options and rating end labels in the page language.
+    private static void WriteResolvedQuestion(Utf8JsonWriter writer, JsonElement question, bool isEl)
+    {
+        writer.WriteStartObject();
+        foreach (var property in question.EnumerateObject())
+        {
+            // Every text that has a language variant is written once, after this loop.
+            if (property.Name is "label" or "labelEn" or "labelEl"
+                or "options" or "optionsEn" or "optionsEl"
+                or "minLabel" or "minLabelEl" or "maxLabel" or "maxLabelEl" or "titleEl")
+                continue;
+            property.WriteTo(writer);
+        }
+
+        // "labelEn"/"optionsEn" come from older editor saves, "label"/"options" from seeds.
+        var labelSource = question.TryGetProperty("labelEn", out _) ? "labelEn" : "label";
+        WriteLocalizedString(writer, question, labelSource, "label", isEl);
+        WriteLocalizedOptions(writer, question, isEl);
+        WriteLocalizedString(writer, question, "minLabel", "minLabel", isEl);
+        WriteLocalizedString(writer, question, "maxLabel", "maxLabel", isEl);
+        writer.WriteEndObject();
+    }
+
+    /// Writes <paramref name="outputName"/> from the "…El" key when Greek and present, else from
+    /// <paramref name="englishName"/>. Writes nothing when neither key holds a string.
+    private static void WriteLocalizedString(
+        Utf8JsonWriter writer, JsonElement source, string englishName, string outputName, bool isEl)
+    {
+        var greekName = (englishName.EndsWith("En", StringComparison.Ordinal) ? englishName[..^2] : englishName) + "El";
+        var greek = isEl ? ReadString(source, greekName) : null;
+        var value = string.IsNullOrWhiteSpace(greek) ? ReadString(source, englishName) : greek;
+        if (value is null)
+            return;
+
+        writer.WriteString(outputName, value);
+    }
+
+    private static void WriteLocalizedOptions(Utf8JsonWriter writer, JsonElement question, bool isEl)
+    {
+        var englishName = question.TryGetProperty("optionsEn", out _) ? "optionsEn" : "options";
+        var hasGreek = isEl
+            && question.TryGetProperty("optionsEl", out var greekOptions)
+            && greekOptions.ValueKind == JsonValueKind.Array
+            && greekOptions.GetArrayLength() > 0;
+        var sourceName = hasGreek ? "optionsEl" : englishName;
+        if (!question.TryGetProperty(sourceName, out var options))
+            return;
+
+        writer.WritePropertyName("options");
+        options.WriteTo(writer);
+    }
+
+    private static string? ReadString(JsonElement source, string propertyName) =>
+        source.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
+
 
     /// Collects question elements from either a flat {"questions":[...]} or sectioned
     /// {"sections":[{"questions":[...]}]} schema.

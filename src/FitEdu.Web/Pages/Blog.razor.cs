@@ -7,6 +7,8 @@ namespace FitEdu.Web.Pages;
 
 public partial class Blog : IDisposable
 {
+    private const int SkeletonCardCount = 3;
+
     [Inject] private IBlogConsumer BlogConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
 

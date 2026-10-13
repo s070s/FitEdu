@@ -1,0 +1,66 @@
+[
+  {
+    "title": "Beginner Start",
+    "titleEl": "Ξεκίνημα για Αρχάριους",
+    "description": "New to training? Start here. Learn the basic movement patterns with your own body weight, build a stable core, loosen up stiff hips and shoulders, then take your first steps with dumbbells and a barbell. Four free programmes, about 18 weeks at three or four short sessions a week.",
+    "descriptionEl": "Πρώτη φορά στην προπόνηση; Ξεκίνα από εδώ. Μάθε τα βασικά μοτίβα κίνησης με το βάρος του σώματός σου, χτίσε σταθερό κορμό, ξεμούδιασε τα σφιγμένα ισχία και τους ώμους και κάνε τα πρώτα σου βήματα με αλτήρες και μπάρα. Τέσσερα δωρεάν προγράμματα, περίπου 18 εβδομάδες με τρεις ή τέσσερις σύντομες προπονήσεις την εβδομάδα.",
+    "category": "Strength",
+    "categoryEl": "Δύναμη",
+    "displayOrder": 1,
+    "isPublished": true,
+    "courseTitles": [
+      "Bodyweight Basics",
+      "Core & Stability",
+      "Mobility & Flexibility",
+      "Strength Foundations"
+    ]
+  },
+  {
+    "title": "Fat Loss",
+    "titleEl": "Απώλεια Λίπους",
+    "description": "Build an aerobic base with run-walk intervals, add short high-intensity sessions, then learn the eating and recovery habits that make changes stick. Fat loss depends mostly on a calorie deficit you can sustain over time, so this path focuses on training, eating and recovering in a way you can keep up. The HIIT programme needs a Plus plan.",
+    "descriptionEl": "Χτίσε αερόβια βάση με διαστήματα τρεξίματος και περπατήματος, πρόσθεσε σύντομες προπονήσεις υψηλής έντασης και μετά μάθε τις διατροφικές συνήθειες και τις συνήθειες αποκατάστασης που κάνουν τις αλλαγές να κρατήσουν. Η απώλεια λίπους εξαρτάται κυρίως από ένα θερμιδικό έλλειμμα που μπορείς να διατηρήσεις στον χρόνο, γι' αυτό η διαδρομή εστιάζει σε έναν τρόπο να προπονείσαι, να τρως και να ανακάμπτεις που μπορείς να συνεχίσεις. Το πρόγραμμα HIIT απαιτεί πλάνο Plus.",
+    "category": "Cardio",
+    "categoryEl": "Κάρντιο",
+    "displayOrder": 2,
+    "isPublished": true,
+    "courseTitles": [
+      "Couch to 5K Running",
+      "HIIT for Fat Loss",
+      "Nutrition Basics for Training",
+      "Recovery & Sleep"
+    ]
+  },
+  {
+    "title": "Build Muscle",
+    "titleEl": "Χτίσε Μυϊκή Μάζα",
+    "description": "Go from your first barbell squat to a six-day push/pull/legs split. Master the main lifts, add volume with dumbbells, focus on upper-body hypertrophy, then bring it all together in an advanced programme built on progressive overload. The later programmes need a Plus or Pro plan.",
+    "descriptionEl": "Πήγαινε από το πρώτο σου squat με μπάρα σε ένα πρόγραμμα push/pull/legs έξι ημερών. Κατάκτησε τις βασικές ασκήσεις, αύξησε τον όγκο με αλτήρες, εστίασε στην υπερτροφία του άνω κορμού και μετά ένωσέ τα όλα σε ένα προχωρημένο πρόγραμμα βασισμένο στην προοδευτική υπερφόρτωση. Τα επόμενα προγράμματα απαιτούν πλάνο Plus ή Pro.",
+    "category": "Strength",
+    "categoryEl": "Δύναμη",
+    "displayOrder": 3,
+    "isPublished": true,
+    "courseTitles": [
+      "Strength Foundations",
+      "Dumbbell Home Strength",
+      "Upper Body Hypertrophy",
+      "Push Pull Legs Programme"
+    ]
+  },
+  {
+    "title": "Move Better",
+    "titleEl": "Κινήσου Καλύτερα",
+    "description": "Ease the stiffness of long hours at a desk, then build mobility that lasts: a quick daily posture reset, a full mobility programme, gentle yoga and stretching, and core work to control your new range. Ideal if you sit a lot or want to move more freely. The yoga programme needs a Plus plan.",
+    "descriptionEl": "Διώξε το πιάσιμο από τις πολλές ώρες στο γραφείο και χτίσε κινητικότητα που διαρκεί: μια γρήγορη καθημερινή επαναφορά της στάσης σου, ένα πλήρες πρόγραμμα κινητικότητας, ήπια γιόγκα και διατάσεις και δουλειά κορμού για να ελέγχεις το νέο σου εύρος κίνησης. Ιδανικό αν κάθεσαι πολύ ή θέλεις να κινείσαι πιο ελεύθερα. Το πρόγραμμα γιόγκας απαιτεί πλάνο Plus.",
+    "category": "Mobility",
+    "categoryEl": "Κινητικότητα",
+    "displayOrder": 4,
+    "isPublished": true,
+    "courseTitles": [
+      "Desk Posture Reset",
+      "Mobility & Flexibility",
+      "Beginner Yoga & Stretching",
+      "Core & Stability"
+    ]
+  }
+]

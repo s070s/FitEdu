@@ -47,9 +47,10 @@ public class SubscriptionController : ControllerBase
     /// </summary>
     [HttpGet("plans")]
     [AllowAnonymous]
-    public async Task<ActionResult<List<SubscriptionPlanDto>>> GetPlans(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<SubscriptionPlanDto>>> GetPlans(
+        [FromQuery] string lang = "en", CancellationToken cancellationToken = default)
     {
-        var plans = await _subscriptionService.GetPlansAsync(cancellationToken);
+        var plans = await _subscriptionService.GetPlansAsync(lang, cancellationToken);
         return Ok(plans);
     }
 

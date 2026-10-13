@@ -40,16 +40,16 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Χρεώσεις &amp; Συναλλαγές - FitEdu</value>
+		<value>Χρεώσεις &amp; συναλλαγές - FitEdu</value>
 	</data>
 	<data name="PageHeading" xml:space="preserve">
-		<value>Χρεώσεις &amp; Συναλλαγές</value>
+		<value>Χρεώσεις &amp; συναλλαγές</value>
 	</data>
 	<data name="LoadingBilling" xml:space="preserve">
 		<value>Φόρτωση πληροφοριών χρέωσης...</value>
 	</data>
 	<data name="CurrentPlan" xml:space="preserve">
-		<value>Τρέχον Πλάνο</value>
+		<value>Τρέχον πλάνο</value>
 	</data>
 	<data name="ActiveSince" xml:space="preserve">
 		<value>Ενεργό από:</value>
@@ -64,31 +64,31 @@
 		<value>Χωρίς λήξη (ισόβια)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Απεριόριστα μαθήματα</value>
+		<value>Απεριόριστα ενεργά προγράμματα</value>
 	</data>
 	<data name="CoursesCountFormat" xml:space="preserve">
-		<value>{0} μάθημα(-τα)</value>
+		<value>Έως {0} ενεργά προγράμματα</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
-		<value>Αξιολογήσεις</value>
+		<value>Αξιολογήσεις αυτοελέγχου</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Πιστοποιητικά</value>
+		<value>Πιστοποιητικά ολοκλήρωσης</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Προτεραιότητα υποστήριξης</value>
+		<value>Υποστήριξη με προτεραιότητα</value>
 	</data>
 	<data name="ChangePlan" xml:space="preserve">
-		<value>Αλλαγή Πλάνου</value>
+		<value>Αλλαγή πλάνου</value>
 	</data>
 	<data name="Cancelling" xml:space="preserve">
 		<value>Ακύρωση...</value>
 	</data>
 	<data name="CancelSubscription" xml:space="preserve">
-		<value>Ακύρωση Συνδρομής</value>
+		<value>Ακύρωση συνδρομής</value>
 	</data>
 	<data name="TransactionHistory" xml:space="preserve">
-		<value>Ιστορικό Συναλλαγών</value>
+		<value>Ιστορικό συναλλαγών</value>
 	</data>
 	<data name="NoTransactions" xml:space="preserve">
 		<value>Δεν υπάρχουν συναλλαγές ακόμα.</value>
@@ -115,12 +115,45 @@
 		<value>Ακύρωση συνδρομής;</value>
 	</data>
 	<data name="CancelConfirmBody" xml:space="preserve">
-		<value>Είστε σίγουροι ότι θέλετε να ακυρώσετε το πρόγραμμα {0};</value>
+		<value>Σίγουρα θέλεις να ακυρώσεις το πλάνο {0};</value>
 	</data>
 	<data name="CancelConfirmAccessUntil" xml:space="preserve">
-		<value>Θα διατηρήσετε την πρόσβαση έως {0}.</value>
+		<value>Θα έχεις πρόσβαση έως {0}.</value>
 	</data>
 	<data name="KeepSubscription" xml:space="preserve">
 		<value>Διατήρηση συνδρομής</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Η συνδρομή σου</value>
+	</data>
+	<data name="TxType_Purchase" xml:space="preserve">
+		<value>Αγορά</value>
+	</data>
+	<data name="TxType_Upgrade" xml:space="preserve">
+		<value>Αναβάθμιση</value>
+	</data>
+	<data name="TxType_Downgrade" xml:space="preserve">
+		<value>Υποβάθμιση</value>
+	</data>
+	<data name="TxType_Renewal" xml:space="preserve">
+		<value>Ανανέωση</value>
+	</data>
+	<data name="TxType_Refund" xml:space="preserve">
+		<value>Επιστροφή χρημάτων</value>
+	</data>
+	<data name="TxType_FreePlanAssignment" xml:space="preserve">
+		<value>Δωρεάν πλάνο</value>
+	</data>
+	<data name="TxType_PlanSwitch" xml:space="preserve">
+		<value>Αλλαγή πλάνου</value>
+	</data>
+	<data name="TxType_Expired" xml:space="preserve">
+		<value>Λήξη</value>
+	</data>
+	<data name="OneCourse" xml:space="preserve">
+		<value>1 ενεργό πρόγραμμα</value>
+	</data>
+	<data name="PlanActive" xml:space="preserve">
+		<value>Ενεργό</value>
 	</data>
 </root>

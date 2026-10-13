@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using FitEdu.Application.ApiInterfaces;
@@ -27,6 +28,18 @@ namespace FitEdu.Web.Startup;
 /// </summary>
 public static class ServiceRegistrationExtensions
 {
+    /// <summary>Largest message the app's own hubs (chat, call, notifications) accept.</summary>
+    public const int AppHubMessageLimitBytes = 32_000;
+
+    /// <summary>
+    /// Largest message the Blazor circuit hub accepts. The message that starts a circuit carries the
+    /// prerendered page's persisted state, and Greek text grows about six-fold there (the JSON escapes
+    /// each Greek letter as \uXXXX before the state is encrypted and base64-encoded): the Greek home
+    /// page alone needs about 32 KB. A larger message closes the connection, so the page never turns
+    /// interactive.
+    /// </summary>
+    public const int CircuitMessageLimitBytes = 128 * 1024;
+
     public static WebApplicationBuilder AddFitEduServices(this WebApplicationBuilder builder)
     {
         var config = builder.Configuration;
@@ -83,6 +96,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IAuthApiService, AuthApiService>();
         builder.Services.AddScoped<ICourseService, CourseService>();
+        builder.Services.AddScoped<IExerciseService, ExerciseService>();
         builder.Services.AddScoped<IAdminCourseService, AdminCourseService>();
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
@@ -106,6 +120,9 @@ public static class ServiceRegistrationExtensions
         // Scoped so it shares the circuit's single CallService hub connection for presence state.
         builder.Services.AddScoped<PresenceService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<ILandingService, LandingService>();
+        // The clock for date-based rules (the training streak); tests swap in a fixed one.
+        builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddScoped<IAssessmentService, AssessmentService>();
         builder.Services.AddScoped<AvatarChangedNotifier>();
         // Circuit-scoped bearer-token provider used by ApiClientBase so consumers authenticate
@@ -221,7 +238,7 @@ public static class ServiceRegistrationExtensions
         // propagate to a second node. Keep TTLs short and move to a shared cache (Redis) before
         // scaling out; see the accepted-limitations note in docs/plans/35-audit-scalability.md.
         builder.Services.AddMemoryCache();
-        builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = 32_000);
+        builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes);
         builder.Services.AddControllers();
         // Enables IProblemDetailsService, used by UseStatusCodePages() (bare-status error responses,
         // e.g. NotFound()/Forbid()/429 rate-limit rejections) and the production exception handler
@@ -319,7 +336,9 @@ public static class ServiceRegistrationExtensions
                 // (base64 avatar data URLs).
                 options.DisconnectedCircuitMaxRetained = 50;
                 options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(2);
-            });
+            })
+            // Only the circuit hub gets the larger limit; the app's own hubs keep AppHubMessageLimitBytes.
+            .AddHubOptions(options => options.MaximumReceiveMessageSize = CircuitMessageLimitBytes);
 
         // Suppress noisy info-level authorization logs
         builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Warning);
@@ -377,6 +396,8 @@ public static class ServiceRegistrationExtensions
 
         builder.Services.AddHttpClient<ICourseConsumer, CourseConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
+        // Public library API (anonymous), so no SsrApiHandler — like the blog consumer.
+        builder.Services.AddHttpClient<IExerciseConsumer, ExerciseConsumer>(Configure);
         builder.Services.AddHttpClient<IAssessmentConsumer, AssessmentConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<ISubscriptionConsumer, SubscriptionConsumer>(Configure)
@@ -405,6 +426,8 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddHttpClient<IAdminBlogConsumer, AdminBlogConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<ITestimonialConsumer, TestimonialConsumer>(Configure);
+        // Public home page API (anonymous), so no SsrApiHandler.
+        builder.Services.AddHttpClient<ILandingConsumer, LandingConsumer>(Configure);
         builder.Services.AddHttpClient<IAdminTestimonialConsumer, AdminTestimonialConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IChatService, ChatService>(Configure)

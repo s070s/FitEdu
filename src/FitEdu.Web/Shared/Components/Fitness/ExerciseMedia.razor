@@ -1,0 +1,63 @@
+@* Two-frame exercise demo. Interactive (workout cards, detail pages): the start photo and the finish
+   photo crossfade in a loop, and a tap anywhere on the photo pauses or resumes it; with reduced
+   motion the two frames sit side by side instead. Not interactive (library grid): a still start
+   photo with no loop, so a page of cards never flashes; the card shows the finish photo on hover. *@
+
+<figure class="exercise-media @ModeClass @(_paused ? "exercise-media--paused" : "")">
+    <div class="exercise-media__frames">
+        <img class="exercise-media__frame exercise-media__frame--start" src="@StartUrl"
+             alt="@string.Format(ExerciseRes.StartPositionAltFormat, Name)"
+             width="@FrameWidth" height="@FrameHeight" loading="@LoadingMode" decoding="async" />
+        <img class="exercise-media__frame exercise-media__frame--end" src="@EndUrl"
+             alt="@string.Format(ExerciseRes.EndPositionAltFormat, Name)"
+             width="@FrameWidth" height="@FrameHeight" loading="@LoadingMode" decoding="async" />
+    </div>
+
+    @* The phase tags are decorative: each photo's alt text already names its position. *@
+    <div class="exercise-media__phases" aria-hidden="true">
+        <span class="exercise-media__phase exercise-media__phase--start">@LessonRes.StartPosition</span>
+        <span class="exercise-media__phase exercise-media__phase--end">@LessonRes.EndPosition</span>
+    </div>
+
+    @if (Interactive)
+    {
+        <button type="button" class="exercise-media__toggle" aria-label="@ExerciseRes.PauseAnimation"
+                aria-pressed="@(_paused ? "true" : "false")" @onclick="TogglePause">
+            <span class="exercise-media__toggle-icon">
+                <span class="bi @(_paused ? "bi-play-fill" : "bi-pause-fill")" aria-hidden="true"></span>
+            </span>
+        </button>
+    }
+</figure>
+
+@code {
+    // The library photos are 480 x 320; the attributes reserve that 3:2 box before they load.
+    private const int FrameWidth = 480;
+    private const int FrameHeight = 320;
+
+    /// <summary>URL of the start-position photo (frame 0).</summary>
+    [Parameter, EditorRequired] public string StartUrl { get; set; } = string.Empty;
+
+    /// <summary>URL of the finish-position photo (frame 1).</summary>
+    [Parameter, EditorRequired] public string EndUrl { get; set; } = string.Empty;
+
+    /// <summary>The exercise name, used in both photos' alt text.</summary>
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// True: the photos loop with a pause button. False inside a card that is itself one link (the
+    /// library grid): a still start photo with no loop and no button to compete with the link.
+    /// </summary>
+    [Parameter] public bool Interactive { get; set; } = true;
+
+    /// <summary>True for a photo at the top of the page, so it is not lazy-loaded.</summary>
+    [Parameter] public bool Eager { get; set; }
+
+    private bool _paused;
+
+    private string ModeClass => Interactive ? "exercise-media--loop" : "exercise-media--still";
+
+    private string LoadingMode => Eager ? "eager" : "lazy";
+
+    private void TogglePause() => _paused = !_paused;
+}

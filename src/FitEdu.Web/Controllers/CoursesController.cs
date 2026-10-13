@@ -4,6 +4,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
@@ -24,7 +25,8 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
         ?? throw new UnauthorizedAccessException("User ID not found in claims");
 
     /// <summary>
-    /// Get a paged list of all published courses with enrollment status.
+    /// Get a paged list of all published courses with enrollment status. Optional filters:
+    /// category, search text, goal and level (enum names) and one equipment code.
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<PagedResult<CourseListItemDto>>> GetCourses(
@@ -33,11 +35,15 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
         [FromQuery] string lang = "en",
         [FromQuery] Guid? categoryId = null,
         [FromQuery] string? search = null,
+        [FromQuery] FitnessGoal? goal = null,
+        [FromQuery] CourseLevel? level = null,
+        [FromQuery] string? equipment = null,
         CancellationToken cancellationToken = default)
     {
         (page, pageSize) = PagingParams.Normalize(page, pageSize);
 
-        var result = await courseService.GetPublishedCoursesAsync(UserId, page, pageSize, lang, categoryId, search, cancellationToken);
+        var result = await courseService.GetPublishedCoursesAsync(
+            UserId, page, pageSize, lang, categoryId, search, goal, level, equipment, cancellationToken);
         return Ok(result);
     }
 

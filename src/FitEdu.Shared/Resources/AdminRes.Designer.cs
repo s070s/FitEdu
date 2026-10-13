@@ -115,6 +115,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to + Add Section.
+        /// </summary>
+        public static string AddSection {
+            get {
+                return ResourceManager.GetString("AddSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assessment Details.
         /// </summary>
         public static string AssessmentDetails {
@@ -169,7 +178,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Assessments.
+        ///   Looks up a localized string similar to Back to Assessments.
         /// </summary>
         public static string BackToAssessments {
             get {
@@ -178,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Course.
+        ///   Looks up a localized string similar to Back to Course.
         /// </summary>
         public static string BackToCourse {
             get {
@@ -187,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Courses.
+        ///   Looks up a localized string similar to Back to Courses.
         /// </summary>
         public static string BackToCourses {
             get {
@@ -385,7 +394,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Role / Company.
+        ///   Looks up a localized string similar to Role / Context.
         /// </summary>
         public static string ColRoleCompany {
             get {
@@ -417,6 +426,15 @@ namespace FitEdu.Shared.Resources {
         public static string ColStatus {
             get {
                 return ResourceManager.GetString("ColStatus", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Training level.
+        /// </summary>
+        public static string ColTrainingLevel {
+            get {
+                return ResourceManager.GetString("ColTrainingLevel", resourceCulture);
             }
         }
 
@@ -790,7 +808,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Company / Context.
+        ///   Looks up a localized string similar to Gym / Context.
         /// </summary>
         public static string FieldCompanyContext {
             get {
@@ -853,7 +871,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unique identifier, e.g. career_clarity_v1.
+        ///   Looks up a localized string similar to unique identifier, e.g. training_readiness_v1.
         /// </summary>
         public static string FieldKeyHint {
             get {
@@ -871,11 +889,29 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max label.
+        /// </summary>
+        public static string FieldMaxLabel {
+            get {
+                return ResourceManager.GetString("FieldMaxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Min.
         /// </summary>
         public static string FieldMin {
             get {
                 return ResourceManager.GetString("FieldMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min label.
+        /// </summary>
+        public static string FieldMinLabel {
+            get {
+                return ResourceManager.GetString("FieldMinLabel", resourceCulture);
             }
         }
         
@@ -907,6 +943,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Quote (Greek).
+        /// </summary>
+        public static string FieldQuoteEl {
+            get {
+                return ResourceManager.GetString("FieldQuoteEl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required.
         /// </summary>
         public static string FieldRequired {
@@ -921,6 +966,15 @@ namespace FitEdu.Shared.Resources {
         public static string FieldRoleTitle {
             get {
                 return ResourceManager.GetString("FieldRoleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role / Title (Greek).
+        /// </summary>
+        public static string FieldRoleTitleEl {
+            get {
+                return ResourceManager.GetString("FieldRoleTitleEl", resourceCulture);
             }
         }
         
@@ -970,7 +1024,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 👁 Admin view:.
+        ///   Looks up a localized string similar to Admin view:.
         /// </summary>
         public static string ImpersonationAdminView {
             get {
@@ -979,7 +1033,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✕ Exit Impersonation.
+        ///   Looks up a localized string similar to Exit Impersonation.
         /// </summary>
         public static string ImpersonationExit {
             get {
@@ -1020,15 +1074,6 @@ namespace FitEdu.Shared.Resources {
         public static string ItemLabelTestimonials {
             get {
                 return ResourceManager.GetString("ItemLabelTestimonials", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} lesson(s).
-        /// </summary>
-        public static string LessonsCountFormat {
-            get {
-                return ResourceManager.GetString("LessonsCountFormat", resourceCulture);
             }
         }
         
@@ -1537,6 +1582,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Section {0}.
+        /// </summary>
+        public static string SectionNumber {
+            get {
+                return ResourceManager.GetString("SectionNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shared fields.
         /// </summary>
         public static string SharedFields {
@@ -1668,6 +1722,15 @@ namespace FitEdu.Shared.Resources {
         public static string TypeChoice {
             get {
                 return ResourceManager.GetString("TypeChoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple choice (select any).
+        /// </summary>
+        public static string TypeMultiSelect {
+            get {
+                return ResourceManager.GetString("TypeMultiSelect", resourceCulture);
             }
         }
         
@@ -1833,7 +1896,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sessions.
+        ///   Looks up a localized string similar to live classes.
         /// </summary>
         public static string ItemLabelSessions {
             get {
@@ -2247,7 +2310,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to save the learning path..
+        ///   Looks up a localized string similar to Failed to save the training path..
         /// </summary>
         public static string PathSaveFailed {
             get {
@@ -2264,5 +2327,364 @@ namespace FitEdu.Shared.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal.
+        /// </summary>
+        public static string Goal {
+            get {
+                return ResourceManager.GetString("Goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Equipment.
+        /// </summary>
+        public static string Equipment {
+            get {
+                return ResourceManager.GetString("Equipment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comma-separated codes: {0}..
+        /// </summary>
+        public static string EquipmentHintFormat {
+            get {
+                return ResourceManager.GetString("EquipmentHintFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Estimated weeks.
+        /// </summary>
+        public static string EstimatedWeeks {
+            get {
+                return ResourceManager.GetString("EstimatedWeeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sessions per week.
+        /// </summary>
+        public static string SessionsPerWeek {
+            get {
+                return ResourceManager.GetString("SessionsPerWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover exercise (slug).
+        /// </summary>
+        public static string CoverExercise {
+            get {
+                return ResourceManager.GetString("CoverExercise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An exercise slug from the library, e.g. barbell-squat. Its start photo becomes the cover..
+        /// </summary>
+        public static string CoverExerciseHint {
+            get {
+                return ResourceManager.GetString("CoverExerciseHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No exercise with this slug.
+        /// </summary>
+        public static string UnknownExerciseSlug {
+            get {
+                return ResourceManager.GetString("UnknownExerciseSlug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exercises.
+        /// </summary>
+        public static string Exercises {
+            get {
+                return ResourceManager.GetString("Exercises", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add exercise.
+        /// </summary>
+        public static string AddExercise {
+            get {
+                return ResourceManager.GetString("AddExercise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string RemoveExercise {
+            get {
+                return ResourceManager.GetString("RemoveExercise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search exercises by name.
+        /// </summary>
+        public static string SearchExercises {
+            get {
+                return ResourceManager.GetString("SearchExercises", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No exercises found..
+        /// </summary>
+        public static string NoExercisesFound {
+            get {
+                return ResourceManager.GetString("NoExercisesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A lesson can hold up to {0} exercises..
+        /// </summary>
+        public static string LessonExerciseLimit {
+            get {
+                return ResourceManager.GetString("LessonExerciseLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No exercises in this lesson yet..
+        /// </summary>
+        public static string NoLessonExercises {
+            get {
+                return ResourceManager.GetString("NoLessonExercises", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets.
+        /// </summary>
+        public static string Sets {
+            get {
+                return ResourceManager.GetString("Sets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reps.
+        /// </summary>
+        public static string Reps {
+            get {
+                return ResourceManager.GetString("Reps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rest (s).
+        /// </summary>
+        public static string RestSeconds {
+            get {
+                return ResourceManager.GetString("RestSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string Notes {
+            get {
+                return ResourceManager.GetString("Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Article title.
+        /// </summary>
+        public static string BlogTitlePlaceholder {
+            get {
+                return ResourceManager.GetString("BlogTitlePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short description for the article card.
+        /// </summary>
+        public static string BlogSummaryPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogSummaryPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. beginner-strength-guide.
+        /// </summary>
+        public static string BlogSlugPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogSlugPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strength, Nutrition, Recovery.
+        /// </summary>
+        public static string BlogTagsPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogTagsPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. FitEdu Coaching Team.
+        /// </summary>
+        public static string BlogAuthorPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogAuthorPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Or paste an image URL.
+        /// </summary>
+        public static string CoverUrlPlaceholder {
+            get {
+                return ResourceManager.GetString("CoverUrlPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover preview.
+        /// </summary>
+        public static string CoverPreviewAlt {
+            get {
+                return ResourceManager.GetString("CoverPreviewAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Maria Papadopoulou.
+        /// </summary>
+        public static string TestimonialNamePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Personal trainer.
+        /// </summary>
+        public static string TestimonialRolePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialRolePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Home workouts.
+        /// </summary>
+        public static string TestimonialContextPlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialContextPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What the member says about training with FitEdu (max 1000 characters).
+        /// </summary>
+        public static string TestimonialQuotePlaceholder {
+            get {
+                return ResourceManager.GetString("TestimonialQuotePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Avatar preview.
+        /// </summary>
+        public static string AvatarPreviewAlt {
+            get {
+                return ResourceManager.GetString("AvatarPreviewAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no label).
+        /// </summary>
+        public static string QuestionNoLabel {
+            get {
+                return ResourceManager.GetString("QuestionNoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Option 1 Option 2 Option 3.
+        /// </summary>
+        public static string OptionsPlaceholder {
+            get {
+                return ResourceManager.GetString("OptionsPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown equipment code: '{0}'. Use only the codes listed below the field..
+        /// </summary>
+        public static string UnknownEquipmentCodeFormat {
+            get {
+                return ResourceManager.GetString("UnknownEquipmentCodeFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string RoleAdmin {
+            get {
+                return ResourceManager.GetString("RoleAdmin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Member.
+        /// </summary>
+        public static string RoleStudent {
+            get {
+                return ResourceManager.GetString("RoleStudent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PDF upload failed..
+        /// </summary>
+        public static string PdfUploadFailed {
+            get {
+                return ResourceManager.GetString("PdfUploadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Video upload failed..
+        /// </summary>
+        public static string VideoUploadFailed {
+            get {
+                return ResourceManager.GetString("VideoUploadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Write the content here....
+        /// </summary>
+        public static string EditorPlaceholder {
+            get {
+                return ResourceManager.GetString("EditorPlaceholder", resourceCulture);
+            }
+        }
     }
 }

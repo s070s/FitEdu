@@ -1,0 +1,95 @@
+/* ================================================
+   Bottom tab bar — phones only (below 768 px)
+   ================================================ */
+.bottom-nav,
+.bottom-nav-spacer {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .bottom-nav-spacer {
+        display: block;
+        height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav {
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        z-index: 1030;
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+        padding: 0 max(var(--space-1), env(safe-area-inset-right)) env(safe-area-inset-bottom) max(var(--space-1), env(safe-area-inset-left));
+        background: rgba(var(--bg-surface-rgb), 0.92);
+        backdrop-filter: blur(12px) saturate(140%);
+        -webkit-backdrop-filter: blur(12px) saturate(140%);
+        border-top: 1px solid var(--border-subtle);
+    }
+}
+
+.bottom-nav ::deep .bottom-nav__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Icons start at the same height on every tab, so a label that wraps onto a second line
+       (Προγράμ-ματα on a 320 px phone) hangs below its icon instead of pushing it up. */
+    justify-content: flex-start;
+    gap: 0.2rem;
+    min-width: 0;
+    min-height: var(--tap-min);
+    /* Tight sides, a 10.4 px label and slightly closer letters let the longest tab label
+       (Προγράμματα) fit on one line from 360 px up, the size of a phone tab-bar label. */
+    padding: 0.4rem 0.05rem 0;
+    color: var(--text-light-muted);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav ::deep .bottom-nav__link:hover {
+    color: var(--text-strong-normal);
+}
+
+.bottom-nav ::deep .bottom-nav__link.active {
+    color: var(--text-strong-accent);
+}
+
+.bottom-nav ::deep .bottom-nav__link:focus-visible {
+    outline-offset: -2px;
+}
+
+/* The active tab gets a soft lime pill behind its icon. */
+.bottom-nav ::deep .bottom-nav__icon-wrap {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 1.85rem;
+    border-radius: var(--radius-pill);
+    transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.bottom-nav ::deep .bottom-nav__link.active .bottom-nav__icon-wrap {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.16);
+}
+
+.bottom-nav ::deep .bottom-nav__icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* A label may break onto a second line, only where its text allows it (a space or a soft hyphen). */
+.bottom-nav ::deep .bottom-nav__label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+    hyphens: manual;
+}

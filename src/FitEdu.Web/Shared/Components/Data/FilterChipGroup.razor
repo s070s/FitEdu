@@ -1,0 +1,67 @@
+@* One labelled row of single-choice filter chips: "All" plus one chip per option; the selected chip
+   is pressed (aria-pressed). It has no styles of its own: CategoryFilterBar, which hosts every
+   group (its categories and the page's ExtraFilters), styles the rows and chips. *@
+
+<div class="filter-chip-group" role="group" aria-label="@Label">
+    <span class="filter-chip-group__label" aria-hidden="true">@Label</span>
+    <div class="filter-chip-group__chips">
+        <button type="button"
+                class="category-chip-option category-chip-option--all @SelectedClass(null)"
+                aria-pressed="@IsPressed(null)"
+                @onclick="() => SelectAsync(null)">
+            @AllLabel
+        </button>
+        @foreach (var option in Options)
+        {
+            <button type="button"
+                    class="category-chip-option @SelectedClass(option.Value)"
+                    aria-pressed="@IsPressed(option.Value)"
+                    @key="option.Value"
+                    @onclick="() => SelectAsync(option.Value)">
+                @if (option.Icon is not null)
+                {
+                    <span class="bi @option.Icon" aria-hidden="true"></span>
+                }
+                @option.Label
+                @if (option.Count is { } count)
+                {
+                    <span class="category-chip-option__count">@count</span>
+                }
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    private const string SelectedCssClass = "selected";
+
+    /// <summary>Group name, shown above (phones) or beside (wider screens) the chips.</summary>
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+
+    /// <summary>Label of the first chip, which clears this group's filter.</summary>
+    [Parameter, EditorRequired] public string AllLabel { get; set; } = string.Empty;
+
+    [Parameter] public IReadOnlyList<Option> Options { get; set; } = [];
+
+    /// <summary>Value of the selected option, or null when "All" is selected.</summary>
+    [Parameter] public string? SelectedValue { get; set; }
+
+    /// <summary>Raised with the chosen option's value, or null for "All".</summary>
+    [Parameter] public EventCallback<string?> OnSelected { get; set; }
+
+    private bool IsSelected(string? value) => string.Equals(SelectedValue, value, StringComparison.Ordinal);
+
+    private string SelectedClass(string? value) => IsSelected(value) ? SelectedCssClass : string.Empty;
+
+    private string IsPressed(string? value) => IsSelected(value) ? "true" : "false";
+
+    // Pressing the chip that is already selected changes nothing, so it does not reload the page.
+    private Task SelectAsync(string? value) =>
+        IsSelected(value) ? Task.CompletedTask : OnSelected.InvokeAsync(value);
+
+    /// <summary>
+    /// One chip: the value the page filters by (an id, an enum name or a code), its label, and an
+    /// optional Bootstrap Icons class and item count.
+    /// </summary>
+    public sealed record Option(string Value, string Label, string? Icon = null, int? Count = null);
+}

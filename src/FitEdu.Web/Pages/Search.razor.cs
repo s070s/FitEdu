@@ -1,6 +1,5 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
@@ -41,25 +40,21 @@ public partial class Search
         _loading = false;
     }
 
-    private void HandleKeyDown(KeyboardEventArgs e)
+    private void Submit()
     {
-        if (e.Key == "Enter" && _input.Trim().Length > 0)
-            Navigation.NavigateTo($"/search?q={Uri.EscapeDataString(_input.Trim())}");
-    }
+        var query = _input.Trim();
+        if (query.Length == 0)
+            return;
 
-    private static string IconFor(string sourceType) => sourceType switch
-    {
-        "Course" => "bi-book",
-        "Assessment" => "bi-list-check",
-        "BlogArticle" => "bi-newspaper",
-        _ => "bi-file-earmark"
-    };
+        Navigation.NavigateTo($"/search?q={Uri.EscapeDataString(query)}");
+    }
 
     private static string TypeLabel(string sourceType) => sourceType switch
     {
         "Course" => SearchRes.TypeCourse,
         "Assessment" => SearchRes.TypeAssessment,
         "BlogArticle" => SearchRes.TypeBlogArticle,
+        "Exercise" => SearchRes.TypeExercise,
         _ => sourceType
     };
 }

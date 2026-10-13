@@ -129,7 +129,7 @@ public class CourseServiceTests
     public async Task GetPublishedCourses_FiltersByCategoryId()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var category = new Category { Id = Guid.NewGuid(), NameEn = "Career" };
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
         db.Categories.Add(category);
         var matching = CourseWithLessons("Matching", 0);
         matching.CategoryId = category.Id;
@@ -142,7 +142,7 @@ public class CourseServiceTests
 
         result.TotalCount.ShouldBe(1);
         result.Items.Single().Title.ShouldBe("Matching");
-        result.Items.Single().CategoryName.ShouldBe("Career");
+        result.Items.Single().CategoryName.ShouldBe("Strength");
     }
 
     [Fact]
@@ -178,7 +178,170 @@ public class CourseServiceTests
         item.CategoryName.ShouldBeNull();
     }
 
+    private static Course FitnessCourse(string titleEn, FitnessGoal goal, CourseLevel level, string? equipment)
+    {
+        var course = CourseWithLessons(titleEn, 0);
+        course.Goal = goal;
+        course.Level = level;
+        course.Equipment = equipment;
+        return course;
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_CarriesFitnessFieldsAndCoverUrl()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = FitnessCourse("Course", FitnessGoal.FatLoss, CourseLevel.Intermediate, "none,bands");
+        course.EstimatedWeeks = 6;
+        course.SessionsPerWeek = 3;
+        course.CoverExerciseSlug = "plank";
+        db.Courses.AddRange(course, CourseWithLessons("No Cover", 0));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var items = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items;
+
+        var item = items.Single(i => i.Title == "Course");
+        item.Goal.ShouldBe(FitnessGoal.FatLoss);
+        item.Level.ShouldBe(CourseLevel.Intermediate);
+        item.Equipment.ShouldBe("none,bands");
+        item.EstimatedWeeks.ShouldBe(6);
+        item.SessionsPerWeek.ShouldBe(3);
+        item.CoverImageUrl.ShouldBe("/images/exercises/plank/0.webp");
+        items.Single(i => i.Title == "No Cover").CoverImageUrl.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_FiltersByGoalLevelAndEquipment()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Courses.AddRange(
+            FitnessCourse("Match", FitnessGoal.Strength, CourseLevel.Advanced, "barbell,dumbbells,cables"),
+            FitnessCourse("Wrong Goal", FitnessGoal.Mobility, CourseLevel.Advanced, "dumbbells"),
+            FitnessCourse("Wrong Level", FitnessGoal.Strength, CourseLevel.Beginner, "dumbbells"),
+            FitnessCourse("No Dumbbells", FitnessGoal.Strength, CourseLevel.Advanced, "barbell"),
+            FitnessCourse("No Equipment Listed", FitnessGoal.Strength, CourseLevel.Advanced, null));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(
+            UserId, 1, 10, "en", goal: FitnessGoal.Strength, level: CourseLevel.Advanced, equipment: "dumbbells");
+
+        result.Items.ShouldHaveSingleItem().Title.ShouldBe("Match");
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_EquipmentFilterMatchesWholeCodesInAnyPosition()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Courses.AddRange(
+            FitnessCourse("First", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell,mat"),
+            FitnessCourse("Last", FitnessGoal.Strength, CourseLevel.Beginner, "mat,kettlebell"),
+            FitnessCourse("Only", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell"),
+            FitnessCourse("Longer Code", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebells"));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en", equipment: "kettlebell");
+
+        string.Join("|", result.Items.Select(i => i.Title)).ShouldBe("First|Last|Only");
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_EquipmentFilterMatchesWholeCodes_OnSqlite()
+    {
+        // Same predicate as above, but translated to SQL by a relational provider.
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Courses.AddRange(
+            FitnessCourse("First", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell,mat"),
+            FitnessCourse("Last", FitnessGoal.Strength, CourseLevel.Beginner, "mat,kettlebell"),
+            FitnessCourse("Only", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell"),
+            FitnessCourse("Longer Code", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebells"),
+            FitnessCourse("No Equipment Listed", FitnessGoal.Strength, CourseLevel.Beginner, null));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en", equipment: "kettlebell");
+
+        string.Join("|", result.Items.Select(i => i.Title)).ShouldBe("First|Last|Only");
+    }
+
     // ---- GetCourseDetailAsync -----------------------------------------------
+
+    [Fact]
+    public async Task GetCourseDetail_CarriesFitnessFieldsAndCoverUrl()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = FitnessCourse("Course", FitnessGoal.Endurance, CourseLevel.Beginner, "bike");
+        course.EstimatedWeeks = 8;
+        course.SessionsPerWeek = 4;
+        course.CoverExerciseSlug = "bicycling";
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!;
+
+        detail.Goal.ShouldBe(FitnessGoal.Endurance);
+        detail.Level.ShouldBe(CourseLevel.Beginner);
+        detail.Equipment.ShouldBe("bike");
+        detail.EstimatedWeeks.ShouldBe(8);
+        detail.SessionsPerWeek.ShouldBe(4);
+        detail.CoverImageUrl.ShouldBe("/images/exercises/bicycling/0.webp");
+    }
+
+    [Fact]
+    public async Task GetCourseDetail_CountsEachLessonsPublishedExercises()
+    {
+        // The lesson page leaves out unpublished exercises, so the course outline counts the same ones.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 2);
+        var firstLesson = course.Modules.First().Lessons.First();
+        var squat = NewExercise("squat", "Squat");
+        var pushUp = NewExercise("pushups", "Pushups");
+        var hidden = NewExercise("hidden", "Hidden");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(squat, pushUp, hidden);
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 1 });
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = pushUp.Id, SortOrder = 2 });
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = hidden.Id, SortOrder = 3 });
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!;
+
+        var exerciseCounts = detail.Modules.Single().Lessons.Select(lesson => lesson.ExerciseCount);
+        string.Join("|", exerciseCounts).ShouldBe("2|0");
+    }
+
+    [Fact]
+    public async Task GetCourseDetail_CarriesTheCategoryNameInThePageLanguage()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength", NameEl = "Δύναμη" };
+        var course = CourseWithLessons("C", 0);
+        course.CategoryId = category.Id;
+        db.Categories.Add(category);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "el"))!.CategoryName.ShouldBe("Δύναμη");
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!.CategoryName.ShouldBe("Strength");
+    }
+
+    [Fact]
+    public async Task GetCourseDetail_NoCategory_LeavesTheCategoryNameEmpty()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 0);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!.CategoryName.ShouldBeNull();
+    }
 
     [Fact]
     public async Task GetCourseDetail_Missing_ReturnsNull()
@@ -364,6 +527,98 @@ public class CourseServiceTests
         last.NextLessonId.ShouldBeNull();
     }
 
+    private static Exercise NewExercise(string slug, string nameEn) =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Slug = slug,
+            NameEn = nameEn,
+            Category = "strength",
+            Level = "beginner",
+            PrimaryMuscles = "chest, triceps",
+            SecondaryMuscles = string.Empty,
+            InstructionsEn = "Lower.\nPush up.",
+            IsPublished = true
+        };
+
+    [Fact]
+    public async Task GetLessonDetail_IncludesPrescribedExercisesInSortOrder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        var lesson = course.Modules.First().Lessons.First();
+        var pushUp = NewExercise("pushups", "Pushups");
+        pushUp.NameEl = "Κάμψεις";
+        var squat = NewExercise("squat", "Squat");
+        db.Exercises.AddRange(pushUp, squat);
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 2, Reps = "12" });
+        lesson.Exercises.Add(new LessonExercise
+        {
+            Id = Guid.NewGuid(), ExerciseId = pushUp.Id, SortOrder = 1,
+            Sets = 3, Reps = "8-12", RestSeconds = 60, NotesEn = "Elbows at 45 degrees", NotesEl = "Αγκώνες στις 45 μοίρες"
+        });
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, lesson.Id, "el")).Value!;
+
+        detail.Exercises.ShouldNotBeNull();
+        string.Join("|", detail.Exercises.Select(x => x.Slug)).ShouldBe("pushups|squat");
+        var first = detail.Exercises[0];
+        first.ExerciseId.ShouldBe(pushUp.Id);
+        first.Name.ShouldBe("Κάμψεις");
+        first.Sets.ShouldBe(3);
+        first.Reps.ShouldBe("8-12");
+        first.RestSeconds.ShouldBe(60);
+        first.Notes.ShouldBe("Αγκώνες στις 45 μοίρες");
+        string.Join("|", first.PrimaryMuscles).ShouldBe("chest|triceps");
+        string.Join("|", first.Instructions).ShouldBe("Lower.|Push up.");
+        first.Image0Url.ShouldBe("/images/exercises/pushups/0.webp");
+        first.Image1Url.ShouldBe("/images/exercises/pushups/1.webp");
+        detail.Exercises[1].Name.ShouldBe("Squat"); // no Greek name: English fallback
+    }
+
+    [Fact]
+    public async Task GetLessonDetail_LeavesOutExercisesThatAreNotPublished()
+    {
+        // The exercise page of an unpublished exercise is a 404, so the lesson must not link to it.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        var lesson = course.Modules.First().Lessons.First();
+        var squat = NewExercise("squat", "Squat");
+        var hidden = NewExercise("hidden", "Hidden");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(squat, hidden);
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = hidden.Id, SortOrder = 1 });
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 2 });
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, lesson.Id, "en")).Value!;
+
+        detail.Exercises.ShouldHaveSingleItem().Slug.ShouldBe("squat");
+    }
+
+    [Fact]
+    public async Task GetLessonDetail_LessonWithoutExercises_ReturnsEmptyList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, course.Modules.First().Lessons.First().Id, "en")).Value!;
+
+        detail.Exercises.ShouldNotBeNull();
+        detail.Exercises.ShouldBeEmpty();
+    }
+
     // ---- CompleteLessonAsync -------------------------------------------------
 
     [Fact]
@@ -430,8 +685,28 @@ public class CourseServiceTests
 
         result.Value!.CourseCompleted.ShouldBeTrue();
         result.Value.CertificatePending.ShouldBeFalse();
+        result.Value.CertificateIncluded.ShouldBeTrue();
         (await db.Enrollments.SingleAsync()).Status.ShouldBe(EnrollmentStatus.Completed);
         await certs.Received(1).GetOrCreateAsync(UserId, course.Id, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task CompleteLesson_FinalLessonWithoutCertificatePlan_SaysNoCertificateIsIncluded()
+    {
+        // Free and Plus finish programmes too; the flag lets the lesson page offer the upgrade instead.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var lessonId = course.Modules.First().Lessons.First().Id;
+        var (svc, _, certs) = NewService(db, Status(certificateAccess: false));
+
+        var result = await svc.CompleteLessonAsync(UserId, lessonId);
+
+        result.Value!.CourseCompleted.ShouldBeTrue();
+        result.Value.CertificateIncluded.ShouldBeFalse();
+        await certs.DidNotReceive().GetOrCreateAsync(Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

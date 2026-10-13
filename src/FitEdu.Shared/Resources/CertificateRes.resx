@@ -104,11 +104,20 @@
 	<data name="Heading" xml:space="preserve">
 		<value>My Certificates</value>
 	</data>
+	<data name="Subtitle" xml:space="preserve">
+		<value>Every programme you finish earns a certificate that anyone can verify.</value>
+	</data>
+	<data name="CardEyebrow" xml:space="preserve">
+		<value>Programme completed</value>
+	</data>
+	<data name="BrowseCourses" xml:space="preserve">
+		<value>Browse programmes</value>
+	</data>
 	<data name="Loading" xml:space="preserve">
 		<value>Loading certificates…</value>
 	</data>
 	<data name="NoCertificates" xml:space="preserve">
-		<value>No certificates yet. Complete a course to earn one.</value>
+		<value>No certificates yet. Complete a programme to earn one.</value>
 	</data>
 	<data name="Issued" xml:space="preserve">
 		<value>Issued:</value>
@@ -146,13 +155,52 @@
 	<data name="VerificationInvalid" xml:space="preserve">
 		<value>Invalid or Revoked Certificate</value>
 	</data>
+	<data name="VerificationNotFoundLead" xml:space="preserve">
+		<value>We could not find a certificate with this verification ID. Check the link, or ask the holder to share it again.</value>
+	</data>
+	<data name="VerificationRevokedLead" xml:space="preserve">
+		<value>This certificate has been revoked and is no longer valid.</value>
+	</data>
 	<data name="FieldRecipient" xml:space="preserve">
 		<value>Recipient</value>
 	</data>
 	<data name="FieldCourse" xml:space="preserve">
-		<value>Course</value>
+		<value>Programme</value>
 	</data>
 	<data name="FieldIssuedOn" xml:space="preserve">
 		<value>Issued on</value>
+	</data>
+	<data name="FieldVerificationId" xml:space="preserve">
+		<value>Verification ID</value>
+	</data>
+	<data name="SubtitleNoAccess" xml:space="preserve">
+		<value>Certificates come with Pro. Upgrade and every programme you finish earns one that anyone can verify.</value>
+	</data>
+	<data name="UpgradeDescription" xml:space="preserve">
+		<value>Finish a programme on Pro to get a certificate with a verification link you can share.</value>
+	</data>
+	<data name="PdfHeading" xml:space="preserve">
+		<value>Programme Completion Certificate</value>
+	</data>
+	<data name="PdfCertifyThat" xml:space="preserve">
+		<value>This is to certify that</value>
+	</data>
+	<data name="PdfCompletedProgramme" xml:space="preserve">
+		<value>has completed the programme</value>
+	</data>
+	<data name="PdfTotalTimeFormat" xml:space="preserve">
+		<value>Total training time: {0}</value>
+	</data>
+	<data name="PdfHoursMinutesFormat" xml:space="preserve">
+		<value>{0}h {1}m</value>
+	</data>
+	<data name="PdfMinutesFormat" xml:space="preserve">
+		<value>{0}m</value>
+	</data>
+	<data name="PdfIssuedOnFormat" xml:space="preserve">
+		<value>Issued on {0}</value>
+	</data>
+	<data name="PdfVerificationIdFormat" xml:space="preserve">
+		<value>Verification ID: {0}</value>
 	</data>
 </root>

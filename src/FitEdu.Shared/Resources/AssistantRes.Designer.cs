@@ -70,7 +70,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to AI-generated — not professional advice..
+        ///   Looks up a localized string similar to AI-generated — not medical or professional advice..
         /// </summary>
         public static string Disclaimer {
             get {
@@ -160,7 +160,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to What course should I start with?.
+        ///   Looks up a localized string similar to Which course should I start with as a beginner?.
         /// </summary>
         public static string SuggestedQuestion1 {
             get {
@@ -169,7 +169,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to What assessments are available?.
+        ///   Looks up a localized string similar to Show me exercises for my back.
         /// </summary>
         public static string SuggestedQuestion2 {
             get {
@@ -178,7 +178,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to How do certificates work?.
+        ///   Looks up a localized string similar to How do I progress my squat?.
         /// </summary>
         public static string SuggestedQuestion3 {
             get {
@@ -187,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to FitEdu Assistant.
+        ///   Looks up a localized string similar to FitEdu Coach.
         /// </summary>
         public static string Title {
             get {

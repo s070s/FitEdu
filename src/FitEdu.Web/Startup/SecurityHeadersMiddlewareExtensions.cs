@@ -31,12 +31,12 @@ public static class SecurityHeadersMiddlewareExtensions
             ctx.Response.Headers["Content-Security-Policy"] =
                 "default-src 'self'; " +
                 "script-src 'self' https://cdn.jsdelivr.net; " +
-                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-                "font-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:; " +
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+                "font-src 'self' https://cdn.jsdelivr.net data:; " +
                 "img-src 'self' data: blob:; " +
                 "media-src 'self' blob:; " +
                 "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; " +
-                $"connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com{devConnectSrc}; " +
+                $"connect-src 'self' https://cdn.jsdelivr.net{devConnectSrc}; " +
                 "object-src 'none'; " +
                 "base-uri 'self'; " +
                 "form-action 'self';";

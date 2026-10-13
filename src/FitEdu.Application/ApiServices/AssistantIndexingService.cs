@@ -19,6 +19,8 @@ public class AssistantIndexingService(
     ILogger<AssistantIndexingService> logger) : IAssistantIndexingService
 {
     private static readonly string[] Languages = ["en", "el"];
+    private const string ExercisesLabel = "Exercises: ";
+    private const string ExerciseListSeparator = "; ";
 
     public async Task<AssistantIndexSummary> RunIndexPassAsync(CancellationToken cancellationToken = default)
     {
@@ -37,10 +39,13 @@ public class AssistantIndexingService(
                 lang => BuildCourseSource(course, lang), existingByKey, touched,
                 r => { if (r) added++; else updated++; }, () => unchanged++, cancellationToken);
 
+        // Every lesson of a published course, the lessons students can open (CourseService rule):
+        // seeded lessons keep Lesson.IsPublished false, so that flag would hide all of them.
         var lessons = await db.Lessons
             .AsNoTracking()
             .Include(l => l.Module).ThenInclude(m => m.Course)
-            .Where(l => l.IsPublished && l.Module.Course.IsPublished)
+            .Include(l => l.Exercises).ThenInclude(x => x.Exercise)
+            .Where(l => l.Module.Course.IsPublished)
             .ToListAsync(cancellationToken);
         foreach (var lesson in lessons)
             await ProcessSourceAsync(AssistantSourceType.Lesson, lesson.Id,
@@ -155,7 +160,7 @@ public class AssistantIndexingService(
         if (lang == "en")
         {
             var header = $"Course: {lesson.Module.Course.TitleEn} — Module: {lesson.Module.TitleEn} — Lesson: {lesson.TitleEn}";
-            return (header, Join(lesson.TitleEn, lesson.ContentEn));
+            return (header, Join(lesson.TitleEn, lesson.ContentEn, DescribeExercises(lesson, isEl: false)));
         }
 
         if (string.IsNullOrWhiteSpace(lesson.TitleEl))
@@ -164,7 +169,30 @@ public class AssistantIndexingService(
         var courseTitleEl = lesson.Module.Course.TitleEl ?? lesson.Module.Course.TitleEn;
         var moduleTitleEl = lesson.Module.TitleEl ?? lesson.Module.TitleEn;
         var headerEl = $"Course: {courseTitleEl} — Module: {moduleTitleEl} — Lesson: {lesson.TitleEl}";
-        return (headerEl, Join(lesson.TitleEl, lesson.ContentEl));
+        return (headerEl, Join(lesson.TitleEl, lesson.ContentEl, DescribeExercises(lesson, isEl: true)));
+    }
+
+    /// <summary>
+    /// "Exercises: Pushups (chest, triceps); Plank (abdominals)" in list order, so a search for an
+    /// exercise or a muscle finds the workouts that train it. Null for a lesson without exercises.
+    /// </summary>
+    /// <remarks>
+    /// Deliberate choices: every prescribed exercise is listed, published or not, because the lesson
+    /// page shows them all (CourseService does not filter them). The Greek chunk keeps the English
+    /// label like its English header labels, and the English muscle values, which are the fixed
+    /// library vocabulary the coach's search_exercises filter takes; the embedding model is multilingual.
+    /// </remarks>
+    private static string? DescribeExercises(Lesson lesson, bool isEl)
+    {
+        if (lesson.Exercises.Count == 0)
+            return null;
+
+        var descriptions = lesson.Exercises
+            .OrderBy(prescription => prescription.SortOrder)
+            .Select(prescription => prescription.Exercise)
+            .Select(exercise => $"{Localized.Pick(isEl, exercise.NameEn, exercise.NameEl)} ({exercise.PrimaryMuscles})");
+
+        return ExercisesLabel + string.Join(ExerciseListSeparator, descriptions);
     }
 
     private static (string Header, string Text)? BuildAssessmentSource(AssessmentDefinition assessment, string lang)

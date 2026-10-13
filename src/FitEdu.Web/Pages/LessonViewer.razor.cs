@@ -1,17 +1,26 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace FitEdu.Web.Pages;
 
 public partial class LessonViewer
 {
+    /// <summary>Id of the exercise list, the target of the exercise-count link in the header.</summary>
+    private const string WorkoutSectionId = "lesson-workout";
+
+    private const int MaxPercent = 100;
+
+    private const string MyCertificatesPath = "/my-certificates";
+    private const string PricingPath = "/pricing";
+
     [Parameter]
     public Guid LessonId
     {
@@ -26,12 +35,53 @@ public partial class LessonViewer
 
     private LessonDetailDto? _lesson;
     private LessonCompletionResultDto? _completionResult;
+    private List<LessonSummaryDto> _courseLessons = [];
+    private CourseProgress? _progress;
     private bool _loading = true;
     private bool _completing;
     private string? _error;
+    private bool _loadFailed;
     private string? _completionError;
     private bool _mediaError;
     private string? _assetToken;
+
+    private static string CurrentLang =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
+    // Seed text repeats the lesson title as its first heading; the page shows it once, as the h1.
+    private string ContentHtml => LessonMarkdown.Render(_lesson?.Content, _lesson?.Title);
+
+    private IReadOnlyList<LessonExerciseDto> Exercises => _lesson?.Exercises ?? [];
+
+    private int TotalSets => Exercises.Sum(exercise => exercise.Sets ?? 0);
+
+    // The completion bar sticks to the bottom of the screen while the lesson is still to do, and right
+    // after a completion so its confirmation and the next-lesson button stay in view (the progress
+    // details sit in the flow below it). A lesson completed earlier shows the bar in the flow.
+    private bool IsActionBarDocked => _lesson is { IsCompleted: false } || _completionResult is not null;
+
+    // After the last workout: the certificate when the plan includes one, otherwise the upgrade to Pro.
+    private bool CertificateIncluded => _completionResult?.CertificateIncluded == true;
+
+    private string CertificateHref => CertificateIncluded ? MyCertificatesPath : PricingPath;
+
+    private string CertificateLinkText => CertificateIncluded ? LessonRes.ViewCertificate : LessonRes.UpgradeToPro;
+
+    private string CertificateNote
+    {
+        get
+        {
+            if (_completionResult?.CertificatePending == true)
+                return LessonRes.CertificatePending;
+
+            return CertificateIncluded ? LessonRes.CertificateReady : LessonRes.CertificateWithPro;
+        }
+    }
+
+    /// <summary>The lesson's 1-based place in the course ("Lesson 3 of 12"), or 0 when the outline did not load.</summary>
+    private int LessonNumber => _lesson is null ? 0 : IndexOfLesson(_lesson.Id) + 1;
+
+    private string WorkoutHref => $"{LessonHref(LessonId)}#{WorkoutSectionId}";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -42,28 +92,56 @@ public partial class LessonViewer
     {
         _loading = true;
         _error = null;
+        _loadFailed = false;
         _completionResult = null;
+        _completionError = null;
         _mediaError = false;
+        _courseLessons = [];
+        _progress = null;
 
         try
         {
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             _assetToken = await AuthService.CreateLessonAssetTokenAsync(authState.User, LessonId);
-            var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
-            _lesson = await CourseService.GetLessonAsync(LessonId, lang);
+            _lesson = await CourseService.GetLessonAsync(LessonId, CurrentLang);
             if (_lesson is null)
-            {
                 _error = LessonRes.LessonNotFoundOrNotEnrolled;
-            }
+            else
+                await LoadCourseOutline(_lesson.CourseId);
         }
         catch (Exception ex)
         {
             _error = LessonRes.FailedToLoadLesson;
-            _logger.LogError(ex, "Failed to load lesson {LessonId}.", LessonId);
+            _loadFailed = true;
+            LogLessonLoadFailed(_logger, ex, LessonId);
         }
         finally
         {
             _loading = false;
+        }
+    }
+
+    /// <summary>
+    /// Loads the course outline for the lesson position, the progress bar and the neighbouring lessons'
+    /// titles. These are extras: when the outline is missing or fails to load, the lesson still shows.
+    /// </summary>
+    private async Task LoadCourseOutline(Guid courseId)
+    {
+        try
+        {
+            var course = await CourseService.GetCourseAsync(courseId, CurrentLang);
+            if (course is null)
+                return;
+
+            _courseLessons = course.Modules
+                .OrderBy(module => module.SortOrder)
+                .SelectMany(module => module.Lessons.OrderBy(lesson => lesson.SortOrder))
+                .ToList();
+            _progress = CourseProgress.From(course.CompletedLessons, course.TotalLessons, course.ProgressPercent);
+        }
+        catch (Exception ex)
+        {
+            LogCourseOutlineFailed(_logger, ex, courseId);
         }
     }
 
@@ -76,8 +154,8 @@ public partial class LessonViewer
             var result = await CourseService.CompleteLessonAsync(LessonId);
             if (result?.Success == true && _lesson is not null)
             {
-                // Update local state
                 _completionResult = result;
+                _progress = CourseProgress.From(result.CompletedLessons, result.TotalLessons, result.ProgressPercent);
                 _lesson = _lesson with
                 {
                     IsCompleted = true
@@ -91,7 +169,7 @@ public partial class LessonViewer
         catch (Exception ex)
         {
             _completionError = LessonRes.FailedToSaveCompletion;
-            _logger.LogError(ex, "Failed to mark lesson {LessonId} as complete.", LessonId);
+            LogCompletionFailed(_logger, ex, LessonId);
         }
         finally
         {
@@ -104,38 +182,34 @@ public partial class LessonViewer
         _mediaError = true;
     }
 
-    private void GoToLesson(Guid lessonId)
+    private static string LessonHref(Guid lessonId) => $"/lessons/{lessonId}";
+
+    private static string CourseHref(Guid courseId) => $"/courses/{courseId}";
+
+    private int IndexOfLesson(Guid lessonId)
     {
-        Navigation.NavigateTo($"/lessons/{lessonId}");
+        for (var index = 0; index < _courseLessons.Count; index++)
+        {
+            if (_courseLessons[index].Id == lessonId)
+                return index;
+        }
+
+        return -1;
     }
 
-    private void GoToCourse(Guid courseId)
+    /// <summary>The title of a neighbouring lesson, or null when there is none or the outline did not load.</summary>
+    private string? LessonTitle(Guid? lessonId)
     {
-        Navigation.NavigateTo($"/courses/{courseId}");
+        if (lessonId is null)
+            return null;
+
+        var index = IndexOfLesson(lessonId.Value);
+        return index < 0 ? null : _courseLessons[index].Title;
     }
 
-    private void GoBack()
-    {
-        Navigation.NavigateTo("/courses");
-    }
+    private static bool IsVideo(LessonDetailDto lesson) => lesson.ContentType == (int)ContentType.Video;
 
-    /// <summary>
-    /// Detects whether content is already HTML (from WYSIWYG editor) or markdown
-    /// (from seed data / plain text input) and renders accordingly.
-    /// </summary>
-    private static string RenderContent(string content)
-    {
-        if (string.IsNullOrEmpty(content))
-            return "";
-
-        var trimmed = content.TrimStart();
-        // If content starts with an HTML tag, treat as pre-rendered HTML from the WYSIWYG editor.
-        if (trimmed.StartsWith('<'))
-            return content;
-
-        // Otherwise fall back to the simple markdown converter for seed/legacy content.
-        return RenderMarkdown(content);
-    }
+    private static bool IsPdf(LessonDetailDto lesson) => lesson.ContentType == (int)ContentType.Pdf;
 
     /// <summary>
     /// Returns true when the content is a YouTube URL rather than an uploaded file path.
@@ -225,91 +299,21 @@ public partial class LessonViewer
         return url;
     }
 
-    /// <summary>
-    /// Simple markdown to HTML converter for basic formatting.
-    /// Handles headers, bold, lists. For production, use a proper library.
-    /// </summary>
-    private static string RenderMarkdown(string markdown)
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load lesson {LessonId}.")]
+    private static partial void LogLessonLoadFailed(ILogger logger, Exception exception, Guid lessonId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to load the outline of course {CourseId}.")]
+    private static partial void LogCourseOutlineFailed(ILogger logger, Exception exception, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to mark lesson {LessonId} as complete.")]
+    private static partial void LogCompletionFailed(ILogger logger, Exception exception, Guid lessonId);
+
+    /// <summary>Course progress as the bar shows it: lessons done, lessons in total and a whole percent.</summary>
+    private sealed record CourseProgress(int CompletedLessons, int TotalLessons, int Percent)
     {
-        if (string.IsNullOrEmpty(markdown))
-            return "";
-
-        var lines = markdown.Split('\n');
-        var html = new System.Text.StringBuilder();
-        var inList = false;
-
-        foreach (var line in lines)
-        {
-            var trimmed = line.Trim();
-
-            // Headers
-            if (trimmed.StartsWith("### "))
-            {
-                CloseList(html, ref inList);
-                html.Append($"<h3>{trimmed[4..]}</h3>");
-            }
-            else if (trimmed.StartsWith("## "))
-            {
-                CloseList(html, ref inList);
-                html.Append($"<h2>{trimmed[3..]}</h2>");
-            }
-            else if (trimmed.StartsWith("# "))
-            {
-                CloseList(html, ref inList);
-                html.Append($"<h1>{trimmed[2..]}</h1>");
-            }
-            // Unordered list
-            else if (trimmed.StartsWith("- "))
-            {
-                if (!inList)
-                {
-                    html.Append("<ul>");
-                    inList = true;
-                }
-                html.Append($"<li>{ProcessInline(trimmed[2..])}</li>");
-            }
-            // Numbered list
-            else if (trimmed.Length > 2 && char.IsDigit(trimmed[0]) && trimmed[1] == '.')
-            {
-                if (!inList)
-                {
-                    html.Append("<ol>");
-                    inList = true;
-                }
-                html.Append($"<li>{ProcessInline(trimmed[2..].TrimStart())}</li>");
-            }
-            // Empty line
-            else if (string.IsNullOrEmpty(trimmed))
-            {
-                CloseList(html, ref inList);
-                html.Append("<br/>");
-            }
-            // Paragraph
-            else
-            {
-                CloseList(html, ref inList);
-                html.Append($"<p>{ProcessInline(trimmed)}</p>");
-            }
-        }
-
-        CloseList(html, ref inList);
-        return html.ToString();
-    }
-
-    private static void CloseList(System.Text.StringBuilder html, ref bool inList)
-    {
-        if (inList)
-        {
-            html.Append("</ul>");
-            inList = false;
-        }
-    }
-
-    private static string ProcessInline(string text)
-    {
-        // Bold: **text**
-        text = Regex.Replace(
-            text, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
-        return text;
+        public static CourseProgress From(int completedLessons, int totalLessons, double percent) =>
+            new(completedLessons, totalLessons, (int)Math.Round(Math.Clamp(percent, 0, MaxPercent)));
     }
 }

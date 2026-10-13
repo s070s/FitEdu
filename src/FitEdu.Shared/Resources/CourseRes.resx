@@ -99,55 +99,115 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="CourseDefault" xml:space="preserve">
-		<value>Course</value>
+		<value>Programme</value>
 	</data>
 	<data name="LoadingCourse" xml:space="preserve">
-		<value>Loading course...</value>
+		<value>Loading programme...</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>← Back to Courses</value>
+		<value>Back to programmes</value>
 	</data>
 	<data name="CourseNotFound" xml:space="preserve">
-		<value>Course not found.</value>
+		<value>Programme not found.</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
-		<value>{0} / {1} lessons completed ({2}%)</value>
+		<value>{0} of {1} lessons done ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Course Completed!</value>
+		<value>Programme completed</value>
 	</data>
 	<data name="Enrolling" xml:space="preserve">
-		<value>Enrolling...</value>
+		<value>Joining…</value>
 	</data>
 	<data name="EnrollInThisCourse" xml:space="preserve">
-		<value>Enroll in This Course</value>
+		<value>Join the programme</value>
 	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>min</value>
 	</data>
+	<data name="OutcomesTitle" xml:space="preserve">
+		<value>What you'll train</value>
+	</data>
+	<data name="OutlineTitle" xml:space="preserve">
+		<value>Programme outline</value>
+	</data>
+	<data name="ModuleCountOne" xml:space="preserve">
+		<value>1 module</value>
+	</data>
+	<data name="ModulesCountFormat" xml:space="preserve">
+		<value>{0} modules</value>
+	</data>
+	<data name="LessonCountOne" xml:space="preserve">
+		<value>1 lesson</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 exercise</value>
+	</data>
+	<data name="ExercisesCountFormat" xml:space="preserve">
+		<value>{0} exercises</value>
+	</data>
+	<data name="LessonKind_Workout" xml:space="preserve">
+		<value>Workout</value>
+	</data>
+	<data name="LessonKind_Video" xml:space="preserve">
+		<value>Video</value>
+	</data>
+	<data name="LessonKind_Reading" xml:space="preserve">
+		<value>Reading</value>
+	</data>
+	<data name="LessonKind_Pdf" xml:space="preserve">
+		<value>PDF guide</value>
+	</data>
+	<data name="ModuleProgressFormat" xml:space="preserve">
+		<value>{0}/{1} done</value>
+	</data>
+	<data name="ProgressTitle" xml:space="preserve">
+		<value>Your progress</value>
+	</data>
+	<data name="StartTitle" xml:space="preserve">
+		<value>Start today</value>
+	</data>
+	<data name="UpNext" xml:space="preserve">
+		<value>Up next</value>
+	</data>
+	<data name="ContinueTraining" xml:space="preserve">
+		<value>Continue training</value>
+	</data>
+	<data name="StartTraining" xml:space="preserve">
+		<value>Start training</value>
+	</data>
+	<data name="TrainAgain" xml:space="preserve">
+		<value>Train again</value>
+	</data>
+	<data name="IncludedInPlan" xml:space="preserve">
+		<value>Included in your plan</value>
+	</data>
+	<data name="JoinToUnlock" xml:space="preserve">
+		<value>Join the programme to open its lessons.</value>
+	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
-		<value>Courses - FitEdu</value>
+		<value>Programmes - FitEdu</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
-		<value>Available Courses</value>
+		<value>Find your next programme</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
-		<value>Loading courses...</value>
+		<value>Loading programmes...</value>
 	</data>
 	<data name="NoCoursesAvailable" xml:space="preserve">
-		<value>No courses available at the moment.</value>
+		<value>No programmes available at the moment.</value>
 	</data>
 	<data name="LessonsCountFormat" xml:space="preserve">
 		<value>{0} lessons</value>
 	</data>
 	<data name="Enrolled" xml:space="preserve">
-		<value>✓ Enrolled</value>
+		<value>Enrolled</value>
 	</data>
 	<data name="UpgradeToFormat" xml:space="preserve">
-		<value>🔒 Upgrade to {0}</value>
+		<value>Upgrade to {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
-		<value>{0} courses</value>
+		<value>{0} programmes</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Per page:</value>
@@ -159,15 +219,117 @@
 		<value>Next</value>
 	</data>
 	<data name="RequiresPlanFormat" xml:space="preserve">
-		<value>This course requires the {0} plan or higher.</value>
+		<value>Included in the {0} plan and above.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
-		<value>Upgrade Plan</value>
+		<value>Upgrade plan</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>You are on the {0} plan — up to {1} course(s).</value>
+		<value>Programme limit on the {0} plan: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
-		<value>You have used all your course slots.</value>
+		<value>You have used all your programme slots.</value>
+	</data>
+	<data name="Level" xml:space="preserve">
+		<value>Level</value>
+	</data>
+	<data name="Goal" xml:space="preserve">
+		<value>Goal</value>
+	</data>
+	<data name="Equipment" xml:space="preserve">
+		<value>Equipment</value>
+	</data>
+	<data name="WeeksFormat" xml:space="preserve">
+		<value>{0} weeks</value>
+	</data>
+	<data name="WeekCountOne" xml:space="preserve">
+		<value>1 week</value>
+	</data>
+	<data name="SessionsPerWeekFormat" xml:space="preserve">
+		<value>{0}× per week</value>
+	</data>
+	<data name="Level_Beginner" xml:space="preserve">
+		<value>Beginner</value>
+	</data>
+	<data name="Level_Intermediate" xml:space="preserve">
+		<value>Intermediate</value>
+	</data>
+	<data name="Level_Advanced" xml:space="preserve">
+		<value>Advanced</value>
+	</data>
+	<data name="Goal_GeneralFitness" xml:space="preserve">
+		<value>General fitness</value>
+	</data>
+	<data name="Goal_Strength" xml:space="preserve">
+		<value>Strength</value>
+	</data>
+	<data name="Goal_MuscleGain" xml:space="preserve">
+		<value>Muscle gain</value>
+	</data>
+	<data name="Goal_FatLoss" xml:space="preserve">
+		<value>Fat loss</value>
+	</data>
+	<data name="Goal_Endurance" xml:space="preserve">
+		<value>Endurance</value>
+	</data>
+	<data name="Goal_Mobility" xml:space="preserve">
+		<value>Mobility</value>
+	</data>
+	<data name="Goal_Recovery" xml:space="preserve">
+		<value>Recovery</value>
+	</data>
+	<data name="Goal_Nutrition" xml:space="preserve">
+		<value>Nutrition</value>
+	</data>
+	<data name="Equipment_none" xml:space="preserve">
+		<value>No equipment</value>
+	</data>
+	<data name="Equipment_dumbbells" xml:space="preserve">
+		<value>Dumbbells</value>
+	</data>
+	<data name="Equipment_barbell" xml:space="preserve">
+		<value>Barbell</value>
+	</data>
+	<data name="Equipment_kettlebell" xml:space="preserve">
+		<value>Kettlebell</value>
+	</data>
+	<data name="Equipment_bands" xml:space="preserve">
+		<value>Bands</value>
+	</data>
+	<data name="Equipment_mat" xml:space="preserve">
+		<value>Mat</value>
+	</data>
+	<data name="Equipment_bike" xml:space="preserve">
+		<value>Bike</value>
+	</data>
+	<data name="Equipment_chair" xml:space="preserve">
+		<value>Chair</value>
+	</data>
+	<data name="Equipment_cables" xml:space="preserve">
+		<value>Cables</value>
+	</data>
+	<data name="Equipment_machine" xml:space="preserve">
+		<value>Machine</value>
+	</data>
+	<data name="AllGoals" xml:space="preserve">
+		<value>All goals</value>
+	</data>
+	<data name="AllLevels" xml:space="preserve">
+		<value>All levels</value>
+	</data>
+	<data name="AllEquipment" xml:space="preserve">
+		<value>Any equipment</value>
+	</data>
+	<data name="CatalogueEyebrow" xml:space="preserve">
+		<value>Training programmes</value>
+	</data>
+	<data name="CatalogueIntro" xml:space="preserve">
+		<value>Structured plans for every goal and level. Pick by what you want to achieve, how experienced you are and the kit you have.</value>
+	</data>
+	<data name="SearchCoursesPlaceholder" xml:space="preserve">
+		<value>Search</value>
+	</data>
+	<data name="NoMatchingCoursesHint" xml:space="preserve">
+		<value>Try another goal, level or piece of equipment, or clear the filters.</value>
 	</data>
 </root>

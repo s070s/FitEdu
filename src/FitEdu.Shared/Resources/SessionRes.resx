@@ -59,13 +59,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Live Sessions</value>
+    <value>Live classes</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Loading sessions…</value>
+    <value>Loading live classes…</value>
   </data>
   <data name="NoUpcomingSessions" xml:space="preserve">
-    <value>No upcoming sessions right now.</value>
+    <value>No upcoming live classes right now.</value>
+  </data>
+  <data name="PageSubtitleFormat" xml:space="preserve">
+    <value>Train live with a coach in small groups of up to {0}. Register, then join when the class goes live.</value>
+  </data>
+  <data name="NoUpcomingSessionsHint" xml:space="preserve">
+    <value>Check back soon for the next class.</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Tomorrow</value>
   </data>
   <data name="StatusScheduled" xml:space="preserve">
     <value>Scheduled</value>
@@ -92,7 +104,7 @@
     <value>Call in progress</value>
   </data>
   <data name="StartSession" xml:space="preserve">
-    <value>Start Session</value>
+    <value>Start class</value>
   </data>
   <data name="JoinSession" xml:space="preserve">
     <value>Join</value>
@@ -110,22 +122,22 @@
     <value>Register</value>
   </data>
   <data name="RegisterError" xml:space="preserve">
-    <value>Failed to register for this session.</value>
+    <value>Couldn't register you for this class. Please try again.</value>
   </data>
   <data name="JoinError" xml:space="preserve">
     <value>Failed to start the call. Please try again.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Live Sessions</value>
+    <value>Live classes</value>
   </data>
   <data name="NewSession" xml:space="preserve">
-    <value>New session</value>
+    <value>New live class</value>
   </data>
   <data name="EditSession" xml:space="preserve">
-    <value>Edit Session</value>
+    <value>Edit live class</value>
   </data>
   <data name="NoSessionsFound" xml:space="preserve">
-    <value>No scheduled sessions found.</value>
+    <value>No scheduled live classes found.</value>
   </data>
   <data name="ColTitle" xml:space="preserve">
     <value>Title</value>
@@ -134,7 +146,7 @@
     <value>Host</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Course</value>
+    <value>Programme</value>
   </data>
   <data name="ColWhen" xml:space="preserve">
     <value>Starts</value>
@@ -152,7 +164,7 @@
     <value>Edit</value>
   </data>
   <data name="CancelSession" xml:space="preserve">
-    <value>Cancel session</value>
+    <value>Cancel class</value>
   </data>
   <data name="FieldTitleEn" xml:space="preserve">
     <value>Title (English)</value>
@@ -161,10 +173,10 @@
     <value>Title (Greek)</value>
   </data>
   <data name="FieldCourse" xml:space="preserve">
-    <value>Related course</value>
+    <value>Related programme</value>
   </data>
   <data name="NoCourse" xml:space="preserve">
-    <value>No related course</value>
+    <value>No related programme</value>
   </data>
   <data name="FieldStartsAt" xml:space="preserve">
     <value>Starts at</value>
@@ -182,9 +194,9 @@
     <value>Cancel</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Failed to save the session. Please try again.</value>
+    <value>Failed to save the live class. Please try again.</value>
   </data>
   <data name="CancelConfirmFormat" xml:space="preserve">
-    <value>Cancel "{0}"? Registered students will no longer see it as upcoming.</value>
+    <value>Cancel "{0}"? Registered members will no longer see it as upcoming.</value>
   </data>
 </root>

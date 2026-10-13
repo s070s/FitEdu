@@ -187,7 +187,7 @@ public class CourseReviewServiceTests
     public async Task ApproveAsync_FlipsStatus_AndDispatchesNotification()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var course = NewCourse("Career Basics");
+        var course = NewCourse("Strength Basics");
         db.Courses.Add(course);
         var review = new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "great", Status = ReviewStatus.Pending };
         db.CourseReviews.Add(review);

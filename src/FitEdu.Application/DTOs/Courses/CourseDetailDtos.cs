@@ -3,7 +3,8 @@ using FitEdu.Domain.Enums;
 namespace FitEdu.Application.DTOs;
 
 /// <summary>
-/// Full course detail including modules and progress.
+/// Full course detail including modules and progress. The fitness fields match
+/// <see cref="CourseListItemDto"/>.
 /// </summary>
 public record CourseDetailDto(
     Guid Id,
@@ -15,7 +16,14 @@ public record CourseDetailDto(
     int TotalLessons,
     double ProgressPercent,
     List<ModuleDto> Modules,
-    SubscriptionTier RequiredTier
+    SubscriptionTier RequiredTier,
+    CourseLevel Level = CourseLevel.Beginner,
+    FitnessGoal Goal = FitnessGoal.GeneralFitness,
+    string? Equipment = null,
+    int? EstimatedWeeks = null,
+    int? SessionsPerWeek = null,
+    string? CoverImageUrl = null,
+    string? CategoryName = null
 );
 
 /// <summary>
@@ -30,7 +38,8 @@ public record ModuleDto(
 );
 
 /// <summary>
-/// Lesson summary for module listing.
+/// Lesson summary for module listing. ExerciseCount counts the published exercises the lesson
+/// prescribes, the same ones the lesson page shows.
 /// </summary>
 public record LessonSummaryDto(
     Guid Id,
@@ -38,5 +47,6 @@ public record LessonSummaryDto(
     int ContentType,
     int? DurationMinutes,
     int SortOrder,
-    bool IsCompleted
+    bool IsCompleted,
+    int ExerciseCount = 0
 );

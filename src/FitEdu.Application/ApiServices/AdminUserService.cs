@@ -108,7 +108,8 @@ public class AdminUserService(
             user.GdprConsentDate,
             user.ParentalConsentGiven,
             user.CreatedAt,
-            [.. roles]);
+            [.. roles],
+            user.Goal?.ToString());
     }
 
     public async Task<ServiceResult<string>> AssignRoleAsync(string userId, string roleName, CancellationToken cancellationToken = default)

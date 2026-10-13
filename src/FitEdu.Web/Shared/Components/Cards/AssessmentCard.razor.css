@@ -1,0 +1,74 @@
+/* The card shell is the shared .card-surface primitive (hover lift, focus border). */
+.assessment-card__body {
+    gap: var(--space-3);
+}
+
+.assessment-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+/* Category icon on a soft teal tile; a completed self-check turns it lime. */
+.assessment-card__icon {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--color-info-rgb), 0.14);
+    color: var(--color-info);
+    font-size: 1.35rem;
+}
+
+.assessment-card--completed .assessment-card__icon {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.14);
+    color: var(--text-strong-accent);
+}
+
+.assessment-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.assessment-card__title {
+    margin: 0;
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+/* The title link is a .stretched-link (shared card rules in shared-components.css). */
+.assessment-card__description {
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+/* Rich-text descriptions read as one clamped block; their links stay above the stretched link. */
+.assessment-card__description ::deep p {
+    display: inline;
+    margin: 0;
+}
+
+.assessment-card__description ::deep a {
+    position: relative;
+    z-index: 3;
+}
+
+.assessment-card__fact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.assessment-card__start {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}

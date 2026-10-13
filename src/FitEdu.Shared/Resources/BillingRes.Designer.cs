@@ -178,7 +178,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} course(s).
+        ///   Looks up a localized string similar to Up to {0} active courses.
         /// </summary>
         public static string CoursesCountFormat {
             get {
@@ -196,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assessments.
+        ///   Looks up a localized string similar to Self-assessments.
         /// </summary>
         public static string FeatureAssessments {
             get {
@@ -205,7 +205,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificates.
+        ///   Looks up a localized string similar to Completion certificates.
         /// </summary>
         public static string FeatureCertificates {
             get {
@@ -304,11 +304,110 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited courses.
+        ///   Looks up a localized string similar to Unlimited active courses.
         /// </summary>
         public static string UnlimitedCourses {
             get {
                 return ResourceManager.GetString("UnlimitedCourses", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your membership.
+        /// </summary>
+        public static string Eyebrow {
+            get {
+                return ResourceManager.GetString("Eyebrow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase.
+        /// </summary>
+        public static string TxType_Purchase {
+            get {
+                return ResourceManager.GetString("TxType_Purchase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade.
+        /// </summary>
+        public static string TxType_Upgrade {
+            get {
+                return ResourceManager.GetString("TxType_Upgrade", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Downgrade.
+        /// </summary>
+        public static string TxType_Downgrade {
+            get {
+                return ResourceManager.GetString("TxType_Downgrade", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Renewal.
+        /// </summary>
+        public static string TxType_Renewal {
+            get {
+                return ResourceManager.GetString("TxType_Renewal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refund.
+        /// </summary>
+        public static string TxType_Refund {
+            get {
+                return ResourceManager.GetString("TxType_Refund", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Free plan.
+        /// </summary>
+        public static string TxType_FreePlanAssignment {
+            get {
+                return ResourceManager.GetString("TxType_FreePlanAssignment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plan switch.
+        /// </summary>
+        public static string TxType_PlanSwitch {
+            get {
+                return ResourceManager.GetString("TxType_PlanSwitch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expired.
+        /// </summary>
+        public static string TxType_Expired {
+            get {
+                return ResourceManager.GetString("TxType_Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 active course.
+        /// </summary>
+        public static string OneCourse {
+            get {
+                return ResourceManager.GetString("OneCourse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string PlanActive {
+            get {
+                return ResourceManager.GetString("PlanActive", resourceCulture);
             }
         }
     }

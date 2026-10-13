@@ -12,8 +12,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
+    width: var(--tap-min);
+    height: var(--tap-min);
     overflow: hidden;
     transition: box-shadow 0.2s;
 }
@@ -37,11 +37,6 @@
 .avatar-icon {
     font-size: 1.6rem;
     color: var(--text-light-normal);
-    width: auto;
-    height: auto;
-    margin: 0;
-    top: 0;
-    background-size: initial;
 }
 
 .dropdown-menu-custom {
@@ -64,6 +59,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: var(--tap-min);
     padding: 0.5rem 1rem;
     color: var(--text-light-normal);
     text-decoration: none;

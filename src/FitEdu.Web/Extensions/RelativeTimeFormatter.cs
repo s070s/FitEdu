@@ -21,4 +21,18 @@ public static class RelativeTimeFormatter
             _ => string.Format(GlobalRes.LastSeenDateFormat, lastSeenUtc.ToLocalTime().ToString("d"))
         };
     }
+
+    /// <summary>
+    /// Short age of a notification ("now", "5m", "3h", "2d"); older than a week shows the
+    /// local day and month. Used by the header bell and the notifications page.
+    /// </summary>
+    public static string NotificationAge(DateTimeOffset createdAt)
+    {
+        var age = DateTimeOffset.UtcNow - createdAt;
+        if (age < TimeSpan.FromMinutes(1)) return NotificationRes.TimeJustNow;
+        if (age < TimeSpan.FromHours(1)) return string.Format(NotificationRes.TimeMinutesFormat, (int)age.TotalMinutes);
+        if (age < TimeSpan.FromDays(1)) return string.Format(NotificationRes.TimeHoursFormat, (int)age.TotalHours);
+        if (age < TimeSpan.FromDays(7)) return string.Format(NotificationRes.TimeDaysFormat, (int)age.TotalDays);
+        return createdAt.ToLocalTime().ToString("M");
+    }
 }

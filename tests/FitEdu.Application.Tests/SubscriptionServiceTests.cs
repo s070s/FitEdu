@@ -54,6 +54,26 @@ public class SubscriptionServiceTests
     // ---- GetPlansAsync -------------------------------------------------------
 
     [Fact]
+    public async Task GetPlans_Greek_ReturnsTheGreekDescription_AndFallsBackToEnglishWithoutOne()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var free = Plan("Free", SubscriptionTier.Free, 0m);
+        free.Description = "Start free.";
+        free.DescriptionEl = "Ξεκίνα δωρεάν.";
+        var plus = Plan("Plus", SubscriptionTier.Plus, 9.99m);
+        plus.Description = "Every Free and Plus course.";
+        db.SubscriptionPlans.AddRange(free, plus);
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+
+        var greek = await service.GetPlansAsync("el");
+        var english = await service.GetPlansAsync("en");
+
+        greek.Select(plan => plan.Description).ShouldBe(["Ξεκίνα δωρεάν.", "Every Free and Plus course."]);
+        english.Select(plan => plan.Description).ShouldBe(["Start free.", "Every Free and Plus course."]);
+    }
+
+    [Fact]
     public async Task GetPlans_ReturnsActiveOnly_OrderedByTierThenPrice()
     {
         await using var db = DbContextFactory.CreateInMemory();

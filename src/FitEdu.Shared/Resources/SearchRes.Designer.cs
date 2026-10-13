@@ -61,7 +61,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Search courses, assessments, articles….
+        ///   Looks up a localized string similar to Search courses, exercises, assessments, articles….
         /// </summary>
         public static string Placeholder {
             get {
@@ -147,6 +147,15 @@ namespace FitEdu.Shared.Resources {
         public static string TypeBlogArticle {
             get {
                 return ResourceManager.GetString("TypeBlogArticle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercise.
+        /// </summary>
+        public static string TypeExercise {
+            get {
+                return ResourceManager.GetString("TypeExercise", resourceCulture);
             }
         }
 

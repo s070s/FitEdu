@@ -72,6 +72,30 @@ namespace FitEdu.Shared.Resources {
             get { return ResourceManager.GetString("NoUpcomingSessions", resourceCulture); }
         }
 
+        public static string PageSubtitleFormat {
+            get {
+                return ResourceManager.GetString("PageSubtitleFormat", resourceCulture);
+            }
+        }
+
+        public static string NoUpcomingSessionsHint {
+            get {
+                return ResourceManager.GetString("NoUpcomingSessionsHint", resourceCulture);
+            }
+        }
+
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+
+        public static string Tomorrow {
+            get {
+                return ResourceManager.GetString("Tomorrow", resourceCulture);
+            }
+        }
+
         public static string StatusScheduled {
             get { return ResourceManager.GetString("StatusScheduled", resourceCulture); }
         }

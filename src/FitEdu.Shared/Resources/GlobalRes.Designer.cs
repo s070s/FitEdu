@@ -214,7 +214,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to Training level.
         /// </summary>
         public static string Label_Info_Status {
             get {
@@ -390,6 +390,24 @@ namespace FitEdu.Shared.Resources {
         public static string PaginationPageOfFormat {
             get {
                 return ResourceManager.GetString("PaginationPageOfFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Previous page.
+        /// </summary>
+        public static string PaginationPreviousPage {
+            get {
+                return ResourceManager.GetString("PaginationPreviousPage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next page.
+        /// </summary>
+        public static string PaginationNextPage {
+            get {
+                return ResourceManager.GetString("PaginationNextPage", resourceCulture);
             }
         }
         
@@ -654,38 +672,47 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Student.
+        ///   Looks up a localized string similar to Beginner.
         /// </summary>
-        public static string StatusStudent {
+        public static string StatusBeginner {
             get {
-                return ResourceManager.GetString("StatusStudent", resourceCulture);
+                return ResourceManager.GetString("StatusBeginner", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Graduate.
+        ///   Looks up a localized string similar to Intermediate.
         /// </summary>
-        public static string StatusGraduate {
+        public static string StatusIntermediate {
             get {
-                return ResourceManager.GetString("StatusGraduate", resourceCulture);
+                return ResourceManager.GetString("StatusIntermediate", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to NEET (not in education, employment, or training).
+        ///   Looks up a localized string similar to Advanced.
         /// </summary>
-        public static string StatusNEET {
+        public static string StatusAdvanced {
             get {
-                return ResourceManager.GetString("StatusNEET", resourceCulture);
+                return ResourceManager.GetString("StatusAdvanced", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Other.
+        ///   Looks up a localized string similar to Prefer not to say.
         /// </summary>
         public static string StatusOther {
             get {
                 return ResourceManager.GetString("StatusOther", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not set.
+        /// </summary>
+        public static string StatusNotSet {
+            get {
+                return ResourceManager.GetString("StatusNotSet", resourceCulture);
             }
         }
 
@@ -717,13 +744,93 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this feature.
+        ///   Looks up a localized string similar to Progress.
         /// </summary>
-        public static string ThisFeature {
+        public static string Progress {
             get {
-                return ResourceManager.GetString("ThisFeature", resourceCulture);
+                return ResourceManager.GetString("Progress", resourceCulture);
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Main goal (optional).
+        /// </summary>
+        public static string Label_Info_Goal {
+            get {
+                return ResourceManager.GetString("Label_Info_Goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not sure yet.
+        /// </summary>
+        public static string GoalNotSureYet {
+            get {
+                return ResourceManager.GetString("GoalNotSureYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We use it to suggest programmes. You can change it any time in your profile..
+        /// </summary>
+        public static string GoalHint {
+            get {
+                return ResourceManager.GetString("GoalHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About you.
+        /// </summary>
+        public static string Label_AboutYou {
+            get {
+                return ResourceManager.GetString("Label_AboutYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your training.
+        /// </summary>
+        public static string Label_YourTraining {
+            get {
+                return ResourceManager.GetString("Label_YourTraining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome back. Pick up your plan where you left off..
+        /// </summary>
+        public static string AuthLoginSubtitle {
+            get {
+                return ResourceManager.GetString("AuthLoginSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining is free. Your first workout is a few minutes away..
+        /// </summary>
+        public static string AuthRegisterSubtitle {
+            get {
+                return ResourceManager.GetString("AuthRegisterSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset the password directly.
+        /// </summary>
+        public static string DevResetPasswordHint {
+            get {
+                return ResourceManager.GetString("DevResetPasswordHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Go to login.
+        /// </summary>
+        public static string Label_GoToLogin {
+            get {
+                return ResourceManager.GetString("Label_GoToLogin", resourceCulture);
+            }
+        }
     }
 }

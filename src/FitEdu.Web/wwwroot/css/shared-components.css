@@ -227,22 +227,19 @@ th.sort-active {
         min-width: fit-content;
     }
 
-    /* Action cell: no label, buttons flow horizontally and wrap if needed */
-    .table-responsive > table tbody td[data-label="Actions"],
-    .table-responsive > table tbody td[data-label="Ενέργειες"] {
+    /* Action cell (td.table-actions, in every language): no label, buttons flow in a row and wrap */
+    .table-responsive > table tbody td.table-actions {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         gap: 0.375rem;
     }
 
-    .table-responsive > table tbody td[data-label="Actions"]::before,
-    .table-responsive > table tbody td[data-label="Ενέργειες"]::before {
+    .table-responsive > table tbody td.table-actions::before {
         display: none;
     }
 
-    .table-responsive > table tbody td[data-label="Actions"] .btn,
-    .table-responsive > table tbody td[data-label="Ενέργειες"] .btn {
+    .table-responsive > table tbody td.table-actions .btn {
         flex: 1 1 auto;
         min-width: 80px;
         text-align: center;
@@ -260,6 +257,18 @@ th.sort-active {
     background-color: var(--bg-table-odd);
     color: var(--text-light-normal);
     border: 1px solid var(--border-subtle);
+}
+
+/* The file picker's own button (avatar upload) matches the dark inputs instead of the browser's white one. */
+.form-control::file-selector-button {
+    border: 0;
+    border-inline-end: 1px solid var(--border-subtle);
+    background-color: var(--bg-neutral-subtle);
+    color: var(--text-strong-normal);
+}
+
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
 }
 
 .form-control::placeholder {
@@ -323,6 +332,31 @@ th.sort-active {
 .btn-check:checked + .btn-outline-primary {
     background-color: var(--text-strong-accent);
     border-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+}
+
+/* Bootstrap's grey and red outline text is too faint on the dark cards, so use the app's tokens. */
+.btn-outline-secondary {
+    color: var(--text-light-normal);
+    border-color: var(--border-subtle);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:active {
+    background-color: var(--bg-neutral-subtle);
+    border-color: var(--text-light-normal);
+    color: var(--text-strong-normal);
+}
+
+.btn-outline-danger {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:active {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
     color: var(--bg-primary);
 }
 
@@ -394,12 +428,6 @@ input[type="date"].form-control,
     background-color: var(--bg-table-odd);
     color: var(--text-light-normal);
     border: 1px solid var(--border-subtle);
-}
-
-/* WebKit: make the native calendar icon visible in dark theme */
-input[type="date"].form-control::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(1.05);
-    opacity: 0.9;
 }
 
 /* Keep focus ring consistent with app theme — see the global :focus-visible rule in app.css */
@@ -698,83 +726,303 @@ input[type="date"].form-control:focus {
         color: var(--color-warning);
     }
 
-/* ================================================
-   Legal pages — Privacy Policy and Terms of Service.
-   Shared prose layout owned by /privacy and /terms.
-   ================================================ */
-.legal-page {
-    max-width: 820px;
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-4);
+/* ================================================================
+   FitEdu design system (Phase D1): cards, chips, stat tiles,
+   duotone photos and the sticky mobile action bar
+   ================================================================ */
+
+/* Bootstrap cards take the design radius (both variables, so headers keep matching corners). */
+.card {
+    --bs-card-border-radius: var(--radius-lg);
+    --bs-card-inner-border-radius: calc(var(--radius-lg) - 1px);
 }
 
-.legal-header {
-    margin-bottom: var(--space-5);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.legal-header h1 {
-    color: var(--text-strong-normal);
-    margin: 0 0 var(--space-2);
-}
-
-.legal-updated {
-    color: var(--text-light-muted);
-    font-size: 0.875rem;
-    margin: 0;
-}
-
-.legal-notice {
-    background: var(--bg-info-subtle);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    margin-bottom: var(--space-5);
-    color: var(--text-light-normal);
-}
-
-.legal-notice strong {
-    color: var(--text-accent);
-}
-
-.legal-intro {
-    color: var(--text-light-normal);
-    font-size: 1.05rem;
-    margin-bottom: var(--space-5);
-}
-
-.legal-content section {
-    margin-bottom: var(--space-5);
-}
-
-.legal-content section h2 {
-    color: var(--text-accent);
-    font-size: 1.25rem;
-    margin: 0 0 var(--space-3);
-}
-
-.legal-content section p {
-    color: var(--text-light-normal);
-    line-height: 1.7;
-    margin: 0;
-}
-
-.legal-footer {
+/* Content card for new pages. No padding of its own, so a cover image can sit flush at the top;
+   wrap the text in .card-surface__body. Links and .card-surface--interactive lift on hover. */
+.card-surface {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-5);
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border-subtle);
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    color: var(--text-light-normal);
+    transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out);
 }
 
-.legal-footer a {
-    color: var(--text-accent);
-    font-weight: 600;
+.card-surface__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+}
+
+a.card-surface {
     text-decoration: none;
 }
 
-.legal-footer a:hover {
-    text-decoration: underline;
+.card-surface:focus-within {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+}
+
+@media (hover: hover) {
+    a.card-surface:hover,
+    .card-surface--interactive:hover {
+        transform: translateY(-2px);
+        border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+    }
+}
+
+/* Chips: small labels for level, muscles, equipment. Lime = primary, teal = info, coral = attention. */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-neutral-subtle);
+    color: var(--text-light-normal);
+    font-size: var(--fs-6);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.chip--lime {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.15);
+    color: var(--text-strong-accent);
+}
+
+.chip--coral {
+    background-color: rgba(var(--color-attention-rgb), 0.15);
+    color: var(--color-attention);
+}
+
+.chip--teal {
+    background-color: rgba(var(--color-info-rgb), 0.15);
+    color: var(--color-info);
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Stat tile: one big number and its label. */
+.stat-tile {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.stat-tile__value {
+    color: var(--text-strong-accent);
+    font-size: var(--fs-2);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+}
+
+.stat-tile__label {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+/* Duotone photo: greyscale exercise photo under a lime-to-charcoal wash (course covers). */
+.duotone {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-table-header);
+}
+
+.duotone > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.15);
+    mix-blend-mode: luminosity;
+    opacity: 0.9;
+}
+
+.duotone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(var(--text-strong-accent-rgb), 0.35), rgba(var(--bg-primary-rgb), 0.85));
+    pointer-events: none;
+}
+
+/* Sticky action bar: pinned above the bottom tab bar on phones, an ordinary row from 768 px. */
+.sticky-bottom-bar {
+    position: sticky;
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: rgba(var(--bg-surface-rgb), 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 768px) {
+    .sticky-bottom-bar {
+        position: static;
+        padding: 0;
+        background-color: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.card-surface:hover,
+    .card-surface--interactive:hover {
+        transform: none;
+    }
+}
+
+/* ================================================================
+   FitEdu cards (Phase D2): the stretched title link, the meta row
+   and clamped text, shared by the card components
+   ================================================================ */
+
+/* A card's one link is its title with Bootstrap's .stretched-link, so the whole card is the hit
+   area. The focus ring moves from the small title to the whole card. */
+.card-surface .stretched-link {
+    color: var(--text-strong-normal);
+    text-decoration: none;
+}
+
+.card-surface .stretched-link:focus-visible {
+    outline: none;
+}
+
+.card-surface:has(.stretched-link:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+@media (hover: hover) {
+    .card-surface--interactive:hover .stretched-link {
+        color: var(--text-strong-accent);
+    }
+}
+
+/* The last row of a card (lessons, author and date, …): pushed to the bottom, under a hairline. */
+.card-surface__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+/* Cut text off after two or three lines with an ellipsis (card titles and summaries). */
+.line-clamp-2,
+.line-clamp-3 {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-2 {
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    -webkit-line-clamp: 3;
+}
+
+/* ================================================================
+   FitEdu admin lists (Phase D12): the search-and-action toolbar
+   wraps on phones; stacked table rows and their action cell
+   ================================================================ */
+
+/* Search field, filters and the "New" button on one row that wraps; the field takes the space left. */
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.admin-toolbar > :is(.form-control, .form-select) {
+    flex: 1 1 16rem;
+    width: auto;
+    min-width: 0;
+}
+
+/* A filter select in a .section-head keeps a readable width without pushing the title off screen. */
+.section-head__filter {
+    width: auto;
+    max-width: 100%;
+}
+
+@media (max-width: 575.98px) {
+    .admin-toolbar > :is(.btn, .btn-cta) {
+        flex: 1 1 100%;
+    }
+}
+
+/* Phones: stacked rows take the card radius. */
+@media (max-width: 767.98px) {
+    .table-responsive > table tbody tr {
+        border-radius: var(--radius-lg);
+    }
+}
+
+/* ================================================================
+   FitEdu admin editors (Phase D13): one capped column, a wrapping
+   page head (.section-head) and wrapping action rows
+   ================================================================ */
+
+/* Editor page frame: wide enough for the EN/EL column pairs, never a full 1440 px line. */
+.admin-editor {
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+}
+
+/* Single-column forms (testimonial, learning path) read better narrower. */
+.admin-editor--narrow {
+    max-width: 46rem;
+}
+
+/* FormCardSection headers: the title and its buttons wrap instead of pushing past 375 px. */
+.admin-editor .card-header {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Save / cancel row. Add .sticky-bottom-bar on long forms so Save stays in reach on phones. */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block: var(--space-4);
+}
+
+@media (max-width: 575.98px) {
+    .form-actions > :is(.btn, .btn-cta) {
+        flex: 1 1 8rem;
+    }
 }

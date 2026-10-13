@@ -80,7 +80,7 @@
     <value>Your review</value>
   </data>
   <data name="BodyPlaceholder" xml:space="preserve">
-    <value>What did you think of this course?</value>
+    <value>What did you think of this programme?</value>
   </data>
   <data name="SubmitReview" xml:space="preserve">
     <value>Submit review</value>
@@ -92,7 +92,7 @@
     <value>Cancel</value>
   </data>
   <data name="EnrollToReview" xml:space="preserve">
-    <value>Enroll in this course to write a review.</value>
+    <value>Join this programme to write a review.</value>
   </data>
   <data name="MyReviewPending" xml:space="preserve">
     <value>Your review is awaiting approval.</value>
@@ -104,10 +104,10 @@
     <value>Failed to submit your review. Please try again.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Course Reviews</value>
+    <value>Programme Reviews</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Course</value>
+    <value>Programme</value>
   </data>
   <data name="ColAuthor" xml:space="preserve">
     <value>Author</value>

@@ -46,7 +46,7 @@
 		<value>Choose Your Plan</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
-		<value>Unlock your full potential with the right plan for you.</value>
+		<value>Train smarter with the plan that fits your goals.</value>
 	</data>
 	<data name="CurrentPlanLabel" xml:space="preserve">
 		<value>Your current plan:</value>
@@ -57,20 +57,17 @@
 	<data name="MostPopular" xml:space="preserve">
 		<value>Most Popular</value>
 	</data>
-	<data name="PriceFree" xml:space="preserve">
-		<value>Free</value>
-	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Unlimited courses</value>
+		<value>Unlimited active programmes</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Up to {0} course(s)</value>
+		<value>Up to {0} active programmes at a time</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
-		<value>Assessment access</value>
+		<value>Fitness self-assessments</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
-		<value>Certificates</value>
+		<value>Completion certificates</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
 		<value>Priority support</value>
@@ -110,5 +107,50 @@
 	</data>
 	<data name="UpgradeNow" xml:space="preserve">
 		<value>Upgrade Now</value>
+	</data>
+	<data name="FeatureExerciseLibrary" xml:space="preserve">
+		<value>Full exercise library</value>
+	</data>
+	<data name="FeatureLiveClasses" xml:space="preserve">
+		<value>Live classes</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Membership</value>
+	</data>
+	<data name="PeriodMonthly" xml:space="preserve">
+		<value>/ month</value>
+	</data>
+	<data name="PeriodQuarterly" xml:space="preserve">
+		<value>/ quarter</value>
+	</data>
+	<data name="PeriodYearly" xml:space="preserve">
+		<value>/ year</value>
+	</data>
+	<data name="PeriodLifetime" xml:space="preserve">
+		<value>one-off</value>
+	</data>
+	<data name="FeatureCoursesFree" xml:space="preserve">
+		<value>Every free programme</value>
+	</data>
+	<data name="FeatureCoursesPlus" xml:space="preserve">
+		<value>Every Free and Plus programme</value>
+	</data>
+	<data name="FeatureCoursesPro" xml:space="preserve">
+		<value>Every programme, including the advanced Pro ones</value>
+	</data>
+	<data name="FeaturesListLabel" xml:space="preserve">
+		<value>What the {0} plan includes</value>
+	</data>
+	<data name="FeatureNotIncluded" xml:space="preserve">
+		<value>Not included:</value>
+	</data>
+	<data name="Footnote" xml:space="preserve">
+		<value>The exercise library and live classes are open to every member. Switch or cancel any time.</value>
+	</data>
+	<data name="OneCourseAtATime" xml:space="preserve">
+		<value>1 active programme at a time</value>
+	</data>
+	<data name="PeriodForever" xml:space="preserve">
+		<value>forever</value>
 	</data>
 </root>

@@ -563,5 +563,41 @@ namespace FitEdu.Shared.Resources.Messages {
             }
         }
 
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exercise not found..
+        /// </summary>
+        public static string Exercise_NotFound {
+            get {
+                return ResourceManager.GetString("Exercise_NotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown exercise slug.
+        /// </summary>
+        public static string Exercise_UnknownSlug {
+            get {
+                return ResourceManager.GetString("Exercise_UnknownSlug", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown equipment code.
+        /// </summary>
+        public static string Course_UnknownEquipmentCode {
+            get {
+                return ResourceManager.GetString("Course_UnknownEquipmentCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This lesson was modified by someone else. Reload and try again..
+        /// </summary>
+        public static string Lesson_ModifiedConcurrently {
+            get {
+                return ResourceManager.GetString("Lesson_ModifiedConcurrently", resourceCulture);
+            }
+        }
     }
 }

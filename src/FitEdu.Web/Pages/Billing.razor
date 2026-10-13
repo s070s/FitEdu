@@ -1,10 +1,14 @@
 @page "/billing"
 @attribute [Authorize]
+@using FitEdu.Web.Extensions
 
 <PageTitle>@BillingRes.PageTitle</PageTitle>
 
-<div class="billing-page">
-    <h1>@BillingRes.PageHeading</h1>
+<div class="billing-page page">
+    <header class="billing-header">
+        <span class="eyebrow">@BillingRes.Eyebrow</span>
+        <h1>@BillingRes.PageHeading</h1>
+    </header>
 
     @if (_loading)
     {
@@ -18,58 +22,65 @@
     else if (_overview is not null)
     {
         @* ── Current Plan Card ── *@
-        <div class="billing-section">
-            <h2>@BillingRes.CurrentPlan</h2>
-            <div class="current-plan-card">
+        <section class="billing-section" aria-labelledby="billing-current-plan">
+            <h2 id="billing-current-plan">@BillingRes.CurrentPlan</h2>
+            <div class="current-plan-card card-surface">
                 <div class="plan-info">
                     <div class="plan-name-row">
                         <span class="plan-name">@_overview.CurrentSubscription?.PlanName</span>
-                        <span class="tier-badge tier-@_overview.CurrentSubscription?.Tier.ToString().ToLowerInvariant()">
-                            @_overview.CurrentSubscription?.Tier
+                        <span class="tier-badge chip @TierChipClass(_overview.CurrentSubscription?.Tier)">
+                            <span class="bi bi-check-circle-fill" aria-hidden="true"></span>@BillingRes.PlanActive
                         </span>
                     </div>
 
-                    <div class="plan-dates">
-                        <p><strong>@BillingRes.ActiveSince</strong> @_overview.CurrentSubscription?.StartedAt.ToLocalTime().ToString("d")</p>
+                    <dl class="plan-dates">
+                        <div>
+                            <dt>@BillingRes.ActiveSince</dt>
+                            <dd>@_overview.CurrentSubscription?.StartedAt.ToLocalTime().ToString("d")</dd>
+                        </div>
                         @if (_overview.CurrentSubscription?.ExpiresAt is not null)
                         {
-                            <p><strong>@BillingRes.NextRenewal</strong> @_overview.CurrentSubscription.ExpiresAt.Value.ToLocalTime().ToString("d")</p>
+                            <div>
+                                <dt>@BillingRes.NextRenewal</dt>
+                                <dd>@_overview.CurrentSubscription.ExpiresAt.Value.ToLocalTime().ToString("d")</dd>
+                            </div>
                         }
                         else
                         {
-                            <p><strong>@BillingRes.Renewal</strong> @BillingRes.NoExpiry</p>
+                            <div>
+                                <dt>@BillingRes.Renewal</dt>
+                                <dd>@BillingRes.NoExpiry</dd>
+                            </div>
                         }
-                    </div>
+                    </dl>
 
                     @if (_overview.CurrentSubscription?.Features is not null)
                     {
                         <div class="plan-features-summary">
-                            <span class="feature-tag">
-                                @(_overview.CurrentSubscription.Features.MaxCourses >= 1000
-                                    ? BillingRes.UnlimitedCourses
-                                    : string.Format(BillingRes.CoursesCountFormat, _overview.CurrentSubscription.Features.MaxCourses))
+                            <span class="feature-tag chip"><span class="bi bi-check-lg" aria-hidden="true"></span>
+                                @CourseLimitLabel(_overview.CurrentSubscription.Features.MaxCourses)
                             </span>
                             @if (_overview.CurrentSubscription.Features.AssessmentAccess)
                             {
-                                <span class="feature-tag">@BillingRes.FeatureAssessments</span>
+                                <span class="feature-tag chip"><span class="bi bi-check-lg" aria-hidden="true"></span>@BillingRes.FeatureAssessments</span>
                             }
                             @if (_overview.CurrentSubscription.Features.CertificateAccess)
                             {
-                                <span class="feature-tag">@BillingRes.FeatureCertificates</span>
+                                <span class="feature-tag chip"><span class="bi bi-check-lg" aria-hidden="true"></span>@BillingRes.FeatureCertificates</span>
                             }
                             @if (_overview.CurrentSubscription.Features.PrioritySupport)
                             {
-                                <span class="feature-tag">@BillingRes.FeaturePrioritySupport</span>
+                                <span class="feature-tag chip"><span class="bi bi-check-lg" aria-hidden="true"></span>@BillingRes.FeaturePrioritySupport</span>
                             }
                         </div>
                     }
                 </div>
 
                 <div class="plan-actions">
-                    <button class="btn btn-primary" @onclick="GoToPricing">@BillingRes.ChangePlan</button>
+                    <button class="btn-cta" @onclick="GoToPricing">@BillingRes.ChangePlan</button>
                     @if (_overview.CurrentSubscription?.Tier > SubscriptionTier.Free)
                     {
-                        <button class="btn btn-outline-warning" @onclick="RequestCancel" disabled="@_cancelling">
+                        <button class="btn-cta btn-cta--ghost btn-cancel-plan" @onclick="RequestCancel" disabled="@_cancelling">
                             @BillingRes.CancelSubscription
                         </button>
                     }
@@ -99,11 +110,11 @@
                     </BodyContent>
                 </ConfirmModal>
             </div>
-        </div>
+        </section>
 
         @* ── Transaction History ── *@
-        <div class="billing-section">
-            <h2>@BillingRes.TransactionHistory</h2>
+        <section class="billing-section" aria-labelledby="billing-history">
+            <h2 id="billing-history">@BillingRes.TransactionHistory</h2>
 
             @if (_overview.Transactions.TotalCount == 0)
             {
@@ -132,8 +143,11 @@
                         <tr @key="tx.Id">
                             <td data-label="@BillingRes.ColDate">@tx.CreatedAt.ToLocalTime().ToString("g")</td>
                             <td data-label="@BillingRes.ColDescription">
-                                <span class="tx-type tx-type-@tx.Type.ToLowerInvariant()">@tx.Type</span>
-                                <span>@tx.Description</span>
+                                <span class="tx-type tx-type-@tx.Type.ToLowerInvariant()">@TransactionTypeLabel(tx.Type)</span>
+                                @if (ShowTransactionDescription)
+                                {
+                                    <span class="tx-description">@tx.Description</span>
+                                }
                             </td>
                             <td data-label="@BillingRes.ColPlan">@tx.PlanName</td>
                             <td data-label="@BillingRes.ColAmount" class="@(tx.Amount > 0 ? "amount-charge" : "amount-zero")">
@@ -143,7 +157,7 @@
                                 }
                                 else
                                 {
-                                    <span>@tx.Currency @tx.Amount.ToString("F2")</span>
+                                    <span>@MoneyFormatter.Format(tx.Amount, tx.Currency)</span>
                                 }
                             </td>
                             <td data-label="@BillingRes.ColReference" class="tx-ref">
@@ -172,8 +186,6 @@
                                         OnPreviousPage="PreviousPage"
                                         OnNextPage="NextPage" />
             }
-        </div>
+        </section>
     }
 </div>
-
-

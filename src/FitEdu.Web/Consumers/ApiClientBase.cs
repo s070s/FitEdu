@@ -92,6 +92,13 @@ public abstract class ApiClientBase
     private static TimeSpan RetryDelay(int attempt) =>
         TimeSpan.FromMilliseconds(100 * attempt + Random.Shared.Next(0, 50));
 
+    /// <summary>
+    /// Returns "&amp;name=value" with the value URL-escaped, or an empty string when the value is
+    /// blank, so optional filters can be appended to a query string that already has a "?".
+    /// </summary>
+    protected static string OptionalQuery(string name, string? value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : $"&{name}={Uri.EscapeDataString(value)}";
+
     protected Task<T?> GetAsync<T>(string url, CancellationToken ct = default) =>
         ExecuteAsync(c => Http.GetAsync(url, c),
             (r, c) => r.Content.ReadFromJsonAsync<T>(cancellationToken: c), retryable: true, fallback: default, ct);

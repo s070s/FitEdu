@@ -5,8 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Data;
+using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.Data;
-using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
 using System.IdentityModel.Tokens.Jwt;
@@ -154,21 +154,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
     {
-        DateOnly? dob = request.DateOfBirth.HasValue
-            ? DateOnly.FromDateTime(request.DateOfBirth.Value.Date)
-            : null;
-
-        var user = new ApplicationUser
-        {
-            UserName = request.Email,
-            Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            DateOfBirth = dob,
-            Status = request.Status == UserStatus.Unknown ? UserStatus.Student : request.Status,
-            GdprConsentGiven = request.GdprConsent,
-            GdprConsentDate = request.GdprConsent ? DateTime.UtcNow : null
-        };
+        var user = request.ToNewUser();
 
         var createResult = await _userManager.CreateAsync(user, request.Password);
         if (!createResult.Succeeded)

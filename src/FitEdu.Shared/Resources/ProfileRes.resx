@@ -159,4 +159,34 @@
 	<data name="DownloadMyData" xml:space="preserve">
 		<value>Download my data</value>
 	</data>
+	<data name="Goal" xml:space="preserve">
+		<value>Training goal</value>
+	</data>
+	<data name="WorkoutsCompleted" xml:space="preserve">
+		<value>Workouts completed</value>
+	</data>
+	<data name="MinutesTrained" xml:space="preserve">
+		<value>Minutes trained</value>
+	</data>
+	<data name="CurrentStreak" xml:space="preserve">
+		<value>Current streak</value>
+	</data>
+	<data name="StreakDaysFormat" xml:space="preserve">
+		<value>{0} days</value>
+	</data>
+	<data name="StatsHeading" xml:space="preserve">
+		<value>Your training at a glance</value>
+	</data>
+	<data name="StatsCourses" xml:space="preserve">
+		<value>Programmes joined</value>
+	</data>
+	<data name="StatsCertificates" xml:space="preserve">
+		<value>Certificates earned</value>
+	</data>
+	<data name="StatsAssessments" xml:space="preserve">
+		<value>Self-assessments done</value>
+	</data>
+	<data name="GoalNotSet" xml:space="preserve">
+		<value>Not chosen yet</value>
+	</data>
 </root>

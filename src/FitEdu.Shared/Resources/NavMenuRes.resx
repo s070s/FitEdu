@@ -124,7 +124,7 @@
     <value>Assessments</value>
   </data>
   <data name="Courses" xml:space="preserve">
-    <value>Courses</value>
+    <value>Programmes</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
@@ -184,9 +184,35 @@
     <value>Reviews</value>
   </data>
   <data name="Paths" xml:space="preserve">
-    <value>Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="Sessions" xml:space="preserve">
-    <value>Live Sessions</value>
+    <value>Live classes</value>
+  </data>
+  <data name="Exercises" xml:space="preserve">
+    <value>Exercises</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="QuickNavigation" xml:space="preserve">
+    <value>Quick navigation</value>
+  </data>
+  <data name="CoursesShort" xml:space="preserve">
+    <value>Programmes</value>
+    <comment>Tab bar and inline header label. The Greek value carries a soft hyphen so it can break onto two lines on a 320 px phone.</comment>
+  </data>
+  <data name="AssessmentsShort" xml:space="preserve">
+    <value>Assessments</value>
+    <comment>Admin tab bar and inline header label. The Greek value carries a soft hyphen so it can break onto two lines on a 320 px phone.</comment>
+  </data>
+  <data name="PathsShort" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="SessionsShort" xml:space="preserve">
+    <value>Live classes</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
   </data>
 </root>

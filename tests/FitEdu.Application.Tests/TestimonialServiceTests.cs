@@ -33,6 +33,69 @@ public class TestimonialServiceTests
         active.Select(t => t.FullName).ShouldBe(new[] { "A", "B" });
     }
 
+    private static Testimonial BilingualItem(string? roleOrTitleEl, string? quoteTextEl) =>
+        new()
+        {
+            Id = Guid.NewGuid(), FullName = "Eleni", DisplayOrder = 1,
+            RoleOrTitle = "Ran her first 5K", RoleOrTitleEl = roleOrTitleEl,
+            QuoteText = "I ran without stopping.", QuoteTextEl = quoteTextEl
+        };
+
+    [Fact]
+    public async Task GetActive_Greek_ReturnsGreekRoleAndQuote()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Testimonials.Add(BilingualItem("Έτρεξε τα πρώτα της 5 χλμ", "Έτρεξα χωρίς στάση."));
+        await db.SaveChangesAsync();
+
+        var testimonial = (await NewService(db).GetActiveAsync("el")).Single();
+
+        testimonial.RoleOrTitle.ShouldBe("Έτρεξε τα πρώτα της 5 χλμ");
+        testimonial.QuoteText.ShouldBe("Έτρεξα χωρίς στάση.");
+    }
+
+    [Fact]
+    public async Task GetActive_GreekWithoutTranslation_FallsBackToEnglish()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Testimonials.Add(BilingualItem(roleOrTitleEl: null, quoteTextEl: null));
+        await db.SaveChangesAsync();
+
+        var testimonial = (await NewService(db).GetActiveAsync("el")).Single();
+
+        testimonial.RoleOrTitle.ShouldBe("Ran her first 5K");
+        testimonial.QuoteText.ShouldBe("I ran without stopping.");
+    }
+
+    [Fact]
+    public async Task GetActive_English_ReturnsEnglishRoleAndQuote()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Testimonials.Add(BilingualItem("Έτρεξε τα πρώτα της 5 χλμ", "Έτρεξα χωρίς στάση."));
+        await db.SaveChangesAsync();
+
+        var testimonial = (await NewService(db).GetActiveAsync("en")).Single();
+
+        testimonial.RoleOrTitle.ShouldBe("Ran her first 5K");
+        testimonial.QuoteText.ShouldBe("I ran without stopping.");
+    }
+
+    [Fact]
+    public async Task CreateAndUpdate_StoreTheGreekRoleAndQuote_AndGetByIdReturnsThem()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var svc = NewService(db);
+
+        var created = await svc.CreateAsync(Request() with { RoleOrTitleEl = "Δρομέας", QuoteTextEl = "Πρώτο" });
+        await svc.UpdateAsync(created.Id, Request() with { RoleOrTitleEl = "Μαραθωνοδρόμος", QuoteTextEl = "Δεύτερο" });
+
+        created.RoleOrTitleEl.ShouldBe("Δρομέας");
+        created.QuoteTextEl.ShouldBe("Πρώτο");
+        var updated = await svc.GetByIdAsync(created.Id);
+        updated!.RoleOrTitleEl.ShouldBe("Μαραθωνοδρόμος");
+        updated.QuoteTextEl.ShouldBe("Δεύτερο");
+    }
+
     [Fact]
     public async Task GetById_Missing_ReturnsNull()
     {

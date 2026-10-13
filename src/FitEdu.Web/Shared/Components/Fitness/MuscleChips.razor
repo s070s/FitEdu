@@ -1,0 +1,44 @@
+@using FitEdu.Web.Extensions
+@* Muscle names as a row of chips in the page language (ExerciseRes Muscle_<key>). Shows at most
+   Max chips plus a "+N more" chip. Renders nothing when there are no muscles. *@
+
+@if (_shownLabels.Count > 0)
+{
+    <ul class="chip-row muscle-chips" aria-label="@(Secondary ? ExerciseRes.SecondaryMuscles : ExerciseRes.PrimaryMuscles)">
+        @foreach (var label in _shownLabels)
+        {
+            <li class="chip @(Secondary ? "muscle-chips__chip--secondary" : "")">@label</li>
+        }
+        @if (_hiddenCount > 0)
+        {
+            <li class="chip muscle-chips__more">@string.Format(ExerciseRes.MoreMusclesFormat, _hiddenCount)</li>
+        }
+    </ul>
+}
+
+@code {
+    /// <summary>Muscle values as stored ("lower back", "quadriceps").</summary>
+    [Parameter] public IReadOnlyList<string>? Muscles { get; set; }
+
+    /// <summary>The most chips to show; the rest collapse into "+N more". 0 shows them all.</summary>
+    [Parameter] public int Max { get; set; }
+
+    /// <summary>True for secondary muscles: outlined chips and the matching list name.</summary>
+    [Parameter] public bool Secondary { get; set; }
+
+    private List<string> _shownLabels = [];
+    private int _hiddenCount;
+
+    protected override void OnParametersSet()
+    {
+        var labels = (Muscles ?? [])
+            .Where(muscle => !string.IsNullOrWhiteSpace(muscle))
+            .Select(ExerciseLabels.Muscle)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var shownCount = Max > 0 ? Math.Min(Max, labels.Count) : labels.Count;
+        _shownLabels = labels.Take(shownCount).ToList();
+        _hiddenCount = labels.Count - shownCount;
+    }
+}

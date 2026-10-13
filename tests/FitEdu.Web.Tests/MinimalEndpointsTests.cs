@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using Shouldly;
 using Xunit;
 
@@ -51,14 +52,29 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
-    public async Task Sitemap_Returns200Xml()
+    public async Task Sitemap_ListsThePublicPagesAndEachPublishedPath()
     {
+        // The only sitemap request in this class (the XML is cached for 30 minutes), so the paths
+        // seeded here are always in it.
+        var published = new LearningPath { TitleEn = "Sitemap Beginner Start", IsPublished = true };
+        var draft = new LearningPath { TitleEn = "Sitemap Draft Path", IsPublished = false };
+        await _factory.SeedAsync(async db =>
+        {
+            db.LearningPaths.AddRange(published, draft);
+            await db.SaveChangesAsync();
+        });
         var client = _factory.CreateClient();
 
         var response = await client.GetAsync("/sitemap.xml");
+        var xml = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Content.Headers.ContentType!.MediaType.ShouldBe("application/xml");
+        string[] publicPages = ["/", "/exercises", "/paths", "/blog", "/pricing", "/privacy", "/terms"];
+        foreach (var page in publicPages)
+            xml.ShouldContain($"<loc>https://tests.local{page}</loc>", Case.Sensitive);
+        xml.ShouldContain($"<loc>https://tests.local/paths/{published.Id}</loc>", Case.Sensitive);
+        xml.ShouldNotContain(draft.Id.ToString());
     }
 
     [Fact]

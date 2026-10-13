@@ -44,7 +44,7 @@ public class SiteSettingsController : ControllerBase
     {
         var setting = await _db.SiteSettings
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Key == "LandingBackgroundImage");
+            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey);
 
         if (setting == null || string.IsNullOrEmpty(setting.Value))
         {
@@ -75,7 +75,7 @@ public class SiteSettingsController : ControllerBase
         }
 
         var setting = await _db.SiteSettings
-            .FirstOrDefaultAsync(s => s.Key == "LandingBackgroundImage");
+            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey);
 
         // Delete old background if exists
         if (setting != null && !string.IsNullOrEmpty(setting.Value))
@@ -92,7 +92,7 @@ public class SiteSettingsController : ControllerBase
             setting = new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                Key = "LandingBackgroundImage",
+                Key = SiteSetting.LandingBackgroundImageKey,
                 Value = path,
                 UpdatedByUserId = UserId,
                 UpdatedAt = DateTimeOffset.UtcNow

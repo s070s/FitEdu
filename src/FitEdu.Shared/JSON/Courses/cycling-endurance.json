@@ -1,0 +1,303 @@
+{
+  "title": "Indoor Cycling Endurance",
+  "titleEl": "Αντοχή στο Στατικό Ποδήλατο",
+  "description": "Build the aerobic engine to ride longer and stronger indoors in six weeks: a proper bike set-up, smooth pedalling, clear effort zones, steady base rides, tempo and threshold intervals and a long endurance ride, plus the fuelling and recovery habits that hold it all together. Not medical advice — consult a professional before starting if you have a health condition.",
+  "descriptionEl": "Χτίσε την αερόβια «μηχανή» σου για να κάνεις ποδήλατο σε εσωτερικό χώρο περισσότερη ώρα και πιο δυνατά μέσα σε έξι εβδομάδες: σωστή ρύθμιση του ποδηλάτου, ομαλό πετάλι, ξεκάθαρες ζώνες έντασης, σταθερές προπονήσεις βάσης, διαστήματα tempo και κατωφλίου και μια μεγάλη προπόνηση αντοχής, μαζί με τις συνήθειες διατροφής και αποκατάστασης που τα δένουν όλα. Δεν αποτελεί ιατρική συμβουλή — συμβουλέψου επαγγελματία πριν ξεκινήσεις αν έχεις κάποια πάθηση.",
+  "requiredTier": "Plus",
+  "isPublished": true,
+  "category": "Cardio",
+  "categoryEl": "Κάρντιο",
+  "level": "Intermediate",
+  "goal": "Endurance",
+  "equipment": "bike",
+  "estimatedWeeks": 6,
+  "sessionsPerWeek": 3,
+  "coverExerciseSlug": "bicycling-stationary",
+  "modules": [
+    {
+      "title": "Weeks 1–2: Set Up and Build Your Base",
+      "titleEl": "Εβδομάδες 1–2: Ρύθμιση και Βάση Αντοχής",
+      "description": "Fit the bike to your body, learn smooth pedalling and effort zones, and lay an aerobic base with steady rides.",
+      "descriptionEl": "Προσάρμοσε το ποδήλατο στο σώμα σου, μάθε ομαλό πετάλι και ζώνες έντασης και χτίσε αερόβια βάση με σταθερές προπονήσεις.",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "title": "How Endurance Training on the Bike Works",
+          "titleEl": "Πώς Λειτουργεί η Προπόνηση Αντοχής στο Ποδήλατο",
+          "durationMinutes": 9,
+          "sortOrder": 1,
+          "content": "# How Endurance Training on the Bike Works\n\nThis six-week course is for riders who can already pedal for 20–30 minutes at a moderate effort and want to ride longer and feel stronger on an indoor bike. You will ride three times a week. Most of that riding is steady and comfortable; a smaller part is harder, structured intervals. Together they raise your aerobic fitness: your heart pumps more blood with each beat, your leg muscles grow more capillaries and mitochondria, and you get better at using fat as fuel, which saves your limited carbohydrate stores for the hard efforts.\n\n## Your weekly rhythm\n\n- Ride three times a week, ideally with a rest day or an easy day between sessions\n- Every session starts with a gradual warm-up and ends with easy spinning and a few stretches\n- Keep roughly 80% of your riding time at easy or endurance effort; endurance is built mostly at low intensity\n- If a week leaves you drained, repeat it before moving on\n\n## Effort zones\n\nYou do not need a power meter. Use the RPE scale (rate of perceived exertion, 1–10) and the talk test, and use heart rate as a cross-check if your bike or watch shows it.\n\n- **Easy spin, RPE 2–3:** recovery pace; you could chat for as long as you like\n- **Endurance, RPE 4–6:** steady and comfortable; you can still speak in full sentences. Most of your riding happens here\n- **Tempo, RPE 7:** comfortably hard; you can say short phrases but would rather not\n- **Threshold, RPE 8:** hard but controlled; only a few words at a time. Roughly the effort you could hold for 30–60 minutes in a race\n- **All-out, RPE 9–10:** not used in this course\n\nThe popular estimate of maximum heart rate, 220 minus your age, can easily be off by ten beats or more. Treat any heart-rate number as a rough guide and let your breathing and the talk test have the final word.\n\n## The plan at a glance\n\n1. Weeks 1–2: bike set-up, cadence skills and steady base rides of 3 × 6–8 minutes\n2. Weeks 3–4: tempo intervals plus a continuous endurance ride of 20–25 minutes\n3. Weeks 5–6: threshold intervals and a long steady ride of 30–35 minutes\n\n## What you need\n\n- An indoor bike: a spin bike, an upright or recumbent exercise bike, or a road bike on a trainer\n- A fan pointed at you, a full water bottle and a towel; indoors there is no wind to cool you\n- A timer, and a cadence display (pedal revolutions per minute, rpm) if your bike has one\n- Padded cycling shorts or close-fitting shorts, and shoes with fairly stiff soles\n\n## Why it works\n\nHealth guidelines recommend 150–300 minutes of moderate activity or 75–150 minutes of vigorous activity each week. Three rides of 30–45 minutes, with some harder intervals, cover a large share of that. Each block of this course asks for a little more than the last and then gives you time to adapt, which is progressive overload applied to endurance.\n\n## Safety\n\n- If you have a heart, lung or metabolic condition, or have not exercised for a long time, check with a professional first\n- Stop and seek help if you feel chest pain, dizziness, palpitations or unusual shortness of breath\n- Knee, hip or lower-back pain on the bike often comes from a poor set-up; fix the bike before you add training",
+          "contentEl": "# Πώς Λειτουργεί η Προπόνηση Αντοχής στο Ποδήλατο\n\nΑυτό το εξάβδομο πρόγραμμα απευθύνεται σε όσους μπορούν ήδη να κάνουν πετάλι 20–30 λεπτά με μέτρια προσπάθεια και θέλουν να αντέχουν περισσότερη ώρα και να νιώθουν πιο δυνατοί στο στατικό ποδήλατο. Θα προπονείσαι τρεις φορές την εβδομάδα. Το μεγαλύτερο μέρος είναι σταθερή, άνετη ποδηλασία· ένα μικρότερο μέρος είναι πιο απαιτητικά, δομημένα διαστήματα (intervals). Μαζί ανεβάζουν την αερόβια φυσική σου κατάσταση: η καρδιά σου στέλνει περισσότερο αίμα με κάθε χτύπο, οι μύες των ποδιών αποκτούν περισσότερα τριχοειδή αγγεία και μιτοχόνδρια και γίνεσαι καλύτερος στο να χρησιμοποιείς το λίπος ως καύσιμο, κάτι που εξοικονομεί τα περιορισμένα αποθέματα υδατανθράκων για τις έντονες προσπάθειες.\n\n## Η εβδομάδα σου\n\n- Κάνε ποδήλατο τρεις φορές την εβδομάδα, ιδανικά με μια μέρα ξεκούρασης ή μια χαλαρή μέρα ανάμεσα\n- Κάθε προπόνηση ξεκινά με σταδιακό ζέσταμα και τελειώνει με χαλαρό πετάλι και λίγες διατάσεις\n- Κράτα περίπου το 80% του χρόνου σου στο ποδήλατο σε χαλαρή ένταση ή ένταση αντοχής· η αντοχή χτίζεται κυρίως σε χαμηλή ένταση\n- Αν μια εβδομάδα σε εξαντλήσει, επανάλαβέ την πριν προχωρήσεις\n\n## Ζώνες έντασης\n\nΔεν χρειάζεσαι μετρητή ισχύος (power meter). Χρησιμοποίησε την κλίμακα RPE (βαθμός αντιληπτής προσπάθειας, 1–10) και το τεστ ομιλίας, και τους παλμούς ως επιπλέον έλεγχο αν τους δείχνει το ποδήλατο ή το ρολόι σου.\n\n- **Χαλαρό πετάλι, RPE 2–3:** ρυθμός αποκατάστασης· θα μπορούσες να κουβεντιάζεις όση ώρα θέλεις\n- **Αντοχή, RPE 4–6:** σταθερά και άνετα· μπορείς ακόμη να μιλάς με ολόκληρες προτάσεις. Εδώ γίνεται το μεγαλύτερο μέρος της προπόνησης\n- **Tempo, RPE 7:** «άνετα δύσκολο»· μπορείς να πεις σύντομες φράσεις, αλλά θα προτιμούσες να μη μιλάς\n- **Κατώφλι, RPE 8:** δύσκολο αλλά ελεγχόμενο· μόνο λίγες λέξεις τη φορά. Περίπου η προσπάθεια που θα κρατούσες 30–60 λεπτά σε αγώνα\n- **Στο μέγιστο, RPE 9–10:** δεν χρησιμοποιείται σε αυτό το πρόγραμμα\n\nΟ γνωστός τύπος για τους μέγιστους παλμούς, 220 μείον την ηλικία σου, μπορεί εύκολα να απέχει δέκα παλμούς ή και περισσότερο από την πραγματικότητα. Αντιμετώπισε κάθε αριθμό παλμών ως πρόχειρο οδηγό και άφησε την αναπνοή σου και το τεστ ομιλίας να έχουν τον τελευταίο λόγο.\n\n## Το πρόγραμμα με μια ματιά\n\n1. Εβδομάδες 1–2: ρύθμιση ποδηλάτου, δεξιότητες ρυθμού πεταλιού (cadence) και σταθερές προπονήσεις βάσης 3 × 6–8 λεπτά\n2. Εβδομάδες 3–4: διαστήματα tempo και μια συνεχόμενη προπόνηση αντοχής 20–25 λεπτών\n3. Εβδομάδες 5–6: διαστήματα κατωφλίου και μια μεγάλη σταθερή προπόνηση 30–35 λεπτών\n\n## Τι χρειάζεσαι\n\n- Ένα ποδήλατο εσωτερικού χώρου: spin bike, όρθιο ή καθιστό (recumbent) ποδήλατο γυμναστικής ή ποδήλατο δρόμου σε προπονητήριο (trainer)\n- Έναν ανεμιστήρα στραμμένο πάνω σου, ένα γεμάτο μπουκάλι νερό και μια πετσέτα· μέσα στο σπίτι δεν υπάρχει αέρας να σε δροσίσει\n- Ένα χρονόμετρο και, αν το ποδήλατό σου έχει, ένδειξη ρυθμού πεταλιού (στροφές ανά λεπτό, rpm)\n- Ποδηλατικό κολάν με επένδυση ή εφαρμοστό σορτσάκι και παπούτσια με σχετικά σκληρή σόλα\n\n## Γιατί λειτουργεί\n\nΟι οδηγίες για την υγεία προτείνουν 150–300 λεπτά μέτριας δραστηριότητας ή 75–150 λεπτά έντονης δραστηριότητας κάθε εβδομάδα. Τρεις προπονήσεις των 30–45 λεπτών, με μερικά πιο έντονα διαστήματα, καλύπτουν μεγάλο μέρος αυτού του στόχου. Κάθε ενότητα του προγράμματος ζητά λίγο περισσότερα από την προηγούμενη και μετά σου δίνει χρόνο να προσαρμοστείς· αυτή είναι η προοδευτική επιβάρυνση εφαρμοσμένη στην αντοχή.\n\n## Ασφάλεια\n\n- Αν έχεις καρδιακή, πνευμονική ή μεταβολική πάθηση ή αν έχεις πολύ καιρό να γυμναστείς, συμβουλέψου πρώτα επαγγελματία\n- Σταμάτα και ζήτα βοήθεια αν νιώσεις πόνο στο στήθος, ζάλη, αίσθημα παλμών ή ασυνήθιστη δύσπνοια\n- Ο πόνος σε γόνατο, ισχίο ή μέση πάνω στο ποδήλατο συχνά οφείλεται σε κακή ρύθμιση· διόρθωσε πρώτα το ποδήλατο και μετά αύξησε την προπόνηση"
+        },
+        {
+          "title": "Bike Set-Up and Pedalling Technique",
+          "titleEl": "Ρύθμιση Ποδηλάτου και Τεχνική Πεταλιού",
+          "durationMinutes": 15,
+          "sortOrder": 2,
+          "content": "# Bike Set-Up and Pedalling Technique\n\nA good position lets your legs produce force without straining your knees, hips or lower back, and smooth pedalling wastes less energy. Set the bike up once, note the settings, then practise the cadence drill: after a 5-minute easy warm-up, ride 2 rounds of 1 minute each at 70, 85 and 95 rpm (3 minutes per round) at RPE 4–5, with 1 easy minute between rounds.\n\n## What it trains\n\n- **Main movers:** the quadriceps straighten the knee and the glutes extend the hip during the downstroke, where most of the force is made\n- **Synergists:** the hamstrings help extend the hip and draw the pedal back through the bottom of the stroke; the calves pass force into the pedal; the hip flexors lift the knee on the upstroke\n- **Stabilisers:** the core and hip muscles keep the pelvis still on the saddle\n- **Pattern:** a cyclical, low-impact compound movement, mainly a push with each leg in turn\n\n## Set-up\n\n- **Saddle height:** with the pedal at the bottom of the stroke and the ball of your foot on it, your knee stays slightly bent (roughly 25–35°). Your hips should not rock\n- **Saddle fore-aft:** with the cranks level, your front knee sits roughly above the pedal axle, a common starting point rather than a rule\n- **Saddle angle:** level, so you neither slide forward nor press onto the nose\n- **Handlebars:** high enough to reach with soft elbows and a long, neutral back; with a stiff back, start at saddle height or higher\n- **Feet:** the ball of the foot over the pedal axle, with straps, cages or cleats secure\n\n## Form cues\n\n1. Sit back on your sit bones and keep your hips level\n2. Hinge forward from the hips rather than rounding your upper back\n3. Hold the bars lightly, shoulders down and away from your ears\n4. Keep each knee tracking in line over the middle of the foot\n5. Push down and slightly forward from the top of the stroke to about the five o'clock position\n6. Sweep the foot back through the bottom, as if wiping mud off your shoe\n7. Aim for 80–95 rpm on endurance rides; let the resistance, not your posture, change the effort\n8. Breathe low and steady into your belly\n\n## Common errors\n\n1. **Saddle too low:** a deep knee bend loads the front of the knee. Raise the saddle a little at a time\n2. **Saddle too high:** the hips rock and the toes reach for the pedal. Lower it until the pelvis stays still\n3. **Bouncing:** the cadence is too high for the resistance. Add resistance or ease off\n4. **Grinding:** heavy resistance at 60 rpm or less strains the knees. Lighten it and spin faster\n5. **Locked elbows, tight grip:** tension spreads to the neck and shoulders. Soften both\n\n## Easier and harder versions\n\n- **Easier:** a recumbent bike supports your back and is easier to get on and off; run the same drill with cadence targets of 75–85 rpm\n- **Harder:** add 20-second spin-ups to 100–110 rpm while keeping your hips quiet, or let one leg lead for 30 seconds while the other follows\n\n## Safety\n\n- On spin bikes with a weighted flywheel the pedals keep turning when you stop pushing; slow down with the resistance knob or brake before you take your feet off\n- Sharp knee pain usually points to a set-up problem; stop and adjust\n- Numbness in the hands or saddle area: stand briefly, shift position and check your set-up",
+          "contentEl": "# Ρύθμιση Ποδηλάτου και Τεχνική Πεταλιού\n\nΜια καλή θέση επιτρέπει στα πόδια να παράγουν δύναμη χωρίς να ζορίζονται τα γόνατα, τα ισχία ή η μέση, και το ομαλό πετάλι σπαταλά λιγότερη ενέργεια. Ρύθμισε το ποδήλατο μία φορά, σημείωσε τις ρυθμίσεις και μετά κάνε την άσκηση ρυθμού πεταλιού: ύστερα από 5 λεπτά χαλαρό ζέσταμα, κάνε 2 γύρους με 1 λεπτό στις 70, 1 λεπτό στις 85 και 1 λεπτό στις 95 στροφές ανά λεπτό (rpm), όλα σε RPE 4–5, με 1 λεπτό χαλαρό πετάλι ανάμεσα στους γύρους.\n\n## Τι δουλεύει\n\n- **Κύριοι μύες:** οι τετρακέφαλοι τεντώνουν το γόνατο και οι γλουτοί εκτείνουν το ισχίο στο κατέβασμα του πεταλιού, εκεί όπου παράγεται η περισσότερη δύναμη\n- **Συνεργοί:** οι οπίσθιοι μηριαίοι βοηθούν στην έκταση του ισχίου και τραβούν το πετάλι πίσω στο κάτω μέρος της περιστροφής· οι γάμπες μεταφέρουν τη δύναμη στο πετάλι· οι καμπτήρες του ισχίου σηκώνουν το γόνατο στο ανέβασμα\n- **Σταθεροποιητές:** ο κορμός και οι μύες του ισχίου κρατούν τη λεκάνη σταθερή στη σέλα\n- **Μοτίβο:** μια κυκλική, πολυαρθρική κίνηση με μικρή επιβάρυνση για τις αρθρώσεις, κυρίως ώθηση με κάθε πόδι εναλλάξ\n\n## Τοποθέτηση\n\n- **Ύψος σέλας:** με το πετάλι στο κατώτερο σημείο και το μπροστινό μέρος του πέλματος πάνω του, το γόνατο μένει ελαφρά λυγισμένο (περίπου 25–35°). Η λεκάνη δεν πρέπει να κουνιέται\n- **Θέση σέλας μπρος-πίσω:** με τα πετάλια στο ίδιο ύψος (μανιβέλες οριζόντιες), το μπροστινό γόνατο βρίσκεται περίπου πάνω από τον άξονα του πεταλιού, ένα συνηθισμένο σημείο εκκίνησης και όχι κανόνας\n- **Κλίση σέλας:** οριζόντια, ώστε ούτε να γλιστράς μπροστά ούτε να πιέζεσαι στη μύτη της\n- **Τιμόνι:** αρκετά ψηλά ώστε να το φτάνεις με χαλαρούς αγκώνες και μακριά, ουδέτερη πλάτη· αν η μέση σου είναι δύσκαμπτη, ξεκίνα με το τιμόνι στο ύψος της σέλας ή ψηλότερα\n- **Πέλματα:** το μπροστινό μέρος του πέλματος πάνω από τον άξονα του πεταλιού, με λουράκια, κλουβάκια ή σφήνες κουμπωτών πεταλιών (cleats) καλά στερεωμένα\n\n## Οδηγίες τεχνικής\n\n1. Κάθισε πίσω, πάνω στα ισχιακά οστά, και κράτα τη λεκάνη οριζόντια\n2. Γείρε μπροστά από τα ισχία αντί να καμπουριάζεις την πάνω πλάτη\n3. Κράτα το τιμόνι χαλαρά, με τους ώμους κάτω και μακριά από τα αυτιά\n4. Κράτα κάθε γόνατο σε ευθεία πάνω από τη μέση του πέλματος\n5. Σπρώξε προς τα κάτω και ελαφρά μπροστά, από το πάνω σημείο της περιστροφής μέχρι περίπου τη θέση «πέντε η ώρα»\n6. Σύρε το πέλμα προς τα πίσω στο κάτω μέρος, σαν να σκουπίζεις λάσπη από το παπούτσι σου\n7. Στόχευσε σε 80–95 rpm στις προπονήσεις αντοχής· άλλαζε την ένταση με την αντίσταση, όχι με τη στάση σου\n8. Ανάπνεε χαμηλά και σταθερά, προς την κοιλιά\n\n## Συνηθισμένα λάθη\n\n1. **Σέλα πολύ χαμηλά:** το βαθύ λύγισμα του γονάτου επιβαρύνει το μπροστινό του μέρος. Ανέβασε τη σέλα λίγο λίγο\n2. **Σέλα πολύ ψηλά:** η λεκάνη κουνιέται και τα δάχτυλα «ψάχνουν» το πετάλι. Κατέβασέ τη μέχρι να μένει σταθερή η λεκάνη\n3. **Αναπήδηση:** ο ρυθμός είναι πολύ υψηλός για την αντίσταση. Πρόσθεσε αντίσταση ή χαλάρωσε τον ρυθμό\n4. **Πετάλι «με το ζόρι»:** βαριά αντίσταση στις 60 rpm ή λιγότερο ζορίζει τα γόνατα. Ελάφρυνέ τη και κάνε πιο γρήγορο πετάλι\n5. **Κλειδωμένοι αγκώνες, σφιχτό κράτημα:** η ένταση απλώνεται στον αυχένα και στους ώμους. Χαλάρωσε και τα δύο\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- **Ευκολότερη:** ένα καθιστό ποδήλατο (recumbent) στηρίζει την πλάτη και είναι πιο εύκολο να ανέβεις και να κατέβεις· κάνε την ίδια άσκηση με στόχους 75–85 rpm\n- **Δυσκολότερη:** πρόσθεσε σύντομες επιταχύνσεις ρυθμού (spin-ups) 20 δευτερολέπτων στις 100–110 rpm κρατώντας τη λεκάνη ακίνητη, ή άφησε το ένα πόδι να οδηγεί για 30 δευτερόλεπτα ενώ το άλλο ακολουθεί\n\n## Ασφάλεια\n\n- Στα spin bikes με βαρύ σφόνδυλο τα πετάλια συνεχίζουν να γυρίζουν όταν σταματάς να σπρώχνεις· επιβράδυνε με τον ρυθμιστή αντίστασης ή το φρένο πριν βγάλεις τα πόδια\n- Ο οξύς πόνος στο γόνατο συνήθως δείχνει πρόβλημα ρύθμισης· σταμάτα και ρύθμισε το ποδήλατο\n- Μούδιασμα στα χέρια ή στην περιοχή της σέλας: σήκω για λίγο όρθιος, άλλαξε θέση και έλεγξε τη ρύθμιση",
+          "exercises": [
+            {
+              "slug": "bicycling-stationary",
+              "sets": 2,
+              "reps": "1 min @ 70 / 85 / 95 rpm",
+              "restSeconds": 60,
+              "notes": "One minute at each cadence in turn. Spin easily in the rest minute; keep the hips still even at 95 rpm.",
+              "notesEl": "Ένα λεπτό σε κάθε ρυθμό πεταλιού, με τη σειρά. Κάνε χαλαρό πετάλι στο λεπτό ξεκούρασης· κράτα τη λεκάνη ακίνητη ακόμη και στις 95 rpm."
+            },
+            {
+              "slug": "recumbent-bike",
+              "sets": 2,
+              "reps": "1 min @ 75 / 80 / 85 rpm",
+              "restSeconds": 60,
+              "notes": "One minute at each cadence in turn. Easier option: back against the seat, knees in line with your feet.",
+              "notesEl": "Ένα λεπτό σε κάθε ρυθμό πεταλιού, με τη σειρά. Ευκολότερη επιλογή: πλάτη ακουμπισμένη στο κάθισμα, γόνατα στην ευθεία των πελμάτων."
+            }
+          ]
+        },
+        {
+          "title": "Weeks 1–2: Aerobic Base Rides",
+          "titleEl": "Εβδομάδες 1–2: Προπονήσεις Αερόβιας Βάσης",
+          "durationMinutes": 45,
+          "sortOrder": 3,
+          "content": "# Weeks 1–2: Aerobic Base Rides\n\nThese are your three rides a week for the first two weeks. Each one is a set of steady blocks at endurance effort with short, easy spins in between. The breaks keep the effort honest and give you a moment to check your position; in week 2 the blocks get longer, which prepares you for the continuous rides that follow. The whole session takes 40–45 minutes. Once a week, add the cadence drill from the previous lesson straight after the warm-up; it makes that ride about 8 minutes longer.\n\n## Warm-up\n\nSpend about 8 minutes getting ready.\n\n1. Off the bike, standing hip circles: 5 each way on each leg, holding the bike for balance\n2. Front leg swings: 10 on each leg, small at first and gradually bigger\n3. On the bike, 5 minutes of easy pedalling at RPE 2–3, raising the cadence slowly to about 85 rpm\n\n## The workout\n\nRide each block at RPE 5, a steady pace at which you can still speak in full sentences, at 80–95 rpm. Between blocks, drop the resistance and spin easily (RPE 2–3) for 2 minutes.\n\n- **Week 1:** 3 blocks of 6 minutes steady with 2 minutes easy (24 minutes)\n- **Week 2:** 3 blocks of 8 minutes steady with 2 minutes easy (30 minutes)\n\nIf the effort drifts, adjust the resistance rather than the cadence. Heart rate tends to creep up during each block even at the same resistance; if you can no longer talk comfortably, ease off a little. Write down the resistance level and how each block felt; these notes become your baseline for the coming weeks.\n\n## Cool-down\n\nSpin very easily for 3 minutes until your breathing settles, then get off the bike and stretch. Hold each stretch for 20–30 seconds without bouncing.\n\n1. Kneeling hip-flexor stretch, each side\n2. Standing elevated quad stretch with your foot on a step or low bench, each leg\n3. Calf stretch with your hands against a wall, each leg\n\n## Safety\n\n- Take a few sips of water every 10 minutes or so and keep the fan running\n- If your knees ache, recheck the saddle height before the next ride\n- Mild leg tiredness is normal; chest pain, dizziness or feeling faint means you stop at once",
+          "contentEl": "# Εβδομάδες 1–2: Προπονήσεις Αερόβιας Βάσης\n\nΑυτές είναι οι τρεις προπονήσεις σου την εβδομάδα για τις δύο πρώτες εβδομάδες. Η καθεμία είναι μια σειρά από σταθερά διαστήματα σε ένταση αντοχής, με σύντομο, χαλαρό πετάλι ανάμεσα. Τα διαλείμματα κρατούν την προσπάθεια στο σωστό επίπεδο και σου δίνουν μια στιγμή να ελέγξεις τη θέση σου· τη 2η εβδομάδα τα διαστήματα μεγαλώνουν και σε προετοιμάζουν για τις συνεχόμενες προπονήσεις που ακολουθούν. Όλη η προπόνηση διαρκεί 40–45 λεπτά. Μία φορά την εβδομάδα, πρόσθεσε την άσκηση ρυθμού πεταλιού του προηγούμενου μαθήματος αμέσως μετά το ζέσταμα· αυτή η προπόνηση θα κρατήσει περίπου 8 λεπτά περισσότερο.\n\n## Ζέσταμα\n\nΑφιέρωσε περίπου 8 λεπτά για να προετοιμαστείς.\n\n1. Εκτός ποδηλάτου, κύκλοι ισχίου σε όρθια θέση: 5 προς κάθε κατεύθυνση με κάθε πόδι, κρατώντας το ποδήλατο για ισορροπία\n2. Αιωρήσεις ποδιού μπροστά-πίσω: 10 με κάθε πόδι, μικρές στην αρχή και σταδιακά μεγαλύτερες\n3. Πάνω στο ποδήλατο, 5 λεπτά χαλαρό πετάλι σε RPE 2–3, ανεβάζοντας σιγά σιγά τον ρυθμό στις 85 rpm περίπου\n\n## Η προπόνηση\n\nΚάνε κάθε διάστημα σε RPE 5, με σταθερή ένταση στην οποία μπορείς ακόμη να μιλάς με ολόκληρες προτάσεις, στις 80–95 rpm. Ανάμεσα στα διαστήματα, μείωσε την αντίσταση και κάνε χαλαρό πετάλι (RPE 2–3) για 2 λεπτά.\n\n- **Εβδομάδα 1:** 3 διαστήματα των 6 λεπτών σταθερά με 2 λεπτά χαλαρά (24 λεπτά)\n- **Εβδομάδα 2:** 3 διαστήματα των 8 λεπτών σταθερά με 2 λεπτά χαλαρά (30 λεπτά)\n\nΑν η προσπάθεια ξεφεύγει, άλλαξε την αντίσταση και όχι τον ρυθμό πεταλιού. Οι παλμοί τείνουν να ανεβαίνουν σιγά σιγά μέσα σε κάθε διάστημα, ακόμη και με την ίδια αντίσταση· αν δεν μπορείς πια να μιλάς άνετα, χαλάρωσε λίγο. Σημείωσε το επίπεδο αντίστασης και πώς ένιωσες σε κάθε διάστημα· αυτές οι σημειώσεις γίνονται η βάση σου για τις επόμενες εβδομάδες.\n\n## Αποθεραπεία\n\nΚάνε πολύ χαλαρό πετάλι για 3 λεπτά μέχρι να ηρεμήσει η αναπνοή σου, μετά κατέβα από το ποδήλατο και κάνε διατάσεις. Κράτα κάθε διάταση 20–30 δευτερόλεπτα χωρίς αναπηδήσεις.\n\n1. Διάταση καμπτήρων ισχίου από γονατιστή θέση, σε κάθε πλευρά\n2. Όρθια διάταση τετρακεφάλων με το πόδι σε σκαλί ή χαμηλό πάγκο, με κάθε πόδι\n3. Διάταση γάμπας με τα χέρια στον τοίχο, με κάθε πόδι\n\n## Ασφάλεια\n\n- Πίνε λίγες γουλιές νερό περίπου κάθε 10 λεπτά και κράτα τον ανεμιστήρα αναμμένο\n- Αν πονούν τα γόνατά σου, έλεγξε ξανά το ύψος της σέλας πριν από την επόμενη προπόνηση\n- Η ήπια κούραση στα πόδια είναι φυσιολογική· πόνος στο στήθος, ζάλη ή αίσθημα λιποθυμίας σημαίνουν ότι σταματάς αμέσως",
+          "exercises": [
+            {
+              "slug": "standing-hip-circles",
+              "sets": 1,
+              "reps": "5",
+              "restSeconds": 0,
+              "notes": "Each direction, each leg. Hold the bike for balance and draw big, slow circles with the knee.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από το ποδήλατο για ισορροπία και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
+            },
+            {
+              "slug": "front-leg-raises",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each leg. Start small and let the swing grow; never force it.",
+              "notesEl": "Σε κάθε πόδι. Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μην πιέζεις ποτέ."
+            },
+            {
+              "slug": "bicycling-stationary",
+              "sets": 3,
+              "reps": "6 min @ RPE 5 + 2 min",
+              "restSeconds": 0,
+              "notes": "Spin easy for the 2 min between blocks. Week 1 shown (week 2: 8-minute blocks); you should be able to talk in full sentences.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 2 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 1 (εβδομάδα 2: διαστήματα 8 λεπτών)· πρέπει να μπορείς να μιλάς με ολόκληρες προτάσεις."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Tuck the pelvis and squeeze the back glute before you lean forward.",
+              "notesEl": "Σε κάθε πλευρά. «Μάζεψε» ελαφρά τη λεκάνη και σφίξε τον γλουτό του πίσω ποδιού πριν γείρεις μπροστά."
+            },
+            {
+              "slug": "standing-elevated-quad-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Stand tall, keep the supporting knee soft and hold a wall if needed.",
+              "notesEl": "Σε κάθε πόδι. Στάσου ευθυτενής, κράτα το γόνατο στήριξης ελαφρά λυγισμένο και κρατήσου από τον τοίχο αν χρειαστεί."
+            },
+            {
+              "slug": "calf-stretch-hands-against-wall",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Keep the back heel down and the back leg straight.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 3–4: Add Tempo",
+      "titleEl": "Εβδομάδες 3–4: Προσθέτουμε Tempo",
+      "description": "Tempo intervals raise the pace you can hold, a longer continuous ride builds staying power, and smart fuelling and recovery keep you going.",
+      "descriptionEl": "Τα διαστήματα tempo ανεβάζουν την ένταση που μπορείς να κρατήσεις, μια μεγαλύτερη συνεχόμενη προπόνηση χτίζει αντοχή και η σωστή διατροφή και αποκατάσταση σε κρατούν σε τροχιά.",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "title": "Weeks 3–4: Tempo Intervals",
+          "titleEl": "Εβδομάδες 3–4: Διαστήματα Tempo",
+          "durationMinutes": 45,
+          "sortOrder": 1,
+          "content": "# Weeks 3–4: Tempo Intervals\n\nTempo is comfortably hard riding at RPE 7: you can manage a short phrase, but you are concentrating. Time at this effort raises the pace you can hold before your legs start to burn, and it teaches you to stay relaxed while you work. This is the key session of each week in weeks 3–4 and takes about 45 minutes.\n\n## Your other two rides\n\n- **Endurance ride:** a 5-minute warm-up, then 20 minutes (week 3) or 25 minutes (week 4) continuous at RPE 5, then 3 minutes easy and a few stretches\n- **Easy spin:** 25–30 minutes at RPE 2–3, including the cadence drill from module 1\n- Put the easy spin or a rest day between the tempo session and the endurance ride; avoid two hard days in a row\n\n## Warm-up\n\nTempo work needs a slightly longer warm-up of about 10 minutes.\n\n1. Off the bike, standing hip circles: 5 each way on each leg\n2. On the bike, 5 minutes building from RPE 2 to RPE 5, cadence 85–90 rpm\n3. Two 30-second efforts at RPE 7 with 1 minute easy after each, to rehearse the effort\n\n## The workout\n\nRide each tempo block seated at RPE 7 and 85–95 rpm, with smooth circles. Between blocks, spin easily at RPE 2–3.\n\n- **Week 3:** 3 blocks of 6 minutes at tempo with 3 minutes easy (27 minutes)\n- **Week 4:** 2 blocks of 10 minutes at tempo with 4 minutes easy (28 minutes)\n\nPace the first block so that the last one feels just as strong. If your cadence keeps dropping or you cannot say a short phrase, the resistance is too high. Breathe out fully and keep your shoulders relaxed as each block goes on. Compare the resistance with your base-ride notes: tempo usually needs a few levels more.\n\n## Cool-down\n\nSpin very easily for 3 minutes, then stretch for about 4 minutes. Hold the leg stretches for 20–30 seconds and the cat stretch for 15–20 seconds, twice.\n\n1. Kneeling hip-flexor stretch, each side\n2. Standing hamstring and calf stretch with a towel or band around the front foot, each leg\n3. Cat stretch on your hands and knees, to release your back after time in the saddle\n\n## Safety\n\n- Keep tempo seated and controlled; this is not a sprint session\n- Sip water during the easy spins; you sweat heavily indoors, so start every ride well hydrated\n- Skip the tempo blocks and ride easily instead if you slept badly or still have heavy legs from the last ride",
+          "contentEl": "# Εβδομάδες 3–4: Διαστήματα Tempo\n\nΤο tempo είναι ποδηλασία «άνετα δύσκολη» σε RPE 7: μπορείς να πεις μια σύντομη φράση, αλλά είσαι συγκεντρωμένος. Ο χρόνος σε αυτή την ένταση ανεβάζει την ένταση που μπορείς να κρατήσεις πριν αρχίσουν να «καίνε» τα πόδια σου και σε μαθαίνει να μένεις χαλαρός ενώ δουλεύεις. Στις εβδομάδες 3–4 αυτή είναι η βασική προπόνηση της εβδομάδας και διαρκεί περίπου 45 λεπτά.\n\n## Οι άλλες δύο προπονήσεις σου\n\n- **Προπόνηση αντοχής:** 5 λεπτά ζέσταμα, μετά 20 λεπτά (εβδομάδα 3) ή 25 λεπτά (εβδομάδα 4) συνεχόμενα σε RPE 5 και στο τέλος 3 λεπτά χαλαρά και λίγες διατάσεις\n- **Χαλαρό πετάλι:** 25–30 λεπτά σε RPE 2–3, μαζί με την άσκηση ρυθμού πεταλιού από την ενότητα 1\n- Βάλε το χαλαρό πετάλι ή μια μέρα ξεκούρασης ανάμεσα στην προπόνηση tempo και στην προπόνηση αντοχής· απόφυγε δύο απαιτητικές μέρες στη σειρά\n\n## Ζέσταμα\n\nΤα διαστήματα tempo χρειάζονται λίγο μεγαλύτερο ζέσταμα, περίπου 10 λεπτών.\n\n1. Εκτός ποδηλάτου, κύκλοι ισχίου σε όρθια θέση: 5 προς κάθε κατεύθυνση με κάθε πόδι\n2. Πάνω στο ποδήλατο, 5 λεπτά ανεβαίνοντας σταδιακά από RPE 2 σε RPE 5, με ρυθμό 85–90 rpm\n3. Δύο προσπάθειες 30 δευτερολέπτων σε RPE 7 με 1 λεπτό χαλαρά μετά την καθεμία, για να «δοκιμάσεις» την ένταση\n\n## Η προπόνηση\n\nΚάνε κάθε διάστημα tempo καθιστός, σε RPE 7 και 85–95 rpm, με ομαλούς κύκλους. Ανάμεσα στα διαστήματα κάνε χαλαρό πετάλι σε RPE 2–3.\n\n- **Εβδομάδα 3:** 3 διαστήματα των 6 λεπτών σε tempo με 3 λεπτά χαλαρά (27 λεπτά)\n- **Εβδομάδα 4:** 2 διαστήματα των 10 λεπτών σε tempo με 4 λεπτά χαλαρά (28 λεπτά)\n\nΡύθμισε την ένταση στο πρώτο διάστημα έτσι ώστε το τελευταίο να βγαίνει εξίσου δυνατό. Αν ο ρυθμός πεταλιού σου πέφτει συνεχώς ή δεν μπορείς να πεις μια σύντομη φράση, η αντίσταση είναι πολύ μεγάλη. Όσο προχωρά κάθε διάστημα, κάνε πλήρεις εκπνοές και κράτα τους ώμους χαλαρούς. Σύγκρινε την αντίσταση με τις σημειώσεις από τις προπονήσεις βάσης: το tempo συνήθως θέλει μερικά επίπεδα παραπάνω.\n\n## Αποθεραπεία\n\nΚάνε πολύ χαλαρό πετάλι για 3 λεπτά και μετά διατάσεις για περίπου 4 λεπτά. Κράτα τις διατάσεις ποδιών 20–30 δευτερόλεπτα και τη διάταση της γάτας 15–20 δευτερόλεπτα, δύο φορές.\n\n1. Διάταση καμπτήρων ισχίου από γονατιστή θέση, σε κάθε πλευρά\n2. Όρθια διάταση οπίσθιων μηριαίων και γάμπας με μια πετσέτα ή ένα λάστιχο γύρω από το μπροστινό πέλμα, με κάθε πόδι\n3. Διάταση της γάτας στα τέσσερα, για να ξεκουραστεί η πλάτη σου μετά τον χρόνο στη σέλα\n\n## Ασφάλεια\n\n- Κάνε το tempo καθιστός και ελεγχόμενα· δεν είναι προπόνηση για σπριντ\n- Πίνε γουλιές νερό στα χαλαρά διαστήματα· μέσα στο σπίτι ιδρώνεις πολύ, γι' αυτό ξεκίνα κάθε προπόνηση καλά ενυδατωμένος\n- Παράλειψε τα διαστήματα tempo και κάνε χαλαρό πετάλι αν κοιμήθηκες άσχημα ή αν τα πόδια σου είναι ακόμη βαριά από την προηγούμενη προπόνηση",
+          "exercises": [
+            {
+              "slug": "standing-hip-circles",
+              "sets": 1,
+              "reps": "5",
+              "restSeconds": 0,
+              "notes": "Each direction, each leg. Stand tall and move slowly through the biggest circle you can control.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Στάσου ευθυτενής και κινήσου αργά στον μεγαλύτερο κύκλο που μπορείς να ελέγξεις."
+            },
+            {
+              "slug": "bicycling-stationary",
+              "sets": 3,
+              "reps": "6 min @ RPE 7 + 3 min",
+              "restSeconds": 0,
+              "notes": "Spin easy for the 3 min between blocks. Week 3 shown (week 4: 2 × 10 min, 4 min easy); short phrases only.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 3 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 3 (εβδομάδα 4: 2 × 10 λεπτά, 4 λεπτά χαλαρά)· μόνο σύντομες φράσεις."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Keep the torso upright; feel the stretch at the front of the back hip.",
+              "notesEl": "Σε κάθε πλευρά. Κράτα τον κορμό όρθιο· νιώσε τη διάταση στο μπροστινό μέρος του πίσω ισχίου."
+            },
+            {
+              "slug": "standing-hamstring-and-calf-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Hinge from the hips with a long back and pull the toes gently.",
+              "notesEl": "Σε κάθε πόδι. Γείρε μπροστά από τα ισχία με ίσια πλάτη και τράβηξε απαλά τα δάχτυλα."
+            },
+            {
+              "slug": "cat-stretch",
+              "sets": 2,
+              "reps": "15–20 s",
+              "restSeconds": 0,
+              "notes": "Round the spine slowly and let the air out as you hold.",
+              "notesEl": "Κύρτωσε αργά τη σπονδυλική στήλη και άφησε τον αέρα να βγει όσο κρατάς τη θέση."
+            }
+          ]
+        },
+        {
+          "title": "Fuel, Fluids and Recovery for Indoor Riding",
+          "titleEl": "Ενέργεια, Υγρά και Αποκατάσταση στο Στατικό Ποδήλατο",
+          "durationMinutes": 10,
+          "sortOrder": 2,
+          "content": "# Fuel, Fluids and Recovery for Indoor Riding\n\nHarder sessions and longer rides only pay off if you arrive fuelled, stay cool and hydrated, and recover before the next one. Indoor riding adds one twist: with no wind passing over you, your body has a harder time getting rid of heat, so you sweat more than you would on the road at the same effort.\n\n## Keep cool\n\n- Point a fan at your upper body and ride in a ventilated room\n- Keep a towel within reach so sweat stays out of your eyes and off the bike\n- Wear light, breathable clothing; extra layers only make you hotter\n\n## Fluids\n\n- Start each ride well hydrated; pale-yellow urine through the day is a simple guide\n- For rides of up to about an hour, water is usually enough; sip regularly rather than drinking a lot at once\n- Many riders need roughly 400–800 ml per hour, but sweat rates vary widely. To find yours, weigh yourself before and after a ride: each kilogram lost is about a litre of sweat you did not replace\n- Aim to lose no more than about 2% of your body weight in a session; bigger losses make the same effort feel harder\n- On long or very sweaty rides, a drink with added sodium (electrolytes) helps you hold on to the fluid you take in\n\n## Food and energy\n\n- Eat a normal meal 2–4 hours before riding, or a light, mainly carbohydrate snack such as a banana or toast 30–60 minutes before\n- Ride intervals with some fuel in the tank; hard efforts on an empty stomach often feel flat\n- Carbohydrate during the ride starts to matter for sessions longer than about 60–90 minutes; every ride in this course is shorter than that\n- After hard sessions, have a meal or snack within a couple of hours that combines carbohydrate with a portion of protein (roughly 20–30 g), such as yoghurt with fruit and oats, or chicken with rice\n\n## Recovery\n\n- Sleep is your main recovery tool; most adults need 7–9 hours\n- Allow about 48 hours between hard sessions; the easy spins in between should be truly easy\n- Signs you need an extra easy day: a resting heart rate several beats higher than usual, heavy legs that do not warm up, poor sleep or low motivation\n- After week 6, take a lighter week before you build again; fitness grows during recovery, not only during training\n\n## Saddle comfort\n\n- Wear clean padded shorts for every ride and change out of them soon afterwards\n- Stand up on the pedals for a few seconds every 10 minutes or so to relieve pressure; on a recumbent or a bike not built for standing, shift your position on the seat instead\n- Persistent numbness or soreness is a sign to adjust the saddle, not something to ignore\n\n## Safety\n\n- Stop and cool down if you feel dizzy or confused, stop sweating or develop a headache; these can be signs of overheating, so get help if they do not ease quickly\n- Drinking far more than you sweat out can also be harmful; let thirst and your weigh-ins guide you\n- If you have a condition that affects your fluid or blood-sugar balance, plan your fluids and food with a professional",
+          "contentEl": "# Ενέργεια, Υγρά και Αποκατάσταση στο Στατικό Ποδήλατο\n\nΟι πιο απαιτητικές προπονήσεις και οι μεγαλύτερες διάρκειες αποδίδουν μόνο αν ανεβαίνεις στη σέλα με ενέργεια, μένεις δροσερός και ενυδατωμένος και έχεις αποκατασταθεί πριν από την επόμενη προπόνηση. Η ποδηλασία σε εσωτερικό χώρο έχει μια ιδιαιτερότητα: χωρίς αέρα να περνά πάνω σου, το σώμα δυσκολεύεται περισσότερο να αποβάλει τη θερμότητα, οπότε ιδρώνεις περισσότερο απ' ό,τι στον δρόμο με την ίδια προσπάθεια.\n\n## Μείνε δροσερός\n\n- Στρέψε έναν ανεμιστήρα στο πάνω μέρος του σώματός σου και κάνε ποδήλατο σε δωμάτιο που αερίζεται\n- Κράτα μια πετσέτα κοντά σου, ώστε ο ιδρώτας να μην μπαίνει στα μάτια σου και να μη στάζει στο ποδήλατο\n- Φόρεσε ελαφριά ρούχα που «αναπνέουν»· τα επιπλέον ρούχα απλώς σε ζεσταίνουν περισσότερο\n\n## Υγρά\n\n- Ξεκίνα κάθε προπόνηση καλά ενυδατωμένος· τα ούρα σε ανοιχτό κίτρινο χρώμα μέσα στη μέρα είναι ένας απλός οδηγός\n- Για προπονήσεις έως περίπου μία ώρα το νερό συνήθως αρκεί· πίνε γουλιές τακτικά αντί για πολύ νερό μονομιάς\n- Πολλοί ποδηλάτες χρειάζονται περίπου 400–800 ml την ώρα, αλλά ο ρυθμός εφίδρωσης διαφέρει πολύ από άτομο σε άτομο. Για να βρεις τον δικό σου, ζυγίσου πριν και μετά από μια προπόνηση: κάθε κιλό που χάνεις αντιστοιχεί περίπου σε ένα λίτρο ιδρώτα που δεν αναπλήρωσες\n- Στόχευσε να μη χάνεις πάνω από 2% περίπου του σωματικού σου βάρους σε μια προπόνηση· μεγαλύτερες απώλειες κάνουν την ίδια προσπάθεια να μοιάζει πιο δύσκολη\n- Σε μεγάλες προπονήσεις ή όταν ιδρώνεις πολύ, ένα ρόφημα με προσθήκη νατρίου (ηλεκτρολύτες) σε βοηθά να κρατήσεις τα υγρά που πίνεις\n\n## Φαγητό και ενέργεια\n\n- Φάε ένα κανονικό γεύμα 2–4 ώρες πριν από την προπόνηση ή ένα ελαφρύ σνακ, κυρίως με υδατάνθρακες, όπως μια μπανάνα ή μια φρυγανιά, 30–60 λεπτά πριν\n- Κάνε τα διαστήματα έχοντας κάποια ενέργεια στο «ρεζερβουάρ»· οι έντονες προσπάθειες με άδειο στομάχι συχνά βγαίνουν άνευρες\n- Οι υδατάνθρακες κατά τη διάρκεια της προπόνησης αρχίζουν να μετρούν σε προπονήσεις μεγαλύτερες από περίπου 60–90 λεπτά· όλες οι προπονήσεις αυτού του προγράμματος είναι πιο σύντομες\n- Μετά από απαιτητικές προπονήσεις, φάε μέσα σε μία-δύο ώρες ένα γεύμα ή σνακ που συνδυάζει υδατάνθρακες με μια μερίδα πρωτεΐνης (περίπου 20–30 g), όπως γιαούρτι με φρούτα και βρώμη ή κοτόπουλο με ρύζι\n\n## Αποκατάσταση\n\n- Ο ύπνος είναι το βασικό σου εργαλείο αποκατάστασης· οι περισσότεροι ενήλικες χρειάζονται 7–9 ώρες\n- Άφηνε περίπου 48 ώρες ανάμεσα στις απαιτητικές προπονήσεις· οι χαλαρές προπονήσεις ενδιάμεσα πρέπει να είναι πραγματικά χαλαρές\n- Σημάδια ότι χρειάζεσαι μια επιπλέον χαλαρή μέρα: παλμοί ηρεμίας μερικούς χτύπους πάνω από το συνηθισμένο, βαριά πόδια που δεν «ξεμουδιάζουν», κακός ύπνος ή χαμηλό κίνητρο\n- Μετά την 6η εβδομάδα, κάνε μια πιο ελαφριά εβδομάδα πριν ξαναχτίσεις· η φυσική κατάσταση βελτιώνεται κατά την αποκατάσταση, όχι μόνο κατά την προπόνηση\n\n## Άνεση στη σέλα\n\n- Φόρεσε καθαρό κολάν με επένδυση σε κάθε προπόνηση και άλλαξε ρούχα σύντομα μετά\n- Σήκω όρθιος στα πετάλια για λίγα δευτερόλεπτα περίπου κάθε 10 λεπτά, για να ανακουφιστεί η πίεση· σε καθιστό ποδήλατο ή σε ποδήλατο που δεν είναι φτιαγμένο για όρθια θέση, απλώς άλλαξε θέση στη σέλα\n- Το επίμονο μούδιασμα ή ο πόνος είναι σημάδι ότι πρέπει να ρυθμίσεις τη σέλα, όχι κάτι που αγνοείς\n\n## Ασφάλεια\n\n- Σταμάτα και δροσίσου αν νιώσεις ζάλη ή σύγχυση, αν σταματήσεις να ιδρώνεις ή αν σε πιάσει πονοκέφαλος· μπορεί να είναι σημάδια υπερθέρμανσης, γι' αυτό ζήτα βοήθεια αν δεν υποχωρήσουν γρήγορα\n- Το να πίνεις πολύ περισσότερο απ' όσο χάνεις με τον ιδρώτα μπορεί επίσης να βλάψει· άφησε τη δίψα και τα ζυγίσματα να σε καθοδηγούν\n- Αν έχεις πάθηση που επηρεάζει την ισορροπία των υγρών ή του σακχάρου στο αίμα, σχεδίασε τα υγρά και το φαγητό σου με επαγγελματία"
+        }
+      ]
+    },
+    {
+      "title": "Weeks 5–6: Threshold and the Long Ride",
+      "titleEl": "Εβδομάδες 5–6: Κατώφλι και Μεγάλη Διάρκεια",
+      "description": "Threshold intervals lift the effort you can sustain, while a long steady ride shows how far your endurance has come.",
+      "descriptionEl": "Τα διαστήματα κατωφλίου ανεβάζουν την προσπάθεια που μπορείς να διατηρήσεις, ενώ μια μεγάλη σταθερή προπόνηση δείχνει πόσο έχει προχωρήσει η αντοχή σου.",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "title": "Weeks 5–6: Threshold Intervals",
+          "titleEl": "Εβδομάδες 5–6: Διαστήματα Κατωφλίου",
+          "durationMinutes": 45,
+          "sortOrder": 1,
+          "content": "# Weeks 5–6: Threshold Intervals\n\nThreshold riding, at RPE 8, sits just below the point where effort quickly becomes unsustainable. You can say only a few words, your breathing is deep and fast, and staying smooth takes focus. Short blocks at this effort raise the level you can hold on long rides, so your endurance pace starts to feel easier. Ride this session once a week in weeks 5–6; it takes about 45 minutes. Your other two rides are the long steady ride in the next lesson and an easy 25–30-minute spin at RPE 2–3.\n\n## Warm-up\n\nGive yourself a full 10 minutes; hard intervals feel far better on warm legs.\n\n1. Off the bike, front leg swings: 10 on each leg\n2. Standing hip circles: 5 each way on each leg\n3. On the bike, 6 minutes building from RPE 2 to RPE 5\n4. Two 20-second efforts at RPE 8, each followed by 40 seconds of easy spinning\n\n## The workout\n\nRide each block seated at RPE 8 and 85–95 rpm. Between blocks, spin very easily at RPE 2–3 and let your breathing settle.\n\n- **Week 5:** 4 blocks of 4 minutes at threshold with 2 minutes easy (24 minutes)\n- **Week 6:** 3 blocks of 6 minutes at threshold with 3 minutes easy (27 minutes)\n\nStart each block a little under target and settle into the effort over the first minute; going out too hard is the most common mistake. The last block should feel hard but repeatable. If you cannot finish a block at the target effort, lower the resistance by one level rather than stopping. Note the resistance you used: in later training it shows how your fitness is moving.\n\n## Cool-down\n\nSpin very easily for 4 minutes until your breathing is calm, then stretch. Hold each leg stretch for 20–30 seconds and child's pose for 30 seconds.\n\n1. Kneeling hip-flexor stretch, each side\n2. Standing elevated quad stretch, each leg\n3. Child's pose, breathing slowly into your back\n\n## Safety\n\n- Only ride this session if the previous day was easy or a rest day\n- Stop at once if you feel chest pain, dizziness or an irregular heartbeat, and seek help\n- Drink during the easy spins and keep the fan on; threshold work makes you very hot indoors",
+          "contentEl": "# Εβδομάδες 5–6: Διαστήματα Κατωφλίου\n\nΗ ποδηλασία στο κατώφλι, σε RPE 8, βρίσκεται λίγο κάτω από το σημείο όπου η προσπάθεια γρήγορα γίνεται αδύνατο να διατηρηθεί. Μπορείς να πεις μόνο λίγες λέξεις, η αναπνοή σου είναι βαθιά και γρήγορη και χρειάζεσαι συγκέντρωση για να μένεις ομαλός. Σύντομα διαστήματα σε αυτή την ένταση ανεβάζουν το επίπεδο που μπορείς να κρατήσεις σε μεγάλες διάρκειες, κι έτσι η ένταση αντοχής σου αρχίζει να μοιάζει πιο εύκολη. Κάνε αυτή την προπόνηση μία φορά την εβδομάδα στις εβδομάδες 5–6· διαρκεί περίπου 45 λεπτά. Οι άλλες δύο προπονήσεις σου είναι η μεγάλη σταθερή προπόνηση του επόμενου μαθήματος και ένα χαλαρό πετάλι 25–30 λεπτών σε RPE 2–3.\n\n## Ζέσταμα\n\nΔώσε στον εαυτό σου ολόκληρα 10 λεπτά· τα έντονα διαστήματα βγαίνουν πολύ καλύτερα με ζεστά πόδια.\n\n1. Εκτός ποδηλάτου, αιωρήσεις ποδιού μπροστά-πίσω: 10 με κάθε πόδι\n2. Κύκλοι ισχίου σε όρθια θέση: 5 προς κάθε κατεύθυνση με κάθε πόδι\n3. Πάνω στο ποδήλατο, 6 λεπτά ανεβαίνοντας σταδιακά από RPE 2 σε RPE 5\n4. Δύο προσπάθειες 20 δευτερολέπτων σε RPE 8, με 40 δευτερόλεπτα χαλαρό πετάλι μετά την καθεμία\n\n## Η προπόνηση\n\nΚάνε κάθε διάστημα καθιστός, σε RPE 8 και 85–95 rpm. Ανάμεσα στα διαστήματα κάνε πολύ χαλαρό πετάλι σε RPE 2–3 και άφησε την αναπνοή σου να ηρεμήσει.\n\n- **Εβδομάδα 5:** 4 διαστήματα των 4 λεπτών στο κατώφλι με 2 λεπτά χαλαρά (24 λεπτά)\n- **Εβδομάδα 6:** 3 διαστήματα των 6 λεπτών στο κατώφλι με 3 λεπτά χαλαρά (27 λεπτά)\n\nΞεκίνα κάθε διάστημα λίγο κάτω από τον στόχο και φτάσε στην ένταση μέσα στο πρώτο λεπτό· το πιο συνηθισμένο λάθος είναι να ξεκινάς πολύ δυνατά. Το τελευταίο διάστημα πρέπει να είναι δύσκολο, αλλά να νιώθεις ότι θα μπορούσες να το επαναλάβεις. Αν δεν μπορείς να ολοκληρώσεις ένα διάστημα στην ένταση-στόχο, μείωσε την αντίσταση κατά ένα επίπεδο αντί να σταματήσεις. Σημείωσε την αντίσταση που χρησιμοποίησες: στη μετέπειτα προπόνηση δείχνει πώς εξελίσσεται η φυσική σου κατάσταση.\n\n## Αποθεραπεία\n\nΚάνε πολύ χαλαρό πετάλι για 4 λεπτά μέχρι να ηρεμήσει η αναπνοή σου και μετά κάνε διατάσεις. Κράτα κάθε διάταση ποδιών 20–30 δευτερόλεπτα και τη στάση του παιδιού 30 δευτερόλεπτα.\n\n1. Διάταση καμπτήρων ισχίου από γονατιστή θέση, σε κάθε πλευρά\n2. Όρθια διάταση τετρακεφάλων με το πόδι σε σκαλί, με κάθε πόδι\n3. Στάση του παιδιού, αναπνέοντας αργά προς την πλάτη\n\n## Ασφάλεια\n\n- Κάνε αυτή την προπόνηση μόνο αν η προηγούμενη μέρα ήταν χαλαρή ή μέρα ξεκούρασης\n- Σταμάτα αμέσως αν νιώσεις πόνο στο στήθος, ζάλη ή ακανόνιστο καρδιακό ρυθμό και ζήτα βοήθεια\n- Πίνε νερό στα χαλαρά διαστήματα και κράτα τον ανεμιστήρα αναμμένο· η προπόνηση στο κατώφλι σε ζεσταίνει πολύ σε εσωτερικό χώρο",
+          "exercises": [
+            {
+              "slug": "front-leg-raises",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each leg. Swing from the hip and keep the standing knee soft.",
+              "notesEl": "Σε κάθε πόδι. Κάνε την αιώρηση από το ισχίο και κράτα το γόνατο στήριξης ελαφρά λυγισμένο."
+            },
+            {
+              "slug": "standing-hip-circles",
+              "sets": 1,
+              "reps": "5",
+              "restSeconds": 0,
+              "notes": "Each direction, each leg. Hold the bike and keep the pelvis level as the knee circles.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από το ποδήλατο και κράτα τη λεκάνη οριζόντια όσο το γόνατο κάνει κύκλους."
+            },
+            {
+              "slug": "bicycling-stationary",
+              "sets": 4,
+              "reps": "4 min @ RPE 8 + 2 min",
+              "restSeconds": 0,
+              "notes": "Spin easy for the 2 min between blocks. Week 5 shown (week 6: 3 × 6 min, 3 min easy); a few words only.",
+              "notesEl": "Κάνε χαλαρό πετάλι στα 2 λεπτά ανάμεσα στα διαστήματα. Φαίνεται η εβδομάδα 5 (εβδομάδα 6: 3 × 6 λεπτά, 3 λεπτά χαλαρά)· μόνο λίγες λέξεις."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Squeeze the back glute and lean in gently; no bouncing.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού και γείρε απαλά μπροστά· χωρίς αναπηδήσεις."
+            },
+            {
+              "slug": "standing-elevated-quad-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Tuck the pelvis slightly to feel the stretch along the front of the thigh.",
+              "notesEl": "Σε κάθε πόδι. «Μάζεψε» ελαφρά τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του μηρού."
+            },
+            {
+              "slug": "childs-pose",
+              "sets": 1,
+              "reps": "30 s",
+              "restSeconds": 0,
+              "notes": "Sink the hips towards the heels and breathe slowly into your back.",
+              "notesEl": "Κατέβασε τους γλουτούς προς τις φτέρνες και ανάπνεε αργά προς την πλάτη."
+            }
+          ]
+        },
+        {
+          "title": "The Long Steady Ride",
+          "titleEl": "Η Μεγάλη Σταθερή Προπόνηση",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# The Long Steady Ride\n\nThe long ride is where your endurance shows. It is not fast: you ride at a steady endurance effort for longer than at any other point in this course, and you practise pacing, changing position and drinking on the move. Ride it once a week in weeks 5–6, ideally two days after the threshold session. With the warm-up and stretches it takes 40–50 minutes.\n\n## Warm-up\n\nThe first minutes of the ride are your warm-up.\n\n1. Off the bike, standing hip circles: 5 each way on each leg\n2. On the bike, 5 minutes of easy pedalling, building from RPE 2 to RPE 4 and to about 85 rpm\n\n## The workout\n\nRide continuously at RPE 5–6, a pace at which you can still speak in full sentences, at 80–95 rpm.\n\n- **Week 5:** 30 minutes steady\n- **Week 6:** 35 minutes steady\n\nSplit the ride into 5-minute chunks to keep your mind on the task. In each chunk, check one thing: relaxed shoulders, level hips, smooth circles, steady breathing. Every 10 minutes, take a few sips of water and stand on the pedals for 15–20 seconds to ease saddle pressure; on a recumbent or a bike not built for standing, shift your position on the seat instead. For variety, ride 1 minute at a slightly lower cadence with a little more resistance, then 1 minute at a slightly higher cadence, without leaving the endurance zone. The effort should feel the same at the end as at the start; if you have to slow down sharply in the last 10 minutes, start easier next time. If you already ride longer than this, add 5–10 minutes rather than more intensity.\n\n## Cool-down\n\nSpin very easily for 3 minutes, then stretch for 3–4 minutes.\n\n1. Standing hamstring and calf stretch with a towel or band, 20–30 seconds each leg\n2. Kneeling hip-flexor stretch, 20–30 seconds each side\n3. Cat stretch, 15–20 seconds, twice\n\n## Safety\n\n- Keep the effort conversational; the long ride builds endurance only if it stays steady\n- Drink to thirst, and put your bottle within reach before you start\n- Stop if you feel numbness that does not ease when you stand, or pain in a knee or your lower back",
+          "contentEl": "# Η Μεγάλη Σταθερή Προπόνηση\n\nΣτη μεγάλη προπόνηση φαίνεται η αντοχή σου. Δεν είναι γρήγορη: κάνεις πετάλι με σταθερή ένταση αντοχής για περισσότερη ώρα από οποιαδήποτε άλλη φορά σε αυτό το πρόγραμμα και εξασκείσαι στο να μοιράζεις σωστά τις δυνάμεις σου, στις αλλαγές θέσης και στο να πίνεις νερό εν κινήσει. Θα την κάνεις μία φορά την εβδομάδα στις εβδομάδες 5–6, ιδανικά δύο μέρες μετά την προπόνηση κατωφλίου. Μαζί με το ζέσταμα και τις διατάσεις διαρκεί 40–50 λεπτά.\n\n## Ζέσταμα\n\nΤα πρώτα λεπτά της προπόνησης είναι το ζέσταμά σου.\n\n1. Εκτός ποδηλάτου, κύκλοι ισχίου σε όρθια θέση: 5 προς κάθε κατεύθυνση με κάθε πόδι\n2. Πάνω στο ποδήλατο, 5 λεπτά χαλαρό πετάλι, ανεβαίνοντας από RPE 2 σε RPE 4 και στις 85 rpm περίπου\n\n## Η προπόνηση\n\nΚάνε συνεχόμενο πετάλι σε RPE 5–6, με ένταση στην οποία μπορείς ακόμη να μιλάς με ολόκληρες προτάσεις, στις 80–95 rpm.\n\n- **Εβδομάδα 5:** 30 λεπτά σταθερά\n- **Εβδομάδα 6:** 35 λεπτά σταθερά\n\nΧώρισε την προπόνηση σε κομμάτια των 5 λεπτών για να μένει το μυαλό σου συγκεντρωμένο. Σε κάθε κομμάτι έλεγξε ένα πράγμα: χαλαροί ώμοι, σταθερή λεκάνη, ομαλοί κύκλοι, σταθερή αναπνοή. Κάθε 10 λεπτά, πιες λίγες γουλιές νερό και σήκω όρθιος στα πετάλια για 15–20 δευτερόλεπτα, για να ανακουφιστεί η πίεση από τη σέλα· σε καθιστό ποδήλατο ή σε ποδήλατο που δεν είναι φτιαγμένο για όρθια θέση, απλώς άλλαξε θέση στη σέλα. Για ποικιλία, κάνε 1 λεπτό με λίγο χαμηλότερο ρυθμό πεταλιού και λίγο περισσότερη αντίσταση και μετά 1 λεπτό με λίγο υψηλότερο ρυθμό πεταλιού, χωρίς να βγεις από τη ζώνη αντοχής. Η προσπάθεια πρέπει να μοιάζει ίδια στο τέλος όπως στην αρχή· αν χρειαστεί να κόψεις πολύ ταχύτητα στα τελευταία 10 λεπτά, την επόμενη φορά ξεκίνα πιο χαλαρά. Αν ήδη κάνεις μεγαλύτερες διάρκειες, πρόσθεσε 5–10 λεπτά αντί για περισσότερη ένταση.\n\n## Αποθεραπεία\n\nΚάνε πολύ χαλαρό πετάλι για 3 λεπτά και μετά διατάσεις για 3–4 λεπτά.\n\n1. Όρθια διάταση οπίσθιων μηριαίων και γάμπας με πετσέτα ή λάστιχο, 20–30 δευτερόλεπτα με κάθε πόδι\n2. Διάταση καμπτήρων ισχίου από γονατιστή θέση, 20–30 δευτερόλεπτα σε κάθε πλευρά\n3. Διάταση της γάτας, 15–20 δευτερόλεπτα, δύο φορές\n\n## Ασφάλεια\n\n- Κράτα την προσπάθεια σε επίπεδο κουβέντας· η μεγάλη προπόνηση χτίζει αντοχή μόνο αν μένει σταθερή\n- Πίνε όταν διψάς και βάλε το μπουκάλι σου σε σημείο που το φτάνεις πριν ξεκινήσεις\n- Σταμάτα αν νιώσεις μούδιασμα που δεν υποχωρεί όταν σηκώνεσαι όρθιος ή πόνο σε γόνατο ή στη μέση",
+          "exercises": [
+            {
+              "slug": "standing-hip-circles",
+              "sets": 1,
+              "reps": "5",
+              "restSeconds": 0,
+              "notes": "Each direction, each leg. Slow, controlled circles; hold the bike for balance.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Αργοί, ελεγχόμενοι κύκλοι· κρατήσου από το ποδήλατο για ισορροπία."
+            },
+            {
+              "slug": "bicycling-stationary",
+              "sets": 1,
+              "reps": "30–35 min @ RPE 5–6",
+              "restSeconds": 0,
+              "notes": "Steady pace. Week 5: 30 min, week 6: 35 min; full sentences throughout.",
+              "notesEl": "Σταθερός ρυθμός. Εβδομάδα 5: 30 λεπτά, εβδομάδα 6: 35 λεπτά· ολόκληρες προτάσεις σε όλη τη διάρκεια."
+            },
+            {
+              "slug": "standing-hamstring-and-calf-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Keep the front knee straight but not locked; ease into the stretch.",
+              "notesEl": "Σε κάθε πόδι. Κράτα το μπροστινό γόνατο τεντωμένο αλλά όχι κλειδωμένο· μπες στη διάταση σταδιακά."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Pad the back knee with a folded towel if the floor is hard.",
+              "notesEl": "Σε κάθε πλευρά. Βάλε μια διπλωμένη πετσέτα κάτω από το πίσω γόνατο αν το πάτωμα είναι σκληρό."
+            },
+            {
+              "slug": "cat-stretch",
+              "sets": 2,
+              "reps": "15–20 s",
+              "restSeconds": 0,
+              "notes": "Move slowly in and out of the curve and let your head relax.",
+              "notesEl": "Μπες και βγες αργά από την κύρτωση και άφησε το κεφάλι σου να χαλαρώσει."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

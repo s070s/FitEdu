@@ -1,67 +1,43 @@
 @page "/blog"
 
-@* UX-7: public blog index. Previously blog articles were reachable only through the
-   anonymous home's preview cards; this page lists them for everyone and is linked from nav. *@
+@* UX-7: public blog index, linked from the nav and the home page. A magazine grid: the newest
+   article is the wide featured card, the rest follow in the card grid. *@
 
 <PageTitle>@HomeRes.BlogIndexTitle</PageTitle>
 <SeoHead Title="@HomeRes.BlogIndexTitle"
-         Description="@HomeRes.HeroSubtitle"
-         CanonicalUrl="https://fitedu.com/blog" />
+         Description="@HomeRes.BlogIndexSubtitle"
+         CanonicalUrl="/blog" />
 
-<section class="section section-blog">
-    <div class="container">
-        <h1 class="section-title">@HomeRes.BlogTitle <span class="text-gradient">@HomeRes.BlogTitleHighlight</span></h1>
+<div class="page blog-page">
+    <header class="blog-head">
+        <span class="eyebrow"><span class="bi @AppIcons.BlogArticle" aria-hidden="true"></span> @HomeRes.BlogIndexTitle</span>
+        <h1>@HomeRes.BlogTitle <span class="text-volt">@HomeRes.BlogTitleHighlight</span></h1>
+        <p class="blog-head__lead">@HomeRes.BlogIndexSubtitle</p>
+    </header>
 
-        @if (_loading)
-        {
-            <div class="blog-grid">
-                <div class="blog-card blog-card-skeleton"></div>
-                <div class="blog-card blog-card-skeleton"></div>
-                <div class="blog-card blog-card-skeleton"></div>
-            </div>
-        }
-        else if (_articles is { Count: > 0 })
-        {
-            <div class="blog-grid">
-                @foreach (var article in _articles)
-                {
-                    <div class="blog-card" @key="article.Id">
-                        @if (!string.IsNullOrWhiteSpace(article.CoverImageUrl))
-                        {
-                            <div class="blog-card-cover">
-                                <img src="@article.CoverImageUrl" alt="@article.Title" />
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="blog-card-cover blog-card-cover-placeholder"></div>
-                        }
-                        @if (article.Tags.Length > 0)
-                        {
-                            <div class="blog-card-tags">
-                                @foreach (var tag in article.Tags)
-                                {
-                                    <span class="blog-tag">@tag</span>
-                                }
-                            </div>
-                        }
-                        <h3 class="blog-card-title">@article.Title</h3>
-                        <p class="blog-card-summary">@article.Summary</p>
-                        <div class="blog-card-meta">
-                            <span>@article.AuthorName</span>
-                            @if (article.PublishedAt.HasValue)
-                            {
-                                <span>@article.PublishedAt.Value.ToLocalTime().ToString("d")</span>
-                            }
-                        </div>
-                        <a href="/blog/@article.Slug" class="btn-cta blog-card-cta">@HomeRes.BlogReadMore</a>
-                    </div>
-                }
-            </div>
-        }
-        else
-        {
-            <p class="text-light-muted">@HomeRes.BlogIndexEmpty</p>
-        }
-    </div>
-</section>
+    @if (_loading)
+    {
+        <ul class="blog-grid blog-grid--magazine" aria-hidden="true">
+            @for (var index = 0; index < SkeletonCardCount; index++)
+            {
+                <li class="blog-grid__item"><SkeletonBlock Height="22rem" CssClass="blog-skeleton" /></li>
+            }
+        </ul>
+    }
+    else if (_articles is { Count: > 0 })
+    {
+        <ul class="blog-grid blog-grid--magazine">
+            @for (var index = 0; index < _articles.Count; index++)
+            {
+                var article = _articles[index];
+                <li class="blog-grid__item @(index == 0 ? "blog-grid__item--featured" : "")" @key="article.Id">
+                    <BlogCard Article="article" />
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <EmptyState Icon="@AppIcons.BlogArticle" Title="@HomeRes.BlogIndexEmpty" />
+    }
+</div>

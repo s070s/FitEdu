@@ -163,7 +163,7 @@ public class ScheduledSessionService(IApplicationDbContext db, ILogger<Scheduled
             CourseId = request.CourseId,
             StartsAtUtc = request.StartsAtUtc,
             DurationMinutes = request.DurationMinutes,
-            MaxParticipants = Math.Clamp(request.MaxParticipants, 1, 6)
+            MaxParticipants = Math.Clamp(request.MaxParticipants, 1, ScheduledSession.MaxParticipantsLimit)
         };
 
         db.ScheduledSessions.Add(session);
@@ -185,7 +185,7 @@ public class ScheduledSessionService(IApplicationDbContext db, ILogger<Scheduled
         session.CourseId = request.CourseId;
         session.StartsAtUtc = request.StartsAtUtc;
         session.DurationMinutes = request.DurationMinutes;
-        session.MaxParticipants = Math.Clamp(request.MaxParticipants, 1, 6);
+        session.MaxParticipants = Math.Clamp(request.MaxParticipants, 1, ScheduledSession.MaxParticipantsLimit);
 
         await db.SaveChangesAsync(cancellationToken);
         return await GetAdminByIdAsync(id, cancellationToken);

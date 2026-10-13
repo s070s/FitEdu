@@ -80,9 +80,15 @@ html {
 
 html,
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-primary);
     color: var(--text-strong-normal);
+}
+
+/* Body text only: on html the fluid size would also grow 1rem, and with it every rem-based
+   spacing, gutter and the header height. */
+body {
+    font-size: var(--fs-body);
 }
 
 /* Prevent 300ms tap delay on interactive elements */
@@ -155,10 +161,10 @@ input:-webkit-autofill:active {
     box-sizing: border-box;
     display: none;
     left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    padding: 0.6rem 3.5rem 0.7rem 1.25rem; /* the right padding keeps the text clear of the close button */
     position: fixed;
     width: 100%;
-    z-index: 1000;
+    z-index: 1075; /* above the assistant launcher (1070), which would cover the close button */
 }
 
 /* Near-black text/links against the yellow banner (near-white was ~1.2:1 contrast — UI-2) */
@@ -169,11 +175,24 @@ input:-webkit-autofill:active {
 }
 
 #blazor-error-ui .dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
     cursor: pointer;
     color: var(--bg-primary);
     position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
+    right: 0.375rem;
+    top: 0.125rem;
+}
+
+#blazor-error-ui .dismiss:focus-visible {
+    outline-color: var(--bg-primary);
 }
 
 /* Error boundary */
@@ -185,131 +204,6 @@ input:-webkit-autofill:active {
 
 .blazor-error-boundary::after {
     content: "An error has occurred.";
-}
-
-/* ================================================
-   Boot Loader — compass-themed Blazor startup screen
-   ================================================ */
-.compass-boot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: var(--bg-primary);
-    gap: 1.25rem;
-}
-
-.compass-boot__svg {
-    width: 140px;
-    height: 140px;
-    overflow: visible;
-    animation: compass-boot-glow 2.8s ease-in-out infinite;
-}
-
-.compass-boot__ring-outer {
-    fill: none;
-    stroke: rgba(var(--border-subtle-rgb), 0.25);
-    stroke-width: 1.5;
-}
-
-.compass-boot__tick-cardinal {
-    stroke: rgba(var(--text-accent-rgb), 0.75);
-    stroke-width: 2;
-    stroke-linecap: round;
-}
-
-.compass-boot__tick-minor {
-    stroke: rgba(var(--text-accent-rgb), 0.3);
-    stroke-width: 1;
-    stroke-linecap: round;
-}
-
-.compass-boot__cardinal-n {
-    fill: rgba(var(--text-accent-rgb), 0.7);
-    font-size: 9px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    text-anchor: middle;
-    dominant-baseline: central;
-}
-
-.compass-boot__arc-track {
-    fill: none;
-    stroke: rgba(var(--text-strong-accent-rgb), 0.15);
-    stroke-width: 3;
-}
-
-/* Progress arc: driven by --blazor-load-percentage, starts at 12 o'clock */
-.compass-boot__arc-progress {
-    fill: none;
-    stroke: var(--text-strong-accent);
-    stroke-width: 3;
-    stroke-linecap: round;
-    transform-origin: 60px 60px;
-    transform: rotate(-90deg);
-    stroke-dasharray: calc(2.9531 * var(--blazor-load-percentage, 0%)), 295.31;
-    transition: stroke-dasharray 0.12s ease-out;
-    filter: drop-shadow(0 0 5px rgba(var(--text-strong-accent-rgb), 0.65));
-}
-
-.compass-boot__ring-inner {
-    fill: none;
-    stroke: rgba(var(--border-subtle-rgb), 0.15);
-    stroke-width: 0.8;
-}
-
-.compass-boot__needle-group {
-    transform-origin: 60px 60px;
-    animation: compass-needle-seek 4s linear infinite;
-    will-change: transform;
-}
-
-.compass-boot__needle-north { fill: var(--text-strong-accent); }
-.compass-boot__needle-south { fill: rgba(var(--text-accent-rgb), 0.45); }
-
-.compass-boot__center       { fill: var(--text-strong-accent); }
-.compass-boot__center-inner { fill: var(--bg-primary); }
-
-.compass-boot__label {
-    color: rgba(var(--text-accent-rgb), 0.6);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-}
-
-.compass-boot__label::after {
-    content: var(--blazor-load-percentage-text, "Loading");
-}
-
-/* ================================================
-   Compass animations — shared by boot loader and
-   the LoadingSpinner Blazor component
-   ================================================ */
-
-/* Needle: fast spin that decelerates near north, overshoots, settles, then repeats */
-@keyframes compass-needle-seek {
-    0%   { transform: rotate(0deg); }
-    30%  { transform: rotate(290deg); }
-    45%  { transform: rotate(348deg); }
-    55%  { transform: rotate(368deg); }
-    65%  { transform: rotate(355deg); }
-    72%  { transform: rotate(362deg); }
-    78%  { transform: rotate(358deg); }
-    84%  { transform: rotate(360deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Arc: constant clockwise rotation */
-@keyframes compass-arc-spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Outer SVG breathing glow on the boot screen */
-@keyframes compass-boot-glow {
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(var(--text-strong-accent-rgb), 0.2)); }
-    50%       { filter: drop-shadow(0 0 20px rgba(var(--text-strong-accent-rgb), 0.5)); }
 }
 
 /* ================================================
@@ -403,8 +297,9 @@ input:-webkit-autofill:active {
 /* ================================================
    Reduced motion (WCAG 2.3.3 / 2.2.2)
    Honor the user's OS "reduce motion" preference: neutralize
-   looping/continuous animations (compass spinner & boot loader,
-   landing hero/float/pulse, skeleton shimmer) and long transitions.
+   looping/continuous animations (landing hero/float/pulse, skeleton
+   shimmer) and long transitions. The pulse loader shows a static
+   trace instead (LoadingSpinner.razor.css).
    ================================================ */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -416,15 +311,6 @@ input:-webkit-autofill:active {
         scroll-behavior: auto !important;
     }
 
-    /* Freeze the compass needle/arc at north so the static spinner still reads as "compass" */
-    .compass-boot__needle-group,
-    .compass-spinner__needle-group,
-    .compass-spinner__arc,
-    .compass-spinner__arc-trail,
-    .compass-boot__svg {
-        animation: none !important;
-    }
-
     /* WI-5: reveal/stagger content must never sit hidden waiting for a scroll-triggered
        animation that reduced-motion has neutralized — show it immediately. */
     .reveal-ready .reveal,
@@ -433,15 +319,199 @@ input:-webkit-autofill:active {
     }
 }
 
-/* ================================================
-   Motion hygiene (WI-7)
-   Infinite/looping animations (compass spinner arc + needle) pause while the tab is hidden —
-   toggled by the visibilitychange listener in cert-interop.js. Bounded, short-lived spinners
-   cost nothing while visible; this only matters for a slow load left open in a background tab.
-   ================================================ */
-.tab-hidden .compass-spinner__arc,
-.tab-hidden .compass-spinner__arc-trail,
-.tab-hidden .compass-spinner__needle-group,
-.tab-hidden .compass-boot__svg {
-    animation-play-state: paused;
+/* ================================================================
+   FitEdu design system (Phase D1): tokens and layout primitives
+   Mobile first: base rules target a 375 px phone, min-width queries
+   enhance at 768 px and 1200 px. Components keep their own styles in
+   *.razor.css; these are the building blocks shared by 2+ pages.
+   Cards, chips, stat tiles and the sticky action bar live at the end
+   of shared-components.css.
+   ================================================================ */
+:root {
+    /* Type: system stack, no webfont (the asset rule allows only CC0, public-domain or own files) */
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Fluid type scale, phone size to desktop size */
+    --fs-1: clamp(2rem, 1.2rem + 3.5vw, 3.5rem);      /* display / hero headline */
+    --fs-2: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);     /* page title (h1) */
+    --fs-3: clamp(1.25rem, 1rem + 1vw, 1.5rem);       /* section title (h2) */
+    --fs-4: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);  /* card title (h3) */
+    --fs-5: 1rem;
+    --fs-6: 0.8125rem;                                /* eyebrow, chips, meta */
+    --fs-body: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+    --leading-tight: 1.15;
+    --tracking-tight: -0.02em;
+    /* Layout */
+    --layout-max: 1440px;
+    --content-max: 1200px;
+    --prose-max: 70ch;
+    --page-gutter: clamp(1rem, 4vw, 2rem);
+    --nav-height: 3.75rem;
+    --bottom-nav-height: 4rem;
+    --tap-min: 44px;
+    /* Palette additions: teal for information, coral (already --color-attention) for alerts */
+    --color-info: #2EC4B6;
+    --color-info-rgb: 46, 196, 182;
+    --color-attention-rgb: 255, 107, 61;
+    --radius-xl: 20px;
+}
+
+html {
+    color-scheme: dark;
+    /* clip, not hidden: hidden would turn html into a scroll container and break the sticky header */
+    overflow-x: clip;
+    scroll-padding-top: calc(var(--nav-height) + var(--space-4));
+}
+
+h1,
+h2,
+h3 {
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: var(--fs-2);
+    font-weight: 800;
+}
+
+h2 {
+    font-size: var(--fs-3);
+    font-weight: 700;
+}
+
+h3 {
+    font-size: var(--fs-4);
+    font-weight: 700;
+}
+
+/* Page section: centred, gutter-padded. A page whose top-level elements are .page sections gets
+   a full-width main (below), so a hero between sections can run edge to edge. */
+.page {
+    width: min(100%, var(--content-max));
+    margin-inline: auto;
+    padding-inline: max(var(--page-gutter), env(safe-area-inset-left)) max(var(--page-gutter), env(safe-area-inset-right));
+}
+
+/* Global, not in MainLayout.razor.css: the scoped-CSS rewriter would tag the .page inside :has(). */
+main.content:has(> .page) {
+    max-width: none;
+    padding-inline: 0;
+}
+
+.prose {
+    max-width: var(--prose-max);
+}
+
+/* Responsive card grid: one column on phones, as many 17rem columns as fit above that. */
+.grid-auto {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+
+/* Section heading row: title left, actions right, wrapping on phones. */
+.section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.section-head > :is(h1, h2, h3, p) {
+    margin: 0;
+}
+
+.section-head__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.eyebrow {
+    display: inline-block;
+    color: var(--color-info);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.text-volt {
+    color: var(--text-strong-accent);
+}
+
+/* Primary call to action: the lime pill, one per view. Secondary actions add .btn-cta--ghost. */
+.btn-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--text-strong-accent);
+    border-radius: var(--radius-pill);
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.btn-cta:hover {
+    border-color: var(--text-accent);
+    background-color: var(--text-accent);
+    color: var(--bg-primary);
+}
+
+.btn-cta:active {
+    transform: scale(0.98);
+}
+
+/* A busy or unavailable action (an admin Save while saving) dims instead of looking clickable. */
+.btn-cta:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.btn-cta--ghost {
+    border-color: var(--border-subtle);
+    background-color: transparent;
+    color: var(--text-strong-normal);
+}
+
+.btn-cta--ghost:hover {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.1);
+    color: var(--text-strong-normal);
+}
+
+/* Touch targets (WCAG 2.5.8): controls reach 44 px on touch screens. */
+@media (pointer: coarse) {
+    .btn,
+    .form-control,
+    .form-select,
+    .page-size-select,
+    .page-link {
+        min-height: var(--tap-min);
+    }
+}
+
+/* Phones: floating UI sits above the bottom tab bar (BottomNav.razor). */
+@media (max-width: 767.98px) {
+    #blazor-error-ui {
+        bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-cta:active {
+        transform: none;
+    }
 }

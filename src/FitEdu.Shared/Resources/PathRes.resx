@@ -59,13 +59,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PathsTitle" xml:space="preserve">
-    <value>Learning Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="NoPathsYet" xml:space="preserve">
-    <value>No learning paths available yet.</value>
+    <value>No training paths available yet.</value>
   </data>
   <data name="StepsCountFormat" xml:space="preserve">
-    <value>{0} courses</value>
+    <value>{0} programmes</value>
+  </data>
+  <data name="StepCountOne" xml:space="preserve">
+    <value>1 programme</value>
   </data>
   <data name="ProgressFormat" xml:space="preserve">
     <value>{0} of {1} completed</value>
@@ -86,7 +89,7 @@
     <value>Completed</value>
   </data>
   <data name="GoToCourse" xml:space="preserve">
-    <value>Go to course</value>
+    <value>Open programme</value>
   </data>
   <data name="SignInToTrackProgress" xml:space="preserve">
     <value>Sign in to track your progress through this path.</value>
@@ -95,10 +98,10 @@
     <value>Loading paths…</value>
   </data>
   <data name="PathNotFound" xml:space="preserve">
-    <value>Learning path not found.</value>
+    <value>Training path not found.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Learning Paths</value>
+    <value>Training paths</value>
   </data>
   <data name="NewPath" xml:space="preserve">
     <value>New path</value>
@@ -107,7 +110,7 @@
     <value>Edit Path</value>
   </data>
   <data name="NoPathsFound" xml:space="preserve">
-    <value>No learning paths found.</value>
+    <value>No training paths found.</value>
   </data>
   <data name="ColTitle" xml:space="preserve">
     <value>Title</value>
@@ -179,7 +182,7 @@
     <value>Steps</value>
   </data>
   <data name="NoStepsYet" xml:space="preserve">
-    <value>No steps yet. Add a course below.</value>
+    <value>No steps yet. Add a programme below.</value>
   </data>
   <data name="AddStepsHint" xml:space="preserve">
     <value>Save the path first to start adding steps.</value>
@@ -188,7 +191,7 @@
     <value>Add step</value>
   </data>
   <data name="SelectCourse" xml:space="preserve">
-    <value>Select a course…</value>
+    <value>Select a programme…</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>Move up</value>
@@ -200,6 +203,36 @@
     <value>Remove</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Failed to save the learning path. Please try again.</value>
+    <value>Failed to save the training path. Please try again.</value>
+  </data>
+  <data name="PathsEyebrow" xml:space="preserve">
+    <value>Step by step</value>
+  </data>
+  <data name="PathsSubtitle" xml:space="preserve">
+    <value>Follow a set of programmes in order, from your first workout to your goal. Each one you finish unlocks the next.</value>
+  </data>
+  <data name="BrowseCourses" xml:space="preserve">
+    <value>Browse programmes</value>
+  </data>
+  <data name="StartPath" xml:space="preserve">
+    <value>Start the path</value>
+  </data>
+  <data name="ContinuePath" xml:space="preserve">
+    <value>Continue the path</value>
+  </data>
+  <data name="PathCompleted" xml:space="preserve">
+    <value>Path completed</value>
+  </data>
+  <data name="JourneyTitle" xml:space="preserve">
+    <value>Programmes in this path</value>
+  </data>
+  <data name="StepNumberFormat" xml:space="preserve">
+    <value>Step {0}</value>
+  </data>
+  <data name="StepLockedHint" xml:space="preserve">
+    <value>Finish the previous programme to unlock this one.</value>
+  </data>
+  <data name="PathsListHeading" xml:space="preserve">
+    <value>All training paths</value>
   </data>
 </root>

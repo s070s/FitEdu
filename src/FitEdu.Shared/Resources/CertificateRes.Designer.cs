@@ -104,6 +104,12 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("FieldIssuedOn", resourceCulture);
             }
         }
+
+        public static string FieldVerificationId {
+            get {
+                return ResourceManager.GetString("FieldVerificationId", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Recipient.
@@ -120,6 +126,24 @@ namespace FitEdu.Shared.Resources {
         public static string Heading {
             get {
                 return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
+
+        public static string Subtitle {
+            get {
+                return ResourceManager.GetString("Subtitle", resourceCulture);
+            }
+        }
+
+        public static string CardEyebrow {
+            get {
+                return ResourceManager.GetString("CardEyebrow", resourceCulture);
+            }
+        }
+
+        public static string BrowseCourses {
+            get {
+                return ResourceManager.GetString("BrowseCourses", resourceCulture);
             }
         }
         
@@ -196,6 +220,24 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We could not find a certificate with this verification ID. Check the link, or ask the holder to share it again..
+        /// </summary>
+        public static string VerificationNotFoundLead {
+            get {
+                return ResourceManager.GetString("VerificationNotFoundLead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This certificate has been revoked and is no longer valid..
+        /// </summary>
+        public static string VerificationRevokedLead {
+            get {
+                return ResourceManager.GetString("VerificationRevokedLead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate Verification.
         /// </summary>
         public static string VerificationTitle {
@@ -228,6 +270,96 @@ namespace FitEdu.Shared.Resources {
         public static string Verify {
             get {
                 return ResourceManager.GetString("Verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates come with Pro. Upgrade and every programme you finish earns one that anyone can verify..
+        /// </summary>
+        public static string SubtitleNoAccess {
+            get {
+                return ResourceManager.GetString("SubtitleNoAccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Finish a programme on Pro to get a certificate with a verification link you can share..
+        /// </summary>
+        public static string UpgradeDescription {
+            get {
+                return ResourceManager.GetString("UpgradeDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Programme Completion Certificate.
+        /// </summary>
+        public static string PdfHeading {
+            get {
+                return ResourceManager.GetString("PdfHeading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This is to certify that.
+        /// </summary>
+        public static string PdfCertifyThat {
+            get {
+                return ResourceManager.GetString("PdfCertifyThat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to has completed the programme.
+        /// </summary>
+        public static string PdfCompletedProgramme {
+            get {
+                return ResourceManager.GetString("PdfCompletedProgramme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Total training time: {0}.
+        /// </summary>
+        public static string PdfTotalTimeFormat {
+            get {
+                return ResourceManager.GetString("PdfTotalTimeFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}h {1}m.
+        /// </summary>
+        public static string PdfHoursMinutesFormat {
+            get {
+                return ResourceManager.GetString("PdfHoursMinutesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}m.
+        /// </summary>
+        public static string PdfMinutesFormat {
+            get {
+                return ResourceManager.GetString("PdfMinutesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Issued on {0}.
+        /// </summary>
+        public static string PdfIssuedOnFormat {
+            get {
+                return ResourceManager.GetString("PdfIssuedOnFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Verification ID: {0}.
+        /// </summary>
+        public static string PdfVerificationIdFormat {
+            get {
+                return ResourceManager.GetString("PdfVerificationIdFormat", resourceCulture);
             }
         }
     }

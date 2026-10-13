@@ -65,7 +65,23 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         body.ShouldContain("Page not found");
-        body.ShouldNotContain("FitEdu - Home Page");
+        // The home hero is the page a broken route used to fall back to.
+        body.ShouldNotContain("hero-title");
+    }
+
+    [Fact]
+    public async Task UnknownRoute_RendersInsideTheAppShell_WithItsOwnTitle()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/this-route-does-not-exist-e2e");
+        var body = await response.Content.ReadAsStringAsync();
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        // A bare component fragment has no head: no styles, no navigation and an empty tab title.
+        body.ShouldContain("<title>Page not found</title>");
+        body.ShouldContain("css/app.css");
+        body.ShouldContain("_framework/blazor.web.js");
     }
 
     [Fact]

@@ -1,0 +1,295 @@
+{
+  "title": "Couch to 5K Running",
+  "titleEl": "Από τον Καναπέ στα 5 χλμ",
+  "description": "Go from your first jog to 30 minutes of continuous running, or your first 5 kilometres, in eight weeks of gentle run-walk intervals, relaxed running form, recovery know-how and a short strength routine for runners. Not medical advice — consult a professional before starting if you have a health condition.",
+  "descriptionEl": "Φτάσε από το πρώτο σου χαλαρό τρέξιμο σε 30 λεπτά συνεχόμενου τρεξίματος ή στα πρώτα σου 5 χιλιόμετρα μέσα σε οκτώ εβδομάδες, με ήπια διαστήματα τρεξίματος-περπατήματος, χαλαρή και σωστή τεχνική, βασικές γνώσεις αποκατάστασης και ένα σύντομο πρόγραμμα δύναμης για δρομείς. Δεν αποτελεί ιατρική συμβουλή — συμβουλέψου επαγγελματία πριν ξεκινήσεις αν έχεις κάποια πάθηση.",
+  "requiredTier": "Free",
+  "isPublished": true,
+  "category": "Cardio",
+  "categoryEl": "Κάρντιο",
+  "level": "Beginner",
+  "goal": "Endurance",
+  "equipment": "none",
+  "estimatedWeeks": 8,
+  "sessionsPerWeek": 3,
+  "coverExerciseSlug": "running-treadmill",
+  "modules": [
+    {
+      "title": "Weeks 1–3: Walk, Then Jog",
+      "titleEl": "Εβδομάδες 1–3: Πρώτα Περπάτημα, Μετά Τρέξιμο",
+      "description": "Learn the run-walk method, easy effort and relaxed running form while your body gets used to the impact.",
+      "descriptionEl": "Μάθε τη μέθοδο τρεξίματος-περπατήματος, να τρέχεις με χαλαρή προσπάθεια και με άνετη, σωστή τεχνική, ενώ το σώμα σου συνηθίζει τους κραδασμούς.",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "title": "How Couch to 5K Works",
+          "titleEl": "Πώς Λειτουργεί το «Από τον Καναπέ στα 5 χλμ»",
+          "durationMinutes": 9,
+          "sortOrder": 1,
+          "content": "# How Couch to 5K Works\n\nThis course takes you from little or no running to 30 minutes of continuous easy running, or your first 5 kilometres. It uses run-walk intervals: short, gentle jogs separated by walking breaks. Each week the jogs get a little longer and the walks a little shorter, so your heart, lungs, muscles, tendons and bones adapt step by step.\n\n## Your weekly rhythm\n\n- Run three times a week on non-consecutive days, for example Tuesday, Thursday and Saturday\n- Every session starts with a 5-minute brisk walk and ends with a 5-minute easy walk and stretches\n- On rest days, walking, cycling or the strength session for runners in module 2 are welcome; hard running is not\n- If a week feels too hard, repeat it. Repeating a week is normal and costs you nothing\n\n## How easy is \"easy\"?\n\nAlmost all of your running in this course should feel easy. Many beginners run too fast, get breathless after a minute and decide they are \"not a runner\". Slow down instead.\n\n- **Talk test:** while jogging you should be able to speak in full sentences. If you can only say a few words, slow down or walk\n- **RPE (rate of perceived exertion):** on a 1–10 scale, jogging should feel like 4–5 and walking breaks like 2–3\n- **Pace:** if your jog is barely faster than your walk, that is fine. Speed comes later; time on your feet comes first\n\n## The plan at a glance\n\n1. Weeks 1–2: jogs of 1–1.5 minutes with longer walks in between\n2. Week 3: 3-minute jogs\n3. Week 4: 5-minute jogs\n4. Weeks 5–6: jogs of 6–15 minutes, ending with a 20-minute continuous run\n5. Weeks 7–8: continuous runs that build from 22 to 30 minutes\n\n## What you need\n\n- Comfortable running shoes that fit well; comfort is a sensible guide when you choose a pair\n- Light clothing you are happy to sweat in, layered on cold days\n- A watch or phone with a timer to count your intervals\n- A safe route: flat paths, parks, a track or a treadmill all work\n\n## Why it works\n\nHealth guidelines recommend 150–300 minutes of moderate activity or 75–150 minutes of vigorous activity each week. Three sessions of 30–40 minutes, including the warm-up and cool-down, go a long way towards that target. Small, regular increases give your body time to adapt between sessions, which is the core idea of progressive overload.\n\n## Safety\n\n- If you have a heart, lung or joint condition, or have been inactive for a long time, check with a professional before you start\n- Stop and seek help if you feel chest pain, dizziness or unusual shortness of breath\n- Pain that sharpens as you run, or makes you limp, is a signal to stop, not to push through",
+          "contentEl": "# Πώς Λειτουργεί το «Από τον Καναπέ στα 5 χλμ»\n\nΑυτό το πρόγραμμα σε πηγαίνει από ελάχιστο ή καθόλου τρέξιμο σε 30 λεπτά συνεχόμενου χαλαρού τρεξίματος ή στα πρώτα σου 5 χιλιόμετρα. Βασίζεται σε διαστήματα τρεξίματος και περπατήματος (run-walk): σύντομα, ήπια τρεξίματα (jogging) με διαλείμματα περπατήματος ανάμεσα. Κάθε εβδομάδα τα τρεξίματα μεγαλώνουν λίγο και τα διαλείμματα περπατήματος μικραίνουν, ώστε η καρδιά, οι πνεύμονες, οι μύες, οι τένοντες και τα οστά σου να προσαρμόζονται βήμα-βήμα.\n\n## Ο εβδομαδιαίος σου ρυθμός\n\n- Τρέξε τρεις φορές την εβδομάδα σε μη συνεχόμενες μέρες, για παράδειγμα Τρίτη, Πέμπτη και Σάββατο\n- Κάθε προπόνηση ξεκινά με 5 λεπτά γρήγορο περπάτημα και τελειώνει με 5 λεπτά χαλαρό περπάτημα και διατάσεις\n- Στις μέρες ξεκούρασης, το περπάτημα, το ποδήλατο ή η προπόνηση δύναμης για δρομείς της ενότητας 2 είναι ευπρόσδεκτα· το έντονο τρέξιμο όχι\n- Αν μια εβδομάδα σού φανεί πολύ δύσκολη, επανάλαβέ την. Η επανάληψη μιας εβδομάδας είναι φυσιολογική και δεν σου κοστίζει τίποτα\n\n## Πόσο χαλαρό είναι το «χαλαρό»;\n\nΣχεδόν όλο το τρέξιμο σε αυτό το πρόγραμμα πρέπει να είναι χαλαρό. Πολλοί αρχάριοι τρέχουν πολύ γρήγορα, λαχανιάζουν μετά από ένα λεπτό και καταλήγουν ότι «δεν είναι για τρέξιμο». Αντί γι' αυτό, κόψε ταχύτητα.\n\n- **Τεστ ομιλίας:** όσο τρέχεις, πρέπει να μπορείς να μιλάς με ολόκληρες προτάσεις. Αν βγαίνουν μόνο λίγες λέξεις, χαλάρωσε ή περπάτα\n- **RPE (βαθμός αντιληπτής προσπάθειας):** σε κλίμακα 1–10, το τρέξιμο πρέπει να το νιώθεις γύρω στο 4–5 και τα διαλείμματα περπατήματος γύρω στο 2–3\n- **Ρυθμός:** αν το τρέξιμό σου είναι μόλις λίγο πιο γρήγορο από το περπάτημα, δεν πειράζει. Η ταχύτητα έρχεται αργότερα· πρώτα μετράει ο χρόνος σε κίνηση\n\n## Το πρόγραμμα με μια ματιά\n\n1. Εβδομάδες 1–2: τρεξίματα 1–1,5 λεπτού με μεγαλύτερα περπατήματα ανάμεσα\n2. Εβδομάδα 3: τρεξίματα 3 λεπτών\n3. Εβδομάδα 4: τρεξίματα 5 λεπτών\n4. Εβδομάδες 5–6: τρεξίματα 6–15 λεπτών, με κατάληξη ένα συνεχόμενο τρέξιμο 20 λεπτών\n5. Εβδομάδες 7–8: συνεχόμενα τρεξίματα που ανεβαίνουν από 22 σε 30 λεπτά\n\n## Τι χρειάζεσαι\n\n- Άνετα παπούτσια τρεξίματος που σου εφαρμόζουν καλά· η άνεση είναι λογικό κριτήριο όταν διαλέγεις ζευγάρι\n- Ελαφριά ρούχα που δεν σε πειράζει να ιδρώσεις μέσα τους, σε στρώσεις τις κρύες μέρες\n- Ένα ρολόι ή κινητό με χρονόμετρο για να μετράς τα διαστήματα\n- Μια ασφαλή διαδρομή: επίπεδα μονοπάτια, πάρκα, στίβος ή διάδρομος γυμναστηρίου (treadmill), όλα κάνουν\n\n## Γιατί λειτουργεί\n\nΟι οδηγίες για την υγεία προτείνουν 150–300 λεπτά μέτριας δραστηριότητας ή 75–150 λεπτά έντονης δραστηριότητας κάθε εβδομάδα. Τρεις προπονήσεις των 30–40 λεπτών, μαζί με ζέσταμα και αποθεραπεία, σε φέρνουν πολύ κοντά σε αυτόν τον στόχο. Οι μικρές, τακτικές αυξήσεις δίνουν στο σώμα χρόνο να προσαρμοστεί ανάμεσα στις προπονήσεις· αυτή είναι η βασική ιδέα της προοδευτικής επιβάρυνσης.\n\n## Ασφάλεια\n\n- Αν έχεις πάθηση στην καρδιά, στους πνεύμονες ή στις αρθρώσεις, ή αν έχεις μείνει αδρανής για πολύ καιρό, συμβουλέψου επαγγελματία πριν ξεκινήσεις\n- Σταμάτα και ζήτα βοήθεια αν νιώσεις πόνο στο στήθος, ζάλη ή ασυνήθιστο λαχάνιασμα\n- Ο πόνος που οξύνεται όσο τρέχεις ή σε κάνει να κουτσαίνεις είναι σημάδι ότι πρέπει να σταματήσεις, όχι να επιμείνεις"
+        },
+        {
+          "title": "Easy Running Form",
+          "titleEl": "Χαλαρή και Σωστή Τεχνική Τρεξίματος",
+          "durationMinutes": 15,
+          "sortOrder": 2,
+          "content": "# Easy Running Form\n\nRunning is a series of small, springy bounds from one leg to the other. You do not need a perfect style, but a few cues make it more relaxed and spread the load more evenly across your body. Practise them in this lesson: after a 5-minute brisk walk, do 4 rounds of 1 minute of easy jogging and 1 minute of walking, focusing on one cue per jog.\n\n## What it trains\n\n- **Main movers:** the quadriceps and glutes support your body weight and absorb each landing; the calves and Achilles tendons act like springs and give much of the push-off\n- **Synergists:** the hamstrings slow the swinging leg before it lands and help pull it back under you; the hip flexors swing the thigh forward and lift the knee\n- **Stabilisers:** the core and the hip abductors (glute medius) keep the pelvis level while you are on one leg\n- **Pattern:** a cyclical, whole-body compound movement in which each leg takes turns to push and to absorb\n\n## Set-up\n\n- Stand tall, then lean very slightly forward from the ankles, not from the waist\n- Relax your shoulders down and away from your ears\n- Bend your elbows to roughly 90° and keep your hands loose, as if holding something fragile\n\n## Form cues\n\n1. Look ahead about 10–20 metres, not at your feet\n2. Take short, quick, quiet steps rather than long, reaching ones\n3. Land with your foot close to under your hips and the knee slightly bent; do not force a heel or toe landing\n4. Let your arms swing forward and back, not across your chest\n5. Keep your jaw, hands and shoulders loose; tension wastes energy\n6. Breathe in a steady rhythm through your mouth and nose\n7. Run tall: imagine a string gently pulling the top of your head upwards\n\n## Common errors\n\n1. **Overstriding:** your foot lands far ahead of your body and acts like a brake. Shorten your step and quicken your rhythm\n2. **Running too fast:** breathlessness within a minute means slow down; easy pace is the goal\n3. **Bouncing high:** energy goes up instead of forward. Think \"low and light\"\n4. **Hunched shoulders:** shake out your arms during walk breaks and reset your posture\n\n## Easier and harder versions\n\n- Easier: brisk walking with an active arm swing, or very slow jogging on flat ground\n- Harder: gentle hills, or a 2–3% treadmill incline, once you can run 20 minutes comfortably\n\n## On a treadmill\n\nA treadmill is a good option in bad weather. Set a 1% incline so the effort feels closer to running outdoors, stay in the middle of the belt and use the handrails only to get on and off.\n\n## Safety\n\n- Stop if a cue causes discomfort; change your form gradually, not all at once\n- Choose even, well-lit surfaces until you feel steady on your feet\n- Clip the treadmill safety key to your clothing every time",
+          "contentEl": "# Χαλαρή και Σωστή Τεχνική Τρεξίματος\n\nΤο τρέξιμο είναι μια σειρά από μικρά, ελαστικά αναπηδήματα από το ένα πόδι στο άλλο. Δεν χρειάζεσαι τέλειο στιλ, αλλά μερικά βασικά σημεία το κάνουν πιο χαλαρό και μοιράζουν το φορτίο πιο ομοιόμορφα στο σώμα. Εξασκήσου σε αυτά σε αυτό το μάθημα: μετά από 5 λεπτά γρήγορο περπάτημα, κάνε 4 γύρους από 1 λεπτό χαλαρό τρέξιμο και 1 λεπτό περπάτημα, εστιάζοντας σε ένα σημείο σε κάθε τρέξιμο.\n\n## Τι δουλεύει\n\n- **Κύριοι μύες:** οι τετρακέφαλοι και οι γλουτοί στηρίζουν το βάρος του σώματος και απορροφούν κάθε προσγείωση· οι γάμπες και οι αχίλλειοι τένοντες λειτουργούν σαν ελατήρια και δίνουν μεγάλο μέρος της ώθησης\n- **Συνεργοί:** οι οπίσθιοι μηριαίοι φρενάρουν το πόδι που αιωρείται πριν προσγειωθεί και βοηθούν να το τραβήξεις πάλι κάτω από το σώμα· οι καμπτήρες του ισχίου φέρνουν τον μηρό μπροστά και σηκώνουν το γόνατο\n- **Σταθεροποιοί:** ο κορμός και οι απαγωγοί του ισχίου (μέσος γλουτιαίος) κρατούν τη λεκάνη οριζόντια όσο στηρίζεσαι στο ένα πόδι\n- **Μοτίβο:** μια κυκλική, σύνθετη κίνηση όλου του σώματος, όπου κάθε πόδι εναλλάξ σπρώχνει και απορροφά\n\n## Τοποθέτηση\n\n- Κράτα τον κορμό ψηλό και ίσιο και γείρε ελάχιστα μπροστά από τους αστραγάλους, όχι από τη μέση\n- Χαλάρωσε τους ώμους προς τα κάτω, μακριά από τα αυτιά\n- Λύγισε τους αγκώνες περίπου στις 90° και κράτα τις παλάμες χαλαρές, σαν να κρατάς κάτι εύθραυστο\n\n## Οδηγίες τεχνικής\n\n1. Κοίτα μπροστά σε απόσταση περίπου 10–20 μέτρων, όχι τα πόδια σου\n2. Κάνε μικρά, γρήγορα και αθόρυβα βήματα αντί για μεγάλα, «απλωμένα»\n3. Προσγειώσου με το πέλμα σχεδόν κάτω από τη λεκάνη και το γόνατο ελαφρά λυγισμένο· μην προσπαθείς να πατάς επίτηδες με τη φτέρνα ή με τις μύτες\n4. Άφησε τα χέρια να κινούνται μπροστά-πίσω, όχι χιαστί μπροστά από το στήθος\n5. Κράτα σαγόνι, παλάμες και ώμους χαλαρούς· το σφίξιμο σπαταλά ενέργεια\n6. Ανάπνεε με σταθερό ρυθμό από το στόμα και τη μύτη\n7. Τρέξε «ψηλά»: φαντάσου ένα νήμα που τραβά απαλά την κορυφή του κεφαλιού σου προς τα πάνω\n\n## Συνηθισμένα λάθη\n\n1. **Υπερβολικός διασκελισμός:** το πόδι προσγειώνεται πολύ μπροστά από το σώμα και λειτουργεί σαν φρένο. Μίκρυνε το βήμα και ανέβασε τη συχνότητα των βημάτων\n2. **Πολύ γρήγορο τρέξιμο:** αν λαχανιάζεις μέσα σε ένα λεπτό, κόψε ταχύτητα· στόχος είναι ο χαλαρός ρυθμός\n3. **Ψηλά αναπηδήματα:** η ενέργεια πηγαίνει προς τα πάνω αντί για μπροστά. Σκέψου «χαμηλά και ανάλαφρα»\n4. **Σφιγμένοι, ανασηκωμένοι ώμοι:** τίναξε τα χέρια στα διαλείμματα περπατήματος και διόρθωσε τη στάση σου\n\n## Ευκολότερες και δυσκολότερες εκδοχές\n\n- Ευκολότερη: γρήγορο περπάτημα με ενεργή κίνηση των χεριών ή πολύ αργό τρέξιμο σε επίπεδο έδαφος\n- Δυσκολότερη: ήπιες ανηφόρες ή κλίση 2–3% στον διάδρομο, μόλις μπορείς να τρέξεις άνετα 20 λεπτά\n\n## Στον διάδρομο\n\nΟ διάδρομος γυμναστηρίου (treadmill) είναι καλή λύση όταν ο καιρός είναι άσχημος. Βάλε κλίση 1%, ώστε η προσπάθεια να μοιάζει περισσότερο με τρέξιμο σε εξωτερικό χώρο, μείνε στο κέντρο του ιμάντα και χρησιμοποίησε τις χειρολαβές μόνο για να ανέβεις και να κατέβεις.\n\n## Ασφάλεια\n\n- Σταμάτα αν κάποια οδηγία σού προκαλεί ενόχληση· άλλαζε την τεχνική σου σταδιακά, όχι όλα μαζί\n- Διάλεγε ομαλές επιφάνειες με καλό φωτισμό μέχρι να νιώσεις σιγουριά στο βήμα σου\n- Στερέωνε κάθε φορά το κλειδί ασφαλείας του διαδρόμου στα ρούχα σου",
+          "exercises": [
+            {
+              "slug": "trail-running-walking",
+              "sets": 4,
+              "reps": "1 min + 1 min",
+              "restSeconds": 0,
+              "notes": "Jog 1 min, then walk 1 min. Outdoors: practise one form cue during each jog.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 1 λεπτό. Σε εξωτερικό χώρο: εξασκήσου σε μία οδηγία τεχνικής σε κάθε τρέξιμο."
+            },
+            {
+              "slug": "running-treadmill",
+              "sets": 4,
+              "reps": "1 min + 1 min",
+              "restSeconds": 0,
+              "notes": "Jog 1 min, then walk 1 min. Or on a treadmill: 1% incline, hands off the rails.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 1 λεπτό. Ή στον διάδρομο: κλίση 1%, χέρια μακριά από τις χειρολαβές."
+            }
+          ]
+        },
+        {
+          "title": "Weeks 1–3: Run-Walk Intervals",
+          "titleEl": "Εβδομάδες 1–3: Διαστήματα Τρεξίματος και Περπατήματος",
+          "durationMinutes": 30,
+          "sortOrder": 3,
+          "content": "# Weeks 1–3: Run-Walk Intervals\n\nThese are your three sessions a week for the first three weeks. You alternate gentle jogs with walking breaks, and the jogs grow longer each week. The whole session, including the warm-up and cool-down, takes about 30 minutes. Any safe, fairly flat route works: a park, a quiet path, a track or a treadmill.\n\n## Warm-up\n\nSpend 5–7 minutes getting warm before you jog.\n\n1. Walk briskly for 5 minutes, swinging your arms\n2. Ankle circles: 10 each direction on each foot, holding a wall or post\n3. Front leg swings: 10 on each leg, small at first and gradually bigger\n\n## The workout\n\nUse a timer and follow the plan for your week. Jog at a talk-test pace (RPE 4–5) and walk briskly during the breaks (RPE 2–3).\n\n- **Week 1:** 8 rounds of 1 minute jogging and 1.5 minutes walking (20 minutes)\n- **Week 2:** 6 rounds of 1.5 minutes jogging and 2 minutes walking (21 minutes)\n- **Week 3:** 4 rounds of 3 minutes jogging and 2 minutes walking (20 minutes)\n\nIf a jog leaves you gasping, slow down; if that is not enough, walk until your breathing settles. If you could not finish the jogs, repeat the week before moving on. Rate each session from 1 to 10 and write it down; the notes help you decide when it is time for the next step.\n\n## Cool-down\n\nWalk easily for 5 minutes until your breathing settles, then stretch gently. Hold each stretch for 20–30 seconds without bouncing.\n\n1. Calf stretch with your hands against a wall, each leg\n2. Kneeling hip-flexor stretch, each side\n3. A few slow, deep breaths, standing tall\n\n## Safety\n\n- Keep at least one rest day between runs; your tendons and bones adapt more slowly than your heart and lungs\n- Mild muscle soreness for a day or two is normal; pain in a joint or shin that gets worse while you run is not\n- In hot weather run in the cooler part of the day and drink water before and after",
+          "contentEl": "# Εβδομάδες 1–3: Διαστήματα Τρεξίματος και Περπατήματος\n\nΑυτές είναι οι τρεις εβδομαδιαίες προπονήσεις σου για τις πρώτες τρεις εβδομάδες. Εναλλάσσεις ήπια τρεξίματα με διαλείμματα περπατήματος και τα τρεξίματα μεγαλώνουν κάθε εβδομάδα. Όλη η προπόνηση, μαζί με το ζέσταμα και την αποθεραπεία, διαρκεί περίπου 30 λεπτά. Κάνει οποιαδήποτε ασφαλής, σχετικά επίπεδη διαδρομή: ένα πάρκο, ένα ήσυχο μονοπάτι, ένας στίβος ή ένας διάδρομος γυμναστηρίου.\n\n## Ζέσταμα\n\nΑφιέρωσε 5–7 λεπτά για να ζεσταθείς πριν τρέξεις.\n\n1. Περπάτα γρήγορα για 5 λεπτά, κουνώντας ενεργά τα χέρια\n2. Κύκλοι αστραγάλων: 10 προς κάθε κατεύθυνση σε κάθε πόδι, με το χέρι σε έναν τοίχο ή μια κολόνα για στήριξη\n3. Αιωρήσεις ποδιού μπροστά-πίσω: 10 σε κάθε πόδι, μικρές στην αρχή και σταδιακά μεγαλύτερες\n\n## Η προπόνηση\n\nΧρησιμοποίησε χρονόμετρο και ακολούθησε το πλάνο της εβδομάδας σου. Τρέξε με ρυθμό που περνά το τεστ ομιλίας (RPE 4–5) και περπάτα γρήγορα στα διαλείμματα (RPE 2–3).\n\n- **Εβδομάδα 1:** 8 γύροι με 1 λεπτό τρέξιμο και 1,5 λεπτά περπάτημα (20 λεπτά)\n- **Εβδομάδα 2:** 6 γύροι με 1,5 λεπτά τρέξιμο και 2 λεπτά περπάτημα (21 λεπτά)\n- **Εβδομάδα 3:** 4 γύροι με 3 λεπτά τρέξιμο και 2 λεπτά περπάτημα (20 λεπτά)\n\nΑν σε κάποιο τρέξιμο λαχανιάζεις έντονα, κόψε ταχύτητα· αν δεν αρκεί, περπάτα μέχρι να ηρεμήσει η αναπνοή σου. Αν δεν μπόρεσες να ολοκληρώσεις τα τρεξίματα, επανάλαβε την εβδομάδα πριν προχωρήσεις. Βαθμολόγησε κάθε προπόνηση από το 1 ως το 10 και κατάγραψε τη βαθμολογία· οι σημειώσεις σε βοηθούν να αποφασίσεις πότε είναι η ώρα για το επόμενο βήμα.\n\n## Αποθεραπεία\n\nΠερπάτα χαλαρά για 5 λεπτά μέχρι να ηρεμήσει η αναπνοή σου και μετά κάνε απαλές διατάσεις. Κράτα κάθε διάταση 20–30 δευτερόλεπτα χωρίς ελατηριωτές κινήσεις.\n\n1. Διάταση γάμπας με τα χέρια στον τοίχο, σε κάθε πόδι\n2. Διάταση καμπτήρων ισχίου από γονατιστή θέση, σε κάθε πλευρά\n3. Μερικές αργές, βαθιές ανάσες όρθια, με ίσιο κορμό\n\n## Ασφάλεια\n\n- Άφηνε τουλάχιστον μία μέρα ξεκούρασης ανάμεσα στα τρεξίματα· οι τένοντες και τα οστά προσαρμόζονται πιο αργά από την καρδιά και τους πνεύμονες\n- Ο ήπιος μυϊκός πόνος για μία-δύο μέρες είναι φυσιολογικός· ο πόνος σε άρθρωση ή στην κνήμη που χειροτερεύει όσο τρέχεις δεν είναι\n- Όταν κάνει ζέστη, τρέξε τις πιο δροσερές ώρες της μέρας και πιες νερό πριν και μετά",
+          "exercises": [
+            {
+              "slug": "ankle-circles",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each direction, each foot. Hold a support and draw slow circles with your big toe.",
+              "notesEl": "Προς κάθε κατεύθυνση, με κάθε πόδι. Κρατήσου από ένα στήριγμα και ζωγράφισε αργούς κύκλους με το μεγάλο δάχτυλο."
+            },
+            {
+              "slug": "front-leg-raises",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each leg. Start small and let the swing grow; never force it.",
+              "notesEl": "Σε κάθε πόδι. Ξεκίνα με μικρές αιωρήσεις και άφησέ τες να μεγαλώσουν· μη ζορίζεις ποτέ την κίνηση."
+            },
+            {
+              "slug": "trail-running-walking",
+              "sets": 8,
+              "reps": "1 min + 90 s",
+              "restSeconds": 0,
+              "notes": "Jog 1 min, then walk 90 s. Week 1 shown (see the lesson for weeks 2–3); jog at talk-test pace.",
+              "notesEl": "Τρέξε χαλαρά 1 λεπτό και μετά περπάτησε 90 δευτερόλεπτα. Εδώ φαίνεται η εβδομάδα 1 (δες το μάθημα για τις εβδομάδες 2–3)· τρέξε με ρυθμό που περνά το τεστ ομιλίας."
+            },
+            {
+              "slug": "calf-stretch-hands-against-wall",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Keep the back heel down and the back leg straight.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τη φτέρνα του πίσω ποδιού στο έδαφος και το πίσω πόδι τεντωμένο."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Squeeze the back glute and tuck your pelvis slightly before leaning forward.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού και «μάζεψε» ελαφρά τη λεκάνη πριν γείρεις μπροστά."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 4–6: Build Your Running Time",
+      "titleEl": "Εβδομάδες 4–6: Χτίσε τον Χρόνο Τρεξίματος",
+      "description": "Longer jogs, shorter walks and a weekly strength session that helps your legs handle the extra running.",
+      "descriptionEl": "Μεγαλύτερα τρεξίματα, μικρότερα περπατήματα και μια εβδομαδιαία προπόνηση δύναμης που βοηθά τα πόδια σου να αντέξουν το επιπλέον τρέξιμο.",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "title": "Weeks 4–6: Longer Runs, Shorter Walks",
+          "titleEl": "Εβδομάδες 4–6: Περισσότερο Τρέξιμο, Λιγότερο Περπάτημα",
+          "durationMinutes": 35,
+          "sortOrder": 1,
+          "content": "# Weeks 4–6: Longer Runs, Shorter Walks\n\nThis block is where you turn into a runner. The jogs become long enough that you need to settle into a steady rhythm, and by the end of week 6 you run for 20 minutes without a break. Each session takes 30–40 minutes, including the warm-up and cool-down.\n\n## Warm-up\n\n1. Walk briskly for 5 minutes\n2. Standing hip circles: 5 each direction on each leg, holding a support\n3. Side leg swings: 10 on each leg\n4. Jog very slowly for 1 minute, then walk for 1 minute\n\n## The workout\n\nEach week has three runs; do them in order with a rest day in between. Keep a talk-test pace (RPE 4–5); on the longer jogs it is fine if your sentences get a little shorter near the end.\n\n- **Week 4, all runs:** 3 rounds of 5 minutes jogging and 2.5 minutes walking\n- **Week 5, run 1:** 3 rounds of 6 minutes jogging and 2 minutes walking\n- **Week 5, run 2:** 2 rounds of 9 minutes jogging and 3 minutes walking\n- **Week 5, run 3:** 12 minutes jogging, 2 minutes walking, 8 minutes jogging\n- **Week 6, run 1:** 2 rounds of 10 minutes jogging and 2 minutes walking\n- **Week 6, run 2:** 15 minutes jogging, 2 minutes walking, 6 minutes jogging\n- **Week 6, run 3:** 20 minutes of continuous jogging\n\nThe continuous run is a mental step as much as a physical one. Start slower than feels necessary. The first five minutes often feel harder than the middle ones, because your breathing and heart rate are still catching up. If you need to walk, walk for a minute and then jog again.\n\n## Cool-down\n\nWalk for 5 minutes, then stretch. Hold each stretch for 20–30 seconds.\n\n1. Standing hamstring and calf stretch with a towel or belt, each leg\n2. Standing quad stretch with your foot resting on a step behind you, each leg\n3. Slow breathing until your heart rate feels settled\n\n## Safety\n\n- Increase only one thing at a time: keep your pace easy while the running time grows\n- If a run felt very hard or something ached the next day, repeat the previous run instead of moving on\n- Choose routes with places to stop, and tell someone where you are going if you run alone",
+          "contentEl": "# Εβδομάδες 4–6: Περισσότερο Τρέξιμο, Λιγότερο Περπάτημα\n\nΣε αυτή τη φάση γίνεσαι δρομέας. Τα τρεξίματα γίνονται αρκετά μεγάλα ώστε να χρειάζεται να βρεις σταθερό ρυθμό, και στο τέλος της εβδομάδας 6 τρέχεις 20 λεπτά χωρίς διάλειμμα. Κάθε προπόνηση διαρκεί 30–40 λεπτά, μαζί με το ζέσταμα και την αποθεραπεία.\n\n## Ζέσταμα\n\n1. Περπάτα γρήγορα για 5 λεπτά\n2. Κύκλοι ισχίου σε όρθια θέση: 5 προς κάθε κατεύθυνση σε κάθε πόδι, κρατώντας ένα στήριγμα\n3. Πλάγιες αιωρήσεις ποδιού: 10 σε κάθε πόδι\n4. Τρέξε πολύ αργά για 1 λεπτό και μετά περπάτα για 1 λεπτό\n\n## Η προπόνηση\n\nΚάθε εβδομάδα έχει τρία τρεξίματα· κάν' τα με τη σειρά, με μία μέρα ξεκούρασης ανάμεσα. Κράτα ρυθμό τεστ ομιλίας (RPE 4–5)· στα μεγαλύτερα τρεξίματα είναι φυσιολογικό οι προτάσεις σου να κονταίνουν λίγο προς το τέλος.\n\n- **Εβδομάδα 4, όλα τα τρεξίματα:** 3 γύροι με 5 λεπτά τρέξιμο και 2,5 λεπτά περπάτημα\n- **Εβδομάδα 5, τρέξιμο 1:** 3 γύροι με 6 λεπτά τρέξιμο και 2 λεπτά περπάτημα\n- **Εβδομάδα 5, τρέξιμο 2:** 2 γύροι με 9 λεπτά τρέξιμο και 3 λεπτά περπάτημα\n- **Εβδομάδα 5, τρέξιμο 3:** 12 λεπτά τρέξιμο, 2 λεπτά περπάτημα, 8 λεπτά τρέξιμο\n- **Εβδομάδα 6, τρέξιμο 1:** 2 γύροι με 10 λεπτά τρέξιμο και 2 λεπτά περπάτημα\n- **Εβδομάδα 6, τρέξιμο 2:** 15 λεπτά τρέξιμο, 2 λεπτά περπάτημα, 6 λεπτά τρέξιμο\n- **Εβδομάδα 6, τρέξιμο 3:** 20 λεπτά συνεχόμενο τρέξιμο\n\nΤο συνεχόμενο τρέξιμο είναι νοητικό βήμα όσο και σωματικό. Ξεκίνα πιο αργά απ' όσο νομίζεις ότι χρειάζεται. Τα πρώτα πέντε λεπτά συνήθως μοιάζουν πιο δύσκολα από τα μεσαία, γιατί η αναπνοή και οι παλμοί σου ακόμη προσαρμόζονται. Αν χρειαστεί να περπατήσεις, περπάτα ένα λεπτό και μετά συνέχισε να τρέχεις.\n\n## Αποθεραπεία\n\nΠερπάτα για 5 λεπτά και μετά κάνε διατάσεις. Κράτα κάθε διάταση 20–30 δευτερόλεπτα.\n\n1. Όρθια διάταση οπίσθιων μηριαίων και γάμπας με πετσέτα ή ζώνη, σε κάθε πόδι\n2. Όρθια διάταση τετρακεφάλων με το πόδι ακουμπισμένο σε σκαλί πίσω σου, σε κάθε πόδι\n3. Αργές ανάσες μέχρι να νιώσεις ότι οι παλμοί σου ηρέμησαν\n\n## Ασφάλεια\n\n- Αύξανε μόνο ένα πράγμα κάθε φορά: κράτα τον ρυθμό χαλαρό όσο μεγαλώνει ο χρόνος τρεξίματος\n- Αν ένα τρέξιμο ήταν πολύ δύσκολο ή κάτι πονούσε την επόμενη μέρα, επανάλαβε το προηγούμενο τρέξιμο αντί να προχωρήσεις\n- Διάλεγε διαδρομές με σημεία για στάση και πες σε κάποιον πού πηγαίνεις αν τρέχεις χωρίς παρέα",
+          "exercises": [
+            {
+              "slug": "standing-hip-circles",
+              "sets": 1,
+              "reps": "5",
+              "restSeconds": 0,
+              "notes": "Each direction, each leg. Hold a support and make big, slow circles with the knee.",
+              "notesEl": "Προς κάθε κατεύθυνση, σε κάθε πόδι. Κρατήσου από ένα στήριγμα και κάνε μεγάλους, αργούς κύκλους με το γόνατο."
+            },
+            {
+              "slug": "side-leg-raises",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each leg. Stand tall; swing out and across in a relaxed arc.",
+              "notesEl": "Σε κάθε πόδι. Κράτα τον κορμό ψηλό· αιώρησε το πόδι προς τα έξω και μετά μπροστά από το άλλο, σε ένα χαλαρό τόξο."
+            },
+            {
+              "slug": "trail-running-walking",
+              "sets": 3,
+              "reps": "5 min + 2 min 30 s",
+              "restSeconds": 0,
+              "notes": "Jog 5 min, then walk 2 min 30 s. Week 4 shown (see the lesson for weeks 5–6); keep it easy.",
+              "notesEl": "Τρέξε χαλαρά 5 λεπτά και μετά περπάτησε 2 λεπτά και 30 δευτερόλεπτα. Εδώ φαίνεται η εβδομάδα 4 (δες το μάθημα για τις εβδομάδες 5–6)· κράτα τον ρυθμό χαλαρό."
+            },
+            {
+              "slug": "standing-hamstring-and-calf-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Hinge forward with a long back; pull the belt gently.",
+              "notesEl": "Σε κάθε πόδι. Γείρε μπροστά από τα ισχία με ίσια πλάτη· τράβα απαλά τη ζώνη."
+            },
+            {
+              "slug": "standing-elevated-quad-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Tuck your pelvis to feel it at the front of the hip.",
+              "notesEl": "Σε κάθε πόδι. «Μάζεψε» τη λεκάνη για να νιώσεις τη διάταση στο μπροστινό μέρος του ισχίου."
+            }
+          ]
+        },
+        {
+          "title": "Strength for Runners",
+          "titleEl": "Δύναμη για Δρομείς",
+          "durationMinutes": 25,
+          "sortOrder": 2,
+          "content": "# Strength for Runners\n\nEach running stride lands on one leg with a force of roughly two to three times your body weight. Stronger hips, thighs and core help you absorb that load and hold good form as you tire. Do this short session once or twice a week from week 4, on a non-running day or straight after an easy run.\n\n## Warm-up\n\n1. March on the spot or walk briskly for 3 minutes\n2. Front and side leg swings: 10 each way on each leg\n3. 8 slow squats to a comfortable depth\n\n## The workout\n\nDo the exercises as straight sets: finish every set of one exercise before you move to the next. Work at RPE 6–7, which means you end each set feeling you could do three or four more good reps.\n\n- **Week 4:** 2 sets of each exercise\n- **Weeks 5–6:** 3 sets of each exercise if week 4 felt controlled\n- **Weeks 7–8:** keep 2–3 sets, and leave the session out in the two days before your 5K run\n- **Step-ups:** use the bottom step of a staircase and hold the rail lightly for balance\n- **Plank:** end the set as soon as your hips sag or your lower back arches\n\nStrength work should leave your legs feeling worked, not wrecked. If they are still sore on your next run day, do one set fewer next time. A burning feeling in the working muscles is normal; sharp pain in a joint is not.\n\n## Cool-down\n\nWalk easily for 2 minutes, then hold a calf stretch against a wall and a kneeling hip-flexor stretch for 20–30 seconds on each side.\n\n## Safety\n\n- Keep your knees in line with your toes in squats, lunges and step-ups\n- Stop any exercise that causes sharp or joint pain, and use a smaller range next time\n- Breathe steadily; never hold your breath during the plank",
+          "contentEl": "# Δύναμη για Δρομείς\n\nΣε κάθε διασκελισμό προσγειώνεσαι στο ένα πόδι με δύναμη περίπου δύο έως τρεις φορές το βάρος του σώματός σου. Πιο δυνατά ισχία, μηροί και κορμός σε βοηθούν να απορροφάς αυτό το φορτίο και να κρατάς καλή τεχνική όσο κουράζεσαι. Κάνε αυτή τη σύντομη προπόνηση μία ή δύο φορές την εβδομάδα από την εβδομάδα 4, σε μέρα χωρίς τρέξιμο ή αμέσως μετά από ένα χαλαρό τρέξιμο.\n\n## Ζέσταμα\n\n1. Βάδισε επί τόπου ή περπάτα γρήγορα για 3 λεπτά\n2. Αιωρήσεις ποδιού μπροστά-πίσω και στο πλάι: 10 προς κάθε κατεύθυνση σε κάθε πόδι\n3. 8 αργά squats (καθίσματα) σε άνετο βάθος\n\n## Η προπόνηση\n\nΚάνε τις ασκήσεις σε διαδοχικά σετ: ολοκλήρωσε όλα τα σετ μιας άσκησης πριν περάσεις στην επόμενη. Δούλεψε σε RPE 6–7, δηλαδή τελείωνε κάθε σετ νιώθοντας ότι θα μπορούσες να κάνεις τρεις με τέσσερις ακόμη καλές επαναλήψεις.\n\n- **Εβδομάδα 4:** 2 σετ από κάθε άσκηση\n- **Εβδομάδες 5–6:** 3 σετ από κάθε άσκηση, αν στην εβδομάδα 4 ένιωσες ότι είχες τον έλεγχο\n- **Εβδομάδες 7–8:** κράτα 2–3 σετ και παράλειψε την προπόνηση τις δύο μέρες πριν από το τρέξιμο των 5 χλμ\n- **Step-ups (ανεβάσματα σε σκαλί):** χρησιμοποίησε το πρώτο σκαλί μιας σκάλας και κρατήσου ελαφρά από την κουπαστή για ισορροπία\n- **Plank (σανίδα):** τελείωσε το σετ μόλις πέσει η λεκάνη ή «βουλιάξει» η μέση\n\nΗ προπόνηση δύναμης πρέπει να αφήνει τα πόδια σου κουρασμένα, όχι διαλυμένα. Αν πονούν ακόμη την επόμενη μέρα τρεξίματος, κάνε ένα σετ λιγότερο την επόμενη φορά. Το «κάψιμο» στους μύες που δουλεύουν είναι φυσιολογικό· ο οξύς πόνος σε άρθρωση δεν είναι.\n\n## Αποθεραπεία\n\nΠερπάτα χαλαρά για 2 λεπτά και μετά κράτα μια διάταση γάμπας στον τοίχο και μια διάταση καμπτήρων ισχίου από γονατιστή θέση για 20–30 δευτερόλεπτα σε κάθε πλευρά.\n\n## Ασφάλεια\n\n- Κράτα τα γόνατα στην ίδια γραμμή με τα δάχτυλα των ποδιών στα squats, στις προβολές και στα step-ups\n- Σταμάτα κάθε άσκηση που προκαλεί οξύ πόνο ή πόνο σε άρθρωση και χρησιμοποίησε μικρότερο εύρος κίνησης την επόμενη φορά\n- Ανάπνεε σταθερά· μην κρατάς ποτέ την αναπνοή στο plank",
+          "exercises": [
+            {
+              "slug": "bodyweight-squat",
+              "sets": 2,
+              "reps": "10–15",
+              "restSeconds": 60,
+              "notes": "Sit back and down; knees follow your toes.",
+              "notesEl": "Κάθισε πίσω και κάτω· τα γόνατα ακολουθούν τα δάχτυλα των ποδιών."
+            },
+            {
+              "slug": "bodyweight-walking-lunge",
+              "sets": 2,
+              "reps": "8",
+              "restSeconds": 60,
+              "notes": "Each leg. Torso upright; front knee stays over the front foot.",
+              "notesEl": "Σε κάθε πόδι. Κορμός όρθιος· το μπροστινό γόνατο μένει πάνω από το μπροστινό πέλμα."
+            },
+            {
+              "slug": "step-up-with-knee-raise",
+              "sets": 2,
+              "reps": "8",
+              "restSeconds": 60,
+              "notes": "Each leg. Push through the whole foot on the step; lift the other knee to hip height.",
+              "notesEl": "Σε κάθε πόδι. Σπρώξε με όλο το πέλμα πάνω στο σκαλί· σήκωσε το άλλο γόνατο ως το ύψος του ισχίου."
+            },
+            {
+              "slug": "butt-lift-bridge",
+              "sets": 2,
+              "reps": "12–15",
+              "restSeconds": 45,
+              "notes": "Drive through the heels; squeeze the glutes for 1 s at the top.",
+              "notesEl": "Σπρώξε με τις φτέρνες· σφίξε τους γλουτούς για 1 δευτ. στην κορυφή."
+            },
+            {
+              "slug": "plank",
+              "sets": 2,
+              "reps": "20–40 s",
+              "restSeconds": 45,
+              "notes": "Squeeze your glutes, keep one straight line and keep breathing.",
+              "notesEl": "Σφίξε τους γλουτούς, κράτα το σώμα σε μία ευθεία και συνέχισε να αναπνέεις."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Weeks 7–8: Run Your First 5K",
+      "titleEl": "Εβδομάδες 7–8: Τρέξε τα Πρώτα σου 5 χλμ",
+      "description": "Continuous runs that build to 30 minutes, smart recovery and a calm plan for your first 5K.",
+      "descriptionEl": "Συνεχόμενα τρεξίματα που φτάνουν τα 30 λεπτά, έξυπνη αποκατάσταση και ένα ήρεμο πλάνο για τα πρώτα σου 5 χλμ.",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "title": "Recovery, Pacing and Your First 5K",
+          "titleEl": "Αποκατάσταση, Ρυθμός και τα Πρώτα σου 5 χλμ",
+          "durationMinutes": 10,
+          "sortOrder": 1,
+          "content": "# Recovery, Pacing and Your First 5K\n\nThe last two weeks bring the longest runs of the course. How you recover between them and how you pace them matter as much as the running itself.\n\n## Recovery between runs\n\nYour body adapts during the rest after a run, not during it. Heart and lungs improve quickly, but muscles, tendons and bones need more time, which is why you keep a rest day between runs even when you feel great.\n\n- **Sleep:** most adults need 7–9 hours a night; regular sleep is one of the strongest recovery tools you have\n- **Food:** a normal, balanced meal with carbohydrate and some protein within a few hours of running is enough at this distance\n- **Fluids:** drink regularly through the day; for runs under an hour, water before and after is usually plenty, and more in hot weather\n- **Active rest days:** walking, easy cycling or the strength session keep you moving without adding running impact\n\n## Soreness or a warning sign?\n\n- Normal: general muscle tiredness or mild soreness that eases within a day or two and as you warm up\n- Warning sign: pain in one spot, pain that gets worse as you run, pain that changes how you run, or swelling. Stop, rest and have it checked by a professional if it does not settle\n\n## Pacing a continuous run\n\n1. Start at a pace that feels almost too easy for the first 5 minutes\n2. Check yourself with the talk test every few minutes\n3. On hills, keep the effort steady and let the pace drop\n4. If you need to, walk for a minute and then jog again; finishing matters more than never stopping\n5. Aim to finish feeling you could have run a little longer\n\n## Your first 5K\n\nThe last run of week 8 is your 5K. You can run it on a measured route, on a track (12.5 laps of a standard 400-metre track), with a running app, or at a free, timed community run in a park.\n\n- Do not try new shoes, clothes or food on the day\n- Eat a light, familiar meal 2–3 hours before\n- Warm up with 5 minutes of brisk walking and 2 minutes of very easy jogging\n- Run the first kilometre slower than you want to; most people speed up naturally later\n- If 5 km takes you longer than 30 minutes, that is completely normal; many new runners need 35–40 minutes. Take 1-minute walk breaks when you need them, or run your 30 minutes now and cover the full 5 km in the weeks after\n\n## After the course\n\nKeep three easy runs a week for a few weeks before you add distance or speed. When 30 minutes feels comfortable, change one thing at a time: lengthen one run by 5 minutes every week or two, or add a few short, faster sections to another run.\n\n## Safety\n\n- Hot, humid days make running feel harder; slow down, run early or late, and drink more\n- Wear bright or reflective clothing in low light\n- If you feel dizzy or faint, or have chest discomfort, stop immediately and seek medical help",
+          "contentEl": "# Αποκατάσταση, Ρυθμός και τα Πρώτα σου 5 χλμ\n\nΟι δύο τελευταίες εβδομάδες φέρνουν τα μεγαλύτερα τρεξίματα του προγράμματος. Το πώς ξεκουράζεσαι ανάμεσά τους και το πώς μοιράζεις τις δυνάμεις σου μετράνε όσο και το ίδιο το τρέξιμο.\n\n## Αποκατάσταση ανάμεσα στα τρεξίματα\n\nΤο σώμα σου προσαρμόζεται στην ξεκούραση μετά το τρέξιμο, όχι κατά τη διάρκειά του. Η καρδιά και οι πνεύμονες βελτιώνονται γρήγορα, αλλά οι μύες, οι τένοντες και τα οστά χρειάζονται περισσότερο χρόνο· γι' αυτό κρατάς μία μέρα ξεκούρασης ανάμεσα στα τρεξίματα, ακόμη κι όταν νιώθεις υπέροχα.\n\n- **Ύπνος:** οι περισσότεροι ενήλικες χρειάζονται 7–9 ώρες τη νύχτα· ο τακτικός ύπνος είναι από τα πιο ισχυρά εργαλεία αποκατάστασης που έχεις\n- **Φαγητό:** ένα κανονικό, ισορροπημένο γεύμα με υδατάνθρακες και λίγη πρωτεΐνη μέσα σε λίγες ώρες μετά το τρέξιμο αρκεί σε αυτή την απόσταση\n- **Υγρά:** πίνε τακτικά μέσα στη μέρα· για τρεξίματα κάτω από μία ώρα, συνήθως αρκεί νερό πριν και μετά, και περισσότερο όταν κάνει ζέστη\n- **Μέρες ενεργής ξεκούρασης:** το περπάτημα, το χαλαρό ποδήλατο ή η προπόνηση δύναμης σε κρατούν σε κίνηση χωρίς επιπλέον κραδασμούς από τρέξιμο\n\n## Μυϊκός πόνος ή προειδοποιητικό σημάδι;\n\n- Φυσιολογικό: γενική μυϊκή κούραση ή ήπιος πόνος που υποχωρεί μέσα σε μία-δύο μέρες και όσο ζεσταίνεσαι\n- Προειδοποιητικό σημάδι: πόνος σε ένα συγκεκριμένο σημείο, πόνος που χειροτερεύει όσο τρέχεις, πόνος που αλλάζει τον τρόπο που τρέχεις ή πρήξιμο. Σταμάτα, ξεκουράσου και ζήτα τη γνώμη επαγγελματία αν δεν υποχωρεί\n\n## Ρυθμός σε συνεχόμενο τρέξιμο\n\n1. Ξεκίνα με ρυθμό που μοιάζει σχεδόν υπερβολικά χαλαρός για τα πρώτα 5 λεπτά\n2. Έλεγχε τον εαυτό σου με το τεστ ομιλίας κάθε λίγα λεπτά\n3. Στις ανηφόρες κράτα σταθερή την προσπάθεια και άφησε την ταχύτητα να πέσει\n4. Αν χρειαστεί, περπάτα ένα λεπτό και μετά συνέχισε να τρέχεις· μετράει περισσότερο να τερματίσεις παρά να μη σταματήσεις ποτέ\n5. Στόχευσε να τελειώνεις νιώθοντας ότι θα μπορούσες να τρέξεις λίγο ακόμη\n\n## Τα πρώτα σου 5 χλμ\n\nΤο τελευταίο τρέξιμο της εβδομάδας 8 είναι τα 5 χλμ σου. Μπορείς να το τρέξεις σε μετρημένη διαδρομή, σε στίβο (12,5 γύροι σε κανονικό στίβο 400 μέτρων), με μια εφαρμογή τρεξίματος ή σε μια δωρεάν, χρονομετρημένη τοπική διοργάνωση σε πάρκο.\n\n- Μη δοκιμάζεις καινούργια παπούτσια, ρούχα ή φαγητά εκείνη τη μέρα\n- Φάε ένα ελαφρύ, γνώριμο γεύμα 2–3 ώρες πριν\n- Ζεστάσου με 5 λεπτά γρήγορο περπάτημα και 2 λεπτά πολύ χαλαρό τρέξιμο\n- Τρέξε το πρώτο χιλιόμετρο πιο αργά απ' όσο θέλεις· οι περισσότεροι επιταχύνουν φυσικά αργότερα\n- Αν τα 5 χλμ σού πάρουν περισσότερο από 30 λεπτά, είναι απολύτως φυσιολογικό· πολλοί νέοι δρομείς χρειάζονται 35–40 λεπτά. Κάνε διαλείμματα περπατήματος 1 λεπτού όποτε τα χρειάζεσαι ή τρέξε τώρα τα 30 λεπτά σου και κάλυψε ολόκληρα τα 5 χλμ τις επόμενες εβδομάδες\n\n## Μετά το πρόγραμμα\n\nΚράτα τρία χαλαρά τρεξίματα την εβδομάδα για μερικές εβδομάδες πριν προσθέσεις απόσταση ή ταχύτητα. Όταν τα 30 λεπτά γίνουν άνετα, άλλαζε ένα πράγμα κάθε φορά: μεγάλωνε ένα τρέξιμο κατά 5 λεπτά κάθε μία με δύο εβδομάδες ή πρόσθεσε μερικά σύντομα, πιο γρήγορα κομμάτια σε ένα άλλο τρέξιμο.\n\n## Ασφάλεια\n\n- Οι ζεστές, υγρές μέρες κάνουν το τρέξιμο να μοιάζει πιο δύσκολο· κόψε ταχύτητα, τρέξε νωρίς το πρωί ή αργά το απόγευμα και πίνε περισσότερο\n- Φόρα φωτεινά ή ανακλαστικά ρούχα όταν το φως είναι λίγο\n- Αν νιώσεις ζάλη, τάση λιποθυμίας ή δυσφορία στο στήθος, σταμάτα αμέσως και ζήτα ιατρική βοήθεια"
+        },
+        {
+          "title": "Weeks 7–8: Run 30 Minutes",
+          "titleEl": "Εβδομάδες 7–8: Τρέξε 30 Λεπτά",
+          "durationMinutes": 45,
+          "sortOrder": 2,
+          "content": "# Weeks 7–8: Run 30 Minutes\n\nYou now run without walking breaks. Over these two weeks each run gets a few minutes longer until you reach 30 minutes of continuous easy running, or your first 5 kilometres. Each session takes up to 45 minutes.\n\n## Warm-up\n\n1. Walk briskly for 5 minutes\n2. Ankle circles: 10 each direction on each foot\n3. Front leg swings: 10 on each leg\n4. Jog very slowly for 2 minutes and let your breathing settle into a rhythm\n\n## The workout\n\nRun continuously at an easy, conversational pace (RPE 4–5). Keep at least one rest day between runs.\n\n- **Week 7:** run 1 for 22 minutes, run 2 for 24 minutes, run 3 for 25 minutes\n- **Week 8:** run 1 for 26 minutes, run 2 for 28 minutes, run 3 for 30 minutes or 5 km\n\nBreak long runs into chunks in your head: three blocks of 10 minutes feel easier than one block of 30. Landmarks, music or a podcast help the time pass, but keep the volume low enough to hear traffic. If you need a walk break, walk for 1 minute and carry on; the run still counts.\n\nFor your final run, use the pacing tips from the previous lesson. Note your time or distance so you have a benchmark for the future.\n\n## Cool-down\n\nWalk for 5 minutes, then stretch while your muscles are warm. Hold each stretch for 20–30 seconds without bouncing.\n\n1. Calf stretch with your hands against a wall, each leg\n2. Kneeling hip-flexor stretch, each side\n3. Standing quad stretch with your foot resting on a step behind you, each leg\n\n## Safety\n\n- Stay at an easy pace; these runs build endurance, not speed\n- Skip or shorten a run if you feel unwell, very tired or in pain, and repeat the previous run next time\n- Run on familiar routes, face oncoming traffic where there is no pavement, and stay visible",
+          "contentEl": "# Εβδομάδες 7–8: Τρέξε 30 Λεπτά\n\nΠλέον τρέχεις χωρίς διαλείμματα περπατήματος. Σε αυτές τις δύο εβδομάδες κάθε τρέξιμο μεγαλώνει κατά λίγα λεπτά, μέχρι να φτάσεις τα 30 λεπτά συνεχόμενου χαλαρού τρεξίματος ή τα πρώτα σου 5 χιλιόμετρα. Κάθε προπόνηση διαρκεί έως 45 λεπτά.\n\n## Ζέσταμα\n\n1. Περπάτα γρήγορα για 5 λεπτά\n2. Κύκλοι αστραγάλων: 10 προς κάθε κατεύθυνση σε κάθε πόδι\n3. Αιωρήσεις ποδιού μπροστά-πίσω: 10 σε κάθε πόδι\n4. Τρέξε πολύ αργά για 2 λεπτά και άφησε την αναπνοή σου να βρει ρυθμό\n\n## Η προπόνηση\n\nΤρέξε συνεχόμενα με χαλαρό ρυθμό που σου επιτρέπει να μιλάς (RPE 4–5). Κράτα τουλάχιστον μία μέρα ξεκούρασης ανάμεσα στα τρεξίματα.\n\n- **Εβδομάδα 7:** τρέξιμο 1 για 22 λεπτά, τρέξιμο 2 για 24 λεπτά, τρέξιμο 3 για 25 λεπτά\n- **Εβδομάδα 8:** τρέξιμο 1 για 26 λεπτά, τρέξιμο 2 για 28 λεπτά, τρέξιμο 3 για 30 λεπτά ή 5 χλμ\n\nΧώρισε νοερά τα μεγάλα τρεξίματα σε κομμάτια: τρία κομμάτια των 10 λεπτών μοιάζουν πιο εύκολα από ένα των 30. Σημεία της διαδρομής, μουσική ή ένα podcast βοηθούν να περνά η ώρα, αλλά κράτα την ένταση του ήχου αρκετά χαμηλά ώστε να ακούς την κίνηση των αυτοκινήτων. Αν χρειαστείς διάλειμμα περπατήματος, περπάτα 1 λεπτό και συνέχισε· το τρέξιμο μετράει κανονικά.\n\nΣτο τελευταίο σου τρέξιμο, εφάρμοσε τις συμβουλές ρυθμού από το προηγούμενο μάθημα. Σημείωσε τον χρόνο ή την απόσταση, ώστε να έχεις ένα σημείο αναφοράς για το μέλλον.\n\n## Αποθεραπεία\n\nΠερπάτα για 5 λεπτά και μετά κάνε διατάσεις όσο οι μύες είναι ακόμη ζεστοί. Κράτα κάθε διάταση 20–30 δευτερόλεπτα χωρίς ελατηριωτές κινήσεις.\n\n1. Διάταση γάμπας με τα χέρια στον τοίχο, σε κάθε πόδι\n2. Διάταση καμπτήρων ισχίου από γονατιστή θέση, σε κάθε πλευρά\n3. Όρθια διάταση τετρακεφάλων με το πόδι ακουμπισμένο σε σκαλί πίσω σου, σε κάθε πόδι\n\n## Ασφάλεια\n\n- Μείνε σε χαλαρό ρυθμό· αυτά τα τρεξίματα χτίζουν αντοχή, όχι ταχύτητα\n- Παράλειψε ή κόντυνε ένα τρέξιμο αν νιώθεις αδιαθεσία, μεγάλη κούραση ή πόνο, και την επόμενη φορά επανάλαβε το προηγούμενο τρέξιμο\n- Τρέχε σε γνώριμες διαδρομές, τρέχε αντίθετα στη ροή της κυκλοφορίας όπου δεν υπάρχει πεζοδρόμιο και φρόντισε να σε βλέπουν οι οδηγοί",
+          "exercises": [
+            {
+              "slug": "ankle-circles",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each direction, each foot. Smooth circles; keep the standing knee soft.",
+              "notesEl": "Προς κάθε κατεύθυνση, με κάθε πόδι. Ομαλοί κύκλοι· το γόνατο του ποδιού στήριξης μένει ελαφρά λυγισμένο."
+            },
+            {
+              "slug": "front-leg-raises",
+              "sets": 1,
+              "reps": "10",
+              "restSeconds": 0,
+              "notes": "Each leg. Relaxed swing; stay tall over the standing leg.",
+              "notesEl": "Σε κάθε πόδι. Χαλαρή αιώρηση· μείνε ψηλά πάνω από το πόδι στήριξης."
+            },
+            {
+              "slug": "trail-running-walking",
+              "sets": 1,
+              "reps": "22–30 min",
+              "restSeconds": 0,
+              "notes": "Run without walk breaks. Week 7: 22–25 min; week 8: 26–30 min. Easy pace.",
+              "notesEl": "Τρέξε συνεχόμενα, χωρίς διαλείμματα για περπάτημα. Εβδομάδα 7: 22–25 λεπτά· εβδομάδα 8: 26–30 λεπτά. Χαλαρός ρυθμός."
+            },
+            {
+              "slug": "calf-stretch-hands-against-wall",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Heel down, back leg straight; lean in slowly.",
+              "notesEl": "Σε κάθε πόδι. Φτέρνα κάτω, πίσω πόδι τεντωμένο· γείρε αργά προς τον τοίχο."
+            },
+            {
+              "slug": "kneeling-hip-flexor",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each side. Squeeze the back glute to deepen the stretch.",
+              "notesEl": "Σε κάθε πλευρά. Σφίξε τον γλουτό του πίσω ποδιού για να βαθύνει η διάταση."
+            },
+            {
+              "slug": "standing-elevated-quad-stretch",
+              "sets": 1,
+              "reps": "20–30 s",
+              "restSeconds": 0,
+              "notes": "Each leg. Supporting knee soft; hips facing forward.",
+              "notesEl": "Σε κάθε πόδι. Το γόνατο στήριξης ελαφρά λυγισμένο· η λεκάνη κοιτά ίσια μπροστά."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

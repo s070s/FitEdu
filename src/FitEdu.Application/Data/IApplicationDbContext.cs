@@ -10,6 +10,8 @@ public interface IApplicationDbContext
     DbSet<Category> Categories { get; }
     DbSet<Module> Modules { get; }
     DbSet<Lesson> Lessons { get; }
+    DbSet<Exercise> Exercises { get; }
+    DbSet<LessonExercise> LessonExercises { get; }
     DbSet<AssessmentDefinition> AssessmentDefinitions { get; }
     DbSet<AssessmentSubmission> AssessmentSubmissions { get; }
     DbSet<Enrollment> Enrollments { get; }

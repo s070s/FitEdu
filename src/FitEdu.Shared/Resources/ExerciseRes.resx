@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Exercise Library - FitEdu</value>
+  </data>
+  <data name="Library" xml:space="preserve">
+    <value>Exercise library</value>
+  </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Public-domain photos of every exercise — filter by muscle, equipment and level.</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search exercises…</value>
+  </data>
+  <data name="Muscle" xml:space="preserve">
+    <value>Muscle</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="AllMuscles" xml:space="preserve">
+    <value>All muscles</value>
+  </data>
+  <data name="PrimaryMuscles" xml:space="preserve">
+    <value>Primary muscles</value>
+  </data>
+  <data name="SecondaryMuscles" xml:space="preserve">
+    <value>Secondary muscles</value>
+  </data>
+  <data name="Instructions" xml:space="preserve">
+    <value>Instructions</value>
+  </data>
+  <data name="UsedInLessons" xml:space="preserve">
+    <value>Used in these workouts</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>No exercises match these filters.</value>
+  </data>
+  <data name="ResultsFormat" xml:space="preserve">
+    <value>{0} exercises</value>
+  </data>
+  <data name="ResultCountOne" xml:space="preserve">
+    <value>1 exercise</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Photos and instructions: Free Exercise DB (public domain).</value>
+  </data>
+  <data name="Force_push" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="Force_pull" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="Force_static" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="Mechanic_compound" xml:space="preserve">
+    <value>Compound</value>
+  </data>
+  <data name="Mechanic_isolation" xml:space="preserve">
+    <value>Isolation</value>
+  </data>
+  <data name="Level_beginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="Level_intermediate" xml:space="preserve">
+    <value>Intermediate</value>
+  </data>
+  <data name="Level_expert" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Category_strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="Category_stretching" xml:space="preserve">
+    <value>Stretching</value>
+  </data>
+  <data name="Category_cardio" xml:space="preserve">
+    <value>Cardio</value>
+  </data>
+  <data name="Category_plyometrics" xml:space="preserve">
+    <value>Plyometrics</value>
+  </data>
+  <data name="Category_powerlifting" xml:space="preserve">
+    <value>Powerlifting</value>
+  </data>
+  <data name="Category_strongman" xml:space="preserve">
+    <value>Strongman</value>
+  </data>
+  <data name="Category_olympic_weightlifting" xml:space="preserve">
+    <value>Olympic weightlifting</value>
+  </data>
+  <data name="Muscle_abdominals" xml:space="preserve">
+    <value>Abdominals</value>
+  </data>
+  <data name="Muscle_abductors" xml:space="preserve">
+    <value>Abductors</value>
+  </data>
+  <data name="Muscle_adductors" xml:space="preserve">
+    <value>Adductors</value>
+  </data>
+  <data name="Muscle_biceps" xml:space="preserve">
+    <value>Biceps</value>
+  </data>
+  <data name="Muscle_calves" xml:space="preserve">
+    <value>Calves</value>
+  </data>
+  <data name="Muscle_chest" xml:space="preserve">
+    <value>Chest</value>
+  </data>
+  <data name="Muscle_forearms" xml:space="preserve">
+    <value>Forearms</value>
+  </data>
+  <data name="Muscle_glutes" xml:space="preserve">
+    <value>Glutes</value>
+  </data>
+  <data name="Muscle_hamstrings" xml:space="preserve">
+    <value>Hamstrings</value>
+  </data>
+  <data name="Muscle_lats" xml:space="preserve">
+    <value>Lats</value>
+  </data>
+  <data name="Muscle_lower_back" xml:space="preserve">
+    <value>Lower back</value>
+  </data>
+  <data name="Muscle_middle_back" xml:space="preserve">
+    <value>Middle back</value>
+  </data>
+  <data name="Muscle_neck" xml:space="preserve">
+    <value>Neck</value>
+  </data>
+  <data name="Muscle_quadriceps" xml:space="preserve">
+    <value>Quadriceps</value>
+  </data>
+  <data name="Muscle_shoulders" xml:space="preserve">
+    <value>Shoulders</value>
+  </data>
+  <data name="Muscle_traps" xml:space="preserve">
+    <value>Traps</value>
+  </data>
+  <data name="Muscle_triceps" xml:space="preserve">
+    <value>Triceps</value>
+  </data>
+  <data name="Equipment_body_only" xml:space="preserve">
+    <value>Bodyweight</value>
+  </data>
+  <data name="Equipment_dumbbell" xml:space="preserve">
+    <value>Dumbbell</value>
+  </data>
+  <data name="Equipment_barbell" xml:space="preserve">
+    <value>Barbell</value>
+  </data>
+  <data name="Equipment_kettlebells" xml:space="preserve">
+    <value>Kettlebells</value>
+  </data>
+  <data name="Equipment_cable" xml:space="preserve">
+    <value>Cable</value>
+  </data>
+  <data name="Equipment_machine" xml:space="preserve">
+    <value>Machine</value>
+  </data>
+  <data name="Equipment_bands" xml:space="preserve">
+    <value>Bands</value>
+  </data>
+  <data name="Equipment_medicine_ball" xml:space="preserve">
+    <value>Medicine ball</value>
+  </data>
+  <data name="Equipment_exercise_ball" xml:space="preserve">
+    <value>Exercise ball</value>
+  </data>
+  <data name="Equipment_e_z_curl_bar" xml:space="preserve">
+    <value>E-Z curl bar</value>
+  </data>
+  <data name="Equipment_foam_roll" xml:space="preserve">
+    <value>Foam roll</value>
+  </data>
+  <data name="Equipment_other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="PauseAnimation" xml:space="preserve">
+    <value>Pause animation</value>
+  </data>
+  <data name="StartPositionAltFormat" xml:space="preserve">
+    <value>{0} — start position</value>
+  </data>
+  <data name="EndPositionAltFormat" xml:space="preserve">
+    <value>{0} — finish position</value>
+  </data>
+  <data name="MoreMusclesFormat" xml:space="preserve">
+    <value>+{0} more</value>
+  </data>
+  <data name="FiltersLabel" xml:space="preserve">
+    <value>Filter exercises</value>
+  </data>
+  <data name="AllLevels" xml:space="preserve">
+    <value>All levels</value>
+  </data>
+  <data name="AllEquipment" xml:space="preserve">
+    <value>All equipment</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All types</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Clear filters</value>
+  </data>
+  <data name="NoResultsHint" xml:space="preserve">
+    <value>Try another muscle, or clear the filters to see the whole library.</value>
+  </data>
+  <data name="PagesLabel" xml:space="preserve">
+    <value>Exercise pages</value>
+  </data>
+  <data name="BackToLibrary" xml:space="preserve">
+    <value>All exercises</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Exercise not found</value>
+  </data>
+  <data name="NotFoundText" xml:space="preserve">
+    <value>This exercise may have been renamed or removed. Find it in the library.</value>
+  </data>
+  <data name="NoInstructions" xml:space="preserve">
+    <value>Step-by-step instructions for this exercise are not available yet. Follow the start and finish photos and move slowly, with control.</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Force</value>
+  </data>
+  <data name="Mechanic" xml:space="preserve">
+    <value>Mechanics</value>
+  </data>
+  <data name="AtAGlance" xml:space="preserve">
+    <value>At a glance</value>
+  </data>
+  <data name="DetailDescriptionFormat" xml:space="preserve">
+    <value>How to do {0}: the muscles it works, the equipment you need and step-by-step instructions.</value>
+  </data>
+  <data name="DetailPageTitleFormat" xml:space="preserve">
+    <value>{0} - FitEdu</value>
+  </data>
+  <data name="LoadFailed" xml:space="preserve">
+    <value>We couldn't load the exercise library right now.</value>
+  </data>
+</root>

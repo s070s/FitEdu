@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Web.Extensions;
+using System.Globalization;
 
 namespace FitEdu.Web.Pages;
 
@@ -20,11 +23,47 @@ public partial class Pricing
     private string? _cancelMessage;
     private bool _cancelSuccess;
 
+    private static string CurrentLang =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
+    /// <summary>The second line of every plan card: how many courses can run at once.</summary>
+    private static string CourseLimitLabel(int maxCourses) =>
+        CourseLimitText.Describe(maxCourses, PricingRes.UnlimitedCourses, PricingRes.OneCourseAtATime, PricingRes.UpToCoursesFormat);
+
+    /// <summary>A tick for an included feature, a cross for one the plan lacks.</summary>
+    private static string FeatureIcon(bool included) => included ? "bi-check-lg" : "bi-x-lg";
+
+    /// <summary>Pro is the highlighted plan: lime border, badge, and first in the list on phones.</summary>
+    private static bool IsFeatured(SubscriptionPlanDto plan) => plan.Tier == SubscriptionTier.Pro;
+
+    /// <summary>Which courses the tier opens, the first line of every plan card.</summary>
+    private static string CourseAccessLabel(SubscriptionTier tier) => tier switch
+    {
+        SubscriptionTier.Plus => PricingRes.FeatureCoursesPlus,
+        SubscriptionTier.Pro => PricingRes.FeatureCoursesPro,
+        _ => PricingRes.FeatureCoursesFree
+    };
+
+    /// <summary>The "/ month" suffix after a price; the API sends the BillingPeriod enum name.</summary>
+    private static string PeriodLabel(string billingPeriod)
+    {
+        if (!Enum.TryParse<BillingPeriod>(billingPeriod, ignoreCase: true, out var period))
+            return string.Empty;
+
+        return period switch
+        {
+            BillingPeriod.Quarterly => PricingRes.PeriodQuarterly,
+            BillingPeriod.Yearly => PricingRes.PeriodYearly,
+            BillingPeriod.Lifetime => PricingRes.PeriodLifetime,
+            _ => PricingRes.PeriodMonthly
+        };
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _plans = await SubscriptionService.GetPlansAsync();
+            _plans = await SubscriptionService.GetPlansAsync(CurrentLang);
             _currentStatus = await SubscriptionService.GetStatusAsync();
         }
         catch (Exception ex)

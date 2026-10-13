@@ -1,33 +1,55 @@
-@* Category chip filter bar + search box for the public Courses/Assessments browse pages.
-   Owns no debounce timing — every keystroke raises OnSearchChanged; the host page debounces. *@
+@using FitEdu.Web.Extensions
+@* Search box and category chips for the Courses and Assessments browse pages, plus optional extra
+   chip groups (ExtraFilters, e.g. goal, level and equipment). On phones every group is one
+   swipeable row and the extra groups fold behind a "Filters" button; from 768 px they are always
+   shown as labelled rows. Owns no debounce timing: every keystroke raises OnSearchChanged and the
+   host page debounces. *@
 
 <div class="category-filter-bar">
-    <div class="category-chips" role="group" aria-label="@CategoryRes.CategoryLabel">
-        <button type="button"
-                class="category-chip-option @(SelectedCategoryId is null ? "selected" : "")"
-                aria-pressed="@(SelectedCategoryId is null ? "true" : "false")"
-                @onclick="() => SelectCategory(null)">
-            @CategoryRes.AllCategories
-        </button>
-        @foreach (var category in Categories)
+    <div class="category-filter-bar__top">
+        <div class="category-filter-search-box">
+            <span class="bi bi-search category-filter-search-icon" aria-hidden="true"></span>
+            <input type="search"
+                   class="form-control category-filter-search"
+                   placeholder="@SearchPlaceholder"
+                   aria-label="@SearchPlaceholder"
+                   value="@SearchText"
+                   @oninput="OnSearchInput" />
+        </div>
+        @if (ExtraFilters is not null)
         {
             <button type="button"
-                    class="category-chip-option @(SelectedCategoryId == category.Id ? "selected" : "")"
-                    aria-pressed="@(SelectedCategoryId == category.Id ? "true" : "false")"
-                    @onclick="() => SelectCategory(category.Id)">
-                @category.Name (@category.Count)
+                    class="category-filter-toggle"
+                    aria-expanded="@(_extraFiltersOpen ? "true" : "false")"
+                    aria-controls="@ExtraFiltersId"
+                    @onclick="ToggleExtraFilters">
+                <span class="bi bi-sliders" aria-hidden="true"></span>
+                <span class="category-filter-toggle__label">@CategoryRes.Filters</span>
+                @if (ExtraFilterCount > 0)
+                {
+                    <span class="category-filter-toggle__count">@ExtraFilterCount</span>
+                }
             </button>
         }
     </div>
-    <input type="search"
-           class="form-control category-filter-search"
-           placeholder="@SearchPlaceholder"
-           aria-label="@SearchPlaceholder"
-           value="@SearchText"
-           @oninput="OnSearchInput" />
+
+    <FilterChipGroup Label="@CategoryRes.CategoryLabel"
+                     AllLabel="@CategoryRes.AllCategories"
+                     Options="_categoryOptions"
+                     SelectedValue="@SelectedCategoryId?.ToString()"
+                     OnSelected="SelectCategory" />
+
+    @if (ExtraFilters is not null)
+    {
+        <div id="@ExtraFiltersId" class="category-filter-extra @(_extraFiltersOpen ? "is-open" : "")">
+            @ExtraFilters
+        </div>
+    }
 </div>
 
 @code {
+    private const string ExtraFiltersId = "category-filter-extra";
+
     [Parameter] public List<CategoryDto> Categories { get; set; } = [];
     [Parameter] public Guid? SelectedCategoryId { get; set; }
     [Parameter] public EventCallback<Guid?> OnCategorySelected { get; set; }
@@ -35,7 +57,30 @@
     [Parameter] public EventCallback<string> OnSearchChanged { get; set; }
     [Parameter] public string SearchPlaceholder { get; set; } = string.Empty;
 
-    private Task SelectCategory(Guid? id) => OnCategorySelected.InvokeAsync(id);
+    /// <summary>More chip groups (FilterChipGroup) shown under the categories.</summary>
+    [Parameter] public RenderFragment? ExtraFilters { get; set; }
+
+    /// <summary>How many extra filters are set; shown on the phone "Filters" button.</summary>
+    [Parameter] public int ExtraFilterCount { get; set; }
+
+    private IReadOnlyList<FilterChipGroup.Option> _categoryOptions = [];
+    private bool _extraFiltersOpen;
+
+    protected override void OnParametersSet()
+    {
+        _categoryOptions = Categories
+            .Select(category => new FilterChipGroup.Option(
+                category.Id.ToString(), category.Name, CategoryIcons.For(category.Name), category.Count))
+            .ToList();
+    }
+
+    private Task SelectCategory(string? value)
+    {
+        Guid? categoryId = Guid.TryParse(value, out var parsed) ? parsed : null;
+        return OnCategorySelected.InvokeAsync(categoryId);
+    }
+
+    private void ToggleExtraFilters() => _extraFiltersOpen = !_extraFiltersOpen;
 
     private Task OnSearchInput(ChangeEventArgs e) => OnSearchChanged.InvokeAsync(e.Value?.ToString() ?? string.Empty);
 }

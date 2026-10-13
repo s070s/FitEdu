@@ -4,7 +4,7 @@ namespace FitEdu.Application.ApiInterfaces;
 public record AssistantIndexSummary(int Added, int Updated, int Removed, int Unchanged);
 
 /// <summary>
-/// Re-indexes published Courses/Lessons/Assessments/BlogArticles into <c>AssistantContentChunks</c>
+/// Re-indexes published Courses (with every lesson in them)/Assessments/BlogArticles into <c>AssistantContentChunks</c>
 /// for the AI assistant's retrieval-augmented answers. Re-embeds only sources whose text changed
 /// since the last pass (content-hash diff), and removes chunks for sources that are gone or
 /// unpublished.

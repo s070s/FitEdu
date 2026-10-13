@@ -1,49 +1,234 @@
+/* Mobile first: search row, then one swipeable chip row per group. From 768 px every group is a
+   labelled row whose chips wrap. The chip groups are FilterChipGroup children (hence ::deep).
+   Not sticky on purpose: with goal, level and equipment rows the bar is too tall to pin under
+   the header without hiding most of the results. */
 .category-filter-bar {
+    display: grid;
+    gap: var(--space-4);
+    margin-block: var(--space-4) var(--space-5);
+}
+
+.category-filter-bar__top {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-    margin: 1rem 0;
+    gap: var(--space-2);
 }
 
-.category-chips {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.category-chip-option {
+.category-filter-search-box {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.85rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--text-light-normal);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    flex: 1;
+    min-width: 0;
 }
 
-    .category-chip-option:hover:not(.selected) {
-        border-color: var(--text-accent);
-        background-color: rgba(var(--text-accent-rgb), 0.08);
+.category-filter-search-icon {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 1rem;
+    color: var(--text-light-muted);
+    line-height: 1;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.category-filter-search {
+    min-height: var(--tap-min);
+    padding-inline: 2.6rem 1rem;
+    border-radius: var(--radius-pill);
+}
+
+/* Phones only: folds the extra groups away (hidden from 768 px, where they always show). */
+.category-filter-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background-color: transparent;
+    color: var(--text-strong-normal);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+    .category-filter-toggle[aria-expanded="true"] {
+        border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+        background-color: rgba(var(--text-strong-accent-rgb), 0.08);
     }
 
-    .category-chip-option:focus-visible {
-        outline: 2px solid var(--text-accent);
+.category-filter-toggle__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.375rem;
+    height: 1.375rem;
+    padding-inline: 0.35rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+    font-size: var(--fs-6);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The narrowest phones keep the search box readable: the button shows its icon and count only. */
+@media (max-width: 359.98px) {
+    .category-filter-toggle {
+        padding-inline: 0.85rem;
+    }
+
+    .category-filter-toggle__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+}
+
+.category-filter-extra {
+    display: none;
+    gap: var(--space-4);
+}
+
+    .category-filter-extra.is-open {
+        display: grid;
+    }
+
+/* ---- Chip groups ------------------------------------------------------------------------- */
+.category-filter-bar ::deep .filter-chip-group {
+    display: grid;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.category-filter-bar ::deep .filter-chip-group__label {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* One row that scrolls sideways and runs to the screen edges (the page gutter is the padding),
+   with a little block padding so the focus ring is not clipped. */
+.category-filter-bar ::deep .filter-chip-group__chips {
+    display: flex;
+    gap: var(--space-2);
+    margin-inline: calc(-1 * var(--page-gutter));
+    padding: 4px var(--page-gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: var(--page-gutter);
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+}
+
+    .category-filter-bar ::deep .filter-chip-group__chips::-webkit-scrollbar {
+        display: none;
+    }
+
+.category-filter-bar ::deep .category-chip-option {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: var(--tap-min);
+    padding: 0 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-surface);
+    color: var(--text-light-normal);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+    .category-filter-bar ::deep .category-chip-option:hover:not(.selected) {
+        border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+        color: var(--text-strong-normal);
+    }
+
+    .category-filter-bar ::deep .category-chip-option:focus-visible {
+        outline: 2px solid var(--focus-ring);
         outline-offset: 2px;
     }
 
-    .category-chip-option.selected {
+    /* Selected: filled lime with dark text (about 13:1). */
+    .category-filter-bar ::deep .category-chip-option.selected {
         border-color: var(--text-strong-accent);
-        background-color: rgba(var(--text-strong-accent-rgb), 0.15);
-        color: var(--text-accent);
-        font-weight: 600;
+        background-color: var(--text-strong-accent);
+        color: var(--bg-primary);
     }
 
-.category-filter-search {
-    max-width: 260px;
-    margin-left: auto;
+    /* "All" is the resting state, so it stays quiet: lime marks only the filters a member set. */
+    .category-filter-bar ::deep .category-chip-option--all.selected {
+        border-color: rgba(var(--border-subtle-rgb), 0.45);
+        background-color: rgba(var(--border-subtle-rgb), 0.14);
+        color: var(--text-strong-normal);
+    }
+
+.category-filter-bar ::deep .category-chip-option__count {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-filter-bar ::deep .category-chip-option.selected .category-chip-option__count {
+    color: rgba(var(--bg-primary-rgb), 0.7);
+}
+
+@media (min-width: 768px) {
+    .category-filter-search-box {
+        flex: 0 1 26rem;
+    }
+
+    .category-filter-toggle {
+        display: none;
+    }
+
+    .category-filter-extra {
+        display: grid;
+    }
+
+    .category-filter-bar {
+        gap: var(--space-3);
+    }
+
+    .category-filter-bar ::deep .filter-chip-group {
+        grid-template-columns: 8rem minmax(0, 1fr);
+        align-items: start;
+        gap: var(--space-3);
+    }
+
+    /* Vertically centred on the first chip row. */
+    .category-filter-bar ::deep .filter-chip-group__label {
+        padding-top: calc(4px + (var(--tap-min) - 1.2em) / 2);
+        line-height: 1.2;
+    }
+
+    .category-filter-bar ::deep .filter-chip-group__chips {
+        flex-wrap: wrap;
+        margin-inline: 0;
+        padding-inline: 0;
+        overflow: visible;
+    }
+}
+
+/* Mouse and trackpad on wide screens: a denser chip (touch screens keep 44 px). */
+@media (min-width: 768px) and (pointer: fine) {
+    .category-filter-bar ::deep .category-chip-option {
+        min-height: 2.375rem;
+        padding-inline: 0.9rem;
+    }
+
+    .category-filter-bar ::deep .filter-chip-group__label {
+        padding-top: calc(4px + (2.375rem - 1.2em) / 2);
+    }
 }
