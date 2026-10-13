@@ -101,14 +101,41 @@ public class HomeDashboardTests : BunitContext
     [Fact]
     public void Student_WhoFinishedEveryProgramme_IsToldToPickTheNextOne()
     {
-        // Enrolled courses but no programme in progress: every joined programme is finished.
-        UseStudent(Stats(currentCourseId: null));
+        var finishedCatalog = Catalog().Select(course => course with { IsCompleted = course.IsEnrolled }).ToList();
+        UseStudent(Stats(currentCourseId: null), finishedCatalog);
 
         var page = Render<Home>();
 
         var emptyPlan = page.Find(".today-plan--empty");
         emptyPlan.TextContent.ShouldContain(HomeRes.TodayPlanAllDone);
         emptyPlan.TextContent.ShouldNotContain(HomeRes.TodayPlanEmpty);
+    }
+
+    [Fact]
+    public void Student_WithAnUnfinishedProgrammeButNoNextWorkout_IsNotToldTheyFinishedEverything()
+    {
+        // The current programme could not be fetched, so there is no next workout to show; the
+        // member has not finished everything, so the plain empty text is the honest one.
+        UseStudent(Stats(CurrentCourseId));
+        _courseConsumer.GetCourseAsync(CurrentCourseId, Arg.Any<string>()).Returns((CourseDetailDto?)null);
+
+        var page = Render<Home>();
+
+        var emptyPlan = page.Find(".today-plan--empty");
+        emptyPlan.TextContent.ShouldContain(HomeRes.TodayPlanEmpty);
+        emptyPlan.TextContent.ShouldNotContain(HomeRes.TodayPlanAllDone);
+    }
+
+    [Fact]
+    public void Student_WithOneOfTwoProgrammesFinished_GetsThePlainEmptyText()
+    {
+        var catalog = Catalog();
+        catalog[0] = catalog[0] with { IsCompleted = true };
+        UseStudent(Stats(currentCourseId: null), catalog);
+
+        var page = Render<Home>();
+
+        page.Find(".today-plan--empty").TextContent.ShouldContain(HomeRes.TodayPlanEmpty);
     }
 
     [Fact]

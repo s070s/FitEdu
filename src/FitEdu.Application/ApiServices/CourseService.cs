@@ -58,11 +58,10 @@ public class CourseService(
             .ToListAsync(cancellationToken);
 
         // Two batched queries replace per-row correlated subqueries.
-        var enrolledCourseIds = await db.Enrollments
+        var enrolmentStatusByCourseId = await db.Enrollments
             .AsNoTracking()
             .Where(e => e.UserId == userId && pageIds.Contains(e.CourseId))
-            .Select(e => e.CourseId)
-            .ToHashSetAsync(cancellationToken);
+            .ToDictionaryAsync(e => e.CourseId, e => e.Status, cancellationToken);
 
         var lessonCountById = await db.Lessons
             .AsNoTracking()
@@ -99,11 +98,12 @@ public class CourseService(
         var items = courses.Select(c =>
         {
             var rating = ratingsById.GetValueOrDefault(c.Id);
+            var isEnrolled = enrolmentStatusByCourseId.TryGetValue(c.Id, out var enrolmentStatus);
             return new CourseListItemDto(
                 c.Id,
                 Localized.Pick(isEl, c.TitleEn, c.TitleEl),
                 Localized.Pick(isEl, c.DescriptionEn, c.DescriptionEl),
-                enrolledCourseIds.Contains(c.Id),
+                isEnrolled,
                 lessonCountById.GetValueOrDefault(c.Id, 0),
                 c.RequiredTier,
                 c.CategoryId,
@@ -115,7 +115,8 @@ public class CourseService(
                 c.Equipment,
                 c.EstimatedWeeks,
                 c.SessionsPerWeek,
-                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug)
+                ExerciseImagePaths.CourseCoverUrl(c.CoverExerciseSlug),
+                IsCompleted: isEnrolled && enrolmentStatus == EnrollmentStatus.Completed
             );
         }).ToList();
 

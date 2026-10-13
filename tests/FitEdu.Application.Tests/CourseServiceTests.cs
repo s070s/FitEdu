@@ -95,7 +95,28 @@ public class CourseServiceTests
         var item = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items.Single();
 
         item.IsEnrolled.ShouldBeTrue();
+        item.IsCompleted.ShouldBeFalse();
         item.TotalLessons.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task GetPublishedCourses_SetsCompletedFlagForAFinishedProgramme()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var finished = CourseWithLessons("Finished", 1);
+        var started = CourseWithLessons("Started", 1);
+        db.Courses.AddRange(finished, started);
+        db.Enrollments.AddRange(
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = finished.Id, Status = EnrollmentStatus.Completed },
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = started.Id, Status = EnrollmentStatus.Active },
+            new Enrollment { Id = Guid.NewGuid(), UserId = "someone-else", CourseId = started.Id, Status = EnrollmentStatus.Completed });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var items = (await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en")).Items;
+
+        items.Single(item => item.Id == finished.Id).IsCompleted.ShouldBeTrue();
+        items.Single(item => item.Id == started.Id).IsCompleted.ShouldBeFalse();
     }
 
     [Fact]

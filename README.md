@@ -217,7 +217,7 @@ The catalogue reads are public so guests can browse programmes: a guest gets no 
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week and a cover image URL | No |
+| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week, a cover image URL and, for a member, whether they joined (`isEnrolled`) and finished (`isCompleted`) it | No |
 | `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | No |
 | `GET` | `api/courses/enrolment-count` | How many programmes the member has joined, counted the same way as the plan limit (the catalogue's plan banner shows it) | Yes |
 | `POST` | `api/courses/{courseId}/enroll` | Enroll in a course | Yes |
