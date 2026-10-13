@@ -3,7 +3,9 @@
 
 <PageTitle>@AdminRes.PageTitle</PageTitle>
 
-<h1 class="h2">@AdminRes.PageTitle</h1>
+<header class="section-head">
+    <h1>@AdminRes.PageTitle</h1>
+</header>
 
 @if (_loading)
 {
@@ -11,101 +13,81 @@
 }
 else if (_error is not null)
 {
-    <p class="text-danger">@_error</p>
-    <button class="btn btn-secondary" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+    <div class="alert alert-danger d-flex flex-wrap align-items-center gap-3" role="alert">
+        <span>@_error</span>
+        <button class="btn btn-secondary" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+    </div>
 }
 else if (stats is not null)
 {
-    <div class="row">
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>@stats.TotalUsers</h3>
-                    <p>@AdminRes.TotalUsers</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>@stats.ActiveUsers</h3>
-                    <p>@AdminRes.ActiveUsers</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>@stats.TotalEnrollments</h3>
-                    <p>@AdminRes.TotalEnrollments</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>@stats.CompletedCourses</h3>
-                    <p>@AdminRes.CompletedCourses</p>
-                </div>
-            </div>
-        </div>
+    <div class="analytics-tiles">
+        <StatTile Icon="bi-people" Value="@FormatCount(stats.TotalUsers)" Label="@AdminRes.TotalUsers" />
+        <StatTile Icon="bi-person-check" Value="@FormatCount(stats.ActiveUsers)" Label="@AdminRes.ActiveUsers" />
+        <StatTile Icon="bi-journal-plus" Value="@FormatCount(stats.TotalEnrollments)" Label="@AdminRes.TotalEnrollments" />
+        <StatTile Icon="bi-trophy" Value="@FormatCount(stats.CompletedCourses)" Label="@AdminRes.CompletedCourses" />
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>@AdminRes.CourseEnrollmentStats</h5>
-                </div>
-                <div class="card-body">
-                    @if (stats.CourseStats != null && stats.CourseStats.Any())
-                    {
-                        <div class="table-responsive">
-                        <table class="table table-sm">
+    <div class="analytics-panels">
+        <section class="card-surface" aria-labelledby="course-stats-title">
+            <div class="card-surface__body">
+                <h2 id="course-stats-title" class="analytics-panel__title">@AdminRes.CourseEnrollmentStats</h2>
+                @if (stats.CourseStats is { Count: > 0 })
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0" aria-labelledby="course-stats-title">
                             <thead>
                                 <tr>
-                                    <th>@AdminRes.ColCourse</th>
-                                    <th>@AdminRes.ColEnrollments</th>
-                                    <th>@AdminRes.ColCompletions</th>
-                                    <th>@AdminRes.ColCompletionRate</th>
+                                    <th scope="col">@AdminRes.ColCourse</th>
+                                    <th scope="col">@AdminRes.ColEnrollments</th>
+                                    <th scope="col">@AdminRes.ColCompletions</th>
+                                    <th scope="col">@AdminRes.ColCompletionRate</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var courseStat in stats.CourseStats)
                                 {
+                                    var completionPercent = CompletionPercent(courseStat);
                                     <tr @key="courseStat.CourseTitle">
                                         <td data-label="@AdminRes.ColCourse">@courseStat.CourseTitle</td>
-                                        <td data-label="@AdminRes.ColEnrollments">@courseStat.EnrollmentCount</td>
-                                        <td data-label="@AdminRes.ColCompletions">@courseStat.CompletionCount</td>
-                                        <td data-label="@AdminRes.ColCompletionRate">@(courseStat.EnrollmentCount > 0 ? $"{100.0 * courseStat.CompletionCount / courseStat.EnrollmentCount:0}%" : "—")</td>
+                                        <td data-label="@AdminRes.ColEnrollments">@FormatCount(courseStat.EnrollmentCount)</td>
+                                        <td data-label="@AdminRes.ColCompletions">@FormatCount(courseStat.CompletionCount)</td>
+                                        <td data-label="@AdminRes.ColCompletionRate">
+                                            @if (completionPercent is null)
+                                            {
+                                                <text>—</text>
+                                            }
+                                            else
+                                            {
+                                                <span class="completion-rate">
+                                                    <progress class="completion-rate__bar" max="100" value="@completionPercent" aria-hidden="true"></progress>
+                                                    <span>@($"{completionPercent}%")</span>
+                                                </span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p>@AdminRes.NoCourseData</p>
-                    }
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-light-muted mb-0">@AdminRes.NoCourseData</p>
+                }
             </div>
-        </div>
+        </section>
 
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>@AdminRes.AssessmentStats</h5>
-                </div>
-                <div class="card-body">
-                    @if (stats.AssessmentStats != null && stats.AssessmentStats.Any())
-                    {
-                        <div class="table-responsive">
-                        <table class="table table-sm">
+        <section class="card-surface" aria-labelledby="assessment-stats-title">
+            <div class="card-surface__body">
+                <h2 id="assessment-stats-title" class="analytics-panel__title">@AdminRes.AssessmentStats</h2>
+                @if (stats.AssessmentStats is { Count: > 0 })
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0" aria-labelledby="assessment-stats-title">
                             <thead>
                                 <tr>
-                                    <th>@AdminRes.ColAssessment</th>
-                                    <th>@AdminRes.ColSubmissions</th>
+                                    <th scope="col">@AdminRes.ColAssessment</th>
+                                    <th scope="col">@AdminRes.ColSubmissions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,19 +95,18 @@ else if (stats is not null)
                                 {
                                     <tr @key="assessmentStat.AssessmentTitle">
                                         <td data-label="@AdminRes.ColAssessment">@assessmentStat.AssessmentTitle</td>
-                                        <td data-label="@AdminRes.ColSubmissions">@assessmentStat.SubmissionCount</td>
+                                        <td data-label="@AdminRes.ColSubmissions">@FormatCount(assessmentStat.SubmissionCount)</td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p>@AdminRes.NoAssessmentData</p>
-                    }
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-light-muted mb-0">@AdminRes.NoAssessmentData</p>
+                }
             </div>
-        </div>
+        </section>
     </div>
 }

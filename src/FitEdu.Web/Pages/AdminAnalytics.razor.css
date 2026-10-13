@@ -1,0 +1,60 @@
+/* Headline numbers: two tiles per row on phones, all four in one row from 992 px. */
+.analytics-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+/* Course and assessment tables: stacked on phones and tablets, side by side from 992 px. */
+.analytics-panels {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.analytics-panel__title {
+    margin: 0 0 var(--space-2);
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+}
+
+/* Completion rate: a slim lime bar beside the percentage. */
+.completion-rate {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-variant-numeric: tabular-nums;
+}
+
+.completion-rate__bar {
+    width: 4rem;
+    height: 0.375rem;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-neutral-subtle);
+    overflow: hidden;
+    appearance: none;
+}
+
+    .completion-rate__bar::-webkit-progress-bar {
+        background-color: var(--bg-neutral-subtle);
+    }
+
+    .completion-rate__bar::-webkit-progress-value {
+        background-color: var(--text-strong-accent);
+    }
+
+    .completion-rate__bar::-moz-progress-bar {
+        background-color: var(--text-strong-accent);
+    }
+
+@media (min-width: 992px) {
+    .analytics-tiles {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .analytics-panels {
+        grid-template-columns: 3fr 2fr;
+        align-items: start;
+    }
+}

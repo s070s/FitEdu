@@ -34,16 +34,17 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 ## 3. Findings
 
 ### UI-11: Static inline styles scattered through markup instead of scoped CSS  [Low] [Effort: S]
-- **Evidence:** ~34 `style="` occurrences in `.razor` files. Legitimately dynamic ones aside (progress width `CourseDetail.razor:40`, parameterized `ScrollableTable.razor:6`), the static offenders include: `AdminTestimonialEditor.razor:66` (avatar preview with hardcoded `border:2px solid #444` — a hex not in the token set), `VerifyCertificate.razor:5` (max-width), `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AdminCourseEdit.razor:162-167` (five column widths).
+- **Evidence:** ~34 `style="` occurrences in `.razor` files. Legitimately dynamic ones aside (progress width `CourseDetail.razor:40`, parameterized `ScrollableTable.razor:6`), the static offenders include: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AdminCourseEdit.razor:162-167` (five column widths).
 - **Impact:** Bypasses the documented consolidation rule and the token system, so theme adjustments (like the deferred hardcoded-value token sweep — see the plan-13 note in 00-INDEX.md) miss these; `#444` is invisible against the dark card in practice.
 - **Recommendation:** Fold each static style into the owning component's `.razor.css`; do it alongside the deferred token sweep to avoid touching the same lines twice.
 - **Progress:** D11 removed `BlogArticle.razor`'s container padding (now in `BlogArticle.razor.css`) and `ConversationSidebar.razor`'s list max-height (the list already fills the sidebar through its scoped CSS).
+- **Progress (D13):** the static styles in `AdminTestimonialEditor` (avatar preview, file input, form width), `VerifyCertificate`, `AdminLearningPathEditor` and `AdminBlogEditor` moved into scoped CSS.
 
 ### UI-12: Data tables have no caption or accessible name  [Low] [Effort: S]
-- **Evidence:** `ScrollableTable.razor:6-18` renders a bare `<table>` with no `<caption>`, `aria-label`, or `aria-labelledby` parameter; no `<caption>` exists anywhere in the repo (grep). Every ScrollableTable consumer (now including Billing) plus AdminAnalytics' inline tables are affected.
-- **Impact:** Screen-reader table navigation announces an anonymous table; on pages with two tables (AdminAnalytics courses + assessments, `AdminAnalytics.razor:58-111`) they are indistinguishable in the rotor.
+- **Evidence:** `ScrollableTable.razor:6-18` renders a bare `<table>` with no `<caption>`, `aria-label`, or `aria-labelledby` parameter; no `<caption>` exists anywhere in the repo (grep). Every ScrollableTable consumer (now including Billing) is affected; AdminAnalytics' two inline tables are now named by their panel headings (`aria-labelledby`, D13).
+- **Impact:** Screen-reader table navigation announces an anonymous table.
 - **Recommendation:** Add an optional `AriaLabel`/`Caption` parameter to ScrollableTable (visually-hidden `<caption>`) and pass the page heading string at each call site.
-- **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Still open: Billing, Notifications, AssessmentHistory and the AdminAnalytics inline tables.
+- **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Still open: Billing, Notifications and AssessmentHistory (the AdminAnalytics inline tables are named by their panel headings, D13).
 
 ### UI-13: Mobile card-table CSS couples to localized label text values  [Low] [Effort: S]
 - **Evidence:** `wwwroot/css/shared-components.css:222-236` targets `td[data-label="Actions"]` and `td[data-label="Ενέργειες"]` to suppress the label and lay action buttons out horizontally. The values must stay in lockstep with `AdminRes.ColActions`, `CategoryRes.ColActions`, `AssessmentRes.Actions` (`AdminRes.resx:257-259`, `AdminRes.el.resx:276-278`, etc. — currently all aligned).
