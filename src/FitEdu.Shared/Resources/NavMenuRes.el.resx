@@ -198,6 +198,14 @@
   <data name="QuickNavigation" xml:space="preserve">
     <value>Γρήγορη πλοήγηση</value>
   </data>
+  <data name="CoursesShort" xml:space="preserve">
+    <value>Προγράμ&#173;ματα</value>
+    <comment>Soft hyphen (&amp;#173;): the word breaks as Προγράμ-ματα only when the tab is too narrow (320 px phones).</comment>
+  </data>
+  <data name="AssessmentsShort" xml:space="preserve">
+    <value>Αξιολο&#173;γήσεις</value>
+    <comment>Soft hyphen (&amp;#173;): the word breaks as Αξιολο-γήσεις only when the tab is too narrow (320 px phones).</comment>
+  </data>
   <data name="PathsShort" xml:space="preserve">
     <value>Διαδρομές</value>
   </data>

@@ -33,13 +33,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* Icons start at the same height on every tab, so a label that wraps onto a second line
+       (Προγράμ-ματα on a 320 px phone) hangs below its icon instead of pushing it up. */
+    justify-content: flex-start;
     gap: 0.2rem;
     min-width: 0;
     min-height: var(--tap-min);
     /* Tight sides, a 10.4 px label and slightly closer letters let the longest tab label
-       (Προγράμματα) fit five tabs on a 360 px phone, the size of a phone tab-bar label. */
-    padding: 0.35rem 0.05rem;
+       (Προγράμματα) fit on one line from 360 px up, the size of a phone tab-bar label. */
+    padding: 0.4rem 0.05rem 0;
     color: var(--text-light-muted);
     font-size: 0.65rem;
     font-weight: 600;
@@ -80,9 +82,14 @@
     line-height: 1;
 }
 
+/* A label may break onto a second line, only where its text allows it (a space or a soft hyphen). */
 .bottom-nav ::deep .bottom-nav__label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     max-width: 100%;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    text-align: center;
+    hyphens: manual;
 }

@@ -26,7 +26,7 @@ public static class NavItems
     public static readonly IReadOnlyList<NavItem> Student =
     [
         new("", AppIcons.Home, () => NavMenuRes.Home, InHeader: true, InBottomNav: true),
-        new("courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, InBottomNav: true),
+        new("courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.CoursesShort),
         new("exercises", AppIcons.Exercise, () => NavMenuRes.Exercises, InHeader: true, InBottomNav: true),
         new("paths", AppIcons.Path, () => NavMenuRes.Paths, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.PathsShort),
         new("sessions", AppIcons.Session, () => NavMenuRes.Sessions, InHeader: true, ShortLabel: () => NavMenuRes.SessionsShort),
@@ -42,8 +42,8 @@ public static class NavItems
     public static readonly IReadOnlyList<NavItem> Admin =
     [
         new("admin/users", AppIcons.Users, () => NavMenuRes.Users, InHeader: true, InBottomNav: true),
-        new("admin/courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, InBottomNav: true),
-        new("admin/assessments", AppIcons.Assessment, () => NavMenuRes.Assessments, InHeader: true, InBottomNav: true),
+        new("admin/courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.CoursesShort),
+        new("admin/assessments", AppIcons.Assessment, () => NavMenuRes.Assessments, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.AssessmentsShort),
         new("admin/analytics", AppIcons.Analytics, () => NavMenuRes.Analytics, InHeader: true, InBottomNav: true),
         new("admin/blog", AppIcons.BlogArticle, () => NavMenuRes.Blog, InHeader: true, InBottomNav: true),
         new("admin/categories", AppIcons.Categories, () => NavMenuRes.Categories),

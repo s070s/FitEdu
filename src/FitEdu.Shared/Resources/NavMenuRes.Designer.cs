@@ -304,6 +304,24 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Programmes.
+        /// </summary>
+        public static string CoursesShort {
+            get {
+                return ResourceManager.GetString("CoursesShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assessments.
+        /// </summary>
+        public static string AssessmentsShort {
+            get {
+                return ResourceManager.GetString("AssessmentsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Paths.
         /// </summary>
         public static string PathsShort {

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bunit;
 using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Components;
@@ -25,6 +26,7 @@ namespace FitEdu.Web.Tests;
 public class NavigationComponentTests : BunitContext
 {
     private const string GuestRole = "";
+    private const string SoftHyphen = "­";
 
     private readonly BunitAuthorizationContext _authorization;
 
@@ -82,10 +84,14 @@ public class NavigationComponentTests : BunitContext
         hrefs.ShouldBe(expectedHrefs);
     }
 
-    [Fact]
-    public void BottomNav_EveryTabHasAnIconAVisibleLabelAndAnAccessibleName()
+    [Theory]
+    [InlineData("en", NavItems.StudentRole)]
+    [InlineData("el", NavItems.StudentRole)]
+    [InlineData("el", NavItems.AdminRole)]
+    public void BottomNav_EveryTabHasAnIconAVisibleLabelAndAnAccessibleName(string culture, string role)
     {
-        SignInAs(NavItems.StudentRole);
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        SignInAs(role);
 
         var bottomNav = Render<BottomNav>();
 
@@ -93,11 +99,27 @@ public class NavigationComponentTests : BunitContext
         foreach (var tab in bottomNav.FindAll(".bottom-nav a"))
         {
             tab.QuerySelector(".bi").ShouldNotBeNull();
-            var visibleLabel = tab.QuerySelector(".bottom-nav__label")!.TextContent;
+            // A soft hyphen only marks where a long label may break, so it is not part of the name.
+            var visibleLabel = tab.QuerySelector(".bottom-nav__label")!.TextContent.Replace(SoftHyphen, "");
             visibleLabel.ShouldNotBeNullOrWhiteSpace();
             // WCAG 2.5.3: the accessible name contains the visible label.
             tab.GetAttribute("aria-label")!.ShouldContain(visibleLabel, Case.Insensitive);
         }
+    }
+
+    // Προγράμματα and Αξιολογήσεις are wider than a tab on a 320 px phone, so they may break
+    // as Προγράμ-ματα and Αξιολο-γήσεις.
+    [Theory]
+    [InlineData(nameof(NavMenuRes.CoursesShort), nameof(NavMenuRes.Courses))]
+    [InlineData(nameof(NavMenuRes.AssessmentsShort), nameof(NavMenuRes.Assessments))]
+    public void Greek_LongTabLabels_AreTheFullWordWithABreakHint(string shortKey, string fullKey)
+    {
+        var greek = new CultureInfo("el");
+        var shortLabel = NavMenuRes.ResourceManager.GetString(shortKey, greek)!;
+        var fullLabel = NavMenuRes.ResourceManager.GetString(fullKey, greek)!;
+
+        shortLabel.ShouldContain(SoftHyphen);
+        shortLabel.Replace(SoftHyphen, "").ShouldBe(fullLabel);
     }
 
     [Fact]

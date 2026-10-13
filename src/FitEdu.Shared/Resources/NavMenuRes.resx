@@ -198,6 +198,14 @@
   <data name="QuickNavigation" xml:space="preserve">
     <value>Quick navigation</value>
   </data>
+  <data name="CoursesShort" xml:space="preserve">
+    <value>Programmes</value>
+    <comment>Tab bar and inline header label. The Greek value carries a soft hyphen so it can break onto two lines on a 320 px phone.</comment>
+  </data>
+  <data name="AssessmentsShort" xml:space="preserve">
+    <value>Assessments</value>
+    <comment>Admin tab bar and inline header label. The Greek value carries a soft hyphen so it can break onto two lines on a 320 px phone.</comment>
+  </data>
   <data name="PathsShort" xml:space="preserve">
     <value>Paths</value>
   </data>
