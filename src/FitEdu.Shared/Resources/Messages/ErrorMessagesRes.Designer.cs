@@ -608,5 +608,32 @@ namespace FitEdu.Shared.Resources.Messages {
                 return ResourceManager.GetString("Lesson_ModifiedConcurrently", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate not found..
+        /// </summary>
+        public static string Certificate_NotFound {
+            get {
+                return ResourceManager.GetString("Certificate_NotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This certificate has been revoked..
+        /// </summary>
+        public static string Certificate_Revoked {
+            get {
+                return ResourceManager.GetString("Certificate_Revoked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The certificate PDF isn't available right now. Please try again later..
+        /// </summary>
+        public static string Certificate_PdfUnavailable {
+            get {
+                return ResourceManager.GetString("Certificate_PdfUnavailable", resourceCulture);
+            }
+        }
     }
 }

@@ -17,8 +17,9 @@ public interface ICertificateService
     Task<Certificate> GetOrCreateAsync(string userId, Guid courseId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Ensures the certificate's PDF exists on disk, rendering and persisting it on first call.
-    /// Returns the certificate with a populated <c>PdfPath</c>.
+    /// Ensures the certificate's PDF in the current UI culture's language exists on disk, rendering
+    /// and persisting it on the first download in that language. Returns the certificate with
+    /// <c>PdfPath</c> (English) or <c>PdfPathEl</c> (Greek) populated.
     /// Throws <see cref="KeyNotFoundException"/> when the certificate does not exist.
     /// </summary>
     Task<Certificate> EnsurePdfAsync(Guid certificateId, CancellationToken cancellationToken = default);
@@ -30,7 +31,8 @@ public interface ICertificateService
     Task RevokeAsync(Guid certificateId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes and regenerates the PDF for an existing certificate.
+    /// Deletes both language PDFs of an existing certificate and clears their paths, so each one
+    /// renders again on its next download.
     /// Throws <see cref="KeyNotFoundException"/> when the certificate does not exist.
     /// </summary>
     Task RegenerateAsync(Guid certificateId, CancellationToken cancellationToken = default);

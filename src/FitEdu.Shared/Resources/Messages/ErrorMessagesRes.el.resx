@@ -300,4 +300,13 @@
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
     <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά και δοκίμασε πάλι.</value>
   </data>
+  <data name="Certificate_NotFound" xml:space="preserve">
+    <value>Το πιστοποιητικό δεν βρέθηκε.</value>
+  </data>
+  <data name="Certificate_Revoked" xml:space="preserve">
+    <value>Αυτό το πιστοποιητικό έχει ανακληθεί.</value>
+  </data>
+  <data name="Certificate_PdfUnavailable" xml:space="preserve">
+    <value>Το PDF του πιστοποιητικού δεν είναι διαθέσιμο αυτή τη στιγμή. Δοκίμασε ξανά αργότερα.</value>
+  </data>
 </root>

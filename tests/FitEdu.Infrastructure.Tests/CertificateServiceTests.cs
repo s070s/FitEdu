@@ -111,6 +111,9 @@ public partial class CertificateServiceTests
         var withPdf = await svc.EnsurePdfAsync(cert.Id);
 
         withPdf.PdfPath.ShouldBe("certificates/cert.pdf");
+        withPdf.PdfPathEl.ShouldBeNull();
+        await storage.Received(1).SaveFileAsync(
+            Arg.Any<Stream>(), $"{cert.VerificationId}.en.pdf", "certificates", Arg.Any<long?>(), Arg.Any<CancellationToken>());
         pdf.ShouldNotBeNull();
         Encoding.ASCII.GetString(pdf!, 0, 4).ShouldBe("%PDF");
         // The document title readers show in their title bar and file properties.
@@ -126,12 +129,78 @@ public partial class CertificateServiceTests
         await db.SaveChangesAsync();
         var storage = Substitute.For<IFileStorage>();
         storage.FileExists("certificates/old.pdf").Returns(true);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
 
         var result = await NewService(db, storage).EnsurePdfAsync(cert.Id);
 
         result.PdfPath.ShouldBe("certificates/old.pdf");
         await storage.DidNotReceive().SaveFileAsync(
             Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task EnsurePdf_EnglishThenGreek_StoresOnePdfPerLanguage()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var cert = ExistingCert("u1", Guid.NewGuid());
+        db.Certificates.Add(cert);
+        await db.SaveChangesAsync();
+        var storage = StorageThatSavesUnderTheRequestedName();
+        var service = NewService(db, storage);
+
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        await service.EnsurePdfAsync(cert.Id);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("el");
+        var result = await service.EnsurePdfAsync(cert.Id);
+
+        result.PdfPath.ShouldBe($"certificates/{cert.VerificationId}.en.pdf");
+        result.PdfPathEl.ShouldBe($"certificates/{cert.VerificationId}.el.pdf");
+        CertificateService.PdfPathFor(result, CultureInfo.GetCultureInfo("el")).ShouldBe(result.PdfPathEl);
+        CertificateService.PdfPathFor(result, CultureInfo.GetCultureInfo("en-GB")).ShouldBe(result.PdfPath);
+    }
+
+    [Fact]
+    public async Task EnsurePdf_SecondEnglishDownload_ReusesTheEnglishPdf()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var cert = ExistingCert("u1", Guid.NewGuid());
+        db.Certificates.Add(cert);
+        await db.SaveChangesAsync();
+        var storage = StorageThatSavesUnderTheRequestedName();
+        var service = NewService(db, storage);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+
+        var first = await service.EnsurePdfAsync(cert.Id);
+        storage.FileExists(first.PdfPath!).Returns(true);
+        var second = await service.EnsurePdfAsync(cert.Id);
+
+        second.PdfPath.ShouldBe(first.PdfPath);
+        await storage.Received(1).SaveFileAsync(
+            Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task EnsurePdf_StoredFileMissing_RendersAgain()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var cert = ExistingCert("u1", Guid.NewGuid(), "certificates/gone.pdf");
+        db.Certificates.Add(cert);
+        await db.SaveChangesAsync();
+        var storage = StorageThatSavesUnderTheRequestedName();
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+
+        var result = await NewService(db, storage).EnsurePdfAsync(cert.Id);
+
+        result.PdfPath.ShouldBe($"certificates/{cert.VerificationId}.en.pdf");
+    }
+
+    /// <summary>A storage mock whose saved path is the folder plus the file name it was asked for.</summary>
+    private static IFileStorage StorageThatSavesUnderTheRequestedName()
+    {
+        var storage = Substitute.For<IFileStorage>();
+        storage.SaveFileAsync(Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>())
+            .Returns(call => $"{call.ArgAt<string>(2)}/{call.ArgAt<string>(1)}");
+        return storage;
     }
 
     [Fact]
@@ -237,21 +306,26 @@ public partial class CertificateServiceTests
     }
 
     [Fact]
-    public async Task Regenerate_DeletesOldFileAndStoresNew()
+    public async Task Regenerate_DeletesBothLanguageFilesAndClearsBothPaths()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var cert = ExistingCert("u1", Guid.NewGuid(), "certificates/old.pdf");
+        var cert = ExistingCert("u1", Guid.NewGuid(), "certificates/old.en.pdf");
+        cert.PdfPathEl = "certificates/old.el.pdf";
         db.Certificates.Add(cert);
         await db.SaveChangesAsync();
         var storage = Substitute.For<IFileStorage>();
-        storage.FileExists("certificates/old.pdf").Returns(true);
-        storage.SaveFileAsync(Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>())
-            .Returns("certificates/new.pdf");
+        storage.FileExists(Arg.Any<string>()).Returns(true);
 
         await NewService(db, storage).RegenerateAsync(cert.Id);
 
-        await storage.Received().DeleteFileAsync("certificates/old.pdf", Arg.Any<CancellationToken>());
-        (await db.Certificates.FindAsync(cert.Id))!.PdfPath.ShouldBe("certificates/new.pdf");
+        await storage.Received().DeleteFileAsync("certificates/old.en.pdf", Arg.Any<CancellationToken>());
+        await storage.Received().DeleteFileAsync("certificates/old.el.pdf", Arg.Any<CancellationToken>());
+        var reloaded = (await db.Certificates.FindAsync(cert.Id))!;
+        // Both languages render again on their next download.
+        reloaded.PdfPath.ShouldBeNull();
+        reloaded.PdfPathEl.ShouldBeNull();
+        await storage.DidNotReceive().SaveFileAsync(
+            Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

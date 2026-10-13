@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
@@ -168,18 +169,30 @@ public class CertificateService : ICertificateService
             .FirstOrDefaultAsync(c => c.Id == certificateId, cancellationToken)
             ?? throw new KeyNotFoundException($"Certificate {certificateId} not found.");
 
-        // Already rendered — nothing to do.
-        if (!string.IsNullOrEmpty(certificate.PdfPath) && _storage.FileExists(certificate.PdfPath))
+        // The download request's language (set by UseRequestLocalization from the member's cookie)
+        // picks which of the two PDFs is wanted; each language is rendered once and kept.
+        var culture = CultureInfo.CurrentUICulture;
+        var existingPath = PdfPathFor(certificate, culture);
+        if (!string.IsNullOrEmpty(existingPath) && _storage.FileExists(existingPath))
             return certificate;
 
-        certificate.PdfPath = await GeneratePdfAsync(certificate, cancellationToken);
+        var newPath = await GeneratePdfAsync(certificate, culture, cancellationToken);
+        if (IsGreek(culture))
+            certificate.PdfPathEl = newPath;
+        else
+            certificate.PdfPath = newPath;
         await _db.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
-            "Certificate {CertificateId} PDF rendered on first download.", certificate.Id);
+            "Certificate {CertificateId} PDF rendered on first download in {Language}.",
+            certificate.Id, LanguageCode(culture));
 
         return certificate;
     }
+
+    /// <summary>The stored PDF path for the culture's language: Greek for el, English for every other culture.</summary>
+    public static string? PdfPathFor(Certificate certificate, CultureInfo culture) =>
+        IsGreek(culture) ? certificate.PdfPathEl : certificate.PdfPath;
 
     public async Task RevokeAsync(Guid certificateId, CancellationToken cancellationToken = default)
     {
@@ -199,43 +212,50 @@ public class CertificateService : ICertificateService
         var certificate = await _db.Certificates.FindAsync([certificateId], cancellationToken)
             ?? throw new KeyNotFoundException($"Certificate {certificateId} not found.");
 
-        if (!string.IsNullOrEmpty(certificate.PdfPath) && _storage.FileExists(certificate.PdfPath))
-            await _storage.DeleteFileAsync(certificate.PdfPath, cancellationToken);
+        await DeleteStoredFileAsync(certificate.PdfPath, cancellationToken);
+        await DeleteStoredFileAsync(certificate.PdfPathEl, cancellationToken);
 
-        certificate.PdfPath = await GeneratePdfAsync(certificate, cancellationToken);
+        // Both languages render again, in their own language, on their next download.
+        certificate.PdfPath = null;
+        certificate.PdfPathEl = null;
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Certificate {CertificateId} PDF regenerated.", certificateId);
+        _logger.LogInformation("Certificate {CertificateId} PDFs cleared for regeneration.", certificateId);
+    }
+
+    private async Task DeleteStoredFileAsync(string? path, CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrEmpty(path) && _storage.FileExists(path))
+            await _storage.DeleteFileAsync(path, cancellationToken);
     }
 
     // ---------------------------------------------------------------------------
     // PDF generation
     // ---------------------------------------------------------------------------
 
-    private async Task<string> GeneratePdfAsync(Certificate cert, CancellationToken cancellationToken)
+    private async Task<string> GeneratePdfAsync(Certificate cert, CultureInfo culture, CancellationToken cancellationToken)
     {
-        // Render the certificate in the culture active for the current request (set by
-        // UseRequestLocalization from the member's language cookie on the download request).
-        var pdfBytes = CreateDocument(cert, CultureInfo.CurrentUICulture).GeneratePdf();
+        var pdfBytes = CreateDocument(cert, culture).GeneratePdf();
 
         using var stream = new MemoryStream(pdfBytes);
         return await _storage.SaveFileAsync(
             stream,
-            $"{cert.VerificationId}.pdf",
+            $"{cert.VerificationId}.{LanguageCode(culture)}.pdf",
             "certificates",
             cancellationToken: cancellationToken);
     }
+
+    private static bool IsGreek(CultureInfo culture) => Localized.IsEl(culture.TwoLetterISOLanguageName);
+
+    private static string LanguageCode(CultureInfo culture) => IsGreek(culture) ? "el" : "en";
 
     /// <summary>
     /// Selects the course title to print for the given culture.
     /// Greek cultures (el) get the Greek title when one exists; every other culture
     /// gets the English title. Fixes the prior behaviour that always preferred Greek.
     /// </summary>
-    public static string ResolveCourseTitle(string titleEn, string? titleEl, CultureInfo culture)
-    {
-        var isGreek = culture.TwoLetterISOLanguageName.Equals("el", StringComparison.OrdinalIgnoreCase);
-        return isGreek && !string.IsNullOrWhiteSpace(titleEl) ? titleEl : titleEn;
-    }
+    public static string ResolveCourseTitle(string titleEn, string? titleEl, CultureInfo culture) =>
+        IsGreek(culture) && !string.IsNullOrWhiteSpace(titleEl) ? titleEl : titleEn;
 
     /// <summary>
     /// Lays out the one-page landscape certificate in the brand palette: the dumbbell mark and

@@ -27,6 +27,9 @@ public class CertificateConfiguration : IEntityTypeConfiguration<Certificate>
         builder.Property(c => c.PdfPath)
             .HasMaxLength(1024);
 
+        builder.Property(c => c.PdfPathEl)
+            .HasMaxLength(1024);
+
         // Status stored as int; consistent with EnrollmentStatus convention
         builder.Property(c => c.Status)
             .HasConversion<int>();
