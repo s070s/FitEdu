@@ -459,6 +459,7 @@ public class FitnessComponentTests : BunitContext
     [Theory]
     [InlineData("Strength", "Δύναμη")]
     [InlineData("Cardio", "Κάρντιο")]
+    [InlineData("Cardio", "Καρδιο")] // the old spelling, kept by databases seeded before the rename
     [InlineData("Mobility", "Κινητικότητα")]
     [InlineData("Core", "Κορμός")]
     [InlineData("Recovery", "Αποκατάσταση")]

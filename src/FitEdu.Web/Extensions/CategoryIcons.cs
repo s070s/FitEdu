@@ -15,6 +15,8 @@ public static class CategoryIcons
         ["Δύναμη"] = "bi-lightning-charge",
         ["Cardio"] = "bi-heart-pulse",
         ["Κάρντιο"] = "bi-heart-pulse",
+        // The old spelling, still stored in databases seeded before the rename (the seeder keeps names).
+        ["Καρδιο"] = "bi-heart-pulse",
         ["Mobility"] = "bi-person-arms-up",
         ["Κινητικότητα"] = "bi-person-arms-up",
         ["Core"] = "bi-bullseye",
