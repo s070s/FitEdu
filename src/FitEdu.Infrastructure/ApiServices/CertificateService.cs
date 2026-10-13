@@ -24,7 +24,9 @@ public class CertificateService : ICertificateService
     private const string PlatformName = "FitEdu";
     private const float BrandMarkSize = 44;
 
-    // Brand palette (the --bg-primary, --text-* tokens and the teal accent in wwwroot/css/app.css).
+    // Brand palette. Page, lime and the two text colours are wwwroot/css/app.css tokens
+    // (--bg-primary, --text-strong-accent, --text-strong-normal, --text-light-normal); teal is the
+    // favicon dumbbell bar colour (app.css uses it only translucent). Muted text and divider are certificate-only.
     private const string PageColor = "#0E1116";
     private const string LimeColor = "#C6F432";
     private const string TealColor = "#2EC4B6";
