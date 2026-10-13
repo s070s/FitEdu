@@ -3,6 +3,8 @@ namespace FitEdu.Domain.Entities;
 /// <summary>
 /// Educational unit within a Module. Contains text, PDF, or video content.
 /// Belongs to exactly one Module.
+/// IsPublished (from AuditableEntity) is not used: a lesson is visible exactly when its course is
+/// published. The column stays only to avoid a migration.
 /// </summary>
 public class Lesson : AuditableEntity
 {

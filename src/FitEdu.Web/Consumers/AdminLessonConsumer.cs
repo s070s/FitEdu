@@ -50,9 +50,6 @@ public class AdminLessonConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenPr
         return result?.VideoPath;
     }
 
-    public Task<bool> PublishLessonAsync(Guid id)
-        => ActionAsync($"api/admin/lessons/{id}/publish");
-
     private record UploadPdfResponse(string PdfPath);
     private record UploadVideoResponse(string VideoPath);
 }

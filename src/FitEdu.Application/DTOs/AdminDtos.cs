@@ -120,7 +120,6 @@ public record AdminLessonDto(
     int? DurationMinutes,
     int SortOrder,
     Guid ModuleId,
-    bool IsPublished,
     List<LessonExerciseEditDto>? Exercises = null
 );
 

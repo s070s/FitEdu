@@ -515,7 +515,6 @@ public class AdminCourseServiceTests
         rows.Select(row => row.ExerciseId).ShouldBe([pushUps.Id, plank.Id]);
         rows.Select(row => row.SortOrder).ShouldBe([1, 2]);
         result.Value.ModuleId.ShouldBe(moduleId);
-        result.Value.IsPublished.ShouldBeFalse();
     }
 
     [Fact]

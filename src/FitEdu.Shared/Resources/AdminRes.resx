@@ -380,9 +380,6 @@
 	<data name="LessonTypeText" xml:space="preserve">
 		<value>Text</value>
 	</data>
-	<data name="StatusLive" xml:space="preserve">
-		<value>Live</value>
-	</data>
 	<data name="CourseStructurePreview" xml:space="preserve">
 		<value>Programme Structure Preview</value>
 	</data>

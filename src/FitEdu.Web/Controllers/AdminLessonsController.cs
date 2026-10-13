@@ -208,26 +208,4 @@ public class AdminLessonsController : ControllerBase
         // Return the new video path.
         return Ok(new LessonVideoUploadResultDto(path));
     }
-
-    /// <summary>Publish a lesson to make it available to students.</summary>
-    [HttpPost("{id:guid}/publish")]
-    public async Task<IActionResult> PublishLesson(Guid id)
-    {
-        // Find the lesson or return 404.
-        var lesson = await _db.Lessons.FindAsync(id);
-        if (lesson == null)
-            return NotFound();
-
-        // If not already published, mark published and set audit metadata.
-        if (!lesson.IsPublished)
-        {
-            lesson.IsPublished = true;
-            lesson.PublishedAt = DateTimeOffset.UtcNow;
-            lesson.UpdatedByUserId = UserId;
-            await _db.SaveChangesAsync();
-        }
-
-        // Return 204 No Content for success without body.
-        return NoContent();
-    }
 }

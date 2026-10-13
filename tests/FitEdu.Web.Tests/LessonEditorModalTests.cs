@@ -45,7 +45,7 @@ public class LessonEditorModalTests : BunitContext
     }
 
     private AdminLessonDto Lesson(List<LessonExerciseEditDto> exercises) => new(
-        Guid.NewGuid(), "Leg day", null, null, null, null, null, 30, 1, _moduleId, false, exercises);
+        Guid.NewGuid(), "Leg day", null, null, null, null, null, 30, 1, _moduleId, exercises);
 
     private static ExerciseListItemDto ListItem(string slug, string name) => new(
         Guid.NewGuid(), slug, name, "strength", "beginner", "body only", ["chest"],

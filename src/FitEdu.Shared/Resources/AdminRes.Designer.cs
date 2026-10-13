@@ -1645,15 +1645,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Live.
-        /// </summary>
-        public static string StatusLive {
-            get {
-                return ResourceManager.GetString("StatusLive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Published.
         /// </summary>
         public static string StatusPublished {

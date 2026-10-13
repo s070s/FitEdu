@@ -39,16 +39,6 @@
                                 {
                                     <text>@string.Format(AdminRes.MinutesFormat, lesson.DurationMinutes)</text>
                                 }
-                                @if (lesson.IsPublished)
-                                {
-                                    <StatusBadge IsActive="true"
-                                                 ActiveText="@AdminRes.StatusPublished" />
-                                }
-                                else
-                                {
-                                    <StatusBadge IsActive="false"
-                                                 InactiveText="@AdminRes.StatusDraft" />
-                                }
                             </small>
                         </div>
                         <div class="lesson-row__actions">

@@ -239,7 +239,6 @@
                                                             <th>@AdminRes.FieldTitle</th>
                                                             <th style="width:80px">@AdminRes.FieldType</th>
                                                             <th style="width:70px">@AdminRes.ColMins</th>
-                                                            <th style="width:80px">@AdminRes.ColStatus</th>
                                                             <th style="width:120px">@AdminRes.ColActions</th>
                                                         </tr>
                                                     </thead>
@@ -264,11 +263,6 @@
                                                                     }
                                                                 </td>
                                                                 <td data-label="@AdminRes.ColMins">@(lesson.DurationMinutes?.ToString() ?? "—")</td>
-                                                                <td data-label="@AdminRes.ColStatus">
-                                                                    <StatusBadge IsActive="lesson.IsPublished"
-                                                                                 ActiveText="@AdminRes.StatusLive"
-                                                                                 InactiveText="@AdminRes.StatusDraft" />
-                                                                </td>
                                                                 <td class="table-actions" data-label="@AdminRes.ColActions">
                                                                     <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
                                                                     <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)" title="@AdminRes.Delete" aria-label="@AdminRes.Delete"><span class="bi bi-x-lg" aria-hidden="true"></span></button>

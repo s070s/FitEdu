@@ -421,7 +421,6 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `DELETE` | `api/admin/lessons/{id}` | Delete lesson | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/pdf` | Upload PDF | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/video` | Upload video | Admin |
-| `POST` | `api/admin/lessons/{id}/publish` | Publish lesson | Admin |
 
 ### Admin — Assessments — `api/admin/assessments`
 

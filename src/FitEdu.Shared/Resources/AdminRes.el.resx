@@ -399,9 +399,6 @@
   <data name="LessonTypeText" xml:space="preserve">
     <value>Κείμενο</value>
   </data>
-  <data name="StatusLive" xml:space="preserve">
-    <value>Ενεργό</value>
-  </data>
   <data name="CourseStructurePreview" xml:space="preserve">
     <value>Προεπισκόπηση δομής προγράμματος</value>
   </data>
