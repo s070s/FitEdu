@@ -21,6 +21,9 @@ public partial class ExerciseDetail : IDisposable
     [Inject] private IExerciseConsumer ExerciseConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
 
+    // Present only while prerendering, so a missing item can answer 404.
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
     private ExerciseDetailDto? _exercise;
     private IReadOnlyList<LessonUsingExerciseDto> _lessons = [];
     private List<ExerciseFact> _facts = [];
@@ -67,6 +70,9 @@ public partial class ExerciseDetail : IDisposable
         _lessons = lessons;
         _facts = exercise is null ? [] : BuildFacts(exercise);
         _loading = false;
+
+        if (exercise is null)
+            PrerenderStatus.SetNotFound(HttpContext);
     }
 
     /// <summary>The "at a glance" tiles; a value the source data leaves empty gets no tile.</summary>

@@ -21,6 +21,9 @@ public partial class BlogArticle : IDisposable
     [Inject] private IBlogConsumer BlogConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
 
+    // Present only while prerendering, so a missing item can answer 404.
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
     private BlogArticleDto? _article;
     private bool _loading = true;
     private bool _notFound;
@@ -61,7 +64,10 @@ public partial class BlogArticle : IDisposable
         }
 
         if (_article is null)
+        {
             _notFound = true;
+            PrerenderStatus.SetNotFound(HttpContext);
+        }
         else
             _readingMinutes = EstimateReadingMinutes(_article.Content);
 

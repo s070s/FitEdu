@@ -34,6 +34,9 @@ public partial class CourseDetail
 
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
+    // Present only while prerendering, so a missing item can answer 404.
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
     private CourseDetailDto? _course;
     private SubscriptionTier _userTier = SubscriptionTier.Free;
     private bool _isGuest;
@@ -172,7 +175,10 @@ public partial class CourseDetail
         {
             _course = await CourseService.GetCourseAsync(CourseId, CurrentLang);
             if (_course is null)
+            {
                 _error = ErrorMessagesRes.CourseNotFound;
+                PrerenderStatus.SetNotFound(HttpContext);
+            }
             else
                 PrepareView(_course);
         }
