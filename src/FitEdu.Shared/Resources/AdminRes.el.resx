@@ -980,4 +980,10 @@
   <data name="UnknownEquipmentCodeFormat" xml:space="preserve">
     <value>Άγνωστος κωδικός εξοπλισμού: «{0}». Χρησιμοποίησε μόνο τους κωδικούς που φαίνονται κάτω από το πεδίο.</value>
   </data>
+  <data name="RoleAdmin" xml:space="preserve">
+    <value>Διαχειριστής</value>
+  </data>
+  <data name="RoleStudent" xml:space="preserve">
+    <value>Μέλος</value>
+  </data>
 </root>

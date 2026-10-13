@@ -49,14 +49,6 @@ public partial class Sessions
 
     private static bool IsLive(ScheduledSessionListItemDto session) => session.Status == LiveStatus;
 
-    private static string StatusLabel(string status) => status switch
-    {
-        LiveStatus => SessionRes.StatusLive,
-        "Ended" => SessionRes.StatusEnded,
-        "Cancelled" => SessionRes.StatusCancelled,
-        _ => SessionRes.StatusScheduled
-    };
-
     /// <summary>How full the class is, 0-100, for the capacity bar.</summary>
     private static int CapacityPercent(ScheduledSessionListItemDto session)
     {

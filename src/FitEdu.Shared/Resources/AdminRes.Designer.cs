@@ -2641,5 +2641,23 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("UnknownEquipmentCodeFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string RoleAdmin {
+            get {
+                return ResourceManager.GetString("RoleAdmin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Member.
+        /// </summary>
+        public static string RoleStudent {
+            get {
+                return ResourceManager.GetString("RoleStudent", resourceCulture);
+            }
+        }
     }
 }

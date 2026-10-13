@@ -78,7 +78,7 @@
                                 <span class="visually-hidden">@(user.EmailConfirmed ? AdminRes.Yes : AdminRes.No)</span>
                             </td>
                             <td data-label="@AdminRes.ColTier">@user.SubscriptionTier</td>
-                            <td data-label="@AdminRes.ColRoles">@string.Join(", ", user.Roles)</td>
+                            <td data-label="@AdminRes.ColRoles">@string.Join(", ", user.Roles.Select(RoleLabels.Label))</td>
                             <td data-label="@AdminRes.ColCreated">@user.CreatedAt.ToLocalTime().ToString("d")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 @if (user.Roles.Contains("Student"))

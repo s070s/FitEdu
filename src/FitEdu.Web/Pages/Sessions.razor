@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @using System.Globalization
 @using FitEdu.Domain.Entities
+@using FitEdu.Web.Extensions
 
 <PageTitle>@SessionRes.PageTitle</PageTitle>
 
@@ -49,7 +50,7 @@
 
                             <div class="session-body">
                                 <div class="session-body__top">
-                                    <span class="status-chip status-@session.Status.ToLowerInvariant()">@StatusLabel(session.Status)</span>
+                                    <span class="status-chip status-@session.Status.ToLowerInvariant()">@SessionLabels.Status(session.Status)</span>
                                     @if (session.CourseTitle is not null)
                                     {
                                         <span class="chip chip--teal session-course">@session.CourseTitle</span>

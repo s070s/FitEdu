@@ -1,6 +1,7 @@
 @page "/admin/sessions"
 @attribute [Authorize(Roles = "Admin")]
 @using FitEdu.Domain.Entities
+@using FitEdu.Web.Extensions
 
 <PageTitle>@SessionRes.AdminPageTitle</PageTitle>
 
@@ -49,7 +50,7 @@
                     <td data-label="@SessionRes.ColCourse">@(session.CourseTitle ?? "—")</td>
                     <td data-label="@SessionRes.ColWhen">@session.StartsAtUtc.ToLocalTime().ToString("g")</td>
                     <td data-label="@SessionRes.ColParticipants">@session.RegisteredCount / @session.MaxParticipants</td>
-                    <td data-label="@SessionRes.ColStatus">@session.Status</td>
+                    <td data-label="@SessionRes.ColStatus">@SessionLabels.Status(session.Status)</td>
                     <td class="table-actions" data-label="@SessionRes.ColActions">
                         @if (session.Status is "Scheduled")
                         {

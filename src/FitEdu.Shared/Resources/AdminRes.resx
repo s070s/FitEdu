@@ -961,4 +961,10 @@ Option 3</value>
   <data name="UnknownEquipmentCodeFormat" xml:space="preserve">
     <value>Unknown equipment code: '{0}'. Use only the codes listed below the field.</value>
   </data>
+  <data name="RoleAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="RoleStudent" xml:space="preserve">
+    <value>Member</value>
+  </data>
 </root>
