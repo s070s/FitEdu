@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 
@@ -27,7 +28,7 @@ public partial class AdminSessions
     private Guid? _formCourseId;
     private DateTime _formStartsAtLocal = DateTime.Now.AddHours(1);
     private int _formDurationMinutes = 30;
-    private int _formMaxParticipants = 6;
+    private int _formMaxParticipants = ScheduledSession.MaxParticipantsLimit;
     private bool _isSaving;
     private string? _formError;
 
@@ -96,7 +97,7 @@ public partial class AdminSessions
         _formCourseId = null;
         _formStartsAtLocal = DateTime.Now.AddHours(1);
         _formDurationMinutes = 30;
-        _formMaxParticipants = 6;
+        _formMaxParticipants = ScheduledSession.MaxParticipantsLimit;
         _formError = null;
         _formModalVisible = true;
     }

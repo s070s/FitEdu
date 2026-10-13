@@ -1,5 +1,6 @@
 @page "/admin/sessions"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Domain.Entities
 
 <PageTitle>@SessionRes.AdminPageTitle</PageTitle>
 
@@ -111,7 +112,7 @@
             </div>
             <div class="col-6">
                 <label class="form-label">@SessionRes.FieldMaxParticipants</label>
-                <input type="number" class="form-control" @bind="_formMaxParticipants" min="1" max="6" />
+                <input type="number" class="form-control" @bind="_formMaxParticipants" min="1" max="@ScheduledSession.MaxParticipantsLimit" />
             </div>
         </div>
     </Body>
