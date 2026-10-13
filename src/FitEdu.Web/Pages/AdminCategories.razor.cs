@@ -4,6 +4,7 @@ using FitEdu.Shared.Resources.Messages;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 
 namespace FitEdu.Web.Pages;
 
@@ -148,7 +149,7 @@ public partial class AdminCategories
             if (_pendingDelete is null)
                 return string.Empty;
 
-            return string.Format(CategoryRes.DeleteConfirmFormat,
+            return ResourceFormat.Fill(CategoryRes.DeleteConfirmFormat,
                 DisplayName(_pendingDelete), _pendingDelete.CourseCount, _pendingDelete.AssessmentCount);
         }
     }
