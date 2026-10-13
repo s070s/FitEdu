@@ -1,7 +1,8 @@
 @using System.Globalization
 @using FitEdu.Web.Extensions
 @* Magazine card for one blog article: cover photo (uploaded or shipped), tags, title, summary, author
-   and date. The title link is stretched over the whole card. *@
+   and date. The title link is stretched over the whole card. The title is an h2 because the card
+   sits right under the page h1. *@
 
 <article class="blog-card card-surface card-surface--interactive">
     <div class="blog-card__cover">
@@ -26,9 +27,9 @@
             </ul>
         }
 
-        <h3 class="blog-card__title line-clamp-2">
+        <h2 class="blog-card__title line-clamp-2">
             <a class="blog-card__link stretched-link" href="@ArticleUrl">@Article.Title</a>
-        </h3>
+        </h2>
         <p class="blog-card__summary line-clamp-3">@Article.Summary</p>
 
         <div class="blog-card__meta card-surface__meta">

@@ -208,7 +208,7 @@
     <value>Όλα τα άρθρα</value>
   </data>
   <data name="BlogReadingTimeFormat" xml:space="preserve">
-    <value>{0} λεπτά ανάγνωσης</value>
+    <value>Ανάγνωση: {0} λεπ.</value>
   </data>
   <data name="BackToHome" xml:space="preserve">
     <value>Επιστροφή στην αρχική</value>

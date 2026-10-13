@@ -40,6 +40,8 @@ public class BlogPagesTests : BunitContext
         var items = page.FindAll(".blog-grid__item");
         items[0].ClassList.ShouldContain("blog-grid__item--featured");
         items[1].ClassList.ShouldNotContain("blog-grid__item--featured");
+        // Card titles follow the page h1 directly, so they are h2 (no skipped heading level).
+        page.FindAll(".blog-card h2.blog-card__title").Count.ShouldBe(3);
     }
 
     [Fact]
