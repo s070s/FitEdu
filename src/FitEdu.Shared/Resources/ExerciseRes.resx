@@ -250,4 +250,55 @@
   <data name="MoreMusclesFormat" xml:space="preserve">
     <value>+{0} more</value>
   </data>
+  <data name="FiltersLabel" xml:space="preserve">
+    <value>Filter exercises</value>
+  </data>
+  <data name="AllLevels" xml:space="preserve">
+    <value>All levels</value>
+  </data>
+  <data name="AllEquipment" xml:space="preserve">
+    <value>All equipment</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All types</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Clear filters</value>
+  </data>
+  <data name="NoResultsHint" xml:space="preserve">
+    <value>Try another muscle, or clear the filters to see the whole library.</value>
+  </data>
+  <data name="PagesLabel" xml:space="preserve">
+    <value>Exercise pages</value>
+  </data>
+  <data name="BackToLibrary" xml:space="preserve">
+    <value>All exercises</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Exercise not found</value>
+  </data>
+  <data name="NotFoundText" xml:space="preserve">
+    <value>This exercise may have been renamed or removed. Find it in the library.</value>
+  </data>
+  <data name="NoInstructions" xml:space="preserve">
+    <value>Step-by-step instructions for this exercise are not available yet. Follow the start and finish photos and move slowly, with control.</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Force</value>
+  </data>
+  <data name="Mechanic" xml:space="preserve">
+    <value>Mechanics</value>
+  </data>
+  <data name="AtAGlance" xml:space="preserve">
+    <value>At a glance</value>
+  </data>
+  <data name="DetailDescriptionFormat" xml:space="preserve">
+    <value>How to do {0}: the muscles it works, the equipment you need and step-by-step instructions.</value>
+  </data>
+  <data name="DetailPageTitleFormat" xml:space="preserve">
+    <value>{0} - FitEdu</value>
+  </data>
+  <data name="LoadFailed" xml:space="preserve">
+    <value>We couldn't load the exercise library right now.</value>
+  </data>
 </root>

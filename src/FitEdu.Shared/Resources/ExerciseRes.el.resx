@@ -250,4 +250,55 @@
   <data name="MoreMusclesFormat" xml:space="preserve">
     <value>+{0} ακόμη</value>
   </data>
+  <data name="FiltersLabel" xml:space="preserve">
+    <value>Φίλτρα ασκήσεων</value>
+  </data>
+  <data name="AllLevels" xml:space="preserve">
+    <value>Όλα τα επίπεδα</value>
+  </data>
+  <data name="AllEquipment" xml:space="preserve">
+    <value>Όλος ο εξοπλισμός</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Όλοι οι τύποι</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Καθαρισμός φίλτρων</value>
+  </data>
+  <data name="NoResultsHint" xml:space="preserve">
+    <value>Δοκίμασε άλλον μυ ή καθάρισε τα φίλτρα για να δεις όλη τη βιβλιοθήκη.</value>
+  </data>
+  <data name="PagesLabel" xml:space="preserve">
+    <value>Σελίδες ασκήσεων</value>
+  </data>
+  <data name="BackToLibrary" xml:space="preserve">
+    <value>Όλες οι ασκήσεις</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Η άσκηση δεν βρέθηκε</value>
+  </data>
+  <data name="NotFoundText" xml:space="preserve">
+    <value>Η άσκηση ίσως μετονομάστηκε ή αφαιρέθηκε. Βρες τη στη βιβλιοθήκη.</value>
+  </data>
+  <data name="NoInstructions" xml:space="preserve">
+    <value>Δεν υπάρχουν ακόμη οδηγίες βήμα προς βήμα για αυτή την άσκηση. Ακολούθησε τις φωτογραφίες αρχικής και τελικής θέσης και κινήσου αργά και ελεγχόμενα.</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Κίνηση</value>
+  </data>
+  <data name="Mechanic" xml:space="preserve">
+    <value>Είδος άσκησης</value>
+  </data>
+  <data name="AtAGlance" xml:space="preserve">
+    <value>Με μια ματιά</value>
+  </data>
+  <data name="DetailDescriptionFormat" xml:space="preserve">
+    <value>Πώς γίνεται η άσκηση {0}: ποιους μύες δουλεύει, τι εξοπλισμό χρειάζεσαι και οδηγίες βήμα προς βήμα.</value>
+  </data>
+  <data name="DetailPageTitleFormat" xml:space="preserve">
+    <value>{0} - FitEdu</value>
+  </data>
+  <data name="LoadFailed" xml:space="preserve">
+    <value>Δεν μπορέσαμε να φορτώσουμε τη βιβλιοθήκη ασκήσεων αυτή τη στιγμή.</value>
+  </data>
 </root>

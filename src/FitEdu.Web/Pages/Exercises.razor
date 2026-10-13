@@ -1,0 +1,128 @@
+@page "/exercises"
+
+<PageTitle>@ExerciseRes.PageTitle</PageTitle>
+<SeoHead Title="@ExerciseRes.PageTitle" Description="@ExerciseRes.Subtitle" CanonicalUrl="/exercises" />
+
+<section class="page exercise-library">
+    <header class="exercise-library__hero">
+        @if (LibraryTotal > 0)
+        {
+            <p class="eyebrow">@string.Format(ExerciseRes.ResultsFormat, LibraryTotal)</p>
+        }
+        <h1>@ExerciseRes.Library</h1>
+        <p class="exercise-library__lead">@ExerciseRes.Subtitle</p>
+    </header>
+
+    <div class="exercise-filters card-surface" role="region" aria-label="@ExerciseRes.FiltersLabel">
+        <div class="card-surface__body exercise-filters__body">
+            <form class="exercise-filters__search" role="search" @onsubmit="SubmitSearchAsync" @onsubmit:preventDefault>
+                <span class="bi bi-search exercise-filters__search-icon" aria-hidden="true"></span>
+                <input type="search" class="form-control" autocomplete="off"
+                       placeholder="@ExerciseRes.SearchPlaceholder" aria-label="@ExerciseRes.SearchPlaceholder"
+                       value="@_searchText" @oninput="OnSearchInputAsync" />
+            </form>
+
+            @if (_muscleOptions.Count > 0)
+            {
+                <div class="exercise-filters__chips" role="group" aria-label="@ExerciseRes.Muscle">
+                    <button type="button" class="filter-chip @(_filter.Muscle is null ? "is-selected" : "")"
+                            aria-pressed="@(_filter.Muscle is null ? "true" : "false")"
+                            @onclick="() => SelectMuscleAsync(null)">
+                        @ExerciseRes.AllMuscles
+                    </button>
+                    @foreach (var muscle in _muscleOptions)
+                    {
+                        var isSelected = _filter.Muscle == muscle.Value;
+                        <button type="button" class="filter-chip @(isSelected ? "is-selected" : "")" @key="muscle.Value"
+                                aria-pressed="@(isSelected ? "true" : "false")"
+                                @onclick="() => SelectMuscleAsync(muscle.Value)">
+                            @muscle.Label <span class="filter-chip__count">@muscle.Count</span>
+                        </button>
+                    }
+                </div>
+            }
+
+            <div class="exercise-filters__selects">
+                @FacetSelect("exercise-level", ExerciseRes.Level, ExerciseRes.AllLevels, _levelOptions, _filter.Level, OnLevelChangedAsync)
+                @FacetSelect("exercise-category", ExerciseRes.Category, ExerciseRes.AllCategories, _categoryOptions, _filter.Category, OnCategoryChangedAsync)
+                @FacetSelect("exercise-equipment", ExerciseRes.Equipment, ExerciseRes.AllEquipment, _equipmentOptions, _filter.Equipment, OnEquipmentChangedAsync)
+            </div>
+        </div>
+    </div>
+
+    @if (_loading)
+    {
+        <div class="grid-auto exercise-library__grid" aria-hidden="true">
+            @for (var placeholder = 0; placeholder < SkeletonCardCount; placeholder++)
+            {
+                <SkeletonBlock Height="18rem" CssClass="exercise-library__skeleton" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="exercise-library__results-head">
+            <h2 class="exercise-library__count" tabindex="-1" @ref="_resultsHeading" aria-live="polite">
+                @string.Format(ExerciseRes.ResultsFormat, _result?.TotalCount ?? 0)
+            </h2>
+            @if (_filter.IsActive)
+            {
+                <button type="button" class="btn-cta btn-cta--ghost exercise-library__clear" @onclick="ClearFiltersAsync">
+                    <span class="bi bi-x-lg" aria-hidden="true"></span> @ExerciseRes.ClearFilters
+                </button>
+            }
+        </div>
+
+        @if (HasResults)
+        {
+            <div class="grid-auto exercise-library__grid @(_refreshing ? "is-refreshing" : "")" aria-busy="@(_refreshing ? "true" : "false")">
+                @foreach (var exercise in _result!.Items)
+                {
+                    <ExerciseCard Exercise="exercise" @key="exercise.Id" />
+                }
+            </div>
+
+            <div class="exercise-library__pages">
+                <PaginationNav CurrentPage="_page"
+                               TotalPages="_result.TotalPages"
+                               HasPreviousPage="_result.HasPreviousPage"
+                               HasNextPage="_result.HasNextPage"
+                               AriaLabel="@ExerciseRes.PagesLabel"
+                               OnPageChanged="GoToPageAsync" />
+            </div>
+        }
+        else if (_filter.IsActive)
+        {
+            <EmptyState Icon="bi-search" Title="@ExerciseRes.NoResults" Text="@ExerciseRes.NoResultsHint">
+                <button type="button" class="btn-cta empty-state__action" @onclick="ClearFiltersAsync">@ExerciseRes.ClearFilters</button>
+            </EmptyState>
+        }
+        else
+        {
+            @* The consumer turns a failed request into an empty page, so an empty unfiltered library means the API is down. *@
+            <EmptyState Icon="bi-wifi-off" Title="@ExerciseRes.LoadFailed">
+                <button type="button" class="btn-cta empty-state__action" @onclick="ReloadAsync">@GlobalRes.TryAgain</button>
+            </EmptyState>
+        }
+    }
+
+    <ExerciseSourceCredit />
+</section>
+
+@code {
+    // Placeholder cards while the first page loads: two rows of a three-column grid.
+    private const int SkeletonCardCount = 6;
+
+    private RenderFragment FacetSelect(string id, string label, string allLabel, List<FacetOption> options,
+        string? selectedValue, Func<ChangeEventArgs, Task> onChange) =>
+        @<div class="exercise-filters__field">
+            <label class="form-label" for="@id">@label</label>
+            <select id="@id" class="form-select" @onchange="onChange">
+                <option value="" selected="@(selectedValue is null)">@allLabel</option>
+                @foreach (var option in options)
+                {
+                    <option value="@option.Value" selected="@(selectedValue == option.Value)">@option.Label (@option.Count)</option>
+                }
+            </select>
+        </div>;
+}

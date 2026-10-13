@@ -1,0 +1,239 @@
+/* Exercise library. Phone first: a stacked filter card with a sideways-scrolling row of muscle
+   chips, one card per row; from 768 px the chips wrap and the selects sit side by side.
+   The page frame (main.content) already pads the top and the bottom. */
+
+/* ---- Hero ---- */
+.exercise-library__hero {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 48rem;
+    margin-bottom: var(--space-5);
+}
+
+.exercise-library__hero > * {
+    margin: 0;
+}
+
+.exercise-library__hero h1 {
+    font-size: var(--fs-1);
+}
+
+.exercise-library__lead {
+    max-width: 60ch;
+    color: var(--text-light-normal);
+    font-size: var(--fs-body);
+    text-wrap: pretty;
+}
+
+/* ---- Filters ---- */
+.exercise-filters {
+    margin-bottom: var(--space-5);
+}
+
+.exercise-filters__body {
+    gap: var(--space-4);
+}
+
+.exercise-filters__search {
+    position: relative;
+    margin: 0;
+}
+
+.exercise-filters__search-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    color: var(--text-light-muted);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.exercise-filters__search .form-control {
+    min-height: 48px;
+    padding-left: 2.75rem;
+    border-radius: var(--radius-pill);
+}
+
+/* Phones: one row that scrolls sideways, running to the card's edges. */
+.exercise-filters__chips {
+    display: flex;
+    gap: var(--space-2);
+    margin-inline: calc(-1 * var(--space-4));
+    padding: 2px var(--space-4);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: var(--space-4);
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+}
+
+.exercise-filters__chips::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-chip {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: var(--tap-min);
+    padding: 0 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background-color: transparent;
+    color: var(--text-light-normal);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.filter-chip:hover {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+    color: var(--text-strong-normal);
+}
+
+.filter-chip.is-selected {
+    border-color: var(--text-strong-accent);
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+}
+
+.filter-chip__count {
+    color: var(--text-light-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.filter-chip.is-selected .filter-chip__count {
+    color: rgba(var(--bg-primary-rgb), 0.75);
+}
+
+/* Phones: one select per row with its label beside it (the Greek "all" labels need the width);
+   two per row from 576 px with the last one full width, three in a row from 768 px. */
+.exercise-filters__selects {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+}
+
+/* The label and the select of each field sit in the two shared columns, so the selects line up. */
+.exercise-filters__field {
+    display: contents;
+}
+
+.exercise-filters__field .form-label {
+    margin-bottom: 0;
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 600;
+}
+
+.exercise-filters__field .form-select {
+    min-height: var(--tap-min);
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 576px) {
+    .exercise-filters__selects {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-3);
+    }
+
+    .exercise-filters__field {
+        display: block;
+    }
+
+    .exercise-filters__field:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .exercise-filters__field .form-label {
+        margin-bottom: 0.35rem;
+    }
+}
+
+/* ---- Results ---- */
+.exercise-library__results-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    min-height: var(--tap-min);
+    margin-bottom: var(--space-4);
+}
+
+.exercise-library__count {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+    font-variant-numeric: tabular-nums;
+}
+
+/* The heading takes focus from code after a page change; only keyboard focus shows a ring. */
+.exercise-library__count:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.exercise-library__clear {
+    min-height: var(--tap-min);
+    padding: 0.5rem 1.1rem;
+    font-size: 0.875rem;
+}
+
+/* While the next page loads the current cards stay in place, dimmed. */
+.exercise-library__grid {
+    transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.exercise-library__grid.is-refreshing {
+    opacity: 0.55;
+}
+
+.exercise-library ::deep .exercise-library__skeleton {
+    border-radius: var(--radius-lg);
+}
+
+.exercise-library__pages {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
+}
+
+.exercise-library__pages ::deep .btn {
+    min-height: var(--tap-min);
+    padding-inline: 1.1rem;
+    border-radius: var(--radius-pill);
+}
+
+@media (min-width: 768px) {
+    .exercise-filters__body {
+        padding: var(--space-5);
+    }
+
+    .exercise-filters__chips {
+        flex-wrap: wrap;
+        margin-inline: 0;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .exercise-filters__selects {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .exercise-filters__field:last-child {
+        grid-column: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exercise-library__grid {
+        transition: none;
+    }
+}

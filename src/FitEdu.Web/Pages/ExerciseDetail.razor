@@ -1,0 +1,123 @@
+@page "/exercises/{Slug}"
+@using FitEdu.Web.Extensions
+
+@if (_loading)
+{
+    <div class="page exercise-detail" aria-hidden="true">
+        <div class="exercise-detail__layout">
+            <SkeletonBlock Height="16rem" CssClass="exercise-detail__skeleton" />
+            <SkeletonBlock Rows="4" Height="2.5rem" Gap="0.75rem" />
+        </div>
+    </div>
+}
+else if (_exercise is null)
+{
+    <PageTitle>@ExerciseRes.NotFoundTitle</PageTitle>
+    <div class="page exercise-detail">
+        <h1 class="visually-hidden">@ExerciseRes.NotFoundTitle</h1>
+        <EmptyState Icon="bi-search" Title="@ExerciseRes.NotFoundTitle" Text="@ExerciseRes.NotFoundText"
+                    ActionHref="/exercises" ActionLabel="@ExerciseRes.BackToLibrary" />
+    </div>
+}
+else
+{
+    <PageTitle>@string.Format(ExerciseRes.DetailPageTitleFormat, _exercise.Name)</PageTitle>
+    <SeoHead Title="@_exercise.Name"
+             Description="@string.Format(ExerciseRes.DetailDescriptionFormat, _exercise.Name)"
+             CanonicalUrl="@CanonicalPath"
+             ImageUrl="@_exercise.Image0Url"
+             PreloadImageUrl="@_exercise.Image0Url" />
+
+    <article class="page exercise-detail">
+        <a class="exercise-detail__back" href="/exercises">
+            <span class="bi bi-arrow-left" aria-hidden="true"></span> @ExerciseRes.BackToLibrary
+        </a>
+
+        <div class="exercise-detail__layout">
+            <div class="exercise-detail__media">
+                <ExerciseMedia StartUrl="@_exercise.Image0Url" EndUrl="@_exercise.Image1Url" Name="@_exercise.Name" Eager="true" />
+            </div>
+
+            <div class="exercise-detail__summary">
+                <header class="exercise-detail__header">
+                    <p class="eyebrow">@ExerciseLabels.Category(_exercise.Category)</p>
+                    <h1 class="exercise-detail__name">@_exercise.Name</h1>
+                    <LevelBadge ExerciseLevel="@_exercise.Level" />
+                </header>
+
+                @if (_facts.Count > 0)
+                {
+                    <dl class="exercise-facts" aria-label="@ExerciseRes.AtAGlance">
+                        @foreach (var fact in _facts)
+                        {
+                            <div class="exercise-facts__item">
+                                <dt><span class="bi @fact.Icon" aria-hidden="true"></span> @fact.Label</dt>
+                                <dd>@fact.Value</dd>
+                            </div>
+                        }
+                    </dl>
+                }
+
+                @if (_exercise.PrimaryMuscles.Length > 0)
+                {
+                    <div class="exercise-detail__muscles">
+                        <h2 class="exercise-detail__label">@ExerciseRes.PrimaryMuscles</h2>
+                        <MuscleChips Muscles="@_exercise.PrimaryMuscles" />
+                    </div>
+                }
+
+                @if (_exercise.SecondaryMuscles.Length > 0)
+                {
+                    <div class="exercise-detail__muscles">
+                        <h2 class="exercise-detail__label">@ExerciseRes.SecondaryMuscles</h2>
+                        <MuscleChips Muscles="@_exercise.SecondaryMuscles" Secondary="true" />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <section class="exercise-detail__section" aria-labelledby="exercise-steps-title">
+            <h2 id="exercise-steps-title">@ExerciseRes.Instructions</h2>
+            @if (_exercise.Instructions.Any(step => !string.IsNullOrWhiteSpace(step)))
+            {
+                <ol class="exercise-steps">
+                    @foreach (var step in _exercise.Instructions.Where(step => !string.IsNullOrWhiteSpace(step)))
+                    {
+                        <li>@step</li>
+                    }
+                </ol>
+            }
+            else
+            {
+                <p class="exercise-steps__empty">
+                    <span class="bi bi-info-circle" aria-hidden="true"></span>
+                    <span>@ExerciseRes.NoInstructions</span>
+                </p>
+            }
+        </section>
+
+        @if (_lessons.Count > 0)
+        {
+            <section class="exercise-detail__section" aria-labelledby="exercise-used-in-title">
+                <h2 id="exercise-used-in-title">@ExerciseRes.UsedInLessons</h2>
+                <ul class="used-in-list">
+                    @foreach (var lesson in _lessons)
+                    {
+                        <li @key="lesson.LessonId">
+                            <a class="used-in-list__link card-surface" href="@CourseUrl(lesson)">
+                                <span class="used-in-list__icon" aria-hidden="true"><span class="bi bi-lightning-charge-fill"></span></span>
+                                <span class="used-in-list__text">
+                                    <span class="used-in-list__lesson">@lesson.LessonTitle</span>
+                                    <span class="used-in-list__course">@lesson.CourseTitle</span>
+                                </span>
+                                <span class="bi bi-chevron-right used-in-list__chevron" aria-hidden="true"></span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+
+        <ExerciseSourceCredit />
+    </article>
+}

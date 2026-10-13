@@ -216,7 +216,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 ### Exercises — `api/exercises`
 
-The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position).
+The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position). The public pages `/exercises` (library grid with muscle, level, type and equipment filters, search and pages) and `/exercises/{slug}` (photos, muscles, steps and the workouts that use it) read these endpoints.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|

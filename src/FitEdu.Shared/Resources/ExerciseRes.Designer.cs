@@ -443,5 +443,107 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("MoreMusclesFormat", resourceCulture);
             }
         }
+
+        public static string FiltersLabel {
+            get {
+                return ResourceManager.GetString("FiltersLabel", resourceCulture);
+            }
+        }
+
+        public static string AllLevels {
+            get {
+                return ResourceManager.GetString("AllLevels", resourceCulture);
+            }
+        }
+
+        public static string AllEquipment {
+            get {
+                return ResourceManager.GetString("AllEquipment", resourceCulture);
+            }
+        }
+
+        public static string AllCategories {
+            get {
+                return ResourceManager.GetString("AllCategories", resourceCulture);
+            }
+        }
+
+        public static string ClearFilters {
+            get {
+                return ResourceManager.GetString("ClearFilters", resourceCulture);
+            }
+        }
+
+        public static string NoResultsHint {
+            get {
+                return ResourceManager.GetString("NoResultsHint", resourceCulture);
+            }
+        }
+
+        public static string PagesLabel {
+            get {
+                return ResourceManager.GetString("PagesLabel", resourceCulture);
+            }
+        }
+
+        public static string BackToLibrary {
+            get {
+                return ResourceManager.GetString("BackToLibrary", resourceCulture);
+            }
+        }
+
+        public static string NotFoundTitle {
+            get {
+                return ResourceManager.GetString("NotFoundTitle", resourceCulture);
+            }
+        }
+
+        public static string NotFoundText {
+            get {
+                return ResourceManager.GetString("NotFoundText", resourceCulture);
+            }
+        }
+
+        public static string NoInstructions {
+            get {
+                return ResourceManager.GetString("NoInstructions", resourceCulture);
+            }
+        }
+
+        public static string Force {
+            get {
+                return ResourceManager.GetString("Force", resourceCulture);
+            }
+        }
+
+        public static string Mechanic {
+            get {
+                return ResourceManager.GetString("Mechanic", resourceCulture);
+            }
+        }
+
+        public static string AtAGlance {
+            get {
+                return ResourceManager.GetString("AtAGlance", resourceCulture);
+            }
+        }
+
+        public static string DetailDescriptionFormat {
+            get {
+                return ResourceManager.GetString("DetailDescriptionFormat", resourceCulture);
+            }
+        }
+
+        public static string DetailPageTitleFormat {
+            get {
+                return ResourceManager.GetString("DetailPageTitleFormat", resourceCulture);
+            }
+        }
+
+        public static string LoadFailed {
+            get {
+                return ResourceManager.GetString("LoadFailed", resourceCulture);
+            }
+        }
     }
 }
