@@ -41,6 +41,19 @@ public static partial class LessonMarkdown
         return RenderMarkdown(WithoutTitleHeading(content, pageTitle));
     }
 
+    /// <summary>
+    /// The lesson text as HTML for the admin WYSIWYG editor, which only understands HTML: seed
+    /// Markdown would otherwise load as one paragraph of literal "#" and "1." markers. The title
+    /// heading is left out as on the lesson page, so a save does not add a second title. Empty text stays null.
+    /// </summary>
+    public static string? RenderForEditor(string? content, string? pageTitle)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return null;
+
+        return Render(content, pageTitle);
+    }
+
     private static string RenderMarkdown(string markdown)
     {
         var html = new StringBuilder();

@@ -114,4 +114,20 @@ public class LessonMarkdownTests
     {
         LessonMarkdown.Render(content).ShouldBeEmpty();
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("  \n ")]
+    public void ForEditor_EmptyContent_StaysNull(string? content)
+    {
+        LessonMarkdown.RenderForEditor(content, "Any title").ShouldBeNull();
+    }
+
+    [Fact]
+    public void ForEditor_SeedMarkdown_BecomesHtmlWithoutTheTitleHeading()
+    {
+        var html = LessonMarkdown.RenderForEditor("# Core\n\n## Warm-up\n- Dead bug", "Core");
+
+        html.ShouldBe("<h2>Warm-up</h2><ul><li>Dead bug</li></ul>");
+    }
 }

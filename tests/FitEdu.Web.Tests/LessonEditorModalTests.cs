@@ -237,4 +237,27 @@ public class LessonEditorModalTests : BunitContext
         modal.Find(".exercise-limit").TextContent.ShouldBe(expectedLimitText);
         modal.Find(".exercise-search-result").HasAttribute("disabled").ShouldBeTrue();
     }
+
+    [Fact]
+    public void SeededMarkdownLesson_ReachesTheEditorAsHtml()
+    {
+        // Quill only reads HTML: raw Markdown would load as one paragraph of "#" and "1." markers.
+        var lesson = Lesson([]) with
+        {
+            ContentEn = "# Leg day\n\n## Warm-up\n\n1. March in place\n2. Squat to a box",
+            TitleEl = "Μέρα ποδιών",
+            ContentEl = "# Μέρα ποδιών\n\n- Βαθύ κάθισμα"
+        };
+
+        RenderModal(lesson);
+
+        var editorContents = JSInterop.Invocations["quillInterop.init"]
+            .Select(invocation => invocation.Arguments[1] as string)
+            .ToList();
+        editorContents.ShouldBe(
+        [
+            "<h2>Warm-up</h2><ol><li>March in place</li><li>Squat to a box</li></ol>",
+            "<ul><li>Βαθύ κάθισμα</li></ul>"
+        ]);
+    }
 }

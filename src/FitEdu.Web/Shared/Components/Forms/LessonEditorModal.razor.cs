@@ -4,6 +4,7 @@ using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Shared.Components.Forms;
@@ -68,8 +69,8 @@ public partial class LessonEditorModal
         {
             _titleEn = EditingLesson.TitleEn;
             _titleEl = EditingLesson.TitleEl;
-            _contentEn = EditingLesson.ContentEn;
-            _contentEl = EditingLesson.ContentEl;
+            _contentEn = LessonMarkdown.RenderForEditor(EditingLesson.ContentEn, EditingLesson.TitleEn);
+            _contentEl = LessonMarkdown.RenderForEditor(EditingLesson.ContentEl, EditingLesson.TitleEl);
             _videoUrl = EditingLesson.VideoPath;
             _sortOrder = EditingLesson.SortOrder;
             _duration = EditingLesson.DurationMinutes;

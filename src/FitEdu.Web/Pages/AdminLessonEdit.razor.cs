@@ -3,6 +3,7 @@ using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Application.DTOs;
 
@@ -95,8 +96,8 @@ public partial class AdminLessonEdit
         editingLessonId = lesson.Id;
         lessonTitleEn = lesson.TitleEn;
         lessonTitleEl = lesson.TitleEl;
-        lessonContentEn = lesson.ContentEn;
-        lessonContentEl = lesson.ContentEl;
+        lessonContentEn = LessonMarkdown.RenderForEditor(lesson.ContentEn, lesson.TitleEn);
+        lessonContentEl = LessonMarkdown.RenderForEditor(lesson.ContentEl, lesson.TitleEl);
         lessonVideoUrl = lesson.VideoPath;
         lessonSortOrder = lesson.SortOrder;
         lessonDuration = lesson.DurationMinutes;
