@@ -168,7 +168,7 @@
             @* ── Modules & Lessons ── *@
             <FormCardSection Title="@AdminRes.ModulesAndLessons">
                 <HeaderActions>
-                    <button class="btn btn-sm btn-success" @onclick="ShowAddModule">@AdminRes.AddModule</button>
+                    <button class="btn-cta" @onclick="ShowAddModule">@AdminRes.AddModule</button>
                 </HeaderActions>
                 <ChildContent>
                     @if (modules == null)
@@ -211,7 +211,7 @@
                                                 <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteModule(module.Id)">
                                                     <span class="bi bi-trash" aria-hidden="true"></span> @AdminRes.Delete
                                                 </button>
-                                                <button class="btn btn-sm btn-success" @onclick="() => ShowAddLesson(module.Id)">
+                                                <button class="btn btn-sm btn-primary" @onclick="() => ShowAddLesson(module.Id)">
                                                     @AdminRes.AddLesson
                                                 </button>
                                             </div>
@@ -297,11 +297,11 @@
                                      InactiveText="@AdminRes.StatusDraft" />
                         @if (!course.IsPublished)
                         {
-                            <button class="btn btn-success" @onclick="PublishCourse">@AdminRes.PublishCourse</button>
+                            <button class="btn-cta" @onclick="PublishCourse">@AdminRes.PublishCourse</button>
                         }
                         else
                         {
-                            <button class="btn btn-warning" @onclick="UnpublishCourse">@AdminRes.UnpublishCourse</button>
+                            <button class="btn-cta btn-cta--ghost" @onclick="UnpublishCourse">@AdminRes.UnpublishCourse</button>
                         }
                     </div>
                 </ChildContent>

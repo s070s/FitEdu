@@ -11,7 +11,7 @@
     <input type="text" class="form-control" placeholder="@AdminRes.SearchAssessments"
            aria-label="@AdminRes.SearchAssessments"
            value="@_searchTerm" @oninput="OnSearchInput" />
-    <button class="btn btn-primary text-nowrap" @onclick="CreateAssessment">@AdminRes.CreateNewAssessment</button>
+    <button class="btn-cta text-nowrap" @onclick="CreateAssessment">@AdminRes.CreateNewAssessment</button>
 </div>
 
 @if (_pagedResult == null)
@@ -64,14 +64,14 @@ else
                     <button class="btn btn-sm btn-primary" @onclick="() => EditAssessment(assessment.Id)">@AdminRes.Edit</button>
                     @if (assessment.IsPublished)
                     {
-                        <button class="btn btn-sm btn-warning" @onclick="() => UnpublishAssessment(assessment.Id)">@AdminRes.Unpublish</button>
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => UnpublishAssessment(assessment.Id)">@AdminRes.Unpublish</button>
                     }
                     else
                     {
-                        <button class="btn btn-sm btn-success" @onclick="() => PublishAssessment(assessment.Id)">@AdminRes.Publish</button>
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => PublishAssessment(assessment.Id)">@AdminRes.Publish</button>
                     }
-                    <button class="btn btn-sm btn-info" @onclick="() => ViewSubmissions(assessment.Id)">@AdminRes.ColSubmissions</button>
-                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteAssessment(assessment.Id)">@AdminRes.Delete</button>
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => ViewSubmissions(assessment.Id)">@AdminRes.ColSubmissions</button>
+                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteAssessment(assessment.Id)">@AdminRes.Delete</button>
                 </td>
             </tr>
         </RowTemplate>

@@ -53,14 +53,14 @@
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-primary" @onclick="Save" disabled="@_isBusy">
+        <button class="btn-cta" @onclick="Save" disabled="@_isBusy">
             @if (_isBusy)
             {
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             }
             @PathRes.Save
         </button>
-        <button class="btn btn-secondary" @onclick="Cancel" disabled="@_isBusy">@PathRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="Cancel" disabled="@_isBusy">@PathRes.Cancel</button>
     </div>
 
     <hr class="my-4" />

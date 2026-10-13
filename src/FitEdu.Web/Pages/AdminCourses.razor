@@ -11,7 +11,7 @@
     <input type="text" class="form-control" placeholder="@AdminRes.SearchCourses"
            aria-label="@AdminRes.SearchCourses"
            value="@searchTerm" @oninput="OnSearchInput" />
-    <button class="btn btn-primary text-nowrap" @onclick="CreateCourse">@AdminRes.CreateNewCourse</button>
+    <button class="btn-cta text-nowrap" @onclick="CreateCourse">@AdminRes.CreateNewCourse</button>
 </div>
 
 @if (pagedResult == null)
@@ -66,13 +66,13 @@ else
                     <button class="btn btn-sm btn-primary" @onclick="() => EditCourse(course.Id)">@AdminRes.Edit</button>
                     @if (course.IsPublished)
                     {
-                        <button class="btn btn-sm btn-warning" @onclick="() => UnpublishCourse(course.Id)">@AdminRes.Unpublish</button>
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => UnpublishCourse(course.Id)">@AdminRes.Unpublish</button>
                     }
                     else
                     {
-                        <button class="btn btn-sm btn-success" @onclick="() => PublishCourse(course.Id)">@AdminRes.Publish</button>
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => PublishCourse(course.Id)">@AdminRes.Publish</button>
                     }
-                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteCourse(course.Id)">@AdminRes.Delete</button>
+                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteCourse(course.Id)">@AdminRes.Delete</button>
                 </td>
             </tr>
         </RowTemplate>

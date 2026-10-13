@@ -20,7 +20,7 @@
         <Authorized>
             @if (_loadFailed)
             {
-                <button class="btn btn-secondary" @onclick="LoadUsers">@GlobalRes.TryAgain</button>
+                <button type="button" class="btn-cta btn-cta--ghost" @onclick="LoadUsers">@GlobalRes.TryAgain</button>
             }
             else if (pagedResult == null)
             {
@@ -87,17 +87,17 @@
                                 }
                                 @if (!user.Roles.Contains("Admin"))
                                 {
-                                    <button class="btn btn-sm btn-warning" @onclick="() => OpenResetPasswordModal(user)">@AdminRes.ResetPassword</button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => OpenResetPasswordModal(user)">@AdminRes.ResetPassword</button>
                                 }
                                 @if (!user.Roles.Contains("Admin"))
                                 {
                                     @if (user.IsEnabled)
                                     {
-                                        <button class="btn btn-sm btn-secondary" @onclick="() => SetUserEnabled(user.Id, false)">@AdminRes.DisableUser</button>
+                                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => SetUserEnabled(user.Id, false)">@AdminRes.DisableUser</button>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-sm btn-success" @onclick="() => SetUserEnabled(user.Id, true)">@AdminRes.EnableUser</button>
+                                        <button class="btn btn-sm btn-outline-primary" @onclick="() => SetUserEnabled(user.Id, true)">@AdminRes.EnableUser</button>
                                     }
                                 }
                                 @if (!user.Roles.Contains("Admin"))
@@ -152,7 +152,7 @@
         <button class="btn btn-secondary" @onclick="CloseResetPasswordModal" disabled="@_resetPwdBusy">
             @AdminRes.Cancel
         </button>
-        <button class="btn btn-warning" @onclick="SubmitResetPassword" disabled="@_resetPwdBusy">
+        <button class="btn btn-primary" @onclick="SubmitResetPassword" disabled="@_resetPwdBusy">
             @if (_resetPwdBusy)
             {
                 <span class="spinner-border spinner-border-sm me-1" role="status"></span>

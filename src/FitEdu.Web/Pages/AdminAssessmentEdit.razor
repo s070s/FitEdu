@@ -69,7 +69,7 @@
 
         <FormCardSection Title="@AdminRes.Questions">
             <HeaderActions>
-                <button class="btn btn-sm btn-success" @onclick="AddSection">@AdminRes.AddSection</button>
+                <button class="btn-cta" @onclick="AddSection">@AdminRes.AddSection</button>
             </HeaderActions>
             <ChildContent>
                 @for (var s = 0; s < schema.Sections.Count; s++)
@@ -224,7 +224,7 @@
                                 </div>
                             }
 
-                            <button class="btn btn-sm btn-outline-success" @onclick="() => AddQuestion(section)">@AdminRes.AddQuestion</button>
+                            <button class="btn btn-sm btn-outline-primary" @onclick="() => AddQuestion(section)">@AdminRes.AddQuestion</button>
                         </div>
                     </div>
                 }

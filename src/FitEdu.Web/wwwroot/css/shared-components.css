@@ -952,7 +952,7 @@ a.card-surface {
 }
 
 @media (max-width: 575.98px) {
-    .admin-toolbar > .btn {
+    .admin-toolbar > :is(.btn, .btn-cta) {
         flex: 1 1 100%;
     }
 }
@@ -997,7 +997,7 @@ a.card-surface {
 }
 
 @media (max-width: 575.98px) {
-    .form-actions > .btn {
+    .form-actions > :is(.btn, .btn-cta) {
         flex: 1 1 8rem;
     }
 }

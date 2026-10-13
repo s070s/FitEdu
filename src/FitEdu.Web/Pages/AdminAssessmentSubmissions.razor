@@ -4,7 +4,7 @@
 <PageTitle>@AdminRes.AssessmentSubmissions</PageTitle>
 
 <div class="mb-3">
-    <button class="btn btn-outline-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToAssessments</button>
+    <button type="button" class="btn-cta btn-cta--ghost" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToAssessments</button>
 </div>
 
 <h1 class="h2">@(assessmentTitle != null ? string.Format(AdminRes.SubmissionsWithTitle, assessmentTitle) : AdminRes.ColSubmissions)</h1>

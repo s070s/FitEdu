@@ -59,11 +59,11 @@
                     <td class="table-actions" data-label="@ReviewRes.ColActions">
                         @if (review.Status != "Approved")
                         {
-                            <button class="btn btn-sm btn-success" @onclick="() => ApproveAsync(review.Id)">@ReviewRes.Approve</button>
+                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ApproveAsync(review.Id)">@ReviewRes.Approve</button>
                         }
                         @if (review.Status != "Rejected")
                         {
-                            <button class="btn btn-sm btn-danger" @onclick="() => RejectAsync(review.Id)">@ReviewRes.Reject</button>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RejectAsync(review.Id)">@ReviewRes.Reject</button>
                         }
                     </td>
                 </tr>

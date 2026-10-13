@@ -119,13 +119,13 @@
     </div>
 
     <div class="form-actions sticky-bottom-bar">
-        <button class="btn btn-primary" @onclick="Save" disabled="@_isBusy">
+        <button class="btn-cta" @onclick="Save" disabled="@_isBusy">
             @if (_isBusy)
             {
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             }
             @AdminRes.Save
         </button>
-        <button class="btn btn-secondary" @onclick="Cancel" disabled="@_isBusy">@AdminRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="Cancel" disabled="@_isBusy">@AdminRes.Cancel</button>
     </div>
 </div>

@@ -473,6 +473,13 @@ main.content:has(> .page) {
     transform: scale(0.98);
 }
 
+/* A busy or unavailable action (an admin Save while saving) dims instead of looking clickable. */
+.btn-cta:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
 .btn-cta--ghost {
     border-color: var(--border-subtle);
     background-color: transparent;

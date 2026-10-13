@@ -7,7 +7,7 @@
     <div class="section-head">
         <h1 class="h2">@PathRes.AdminPageTitle</h1>
         <div class="section-head__actions">
-            <button class="btn btn-primary text-nowrap" @onclick="NewPath">@PathRes.NewPath</button>
+            <button class="btn-cta text-nowrap" @onclick="NewPath">@PathRes.NewPath</button>
         </div>
     </div>
 
@@ -55,11 +55,11 @@
                         <button class="btn btn-sm btn-primary me-1" @onclick="() => EditPath(path.Id)">@PathRes.Edit</button>
                         @if (path.IsPublished)
                         {
-                            <button class="btn btn-sm btn-warning me-1" @onclick="() => Unpublish(path.Id)">@PathRes.Unpublish</button>
+                            <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => Unpublish(path.Id)">@PathRes.Unpublish</button>
                         }
                         else
                         {
-                            <button class="btn btn-sm btn-success me-1" @onclick="() => Publish(path.Id)">@PathRes.Publish</button>
+                            <button class="btn btn-sm btn-outline-primary me-1" @onclick="() => Publish(path.Id)">@PathRes.Publish</button>
                         }
                         @if (confirmDeleteId == path.Id)
                         {

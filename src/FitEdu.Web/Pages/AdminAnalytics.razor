@@ -15,7 +15,7 @@ else if (_error is not null)
 {
     <div class="alert alert-danger d-flex flex-wrap align-items-center gap-3" role="alert">
         <span>@_error</span>
-        <button class="btn btn-secondary" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+        <button type="button" class="btn-cta btn-cta--ghost" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
     </div>
 }
 else if (stats is not null)
