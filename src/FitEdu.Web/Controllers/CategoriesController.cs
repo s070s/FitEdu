@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -21,6 +23,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     /// </summary>
     [HttpGet]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<List<CategoryDto>>> GetCategories(
         [FromQuery] string scope = "courses",
         [FromQuery] string lang = "en",

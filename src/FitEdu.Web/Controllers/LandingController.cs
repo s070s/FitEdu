@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -11,6 +13,7 @@ namespace FitEdu.Web.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/landing")]
+[EnableRateLimiting(PublicRateLimit.PolicyName)]
 [AllowAnonymous]
 [Tags("Landing")]
 [Produces("application/json")]

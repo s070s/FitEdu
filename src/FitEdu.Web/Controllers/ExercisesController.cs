@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -14,6 +16,7 @@ namespace FitEdu.Web.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/exercises")]
+[EnableRateLimiting(PublicRateLimit.PolicyName)]
 [Tags("Exercises")]
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status404NotFound)]

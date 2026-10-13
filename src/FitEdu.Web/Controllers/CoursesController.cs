@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Web.Extensions;
+using FitEdu.Web.Startup;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
@@ -37,6 +39,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     /// </summary>
     [HttpGet]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<PagedResult<CourseListItemDto>>> GetCourses(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -62,6 +65,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     /// </summary>
     [HttpGet("{courseId:guid}")]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<CourseDetailDto>> GetCourse(Guid courseId, [FromQuery] string lang = "en", CancellationToken cancellationToken = default)
     {
         var dto = await courseService.GetCourseDetailAsync(OptionalUserId ?? AnonymousUser.Id, courseId, lang, cancellationToken);
@@ -111,6 +115,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     /// </summary>
     [HttpGet("{courseId:guid}/reviews")]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<CourseReviewsResponseDto>> GetReviews(Guid courseId, CancellationToken cancellationToken = default)
     {
         var reviews = await reviewService.GetApprovedForCourseAsync(courseId, cancellationToken);

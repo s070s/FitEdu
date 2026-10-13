@@ -294,6 +294,8 @@ public static class ServiceRegistrationExtensions
                         QueueLimit = 0
                     });
             });
+            // Per caller IP on the anonymous reads; the app's own loopback calls are exempt (see PublicRateLimit).
+            options.AddPolicy(PublicRateLimit.PolicyName, PublicRateLimit.PartitionFor);
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
 
