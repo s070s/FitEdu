@@ -1,4 +1,4 @@
-namespace FitEdu.Web.Layout;
+namespace FitEdu.Web.Extensions;
 
 /// <summary>
 /// The Bootstrap Icons glyph for a course or assessment category. The API sends the category name

@@ -2,7 +2,7 @@ using System.Globalization;
 using Bunit;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
-using FitEdu.Web.Layout;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Fitness;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
