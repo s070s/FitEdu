@@ -284,5 +284,41 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Exercises", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Menu.
+        /// </summary>
+        public static string Menu {
+            get {
+                return ResourceManager.GetString("Menu", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Quick navigation.
+        /// </summary>
+        public static string QuickNavigation {
+            get {
+                return ResourceManager.GetString("QuickNavigation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paths.
+        /// </summary>
+        public static string PathsShort {
+            get {
+                return ResourceManager.GetString("PathsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
     }
 }

@@ -192,4 +192,16 @@
   <data name="Exercises" xml:space="preserve">
     <value>Exercises</value>
   </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="QuickNavigation" xml:space="preserve">
+    <value>Quick navigation</value>
+  </data>
+  <data name="PathsShort" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
 </root>

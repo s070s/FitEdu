@@ -47,15 +47,6 @@ public partial class Search
             Navigation.NavigateTo($"/search?q={Uri.EscapeDataString(_input.Trim())}");
     }
 
-    private static string IconFor(string sourceType) => sourceType switch
-    {
-        "Course" => "bi-book",
-        "Assessment" => "bi-list-check",
-        "BlogArticle" => "bi-newspaper",
-        "Exercise" => "bi-activity",
-        _ => "bi-file-earmark"
-    };
-
     private static string TypeLabel(string sourceType) => sourceType switch
     {
         "Course" => SearchRes.TypeCourse,

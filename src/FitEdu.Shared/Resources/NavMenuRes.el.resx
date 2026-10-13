@@ -192,4 +192,16 @@
   <data name="Exercises" xml:space="preserve">
     <value>Ασκήσεις</value>
   </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Μενού</value>
+  </data>
+  <data name="QuickNavigation" xml:space="preserve">
+    <value>Γρήγορη πλοήγηση</value>
+  </data>
+  <data name="PathsShort" xml:space="preserve">
+    <value>Διαδρομές</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Γλώσσα</value>
+  </data>
 </root>

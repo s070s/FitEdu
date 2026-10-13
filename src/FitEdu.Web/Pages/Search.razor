@@ -34,7 +34,7 @@
             @foreach (var hit in _result.Hits)
             {
                 <a class="site-search-result-card" href="@hit.Url">
-                    <span class="bi @IconFor(hit.SourceType) site-search-result-icon" aria-hidden="true"></span>
+                    <span class="bi @AppIcons.ForSearchSource(hit.SourceType) site-search-result-icon" aria-hidden="true"></span>
                     <span class="site-search-result-body">
                         <span class="site-search-result-type">@TypeLabel(hit.SourceType)</span>
                         <span class="site-search-result-title">@hit.Title</span>
