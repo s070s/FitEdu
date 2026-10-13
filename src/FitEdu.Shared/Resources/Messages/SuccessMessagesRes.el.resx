@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationSuccess" xml:space="preserve">
-    <value>Το Email επαληθεύτηκε</value>
+    <value>Το email επαληθεύτηκε.</value>
   </data>
   <data name="RegistrationSuccess" xml:space="preserve">
-    <value>Επιτυχής δημιουργία λογαριασμού, Παρακαλώ δείτε το email σας</value>
+    <value>Ο λογαριασμός σου είναι έτοιμος. Δες το email σου για να τον επιβεβαιώσεις.</value>
   </data>
   <data name="RegistrationSuccessfulNoEmail" xml:space="preserve">
-    <value>Επιτυχής εγγραφή. Παρακαλώ επιβεβαιώστε το email σας.</value>
+    <value>Η εγγραφή ολοκληρώθηκε. Επιβεβαίωσε το email σου για να συνδεθείς.</value>
   </data>
   <data name="RegistrationSuccessfulCheckEmail" xml:space="preserve">
     <value>Επιτυχής εγγραφή. Ελέγξτε το email σας για να επιβεβαιώσετε τον λογαριασμό σας.</value>

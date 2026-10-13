@@ -1,0 +1,74 @@
+@* Shared frame of the login, register and forgot-password pages: a centred card with the brand
+   mark, a title and a short line under it. From 1024 px a photo pane with the three "how it
+   works" steps sits beside the card. The card keeps .auth-container for the shared input styles. *@
+
+<div class="auth-shell">
+    <aside class="auth-side">
+        @* Lazy, so phones (where the pane is hidden) never download the photo. *@
+        <img class="auth-side__photo" src="images/hero-home.webp" alt=""
+             width="@SidePhotoWidth" height="@SidePhotoHeight" loading="lazy" decoding="async" />
+        <div class="auth-side__content">
+            <p class="auth-side__title">
+                @HomeRes.HeroTitleLine1
+                <span class="text-volt">@HomeRes.HeroTitleLine2</span>
+            </p>
+            <ul class="auth-side__steps">
+                @foreach (var step in Steps)
+                {
+                    <li>
+                        <span class="bi @step.Icon auth-side__icon" aria-hidden="true"></span>
+                        <span>
+                            <strong>@step.Title</strong>
+                            <span class="auth-side__text">@step.Text</span>
+                        </span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </aside>
+
+    <section class="auth-container auth-card @(Wide ? "auth-card--wide" : "")" aria-labelledby="auth-title">
+        <header class="auth-card__head">
+            <BrandMark Size="40" />
+            <h1 id="auth-title" class="auth-card__title">@Title</h1>
+            @if (!string.IsNullOrWhiteSpace(Subtitle))
+            {
+                <p class="auth-card__subtitle">@Subtitle</p>
+            }
+        </header>
+
+        @ChildContent
+
+        @if (Footer is not null)
+        {
+            <div class="auth-card__footer">@Footer</div>
+        }
+    </section>
+</div>
+
+@code {
+    // Intrinsic size of images/hero-home.webp, so the pane reserves its space before the photo loads.
+    private const int SidePhotoWidth = 1920;
+    private const int SidePhotoHeight = 1440;
+
+    private sealed record Step(string Icon, string Title, string Text);
+
+    private static IReadOnlyList<Step> Steps =>
+    [
+        new("bi-clipboard2-pulse", HomeRes.HowStep1Title, HomeRes.HowStep1Text),
+        new("bi-list-check", HomeRes.HowStep2Title, HomeRes.HowStep2Text),
+        new("bi-graph-up-arrow", HomeRes.HowStep3Title, HomeRes.HowStep3Text)
+    ];
+
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+
+    [Parameter] public string? Subtitle { get; set; }
+
+    /// <summary>Wider card for the longer register form.</summary>
+    [Parameter] public bool Wide { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>The links under the form (switch between log in and register, back to log in).</summary>
+    [Parameter] public RenderFragment? Footer { get; set; }
+}

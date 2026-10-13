@@ -1,0 +1,291 @@
+/* ================================================
+   Auth frame (login, register, forgot password)
+   Phones: the card fills the gutter-padded column.
+   From 1024 px: photo pane left, card right.
+   ================================================ */
+
+.auth-shell {
+    display: grid;
+    gap: var(--space-6);
+    width: min(100%, 1120px);
+    margin-inline: auto;
+}
+
+.auth-side {
+    display: none;
+}
+
+/* The card. Overrides the margins of the shared .auth-container rule (shared-components.css),
+   which still provides the surface, border and input colours. */
+.auth-card {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-4);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 24px 48px -32px rgba(0, 0, 0, 0.8);
+}
+
+.auth-card--wide {
+    max-width: 36rem;
+}
+
+@media (min-width: 576px) {
+    .auth-card {
+        padding: var(--space-6);
+    }
+}
+
+.auth-card__head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+}
+
+.auth-card__head ::deep .brand-mark {
+    margin-bottom: var(--space-2);
+}
+
+.auth-card__title {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-2);
+}
+
+.auth-card__subtitle {
+    margin: 0;
+    color: var(--text-light-normal);
+    line-height: 1.5;
+}
+
+.auth-card__footer {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--text-light-normal);
+    text-align: center;
+}
+
+/* ── Form parts rendered by the pages (::deep reaches their markup) ── */
+
+.auth-card ::deep .form-label {
+    margin-bottom: 0.375rem;
+    color: var(--text-strong-normal);
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.auth-card ::deep :is(.form-control, .form-select) {
+    min-height: 48px;
+    border-radius: var(--radius-md);
+}
+
+.auth-card ::deep .form-select {
+    background-color: var(--bg-table-odd);
+    color: var(--text-strong-normal);
+    border: 1px solid var(--border-subtle);
+}
+
+.auth-card ::deep .form-text {
+    color: var(--text-light-muted);
+}
+
+.auth-card ::deep .form-check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-2);
+    padding-left: 0;
+}
+
+.auth-card ::deep .form-check .form-check-input {
+    float: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0.125rem 0 0;
+}
+
+.auth-card ::deep .form-check > :not(.form-check-input) {
+    grid-column: 2;
+}
+
+.auth-card ::deep a {
+    color: var(--text-strong-accent);
+    font-weight: 600;
+    text-underline-offset: 0.2em;
+}
+
+.auth-card ::deep a:hover {
+    color: var(--text-accent);
+}
+
+/* A labelled group of fields (register: "About you", "Your training"). */
+.auth-card ::deep .auth-group {
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    border: 0;
+}
+
+.auth-card ::deep .auth-group__legend {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--color-info);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* Remember me on the left, "Forgot password?" on the right; they stack when space runs out. */
+.auth-card ::deep .auth-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.auth-card ::deep .auth-row .form-check {
+    margin: 0;
+}
+
+.auth-card ::deep .auth-submit {
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.auth-card ::deep .auth-submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.auth-card ::deep .alert {
+    overflow-wrap: anywhere;
+}
+
+/* Password field with its show/hide button joined on the right. */
+.auth-card ::deep .btn-password-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    padding: 0 0.75rem;
+    background-color: var(--bg-table-odd);
+    border: 1px solid var(--border-subtle);
+    border-left: none;
+    color: var(--text-light-normal);
+}
+
+.auth-card ::deep .btn-password-toggle:hover,
+.auth-card ::deep .btn-password-toggle:focus-visible {
+    background-color: var(--bg-table-header-hover);
+    color: var(--text-accent);
+}
+
+.auth-card ::deep .input-group .form-control {
+    border-right: none;
+}
+
+.auth-card ::deep .input-group .form-control:focus + .btn-password-toggle {
+    border-color: var(--focus-ring);
+}
+
+/* ── Photo pane, wide screens only ── */
+@media (min-width: 1024px) {
+    .auth-shell {
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+        padding-block: var(--space-4);
+    }
+
+    .auth-side {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        min-height: 36rem;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        background-color: var(--bg-surface);
+        isolation: isolate;
+    }
+
+    .auth-side__photo {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Dark fade at the bottom keeps the white text above WCAG AA contrast on any part of the photo. */
+    .auth-side::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.15) 0%, rgba(var(--bg-primary-rgb), 0.7) 45%, rgba(var(--bg-primary-rgb), 0.96) 100%);
+    }
+
+    .auth-side__content {
+        display: grid;
+        gap: var(--space-5);
+        padding: var(--space-6);
+    }
+
+    .auth-side__title {
+        margin: 0;
+        color: var(--text-strong-normal);
+        font-size: var(--fs-2);
+        font-weight: 800;
+        line-height: var(--leading-tight);
+        letter-spacing: var(--tracking-tight);
+        text-wrap: balance;
+    }
+
+    .auth-side__title .text-volt {
+        display: block;
+    }
+
+    .auth-side__steps {
+        display: grid;
+        gap: var(--space-4);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .auth-side__steps li {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--space-3);
+        color: var(--text-strong-normal);
+    }
+
+    .auth-side__icon {
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: var(--radius-md);
+        background-color: rgba(var(--text-strong-accent-rgb), 0.15);
+        color: var(--text-strong-accent);
+        font-size: 1.125rem;
+    }
+
+    .auth-side__text {
+        display: block;
+        color: var(--text-light-normal);
+        font-size: 0.9375rem;
+        line-height: 1.5;
+    }
+
+    .auth-card {
+        align-self: center;
+    }
+}

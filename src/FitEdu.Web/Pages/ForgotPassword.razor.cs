@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Hosting;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
@@ -13,6 +14,7 @@ public partial class ForgotPassword
     // HttpClient retained exclusively for the dev-only reset endpoint (not in IAuthService)
     [Inject] private HttpClient Http { get; set; } = default!;
     [Inject] private ILogger<ForgotPassword> Logger { get; set; } = default!;
+    [Inject] private IWebHostEnvironment Env { get; set; } = default!;
 
     private ForgotPasswordRequestDto forgotPasswordRequest = new();
     private string? successMessage;

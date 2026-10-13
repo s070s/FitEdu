@@ -342,4 +342,28 @@
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
   </data>
+    <data name="Label_Info_Goal" xml:space="preserve">
+      <value>Main goal (optional)</value>
+    </data>
+    <data name="GoalNotSureYet" xml:space="preserve">
+      <value>Not sure yet</value>
+    </data>
+    <data name="GoalHint" xml:space="preserve">
+      <value>We use it to suggest programmes. You can change it any time in your profile.</value>
+    </data>
+    <data name="Label_AboutYou" xml:space="preserve">
+      <value>About you</value>
+    </data>
+    <data name="Label_YourTraining" xml:space="preserve">
+      <value>Your training</value>
+    </data>
+    <data name="AuthLoginSubtitle" xml:space="preserve">
+      <value>Welcome back. Pick up your plan where you left off.</value>
+    </data>
+    <data name="AuthRegisterSubtitle" xml:space="preserve">
+      <value>Joining is free. Your first workout is a few minutes away.</value>
+    </data>
+    <data name="DevResetPasswordHint" xml:space="preserve">
+      <value>Reset the password directly</value>
+    </data>
 </root>

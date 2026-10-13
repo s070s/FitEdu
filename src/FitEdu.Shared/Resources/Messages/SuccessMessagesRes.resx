@@ -121,7 +121,7 @@
     <value>Email confirmed</value>
   </data>
   <data name="RegistrationSuccess" xml:space="preserve">
-    <value>Registration Successful ! , please check your email</value>
+    <value>Your account is ready. Please check your email to confirm it.</value>
   </data>
   <data name="RegistrationSuccessfulNoEmail" xml:space="preserve">
     <value>Registration successful. Please confirm your email.</value>

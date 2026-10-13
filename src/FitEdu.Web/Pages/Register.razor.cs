@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
 using System.Net.Http.Json;
 
@@ -31,6 +32,9 @@ public partial class Register : IDisposable
     private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
     private string confirmPasswordInputType => showConfirmPassword ? "text" : "password";
     private string confirmPasswordIconClass => showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye";
+
+    // The optional goal select lists every goal; an empty value means "not sure yet".
+    private static readonly FitnessGoal[] GoalOptions = Enum.GetValues<FitnessGoal>();
 
     protected override void OnInitialized()
     {

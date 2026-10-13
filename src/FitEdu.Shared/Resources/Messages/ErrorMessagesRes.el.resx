@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationError" xml:space="preserve">
-    <value>Σφάλμα κατα την επαλήθευση του email!</value>
+    <value>Σφάλμα κατά την επαλήθευση του email.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Σφάλμα</value>
@@ -127,7 +127,7 @@
     <value>Η διεύθυνση email είναι ήδη εγγεγραμένη</value>
   </data>
   <data name="LoginError" xml:space="preserve">
-    <value>Σφάλμα κατα τη σύνδεση!</value>
+    <value>Σφάλμα κατά τη σύνδεση.</value>
   </data>
   <data name="AccountDisabled" xml:space="preserve">
     <value>Ο Λογαριασμός Απενεργοποιήθηκε</value>
@@ -139,10 +139,10 @@
     <value>Εάν πιστεύετε ότι πρόκειται για λάθος, επικοινωνήστε με την υποστήριξη.</value>
   </data>
   <data name="BackToLogin" xml:space="preserve">
-    <value>Επιστροφή στη Σύνδεση</value>
+    <value>Επιστροφή στη σύνδεση</value>
   </data>
   <data name="EmailNotConfirmedHint" xml:space="preserve">
-    <value>Η διεύθυνση email σας δεν έχει επιβεβαιωθεί ακόμη. Ελέγξτε τα εισερχόμενά σας για τον σύνδεσμο επιβεβαίωσης.</value>
+    <value>Η διεύθυνση email σου δεν έχει επιβεβαιωθεί ακόμα. Δες τα εισερχόμενά σου για τον σύνδεσμο επιβεβαίωσης.</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Μη έγκυρα διαπιστευτήρια.</value>
@@ -229,7 +229,7 @@
     <value>Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Δοκιμάστε ξανά.</value>
   </data>
   <data name="EnterEmailAndPassword" xml:space="preserve">
-    <value>Παρακαλώ εισαγάγετε email και νέο κωδικό πρόσβασης.</value>
+    <value>Γράψε το email σου και τον νέο κωδικό.</value>
   </data>
   <data name="PasswordResetFailed" xml:space="preserve">
     <value>Σφάλμα κατά την επαναφορά του κωδικού πρόσβασης.</value>

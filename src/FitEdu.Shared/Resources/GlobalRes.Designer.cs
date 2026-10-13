@@ -733,5 +733,77 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Progress", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main goal (optional).
+        /// </summary>
+        public static string Label_Info_Goal {
+            get {
+                return ResourceManager.GetString("Label_Info_Goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not sure yet.
+        /// </summary>
+        public static string GoalNotSureYet {
+            get {
+                return ResourceManager.GetString("GoalNotSureYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We use it to suggest programmes. You can change it any time in your profile..
+        /// </summary>
+        public static string GoalHint {
+            get {
+                return ResourceManager.GetString("GoalHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About you.
+        /// </summary>
+        public static string Label_AboutYou {
+            get {
+                return ResourceManager.GetString("Label_AboutYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your training.
+        /// </summary>
+        public static string Label_YourTraining {
+            get {
+                return ResourceManager.GetString("Label_YourTraining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome back. Pick up your plan where you left off..
+        /// </summary>
+        public static string AuthLoginSubtitle {
+            get {
+                return ResourceManager.GetString("AuthLoginSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining is free. Your first workout is a few minutes away..
+        /// </summary>
+        public static string AuthRegisterSubtitle {
+            get {
+                return ResourceManager.GetString("AuthRegisterSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset the password directly.
+        /// </summary>
+        public static string DevResetPasswordHint {
+            get {
+                return ResourceManager.GetString("DevResetPasswordHint", resourceCulture);
+            }
+        }
     }
 }
