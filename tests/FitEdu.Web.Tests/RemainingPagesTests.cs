@@ -169,13 +169,21 @@ public class ContentLanguageTextTests
     [InlineData("el")]
     public void Placeholders_FollowTheContentLanguage_WhateverTheUiLanguage(string uiCulture)
     {
+        // Restored afterwards so the UI language does not leak into tests that run next on this thread.
+        var originalUiCulture = CultureInfo.CurrentUICulture;
         CultureInfo.CurrentUICulture = new CultureInfo(uiCulture);
+        try
+        {
+            var english = ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder));
+            var greek = ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder));
 
-        var english = ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder));
-        var greek = ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder));
-
-        english.ShouldBe("Article title");
-        greek.ShouldBe("Τίτλος άρθρου");
+            english.ShouldBe("Article title");
+            greek.ShouldBe("Τίτλος άρθρου");
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = originalUiCulture;
+        }
     }
 
     [Fact]
