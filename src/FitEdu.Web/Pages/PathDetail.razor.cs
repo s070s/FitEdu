@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Components;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using System.Globalization;
-using System.Text;
 
 namespace FitEdu.Web.Pages;
 
@@ -42,10 +42,10 @@ public partial class PathDetail
 
     /// <summary>"1 of 3 completed": the hero's progress label and the ring's accessible name.</summary>
     private string ProgressText =>
-        FormatText(PathRes.ProgressFormat, CompletedCount, StepCount);
+        ResourceFormat.Fill(PathRes.ProgressFormat, CompletedCount, StepCount);
 
     private string StepsCountText =>
-        FormatText(PathRes.StepsCountFormat, StepCount);
+        ResourceFormat.Fill(PathRes.StepsCountFormat, StepCount);
 
     protected override async Task OnParametersSetAsync()
     {
@@ -57,14 +57,7 @@ public partial class PathDetail
     private static string CourseUrl(LearningPathStepDto step) => CourseUrlPrefix + step.CourseId;
 
     private static string StepNumberText(LearningPathStepDto step) =>
-        FormatText(PathRes.StepNumberFormat, step.StepOrder);
-
-    /// <summary>
-    /// Fills a resource format in the current culture. The format text depends on the UI language,
-    /// so it is parsed on each call rather than cached in a static field.
-    /// </summary>
-    private static string FormatText(string resourceFormat, params object?[] values) =>
-        string.Format(CultureInfo.CurrentCulture, CompositeFormat.Parse(resourceFormat), values);
+        ResourceFormat.Fill(PathRes.StepNumberFormat, step.StepOrder);
 
     /// <summary>
     /// A step links to its course unless it is locked and not yet done. Courses are shared between
