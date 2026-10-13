@@ -67,7 +67,7 @@ public partial class SeedContentIntegrityTests
         "AdminRes.TestimonialNamePlaceholder"
     };
 
-    private static readonly string SourceRoot =Path.Combine(RepoPaths.RepoRoot, "src");
+    private static readonly string SourceRoot = Path.Combine(RepoPaths.RepoRoot, "src");
 
     // Where the text gates (career vocabulary, Greek command forms) look: the seed JSON, every
     // resx file, the seed data written in C# (blog articles, plans, the seeders) and the other
@@ -810,8 +810,9 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekFormalAddressRegex();
 
-    // Two capitalised Greek words in a row, the title case of "Διαχείριση Χρηστών".
-    [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+ [ΆΈ-ΏΑ-Ω][ά-ώ]+", RegexOptions.CultureInvariant)]
+    // Two capitalised Greek words in a row, the title case of "Διαχείριση Χρηστών", also after a
+    // short abbreviation such as "Ημ. Γέννησης".
+    [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+ [ΆΈ-ΏΑ-Ω][ά-ώ]+|\b[ΆΈ-ΏΑ-Ω][ά-ώ]{1,3}\. [ΆΈ-ΏΑ-Ω][ά-ώ]+", RegexOptions.CultureInvariant)]
     private static partial Regex GreekTitleCaseRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
