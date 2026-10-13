@@ -401,7 +401,7 @@ public class AdminCourseService(
         if (!await CoverExerciseExistsAsync(coverExerciseSlug, cancellationToken))
             return UnknownSlugMessage(coverExerciseSlug!);
 
-        var unknownCode = FindUnknownEquipmentCode(NormalizeEquipment(equipment));
+        var unknownCode = EquipmentCodeList.FindUnknownCode(equipment);
         return unknownCode is null ? null : $"{ErrorMessagesRes.Course_UnknownEquipmentCode}: '{unknownCode}'";
     }
 
@@ -417,43 +417,14 @@ public class AdminCourseService(
         return await db.Exercises.AnyAsync(e => e.Slug == slug && e.IsPublished, cancellationToken);
     }
 
-    /// <summary>The first code that is not in <see cref="Course.EquipmentCodes"/>, or null when all are known.</summary>
-    private static string? FindUnknownEquipmentCode(string? normalizedEquipment)
-    {
-        if (normalizedEquipment is null)
-            return null;
-
-        return normalizedEquipment
-            .Split(Course.EquipmentSeparator)
-            .FirstOrDefault(code => !Course.EquipmentCodes.Contains(code));
-    }
-
     private static void ApplyFitnessFields(Course course, SaveCourseRequest request, string? coverExerciseSlug)
     {
         course.Level = request.Level;
         course.Goal = request.Goal;
-        course.Equipment = NormalizeEquipment(request.Equipment);
+        course.Equipment = EquipmentCodeList.Normalize(request.Equipment);
         course.EstimatedWeeks = request.EstimatedWeeks;
         course.SessionsPerWeek = request.SessionsPerWeek;
         course.CoverExerciseSlug = coverExerciseSlug;
-    }
-
-    /// <summary>
-    /// Stores equipment as distinct lowercase codes joined by "," with no spaces, the shape the
-    /// catalogue's equipment filter matches against. Blank input clears the field.
-    /// </summary>
-    private static string? NormalizeEquipment(string? equipment)
-    {
-        if (string.IsNullOrWhiteSpace(equipment))
-            return null;
-
-        var codes = equipment
-            .Split(Course.EquipmentSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(code => code.ToLowerInvariant())
-            .Distinct();
-
-        var joined = string.Join(Course.EquipmentSeparator, codes);
-        return joined.Length == 0 ? null : joined;
     }
 
     // A blank row slug stays "" so it is reported as an unknown slug.

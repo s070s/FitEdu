@@ -882,8 +882,8 @@
   <data name="Equipment" xml:space="preserve">
     <value>Εξοπλισμός</value>
   </data>
-  <data name="EquipmentHint" xml:space="preserve">
-    <value>Κωδικοί χωρισμένοι με κόμμα: none, dumbbells, barbell, kettlebell, bands, mat, bike, chair, cables, machine.</value>
+  <data name="EquipmentHintFormat" xml:space="preserve">
+    <value>Κωδικοί χωρισμένοι με κόμμα: {0}.</value>
   </data>
   <data name="EstimatedWeeks" xml:space="preserve">
     <value>Εκτιμώμενες εβδομάδες</value>
@@ -976,5 +976,8 @@
     <value>Επιλογή 1
 Επιλογή 2
 Επιλογή 3</value>
+  </data>
+  <data name="UnknownEquipmentCodeFormat" xml:space="preserve">
+    <value>Άγνωστος κωδικός εξοπλισμού: «{0}». Χρησιμοποίησε μόνο τους κωδικούς που φαίνονται κάτω από το πεδίο.</value>
   </data>
 </root>

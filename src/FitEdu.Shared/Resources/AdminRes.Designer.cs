@@ -2355,11 +2355,11 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comma-separated codes: none, dumbbells, barbell, kettlebell, bands, mat, bike, chair, cables, machine..
+        ///   Looks up a localized string similar to Comma-separated codes: {0}..
         /// </summary>
-        public static string EquipmentHint {
+        public static string EquipmentHintFormat {
             get {
-                return ResourceManager.GetString("EquipmentHint", resourceCulture);
+                return ResourceManager.GetString("EquipmentHintFormat", resourceCulture);
             }
         }
         
@@ -2632,6 +2632,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("OptionsPlaceholder", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown equipment code: '{0}'. Use only the codes listed below the field..
+        /// </summary>
+        public static string UnknownEquipmentCodeFormat {
+            get {
+                return ResourceManager.GetString("UnknownEquipmentCodeFormat", resourceCulture);
+            }
+        }
     }
 }

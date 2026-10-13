@@ -110,9 +110,17 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="form-label" for="course-equipment">@AdminRes.Equipment</label>
-                        <input id="course-equipment" class="form-control" maxlength="120" @bind="courseEquipment"
-                               aria-describedby="course-equipment-hint" />
-                        <small id="course-equipment-hint" class="form-text text-light-muted">@AdminRes.EquipmentHint</small>
+                        <input id="course-equipment"
+                               class="form-control @(unknownEquipmentCode is not null ? "is-invalid" : "")"
+                               maxlength="120"
+                               @bind="courseEquipment"
+                               aria-invalid="@(unknownEquipmentCode is not null ? "true" : null)"
+                               aria-describedby="@EquipmentDescribedBy" />
+                        @if (unknownEquipmentCode is not null)
+                        {
+                            <div id="course-equipment-error" class="invalid-feedback">@UnknownEquipmentCodeMessage</div>
+                        }
+                        <small id="course-equipment-hint" class="form-text text-light-muted">@EquipmentHint</small>
                     </div>
                     <div class="col-sm-6 col-md-4 mb-3">
                         <label class="form-label" for="course-weeks">@AdminRes.EstimatedWeeks</label>

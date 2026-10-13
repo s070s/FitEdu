@@ -3,7 +3,9 @@ using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Web;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Forms;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Common;
@@ -56,6 +58,7 @@ public partial class AdminCourseEdit
     private CourseLevel courseLevel = CourseLevel.Beginner;
     private FitnessGoal courseGoal = FitnessGoal.GeneralFitness;
     private string? courseEquipment;
+    private string? unknownEquipmentCode;
     private int? courseEstimatedWeeks;
     private int? courseSessionsPerWeek;
     private string? courseCoverExerciseSlug;
@@ -177,6 +180,17 @@ public partial class AdminCourseEdit
 
     // ── Cover exercise ──
 
+    // Built from the domain list, so the hint never drifts from the codes the API accepts.
+    private static readonly string KnownEquipmentCodesText = string.Join(", ", Course.EquipmentCodes);
+
+    private static string EquipmentHint => ResourceFormat.Fill(AdminRes.EquipmentHintFormat, KnownEquipmentCodesText);
+
+    private string UnknownEquipmentCodeMessage => ResourceFormat.Fill(AdminRes.UnknownEquipmentCodeFormat, unknownEquipmentCode);
+
+    private string EquipmentDescribedBy => unknownEquipmentCode is not null
+        ? "course-equipment-error course-equipment-hint"
+        : "course-equipment-hint";
+
     private string CoverExerciseDescribedBy => coverExerciseSlugInvalid
         ? "course-cover-exercise-error course-cover-exercise-hint"
         : "course-cover-exercise-hint";
@@ -256,7 +270,9 @@ public partial class AdminCourseEdit
             // Same normal form as the API, so the page checks exactly the slug the server will.
             var coverExerciseSlug = SlugHelper.NormalizeTypedSlug(courseCoverExerciseSlug);
             coverExerciseSlugInvalid = !await CoverExerciseExistsAsync(coverExerciseSlug);
-            if (coverExerciseSlugInvalid)
+            // Same check as the API, so a typo names the bad code instead of a generic save failure.
+            unknownEquipmentCode = EquipmentCodeList.FindUnknownCode(courseEquipment);
+            if (coverExerciseSlugInvalid || unknownEquipmentCode is not null)
                 return;
 
             var request = new SaveCourseRequest(courseTitleEn, courseTitleEl, descEn, descEl, courseRequiredTier, categoryIdArg, newCategoryNameArg,

@@ -93,6 +93,33 @@ public class AdminCourseEditTests : BunitContext
     }
 
     [Fact]
+    public void Save_UnknownEquipmentCode_NamesTheCode_AndDoesNotSave()
+    {
+        var page = RenderNewCourse();
+
+        page.Find("#course-title-en").Change("Strength 101");
+        page.Find("#course-equipment").Change("dumbbells, Yoga-Mat");
+        ClickSave(page);
+
+        page.Find("#course-equipment").ClassList.ShouldContain("is-invalid");
+        var error = page.Find("#course-equipment-error").TextContent;
+        error.ShouldContain("yoga-mat");
+        error.ShouldNotContain("{0}");
+        _courseConsumer.DidNotReceive().CreateCourseAsync(Arg.Any<SaveCourseRequest>());
+    }
+
+    [Fact]
+    public void EquipmentHint_ListsEveryKnownCode()
+    {
+        var page = RenderNewCourse();
+
+        var hint = page.Find("#course-equipment-hint").TextContent;
+
+        foreach (var code in FitEdu.Domain.Entities.Course.EquipmentCodes)
+            hint.ShouldContain(code);
+    }
+
+    [Fact]
     public void Save_SendsFitnessFields()
     {
         _exerciseConsumer.GetBySlugAsync("barbell-squat", Arg.Any<string>()).Returns(Detail("barbell-squat"));
@@ -115,6 +142,7 @@ public class AdminCourseEditTests : BunitContext
         _savedRequest.SessionsPerWeek.ShouldBe(3);
         _savedRequest.CoverExerciseSlug.ShouldBe("barbell-squat");
         page.FindAll("#course-cover-exercise-error").ShouldBeEmpty();
+        page.FindAll("#course-equipment-error").ShouldBeEmpty();
     }
 
     [Fact]
