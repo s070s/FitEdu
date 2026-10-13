@@ -1,10 +1,8 @@
 @page "/"
 
 <PageTitle>@HomeRes.PageTitle</PageTitle>
-<SeoHead Title="@HomeRes.PageTitle"
-         Description="@HomeRes.HeroSubtitle"
-         CanonicalUrl="/"
-         ImageUrl="/images/og-home.jpg" />
+@* The default description (hero subtitle) and share image are the home ones. *@
+<SeoHead Title="@HomeRes.PageTitle" CanonicalUrl="/" />
 
 @if (_isAuthenticated)
 {

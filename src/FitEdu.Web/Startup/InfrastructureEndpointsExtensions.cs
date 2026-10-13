@@ -222,8 +222,8 @@ public static class InfrastructureEndpointsExtensions
         app.MapGet("/sitemap.xml", async (IBlogArticleService blog, IExerciseService exercises, ILearningPathService paths,
             IConfiguration sitemapConfig, IMemoryCache sitemapCache, HttpContext ctx) =>
         {
-            var baseUrl = sitemapConfig["Sitemap:BaseUrl"]
-                ?? throw new InvalidOperationException("Sitemap:BaseUrl is not configured.");
+            var baseUrl = sitemapConfig[SitemapBuilder.BaseUrlSetting]
+                ?? throw new InvalidOperationException($"{SitemapBuilder.BaseUrlSetting} is not configured.");
 
             // Cache the rendered XML for 30 minutes — avoids a DB hit + StringBuilder allocation on every crawler request.
             var xml = await sitemapCache.GetOrCreateAsync("sitemap.xml", async entry =>

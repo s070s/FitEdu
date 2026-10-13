@@ -10,6 +10,12 @@ namespace FitEdu.Web.Services;
 /// </summary>
 public sealed class SitemapBuilder
 {
+    /// <summary>
+    /// The public site address setting. Canonical links (SeoHead) read the same key, so they
+    /// match the sitemap URLs.
+    /// </summary>
+    public const string BaseUrlSetting = "Sitemap:BaseUrl";
+
     private const string DateFormat = "yyyy-MM-dd";
 
     private readonly string _escapedBaseUrl;

@@ -30,9 +30,6 @@
     private const string SiteName = "FitEdu";
     private const string DefaultImagePath = "/images/og-home.jpg";
 
-    // The sitemap builds its URLs from the same setting, so canonical links and the sitemap agree.
-    private const string SiteBaseUrlSetting = "Sitemap:BaseUrl";
-
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
 
     /// <summary>Falls back to the site description (the home hero subtitle) when empty.</summary>
@@ -65,7 +62,8 @@
         if (isAbsoluteWebUrl)
             return urlOrPath;
 
-        var siteBaseUrl = Configuration[SiteBaseUrlSetting];
+        // The sitemap builds its URLs from the same setting, so canonical links and the sitemap agree.
+        var siteBaseUrl = Configuration[SitemapBuilder.BaseUrlSetting];
         if (string.IsNullOrWhiteSpace(siteBaseUrl))
             siteBaseUrl = Navigation.BaseUri;
 
