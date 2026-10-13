@@ -73,6 +73,20 @@ public class MemberPagesTests : BunitContext
     }
 
     [Fact]
+    public void MyCertificates_KeptCertificatesOnAPlanWithoutCertificates_SaysTheyStayTheMembers()
+    {
+        var certificate = new CertificateDto(Guid.NewGuid(), Guid.NewGuid(), "Alice Johnson", "Couch to 5K", DateTime.UtcNow, "Active");
+        _certificateConsumer.GetMyCertificatesAsync(Arg.Any<string>()).Returns([certificate]);
+        _subscriptionConsumer.GetStatusAsync().Returns(new UserSubscriptionStatusDto(
+            SubscriptionTier.Free, "Free", DateTime.UtcNow, null, false, new PlanFeaturesDto { CertificateAccess = false }));
+
+        var page = Render<MyCertificates>();
+
+        page.Find(".certificates-head__lead").TextContent.ShouldBe(CertificateRes.SubtitleKeptCertificates);
+        page.FindAll(".certificate-card").Count.ShouldBe(1);
+    }
+
+    [Fact]
     public void Notifications_UnreadRow_IsMarkedAndOffersMarkRead()
     {
         ReturnNotifications(Notification(isRead: false), Notification(isRead: true));

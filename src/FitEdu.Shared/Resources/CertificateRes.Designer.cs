@@ -362,5 +362,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("PdfVerificationIdFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your certificates stay yours. Upgrade to Pro to earn new ones..
+        /// </summary>
+        public static string SubtitleKeptCertificates {
+            get {
+                return ResourceManager.GetString("SubtitleKeptCertificates", resourceCulture);
+            }
+        }
     }
 }

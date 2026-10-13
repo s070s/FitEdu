@@ -25,6 +25,18 @@ public partial class MyCertificates
 
     private bool HasNoCertificates => _certificates is null || _certificates.Count == 0;
 
+    // Without Pro, a member who already earned certificates is told they keep them, not "certificates come with Pro".
+    private string LeadText
+    {
+        get
+        {
+            if (_certificateAccess)
+                return CertificateRes.Subtitle;
+
+            return HasNoCertificates ? CertificateRes.SubtitleNoAccess : CertificateRes.SubtitleKeptCertificates;
+        }
+    }
+
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 

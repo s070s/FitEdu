@@ -8,7 +8,7 @@
     <header class="certificates-head">
         <span class="eyebrow"><span class="bi @AppIcons.Certificate" aria-hidden="true"></span> @NavMenuRes.Certificates</span>
         <h1>@CertificateRes.Heading</h1>
-        <p class="certificates-head__lead">@(_certificateAccess ? CertificateRes.Subtitle : CertificateRes.SubtitleNoAccess)</p>
+        <p class="certificates-head__lead">@LeadText</p>
     </header>
 
     @if (_loading)

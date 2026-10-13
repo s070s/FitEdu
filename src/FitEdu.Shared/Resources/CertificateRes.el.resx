@@ -193,7 +193,7 @@
     <value>Κωδικός επαλήθευσης</value>
   </data>
   <data name="SubtitleNoAccess" xml:space="preserve">
-    <value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση και κάθε πρόγραμμα που ολοκληρώνεις σού χαρίζει ένα, που μπορεί να το επαληθεύσει οποιοσδήποτε.</value>
+    <value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση και κάθε πρόγραμμα που ολοκληρώνεις σού χαρίζει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
   </data>
   <data name="UpgradeDescription" xml:space="preserve">
     <value>Ολοκλήρωσε ένα πρόγραμμα με το Pro και πάρε πιστοποιητικό με σύνδεσμο επαλήθευσης που μπορείς να μοιραστείς.</value>
@@ -221,5 +221,8 @@
   </data>
   <data name="PdfVerificationIdFormat" xml:space="preserve">
     <value>Κωδικός επαλήθευσης: {0}</value>
+  </data>
+  <data name="SubtitleKeptCertificates" xml:space="preserve">
+    <value>Τα πιστοποιητικά σου μένουν δικά σου. Κάνε αναβάθμιση σε Pro για να κερδίζεις καινούργια.</value>
   </data>
 </root>

@@ -203,4 +203,7 @@
 	<data name="PdfVerificationIdFormat" xml:space="preserve">
 		<value>Verification ID: {0}</value>
 	</data>
+	<data name="SubtitleKeptCertificates" xml:space="preserve">
+		<value>Your certificates stay yours. Upgrade to Pro to earn new ones.</value>
+	</data>
 </root>
