@@ -176,6 +176,12 @@ public class AssistantIndexingService(
     /// "Exercises: Pushups (chest, triceps); Plank (abdominals)" in list order, so a search for an
     /// exercise or a muscle finds the workouts that train it. Null for a lesson without exercises.
     /// </summary>
+    /// <remarks>
+    /// Deliberate choices: every prescribed exercise is listed, published or not, because the lesson
+    /// page shows them all (CourseService does not filter them). The Greek chunk keeps the English
+    /// label like its English header labels, and the English muscle values, which are the fixed
+    /// library vocabulary the coach's search_exercises filter takes; the embedding model is multilingual.
+    /// </remarks>
     private static string? DescribeExercises(Lesson lesson, bool isEl)
     {
         if (lesson.Exercises.Count == 0)
