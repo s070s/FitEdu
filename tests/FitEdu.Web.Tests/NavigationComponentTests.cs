@@ -187,7 +187,7 @@ public class NavigationComponentTests : BunitContext
     }
 
     [Fact]
-    public void NavItems_EachRoleHasAtMostFiveTabs()
+    public void NavItems_GuestsGetFourTabsAndMembersFive()
     {
         NavItems.Guest.Count(item => item.InBottomNav).ShouldBe(4);
         NavItems.Student.Count(item => item.InBottomNav).ShouldBe(5);
