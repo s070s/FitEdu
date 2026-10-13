@@ -20,8 +20,8 @@
     .chat-container {
         flex-direction: column;
         height: auto;
-        min-height: calc(100vh - 120px);
-        min-height: calc(100dvh - 120px);
+        /* Header, the bottom tab bar and the page padding (BottomNav.razor) */
+        min-height: calc(100dvh - var(--nav-height) - var(--bottom-nav-height) - env(safe-area-inset-bottom) - 3.5rem);
         border-radius: 0.375rem;
     }
 
