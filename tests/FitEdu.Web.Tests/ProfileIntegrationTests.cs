@@ -53,6 +53,36 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task UpdateProfile_SavesTheGoalAndANullGoalClearsIt()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var saved = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Goal", "Setter", null, null, UserStatus.Advanced, FitnessGoal.Endurance)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+        var reloaded = await client.GetFromJsonAsync<ProfileDto>("/api/profile");
+        var cleared = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Goal", "Setter", null, null, UserStatus.Advanced, Goal: null)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+
+        saved!.Goal.ShouldBe(FitnessGoal.Endurance);
+        reloaded!.Goal.ShouldBe(FitnessGoal.Endurance);
+        reloaded.Status.ShouldBe(UserStatus.Advanced);
+        cleared!.Goal.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateProfile_UnknownGoalValue_Returns400()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var response = await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Bad", "Goal", null, null, UserStatus.Beginner, (FitnessGoal)42));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task ChangePassword_ExceedsPerUserRateLimit_Returns429()
     {
         // SEC-3: change-password had no back-pressure at all. The limiter counts every request

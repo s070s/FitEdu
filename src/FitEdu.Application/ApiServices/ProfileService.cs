@@ -34,6 +34,7 @@ public class ProfileService(
         user.DisplayName = request.DisplayName?.Trim();
         user.DateOfBirth = request.DateOfBirth;
         user.Status = request.Status == UserStatus.Unknown ? UserStatus.Beginner : request.Status;
+        user.Goal = request.Goal;
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
@@ -161,6 +162,7 @@ public class ProfileService(
         user.DisplayName,
         user.AvatarPath,
         user.DateOfBirth,
-        user.Status
+        user.Status,
+        user.Goal
     );
 }

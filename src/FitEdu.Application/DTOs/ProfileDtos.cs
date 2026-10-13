@@ -14,18 +14,21 @@ public record ProfileDto(
     string? DisplayName,
     string? AvatarPath,
     DateOnly? DateOfBirth,
-    UserStatus Status
+    UserStatus Status,
+    FitnessGoal? Goal = null
 );
 
 /// <summary>
-/// Request to update user profile.
+/// Request to update user profile. Status is the training level; a null Goal clears the
+/// user's training goal.
 /// </summary>
 public record UpdateProfileRequest(
     [Required, MaxLength(100)] string FirstName,
     [Required, MaxLength(100)] string LastName,
     [MaxLength(100)] string? DisplayName,
     DateOnly? DateOfBirth,
-    UserStatus Status
+    UserStatus Status,
+    [EnumDataType(typeof(FitnessGoal))] FitnessGoal? Goal = null
 );
 
 /// <summary>
