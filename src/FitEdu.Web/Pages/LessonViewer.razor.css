@@ -340,8 +340,9 @@
     font-weight: 700;
 }
 
+/* Below the completion bar, in the flow. */
 .progress-update {
-    flex: 1 1 12rem;
+    margin: calc(-1 * var(--space-2)) 0 var(--space-5);
     color: var(--text-light-muted);
     font-size: 0.9375rem;
 }
@@ -389,6 +390,20 @@
 
     .btn-success {
         flex: 0 0 auto;
+    }
+}
+
+/* The docked next-lesson button sits on the indicator's line. From 768 px the bar is in the flow
+   right above the previous / next links, so the button would only repeat them. */
+.lesson-actions__next {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding-inline: 1.125rem;
+}
+
+@media (min-width: 768px) {
+    .lesson-actions__next {
+        display: none;
     }
 }
 

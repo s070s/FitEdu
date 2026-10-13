@@ -53,6 +53,7 @@ public static class ExerciseMappings
     {
         var exercise = prescription.Exercise;
         return new LessonExerciseDto(
+            prescription.Id,
             exercise.Id,
             exercise.Slug,
             Localized.Pick(isEl, exercise.NameEn, exercise.NameEl),

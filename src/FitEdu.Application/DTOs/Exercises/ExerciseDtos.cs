@@ -73,9 +73,11 @@ public record ExerciseFacetsDto(
 }
 
 /// <summary>
-/// An exercise as prescribed inside a lesson (sets, reps, rest and coaching notes).
+/// An exercise as prescribed inside a lesson (sets, reps, rest and coaching notes). Id is the
+/// prescription's own id: a lesson may list the same exercise (ExerciseId) more than once.
 /// </summary>
 public record LessonExerciseDto(
+    Guid Id,
     Guid ExerciseId,
     string Slug,
     string Name,

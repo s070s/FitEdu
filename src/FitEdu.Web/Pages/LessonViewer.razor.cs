@@ -52,7 +52,8 @@ public partial class LessonViewer
     private int TotalSets => Exercises.Sum(exercise => exercise.Sets ?? 0);
 
     // The completion bar sticks to the bottom of the screen while the lesson is still to do, and right
-    // after a completion so its confirmation stays in view. A lesson completed earlier shows it in the flow.
+    // after a completion so its confirmation and the next-lesson button stay in view (the progress
+    // details sit in the flow below it). A lesson completed earlier shows the bar in the flow.
     private bool IsActionBarDocked => _lesson is { IsCompleted: false } || _completionResult is not null;
 
     /// <summary>The lesson's 1-based place in the course ("Lesson 3 of 12"), or 0 when the outline did not load.</summary>

@@ -63,6 +63,7 @@ public class LessonViewerTests : BunitContext
 
     private static LessonExerciseDto Prescription(string slug, string name, int? sets, string? reps) => new(
         Guid.NewGuid(),
+        Guid.NewGuid(),
         slug,
         name,
         Equipment: "body only",
@@ -404,6 +405,27 @@ public class LessonViewerTests : BunitContext
         var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
 
         cut.Find(".lesson-actions").ClassList.ShouldNotContain("sticky-bottom-bar");
+    }
+
+    [Fact]
+    public void MarkComplete_DocksOnlyTheIndicatorAndNextLesson()
+    {
+        var nextLessonId = Guid.NewGuid();
+        var lesson = Lesson(isCompleted: false, nextLessonId: nextLessonId);
+        _courseService.GetLessonAsync(_lessonId, Arg.Any<string>()).Returns(lesson);
+        _courseService.CompleteLessonAsync(_lessonId).Returns(
+            new LessonCompletionResultDto(true, "ok", CompletedLessons: 5, TotalLessons: 5, ProgressPercent: 100,
+                CourseCompleted: true, CertificatePending: true));
+
+        var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
+        cut.Find(".btn-success").Click();
+
+        var dock = cut.Find(".lesson-actions--docked");
+        dock.QuerySelector(".completed-indicator").ShouldNotBeNull();
+        dock.QuerySelector(".lesson-actions__next")!.GetAttribute("href").ShouldBe($"/lessons/{nextLessonId}");
+        dock.QuerySelector(".progress-update").ShouldBeNull();
+        cut.Find(".progress-update .course-completed").ShouldNotBeNull();
+        cut.Find(".progress-update__certificate").ShouldNotBeNull();
     }
 
     [Fact]

@@ -510,6 +510,7 @@ public class FitnessComponentTests : BunitContext
 
     private static LessonExerciseDto Prescription() => new(
         Guid.NewGuid(),
+        Guid.NewGuid(),
         "bodyweight-squat",
         "Bodyweight squat",
         "body only",

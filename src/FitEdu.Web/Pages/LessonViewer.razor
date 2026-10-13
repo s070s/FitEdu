@@ -136,7 +136,7 @@ else
                     {
                         var exerciseNumber = index + 1;
                         var exercise = Exercises[index];
-                        <li @key="exerciseNumber">
+                        <li @key="exercise.Id">
                             <ExerciseCard Prescription="exercise" Position="exerciseNumber" />
                         </li>
                     }
@@ -156,28 +156,37 @@ else
             else
             {
                 <span class="completed-indicator"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @LessonRes.CompletedIndicator</span>
+                @* Right after a completion the phone dock offers the next lesson; the full links follow below. *@
+                @if (_completionResult is not null && _lesson.NextLessonId is { } dockedNextLessonId)
+                {
+                    <a class="btn btn-success lesson-actions__next" href="@LessonHref(dockedNextLessonId)">
+                        @LessonRes.NextLesson <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                    </a>
+                }
             }
 
             @if (_completionError is not null)
             {
                 <p class="text-danger lesson-actions__error" role="alert">@_completionError</p>
             }
-
-            @if (_completionResult is not null)
-            {
-                <div class="progress-update" role="status">
-                    @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _progress?.Percent ?? 0)
-                    @if (_completionResult.CourseCompleted)
-                    {
-                        <span class="course-completed"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @LessonRes.CourseCompleted</span>
-                    }
-                    @if (_completionResult.CertificatePending)
-                    {
-                        <p class="progress-update__certificate">@LessonRes.CertificatePending</p>
-                    }
-                </div>
-            }
         </div>
+
+        @* In the flow, not in the dock: the progress line, trophy and certificate note would make the
+           docked bar several lines tall on a phone. *@
+        @if (_completionResult is not null)
+        {
+            <div class="progress-update" role="status">
+                @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _progress?.Percent ?? 0)
+                @if (_completionResult.CourseCompleted)
+                {
+                    <span class="course-completed"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @LessonRes.CourseCompleted</span>
+                }
+                @if (_completionResult.CertificatePending)
+                {
+                    <p class="progress-update__certificate">@LessonRes.CertificatePending</p>
+                }
+            </div>
+        }
 
         <nav class="lesson-navigation @(_lesson.IsCompleted ? "lesson-navigation--ready" : "")" aria-label="@LessonRes.LessonNavigationLabel">
             @if (_lesson.PreviousLessonId is { } previousLessonId)
