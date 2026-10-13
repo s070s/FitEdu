@@ -34,3 +34,18 @@ test( 'switching to Greek renders the courses page in Greek', async ( { page } )
     const bodyText = await page.locator( 'body' ).innerText();
     expect( bodyText ).toMatch( /[Α-ω]/ );
 } );
+
+test( 'exercises page renders library cards', async ( { page } ) => {
+    // Public page: no login. The cards come from the exercise library through the loopback consumer.
+    await page.goto( '/exercises' );
+    await waitForCircuit( page );
+
+    const cards = page.locator( '.exercise-card' );
+    await expect( cards.first() ).toBeVisible( { timeout: 15_000 } );
+    expect( await cards.count() ).toBeGreaterThan( 0 );
+
+    // Each card is one link to its exercise page, which shows its name.
+    await cards.first().locator( 'a.stretched-link' ).click();
+    await expect( page ).toHaveURL( /\/exercises\/[a-z0-9-]+$/ );
+    await expect( page.locator( '.exercise-detail h1' ) ).toBeVisible( { timeout: 15_000 } );
+} );
