@@ -2,7 +2,8 @@
 
 <PageTitle>@HomeRes.PageTitle</PageTitle>
 @* The default description (hero subtitle) and share image are the home ones. *@
-<SeoHead Title="@HomeRes.PageTitle" CanonicalUrl="/" />
+@* Guests see the hero photo first, so the browser fetches it before the CSS asks for it. *@
+<SeoHead Title="@HomeRes.PageTitle" CanonicalUrl="/" PreloadImageUrl="@(_isAuthenticated ? null : backgroundImageUrl)" />
 
 @if (_isAuthenticated)
 {

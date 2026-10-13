@@ -149,5 +149,26 @@ public class SeoHeadTests : BunitContext
 
         Attribute(head, "link[rel=canonical]", "href").ShouldBe("https://tests.local/");
         Attribute(head, "meta[property='og:image']", "content").ShouldBe("https://tests.local/images/og-home.jpg");
+        // A guest lands on the hero, so its photo is preloaded.
+        Attribute(head, "link[rel=preload][as=image]", "href").ShouldBe("/images/hero-home.webp");
+    }
+
+    [Fact]
+    public void PreloadImage_IsAddedOnlyWhenAPageAsksForOne()
+    {
+        UseSiteBaseUrl(SiteBaseUrl);
+        var head = RenderHeadOutlet();
+
+        var seo = Render<SeoHead>(parameters => parameters
+            .Add(component => component.Title, "Pricing")
+            .Add(component => component.CanonicalUrl, "/pricing"));
+        head.FindAll("link[rel=preload]").ShouldBeEmpty();
+
+        seo.Render(parameters => parameters.Add(component => component.PreloadImageUrl, "images/hero-home.webp"));
+
+        var preload = head.Find("link[rel=preload]");
+        preload.GetAttribute("as").ShouldBe("image");
+        preload.GetAttribute("href").ShouldBe("images/hero-home.webp");
+        preload.GetAttribute("fetchpriority").ShouldBe("high");
     }
 }

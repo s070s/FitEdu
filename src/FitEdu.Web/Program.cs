@@ -101,7 +101,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseFitEduSecurityHeaders();
 
-app.UseStaticFiles();
+app.UseStaticFiles(StaticFileCaching.CreateOptions());
 app.UseRequestLocalization();
 
 // Disabled-user enforcement is handled by two mechanisms:

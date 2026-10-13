@@ -24,6 +24,12 @@
     <link rel="alternate" hreflang="en" href="@_canonicalUrl" />
     <link rel="alternate" hreflang="el" href="@_canonicalUrl" />
     <link rel="alternate" hreflang="x-default" href="@_canonicalUrl" />
+
+    @* Only one HeadContent shows per page, so a page-level preload goes through this component. *@
+    @if (!string.IsNullOrWhiteSpace(PreloadImageUrl))
+    {
+        <link rel="preload" as="image" href="@PreloadImageUrl" fetchpriority="high" />
+    }
 </HeadContent>
 
 @code {
@@ -42,6 +48,9 @@
     [Parameter] public string? ImageUrl { get; set; }
 
     [Parameter] public string OgType { get; set; } = "website";
+
+    /// <summary>Optional above-the-fold image (e.g. a hero photo) the browser should fetch early.</summary>
+    [Parameter] public string? PreloadImageUrl { get; set; }
 
     private string _description = string.Empty;
     private string _canonicalUrl = string.Empty;
