@@ -477,6 +477,20 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
+    public void GreekResx_BoldWordsMidSentenceStayLowercase()
+    {
+        var greekValues = LoadAllGreekResxValues();
+
+        var capitalisedBoldValues = greekValues
+            .Where(value => GreekCapitalisedBoldMidSentenceRegex().IsMatch(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .ToList();
+
+        greekValues.ShouldNotBeEmpty();
+        capitalisedBoldValues.ShouldBeEmpty("bold does not make a Greek word a heading (<strong>ενότητες</strong>, not <strong>Ενότητες</strong>)");
+    }
+
+    [Fact]
     public void CourseRes_HasALabelForEveryLevelGoalAndEquipmentCode()
     {
         var expectedKeys = Enum.GetNames<CourseLevel>().Select(name => $"Level_{name}")
@@ -816,6 +830,11 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+(?:(?: [α-ωά-ώ]{1,3})? | ?[&/] ?)[ΆΈ-ΏΑ-Ω][ά-ώ]+|\b[ΆΈ-ΏΑ-Ω][ά-ώ]{1,3}\. [ΆΈ-ΏΑ-Ω][ά-ώ]+",
         RegexOptions.CultureInvariant)]
     private static partial Regex GreekTitleCaseRegex();
+
+    // A bold Greek word that starts with a capital right after a lowercase word or a comma, so in
+    // the middle of a sentence: "να προσθέσεις <strong>Ενότητες</strong>".
+    [GeneratedRegex(@"[α-ωά-ώϊϋΐΰ,] <strong>[ΆΈ-ΏΑ-Ω]", RegexOptions.CultureInvariant)]
+    private static partial Regex GreekCapitalisedBoldMidSentenceRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and
