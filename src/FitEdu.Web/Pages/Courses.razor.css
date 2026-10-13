@@ -131,11 +131,70 @@
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
 }
 
+/* Per-page select: a pill like the search box, tall enough to tap. */
+.page-size-selector select {
+    min-height: var(--tap-min);
+    padding-block: 0;
+    border-color: var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-surface);
+    color: var(--text-strong-normal);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+    .page-size-selector select:focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
 .courses-pagination {
     display: flex;
     justify-content: center;
     margin-top: var(--space-6);
 }
+
+    /* PaginationNav renders plain Bootstrap buttons; here they become pills that match the chips. */
+    .courses-pagination ::deep .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        min-height: var(--tap-min);
+        padding: 0 1.1rem;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-pill);
+        background-color: var(--bg-surface);
+        color: var(--text-strong-normal);
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+
+    .courses-pagination ::deep .btn:hover:not(:disabled) {
+        border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+        background-color: var(--bg-surface);
+        color: var(--text-strong-accent);
+    }
+
+    .courses-pagination ::deep .btn:focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
+    .courses-pagination ::deep .btn:disabled {
+        border-color: rgba(var(--border-subtle-rgb), 0.12);
+        background-color: transparent;
+        color: var(--text-light-muted);
+        opacity: 0.6;
+    }
+
+    .courses-pagination ::deep .small {
+        padding-inline: var(--space-2);
+        color: var(--text-light-normal);
+        font-variant-numeric: tabular-nums;
+    }
 
 @media (min-width: 768px) {
     .courses-grid {

@@ -1,5 +1,7 @@
 /* Mobile first: search row, then one swipeable chip row per group. From 768 px every group is a
-   labelled row whose chips wrap. The chip groups are FilterChipGroup children (hence ::deep). */
+   labelled row whose chips wrap. The chip groups are FilterChipGroup children (hence ::deep).
+   Not sticky on purpose: with goal, level and equipment rows the bar is too tall to pin under
+   the header without hiding most of the results. */
 .category-filter-bar {
     display: grid;
     gap: var(--space-4);
