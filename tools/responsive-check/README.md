@@ -37,16 +37,17 @@ that is not possible, rather than checking the "not enrolled" page.
   which loads an existing **playwright-core** (`PLAYWRIGHT_CORE`, required) and starts the
   installed **Chrome** (`CHROME_PATH`); see [`tools/assets/README.md`](../assets/README.md).
 - The app running with the Development seed data, for example the `fitedu-main` preview server on
-  `http://localhost:5090`.
+  `http://127.0.0.1:5090` (use 127.0.0.1: Node may resolve `localhost` to IPv6, where the dev
+  server does not listen).
 
 ## Running
 
 ```bash
 FITEDU_STUDENT_PASSWORD=... FITEDU_ADMIN_PASSWORD=... \
-  node tools/responsive-check/check-pages.mjs http://localhost:5090 /path/to/output
+  node tools/responsive-check/check-pages.mjs http://127.0.0.1:5090 /path/to/output
 ```
 
-- Argument 1: the app's base URL (default `http://localhost:5090`).
+- Argument 1: the app's base URL (default `http://127.0.0.1:5090`).
 - Argument 2: the output folder (default: `fitedu-responsive-check` in the system temp folder). It
   gets `report.json`, `report.md` and `screenshots/` (a first-screen and a full-page JPEG per
   visit). Keep it outside the repo.
