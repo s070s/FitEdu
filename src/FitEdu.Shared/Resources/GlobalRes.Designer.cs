@@ -823,5 +823,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("DevResetPasswordHint", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Go to login.
+        /// </summary>
+        public static string Label_GoToLogin {
+            get {
+                return ResourceManager.GetString("Label_GoToLogin", resourceCulture);
+            }
+        }
     }
 }

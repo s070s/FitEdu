@@ -372,4 +372,7 @@
     <data name="DevResetPasswordHint" xml:space="preserve">
       <value>Άλλαξε τον κωδικό απευθείας</value>
     </data>
+  <data name="Label_GoToLogin" xml:space="preserve">
+    <value>Πήγαινε στη σύνδεση</value>
+  </data>
 </root>

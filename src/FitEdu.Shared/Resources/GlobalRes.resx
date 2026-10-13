@@ -372,4 +372,7 @@
     <data name="DevResetPasswordHint" xml:space="preserve">
       <value>Reset the password directly</value>
     </data>
+  <data name="Label_GoToLogin" xml:space="preserve">
+    <value>Go to login</value>
+  </data>
 </root>

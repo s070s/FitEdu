@@ -4,6 +4,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Pages;
 using FitEdu.Web.Shared.Components.Data;
 using FitEdu.Web.Shared.Components.Layout;
@@ -103,6 +104,37 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("form").Submit();
 
         _authService.Received(1).RegisterAsync(Arg.Is<RegisterRequestDto>(request => request.Goal == null));
+    }
+
+    [Fact]
+    public void Register_Success_ReplacesTheFormWithTheResultAndALoginLink()
+    {
+        // On a phone the alert above a long form was out of sight; the result now takes the form's place.
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.FindAll("form").ShouldBeEmpty();
+        page.Find(".register-success .alert-success").TextContent.ShouldContain(SuccessMessagesRes.RegistrationSuccess);
+        page.Find(".register-success__login").GetAttribute("href").ShouldBe("/login");
+    }
+
+    [Fact]
+    public void Register_ServerError_ShowsAnAlertRightAboveTheSubmitButton()
+    {
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Message = "failed", Errors = ["Email 'maria@fitedu.local' is already taken."] });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var feedback = page.Find("form .register-errors");
+        feedback.GetAttribute("role").ShouldBe("alert");
+        feedback.TextContent.ShouldContain(ErrorMessagesRes.EmailTakenError);
+        feedback.NextElementSibling!.GetAttribute("type").ShouldBe("submit");
     }
 
     [Fact]
