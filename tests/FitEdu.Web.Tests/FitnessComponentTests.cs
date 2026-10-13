@@ -458,7 +458,7 @@ public class FitnessComponentTests : BunitContext
 
     [Theory]
     [InlineData("Strength", "Δύναμη")]
-    [InlineData("Cardio", "Καρδιο")]
+    [InlineData("Cardio", "Κάρντιο")]
     [InlineData("Mobility", "Κινητικότητα")]
     [InlineData("Core", "Κορμός")]
     [InlineData("Recovery", "Αποκατάσταση")]

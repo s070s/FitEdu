@@ -43,7 +43,7 @@ the fitness fields seed with the defaults above.
 The seeder accepts files with fields left out, but the shipped catalogue is held to a stricter rule:
 `SeedContentIntegrityTests` (`tests/FitEdu.Infrastructure.Tests`) fails when a course here lacks a
 Greek text, misspells a field name, uses a level, goal, tier or equipment code outside the lists
-above, uses a category other than Strength (Δύναμη), Cardio (Καρδιο), Mobility (Κινητικότητα), Core
+above, uses a category other than Strength (Δύναμη), Cardio (Κάρντιο), Mobility (Κινητικότητα), Core
 (Κορμός), Nutrition (Διατροφή), Recovery (Αποκατάσταση) or Performance (Απόδοση) with exactly that
 `categoryEl`, writes words in `reps`, or points at an exercise with no photos or no Greek name in
 `../Exercises/exercises.el.json` or `../Exercises/el/*.el.json`.

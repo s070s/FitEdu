@@ -96,7 +96,7 @@ One migration for all of the above: `FIT1_ExerciseLibraryAndFitnessFields`.
 
 ### 3.2 Content catalogue (all EN + EL)
 
-**Categories (7, created by `CategorySeedHelper` from course JSON):** Strength · Cardio · Mobility · Core · Nutrition · Recovery · Performance (EL: Δύναμη · Καρδιο · Κινητικότητα · Κορμός · Διατροφή · Αποκατάσταση · Απόδοση).
+**Categories (7, created by `CategorySeedHelper` from course JSON):** Strength · Cardio · Mobility · Core · Nutrition · Recovery · Performance (EL: Δύναμη · Κάρντιο · Κινητικότητα · Κορμός · Διατροφή · Αποκατάσταση · Απόδοση).
 
 **Courses (19)** — file `src/FitEdu.Shared/JSON/Courses/<slug>.json` (old files deleted):
 

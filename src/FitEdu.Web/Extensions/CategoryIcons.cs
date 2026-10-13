@@ -14,7 +14,7 @@ public static class CategoryIcons
         ["Strength"] = "bi-lightning-charge",
         ["Δύναμη"] = "bi-lightning-charge",
         ["Cardio"] = "bi-heart-pulse",
-        ["Καρδιο"] = "bi-heart-pulse",
+        ["Κάρντιο"] = "bi-heart-pulse",
         ["Mobility"] = "bi-person-arms-up",
         ["Κινητικότητα"] = "bi-person-arms-up",
         ["Core"] = "bi-bullseye",

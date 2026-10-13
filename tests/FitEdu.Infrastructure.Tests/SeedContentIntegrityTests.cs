@@ -41,7 +41,7 @@ public partial class SeedContentIntegrityTests
     private static readonly Dictionary<string, string> CourseCategoryGreekNames = new(StringComparer.Ordinal)
     {
         ["Strength"] = "Δύναμη",
-        ["Cardio"] = "Καρδιο",
+        ["Cardio"] = "Κάρντιο",
         ["Mobility"] = "Κινητικότητα",
         ["Core"] = "Κορμός",
         ["Nutrition"] = "Διατροφή",
