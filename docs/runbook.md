@@ -88,7 +88,8 @@ To pick up changed seed files:
    exercise library (before the courses, because lessons link exercises by slug), courses,
    assessments, students, learning paths and the Home showcase.
 4. Check the startup log: a fresh database gets 873 exercises, 19 courses, 19 assessments,
-   4 learning paths, 6 testimonials, 6 live classes and 10 students. An unknown exercise slug or
+   4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) and, in the
+   background, the bulk students (`SeedData:BulkStudentCount`, default 10). An unknown exercise slug or
    course title stops the seed with a `SeedContentException` that names the bad value.
 
 The exercise photos are static files (`wwwroot/images/exercises/<slug>/`), not database rows, so a
