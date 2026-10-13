@@ -26,10 +26,10 @@ NOT examined: runtime rendering, real contrast measurements in a browser, JS int
 | Critical | 0 |
 | High | 0 |
 | Medium | 0 |
-| Low | 4 |
+| Low | 3 |
 | Info | 1 |
 
-The UI layer is in better shape than most student projects: a coherent dark-theme token set in `app.css`, a documented CSS consolidation rule that is followed throughout, a genuinely good mobile card-table transformation with 100% `data-label` coverage on all 12 data tables, a skip link, `aria-sort` on sortable headers (now styled — see UI-8, fixed), `aria-pressed` on the culture selector and category chips, visually-hidden text for icon-only cells, `role="log"`/`aria-live` on the chat pane, focus-trapped/focus-restoring modals, and a global `prefers-reduced-motion` kill-switch already in place. All six Medium findings (keyboard operability of the admin collapsible header, modal focus trap/restore, `.tier-badge` duplication, unstyled sort-indicator classes, Chat's unlabeled spinner, and unlabeled search inputs/filter chips) are fixed. What remains is Low/Info polish: static inline styles, table captions, a locale-coupled CSS hook, stray Bootstrap palette leaks, and one dropdown's keyboard model.
+The UI layer is in better shape than most student projects: a coherent dark-theme token set in `app.css`, a documented CSS consolidation rule that is followed throughout, a genuinely good mobile card-table transformation with 100% `data-label` coverage on all 12 data tables, a skip link, `aria-sort` on sortable headers (now styled — see UI-8, fixed), `aria-pressed` on the culture selector and category chips, visually-hidden text for icon-only cells, `role="log"`/`aria-live` on the chat pane, focus-trapped/focus-restoring modals, and a global `prefers-reduced-motion` kill-switch already in place. All six Medium findings (keyboard operability of the admin collapsible header, modal focus trap/restore, `.tier-badge` duplication, unstyled sort-indicator classes, Chat's unlabeled spinner, and unlabeled search inputs/filter chips) are fixed. What remains is Low/Info polish: static inline styles, table captions, stray Bootstrap palette leaks, and one dropdown's keyboard model.
 
 ## 3. Findings
 
@@ -45,12 +45,6 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 - **Impact:** Screen-reader table navigation announces an anonymous table.
 - **Recommendation:** Add an optional `AriaLabel`/`Caption` parameter to ScrollableTable (visually-hidden `<caption>`) and pass the page heading string at each call site.
 - **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Still open: Billing, Notifications and AssessmentHistory (the AdminAnalytics inline tables are named by their panel headings, D13).
-
-### UI-13: Mobile card-table CSS couples to localized label text values  [Low] [Effort: S]
-- **Evidence:** `wwwroot/css/shared-components.css:222-236` targets `td[data-label="Actions"]` and `td[data-label="Ενέργειες"]` to suppress the label and lay action buttons out horizontally. The values must stay in lockstep with `AdminRes.ColActions`, `CategoryRes.ColActions`, `AssessmentRes.Actions` (`AdminRes.resx:257-259`, `AdminRes.el.resx:276-278`, etc. — currently all aligned).
-- **Impact:** Renaming the resx value (or adding a third language) silently degrades every admin table's mobile action row into a mislabeled stacked cell — a failure no compiler or test catches.
-- **Recommendation:** Switch the hook to a locale-independent class (`<td class="actions-cell" data-label=…>`) and match `.table-responsive td.actions-cell` in the CSS; one mechanical sweep of the 10 action cells.
-- **Status (D12):** `shared-components.css` also matches `td.table-actions`, and the admin list pages use it. Still open: Notifications, AssessmentHistory and AdminCourseEdit; drop the `data-label` literal selectors once they move to the class.
 
 ### UI-14: Bootstrap default palette leaks into the themed UI  [Low] [Effort: S]
 - **Evidence:** `AssessmentHistory.razor:22` — `card-header bg-primary text-white` renders Bootstrap's stock blue header on the otherwise volt-lime (`--text-strong-accent`) theme; `AdminCourseEdit.razor:124` — `badge bg-light text-dark`; `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).
@@ -68,7 +62,6 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 |----|----------|--------|--------|
 | UI-11 | Low | S | Fold static inline styles into scoped CSS (with the deferred token sweep) |
 | UI-12 | Low | S | Add caption/aria-label parameter to ScrollableTable and pass at call sites |
-| UI-13 | Low | S | Replace `data-label="Actions"` CSS coupling with a locale-independent class |
 | UI-14 | Low | S | Purge `bg-primary text-white` / `bg-light text-dark` leaks |
 | UI-15 | Info | S | Downgrade AvatarDropdown to the disclosure pattern (or implement menu keys) |
 
