@@ -70,7 +70,10 @@
 
     @if (!_isEditMode)
     {
-        <div class="alert alert-info py-2">@PathRes.AddStepsHint</div>
+        <div class="alert alert-secondary py-2">
+            <span class="bi bi-info-circle" aria-hidden="true"></span>
+            @PathRes.AddStepsHint
+        </div>
     }
     else
     {

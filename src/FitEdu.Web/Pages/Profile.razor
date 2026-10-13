@@ -170,10 +170,7 @@
                     </ChildContent>
                 </FormCardSection>
 
-                @if (!string.IsNullOrEmpty(message))
-                {
-                    <div class="alert alert-info">@message</div>
-                }
+                <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
                 @if (!_isImpersonating)
                 {

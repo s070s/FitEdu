@@ -170,4 +170,33 @@ public class ProfilePageTests : BunitContext
 
         _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request => request.Goal == null));
     }
+
+    [Fact]
+    public void SaveProfile_Success_ShowsASuccessMessage()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns(AliceProfile);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-goal"));
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        var alert = page.Find(".alert[role=alert]");
+        alert.TextContent.ShouldContain(ProfileRes.ProfileUpdatedSuccess);
+        alert.ClassList.ShouldContain("alert-success");
+    }
+
+    [Fact]
+    public void SaveProfile_Failure_ShowsAnErrorMessage()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns((ProfileDto?)null);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-goal"));
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        var alert = page.Find(".alert[role=alert]");
+        alert.TextContent.ShouldContain(ProfileRes.ErrorUpdatingProfile);
+        alert.ClassList.ShouldContain("alert-danger");
+        alert.ClassList.ShouldNotContain("alert-info");
+    }
 }
