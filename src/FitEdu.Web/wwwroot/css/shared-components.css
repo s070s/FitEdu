@@ -396,12 +396,6 @@ input[type="date"].form-control,
     border: 1px solid var(--border-subtle);
 }
 
-/* WebKit: make the native calendar icon visible in dark theme */
-input[type="date"].form-control::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(1.05);
-    opacity: 0.9;
-}
-
 /* Keep focus ring consistent with app theme — see the global :focus-visible rule in app.css */
 input[type="date"].form-control:focus {
     box-shadow: none;
