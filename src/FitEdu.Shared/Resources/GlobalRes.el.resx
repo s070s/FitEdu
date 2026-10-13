@@ -283,7 +283,7 @@
     <value>Επιβεβαίωση</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Είσαι σίγουρος/η;</value>
+    <value>Σίγουρα θέλεις να συνεχίσεις;</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Άκυρο</value>

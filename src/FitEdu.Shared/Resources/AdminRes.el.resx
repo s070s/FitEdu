@@ -274,7 +274,7 @@
     <value>Μετακίνηση κάτω</value>
   </data>
   <data name="ResetSortToReorder" xml:space="preserve">
-    <value>Επανάφερε την ταξινόμηση στη σειρά εμφάνισης για να αλλάξεις τη σειρά</value>
+    <value>Για να αλλάξεις τη σειρά, επανάφερε πρώτα την προεπιλεγμένη ταξινόμηση</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Αφαίρεση</value>

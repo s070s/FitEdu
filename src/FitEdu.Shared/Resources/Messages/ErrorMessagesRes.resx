@@ -193,7 +193,7 @@
     <value>This programme requires a {0} subscription or higher. Please upgrade your plan.</value>
   </data>
   <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
-    <value>Your {0} plan allows up to {1} active programme(s). Please upgrade to enroll in more programmes.</value>
+    <value>You have reached the active programme limit of your {0} plan ({1}). Upgrade to join more.</value>
   </data>
   <data name="LessonNotFound" xml:space="preserve">
     <value>Lesson not found</value>

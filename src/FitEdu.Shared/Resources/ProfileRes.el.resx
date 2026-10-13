@@ -64,7 +64,7 @@
 		<value>Ονοματεπώνυμο:</value>
 	</data>
 	<data name="LabelDateOfBirth" xml:space="preserve">
-		<value>Ημ. Γέννησης:</value>
+		<value>Ημ. γέννησης:</value>
 	</data>
 	<data name="NotSpecified" xml:space="preserve">
 		<value>Δεν έχει οριστεί</value>

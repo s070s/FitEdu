@@ -67,7 +67,7 @@
 		<value>Rename</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Delete '{0}'? {1} programme(s) and {2} assessment(s) will become uncategorized.</value>
+		<value>Delete '{0}'? These will be left without a category: programmes {1}, assessments {2}.</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>No categories yet.</value>
