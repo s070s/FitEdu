@@ -1,6 +1,7 @@
 // Swipe rows (marked data-scroll-region) are a keyboard tab stop only while they really scroll.
 // On phones such a row scrolls sideways, so a keyboard user must be able to focus it to scroll it
 // with the arrow keys; on wider screens the row wraps into a grid and a tab stop there leads nowhere.
+// The markup starts each row as a tab stop (tabindex="0"), so it is reachable before this runs.
 // Blazor adds and replaces these rows as pages render, so rows added later are watched too, and
 // rows it removes are let go so the observer does not keep them alive.
 (function () {

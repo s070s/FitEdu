@@ -174,14 +174,16 @@ public class HomeLandingTests : BunitContext
 
         page.FindAll(".section-featured .course-card").Count.ShouldBe(2);
         page.Find(".section-featured a.course-card-link").TextContent.ShouldBe("Strength basics");
-        // The swipe row on phones is a named region; scroll-regions.js makes it a tab stop only
-        // while it scrolls, so the markup itself carries no tabindex.
+        // The swipe row on phones is a named region and a tab stop from the first (prerendered)
+        // paint; scroll-regions.js removes the tab stop once it sees the row does not scroll.
         var row = page.Find(".section-featured .featured-grid");
         row.HasAttribute("data-scroll-region").ShouldBeTrue();
-        row.HasAttribute("tabindex").ShouldBeFalse();
+        row.GetAttribute("tabindex").ShouldBe("0");
         row.GetAttribute("role").ShouldBe("region");
         row.GetAttribute("aria-labelledby").ShouldBe("featured-title");
-        page.Find(".testimonials-grid").HasAttribute("data-scroll-region").ShouldBeTrue();
+        var storiesRow = page.Find(".testimonials-grid");
+        storiesRow.HasAttribute("data-scroll-region").ShouldBeTrue();
+        storiesRow.GetAttribute("tabindex").ShouldBe("0");
     }
 
     [Fact]
