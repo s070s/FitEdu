@@ -12,3 +12,25 @@ window.inputInterop = {
         }
     }
 };
+
+// iOS Safari opens the on-screen keyboard only for a focus() made inside the tap itself, and
+// Blazor's own focus call (SiteSearchBox.OnAfterRenderAsync) arrives a server round trip later.
+// So the header search button opens its panel and focuses the field right here; the component
+// then renders the same open state.
+document.addEventListener('click', function (event) {
+    var toggle = event.target.closest ? event.target.closest('.site-search-toggle') : null;
+    if (!toggle) {
+        return;
+    }
+
+    var searchBox = toggle.closest('.site-search');
+    if (!searchBox || searchBox.classList.contains('site-search--expanded')) {
+        return; // this tap closes the panel
+    }
+
+    searchBox.classList.add('site-search--expanded');
+    var input = searchBox.querySelector('.site-search-input');
+    if (input) {
+        input.focus();
+    }
+});
