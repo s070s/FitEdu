@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Layout;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -77,10 +78,10 @@ public partial class Home : IDisposable
     private string HeroImageUrl => _landing?.HasCustomHeroImage == true ? CustomHeroImageUrl : DefaultHeroImageUrl;
 
     /// <summary>
-    /// Today's date for the dashboard eyebrow ("Tuesday 13 October"). It is the UTC day, the same day
-    /// the training streak counts, so the two never disagree around midnight.
+    /// Today's date for the dashboard eyebrow ("Tuesday 13 October") in the members' time zone: the
+    /// same day the training streak counts, so the two never disagree around midnight.
     /// </summary>
-    private string TodayLabel => TimeProvider.GetUtcNow().ToString(TodayFormat, CultureInfo.CurrentCulture);
+    private string TodayLabel => SiteClock.Today(TimeProvider).ToString(TodayFormat, CultureInfo.CurrentCulture);
 
     private bool ShowMemberCount => _landing?.MemberCount >= MinimumMemberCountShown;
 

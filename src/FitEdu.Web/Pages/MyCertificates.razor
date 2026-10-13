@@ -35,7 +35,7 @@
             @foreach (var cert in _certificates)
             {
                 // The machine-readable date and the shown date are the same local day.
-                var issuedLocal = cert.IssuedAt.ToLocalTime();
+                var issuedLocal = SiteClock.ToSiteTime(cert.IssuedAt);
                 <li class="card-surface certificate-card" @key="cert.Id">
                     <div class="certificate-card__band">
                         <span class="certificate-card__seal" aria-hidden="true"><span class="bi bi-award-fill"></span></span>

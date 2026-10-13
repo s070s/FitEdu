@@ -123,6 +123,10 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<ILandingService, LandingService>();
         // The clock for date-based rules (the training streak); tests swap in a fixed one.
         builder.Services.TryAddSingleton(TimeProvider.System);
+        // The members' time zone (Site:TimeZone): "today" and every shown date and time follow it,
+        // not UTC or the server's own zone. An unknown zone id stops startup.
+        var siteOptions = config.GetSection(SiteOptions.SectionName).Get<SiteOptions>() ?? new SiteOptions();
+        SiteClock.UseTimeZone(siteOptions.TimeZone);
         builder.Services.AddScoped<IAssessmentService, AssessmentService>();
         builder.Services.AddScoped<AvatarChangedNotifier>();
         // Circuit-scoped bearer-token provider used by ApiClientBase so consumers authenticate

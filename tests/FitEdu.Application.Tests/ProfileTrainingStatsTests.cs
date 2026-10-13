@@ -13,26 +13,32 @@ using Xunit;
 namespace FitEdu.Application.Tests;
 
 /// <summary>
-/// The home dashboard's training stats: completions, minutes and the daily streak, counted in UTC
-/// days against a fixed clock so the result is the same on every machine and in CI.
+/// The home dashboard's training stats: completions, minutes and the daily streak, counted in days
+/// of the members' time zone (Europe/Athens, SiteClock) against a fixed clock, so the result is the
+/// same on every machine and in CI.
 /// </summary>
 public class ProfileTrainingStatsTests
 {
     private const string UserId = "member-1";
     private const int LessonMinutes = 20;
 
-    // Tuesday 10 March 2026, 08:00 UTC.
+    // Tuesday 10 March 2026, 08:00 UTC (10:00 in Athens, UTC+2 in winter time).
     private static readonly DateTimeOffset Now = new(2026, 3, 10, 8, 0, 0, TimeSpan.Zero);
+
+    // Tuesday 10 March 2026, 22:30 UTC: already 00:30 on Wednesday in Athens.
+    private static readonly DateTimeOffset LateEveningUtc = new(2026, 3, 10, 22, 30, 0, TimeSpan.Zero);
 
     private readonly ApplicationDbContext _db = DbContextFactory.CreateInMemory();
     private readonly ApplicationUser _member = new() { Id = UserId, Email = "member@fitedu.local", FirstName = "Maria", LastName = "Papa" };
 
-    private ProfileService NewService()
+    private ProfileService NewService() => NewService(Now);
+
+    private ProfileService NewService(DateTimeOffset now)
     {
         var userManager = IdentityMocks.MockUserManager();
         userManager.FindByIdAsync(UserId).Returns(_member);
         return new ProfileService(userManager, Substitute.For<IFileStorage>(), _db,
-            NullLogger<ProfileService>.Instance, new FixedTimeProvider(Now));
+            NullLogger<ProfileService>.Instance, new FixedTimeProvider(now));
     }
 
     [Fact]
@@ -93,14 +99,28 @@ public class ProfileTrainingStatsTests
     }
 
     [Fact]
-    public async Task Streak_SplitsDaysAtMidnightUtc()
+    public async Task Streak_SplitsDaysAtMidnightInAthens()
     {
+        // Days now turn at the members' midnight, not at midnight UTC (the old rule this test checked).
         var course = await AddCourseAsync(lessonCount: 2);
-        var lateYesterday = new DateTimeOffset(2026, 3, 9, 23, 30, 0, TimeSpan.Zero);
-        var earlyToday = new DateTimeOffset(2026, 3, 10, 0, 10, 0, TimeSpan.Zero);
+        var lateYesterday = new DateTimeOffset(2026, 3, 9, 21, 30, 0, TimeSpan.Zero); // 23:30 on 9 March in Athens
+        var earlyToday = new DateTimeOffset(2026, 3, 9, 22, 10, 0, TimeSpan.Zero);    // 00:10 on 10 March in Athens
         await CompleteAsync(course, lateYesterday, earlyToday);
 
         var stats = await NewService().GetTrainingStatsAsync(UserId);
+
+        stats.CurrentStreak.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Streak_AtLateEveningUtc_CountsTheWorkoutJustDoneAsTodayInAthens()
+    {
+        var course = await AddCourseAsync(lessonCount: 2);
+        var thisMorning = new DateTimeOffset(2026, 3, 10, 8, 0, 0, TimeSpan.Zero);  // Tuesday in Athens
+        var justNow = new DateTimeOffset(2026, 3, 10, 22, 15, 0, TimeSpan.Zero);     // 00:15 on Wednesday in Athens
+        await CompleteAsync(course, thisMorning, justNow);
+
+        var stats = await NewService(LateEveningUtc).GetTrainingStatsAsync(UserId);
 
         stats.CurrentStreak.ShouldBe(2);
     }

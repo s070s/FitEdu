@@ -48,7 +48,7 @@
                     <td data-label="@SessionRes.ColTitle">@session.TitleEn</td>
                     <td data-label="@SessionRes.ColHost">@session.HostName</td>
                     <td data-label="@SessionRes.ColCourse">@(session.CourseTitle ?? "—")</td>
-                    <td data-label="@SessionRes.ColWhen">@session.StartsAtUtc.ToLocalTime().ToString("g")</td>
+                    <td data-label="@SessionRes.ColWhen">@SiteClock.ToSiteTime(session.StartsAtUtc).ToString("g")</td>
                     <td data-label="@SessionRes.ColParticipants">@session.RegisteredCount / @session.MaxParticipants</td>
                     <td data-label="@SessionRes.ColStatus">@SessionLabels.Status(session.Status)</td>
                     <td class="table-actions" data-label="@SessionRes.ColActions">

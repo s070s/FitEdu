@@ -55,7 +55,7 @@
                                      ActiveText="@ReviewRes.StatusApproved"
                                      InactiveText="@(review.Status == "Rejected" ? ReviewRes.StatusRejected : ReviewRes.StatusPending)" />
                     </td>
-                    <td data-label="@ReviewRes.ColCreated">@review.CreatedAt.ToLocalTime().ToString("d")</td>
+                    <td data-label="@ReviewRes.ColCreated">@SiteClock.ToSiteTime(review.CreatedAt).ToString("d")</td>
                     <td class="table-actions" data-label="@ReviewRes.ColActions">
                         @if (review.Status != "Approved")
                         {

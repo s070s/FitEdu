@@ -68,7 +68,7 @@ else
                     </span>
                     @if (_article.PublishedAt is { } publishedAt)
                     {
-                        var localDate = publishedAt.ToLocalTime();
+                        var localDate = SiteClock.ToSiteTime(publishedAt);
                         <time datetime="@localDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@localDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)</time>
                     }
                     <span><span class="bi bi-clock" aria-hidden="true"></span> @string.Format(HomeRes.BlogReadingTimeFormat, _readingMinutes)</span>

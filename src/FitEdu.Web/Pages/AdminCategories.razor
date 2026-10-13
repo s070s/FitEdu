@@ -51,7 +51,7 @@
                     <td data-label="@CategoryRes.ColNameEl">@(category.NameEl ?? "—")</td>
                     <td data-label="@CategoryRes.ColCourseCount">@category.CourseCount</td>
                     <td data-label="@CategoryRes.ColAssessmentCount">@category.AssessmentCount</td>
-                    <td data-label="@CategoryRes.ColCreated">@category.CreatedAt.ToLocalTime().ToString("d")</td>
+                    <td data-label="@CategoryRes.ColCreated">@SiteClock.ToSiteTime(category.CreatedAt).ToString("d")</td>
                     <td class="table-actions" data-label="@CategoryRes.ColActions">
                         <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditModal(category)">@CategoryRes.Rename</button>
                         <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDelete(category)">@AdminRes.Delete</button>

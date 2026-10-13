@@ -26,8 +26,9 @@ public class HomeDashboardTests : BunitContext
     private static readonly Guid CurrentCourseId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     private static readonly Guid NextLessonId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
-    // Late on Tuesday 13 October in UTC; the dashboard date follows the UTC day like the streak.
-    private static readonly DateTimeOffset Now = new(2026, 10, 13, 23, 30, 0, TimeSpan.Zero);
+    // 22:30 UTC on Tuesday 13 October is already 01:30 on Wednesday in Athens, the members' time zone;
+    // the dashboard date follows that day, like the streak.
+    private static readonly DateTimeOffset Now = new(2026, 10, 13, 22, 30, 0, TimeSpan.Zero);
 
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
     private readonly IProfileConsumer _profileConsumer = Substitute.For<IProfileConsumer>();
@@ -63,13 +64,14 @@ public class HomeDashboardTests : BunitContext
     }
 
     [Fact]
-    public void Dashboard_EyebrowShowsTodaysUtcDate()
+    public void Dashboard_EyebrowShowsTodaysDateInTheMembersTimeZone()
     {
+        // It used to show the UTC day (Tuesday); the members' day in Athens is already Wednesday.
         UseStudent(Stats(CurrentCourseId));
 
         var page = Render<Home>();
 
-        page.Find(".dashboard-head .eyebrow").TextContent.ShouldBe("Tuesday 13 October");
+        page.Find(".dashboard-head .eyebrow").TextContent.ShouldBe("Wednesday 14 October");
     }
 
     [Fact]

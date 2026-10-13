@@ -310,7 +310,7 @@ else
                                     <StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" />
                                 </div>
                                 <p class="review-body">@review.Body</p>
-                                <span class="review-date">@review.CreatedAt.ToLocalTime().ToString("d")</span>
+                                <span class="review-date">@SiteClock.ToSiteTime(review.CreatedAt).ToString("d")</span>
                             </article>
                         }
                     </div>

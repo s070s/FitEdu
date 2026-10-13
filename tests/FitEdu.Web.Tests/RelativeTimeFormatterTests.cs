@@ -1,4 +1,5 @@
 using System.Globalization;
+using FitEdu.Application.Common;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
@@ -52,6 +53,7 @@ public class RelativeTimeFormatterTests
 
         var result = RelativeTimeFormatter.LastSeen(lastSeen);
 
-        result.ShouldBe($"last seen {lastSeen.ToLocalTime().ToString("d", CultureInfo.CurrentCulture)}");
+        // The date is the members' day (SiteClock), not the day in the test machine's zone.
+        result.ShouldBe($"last seen {SiteClock.ToSiteTime(lastSeen).ToString("d", CultureInfo.CurrentCulture)}");
     }
 }

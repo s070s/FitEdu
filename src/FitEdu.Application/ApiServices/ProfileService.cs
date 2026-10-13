@@ -164,8 +164,8 @@ public class ProfileService(
             .ToListAsync(cancellationToken);
 
         var minutesTrained = completions.Sum(c => c.DurationMinutes ?? 0);
-        var todayUtc = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
-        var currentStreak = CountStreakDays(completions.Select(c => c.CompletedAt), todayUtc);
+        var today = SiteClock.Today(timeProvider);
+        var currentStreak = CountStreakDays(completions.Select(c => c.CompletedAt), today);
 
         // The programme to continue: the newest enrolment that is neither finished nor dropped.
         var currentCourseId = await db.Enrollments
@@ -182,13 +182,16 @@ public class ProfileService(
     }
 
     /// <summary>
-    /// Consecutive UTC calendar days with at least one completion, counting back from today. A streak
-    /// whose last day is yesterday still counts, because today's workout may be still to come.
+    /// Consecutive calendar days in the members' time zone (SiteClock) with at least one completion,
+    /// counting back from today. A streak whose last day is yesterday still counts, because today's
+    /// workout may be still to come.
     /// </summary>
-    private static int CountStreakDays(IEnumerable<DateTime> completedAtUtc, DateOnly todayUtc)
+    private static int CountStreakDays(IEnumerable<DateTime> completedAtUtc, DateOnly today)
     {
-        var trainingDays = completedAtUtc.Select(DateOnly.FromDateTime).ToHashSet();
-        var day = trainingDays.Contains(todayUtc) ? todayUtc : todayUtc.AddDays(-1);
+        var trainingDays = completedAtUtc
+            .Select(completedAt => DateOnly.FromDateTime(SiteClock.ToSiteTime(completedAt).DateTime))
+            .ToHashSet();
+        var day = trainingDays.Contains(today) ? today : today.AddDays(-1);
 
         var streak = 0;
         while (trainingDays.Contains(day))

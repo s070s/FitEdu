@@ -209,7 +209,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | `POST` | `api/profile/avatar` | Upload avatar | Yes |
 | `GET` | `api/profile/avatar` | Get avatar | Yes |
 | `POST` | `api/profile/change-password` | Change password | Yes |
-| `GET` | `api/profile/training-stats` | Home dashboard stats: workouts completed, minutes trained, daily streak (UTC days), the programme to continue, goal and level | Yes |
+| `GET` | `api/profile/training-stats` | Home dashboard stats: workouts completed, minutes trained, daily streak (days of the members' time zone, `Site:TimeZone`), the programme to continue, goal and level | Yes |
 
 ### Courses — `api/courses`
 
@@ -554,6 +554,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 | `SelfBaseUrl` | `.env` | The app's own real bound base address (used for its self-calling loopback API consumers). Defaults to `https://localhost:7090` in Development only — **startup throws** outside Development if unset or still pointing at localhost. |
 | `Email__Smtp__Host` (+ `Port`/`Username`/`Password`/`FromAddress`) | `.env` | SMTP relay for real email via `SmtpEmailService` (MailKit). Set it to send real mail; leave unset in Development to use the logging stub. **Required outside Development** — startup throws without it. |
 | `Assistant__Enabled` / `Assistant__BaseUrl` | `.env` or `appsettings.json` | Toggle the local AI assistant (default on) and point it at a non-default Ollama host. |
+| `Site:TimeZone` | `appsettings.json` | The members' time zone as an IANA id (default `Europe/Athens`). The dashboard date, the training-streak day boundary and every date and time the pages show use it (`SiteClock`), never UTC or the server's own zone; admins type class start times in it too. **Startup throws** on an unknown id. |
 | `Sitemap:BaseUrl` | `appsettings.json` | Public site address (default `https://fitedu.com`). `/sitemap.xml` lists the public pages (home, programmes, exercises, paths, blog, pricing, privacy, terms), every published blog article, programme, learning path and exercise under it (a missing exercise, article or programme page answers 404 with its friendly not-found view, so crawlers drop dead addresses), and `SeoHead` builds each page's canonical, Open Graph and Twitter URLs from it. **Required** — startup throws without it. |
 
 `appsettings.Development.json`: `SeedData:Enabled`, `SeedData:BulkStudentCount`, `SeedData:JsonPaths:*`, `Payment:MockEnabled`, dev connection string.

@@ -60,7 +60,7 @@
                         </p>
                         <p class="notification-row__meta">
                             <time datetime="@notification.CreatedAt.ToString("o", CultureInfo.InvariantCulture)"
-                                  title="@notification.CreatedAt.ToLocalTime().ToString("g")">@RelativeTimeFormatter.NotificationAge(notification.CreatedAt)</time>
+                                  title="@SiteClock.ToSiteTime(notification.CreatedAt).ToString("g")">@RelativeTimeFormatter.NotificationAge(notification.CreatedAt)</time>
                             @if (!notification.IsRead)
                             {
                                 <span class="notification-row__unread">@NotificationRes.StatusUnread</span>

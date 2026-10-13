@@ -44,7 +44,7 @@
                     {
                         <li class="session-card @(IsLive(session) ? "session-card--live" : "")" @key="session.Id">
                             <div class="session-time">
-                                <time class="session-time__start" datetime="@session.StartsAtUtc.ToString("o", CultureInfo.InvariantCulture)">@session.StartsAtUtc.ToLocalTime().ToString("t", CultureInfo.CurrentCulture)</time>
+                                <time class="session-time__start" datetime="@session.StartsAtUtc.ToString("o", CultureInfo.InvariantCulture)">@SiteClock.ToSiteTime(session.StartsAtUtc).ToString("t", CultureInfo.CurrentCulture)</time>
                                 <span class="session-time__duration">@string.Format(SessionRes.DurationFormat, session.DurationMinutes)</span>
                             </div>
 

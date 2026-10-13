@@ -23,13 +23,13 @@
                 </div>
                 <div>
                     <dt>@SubscriptionSuccessRes.LabelStarted</dt>
-                    <dd>@_status.StartedAt.ToLocalTime().ToString("d")</dd>
+                    <dd>@SiteClock.ToSiteTime(_status.StartedAt).ToString("d")</dd>
                 </div>
                 @if (_status.ExpiresAt.HasValue)
                 {
                     <div>
                         <dt>@SubscriptionSuccessRes.LabelRenews</dt>
-                        <dd>@_status.ExpiresAt.Value.ToLocalTime().ToString("d")</dd>
+                        <dd>@SiteClock.ToSiteTime(_status.ExpiresAt.Value).ToString("d")</dd>
                     </div>
                 }
             </dl>

@@ -34,7 +34,7 @@ else if (_result.IsValid)
                 </div>
                 <div>
                     <dt>@CertificateRes.FieldIssuedOn</dt>
-                    <dd>@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
+                    <dd>@(_result.IssuedAt is { } issuedAt ? SiteClock.ToSiteTime(issuedAt).ToString("d") : null)</dd>
                 </div>
             </dl>
         </ChildContent>

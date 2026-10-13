@@ -36,7 +36,7 @@
             <span>@Article.AuthorName</span>
             @if (Article.PublishedAt is { } publishedAt)
             {
-                var localDate = publishedAt.ToLocalTime();
+                var localDate = SiteClock.ToSiteTime(publishedAt);
                 <time datetime="@localDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@localDate.ToString("d MMM yyyy", CultureInfo.CurrentCulture)</time>
             }
             <span class="blog-card__more" aria-hidden="true">

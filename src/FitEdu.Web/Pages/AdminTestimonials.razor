@@ -82,7 +82,7 @@
                                              ActiveText="@AdminRes.StatusActive"
                                              InactiveText="@AdminRes.StatusInactive" />
                             </td>
-                            <td data-label="@AdminRes.ColCreated">@item.CreatedAt.ToLocalTime().ToString("d")</td>
+                            <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(item.CreatedAt).ToString("d")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 <button class="btn btn-sm btn-primary me-1" @onclick="() => EditTestimonial(item.Id)">@AdminRes.Edit</button>
                                 @if (item.IsActive)

@@ -80,7 +80,7 @@
                                 <span class="message-role">(@msg.SenderRole)</span>
                             </div>
                             <div class="message-content">@msg.Content</div>
-                            <div class="message-time">@msg.SentAt.ToLocalTime().ToString( "HH:mm" )</div>
+                            <div class="message-time">@SiteClock.ToSiteTime(msg.SentAt).ToString( "HH:mm" )</div>
                         </div>
                     }
                 </Virtualize>

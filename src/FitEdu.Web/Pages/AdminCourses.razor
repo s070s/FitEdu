@@ -61,7 +61,7 @@ else
                 </td>
                 <td data-label="@AdminRes.ColEnrollments">@course.EnrollmentCount</td>
                 <td data-label="@AdminRes.ColModulesLessons">@course.ModuleCount / @course.TotalLessons</td>
-                <td data-label="@AdminRes.ColCreated">@course.CreatedAt.ToLocalTime().ToString("d")</td>
+                <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(course.CreatedAt).ToString("d")</td>
                 <td class="table-actions" data-label="@AdminRes.ColActions">
                     <button class="btn btn-sm btn-primary" @onclick="() => EditCourse(course.Id)">@AdminRes.Edit</button>
                     @if (course.IsPublished)

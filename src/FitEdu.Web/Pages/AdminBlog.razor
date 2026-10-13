@@ -62,8 +62,8 @@
                                              ActiveText="@AdminRes.StatusPublished"
                                              InactiveText="@AdminRes.StatusDraft" />
                             </td>
-                            <td data-label="@AdminRes.ColCreated">@article.CreatedAt.ToLocalTime().ToString("d")</td>
-                            <td data-label="@AdminRes.ColPublishedAt">@(article.PublishedAt?.ToLocalTime().ToString("d") ?? "—")</td>
+                            <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(article.CreatedAt).ToString("d")</td>
+                            <td data-label="@AdminRes.ColPublishedAt">@(article.PublishedAt is { } publishedAt ? SiteClock.ToSiteTime(publishedAt).ToString("d") : "—")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 <button class="btn btn-sm btn-primary me-1" @onclick="() => EditArticle(article.Id)">@AdminRes.Edit</button>
                                 @if (article.IsPublished)
