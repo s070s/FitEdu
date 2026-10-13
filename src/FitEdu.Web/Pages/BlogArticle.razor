@@ -2,8 +2,10 @@
 @using System.Globalization
 @using FitEdu.Web.Extensions
 
+@* Every state sets a title: App.razor has no static fallback. *@
 @if (_loading)
 {
+    <PageTitle>@HomeRes.BlogIndexTitle</PageTitle>
     <div class="page blog-article-page" aria-hidden="true">
         <div class="blog-article-skeleton">
             <SkeletonBlock Height="1rem" Width="8rem" />
@@ -16,6 +18,7 @@
 }
 else if (_notFound || _article is null)
 {
+    <PageTitle>@HomeRes.BlogNotFoundTitle</PageTitle>
     <div class="page blog-article-page">
         <h1 class="visually-hidden">@HomeRes.BlogNotFoundTitle</h1>
         <EmptyState Icon="@AppIcons.BlogArticle"

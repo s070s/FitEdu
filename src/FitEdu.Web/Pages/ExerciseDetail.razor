@@ -1,8 +1,10 @@
 @page "/exercises/{Slug}"
 @using FitEdu.Web.Extensions
 
+@* Every state sets a title: App.razor has no static fallback. *@
 @if (_loading)
 {
+    <PageTitle>@ExerciseRes.PageTitle</PageTitle>
     <div class="page exercise-detail" aria-hidden="true">
         <div class="exercise-detail__layout">
             <SkeletonBlock Height="16rem" CssClass="exercise-detail__skeleton" />
