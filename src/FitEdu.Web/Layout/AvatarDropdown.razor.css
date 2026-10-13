@@ -64,6 +64,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: var(--tap-min);
     padding: 0.5rem 1rem;
     color: var(--text-light-normal);
     text-decoration: none;
