@@ -273,6 +273,24 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
+        public static string BlogIndexSubtitle {
+            get {
+                return ResourceManager.GetString("BlogIndexSubtitle", resourceCulture);
+            }
+        }
+
+        public static string BlogBackToArticles {
+            get {
+                return ResourceManager.GetString("BlogBackToArticles", resourceCulture);
+            }
+        }
+
+        public static string BlogReadingTimeFormat {
+            get {
+                return ResourceManager.GetString("BlogReadingTimeFormat", resourceCulture);
+            }
+        }
+
         public static string BackToHome {
             get {
                 return ResourceManager.GetString("BackToHome", resourceCulture);

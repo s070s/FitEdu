@@ -201,6 +201,15 @@
   <data name="BlogNotFoundBody" xml:space="preserve">
     <value>The article you're looking for doesn't exist or has been removed.</value>
   </data>
+  <data name="BlogIndexSubtitle" xml:space="preserve">
+    <value>Training, nutrition and recovery, explained simply so you can put it to work this week.</value>
+  </data>
+  <data name="BlogBackToArticles" xml:space="preserve">
+    <value>All articles</value>
+  </data>
+  <data name="BlogReadingTimeFormat" xml:space="preserve">
+    <value>{0} min read</value>
+  </data>
   <data name="BackToHome" xml:space="preserve">
     <value>Back to Home</value>
   </data>

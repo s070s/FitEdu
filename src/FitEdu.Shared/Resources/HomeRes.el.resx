@@ -199,7 +199,16 @@
     <value>Το άρθρο δεν βρέθηκε</value>
   </data>
   <data name="BlogNotFoundBody" xml:space="preserve">
-    <value>Το άρθρο που αναζητάτε δεν υπάρχει ή έχει αφαιρεθεί.</value>
+    <value>Το άρθρο που αναζητάς δεν υπάρχει ή έχει αφαιρεθεί.</value>
+  </data>
+  <data name="BlogIndexSubtitle" xml:space="preserve">
+    <value>Προπόνηση, διατροφή και αποκατάσταση, εξηγημένα απλά για να τα εφαρμόσεις από αυτή κιόλας την εβδομάδα.</value>
+  </data>
+  <data name="BlogBackToArticles" xml:space="preserve">
+    <value>Όλα τα άρθρα</value>
+  </data>
+  <data name="BlogReadingTimeFormat" xml:space="preserve">
+    <value>{0} λεπτά ανάγνωσης</value>
   </data>
   <data name="BackToHome" xml:space="preserve">
     <value>Επιστροφή στην αρχική</value>

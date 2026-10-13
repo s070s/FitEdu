@@ -1,21 +1,27 @@
 @page "/blog/{Slug}"
+@using System.Globalization
+@using FitEdu.Web.Extensions
 
 @if (_loading)
 {
-    <div class="container" style="padding: 4rem 1rem;">
+    <div class="page blog-article-page" aria-hidden="true">
         <div class="blog-article-skeleton">
-            <div class="skeleton-title"></div>
-            <div class="skeleton-meta"></div>
-            <div class="skeleton-body"></div>
+            <SkeletonBlock Height="1rem" Width="8rem" />
+            <SkeletonBlock Height="2.75rem" Width="min(100%, 36rem)" />
+            <SkeletonBlock Height="1rem" Width="14rem" />
+            <SkeletonBlock Height="clamp(12rem, 45vw, 28rem)" CssClass="blog-article-skeleton__cover" />
+            <SkeletonBlock Rows="6" Height="1rem" Gap="0.75rem" />
         </div>
     </div>
 }
 else if (_notFound || _article is null)
 {
-    <div class="container" style="padding: 4rem 1rem; text-align: center;">
-        <h1 class="h2">@HomeRes.BlogNotFoundTitle</h1>
-        <p>@HomeRes.BlogNotFoundBody</p>
-        <a href="/" class="btn-cta">@HomeRes.BackToHome</a>
+    <div class="page blog-article-page">
+        <EmptyState Icon="@AppIcons.BlogArticle"
+                    Title="@HomeRes.BlogNotFoundTitle"
+                    Text="@HomeRes.BlogNotFoundBody"
+                    ActionHref="/blog"
+                    ActionLabel="@HomeRes.BlogBackToArticles" />
     </div>
 }
 else
@@ -24,43 +30,61 @@ else
     <SeoHead Title="@_article.Title"
              Description="@_article.Summary"
              CanonicalUrl="@($"/blog/{_article.Slug}")"
-             ImageUrl="@_article.CoverImageUrl"
+             ImageUrl="@CoverUrl"
              OgType="article" />
 
-    <article class="blog-article container">
-        @if (!string.IsNullOrWhiteSpace(_article.CoverImageUrl))
-        {
-            <div class="blog-article-cover">
-                <img src="@_article.CoverImageUrl" alt="@_article.Title" />
-            </div>
-        }
+    <div class="page blog-article-page">
+        <article class="blog-article">
+            <nav class="blog-article-back" aria-label="@HomeRes.BlogIndexTitle">
+                <a href="/blog"><span class="bi bi-arrow-left" aria-hidden="true"></span> @HomeRes.BlogBackToArticles</a>
+            </nav>
 
-        <header class="blog-article-header">
-            <h1 class="blog-article-title">@_article.Title</h1>
-            <div class="blog-article-meta">
-                <span>@_article.AuthorName</span>
-                @if (_article.PublishedAt.HasValue)
+            <header class="blog-article-header">
+                @if (_article.Tags.Length > 0)
                 {
-                    <span>@_article.PublishedAt.Value.ToLocalTime().ToString("d")</span>
+                    <ul class="chip-row blog-article-tags">
+                        @foreach (var tag in _article.Tags)
+                        {
+                            <li class="chip chip--lime">@tag</li>
+                        }
+                    </ul>
                 }
-            </div>
-            @if (_article.Tags.Length > 0)
-            {
-                <div class="blog-article-tags">
-                    @foreach (var tag in _article.Tags)
+
+                <h1 class="blog-article-title">@_article.Title</h1>
+
+                @if (!string.IsNullOrWhiteSpace(_article.Summary))
+                {
+                    <p class="blog-article-lead">@_article.Summary</p>
+                }
+
+                <div class="blog-article-meta">
+                    <span class="blog-article-author">
+                        <span class="blog-article-author__mark" aria-hidden="true">@AuthorInitial</span>
+                        @_article.AuthorName
+                    </span>
+                    @if (_article.PublishedAt is { } publishedAt)
                     {
-                        <span class="blog-tag">@tag</span>
+                        var localDate = publishedAt.ToLocalTime();
+                        <time datetime="@localDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@localDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)</time>
                     }
+                    <span><span class="bi bi-clock" aria-hidden="true"></span> @string.Format(HomeRes.BlogReadingTimeFormat, _readingMinutes)</span>
                 </div>
+            </header>
+
+            @if (CoverUrl is not null)
+            {
+                <figure class="blog-article-cover">
+                    <img src="@CoverUrl" alt="" width="@CoverWidth" height="@CoverHeight" decoding="async" fetchpriority="high" />
+                </figure>
             }
-        </header>
 
-        <div class="blog-article-content">
-            @((MarkupString)_article.Content)
-        </div>
+            <div class="blog-article-content">
+                @((MarkupString)_article.Content)
+            </div>
 
-        <footer class="blog-article-footer">
-            <a href="/" class="btn-cta"><span class="bi bi-arrow-left" aria-hidden="true"></span> @HomeRes.BackToHome</a>
-        </footer>
-    </article>
+            <footer class="blog-article-footer">
+                <a href="/blog" class="btn-cta btn-cta--ghost"><span class="bi bi-grid" aria-hidden="true"></span> @HomeRes.BlogBackToArticles</a>
+            </footer>
+        </article>
+    </div>
 }
