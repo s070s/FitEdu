@@ -9,6 +9,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
 using FitEdu.Web.Services;
 using Shouldly;
@@ -106,6 +107,26 @@ public class ProfilePageTests : BunitContext
         page.WaitForAssertion(() => page.Find("#profile-goal").GetAttribute("value").ShouldBe(nameof(FitnessGoal.Strength)));
         page.FindAll("#profile-goal option")[0].TextContent.ShouldBe(ProfileRes.GoalNotSet);
         page.FindAll("#profile-goal option").Count.ShouldBe(Enum.GetValues<FitnessGoal>().Length + 1);
+    }
+
+    [Fact]
+    public void LevelSelect_WithoutASavedLevel_ShowsNotChosenInsteadOfABlankBox()
+    {
+        _profileConsumer.GetProfileAsync().Returns(AliceProfile with { Status = UserStatus.Unknown });
+
+        var page = Render<Profile>();
+
+        page.WaitForAssertion(() => page.Find("#profile-status").GetAttribute("value").ShouldBe(nameof(UserStatus.Unknown)));
+        page.FindAll("#profile-status option")[0].TextContent.ShouldBe(ProfileRes.GoalNotSet);
+    }
+
+    [Fact]
+    public void LevelSelect_WithASavedLevel_OffersOnlyRealLevels()
+    {
+        var page = Render<Profile>();
+
+        page.WaitForAssertion(() => page.Find("#profile-status").GetAttribute("value").ShouldBe(nameof(UserStatus.Intermediate)));
+        page.FindAll("#profile-status option").Count.ShouldBe(UserStatusLabels.Selectable.Length);
     }
 
     [Fact]

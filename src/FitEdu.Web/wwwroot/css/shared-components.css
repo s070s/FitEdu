@@ -259,6 +259,18 @@ th.sort-active {
     border: 1px solid var(--border-subtle);
 }
 
+/* The file picker's own button (avatar upload) matches the dark inputs instead of the browser's white one. */
+.form-control::file-selector-button {
+    border: 0;
+    border-inline-end: 1px solid var(--border-subtle);
+    background-color: var(--bg-neutral-subtle);
+    color: var(--text-strong-normal);
+}
+
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+}
+
 .form-control::placeholder {
     color: var(--text-light-muted);
     opacity: 1;

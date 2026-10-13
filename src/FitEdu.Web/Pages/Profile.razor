@@ -101,6 +101,11 @@
                             <div class="mb-3">
                                 <label class="form-label" for="profile-status">@GlobalRes.Label_Info_Status</label>
                                 <select id="profile-status" class="form-select" @bind="profileStatus">
+                                    @* A member who never picked a level gets a visible "not chosen" option, not a blank box. *@
+                                    @if (profileStatus == UserStatus.Unknown)
+                                    {
+                                        <option value="@UserStatus.Unknown">@ProfileRes.GoalNotSet</option>
+                                    }
                                     @foreach (var status in UserStatusLabels.Selectable)
                                     {
                                         <option value="@status">@UserStatusLabels.Label(status)</option>
@@ -150,7 +155,7 @@
                                 <label class="form-label" for="profile-confirm-password">@ProfileRes.LabelConfirmNewPassword</label>
                                 <input id="profile-confirm-password" type="password" class="form-control" autocomplete="new-password" @bind="confirmPassword" />
                             </div>
-                            <button type="submit" class="btn btn-warning" disabled="@isChangingPassword">@ProfileRes.ChangePassword</button>
+                            <button type="submit" class="btn-cta" disabled="@isChangingPassword">@ProfileRes.ChangePassword</button>
                         </form>
                     </ChildContent>
                 </FormCardSection>
@@ -172,7 +177,7 @@
 
                 @if (!_isImpersonating)
                 {
-                    <button class="btn btn-secondary mt-3" @onclick="Logout">@ProfileRes.BtnLogout</button>
+                    <button type="button" class="btn-cta btn-cta--ghost profile-logout" @onclick="Logout">@ProfileRes.BtnLogout</button>
 
                     <FormCardSection Title="@ProfileRes.DangerZone"
                                      IsCollapsible="true"
