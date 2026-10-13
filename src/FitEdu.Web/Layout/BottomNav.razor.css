@@ -37,10 +37,13 @@
     gap: 0.2rem;
     min-width: 0;
     min-height: var(--tap-min);
-    padding: 0.35rem 0.15rem;
+    /* Tight sides, a 10.4 px label and slightly closer letters let the longest tab label
+       (Προγράμματα) fit five tabs on a 360 px phone, the size of a phone tab-bar label. */
+    padding: 0.35rem 0.05rem;
     color: var(--text-light-muted);
-    font-size: 0.6875rem;
+    font-size: 0.65rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
     line-height: 1.1;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
