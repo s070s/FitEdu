@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FitEdu.Application.ApiInterfaces;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Infrastructure.Seeding;
@@ -53,6 +54,25 @@ public static class DatabaseSeedingExtensions
         }
     }
 
+    /// <summary>
+    /// The per-language certificate migration cleared the old PDF paths, but their files still hold
+    /// a member's name; this removes every certificate PDF that no certificate points to. It runs
+    /// before the app serves requests, so no download is writing a new PDF at the same time. A
+    /// failure is logged and never stops the app from starting.
+    /// </summary>
+    private static async Task DeleteUnreferencedCertificatePdfsAsync(IServiceProvider services, ILogger startupLogger)
+    {
+        try
+        {
+            var certificates = services.GetRequiredService<ICertificateService>();
+            await certificates.DeleteUnreferencedPdfsAsync();
+        }
+        catch (Exception ex)
+        {
+            startupLogger.LogWarning(ex, "Could not delete the certificate PDFs that no certificate points to.");
+        }
+    }
+
     public static async Task PrewarmAndSeedDatabaseAsync(this WebApplication app)
     {
         // --- Pre-warm LocalDB ---
@@ -92,7 +112,11 @@ public static class DatabaseSeedingExtensions
             if (db.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                 await db.Database.EnsureCreatedAsync();
             else
+            {
                 await db.Database.MigrateAsync();
+                // Only where migrations run, so test hosts never touch the shared uploads folder.
+                await DeleteUnreferencedCertificatePdfsAsync(scope.ServiceProvider, startupLogger);
+            }
         }
 
         // Seed Roles

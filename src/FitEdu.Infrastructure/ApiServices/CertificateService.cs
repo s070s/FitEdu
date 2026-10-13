@@ -22,6 +22,9 @@ public class CertificateService : ICertificateService
     private readonly INotificationDispatcher _notifications;
     private readonly ILogger<CertificateService> _logger;
 
+    /// <summary>The storage folder of the rendered certificate PDFs.</summary>
+    public const string PdfFolder = "certificates";
+
     private const string PlatformName = "FitEdu";
     // Day, month name, year: "12 October 2026" in English, "12 Οκτωβρίου 2026" in Greek.
     private const string IssueDatePattern = "d MMMM yyyy";
@@ -223,6 +226,30 @@ public class CertificateService : ICertificateService
         _logger.LogInformation("Certificate {CertificateId} PDFs cleared for regeneration.", certificateId);
     }
 
+    public async Task<int> DeleteUnreferencedPdfsAsync(CancellationToken cancellationToken = default)
+    {
+        // Every row counts, soft-deleted ones too, so only files that nothing names are removed.
+        var storedPaths = await _db.Certificates
+            .IgnoreQueryFilters()
+            .Select(c => new { c.PdfPath, c.PdfPathEl })
+            .ToListAsync(cancellationToken);
+        var referencedPaths = storedPaths
+            .SelectMany(paths => new[] { paths.PdfPath, paths.PdfPathEl })
+            .OfType<string>()
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var unreferencedFiles = _storage.ListFiles(PdfFolder)
+            .Where(path => !referencedPaths.Contains(path))
+            .ToList();
+        foreach (var path in unreferencedFiles)
+            await _storage.DeleteFileAsync(path, cancellationToken);
+
+        if (unreferencedFiles.Count > 0)
+            _logger.LogInformation("Deleted {Count} certificate PDFs that no certificate points to.", unreferencedFiles.Count);
+
+        return unreferencedFiles.Count;
+    }
+
     private async Task DeleteStoredFileAsync(string? path, CancellationToken cancellationToken)
     {
         if (!string.IsNullOrEmpty(path) && _storage.FileExists(path))
@@ -241,7 +268,7 @@ public class CertificateService : ICertificateService
         return await _storage.SaveFileAsync(
             stream,
             $"{cert.VerificationId}.{LanguageCode(culture)}.pdf",
-            "certificates",
+            PdfFolder,
             cancellationToken: cancellationToken);
     }
 

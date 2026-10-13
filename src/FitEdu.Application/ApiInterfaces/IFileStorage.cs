@@ -38,4 +38,11 @@ public interface IFileStorage
     /// <param name="filePath">Relative file path from database</param>
     /// <returns>True if file exists, false otherwise</returns>
     bool FileExists(string filePath);
+
+    /// <summary>
+    /// Lists the files directly inside a folder, as the relative paths <see cref="SaveFileAsync"/> returns
+    /// ("certificates/x.pdf"). Empty when the folder does not exist.
+    /// </summary>
+    /// <param name="folder">Folder/category (e.g., "certificates")</param>
+    IReadOnlyList<string> ListFiles(string folder);
 }

@@ -155,6 +155,26 @@ public class LocalFileStorage : IFileStorage
         return File.Exists(fullPath);
     }
 
+    public IReadOnlyList<string> ListFiles(string folder)
+    {
+        // Validate folder, as SaveFileAsync does
+        folder = folder.Replace("\\", "/").Trim('/');
+        if (string.IsNullOrWhiteSpace(folder) || folder.Contains(".."))
+        {
+            throw new ArgumentException("Invalid folder path", nameof(folder));
+        }
+
+        var folderPath = Path.Combine(_basePath, folder);
+        if (!Directory.Exists(folderPath))
+        {
+            return [];
+        }
+
+        return Directory.GetFiles(folderPath)
+            .Select(fullPath => $"{folder}/{Path.GetFileName(fullPath)}")
+            .ToList();
+    }
+
     private void ValidateFileSize(Stream fileStream, string folder, long? explicitMaxBytes)
     {
         // Network streams (e.g. from IFormFile) may not be seekable;
