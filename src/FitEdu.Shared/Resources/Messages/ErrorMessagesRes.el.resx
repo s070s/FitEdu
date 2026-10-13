@@ -124,7 +124,7 @@
     <value>Σφάλμα</value>
   </data>
   <data name="EmailTakenError" xml:space="preserve">
-    <value>Η διεύθυνση email είναι ήδη εγγεγραμένη</value>
+    <value>Η διεύθυνση email είναι ήδη εγγεγραμμένη</value>
   </data>
   <data name="LoginError" xml:space="preserve">
     <value>Σφάλμα κατά τη σύνδεση.</value>
