@@ -377,6 +377,32 @@
         padding: var(--space-2) var(--space-3);
     }
 
+    /* With the next-lesson button beside it the indicator shrinks to its tick (the word stays for
+       screen readers), so the dock keeps to one line in either language. */
+    .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .lesson-actions--docked:has(.lesson-actions__next) .completed-indicator {
+        font-size: 1.5rem;
+    }
+
+    .lesson-actions--docked:has(.lesson-actions__next) {
+        column-gap: var(--space-3);
+    }
+
+    /* A zero basis lets the button take whatever the tick leaves, so it never wraps below it. */
+    .lesson-actions--docked .lesson-actions__next {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline: var(--space-3);
+    }
+
     /* Room below the last links so they can scroll clear of the assistant launcher. */
     .lesson-container {
         padding-bottom: 4.5rem;

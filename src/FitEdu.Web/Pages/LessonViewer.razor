@@ -155,7 +155,10 @@ else
             }
             else
             {
-                <span class="completed-indicator"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @LessonRes.CompletedIndicator</span>
+                <span class="completed-indicator">
+                    <span class="bi bi-check-circle-fill" aria-hidden="true"></span>
+                    <span class="completed-indicator__label">@LessonRes.CompletedIndicator</span>
+                </span>
                 @* Right after a completion the phone dock offers the next lesson; the full links follow below. *@
                 @if (_completionResult is not null && _lesson.NextLessonId is { } dockedNextLessonId)
                 {
