@@ -105,7 +105,7 @@
 
 <ConfirmModal IsVisible="@(_pendingDelete is not null)"
               Title="@AdminRes.ConfirmTitle"
-              Message="@(_pendingDelete is not null ? string.Format(CategoryRes.DeleteConfirmFormat, _pendingDelete.NameEn, _pendingDelete.CourseCount, _pendingDelete.AssessmentCount) : "")"
+              Message="@DeleteConfirmMessage"
               ConfirmLabel="@AdminRes.Delete"
               CancelLabel="@AdminRes.Cancel"
               OnConfirm="ConfirmDelete"
