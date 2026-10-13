@@ -164,7 +164,7 @@ input:-webkit-autofill:active {
     padding: 0.6rem 3.5rem 0.7rem 1.25rem; /* the right padding keeps the text clear of the close button */
     position: fixed;
     width: 100%;
-    z-index: 1000;
+    z-index: 1075; /* above the assistant launcher (1070), which would cover the close button */
 }
 
 /* Near-black text/links against the yellow banner (near-white was ~1.2:1 contrast — UI-2) */
@@ -500,7 +500,6 @@ main.content:has(> .page) {
 @media (max-width: 767.98px) {
     #blazor-error-ui {
         bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
-        z-index: 1035;
     }
 }
 
