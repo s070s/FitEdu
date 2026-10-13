@@ -73,6 +73,7 @@ public class RemainingPagesTests : BunitContext
         var values = page.FindAll(".certificate-details dd").Select(value => value.TextContent).ToList();
         values.ShouldContain("Alice Johnson");
         values.ShouldContain("Strength Foundations");
+        page.Find(".status-panel__actions a[href='/']").TextContent.ShouldBe(GlobalRes.BackToHome);
     }
 
     [Fact]
@@ -139,5 +140,47 @@ public class AdminCourseEditLabelTests : BunitContext
 
         var goalOption = page.Find($"#course-goal option[value='{nameof(FitnessGoal.MuscleGain)}']");
         goalOption.TextContent.ShouldBe(CourseLabels.Goal(FitnessGoal.MuscleGain));
+    }
+
+    [Fact]
+    public void BackButton_UsesTheThemedGhostStyle()
+    {
+        var page = Render<AdminCourseEdit>(parameters => parameters.Add(p => p.CourseId, Guid.Empty));
+
+        // Bootstrap's untouched outline-secondary grey fails AA contrast on the dark page.
+        page.Find(".section-head__actions .btn-cta--ghost").TextContent.ShouldContain(AdminRes.BackToCourses);
+        page.FindAll(".section-head .btn-outline-secondary").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GreekTitleInput_IsMarkedAsGreek()
+    {
+        var page = Render<AdminCourseEdit>(parameters => parameters.Add(p => p.CourseId, Guid.Empty));
+
+        page.Find("#course-title-el").GetAttribute("lang").ShouldBe("el");
+    }
+}
+
+/// <summary>Placeholders of the English and Greek content columns follow the column, not the admin's UI language.</summary>
+public class ContentLanguageTextTests
+{
+    [Theory]
+    [InlineData("en")]
+    [InlineData("el")]
+    public void Placeholders_FollowTheContentLanguage_WhateverTheUiLanguage(string uiCulture)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(uiCulture);
+
+        var english = ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder));
+        var greek = ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder));
+
+        english.ShouldBe("Article title");
+        greek.ShouldBe("Τίτλος άρθρου");
+    }
+
+    [Fact]
+    public void UnknownKey_ReturnsEmptyText()
+    {
+        ContentLanguageText.Greek("NoSuchKey").ShouldBeEmpty();
     }
 }

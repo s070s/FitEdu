@@ -5,60 +5,60 @@
 <PageTitle>@AdminRes.ManageLessons</PageTitle>
 
 <div class="admin-editor">
-<header class="section-head">
-    <h1>@AdminRes.ManageLessons</h1>
-    <div class="section-head__actions">
-        <button class="btn btn-outline-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToCourse</button>
-        <button class="btn btn-success" @onclick="ShowAddLesson">@AdminRes.AddLesson</button>
-    </div>
-</header>
+    <header class="section-head">
+        <h1>@AdminRes.ManageLessons</h1>
+        <div class="section-head__actions">
+            <button type="button" class="btn-cta btn-cta--ghost" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToCourse</button>
+            <button class="btn btn-success" @onclick="ShowAddLesson">@AdminRes.AddLesson</button>
+        </div>
+    </header>
 
-<DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
+    <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
-@if (lessons == null)
-{
-    <LoadingSpinner Label="@AdminRes.Loading" />
-}
-else if (lessons.Count == 0)
-{
-    <p class="text-light-muted">@AdminRes.NoLessons</p>
-}
-else
-{
-    <div class="list-group">
-        @foreach (var lesson in lessons.OrderBy(l => l.SortOrder))
-        {
-            <div class="list-group-item" @key="lesson.Id">
-                <div class="lesson-row">
-                    <div class="lesson-row__text">
-                        <h2 class="lesson-row__title">@lesson.TitleEn</h2>
-                        <small class="lesson-row__meta">
-                            @string.Format(AdminRes.OrderFormat, lesson.SortOrder)
-                            @if (lesson.DurationMinutes.HasValue)
-                            {
-                                <text>@string.Format(AdminRes.MinutesFormat, lesson.DurationMinutes)</text>
-                            }
-                            @if (lesson.IsPublished)
-                            {
-                                <StatusBadge IsActive="true"
-                                             ActiveText="@AdminRes.StatusPublished" />
-                            }
-                            else
-                            {
-                                <StatusBadge IsActive="false"
-                                             InactiveText="@AdminRes.StatusDraft" />
-                            }
-                        </small>
-                    </div>
-                    <div class="lesson-row__actions">
-                        <button class="btn btn-sm btn-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteLesson(lesson.Id)">@AdminRes.Delete</button>
+    @if (lessons == null)
+    {
+        <LoadingSpinner Label="@AdminRes.Loading" />
+    }
+    else if (lessons.Count == 0)
+    {
+        <p class="text-light-muted">@AdminRes.NoLessons</p>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var lesson in lessons.OrderBy(l => l.SortOrder))
+            {
+                <div class="list-group-item" @key="lesson.Id">
+                    <div class="lesson-row">
+                        <div class="lesson-row__text">
+                            <h2 class="lesson-row__title">@lesson.TitleEn</h2>
+                            <small class="lesson-row__meta">
+                                @string.Format(AdminRes.OrderFormat, lesson.SortOrder)
+                                @if (lesson.DurationMinutes.HasValue)
+                                {
+                                    <text>@string.Format(AdminRes.MinutesFormat, lesson.DurationMinutes)</text>
+                                }
+                                @if (lesson.IsPublished)
+                                {
+                                    <StatusBadge IsActive="true"
+                                                 ActiveText="@AdminRes.StatusPublished" />
+                                }
+                                else
+                                {
+                                    <StatusBadge IsActive="false"
+                                                 InactiveText="@AdminRes.StatusDraft" />
+                                }
+                            </small>
+                        </div>
+                        <div class="lesson-row__actions">
+                            <button class="btn btn-sm btn-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteLesson(lesson.Id)">@AdminRes.Delete</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-}
+            }
+        </div>
+    }
 </div>
 
 @* Lesson Create/Edit Modal *@
@@ -74,7 +74,7 @@ else
             </div>
             <div class="col-md-3 mb-3">
                 <label class="form-label" for="lesson-title-el">@AdminRes.FieldTitle (EL)</label>
-                <input id="lesson-title-el" class="form-control" @bind="lessonTitleEl" />
+                <input id="lesson-title-el" class="form-control" lang="el" @bind="lessonTitleEl" />
             </div>
             <div class="col-md-3 mb-3">
                 <label class="form-label" for="lesson-sort">@AdminRes.SortOrder</label>

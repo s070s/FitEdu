@@ -7,299 +7,299 @@
 <PageTitle>@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)</PageTitle>
 
 <div class="admin-editor">
-<header class="section-head">
-    <h1>@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)</h1>
-    <div class="section-head__actions">
-        <button class="btn btn-outline-secondary" @onclick="Cancel"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToCourses</button>
-    </div>
-</header>
-
-<DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
-
-<UnsavedChangesGuard IsDirty="_isDirty" />
-
-@if (!IsNew && course == null && string.IsNullOrEmpty(message))
-{
-    <LoadingSpinner Label="@AdminRes.Loading" />
-}
-else
-{
-    @* ── Course Details ── *@
-    <div @oninput="MarkDirty" @onchange="MarkDirty">
-    <FormCardSection Title="@AdminRes.CourseDetails">
-        <ChildContent>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="course-title-en">@AdminRes.FieldTitle (EN)</label>
-                    <input id="course-title-en" class="form-control" @bind="courseTitleEn" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="course-title-el">@AdminRes.FieldTitle (EL)</label>
-                    <input id="course-title-el" class="form-control" @bind="courseTitleEl" />
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">@AdminRes.FieldDescription (EN)</label>
-                <QuillEditor @ref="descriptionEditorEn" Content="@courseDescriptionEn" MinHeight="150px" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">@AdminRes.FieldDescription (EL)</label>
-                <QuillEditor @ref="descriptionEditorEl" Content="@courseDescriptionEl" MinHeight="150px" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" id="required-tier-label">@AdminRes.RequiredTier</label>
-                <div class="tier-selector" role="radiogroup" aria-labelledby="required-tier-label">
-                    @foreach (var tier in Enum.GetValues<SubscriptionTier>())
-                    {
-                        <label class="tier-option @(courseRequiredTier == tier ? "selected" : "")">
-                            <input type="radio"
-                                   name="requiredTier"
-                                   value="@tier"
-                                   checked="@(courseRequiredTier == tier)"
-                                   @onchange="() => courseRequiredTier = tier" />
-                            @tier
-                        </label>
-                    }
-                </div>
-                <small class="form-text text-light-muted">
-                    @AdminRes.RequiredTierHint
-                </small>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="course-category">@CategoryRes.CategoryLabel</label>
-                <select id="course-category" class="form-select" value="@CategorySelectValue" @onchange="OnCategorySelectChanged">
-                    <option value="none">@CategoryRes.NoneCategory</option>
-                    @foreach (var cat in categories)
-                    {
-                        <option value="@cat.Id">@cat.NameEn</option>
-                    }
-                    <option value="new">@CategoryRes.NewCategoryOption</option>
-                </select>
-                @if (creatingNewCategory)
-                {
-                    <input class="form-control mt-2" placeholder="@CategoryRes.NewCategoryNamePlaceholder" @bind="newCategoryName" />
-                }
-            </div>
-
-            @* Fitness fields: side by side from md up (sm for the two numbers), one per line on phones *@
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="course-level">@AdminRes.Level</label>
-                    <select id="course-level" class="form-select" @bind="courseLevel">
-                        @foreach (var level in Enum.GetValues<CourseLevel>())
-                        {
-                            <option value="@level">@CourseLabels.Level(level)</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="course-goal">@AdminRes.Goal</label>
-                    <select id="course-goal" class="form-select" @bind="courseGoal">
-                        @foreach (var goal in Enum.GetValues<FitnessGoal>())
-                        {
-                            <option value="@goal">@CourseLabels.Goal(goal)</option>
-                        }
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label" for="course-equipment">@AdminRes.Equipment</label>
-                    <input id="course-equipment" class="form-control" maxlength="120" @bind="courseEquipment"
-                           aria-describedby="course-equipment-hint" />
-                    <small id="course-equipment-hint" class="form-text text-light-muted">@AdminRes.EquipmentHint</small>
-                </div>
-                <div class="col-sm-6 col-md-4 mb-3">
-                    <label class="form-label" for="course-weeks">@AdminRes.EstimatedWeeks</label>
-                    <input id="course-weeks" type="number" min="1" max="104" class="form-control" @bind="courseEstimatedWeeks" />
-                </div>
-                <div class="col-sm-6 col-md-4 mb-3">
-                    <label class="form-label" for="course-sessions">@AdminRes.SessionsPerWeek</label>
-                    <input id="course-sessions" type="number" min="1" max="14" class="form-control" @bind="courseSessionsPerWeek" />
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="course-cover-exercise">@AdminRes.CoverExercise</label>
-                <input id="course-cover-exercise"
-                       class="form-control @(coverExerciseSlugInvalid ? "is-invalid" : "")"
-                       maxlength="120"
-                       @bind="courseCoverExerciseSlug"
-                       aria-invalid="@(coverExerciseSlugInvalid ? "true" : null)"
-                       aria-describedby="@CoverExerciseDescribedBy" />
-                @if (coverExerciseSlugInvalid)
-                {
-                    <div id="course-cover-exercise-error" class="invalid-feedback">@AdminRes.UnknownExerciseSlug</div>
-                }
-                <small id="course-cover-exercise-hint" class="form-text text-light-muted">@AdminRes.CoverExerciseHint</small>
-            </div>
-
-            <SaveCancelBar SaveLabel="@AdminRes.SaveCourse"
-                           SavingLabel="@AdminRes.Saving"
-                           IsSaving="isSaving"
-                           OnSave="SaveCourse" />
-        </ChildContent>
-    </FormCardSection>
-    </div>
-
-    @if (IsNew)
-    {
-        <div class="alert alert-secondary mt-3">
-            <span class="bi bi-info-circle" aria-hidden="true"></span>
-            @((MarkupString)AdminRes.SaveCourseFirstHint)
+    <header class="section-head">
+        <h1>@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)</h1>
+        <div class="section-head__actions">
+            <button type="button" class="btn-cta btn-cta--ghost" @onclick="Cancel"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToCourses</button>
         </div>
-    }
+    </header>
 
-    @if (!IsNew && course != null)
+    <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
+
+    <UnsavedChangesGuard IsDirty="_isDirty" />
+
+    @if (!IsNew && course == null && string.IsNullOrEmpty(message))
     {
-        @* ── Modules & Lessons ── *@
-        <FormCardSection Title="@AdminRes.ModulesAndLessons">
-            <HeaderActions>
-                <button class="btn btn-sm btn-success" @onclick="ShowAddModule">@AdminRes.AddModule</button>
-            </HeaderActions>
+        <LoadingSpinner Label="@AdminRes.Loading" />
+    }
+    else
+    {
+        @* ── Course Details ── *@
+        <div @oninput="MarkDirty" @onchange="MarkDirty">
+        <FormCardSection Title="@AdminRes.CourseDetails">
             <ChildContent>
-                @if (modules == null)
-                {
-                    <LoadingSpinner Size="LoadingSpinner.SpinnerSize.Small" Label="@AdminRes.LoadingModules" />
-                }
-                else if (modules.Count == 0)
-                {
-                    <p class="text-light-muted">@AdminRes.NoModules</p>
-                }
-                else
-                {
-                    @foreach (var module in modules)
-                    {
-                        var moduleLessons = lessonsMap.GetValueOrDefault(module.Id);
-                        var isExpanded = expandedModules.Contains(module.Id);
-                        <div class="card mb-2" @key="module.Id">
-                            <div class="card-header module-header collapsible-header"
-                                 role="button"
-                                 tabindex="0"
-                                 aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
-                                 @onclick="() => ToggleModule(module.Id)"
-                                 @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
-                                <div class="module-header__text">
-                                    <span class="module-header__title">@module.TitleEn</span>
-                                    <span class="chip-row">
-                                        <span class="chip chip--teal">@string.Format(AdminRes.LessonsCountFormat, module.LessonCount)</span>
-                                        <span class="chip">@string.Format(AdminRes.OrderFormat, module.SortOrder)</span>
-                                    </span>
-                                </div>
-                                <span class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")" aria-hidden="true"></span>
-                            </div>
-                            <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
-                                <div class="collapsible-body-inner">
-                                    <div class="card-body">
-                                        <div class="d-flex flex-wrap gap-2 mb-3">
-                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditModule(module)">
-                                                <span class="bi bi-pencil" aria-hidden="true"></span> @AdminRes.EditModule
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteModule(module.Id)">
-                                                <span class="bi bi-trash" aria-hidden="true"></span> @AdminRes.Delete
-                                            </button>
-                                            <button class="btn btn-sm btn-success" @onclick="() => ShowAddLesson(module.Id)">
-                                                @AdminRes.AddLesson
-                                            </button>
-                                        </div>
-                                        @if (!string.IsNullOrEmpty(module.DescriptionEn))
-                                        {
-                                            <p class="text-light-muted small mb-3">@module.DescriptionEn</p>
-                                        }
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="course-title-en">@AdminRes.FieldTitle (EN)</label>
+                        <input id="course-title-en" class="form-control" @bind="courseTitleEn" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="course-title-el">@AdminRes.FieldTitle (EL)</label>
+                        <input id="course-title-el" class="form-control" lang="el" @bind="courseTitleEl" />
+                    </div>
+                </div>
 
-                                        @* Inline lessons list *@
-                                        @if (moduleLessons == null)
-                                        {
-                                            <LoadingSpinner Size="LoadingSpinner.SpinnerSize.Small" Label="@AdminRes.LoadingLessons" />
-                                        }
-                                        else if (moduleLessons.Count == 0)
-                                        {
-                                            <p class="text-light-muted small">@AdminRes.NoLessons</p>
-                                        }
-                                        else
-                                        {
-                                            <div class="table-responsive">
-                                            <table class="table table-sm table-hover mb-0">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th style="width:40px">#</th>
-                                                        <th>@AdminRes.FieldTitle</th>
-                                                        <th style="width:80px">@AdminRes.FieldType</th>
-                                                        <th style="width:70px">@AdminRes.ColMins</th>
-                                                        <th style="width:80px">@AdminRes.ColStatus</th>
-                                                        <th style="width:120px">@AdminRes.ColActions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var lesson in moduleLessons)
-                                                    {
-                                                        <tr @key="lesson.Id">
-                                                            <td data-label="#">@lesson.SortOrder</td>
-                                                            <td data-label="@AdminRes.FieldTitle">@lesson.TitleEn</td>
-                                                            <td data-label="@AdminRes.FieldType">
-                                                                @if (!string.IsNullOrEmpty(lesson.VideoPath))
-                                                                {
-                                                                    <span class="badge bg-info">@AdminRes.LessonTypeVideo</span>
-                                                                }
-                                                                else if (!string.IsNullOrEmpty(lesson.PdfPath))
-                                                                {
-                                                                    <span class="badge bg-warning text-dark">@AdminRes.LessonTypePdf</span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="badge bg-light text-dark">@AdminRes.LessonTypeText</span>
-                                                                }
-                                                            </td>
-                                                            <td data-label="@AdminRes.ColMins">@(lesson.DurationMinutes?.ToString() ?? "—")</td>
-                                                            <td data-label="@AdminRes.ColStatus">
-                                                                <StatusBadge IsActive="lesson.IsPublished"
-                                                                             ActiveText="@AdminRes.StatusLive"
-                                                                             InactiveText="@AdminRes.StatusDraft" />
-                                                            </td>
-                                                            <td data-label="@AdminRes.ColActions">
-                                                                <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
-                                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)" title="@AdminRes.Delete" aria-label="@AdminRes.Delete"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label">@AdminRes.FieldDescription (EN)</label>
+                    <QuillEditor @ref="descriptionEditorEn" Content="@courseDescriptionEn" MinHeight="150px" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">@AdminRes.FieldDescription (EL)</label>
+                    <QuillEditor @ref="descriptionEditorEl" Content="@courseDescriptionEl" MinHeight="150px" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" id="required-tier-label">@AdminRes.RequiredTier</label>
+                    <div class="tier-selector" role="radiogroup" aria-labelledby="required-tier-label">
+                        @foreach (var tier in Enum.GetValues<SubscriptionTier>())
+                        {
+                            <label class="tier-option @(courseRequiredTier == tier ? "selected" : "")">
+                                <input type="radio"
+                                       name="requiredTier"
+                                       value="@tier"
+                                       checked="@(courseRequiredTier == tier)"
+                                       @onchange="() => courseRequiredTier = tier" />
+                                @tier
+                            </label>
+                        }
+                    </div>
+                    <small class="form-text text-light-muted">
+                        @AdminRes.RequiredTierHint
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="course-category">@CategoryRes.CategoryLabel</label>
+                    <select id="course-category" class="form-select" value="@CategorySelectValue" @onchange="OnCategorySelectChanged">
+                        <option value="none">@CategoryRes.NoneCategory</option>
+                        @foreach (var cat in categories)
+                        {
+                            <option value="@cat.Id">@cat.NameEn</option>
+                        }
+                        <option value="new">@CategoryRes.NewCategoryOption</option>
+                    </select>
+                    @if (creatingNewCategory)
+                    {
+                        <input class="form-control mt-2" placeholder="@CategoryRes.NewCategoryNamePlaceholder" @bind="newCategoryName" />
                     }
-                }
+                </div>
+
+                @* Fitness fields: side by side from md up (sm for the two numbers), one per line on phones *@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="course-level">@AdminRes.Level</label>
+                        <select id="course-level" class="form-select" @bind="courseLevel">
+                            @foreach (var level in Enum.GetValues<CourseLevel>())
+                            {
+                                <option value="@level">@CourseLabels.Level(level)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="course-goal">@AdminRes.Goal</label>
+                        <select id="course-goal" class="form-select" @bind="courseGoal">
+                            @foreach (var goal in Enum.GetValues<FitnessGoal>())
+                            {
+                                <option value="@goal">@CourseLabels.Goal(goal)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="course-equipment">@AdminRes.Equipment</label>
+                        <input id="course-equipment" class="form-control" maxlength="120" @bind="courseEquipment"
+                               aria-describedby="course-equipment-hint" />
+                        <small id="course-equipment-hint" class="form-text text-light-muted">@AdminRes.EquipmentHint</small>
+                    </div>
+                    <div class="col-sm-6 col-md-4 mb-3">
+                        <label class="form-label" for="course-weeks">@AdminRes.EstimatedWeeks</label>
+                        <input id="course-weeks" type="number" min="1" max="104" class="form-control" @bind="courseEstimatedWeeks" />
+                    </div>
+                    <div class="col-sm-6 col-md-4 mb-3">
+                        <label class="form-label" for="course-sessions">@AdminRes.SessionsPerWeek</label>
+                        <input id="course-sessions" type="number" min="1" max="14" class="form-control" @bind="courseSessionsPerWeek" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="course-cover-exercise">@AdminRes.CoverExercise</label>
+                    <input id="course-cover-exercise"
+                           class="form-control @(coverExerciseSlugInvalid ? "is-invalid" : "")"
+                           maxlength="120"
+                           @bind="courseCoverExerciseSlug"
+                           aria-invalid="@(coverExerciseSlugInvalid ? "true" : null)"
+                           aria-describedby="@CoverExerciseDescribedBy" />
+                    @if (coverExerciseSlugInvalid)
+                    {
+                        <div id="course-cover-exercise-error" class="invalid-feedback">@AdminRes.UnknownExerciseSlug</div>
+                    }
+                    <small id="course-cover-exercise-hint" class="form-text text-light-muted">@AdminRes.CoverExerciseHint</small>
+                </div>
+
+                <SaveCancelBar SaveLabel="@AdminRes.SaveCourse"
+                               SavingLabel="@AdminRes.Saving"
+                               IsSaving="isSaving"
+                               OnSave="SaveCourse" />
             </ChildContent>
         </FormCardSection>
+        </div>
 
-        @* ── Publish ── *@
-        <FormCardSection Title="@AdminRes.Publish">
-            <ChildContent>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <StatusBadge IsActive="course.IsPublished"
-                                 ActiveText="@AdminRes.StatusPublished"
-                                 InactiveText="@AdminRes.StatusDraft" />
-                    @if (!course.IsPublished)
+        @if (IsNew)
+        {
+            <div class="alert alert-secondary mt-3">
+                <span class="bi bi-info-circle" aria-hidden="true"></span>
+                @((MarkupString)AdminRes.SaveCourseFirstHint)
+            </div>
+        }
+
+        @if (!IsNew && course != null)
+        {
+            @* ── Modules & Lessons ── *@
+            <FormCardSection Title="@AdminRes.ModulesAndLessons">
+                <HeaderActions>
+                    <button class="btn btn-sm btn-success" @onclick="ShowAddModule">@AdminRes.AddModule</button>
+                </HeaderActions>
+                <ChildContent>
+                    @if (modules == null)
                     {
-                        <button class="btn btn-success" @onclick="PublishCourse">@AdminRes.PublishCourse</button>
+                        <LoadingSpinner Size="LoadingSpinner.SpinnerSize.Small" Label="@AdminRes.LoadingModules" />
+                    }
+                    else if (modules.Count == 0)
+                    {
+                        <p class="text-light-muted">@AdminRes.NoModules</p>
                     }
                     else
                     {
-                        <button class="btn btn-warning" @onclick="UnpublishCourse">@AdminRes.UnpublishCourse</button>
+                        @foreach (var module in modules)
+                        {
+                            var moduleLessons = lessonsMap.GetValueOrDefault(module.Id);
+                            var isExpanded = expandedModules.Contains(module.Id);
+                            <div class="card mb-2" @key="module.Id">
+                                <div class="card-header module-header collapsible-header"
+                                     role="button"
+                                     tabindex="0"
+                                     aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
+                                     @onclick="() => ToggleModule(module.Id)"
+                                     @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
+                                    <div class="module-header__text">
+                                        <span class="module-header__title">@module.TitleEn</span>
+                                        <span class="chip-row">
+                                            <span class="chip chip--teal">@string.Format(AdminRes.LessonsCountFormat, module.LessonCount)</span>
+                                            <span class="chip">@string.Format(AdminRes.OrderFormat, module.SortOrder)</span>
+                                        </span>
+                                    </div>
+                                    <span class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")" aria-hidden="true"></span>
+                                </div>
+                                <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
+                                    <div class="collapsible-body-inner">
+                                        <div class="card-body">
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditModule(module)">
+                                                    <span class="bi bi-pencil" aria-hidden="true"></span> @AdminRes.EditModule
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteModule(module.Id)">
+                                                    <span class="bi bi-trash" aria-hidden="true"></span> @AdminRes.Delete
+                                                </button>
+                                                <button class="btn btn-sm btn-success" @onclick="() => ShowAddLesson(module.Id)">
+                                                    @AdminRes.AddLesson
+                                                </button>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(module.DescriptionEn))
+                                            {
+                                                <p class="text-light-muted small mb-3">@module.DescriptionEn</p>
+                                            }
+
+                                            @* Inline lessons list *@
+                                            @if (moduleLessons == null)
+                                            {
+                                                <LoadingSpinner Size="LoadingSpinner.SpinnerSize.Small" Label="@AdminRes.LoadingLessons" />
+                                            }
+                                            else if (moduleLessons.Count == 0)
+                                            {
+                                                <p class="text-light-muted small">@AdminRes.NoLessons</p>
+                                            }
+                                            else
+                                            {
+                                                <div class="table-responsive">
+                                                <table class="table table-sm table-hover mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th style="width:40px">#</th>
+                                                            <th>@AdminRes.FieldTitle</th>
+                                                            <th style="width:80px">@AdminRes.FieldType</th>
+                                                            <th style="width:70px">@AdminRes.ColMins</th>
+                                                            <th style="width:80px">@AdminRes.ColStatus</th>
+                                                            <th style="width:120px">@AdminRes.ColActions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var lesson in moduleLessons)
+                                                        {
+                                                            <tr @key="lesson.Id">
+                                                                <td data-label="#">@lesson.SortOrder</td>
+                                                                <td data-label="@AdminRes.FieldTitle">@lesson.TitleEn</td>
+                                                                <td data-label="@AdminRes.FieldType">
+                                                                    @if (!string.IsNullOrEmpty(lesson.VideoPath))
+                                                                    {
+                                                                        <span class="badge bg-info">@AdminRes.LessonTypeVideo</span>
+                                                                    }
+                                                                    else if (!string.IsNullOrEmpty(lesson.PdfPath))
+                                                                    {
+                                                                        <span class="badge bg-warning text-dark">@AdminRes.LessonTypePdf</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="badge bg-light text-dark">@AdminRes.LessonTypeText</span>
+                                                                    }
+                                                                </td>
+                                                                <td data-label="@AdminRes.ColMins">@(lesson.DurationMinutes?.ToString() ?? "—")</td>
+                                                                <td data-label="@AdminRes.ColStatus">
+                                                                    <StatusBadge IsActive="lesson.IsPublished"
+                                                                                 ActiveText="@AdminRes.StatusLive"
+                                                                                 InactiveText="@AdminRes.StatusDraft" />
+                                                                </td>
+                                                                <td data-label="@AdminRes.ColActions">
+                                                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
+                                                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)" title="@AdminRes.Delete" aria-label="@AdminRes.Delete"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     }
-                </div>
-            </ChildContent>
-        </FormCardSection>
+                </ChildContent>
+            </FormCardSection>
+
+            @* ── Publish ── *@
+            <FormCardSection Title="@AdminRes.Publish">
+                <ChildContent>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <StatusBadge IsActive="course.IsPublished"
+                                     ActiveText="@AdminRes.StatusPublished"
+                                     InactiveText="@AdminRes.StatusDraft" />
+                        @if (!course.IsPublished)
+                        {
+                            <button class="btn btn-success" @onclick="PublishCourse">@AdminRes.PublishCourse</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-warning" @onclick="UnpublishCourse">@AdminRes.UnpublishCourse</button>
+                        }
+                    </div>
+                </ChildContent>
+            </FormCardSection>
+        }
     }
-}
 
 </div>
 

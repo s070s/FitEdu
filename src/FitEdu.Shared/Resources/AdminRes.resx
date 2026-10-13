@@ -920,6 +920,12 @@
   <data name="BlogSummaryPlaceholder" xml:space="preserve">
     <value>Short description for the article card</value>
   </data>
+  <data name="BlogSlugPlaceholder" xml:space="preserve">
+    <value>e.g. beginner-strength-guide</value>
+  </data>
+  <data name="BlogTagsPlaceholder" xml:space="preserve">
+    <value>Strength, Nutrition, Recovery</value>
+  </data>
   <data name="BlogAuthorPlaceholder" xml:space="preserve">
     <value>e.g. FitEdu Coaching Team</value>
   </data>

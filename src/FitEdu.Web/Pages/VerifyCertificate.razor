@@ -22,20 +22,25 @@ else if (_result.IsValid)
                  Tone="StatusPanel.StatusTone.Success"
                  Eyebrow="@CertificateRes.VerificationTitle"
                  Title="@CertificateRes.VerificationValid">
-        <dl class="certificate-details">
-            <div>
-                <dt>@CertificateRes.FieldRecipient</dt>
-                <dd>@_result.RecipientName</dd>
-            </div>
-            <div>
-                <dt>@CertificateRes.FieldCourse</dt>
-                <dd>@_result.CourseTitle</dd>
-            </div>
-            <div>
-                <dt>@CertificateRes.FieldIssuedOn</dt>
-                <dd>@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
-            </div>
-        </dl>
+        <ChildContent>
+            <dl class="certificate-details">
+                <div>
+                    <dt>@CertificateRes.FieldRecipient</dt>
+                    <dd>@_result.RecipientName</dd>
+                </div>
+                <div>
+                    <dt>@CertificateRes.FieldCourse</dt>
+                    <dd>@_result.CourseTitle</dd>
+                </div>
+                <div>
+                    <dt>@CertificateRes.FieldIssuedOn</dt>
+                    <dd>@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
+                </div>
+            </dl>
+        </ChildContent>
+        <Actions>
+            <a href="/" class="btn-cta btn-cta--ghost">@GlobalRes.BackToHome</a>
+        </Actions>
     </StatusPanel>
 }
 else

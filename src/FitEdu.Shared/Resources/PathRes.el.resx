@@ -200,7 +200,7 @@
     <value>Αφαίρεση</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Αποτυχία αποθήκευσης της διαδρομής προπόνησης. Δοκιμάστε ξανά.</value>
+    <value>Η αποθήκευση της διαδρομής προπόνησης απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="PathsEyebrow" xml:space="preserve">
     <value>Βήμα προς βήμα</value>

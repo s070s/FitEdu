@@ -2526,6 +2526,24 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e.g. beginner-strength-guide.
+        /// </summary>
+        public static string BlogSlugPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogSlugPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strength, Nutrition, Recovery.
+        /// </summary>
+        public static string BlogTagsPlaceholder {
+            get {
+                return ResourceManager.GetString("BlogTagsPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to e.g. FitEdu Coaching Team.
         /// </summary>
         public static string BlogAuthorPlaceholder {

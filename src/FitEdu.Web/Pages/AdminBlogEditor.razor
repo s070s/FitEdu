@@ -2,6 +2,7 @@
 @page "/admin/blog/{Id:guid}"
 @attribute [Authorize(Roles = "Admin")]
 @using FitEdu.Web.Shared
+@using FitEdu.Web.Extensions
 
 <PageTitle>@(_isEditMode ? AdminRes.EditArticle : AdminRes.NewArticle)</PageTitle>
 
@@ -26,13 +27,13 @@
             <div class="mb-3">
                 <label class="form-label" for="blog-title-en">@AdminRes.FieldTitle <span class="text-danger" aria-hidden="true">*</span></label>
                 <input id="blog-title-en" type="text" class="form-control" value="@_titleEn"
-                       @oninput="OnTitleEnInput" placeholder="@AdminRes.BlogTitlePlaceholder" />
+                       @oninput="OnTitleEnInput" placeholder="@ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder))" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label" for="blog-summary-en">@AdminRes.FieldSummary <span class="text-danger" aria-hidden="true">*</span></label>
                 <textarea id="blog-summary-en" class="form-control" rows="3" maxlength="500"
-                          @bind="_summaryEn" placeholder="@AdminRes.BlogSummaryPlaceholder"></textarea>
+                          @bind="_summaryEn" placeholder="@ContentLanguageText.English(nameof(AdminRes.BlogSummaryPlaceholder))"></textarea>
             </div>
 
             <div class="mb-3">
@@ -47,13 +48,13 @@
 
             <div class="mb-3">
                 <label class="form-label" for="blog-title-el">@AdminRes.FieldTitle</label>
-                <input id="blog-title-el" type="text" class="form-control" lang="el" @bind="_titleEl" placeholder="@AdminRes.BlogTitlePlaceholder" />
+                <input id="blog-title-el" type="text" class="form-control" lang="el" @bind="_titleEl" placeholder="@ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder))" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label" for="blog-summary-el">@AdminRes.FieldSummary</label>
                 <textarea id="blog-summary-el" class="form-control" rows="3" maxlength="500" lang="el"
-                          @bind="_summaryEl" placeholder="@AdminRes.BlogSummaryPlaceholder"></textarea>
+                          @bind="_summaryEl" placeholder="@ContentLanguageText.Greek(nameof(AdminRes.BlogSummaryPlaceholder))"></textarea>
             </div>
 
             <div class="mb-3">
@@ -71,7 +72,7 @@
         <div class="col-md-6">
             <label class="form-label" for="blog-slug">@AdminRes.ColSlug <span class="text-danger" aria-hidden="true">*</span></label>
             <input id="blog-slug" type="text" class="form-control" value="@_slug"
-                   @oninput="OnSlugInput" placeholder="url-friendly-slug" />
+                   @oninput="OnSlugInput" placeholder="@AdminRes.BlogSlugPlaceholder" />
             <div class="form-text">@AdminRes.SlugHint</div>
         </div>
 
@@ -104,7 +105,7 @@
         <div class="col-md-4">
             <label class="form-label" for="blog-tags">@AdminRes.FieldTags</label>
             <input id="blog-tags" type="text" class="form-control" @bind="_tagsInput"
-                   placeholder="Strength, Nutrition, Recovery" />
+                   placeholder="@AdminRes.BlogTagsPlaceholder" />
             <div class="form-text">@AdminRes.TagsHint</div>
         </div>
 

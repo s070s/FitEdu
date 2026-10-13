@@ -538,10 +538,10 @@
     <value>Ευχαριστημένοι Χρήστες</value>
   </data>
   <data name="NewTestimonial" xml:space="preserve">
-    <value>Νέα Μαρτυρία</value>
+    <value>Νέα μαρτυρία</value>
   </data>
   <data name="NoTestimonialsFound" xml:space="preserve">
-    <value>Δεν βρέθηκαν μαρτυρίες χρηστών. Προσθέστε μία για να εμφανιστεί στην αρχική σελίδα.</value>
+    <value>Δεν βρέθηκαν μαρτυρίες χρηστών. Πρόσθεσε μία για να εμφανιστεί στην αρχική σελίδα.</value>
   </data>
   <data name="ColOrder" xml:space="preserve">
     <value>Σειρά</value>
@@ -646,7 +646,7 @@
     <value>Η εικόνα θα μεταφορτωθεί μετά την αποθήκευση του άρθρου.</value>
   </data>
   <data name="EditTestimonial" xml:space="preserve">
-    <value>Επεξεργασία Testimonial</value>
+    <value>Επεξεργασία μαρτυρίας</value>
   </data>
   <data name="FieldFullName" xml:space="preserve">
     <value>Ονοματεπώνυμο</value>
@@ -835,7 +835,7 @@
     <value>Η αποθήκευση της μαρτυρίας απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="AvatarUploadFailed" xml:space="preserve">
-    <value>Απέτυχε η μεταφόρτωση της εικόνας. Ελέγξτε τον τύπο και το μέγεθος του αρχείου (έως 5 MB).</value>
+    <value>Απέτυχε η μεταφόρτωση της εικόνας. Έλεγξε τον τύπο και το μέγεθος του αρχείου (έως 5 MB).</value>
   </data>
   <data name="AvatarRemoveFailed" xml:space="preserve">
     <value>Απέτυχε η αφαίρεση της εικόνας.</value>
@@ -938,6 +938,12 @@
   </data>
   <data name="BlogSummaryPlaceholder" xml:space="preserve">
     <value>Σύντομη περιγραφή για την κάρτα του άρθρου</value>
+  </data>
+  <data name="BlogSlugPlaceholder" xml:space="preserve">
+    <value>π.χ. beginner-strength-guide</value>
+  </data>
+  <data name="BlogTagsPlaceholder" xml:space="preserve">
+    <value>Δύναμη, Διατροφή, Αποκατάσταση</value>
   </data>
   <data name="BlogAuthorPlaceholder" xml:space="preserve">
     <value>π.χ. Ομάδα προπονητών FitEdu</value>
