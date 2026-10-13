@@ -174,23 +174,24 @@ public class AssistantIndexingService(
 
     /// <summary>
     /// "Exercises: Pushups (chest, triceps); Plank (abdominals)" in list order, so a search for an
-    /// exercise or a muscle finds the workouts that train it. Null for a lesson without exercises.
+    /// exercise or a muscle finds the workouts that train it. Null for a lesson without published exercises.
     /// </summary>
     /// <remarks>
-    /// Deliberate choices: every prescribed exercise is listed, published or not, because the lesson
-    /// page shows them all (CourseService does not filter them). The Greek chunk keeps the English
+    /// Deliberate choices: only published exercises are listed, because the lesson page leaves the
+    /// others out (CourseService.PublishedPrescriptions). The Greek chunk keeps the English
     /// label like its English header labels, and the English muscle values, which are the fixed
     /// library vocabulary the coach's search_exercises filter takes; the embedding model is multilingual.
     /// </remarks>
     private static string? DescribeExercises(Lesson lesson, bool isEl)
     {
-        if (lesson.Exercises.Count == 0)
-            return null;
-
         var descriptions = lesson.Exercises
             .OrderBy(prescription => prescription.SortOrder)
             .Select(prescription => prescription.Exercise)
-            .Select(exercise => $"{Localized.Pick(isEl, exercise.NameEn, exercise.NameEl)} ({exercise.PrimaryMuscles})");
+            .Where(exercise => exercise.IsPublished)
+            .Select(exercise => $"{Localized.Pick(isEl, exercise.NameEn, exercise.NameEl)} ({exercise.PrimaryMuscles})")
+            .ToList();
+        if (descriptions.Count == 0)
+            return null;
 
         return ExercisesLabel + string.Join(ExerciseListSeparator, descriptions);
     }

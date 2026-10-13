@@ -416,7 +416,7 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `GET` | `api/admin/lessons/module/{moduleId}` | List lessons for a module | Admin |
 | `GET` | `api/admin/lessons/{id}` | Lesson detail, including its exercise rows in order | Admin |
 | `POST` | `api/admin/lessons` | Create lesson, optionally with its exercises (slug, sets, reps, rest, notes EN/EL) | Admin |
-| `PUT` | `api/admin/lessons/{id}` | Update lesson; an `exercises` list replaces the lesson's exercises wholesale in list order (omit it to keep them; an unknown slug returns 400) | Admin |
+| `PUT` | `api/admin/lessons/{id}` | Update lesson; an `exercises` list replaces the lesson's exercises wholesale in list order (omit it to keep them; an unknown or unpublished slug returns 400) | Admin |
 | `DELETE` | `api/admin/lessons/{id}` | Delete lesson | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/pdf` | Upload PDF | Admin |
 | `POST` | `api/admin/lessons/{id}/upload/video` | Upload video | Admin |
@@ -600,7 +600,7 @@ The app ships 873 exercises from [Free Exercise DB](https://github.com/yuhonas/f
 - **Data:** each exercise has a slug, name, category, level, force, mechanic, equipment, primary and secondary muscles and numbered steps, in English and Greek. The English text is the upstream `exercises.json`, trimmed as described in [its README](src/FitEdu.Shared/JSON/Exercises/README.md); `exercises.el.json` adds the Greek name and steps. The full slug list is [docs/assets/exercise-slugs.txt](docs/assets/exercise-slugs.txt).
 - **Photos:** a start and an end photo per exercise, converted to 480 px WebP by [`tools/assets/`](tools/assets/README.md) and served from `/images/exercises/{slug}/0.webp` and `1.webp`. The UI loops between the two to show the movement; when the visitor asks for reduced motion it shows both photos side by side instead.
 - **Pages:** `/exercises` is the public library (search, muscle, level, type and equipment filters, pages); `/exercises/{slug}` shows the photos, muscles, steps and the workouts that use the exercise.
-- **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400) and fails `SeedContentIntegrityTests`.
+- **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400, which also refuses an unpublished exercise, since members never see one) and fails `SeedContentIntegrityTests`.
 
 ## Assets & Licences
 

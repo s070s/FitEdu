@@ -656,6 +656,78 @@ public class AdminCourseServiceTests
     }
 
     [Fact]
+    public async Task UpdateLesson_RowOfASoftDeletedExercise_IsReplacedToo()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var squat = NewExercise("barbell-squat");
+        var retired = NewExercise("retired-move");
+        db.Exercises.AddRange(squat, retired);
+        var lesson = NewLesson();
+        lesson.Exercises.Add(Prescription(squat, sortOrder: 1));
+        lesson.Exercises.Add(Prescription(retired, sortOrder: 2));
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+        retired.IsDeleted = true; // the query filter now hides its row from lesson.Exercises
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        var result = await NewService(db).UpdateLessonAsync(lesson.Id, LessonRequest(lesson.ModuleId,
+        [
+            new LessonExerciseEditDto("barbell-squat"),
+            new LessonExerciseEditDto("barbell-squat", Sets: 2)
+        ]), Admin);
+
+        result.StatusCode.ShouldBe(200);
+        // The hidden row must not survive and share SortOrder 2 with the new row.
+        var allRows = await db.LessonExercises
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(row => row.LessonId == lesson.Id)
+            .ToListAsync();
+        allRows.Count.ShouldBe(2);
+        allRows.ShouldAllBe(row => row.ExerciseId == squat.Id);
+    }
+
+    [Fact]
+    public async Task UpdateLesson_UnpublishedExercise_ReturnsValidationError_AndChangesNothing()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var squat = NewExercise("barbell-squat");
+        var hidden = NewExercise("hidden-move");
+        hidden.IsPublished = false; // students never see it, so a lesson must not prescribe it
+        db.Exercises.AddRange(squat, hidden);
+        var lesson = NewLesson();
+        lesson.Exercises.Add(Prescription(squat, sortOrder: 1, sets: 5));
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).UpdateLessonAsync(lesson.Id, LessonRequest(lesson.ModuleId,
+        [
+            new LessonExerciseEditDto("hidden-move")
+        ]), Admin);
+
+        result.StatusCode.ShouldBe(400);
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_UnknownSlug}: 'hidden-move'");
+        (await RowsOfLessonAsync(db, lesson.Id)).Single().ExerciseId.ShouldBe(squat.Id);
+    }
+
+    [Fact]
+    public async Task CreateLesson_UnpublishedExercise_ReturnsValidationError_AndSavesNothing()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var hidden = NewExercise("hidden-move");
+        hidden.IsPublished = false;
+        db.Exercises.Add(hidden);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).CreateLessonAsync(
+            LessonRequest(Guid.NewGuid(), [new LessonExerciseEditDto("hidden-move")]), Admin);
+
+        result.StatusCode.ShouldBe(400);
+        (await db.Lessons.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
     public async Task CreateLesson_UnknownExerciseSlug_ReturnsValidationError_AndSavesNothing()
     {
         await using var db = DbContextFactory.CreateInMemory();

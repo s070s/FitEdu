@@ -195,6 +195,29 @@ public class AssistantIndexingServiceTests
         lessonChunks["el"].ShouldContain("Exercises: Κάμψεις (chest, triceps); Plank (abdominals)"); // English name when no Greek one
     }
 
+    [Fact]
+    public async Task RunIndexPassAsync_WorkoutLesson_LeavesOutUnpublishedExercises()
+    {
+        // The lesson page shows published exercises only (CourseService.PublishedPrescriptions).
+        await using var db = DbContextFactory.CreateInMemory();
+        var lesson = NewLessonInCourse(coursePublished: true, lessonPublished: true);
+        var pushUps = NewExercise("pushups", "Pushups", "Κάμψεις", "chest");
+        var hidden = NewExercise("hidden-move", "Hidden Move", nameEl: null, "biceps");
+        hidden.IsPublished = false;
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = pushUps, SortOrder = 1 });
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), Exercise = hidden, SortOrder = 2 });
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+        var (svc, _) = NewService(db);
+
+        await svc.RunIndexPassAsync();
+
+        var lessonText = (await db.AssistantContentChunks.ToListAsync())
+            .Single(c => c.SourceType == AssistantSourceType.Lesson && c.Language == "en").Text;
+        lessonText.ShouldContain("Exercises: Pushups (chest)");
+        lessonText.ShouldNotContain("Hidden Move");
+    }
+
     private static Exercise NewExercise(string slug, string nameEn, string? nameEl, string primaryMuscles) => new()
     {
         Id = Guid.NewGuid(),

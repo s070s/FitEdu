@@ -279,7 +279,7 @@ public class AdminCourseService(
             IsPublished = false,
             UpdatedByUserId = userId
         };
-        ReplaceExerciseRows(lesson, request.Exercises, exercisesBySlug);
+        await ReplaceExerciseRowsAsync(lesson, request.Exercises, exercisesBySlug, cancellationToken);
 
         db.Lessons.Add(lesson);
         await db.SaveChangesAsync(cancellationToken);
@@ -311,7 +311,7 @@ public class AdminCourseService(
         lesson.SortOrder = request.SortOrder;
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.UpdatedByUserId = userId;
-        ReplaceExerciseRows(lesson, request.Exercises, exercisesBySlug);
+        await ReplaceExerciseRowsAsync(lesson, request.Exercises, exercisesBySlug, cancellationToken);
 
         // DB-7: RowVersion (AuditableEntity) is part of this UPDATE's WHERE clause, so a lesson changed
         // by another request in between matches zero rows and EF throws instead of overwriting it.
@@ -332,7 +332,8 @@ public class AdminCourseService(
     // ── Exercise references ──
 
     /// <summary>
-    /// Loads (tracked) every library exercise the rows name, keyed by slug. Empty when there are no rows.
+    /// Loads (tracked) every published library exercise the rows name, keyed by slug. Empty when there
+    /// are no rows. Published only, because students never see an unpublished exercise in a lesson.
     /// </summary>
     private async Task<Dictionary<string, Exercise>> LoadRequestedExercisesAsync(
         List<LessonExerciseEditDto>? rows, CancellationToken cancellationToken)
@@ -342,11 +343,11 @@ public class AdminCourseService(
 
         var slugs = rows.Select(row => NormalizeSlug(row.Slug)).Distinct().ToList();
         return await db.Exercises
-            .Where(e => slugs.Contains(e.Slug))
+            .Where(e => slugs.Contains(e.Slug) && e.IsPublished)
             .ToDictionaryAsync(e => e.Slug, cancellationToken);
     }
 
-    /// <summary>The first row slug that is not in the library, or null when every row is known.</summary>
+    /// <summary>The first row slug that is not a published library exercise, or null when every row is known.</summary>
     private static string? FindUnknownSlug(List<LessonExerciseEditDto>? rows, Dictionary<string, Exercise> exercisesBySlug)
     {
         if (rows is null)
@@ -361,12 +362,20 @@ public class AdminCourseService(
     /// Replaces the lesson's exercise rows with <paramref name="rows"/> in list order.
     /// Null rows leave the lesson's current exercises untouched.
     /// </summary>
-    private void ReplaceExerciseRows(Lesson lesson, List<LessonExerciseEditDto>? rows, Dictionary<string, Exercise> exercisesBySlug)
+    private async Task ReplaceExerciseRowsAsync(
+        Lesson lesson, List<LessonExerciseEditDto>? rows, Dictionary<string, Exercise> exercisesBySlug,
+        CancellationToken cancellationToken)
     {
         if (rows is null)
             return;
 
-        db.LessonExercises.RemoveRange(lesson.Exercises);
+        // lesson.Exercises was loaded through the query filter, which hides the rows of a soft-deleted
+        // exercise; load every row so none of those survives beside the new list.
+        var storedRows = await db.LessonExercises
+            .IgnoreQueryFilters()
+            .Where(row => row.LessonId == lesson.Id)
+            .ToListAsync(cancellationToken);
+        db.LessonExercises.RemoveRange(storedRows);
         lesson.Exercises.Clear();
 
         for (var index = 0; index < rows.Count; index++)
