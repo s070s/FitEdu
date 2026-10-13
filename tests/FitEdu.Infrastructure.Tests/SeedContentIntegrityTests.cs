@@ -301,7 +301,8 @@ public partial class SeedContentIntegrityTests
     public void GreekOverlay_ExerciseNamesUseSentenceCase()
     {
         var problems = SeedJsonFiles.LoadGreekOverlay()
-            .Where(row => row.NameEl is not null && CapitalisedInnerWordRegex().IsMatch(row.NameEl))
+            .Where(row => row.NameEl is not null)
+            .Where(row => CapitalisedInnerWordRegex().IsMatch(row.NameEl!) || LowercaseBracketStartRegex().IsMatch(row.NameEl!))
             .Select(row => $"{row.Slug}: '{row.NameEl}'")
             .ToList();
 
@@ -819,6 +820,10 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
+
+    // A bracket whose first word starts in lower case: "(με βοηθό)" instead of "(Με βοηθό)".
+    [GeneratedRegex(@"\(\p{Ll}", RegexOptions.CultureInvariant)]
+    private static partial Regex LowercaseBracketStartRegex();
 
     [GeneratedRegex(@"\p{IsGreekandCoptic}", RegexOptions.CultureInvariant)]
     private static partial Regex GreekLetterRegex();
