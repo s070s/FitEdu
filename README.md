@@ -261,7 +261,7 @@ The public exercise library (published exercises only). Photos are served from `
 |--------|-------|-------------|------|
 | `GET` | `api/certificates/my` | List current user's certificates | Yes |
 | `POST` | `api/certificates/issue/{courseId}` | Issue certificate for completed course (certificate-enabled plan required) | Yes |
-| `GET` | `api/certificates/{certificateId}/download` | Download certificate PDF | Yes |
+| `GET` | `api/certificates/{certificateId}/download` | Download certificate PDF, printed in English or Greek to match the member's language when it is first rendered | Yes |
 | `GET` | `api/certificates/verify/{verificationId}` | Public certificate verification | No |
 
 ### Learning Paths — `api/paths`

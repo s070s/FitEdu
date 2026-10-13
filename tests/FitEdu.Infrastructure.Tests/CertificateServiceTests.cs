@@ -105,6 +105,8 @@ public partial class CertificateServiceTests
             });
         var svc = NewService(db, storage);
         var cert = await svc.GetOrCreateAsync(userId, course.Id);
+        // The PDF is printed in the request's language; pin English so the title check below holds on any machine.
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
 
         var withPdf = await svc.EnsurePdfAsync(cert.Id);
 
@@ -308,7 +310,7 @@ public partial class CertificateServiceTests
         text.ShouldContain("has completed the programme", Case.Sensitive);
         text.ShouldContain("Strength Foundations", Case.Sensitive);
         text.ShouldContain("Total training time: 1h 30m", Case.Sensitive);
-        text.ShouldContain("Issued on October 12, 2026", Case.Sensitive);
+        text.ShouldContain("Issued on 12 October 2026", Case.Sensitive);
         text.ShouldContain("Verification ID: 8d0f6a52-3c1e-4b7a-9f2d-5e6c7b8a9d01", Case.Sensitive);
         text.ShouldNotContain("Certificate of Completion");
 
@@ -318,14 +320,34 @@ public partial class CertificateServiceTests
     }
 
     [Fact]
-    public void RenderedPage_GreekCulture_PrintsTheGreekCourseTitleWithEnglishLabels()
+    public void RenderedPage_GreekCulture_PrintsGreekLabelsTitleAndDate()
     {
-        // The service localises the course title only; the labels and the date stay English.
         var text = VisibleText(RenderFirstPage(PrintableCertificate(), "el-GR"));
 
+        text.ShouldContain("Πιστοποιητικό ολοκλήρωσης προγράμματος", Case.Sensitive);
+        text.ShouldContain("Βεβαιώνεται ότι", Case.Sensitive);
+        text.ShouldContain("ολοκλήρωσε το πρόγραμμα", Case.Sensitive);
         text.ShouldContain("Θεμέλια Δύναμης", Case.Sensitive);
-        text.ShouldContain("Programme Completion Certificate", Case.Sensitive);
-        text.ShouldContain("Issued on October 12, 2026", Case.Sensitive);
+        text.ShouldContain("Συνολικός χρόνος προπόνησης: 1 ώρ. 30 λεπ.", Case.Sensitive);
+        text.ShouldContain("Εκδόθηκε στις 12 Οκτωβρίου 2026", Case.Sensitive);
+        // The SVG draws the id's first digit as its own run after Greek text, so check the label and the id apart.
+        text.ShouldContain("Κωδικός επαλήθευσης:", Case.Sensitive);
+        text.ShouldContain("3c1e-4b7a-9f2d-5e6c7b8a9d01", Case.Sensitive);
+        text.ShouldNotContain("Programme Completion Certificate");
+        text.ShouldNotContain("Strength Foundations");
+    }
+
+    [Fact]
+    public void RenderedPage_GreekCultureWithoutGreekTitle_FallsBackToTheEnglishCourseTitle()
+    {
+        var certificate = PrintableCertificate();
+        certificate.CourseTitleEl = null;
+        certificate.TotalDurationMinutes = 45;
+
+        var text = VisibleText(RenderFirstPage(certificate, "el"));
+
+        text.ShouldContain("Strength Foundations", Case.Sensitive);
+        text.ShouldContain("Συνολικός χρόνος προπόνησης: 45 λεπ.", Case.Sensitive);
     }
 
     [Fact]

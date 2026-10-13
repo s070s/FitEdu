@@ -179,4 +179,28 @@
 	<data name="UpgradeDescription" xml:space="preserve">
 		<value>Finish a programme on Pro to get a certificate with a verification link you can share.</value>
 	</data>
+	<data name="PdfHeading" xml:space="preserve">
+		<value>Programme Completion Certificate</value>
+	</data>
+	<data name="PdfCertifyThat" xml:space="preserve">
+		<value>This is to certify that</value>
+	</data>
+	<data name="PdfCompletedProgramme" xml:space="preserve">
+		<value>has completed the programme</value>
+	</data>
+	<data name="PdfTotalTimeFormat" xml:space="preserve">
+		<value>Total training time: {0}</value>
+	</data>
+	<data name="PdfHoursMinutesFormat" xml:space="preserve">
+		<value>{0}h {1}m</value>
+	</data>
+	<data name="PdfMinutesFormat" xml:space="preserve">
+		<value>{0}m</value>
+	</data>
+	<data name="PdfIssuedOnFormat" xml:space="preserve">
+		<value>Issued on {0}</value>
+	</data>
+	<data name="PdfVerificationIdFormat" xml:space="preserve">
+		<value>Verification ID: {0}</value>
+	</data>
 </root>

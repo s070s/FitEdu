@@ -7,6 +7,7 @@ using FitEdu.Application.Data;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Shared.Resources;
 
 namespace FitEdu.Infrastructure.ApiServices;
 
@@ -20,8 +21,9 @@ public class CertificateService : ICertificateService
     private readonly INotificationDispatcher _notifications;
     private readonly ILogger<CertificateService> _logger;
 
-    private const string Heading = "Programme Completion Certificate";
     private const string PlatformName = "FitEdu";
+    // Day, month name, year: "12 October 2026" in English, "12 Οκτωβρίου 2026" in Greek.
+    private const string IssueDatePattern = "d MMMM yyyy";
     private const float BrandMarkSize = 44;
 
     // Brand palette. Page, lime and the two text colours are wwwroot/css/app.css tokens
@@ -212,8 +214,8 @@ public class CertificateService : ICertificateService
 
     private async Task<string> GeneratePdfAsync(Certificate cert, CancellationToken cancellationToken)
     {
-        // Render the certificate in the culture active for the current request
-        // (set by UseRequestLocalization). Defaults to English outside a localized request.
+        // Render the certificate in the culture active for the current request (set by
+        // UseRequestLocalization from the member's language cookie on the download request).
         var pdfBytes = CreateDocument(cert, CultureInfo.CurrentUICulture).GeneratePdf();
 
         using var stream = new MemoryStream(pdfBytes);
@@ -238,11 +240,12 @@ public class CertificateService : ICertificateService
     /// <summary>
     /// Lays out the one-page landscape certificate in the brand palette: the dumbbell mark and
     /// name at the top, the heading, recipient and programme in the middle, the issue date and
-    /// verification id at the bottom.
+    /// verification id at the bottom. Labels, course title and date follow the given culture.
     /// </summary>
     public static IDocument CreateDocument(Certificate cert, CultureInfo culture)
     {
         var courseTitle = ResolveCourseTitle(cert.CourseTitleEn, cert.CourseTitleEl, culture);
+        var heading = Label(nameof(CertificateRes.PdfHeading), culture);
 
         return Document.Create(container =>
         {
@@ -255,11 +258,11 @@ public class CertificateService : ICertificateService
                 page.DefaultTextStyle(style => style.FontColor(LightTextColor));
 
                 page.Header().Element(ComposeBrandRow);
-                page.Content().AlignMiddle().Element(content => ComposeBody(content, cert, courseTitle));
-                page.Footer().Element(footer => ComposeFooter(footer, cert));
+                page.Content().AlignMiddle().Element(content => ComposeBody(content, cert, heading, courseTitle, culture));
+                page.Footer().Element(footer => ComposeFooter(footer, cert, culture));
             });
         })
-        .WithMetadata(new DocumentMetadata { Title = Heading, Author = PlatformName, Subject = courseTitle });
+        .WithMetadata(new DocumentMetadata { Title = heading, Author = PlatformName, Subject = courseTitle });
     }
 
     private static void ComposeBrandRow(IContainer container)
@@ -276,7 +279,8 @@ public class CertificateService : ICertificateService
         });
     }
 
-    private static void ComposeBody(IContainer container, Certificate cert, string courseTitle)
+    private static void ComposeBody(
+        IContainer container, Certificate cert, string heading, string courseTitle, CultureInfo culture)
     {
         container.Column(column =>
         {
@@ -285,48 +289,55 @@ public class CertificateService : ICertificateService
             // A short lime rule above the heading, like the accent bars in the app.
             column.Item().AlignCenter().Width(80).LineHorizontal(3).LineColor(LimeColor);
 
-            column.Item().AlignCenter().Text(Heading).FontSize(32).Bold().FontColor(LimeColor);
-            column.Item().AlignCenter().Text("This is to certify that").FontSize(13);
+            column.Item().AlignCenter().Text(heading).FontSize(32).Bold().FontColor(LimeColor);
+            column.Item().AlignCenter().Text(Label(nameof(CertificateRes.PdfCertifyThat), culture)).FontSize(13);
             column.Item().AlignCenter().Text(cert.RecipientName).FontSize(28).Bold().FontColor(StrongTextColor);
-            column.Item().AlignCenter().Text("has completed the programme").FontSize(13);
+            column.Item().AlignCenter().Text(Label(nameof(CertificateRes.PdfCompletedProgramme), culture)).FontSize(13);
 
             // Course title, localised for the issuing culture (English by default)
             column.Item().AlignCenter().Text(courseTitle).FontSize(22).Bold().FontColor(TealColor);
 
-            var duration = FormatDuration(cert.TotalDurationMinutes);
+            var duration = FormatDuration(cert.TotalDurationMinutes, culture);
             if (duration is not null)
-                column.Item().AlignCenter().Text($"Total training time: {duration}").FontSize(11);
+                column.Item().AlignCenter().Text(Format(nameof(CertificateRes.PdfTotalTimeFormat), culture, duration)).FontSize(11);
         });
     }
 
-    private static void ComposeFooter(IContainer container, Certificate cert)
+    private static void ComposeFooter(IContainer container, Certificate cert, CultureInfo culture)
     {
         container.Column(column =>
         {
             column.Item().LineHorizontal(1).LineColor(DividerColor);
             column.Item().PaddingTop(10).Row(row =>
             {
-                row.RelativeItem().Text(FormatIssuedOn(cert.IssuedAt)).FontSize(11);
+                var issueDate = cert.IssuedAt.ToString(IssueDatePattern, culture);
+                row.RelativeItem().Text(Format(nameof(CertificateRes.PdfIssuedOnFormat), culture, issueDate)).FontSize(11);
                 row.RelativeItem().AlignRight()
-                    .Text($"Verification ID: {cert.VerificationId}")
+                    .Text(Format(nameof(CertificateRes.PdfVerificationIdFormat), culture, cert.VerificationId))
                     .FontSize(9)
                     .FontColor(MutedTextColor);
             });
         });
     }
 
-    /// <summary>"1h 30m", or "45m" under an hour; null when no lesson has a duration.</summary>
-    private static string? FormatDuration(int? totalMinutes)
+    /// <summary>"1h 30m", or "45m" under an hour, in the culture's units; null when no lesson has a duration.</summary>
+    private static string? FormatDuration(int? totalMinutes, CultureInfo culture)
     {
         if (totalMinutes is not > 0)
             return null;
 
         var hours = totalMinutes.Value / 60;
         var minutes = totalMinutes.Value % 60;
-        return hours > 0 ? $"{hours}h {minutes}m" : $"{minutes}m";
+        return hours > 0
+            ? Format(nameof(CertificateRes.PdfHoursMinutesFormat), culture, hours, minutes)
+            : Format(nameof(CertificateRes.PdfMinutesFormat), culture, minutes);
     }
 
-    // The labels are English, so the date is too (a Greek month name would read oddly beside them).
-    private static string FormatIssuedOn(DateTime issuedAt) =>
-        string.Create(CultureInfo.InvariantCulture, $"Issued on {issuedAt:MMMM d, yyyy}");
+    // The PDF is built for an explicit culture, so it reads CertificateRes for that culture rather
+    // than through the static properties, which follow the thread's current culture.
+    private static string Label(string key, CultureInfo culture) =>
+        CertificateRes.ResourceManager.GetString(key, culture) ?? key;
+
+    private static string Format(string key, CultureInfo culture, params object[] values) =>
+        string.Format(culture, Label(key, culture), values);
 }

@@ -290,5 +290,77 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("UpgradeDescription", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Programme Completion Certificate.
+        /// </summary>
+        public static string PdfHeading {
+            get {
+                return ResourceManager.GetString("PdfHeading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This is to certify that.
+        /// </summary>
+        public static string PdfCertifyThat {
+            get {
+                return ResourceManager.GetString("PdfCertifyThat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to has completed the programme.
+        /// </summary>
+        public static string PdfCompletedProgramme {
+            get {
+                return ResourceManager.GetString("PdfCompletedProgramme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Total training time: {0}.
+        /// </summary>
+        public static string PdfTotalTimeFormat {
+            get {
+                return ResourceManager.GetString("PdfTotalTimeFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}h {1}m.
+        /// </summary>
+        public static string PdfHoursMinutesFormat {
+            get {
+                return ResourceManager.GetString("PdfHoursMinutesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}m.
+        /// </summary>
+        public static string PdfMinutesFormat {
+            get {
+                return ResourceManager.GetString("PdfMinutesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Issued on {0}.
+        /// </summary>
+        public static string PdfIssuedOnFormat {
+            get {
+                return ResourceManager.GetString("PdfIssuedOnFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Verification ID: {0}.
+        /// </summary>
+        public static string PdfVerificationIdFormat {
+            get {
+                return ResourceManager.GetString("PdfVerificationIdFormat", resourceCulture);
+            }
+        }
     }
 }
