@@ -34,7 +34,10 @@ public class CardComponentTests : BunitContext
 
         var card = RenderCourseCard(Course());
 
-        card.Find("a.course-card-link").GetAttribute("href").ShouldBe($"/courses/{CourseId}");
+        var titleLink = card.Find("a.course-card-link");
+        titleLink.GetAttribute("href").ShouldBe($"/courses/{CourseId}");
+        titleLink.ClassList.ShouldContain("stretched-link"); // the whole card is the link
+        card.FindAll("a").Count.ShouldBe(1);
         card.Find(".course-card").ClassList.ShouldNotContain("course-locked");
         card.Find(".level-badge").TextContent.Trim().ShouldEndWith("Intermediate");
         card.Find(".course-card__chips").TextContent.ShouldContain("8 weeks · 3× per week");
@@ -139,7 +142,9 @@ public class CardComponentTests : BunitContext
 
         var card = RenderBlogCard(Article());
 
-        card.Find("a.blog-card__link").GetAttribute("href").ShouldBe("/blog/progressive-overload-explained");
+        var titleLink = card.Find("a.blog-card__link");
+        titleLink.GetAttribute("href").ShouldBe("/blog/progressive-overload-explained");
+        titleLink.ClassList.ShouldContain("stretched-link");
         card.FindAll(".blog-card__tags li").Select(tag => tag.TextContent).ShouldBe(["strength", "programming"]);
         card.Find(".blog-card__meta").TextContent.ShouldContain("FitEdu");
         card.Find(".blog-card__meta time").GetAttribute("datetime").ShouldBe("2026-10-01");
@@ -209,7 +214,9 @@ public class CardComponentTests : BunitContext
 
         var card = RenderPathCard(path);
 
-        card.Find("a.path-card__link").GetAttribute("href").ShouldBe($"/paths/{path.Id}");
+        var titleLink = card.Find("a.path-card__link");
+        titleLink.GetAttribute("href").ShouldBe($"/paths/{path.Id}");
+        titleLink.ClassList.ShouldContain("stretched-link");
         var ring = card.Find("[role=progressbar]");
         ring.GetAttribute("aria-valuenow").ShouldBe("50");
         ring.GetAttribute("aria-label").ShouldBe("2 από 4 ολοκληρώθηκαν");

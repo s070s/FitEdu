@@ -38,45 +38,15 @@
     overflow-wrap: anywhere;
 }
 
-.course-card-link {
-    color: var(--text-strong-normal);
-    text-decoration: none;
-}
-
-/* Stretched link: the title is the one real link, its hit area covers the card. */
-.course-card-link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-}
-
-.course-card-link:focus-visible {
-    outline: none;
-}
-
-.course-card:has(.course-card-link:focus-visible) {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-}
-
-@media (hover: hover) {
-    .course-card:hover .course-card-link {
-        color: var(--text-strong-accent);
-    }
-}
-
+/* The title link is a .stretched-link (shared card rules in shared-components.css). */
 .course-card__description {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
     color: var(--text-light-normal);
     font-size: 0.9375rem;
     line-height: 1.55;
 }
 
-/* Rich-text descriptions: paragraphs read as one clamped block; their links stay clickable. */
+/* Rich-text descriptions: paragraphs read as one clamped block; their links stay clickable
+   above the stretched title link. */
 .course-card__description ::deep p {
     display: inline;
     margin: 0;
@@ -85,18 +55,6 @@
 .course-card__description ::deep a {
     position: relative;
     z-index: 3;
-}
-
-.course-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2) var(--space-4);
-    margin-top: auto;
-    padding-top: var(--space-3);
-    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
-    color: var(--text-light-muted);
-    font-size: var(--fs-6);
 }
 
 .course-card__lessons,

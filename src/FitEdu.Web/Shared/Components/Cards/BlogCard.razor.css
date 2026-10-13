@@ -37,58 +37,17 @@
     list-style: none;
 }
 
+/* The title link is a .stretched-link (shared card rules in shared-components.css). */
 .blog-card__title {
-    display: -webkit-box;
     margin: 0;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     font-size: var(--fs-4);
 }
 
-.blog-card__link {
-    color: var(--text-strong-normal);
-    text-decoration: none;
-}
-
-/* Stretched link: the title is the one real link, its hit area covers the card. */
-.blog-card__link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-}
-
-.blog-card__link:focus-visible {
-    outline: none;
-}
-
-.blog-card:has(.blog-card__link:focus-visible) {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-}
-
 .blog-card__summary {
-    display: -webkit-box;
     margin: 0;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
     color: var(--text-light-normal);
     font-size: 0.9375rem;
     line-height: 1.55;
-}
-
-.blog-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-1) var(--space-3);
-    margin-top: auto;
-    padding-top: var(--space-3);
-    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
-    color: var(--text-light-muted);
-    font-size: var(--fs-6);
 }
 
 .blog-card__more {

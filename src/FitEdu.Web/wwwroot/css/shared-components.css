@@ -940,3 +940,59 @@ a.card-surface {
         transform: none;
     }
 }
+
+/* ================================================================
+   FitEdu cards (Phase D2): the stretched title link, the meta row
+   and clamped text, shared by the card components
+   ================================================================ */
+
+/* A card's one link is its title with Bootstrap's .stretched-link, so the whole card is the hit
+   area. The focus ring moves from the small title to the whole card. */
+.card-surface .stretched-link {
+    color: var(--text-strong-normal);
+    text-decoration: none;
+}
+
+.card-surface .stretched-link:focus-visible {
+    outline: none;
+}
+
+.card-surface:has(.stretched-link:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+@media (hover: hover) {
+    .card-surface--interactive:hover .stretched-link {
+        color: var(--text-strong-accent);
+    }
+}
+
+/* The last row of a card (lessons, author and date, …): pushed to the bottom, under a hairline. */
+.card-surface__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+/* Cut text off after two or three lines with an ellipsis (card titles and summaries). */
+.line-clamp-2,
+.line-clamp-3 {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-2 {
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    -webkit-line-clamp: 3;
+}

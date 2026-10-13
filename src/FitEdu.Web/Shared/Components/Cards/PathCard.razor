@@ -15,17 +15,17 @@
                     </span>
                 }
                 <h3 class="path-card__title">
-                    <a class="path-card__link" href="@PathUrl">@Path.Title</a>
+                    <a class="path-card__link stretched-link" href="@PathUrl">@Path.Title</a>
                 </h3>
             </div>
         </div>
 
         @if (!string.IsNullOrEmpty(Path.Description))
         {
-            <p class="path-card__description">@Path.Description</p>
+            <p class="path-card__description line-clamp-3">@Path.Description</p>
         }
 
-        <div class="path-card__meta">
+        <div class="path-card__meta card-surface__meta">
             <span class="path-card__steps">
                 <span class="bi bi-signpost-split" aria-hidden="true"></span>
                 @string.Format(PathRes.StepsCountFormat, Path.StepCount)

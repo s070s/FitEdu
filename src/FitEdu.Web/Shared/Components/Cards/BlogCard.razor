@@ -26,12 +26,12 @@
             </ul>
         }
 
-        <h3 class="blog-card__title">
-            <a class="blog-card__link" href="@ArticleUrl">@Article.Title</a>
+        <h3 class="blog-card__title line-clamp-2">
+            <a class="blog-card__link stretched-link" href="@ArticleUrl">@Article.Title</a>
         </h3>
-        <p class="blog-card__summary">@Article.Summary</p>
+        <p class="blog-card__summary line-clamp-3">@Article.Summary</p>
 
-        <div class="blog-card__meta">
+        <div class="blog-card__meta card-surface__meta">
             <span>@Article.AuthorName</span>
             @if (Article.PublishedAt is { } publishedAt)
             {

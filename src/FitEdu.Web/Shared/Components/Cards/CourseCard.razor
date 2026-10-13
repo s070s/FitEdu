@@ -32,15 +32,15 @@
         </div>
 
         <h3 class="course-card__title">
-            <a class="course-card-link" href="@Href">@Course.Title</a>
+            <a class="course-card-link stretched-link" href="@Href">@Course.Title</a>
         </h3>
 
         @if (!Compact && !string.IsNullOrEmpty(Course.Description))
         {
-            <div class="course-card__description">@((MarkupString)Course.Description)</div>
+            <div class="course-card__description line-clamp-3">@((MarkupString)Course.Description)</div>
         }
 
-        <div class="course-card__meta">
+        <div class="course-card__meta card-surface__meta">
             <span class="course-card__lessons">
                 <span class="bi bi-collection-play" aria-hidden="true"></span>
                 @string.Format(CourseRes.LessonsCountFormat, Course.TotalLessons)
