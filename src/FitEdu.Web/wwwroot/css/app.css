@@ -81,9 +81,14 @@ html {
 html,
 body {
     font-family: var(--font-sans);
-    font-size: var(--fs-body);
     background-color: var(--bg-primary);
     color: var(--text-strong-normal);
+}
+
+/* Body text only: on html the fluid size would also grow 1rem, and with it every rem-based
+   spacing, gutter and the header height. */
+body {
+    font-size: var(--fs-body);
 }
 
 /* Prevent 300ms tap delay on interactive elements */
@@ -156,7 +161,7 @@ input:-webkit-autofill:active {
     box-sizing: border-box;
     display: none;
     left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    padding: 0.6rem 3.5rem 0.7rem 1.25rem; /* the right padding keeps the text clear of the close button */
     position: fixed;
     width: 100%;
     z-index: 1000;
@@ -170,11 +175,24 @@ input:-webkit-autofill:active {
 }
 
 #blazor-error-ui .dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
     cursor: pointer;
     color: var(--bg-primary);
     position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
+    right: 0.375rem;
+    top: 0.125rem;
+}
+
+#blazor-error-ui .dismiss:focus-visible {
+    outline-color: var(--bg-primary);
 }
 
 /* Error boundary */
