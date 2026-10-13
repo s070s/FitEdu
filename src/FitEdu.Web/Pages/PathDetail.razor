@@ -120,7 +120,7 @@
                             @if (IsStepOpen(step))
                             {
                                 <a class="step-link stretched-link" href="@CourseUrl(step)">
-                                    @PathRes.GoToCourse<span class="visually-hidden">: @step.CourseTitle</span>
+                                    <span>@PathRes.GoToCourse<span class="visually-hidden">: @step.CourseTitle</span></span>
                                     <span class="bi bi-arrow-right" aria-hidden="true"></span>
                                 </a>
                             }

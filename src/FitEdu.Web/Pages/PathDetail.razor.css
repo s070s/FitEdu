@@ -228,13 +228,10 @@
     animation: step-marker-glow 2.4s var(--ease-in-out) infinite;
 }
 
-.step-locked .step-marker {
+/* A course finished through another path keeps the completed marker even while locked here. */
+.step-locked:not(.step-completed) .step-marker {
     color: var(--text-light-muted);
     font-size: 0.9375rem;
-}
-
-.step-completed.step-locked .step-marker {
-    color: var(--bg-primary);
 }
 
 @keyframes step-marker-glow {

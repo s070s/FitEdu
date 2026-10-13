@@ -227,7 +227,7 @@
     <value>Βήμα {0}</value>
   </data>
   <data name="StepLockedHint" xml:space="preserve">
-    <value>Ολοκλήρωσε το προηγούμενο πρόγραμμα για να ανοίξει αυτό το πρόγραμμα.</value>
+    <value>Ολοκλήρωσε το προηγούμενο πρόγραμμα για να ανοίξει αυτό.</value>
   </data>
   <data name="PathsListHeading" xml:space="preserve">
     <value>Όλες οι διαδρομές προπόνησης</value>
