@@ -374,5 +374,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("TermsChangesBody", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legal.
+        /// </summary>
+        public static string Eyebrow {
+            get {
+                return ResourceManager.GetString("Eyebrow", resourceCulture);
+            }
+        }
     }
 }

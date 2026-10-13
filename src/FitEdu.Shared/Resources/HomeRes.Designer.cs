@@ -467,5 +467,41 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("RecommendedTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Structured training, explained step by step, in English and Greek..
+        /// </summary>
+        public static string FooterTagline {
+            get {
+                return ResourceManager.GetString("FooterTagline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explore.
+        /// </summary>
+        public static string FooterExplore {
+            get {
+                return ResourceManager.GetString("FooterExplore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legal.
+        /// </summary>
+        public static string FooterLegal {
+            get {
+                return ResourceManager.GetString("FooterLegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow us.
+        /// </summary>
+        public static string FooterFollow {
+            get {
+                return ResourceManager.GetString("FooterFollow", resourceCulture);
+            }
+        }
     }
 }

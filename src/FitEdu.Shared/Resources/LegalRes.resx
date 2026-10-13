@@ -163,4 +163,7 @@
   <data name="TermsChangesBody" xml:space="preserve">
     <value>We may update these terms as the project develops; the date at the top of the page shows when they last changed. Continued use after a change means you accept the updated terms. Questions can be raised through the project's public channels linked in the footer.</value>
   </data>
+  <data name="Eyebrow" xml:space="preserve">
+    <value>Legal</value>
+  </data>
 </root>

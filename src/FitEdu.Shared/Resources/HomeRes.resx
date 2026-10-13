@@ -267,4 +267,16 @@
   <data name="RecommendedTitle" xml:space="preserve">
     <value>Recommended for you</value>
   </data>
+    <data name="FooterTagline" xml:space="preserve">
+      <value>Structured training, explained step by step, in English and Greek.</value>
+    </data>
+    <data name="FooterExplore" xml:space="preserve">
+      <value>Explore</value>
+    </data>
+    <data name="FooterLegal" xml:space="preserve">
+      <value>Legal</value>
+    </data>
+    <data name="FooterFollow" xml:space="preserve">
+      <value>Follow us</value>
+    </data>
 </root>

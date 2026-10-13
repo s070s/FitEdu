@@ -1,43 +1,68 @@
 @* UX-7: shared site footer, rendered globally from MainLayout so authenticated
-   users (and every app page) get the footer, not only the anonymous landing page. *@
+   users (and every app page) get the footer, not only the anonymous landing page.
+   Phones: brand, then the link columns two by two; from 768 px four columns in one row. *@
 
-<footer class="landing-footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <span class="footer-logo">@HomeRes.FooterBrand</span>
-            </div>
-            <div class="footer-author">
-                <p class="footer-name">@HomeRes.FooterAuthorName</p>
-                <p class="footer-role">@HomeRes.FooterAuthorRole</p>
-            </div>
-            <div class="footer-social">
-                <a href="@YoutubeUrl" class="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
-                        <path d="m10 15 5-3-5-3z"></path>
-                    </svg>
+<footer class="site-footer">
+    <div class="site-footer__inner">
+        <div class="site-footer__grid">
+            <div class="site-footer__brand">
+                <a class="site-footer__logo" href="">
+                    <BrandMark Size="32" />
+                    <span>@HomeRes.FooterBrand</span>
                 </a>
-                <a href="@InstagramUrl" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                    </svg>
-                </a>
+                <p class="site-footer__tagline">@HomeRes.FooterTagline</p>
+            </div>
+
+            <nav class="site-footer__column" aria-labelledby="footer-explore">
+                <h2 id="footer-explore" class="site-footer__heading">@HomeRes.FooterExplore</h2>
+                <ul class="site-footer__links">
+                    @foreach (var link in ExploreLinks)
+                    {
+                        <li><a href="@link.Href">@link.Label</a></li>
+                    }
+                </ul>
+            </nav>
+
+            <nav class="site-footer__column" aria-labelledby="footer-legal">
+                <h2 id="footer-legal" class="site-footer__heading">@HomeRes.FooterLegal</h2>
+                <ul class="site-footer__links">
+                    <li><a href="/privacy">@LegalRes.PrivacyTitle</a></li>
+                    <li><a href="/terms">@LegalRes.TermsTitle</a></li>
+                </ul>
+            </nav>
+
+            <div class="site-footer__column">
+                <h2 class="site-footer__heading">@HomeRes.FooterFollow</h2>
+                <div class="site-footer__social">
+                    <a href="@YoutubeUrl" class="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                        <span class="bi bi-youtube" aria-hidden="true"></span>
+                    </a>
+                    <a href="@InstagramUrl" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                        <span class="bi bi-instagram" aria-hidden="true"></span>
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <div class="footer-links">
-                <a href="/privacy">@LegalRes.PrivacyTitle</a>
-                <a href="/terms">@LegalRes.TermsTitle</a>
-            </div>
+
+        <div class="site-footer__bottom">
             <p>@HomeRes.FooterCopyright</p>
+            <p>@HomeRes.FooterAuthorName · @HomeRes.FooterAuthorRole</p>
         </div>
     </div>
 </footer>
 
 @code {
+    private sealed record FooterLink(string Href, string Label);
+
+    private static IReadOnlyList<FooterLink> ExploreLinks =>
+    [
+        new("/courses", NavMenuRes.Courses),
+        new("/exercises", NavMenuRes.Exercises),
+        new("/paths", NavMenuRes.Paths),
+        new("/pricing", NavMenuRes.Pricing),
+        new("/blog", NavMenuRes.Blog)
+    ];
+
     private string InstagramUrl => Configuration["Social:Instagram"] ?? "https://instagram.com/yourprofile";
     private string YoutubeUrl => Configuration["Social:Youtube"] ?? "https://youtube.com";
 }
