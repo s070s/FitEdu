@@ -34,7 +34,7 @@ matter.
 | `goal` | `GeneralFitness`, `Strength`, `MuscleGain`, `FatLoss`, `Endurance`, `Mobility`, `Recovery` or `Nutrition`; anything else becomes `GeneralFitness`. |
 | `category`, `categoryEl` | The category is created on first use. `categoryEl` sets its Greek name, or fills it in when the category has none yet; an existing Greek name is kept. |
 | `equipment` | Comma-joined codes with no spaces (the catalogue filter matches `,code,` exactly): `none`, `dumbbells`, `barbell`, `kettlebell`, `bands`, `mat`, `bike`, `chair`, `cables`, `machine`. |
-| `coverExerciseSlug`, `exercises[].slug` | Must be a slug from `docs/assets/exercise-slugs.txt`. An unknown slug stops the whole seed with an error naming the course or lesson and the slug. |
+| `coverExerciseSlug`, `exercises[].slug` | Must be a slug from `docs/assets/exercise-slugs.txt`. An unknown or missing slug stops the seed with an error naming the course or lesson and the slug (and saying so when the exercise library itself is empty). Start-up retries the seed five times over about 30 seconds and then the app refuses to start, so nothing after the courses (assessments, students, paths, showcase) is seeded until the slug is fixed. A file that is not valid JSON is only logged and skipped. |
 | `exercises` | Shown in list order. `sets`, `reps`, `restSeconds`, `notes` and `notesEl` are optional. `reps` has no Greek twin, so it holds only numbers, ranges, symbols and the unit symbols `s`, `min`, `m`, `rpm`, `RPE`, `AMRAP` (`8–12`, `30 s`, `6 min @ RPE 7 + 3 min`), with no decimals; words such as "each side" go at the start of `notes` and `notesEl`. |
 
 Every field except `title` (course, module and lesson) and `slug` is optional; older files without

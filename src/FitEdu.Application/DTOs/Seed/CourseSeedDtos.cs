@@ -67,7 +67,8 @@ public sealed class LessonSeedDto
 /// </summary>
 public sealed class LessonExerciseSeedDto
 {
-    public required string Slug { get; init; }
+    /// <summary>Not <c>required</c>: a missing slug must stop the seed like an unknown one, not fail the file's parse.</summary>
+    public string Slug { get; init; } = string.Empty;
     public int? Sets { get; init; }
 
     /// <summary>Free text such as "8-12", "30 s" or "AMRAP"; shown as-is in both languages (no words).</summary>

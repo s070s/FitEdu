@@ -12,6 +12,8 @@ namespace FitEdu.Infrastructure.Seeding;
 /// </summary>
 public static class CourseSeeder
 {
+    private const string EmptyLibraryHint = " The exercise library is empty: check SeedData:JsonPaths:Exercises.";
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -59,9 +61,9 @@ public static class CourseSeeder
             {
                 await SeedCourseFromFileAsync(db, filePath, categoryCache, exerciseIdsBySlug, logger, cancellationToken);
             }
-            // An unknown exercise slug (InvalidOperationException) is a content error: it stops the
-            // whole seed instead of silently dropping the course. Other failures skip the file as before.
-            catch (Exception ex) when (ex is not InvalidOperationException)
+            // A content error (an unknown or missing exercise slug) stops the whole seed instead of
+            // silently dropping the course. Other failures, such as malformed JSON, skip the file.
+            catch (Exception ex) when (ex is not SeedContentException)
             {
                 logger.LogError(ex, "Failed to seed course from file: {FilePath}", filePath);
             }
@@ -149,10 +151,21 @@ public static class CourseSeeder
             return null;
 
         if (!exerciseIdsBySlug.ContainsKey(dto.CoverExerciseSlug))
-            throw new InvalidOperationException(
-                $"Course '{dto.Title}' references unknown cover exercise slug '{dto.CoverExerciseSlug}'.");
+            throw UnknownSlugError($"Course '{dto.Title}' references unknown cover exercise slug '{dto.CoverExerciseSlug}'.", exerciseIdsBySlug);
 
         return dto.CoverExerciseSlug;
+    }
+
+    /// <summary>
+    /// The error for a slug the library does not have. When the library is empty the cause is the
+    /// Exercises seed folder, not the course file, so the message says where to look.
+    /// </summary>
+    private static SeedContentException UnknownSlugError(string message, Dictionary<string, Guid> exerciseIdsBySlug)
+    {
+        if (exerciseIdsBySlug.Count > 0)
+            return new SeedContentException(message);
+
+        return new SeedContentException(message + EmptyLibraryHint);
     }
 
     private static Module MapToModule(ModuleSeedDto dto, Dictionary<string, Guid> exerciseIdsBySlug)
@@ -205,8 +218,7 @@ public static class CourseSeeder
     {
         var slug = dto?.Slug ?? string.Empty;
         if (dto is null || !exerciseIdsBySlug.TryGetValue(slug, out var exerciseId))
-            throw new InvalidOperationException(
-                $"Lesson '{lessonTitle}' references unknown exercise slug '{slug}'.");
+            throw UnknownSlugError($"Lesson '{lessonTitle}' references unknown exercise slug '{slug}'.", exerciseIdsBySlug);
 
         return new LessonExercise
         {

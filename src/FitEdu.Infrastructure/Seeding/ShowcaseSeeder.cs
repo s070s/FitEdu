@@ -152,13 +152,13 @@ public static partial class ShowcaseSeeder
     private static void EnsureValidSchedule(LiveClassSeedDto dto)
     {
         if (dto.WeekdayOffset < 1)
-            throw new InvalidOperationException($"Live class '{dto.Title}' needs a weekdayOffset of 1 or more.");
+            throw new SeedContentException($"Live class '{dto.Title}' needs a weekdayOffset of 1 or more.");
         if (dto.HourUtc is < 0 or > LastHourOfDay)
-            throw new InvalidOperationException($"Live class '{dto.Title}' has hourUtc {dto.HourUtc}; use 0 to {LastHourOfDay}.");
+            throw new SeedContentException($"Live class '{dto.Title}' has hourUtc {dto.HourUtc}; use 0 to {LastHourOfDay}.");
         if (dto.DurationMinutes < 1)
-            throw new InvalidOperationException($"Live class '{dto.Title}' needs a positive durationMinutes.");
+            throw new SeedContentException($"Live class '{dto.Title}' needs a positive durationMinutes.");
         if (dto.MaxParticipants is < 1 or > ScheduledSession.MaxParticipantsLimit)
-            throw new InvalidOperationException(
+            throw new SeedContentException(
                 $"Live class '{dto.Title}' has maxParticipants {dto.MaxParticipants}; use 1 to {ScheduledSession.MaxParticipantsLimit}.");
     }
 
@@ -169,7 +169,7 @@ public static partial class ShowcaseSeeder
             return null;
 
         if (!courseIdsByTitle.TryGetValue(dto.CourseTitle, out var courseId))
-            throw new InvalidOperationException(
+            throw new SeedContentException(
                 $"Live class '{dto.Title}' references unknown course title '{dto.CourseTitle}'.");
 
         return courseId;

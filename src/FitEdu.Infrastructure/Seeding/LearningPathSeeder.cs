@@ -107,7 +107,7 @@ public static partial class LearningPathSeeder
         Dictionary<string, Guid> courseIdsByTitle)
     {
         if (!courseIdsByTitle.TryGetValue(courseTitle, out var courseId))
-            throw new InvalidOperationException(
+            throw new SeedContentException(
                 $"Learning path '{pathTitle}' references unknown course title '{courseTitle}'.");
 
         return new LearningPathStep

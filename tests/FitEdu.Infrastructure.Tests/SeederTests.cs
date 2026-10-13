@@ -327,6 +327,65 @@ public sealed class SeederTests : IDisposable
     }
 
     [Fact]
+    public async Task CourseSeeder_LessonExerciseWithoutSlug_StopsTheSeedNamingTheLesson()
+    {
+        // A missing slug is the same content error as an unknown one, not a file to skip quietly.
+        await using var db = DbContextFactory.CreateInMemory();
+        await AddExercisesAsync(db, "pushups");
+        var dir = TempDirWith("course.json", """
+        { "title": "Bodyweight Basics",
+          "modules": [ { "title": "Week 1", "sortOrder": 1,
+            "lessons": [ { "title": "Workout A", "sortOrder": 1, "exercises": [ { "sets": 3 } ] } ] } ] }
+        """);
+
+        var exception = await Should.ThrowAsync<SeedContentException>(
+            () => CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance));
+
+        exception.Message.ShouldContain("'Workout A'");
+        (await db.Courses.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CourseSeeder_UnknownSlugWhileTheLibraryIsEmpty_SaysTheLibraryIsEmpty()
+    {
+        // The usual cause is a missing or misconfigured Exercises seed folder, not a typo in the course.
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("course.json", CourseJsonWithExercise(lessonExerciseSlug: "pushups", coverExerciseSlug: "pushups"));
+
+        var exception = await Should.ThrowAsync<SeedContentException>(
+            () => CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance));
+
+        exception.Message.ShouldContain("exercise library is empty");
+        exception.Message.ShouldContain("SeedData:JsonPaths:Exercises");
+    }
+
+    [Fact]
+    public async Task CourseSeeder_MalformedFile_IsSkippedWithError_AndTheOtherFilesSeed()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWithFiles(("broken.json", "{ \"title\": "), ("course.json", SampleCourseJson));
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Courses.SingleAsync()).TitleEn.ShouldBe("Intro Course");
+        logger.Errors.ShouldContain(error => error.Contains("broken.json"));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task CourseSeeder_BlankCoverExerciseSlug_IsStoredAsNoCover(string blankSlug)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWith("course.json", $$"""{ "title": "No Cover", "coverExerciseSlug": "{{blankSlug}}" }""");
+
+        await CourseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.Courses.SingleAsync()).CoverExerciseSlug.ShouldBeNull();
+    }
+
+    [Fact]
     public async Task CourseSeeder_JsonWithoutFitnessFields_UsesDefaults()
     {
         await using var db = DbContextFactory.CreateInMemory();
