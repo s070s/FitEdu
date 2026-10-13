@@ -437,5 +437,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("UpgradeToPro", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string CompletedShort {
+            get {
+                return ResourceManager.GetString("CompletedShort", resourceCulture);
+            }
+        }
     }
 }

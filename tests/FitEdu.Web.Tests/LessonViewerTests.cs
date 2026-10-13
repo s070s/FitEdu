@@ -434,6 +434,10 @@ public class LessonViewerTests : BunitContext
         var dock = cut.Find(".lesson-actions--docked");
         dock.QuerySelector(".completed-indicator").ShouldNotBeNull();
         dock.QuerySelector(".lesson-actions__next")!.GetAttribute("href").ShouldBe($"/lessons/{nextLessonId}");
+        // Beside the next button the phone dock shows the short word; screen readers hear the full one.
+        dock.QuerySelector(".completed-indicator__short")!.TextContent.ShouldBe("Done");
+        dock.QuerySelector(".completed-indicator__short")!.GetAttribute("aria-hidden").ShouldBe("true");
+        dock.QuerySelector(".completed-indicator__label")!.TextContent.ShouldBe(LessonRes.CompletedIndicator);
         dock.QuerySelector(".progress-update").ShouldBeNull();
         dock.QuerySelector(".course-celebration").ShouldBeNull();
         cut.Find(".progress-update").ShouldNotBeNull();
