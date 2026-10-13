@@ -37,11 +37,6 @@
 .avatar-icon {
     font-size: 1.6rem;
     color: var(--text-light-normal);
-    width: auto;
-    height: auto;
-    margin: 0;
-    top: 0;
-    background-size: initial;
 }
 
 .dropdown-menu-custom {
