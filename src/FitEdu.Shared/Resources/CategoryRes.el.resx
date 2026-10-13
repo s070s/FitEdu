@@ -67,7 +67,7 @@
 		<value>Μετονομασία</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Διαγραφή '{0}'; Θα μείνουν χωρίς κατηγορία: προγράμματα {1}, αξιολογήσεις {2}.</value>
+		<value>Διαγραφή '{0}'; Θα μείνουν χωρίς κατηγορία. Προγράμματα: {1} · Αξιολογήσεις: {2}</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>Δεν υπάρχουν ακόμα κατηγορίες.</value>
