@@ -367,6 +367,23 @@ public partial class SeedContentIntegrityTests
         copiedKeys.ShouldBeEmpty("Greek values that repeat the English text");
     }
 
+    [Theory]
+    [MemberData(nameof(EnglishResxFiles))]
+    public void Resx_ValuesCarryNoEmojiOrArrowGlyphs(string englishResxRelativePath)
+    {
+        var englishResxPath = Path.Combine(RepoPaths.ResourcesRoot, englishResxRelativePath);
+        var greekResxPath = Path.ChangeExtension(englishResxPath, null) + GreekResxSuffix;
+        var resourceClassName = Path.GetFileNameWithoutExtension(englishResxPath);
+        var allValues = LoadResxValues(englishResxPath).Concat(LoadResxValues(greekResxPath));
+
+        var valuesWithGlyphs = allValues
+            .Where(pair => IconGlyphRegex().IsMatch(pair.Value))
+            .Select(pair => $"{resourceClassName}.{pair.Key}: {pair.Value}")
+            .ToList();
+
+        valuesWithGlyphs.ShouldBeEmpty("icons belong in the markup as Bootstrap Icons (bi-*), not in the text");
+    }
+
     [Fact]
     public void AssistantRes_GreekAddressesTheMemberInformally()
     {
@@ -656,6 +673,12 @@ public partial class SeedContentIntegrityTests
         + @"|καριέρ|επάγγελμα|επαγγελματικ\w*\s+προσανατολισμ|συνέντευξ|βιογραφικ|εργοδότ|ψυχοκοινωνικ",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex CareerVocabularyRegex();
+
+    // Icon-like characters: arrows, technical symbols (stopwatch, hourglass), miscellaneous symbols,
+    // dingbats (check marks, crosses), stars, and every emoji outside the Basic Multilingual Plane
+    // (a surrogate pair). Punctuation such as the middle dot, ellipsis and «» quotes is allowed.
+    [GeneratedRegex(@"[←-⇿⌀-⏿☀-➿⬀-⯿]|[\uD83C-\uD83E][\uDC00-\uDFFF]")]
+    private static partial Regex IconGlyphRegex();
 
     // Third-person past forms that read as "he/she selected" when used as a command.
     // The imperatives are Επίλεξε, Επίστρεψε, Κατάγραψε, Διάκοψε, Κατάκτησε, Επανάλαβε,

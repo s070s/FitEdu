@@ -10,12 +10,12 @@
 else if (_error is not null)
 {
     <p class="text-danger">@_error</p>
-    <button class="btn btn-secondary" @onclick="GoBack">@LessonRes.Back</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.Back</button>
 }
 else if (_lesson is null)
 {
     <p>@LessonRes.LessonNotFound</p>
-    <button class="btn btn-secondary" @onclick="GoBack">@LessonRes.Back</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.Back</button>
 }
 else
 {
@@ -86,12 +86,13 @@ else
             @if (!_lesson.IsCompleted)
             {
                 <button class="btn btn-success" @onclick="MarkComplete" disabled="@_completing">
+                    <span class="bi @(_completing ? "bi-hourglass-split" : "bi-check2")" aria-hidden="true"></span>
                     @(_completing ? LessonRes.Saving : LessonRes.MarkAsComplete)
                 </button>
             }
             else
             {
-                <span class="completed-indicator">@LessonRes.CompletedIndicator</span>
+                <span class="completed-indicator"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @LessonRes.CompletedIndicator</span>
             }
 
             @if (_completionError is not null)
@@ -105,7 +106,7 @@ else
                     @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _completionResult.ProgressPercent)
                     @if (_completionResult.CourseCompleted)
                     {
-                        <span class="course-completed">@LessonRes.CourseCompleted</span>
+                        <span class="course-completed"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @LessonRes.CourseCompleted</span>
                     }
                     @if (_completionResult.CertificatePending)
                     {
@@ -119,7 +120,7 @@ else
             @if (_lesson.PreviousLessonId.HasValue)
             {
                 <button class="btn btn-secondary" @onclick="() => GoToLesson(_lesson.PreviousLessonId.Value)">
-                    @LessonRes.PreviousLesson
+                    <span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.PreviousLesson
                 </button>
             }
             else
@@ -130,7 +131,7 @@ else
             @if (_lesson.NextLessonId.HasValue)
             {
                 <button class="btn btn-primary" @onclick="() => GoToLesson(_lesson.NextLessonId.Value)">
-                    @LessonRes.NextLesson
+                    @LessonRes.NextLesson <span class="bi bi-arrow-right" aria-hidden="true"></span>
                 </button>
             }
             else

@@ -105,7 +105,7 @@
 		<value>Φόρτωση μαθήματος...</value>
 	</data>
 	<data name="Back" xml:space="preserve">
-		<value>← Πίσω</value>
+		<value>Πίσω</value>
 	</data>
 	<data name="LessonNotFound" xml:space="preserve">
 		<value>Το μάθημα δεν βρέθηκε.</value>
@@ -123,22 +123,22 @@
 		<value>Αποθήκευση...</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
-		<value>✓ Σήμανση ως Ολοκληρωμένο</value>
+		<value>Σήμανση ως Ολοκληρωμένο</value>
 	</data>
 	<data name="CompletedIndicator" xml:space="preserve">
-		<value>✓ Ολοκληρώθηκε</value>
+		<value>Ολοκληρώθηκε</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
 		<value>Πρόοδος: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Μάθημα Ολοκληρώθηκε!</value>
+		<value>Μάθημα Ολοκληρώθηκε!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
-		<value>← Προηγούμενο Μάθημα</value>
+		<value>Προηγούμενο Μάθημα</value>
 	</data>
 	<data name="NextLesson" xml:space="preserve">
-		<value>Επόμενο Μάθημα →</value>
+		<value>Επόμενο Μάθημα</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
 		<value>Πίσω στο Μάθημα</value>

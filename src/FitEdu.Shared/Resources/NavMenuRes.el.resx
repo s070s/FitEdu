@@ -151,7 +151,7 @@
     <value>Προφίλ Χρήστη</value>
   </data>
   <data name="ImpersonatingHint" xml:space="preserve">
-    <value>Χρησιμοποιήστε 'Έξοδος Υποκατάστασης' για να σταματήσετε</value>
+    <value>Πάτα «Έξοδος από την προβολή χρήστη» για να σταματήσεις</value>
   </data>
   <data name="LogOut" xml:space="preserve">
     <value>Αποσύνδεση</value>

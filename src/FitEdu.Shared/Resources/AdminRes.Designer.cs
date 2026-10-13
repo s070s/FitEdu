@@ -178,7 +178,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Assessments.
+        ///   Looks up a localized string similar to Back to Assessments.
         /// </summary>
         public static string BackToAssessments {
             get {
@@ -187,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Course.
+        ///   Looks up a localized string similar to Back to Course.
         /// </summary>
         public static string BackToCourse {
             get {
@@ -196,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back to Courses.
+        ///   Looks up a localized string similar to Back to Courses.
         /// </summary>
         public static string BackToCourses {
             get {
@@ -1015,7 +1015,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 👁 Admin view:.
+        ///   Looks up a localized string similar to Admin view:.
         /// </summary>
         public static string ImpersonationAdminView {
             get {
@@ -1024,7 +1024,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✕ Exit Impersonation.
+        ///   Looks up a localized string similar to Exit Impersonation.
         /// </summary>
         public static string ImpersonationExit {
             get {

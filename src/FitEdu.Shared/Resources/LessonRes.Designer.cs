@@ -61,7 +61,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Back.
+        ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string Back {
             get {
@@ -79,7 +79,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✓ Completed.
+        ///   Looks up a localized string similar to Completed.
         /// </summary>
         public static string CompletedIndicator {
             get {
@@ -88,7 +88,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 🎉 Course Completed!.
+        ///   Looks up a localized string similar to Course Completed!.
         /// </summary>
         public static string CourseCompleted {
             get {
@@ -169,7 +169,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✓ Mark as Complete.
+        ///   Looks up a localized string similar to Mark as Complete.
         /// </summary>
         public static string MarkAsComplete {
             get {
@@ -187,7 +187,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next Lesson →.
+        ///   Looks up a localized string similar to Next Lesson.
         /// </summary>
         public static string NextLesson {
             get {
@@ -196,7 +196,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Previous Lesson.
+        ///   Looks up a localized string similar to Previous Lesson.
         /// </summary>
         public static string PreviousLesson {
             get {

@@ -198,7 +198,7 @@
 		<value>Start</value>
 	</data>
 	<data name="Back" xml:space="preserve">
-		<value>← Back</value>
+		<value>Back</value>
 	</data>
 	<data name="FailedToLoadAssessment" xml:space="preserve">
 		<value>Failed to load this assessment. Please try again.</value>

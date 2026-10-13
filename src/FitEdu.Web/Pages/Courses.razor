@@ -100,13 +100,13 @@ else
                         <span class="lessons">@string.Format(CourseRes.LessonsCountFormat, course.TotalLessons)</span>
                         @if (course.IsEnrolled)
                         {
-                            <span class="enrolled-badge">@CourseRes.Enrolled</span>
+                            <span class="enrolled-badge"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @CourseRes.Enrolled</span>
                         }
                         @if (isLocked)
                         {
                             @* Visual label only — the whole card already links to /pricing for locked courses. *@
                             <span class="locked-badge">
-                                @string.Format(CourseRes.UpgradeToFormat, course.RequiredTier)
+                                <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, course.RequiredTier)
                             </span>
                         }
                     </div>

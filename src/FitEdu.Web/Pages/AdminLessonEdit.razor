@@ -6,7 +6,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h2">@AdminRes.ManageLessons</h1>
-    <button class="btn btn-secondary" @onclick="GoBack">@AdminRes.BackToCourse</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToCourse</button>
 </div>
 
 <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />

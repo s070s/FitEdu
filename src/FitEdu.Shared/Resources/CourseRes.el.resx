@@ -105,7 +105,7 @@
 		<value>Φόρτωση μαθήματος...</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>← Πίσω στα Μαθήματα</value>
+		<value>Πίσω στα Μαθήματα</value>
 	</data>
 	<data name="CourseNotFound" xml:space="preserve">
 		<value>Το μάθημα δεν βρέθηκε.</value>
@@ -114,7 +114,7 @@
 		<value>{0} / {1} μαθήματα ολοκληρώθηκαν ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Μάθημα Ολοκληρώθηκε!</value>
+		<value>Μάθημα Ολοκληρώθηκε!</value>
 	</data>
 	<data name="Enrolling" xml:space="preserve">
 		<value>Εγγραφή...</value>
@@ -141,10 +141,10 @@
 		<value>{0} μαθήματα</value>
 	</data>
 	<data name="Enrolled" xml:space="preserve">
-		<value>✓ Εγγεγραμμένος</value>
+		<value>Έχεις εγγραφεί</value>
 	</data>
 	<data name="UpgradeToFormat" xml:space="preserve">
-		<value>🔒 Αναβάθμιση σε {0}</value>
+		<value>Αναβάθμιση σε {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
 		<value>{0} μαθήματα</value>

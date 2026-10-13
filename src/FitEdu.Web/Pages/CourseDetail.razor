@@ -11,17 +11,17 @@ else if (_error is not null)
 {
     <p class="text-danger">@_error</p>
     <button class="btn btn-primary me-2" @onclick="LoadAllAsync">@GlobalRes.TryAgain</button>
-    <button class="btn btn-secondary" @onclick="GoBack">@CourseRes.BackToCourses</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
 }
 else if (_course is null)
 {
     <p>@CourseRes.CourseNotFound</p>
-    <button class="btn btn-secondary" @onclick="GoBack">@CourseRes.BackToCourses</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
 }
 else
 {
     <div class="course-header">
-        <button class="btn-link" @onclick="GoBack">@CourseRes.BackToCourses</button>
+        <button class="btn-link" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
         <h1>@_course.Title</h1>
         @if (!string.IsNullOrEmpty(_course.Description))
         {
@@ -44,7 +44,7 @@ else
                 </span>
                 @if (_course.IsCompleted)
                 {
-                    <span class="completed-badge">@CourseRes.CourseCompleted</span>
+                    <span class="completed-badge"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @CourseRes.CourseCompleted</span>
                 }
             }
             else if (_userTier < _course.RequiredTier)

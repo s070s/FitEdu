@@ -105,7 +105,7 @@
 		<value>Loading lesson...</value>
 	</data>
 	<data name="Back" xml:space="preserve">
-		<value>← Back</value>
+		<value>Back</value>
 	</data>
 	<data name="LessonNotFound" xml:space="preserve">
 		<value>Lesson not found.</value>
@@ -123,22 +123,22 @@
 		<value>Saving...</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
-		<value>✓ Mark as Complete</value>
+		<value>Mark as Complete</value>
 	</data>
 	<data name="CompletedIndicator" xml:space="preserve">
-		<value>✓ Completed</value>
+		<value>Completed</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
 		<value>Progress: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Course Completed!</value>
+		<value>Course Completed!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
-		<value>← Previous Lesson</value>
+		<value>Previous Lesson</value>
 	</data>
 	<data name="NextLesson" xml:space="preserve">
-		<value>Next Lesson →</value>
+		<value>Next Lesson</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
 		<value>Back to Course</value>

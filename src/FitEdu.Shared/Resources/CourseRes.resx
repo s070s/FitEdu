@@ -105,7 +105,7 @@
 		<value>Loading course...</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>← Back to Courses</value>
+		<value>Back to Courses</value>
 	</data>
 	<data name="CourseNotFound" xml:space="preserve">
 		<value>Course not found.</value>
@@ -114,7 +114,7 @@
 		<value>{0} / {1} lessons completed ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>🎉 Course Completed!</value>
+		<value>Course Completed!</value>
 	</data>
 	<data name="Enrolling" xml:space="preserve">
 		<value>Enrolling...</value>
@@ -141,10 +141,10 @@
 		<value>{0} lessons</value>
 	</data>
 	<data name="Enrolled" xml:space="preserve">
-		<value>✓ Enrolled</value>
+		<value>Enrolled</value>
 	</data>
 	<data name="UpgradeToFormat" xml:space="preserve">
-		<value>🔒 Upgrade to {0}</value>
+		<value>Upgrade to {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
 		<value>{0} courses</value>

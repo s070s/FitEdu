@@ -150,7 +150,7 @@
 		<value>Edit Assessment</value>
 	</data>
 	<data name="BackToAssessments" xml:space="preserve">
-		<value>← Back to Assessments</value>
+		<value>Back to Assessments</value>
 	</data>
 	<data name="AssessmentDetails" xml:space="preserve">
 		<value>Assessment Details</value>
@@ -327,7 +327,7 @@
 		<value>Edit Course</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>← Back to Courses</value>
+		<value>Back to Courses</value>
 	</data>
 	<data name="CourseDetails" xml:space="preserve">
 		<value>Course Details</value>
@@ -438,7 +438,7 @@
 		<value>Manage Lessons</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>← Back to Course</value>
+		<value>Back to Course</value>
 	</data>
 	<data name="MinutesFormat" xml:space="preserve">
 		<value> · {0} min</value>
@@ -504,13 +504,13 @@
 		<value>Access denied. Admin role required.</value>
 	</data>
 	<data name="ImpersonationAdminView" xml:space="preserve">
-		<value>👁 Admin view:</value>
+		<value>Admin view:</value>
 	</data>
 	<data name="ImpersonationLoggedInAs" xml:space="preserve">
 		<value>logged in as</value>
 	</data>
 	<data name="ImpersonationExit" xml:space="preserve">
-		<value>✕ Exit Impersonation</value>
+		<value>Exit Impersonation</value>
 	</data>
 	<data name="ImpersonationFailed" xml:space="preserve">
 		<value>Impersonation failed.</value>

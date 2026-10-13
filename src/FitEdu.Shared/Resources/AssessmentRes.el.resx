@@ -198,7 +198,7 @@
 		<value>Έναρξη</value>
 	</data>
 	<data name="Back" xml:space="preserve">
-		<value>← Πίσω</value>
+		<value>Πίσω</value>
 	</data>
 	<data name="FailedToLoadAssessment" xml:space="preserve">
 		<value>Αποτυχία φόρτωσης αυτής της αξιολόγησης. Δοκιμάστε ξανά.</value>

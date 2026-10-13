@@ -10,7 +10,7 @@
 else if (_loadError is not null)
 {
     <p class="text-danger">@_loadError</p>
-    <button class="btn btn-secondary" @onclick="GoBack">@AssessmentRes.Back</button>
+    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AssessmentRes.Back</button>
 }
 else if (submitted)
 {
