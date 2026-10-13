@@ -52,6 +52,11 @@
     margin: 0;
 }
 
+/* Inline paragraphs would run together ("…week.Next…"): a space keeps the sentences apart. */
+.course-card__description ::deep p + p::before {
+    content: " ";
+}
+
 .course-card__description ::deep a {
     position: relative;
     z-index: 3;
