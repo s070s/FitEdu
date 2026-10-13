@@ -118,6 +118,7 @@ public class AssistantServiceTests
         var systemMessage = captured![0];
         systemMessage.Role.ShouldBe(ChatRole.System);
         systemMessage.Text.ShouldContain("Greek");
+        systemMessage.Text.ShouldContain("address the member informally (εσύ)");
         systemMessage.Text.ShouldContain("Pro");
         systemMessage.Text.ShouldContain("Couch to 5K Running");
         systemMessage.Text.ShouldContain("Strength Foundations teaches the squat, hinge, push and pull.");
@@ -149,6 +150,7 @@ public class AssistantServiceTests
         prompt.ShouldContain("seek professional help"); // serious distress, e.g. disordered eating
         prompt.ShouldNotContain("career", Case.Insensitive);
         prompt.ShouldNotContain("counsel", Case.Insensitive);
+        prompt.ShouldNotContain("εσύ"); // the Greek-only address rule
     }
 
     [Fact]
