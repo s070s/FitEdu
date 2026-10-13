@@ -21,7 +21,7 @@ public class LandingService(IApplicationDbContext db, ICourseService courseServi
     {
         var courseCount = await db.Courses.CountAsync(c => c.IsPublished, cancellationToken);
         var lessonCount = await db.Lessons.CountAsync(l => l.Module.Course.IsPublished, cancellationToken);
-        var exerciseCount = await db.Exercises.CountAsync(cancellationToken);
+        var exerciseCount = await db.Exercises.CountAsync(e => e.IsPublished, cancellationToken);
         var memberCount = await CountMembersAsync(cancellationToken);
         var featuredCourses = await GetFeaturedCoursesAsync(lang, cancellationToken);
         var hasCustomHeroImage = await HasCustomHeroImageAsync(cancellationToken);

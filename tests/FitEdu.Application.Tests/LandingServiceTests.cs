@@ -37,6 +37,7 @@ public class LandingServiceTests
         AddCourse("Draft", published: false, lessonCount: 5);
         _db.Exercises.Add(Exercise("squat"));
         _db.Exercises.Add(Exercise("plank"));
+        _db.Exercises.Add(Exercise("draft-lunge", published: false));
         AddUserInRole("student-1", "Student");
         AddUserInRole("student-2", "Student");
         AddUserInRole("admin-1", "Admin");
@@ -118,8 +119,9 @@ public class LandingServiceTests
         return course;
     }
 
-    private static Exercise Exercise(string slug) => new()
+    private static Exercise Exercise(string slug, bool published = true) => new()
     {
+        IsPublished = published,
         Slug = slug,
         NameEn = slug,
         Category = "strength",
