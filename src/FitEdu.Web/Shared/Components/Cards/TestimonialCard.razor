@@ -1,35 +1,34 @@
 @* One member story: quote, then the member's photo (or initials when there is none or it fails to
    load), name and role. The failed-photo fallback is a Blazor @onerror handler, which the CSP allows
-   (an inline onerror attribute would be blocked). *@
+   (an inline onerror attribute would be blocked). The figcaption is the figure's last direct child,
+   so assistive technology ties the author line to the quote. *@
 
 <figure class="testimonial-card card-surface">
-    <div class="card-surface__body testimonial-card__body">
-        <span class="testimonial-card__quote-icon bi bi-quote" aria-hidden="true"></span>
-        <blockquote class="testimonial-card__quote">
-            <p>@Testimonial.QuoteText</p>
-        </blockquote>
+    <span class="testimonial-card__quote-icon bi bi-quote" aria-hidden="true"></span>
+    <blockquote class="testimonial-card__quote">
+        <p>@Testimonial.QuoteText</p>
+    </blockquote>
 
-        <figcaption class="testimonial-card__author">
-            <span class="testimonial-card__avatar">
-                @if (ShowPhoto)
-                {
-                    <img src="@Testimonial.AvatarUrl" alt="" width="@AvatarSize" height="@AvatarSize"
-                         loading="lazy" decoding="async" @onerror="OnPhotoError" />
-                }
-                else
-                {
-                    <span class="testimonial-card__initials" aria-hidden="true">@Initials(Testimonial.FullName)</span>
-                }
-            </span>
-            <span class="testimonial-card__who">
-                <span class="testimonial-card__name">@Testimonial.FullName</span>
-                @if (RoleText is { } role)
-                {
-                    <span class="testimonial-card__role">@role</span>
-                }
-            </span>
-        </figcaption>
-    </div>
+    <figcaption class="testimonial-card__author">
+        <span class="testimonial-card__avatar">
+            @if (ShowPhoto)
+            {
+                <img src="@Testimonial.AvatarUrl" alt="" width="@AvatarSize" height="@AvatarSize"
+                     loading="lazy" decoding="async" @onerror="OnPhotoError" />
+            }
+            else
+            {
+                <span class="testimonial-card__initials" aria-hidden="true">@Initials(Testimonial.FullName)</span>
+            }
+        </span>
+        <span class="testimonial-card__who">
+            <span class="testimonial-card__name">@Testimonial.FullName</span>
+            @if (RoleText is { } role)
+            {
+                <span class="testimonial-card__role">@role</span>
+            }
+        </span>
+    </figcaption>
 </figure>
 
 @code {

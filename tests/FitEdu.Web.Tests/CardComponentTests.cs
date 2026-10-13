@@ -167,7 +167,9 @@ public class CardComponentTests : BunitContext
     {
         var card = RenderTestimonialCard(Testimonial());
 
-        card.Find("blockquote").TextContent.ShouldContain("I ran 5K without stopping.");
+        card.Find("figure > blockquote").TextContent.ShouldContain("I ran 5K without stopping.");
+        // The caption is the figure's last direct child, so it names the quote's author.
+        card.Find("figure > figcaption:last-child").TextContent.ShouldContain("Alice Johnson");
         card.Find(".testimonial-card__avatar img").GetAttribute("src").ShouldBe("/api/media/testimonials/avatars/alice.jpg");
         card.Find(".testimonial-card__name").TextContent.ShouldBe("Alice Johnson");
         card.Find(".testimonial-card__role").TextContent.ShouldBe("Ran her first 5K · FitEdu member");
