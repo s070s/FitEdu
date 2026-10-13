@@ -145,6 +145,12 @@ public class LessonViewerTests : BunitContext
 
         cut.Find("h1").TextContent.ShouldBe(lesson.Title);
         cut.Find(".module-name").TextContent.ShouldBe(lesson.ModuleTitle);
+
+        // The separator is a decorative chevron icon, not a "/" a screen reader would read out.
+        var separator = cut.Find(".breadcrumb-separator");
+        separator.ClassList.ShouldContain("bi-chevron-right");
+        separator.GetAttribute("aria-hidden").ShouldBe("true");
+        separator.TextContent.ShouldBeEmpty();
     }
 
     [Fact]
