@@ -20,7 +20,8 @@ public partial class CourseDetail
     private const int MaxOutcomes = 4;
     private const string LessonPathPrefix = "/lessons/";
     private const string CoursePathPrefix = "/courses/";
-    private const string LoginPathWithReturnUrl = "/login?returnUrl=";
+    private const string LoginPath = "/login";
+    private const string RegisterPath = "/register";
 
     [Parameter]
     public Guid CourseId
@@ -77,7 +78,10 @@ public partial class CourseDetail
     private bool NeedsUpgrade => _course is { IsEnrolled: false } && _userTier < _course.RequiredTier;
 
     /// <summary>The log-in page, set to come back to this programme afterwards.</summary>
-    private string LoginHref => LoginPathWithReturnUrl + Uri.EscapeDataString(CoursePathPrefix + CourseId);
+    private string LoginHref => Login.LinkWithReturnUrl(LoginPath, CoursePathPrefix + CourseId);
+
+    /// <summary>The sign-up page, set to come back to this programme after the first log-in.</summary>
+    private string RegisterHref => Login.LinkWithReturnUrl(RegisterPath, CoursePathPrefix + CourseId);
 
     private int ProgressPercentRounded => _course is null ? 0 : (int)Math.Round(_course.ProgressPercent);
 

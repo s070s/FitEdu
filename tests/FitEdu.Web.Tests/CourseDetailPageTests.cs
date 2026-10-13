@@ -295,7 +295,8 @@ public class CourseDetailPageTests : BunitContext
 
         var signUp = page.Find("a.course-cta__signup");
         signUp.TextContent.Trim().ShouldBe("Sign up free to start");
-        signUp.GetAttribute("href").ShouldBe("/register");
+        // Both keep the programme as the return address, so the guest comes back here.
+        signUp.GetAttribute("href").ShouldBe($"/register?returnUrl=%2Fcourses%2F{CourseId}");
         page.Find("a.course-cta__login").GetAttribute("href").ShouldBe($"/login?returnUrl=%2Fcourses%2F{CourseId}");
         page.FindAll(".course-cta__enrol").ShouldBeEmpty();
         page.FindAll(".enroll-upgrade-notice").ShouldBeEmpty();

@@ -25,7 +25,7 @@
                     }
                 </div>
                 @RegisterErrors
-                <a class="btn-cta auth-submit register-success__login" href="/login">@GlobalRes.Label_GoToLogin</a>
+                <a class="btn-cta auth-submit register-success__login" href="@LoginHref">@GlobalRes.Label_GoToLogin</a>
             </div>
         }
         else
@@ -139,7 +139,7 @@
         }
     </ChildContent>
     <Footer>
-        @GlobalRes.Label_AlreadyHaveAccount <a href="/login">@GlobalRes.Label_Login</a>
+        @GlobalRes.Label_AlreadyHaveAccount <a href="@LoginHref">@GlobalRes.Label_Login</a>
     </Footer>
 </AuthCard>
 

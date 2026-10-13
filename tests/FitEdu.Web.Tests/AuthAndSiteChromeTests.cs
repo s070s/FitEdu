@@ -87,6 +87,41 @@ public class AuthAndSiteChromeTests : BunitContext
         navigation.Uri.ShouldEndWith("/auth/complete?ticket=ticket&returnUrl=" + expectedReturnUrl);
     }
 
+    [Fact]
+    public void Login_WithReturnUrl_TheRegisterLinkKeepsIt()
+    {
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/login?returnUrl=%2Fcourses%2F42");
+
+        var page = Render<Login>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/register?returnUrl=%2Fcourses%2F42");
+    }
+
+    [Fact]
+    public void Register_WithReturnUrl_TheLoginLinksComeBackToIt()
+    {
+        // A guest who signs up from a programme page lands on that programme after logging in.
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/register?returnUrl=%2Fcourses%2F42");
+        var page = Render<Register>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/login?returnUrl=%2Fcourses%2F42");
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find(".register-success__login").GetAttribute("href").ShouldBe("/login?returnUrl=%2Fcourses%2F42");
+    }
+
+    [Fact]
+    public void Register_ReturnUrlToAnotherSite_LinksToThePlainLogin()
+    {
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/register?returnUrl=%2F%2Fevil.example%2F");
+
+        var page = Render<Register>();
+
+        page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/login");
+    }
+
     [Theory]
     [InlineData("/courses/42", "/courses/42")]
     [InlineData("/", "/")]

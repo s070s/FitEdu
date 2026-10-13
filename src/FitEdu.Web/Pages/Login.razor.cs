@@ -11,6 +11,7 @@ namespace FitEdu.Web.Pages;
 public partial class Login
 {
     private const string HomePath = "/";
+    private const string RegisterPath = "/register";
 
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
@@ -30,6 +31,9 @@ public partial class Login
     // Tracks whether the most recent failure is due to unconfirmed email and which email is pending
     private bool unconfirmedEmailPending;
     private string pendingUnconfirmedEmail = string.Empty;
+
+    /// <summary>The sign-up page, keeping the return address so a new member comes back too.</summary>
+    private string RegisterHref => LinkWithReturnUrl(RegisterPath, ReturnUrl);
 
     private string passwordInputType => showPassword ? "text" : "password";
     private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
@@ -106,6 +110,19 @@ public partial class Login
         var pointsToAnotherSite = returnUrl.StartsWith("//", StringComparison.Ordinal)
             || returnUrl.StartsWith("/\\", StringComparison.Ordinal);
         return pointsToAnotherSite ? HomePath : returnUrl;
+    }
+
+    /// <summary>
+    /// A link to <paramref name="pagePath"/> that carries the return address ("/login?returnUrl=%2Fcourses%2F42"),
+    /// or the bare page path when there is no local return address.
+    /// </summary>
+    public static string LinkWithReturnUrl(string pagePath, string? returnUrl)
+    {
+        var localPath = LocalReturnPath(returnUrl);
+        if (localPath == HomePath)
+            return pagePath;
+
+        return $"{pagePath}?returnUrl={Uri.EscapeDataString(localPath)}";
     }
 
     private async Task DevConfirmPendingEmail()
