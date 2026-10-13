@@ -187,7 +187,7 @@
     <value>Explore</value>
   </data>
   <data name="DashboardBrowseCourses" xml:space="preserve">
-    <value>Browse courses</value>
+    <value>Browse programmes</value>
   </data>
   <data name="BlogNotFoundTitle" xml:space="preserve">
     <value>Article not found</value>
@@ -211,7 +211,7 @@
     <value>Browse exercises</value>
   </data>
   <data name="StatsCourses" xml:space="preserve">
-    <value>Courses</value>
+    <value>Programmes</value>
   </data>
   <data name="StatsExercises" xml:space="preserve">
     <value>Exercises</value>

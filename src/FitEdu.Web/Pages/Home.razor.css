@@ -1,7 +1,7 @@
 /* ================================================
    Home: guest landing and member dashboard.
-   Mobile first: base rules target a 375 px phone; min-width queries enhance at 576, 768 and
-   1200 px. Layout primitives (.page, .grid-auto, .section-head, .btn-cta, .eyebrow, .text-volt)
+   Mobile first: base rules target a 375 px phone; min-width queries enhance at 400, 576, 768,
+   992 and 1200 px. Layout primitives (.page, .grid-auto, .section-head, .btn-cta, .eyebrow, .text-volt)
    and the cards come from app.css and shared-components.css.
    ================================================ */
 
@@ -161,6 +161,11 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
+/* The member tile only shows past a threshold; an odd last tile takes the whole row. */
+.stats-strip ::deep .stat-tile:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
 /* ---------- Goal cards ---------- */
 .goal-grid {
     display: grid;
@@ -171,11 +176,14 @@
     list-style: none;
 }
 
+/* Icon and arrow share the top row, so the label gets the card's full width below them. */
 .goal-card {
     --goal-tone-rgb: var(--text-strong-accent-rgb);
     position: relative;
     display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto 1fr;
+    align-items: start;
     gap: var(--space-3);
     height: 100%;
     min-height: 7.5rem;
@@ -211,19 +219,18 @@
     font-size: 1.25rem;
 }
 
+/* break-word splits a word only when it cannot fit a line on its own (Greek has no hyphenation). */
 .goal-card__label {
+    grid-column: 1 / -1;
     align-self: end;
-    padding-right: 1.5rem;
+    font-size: 0.9375rem;
     font-weight: 700;
     line-height: 1.3;
-    overflow-wrap: anywhere;
-    hyphens: auto;
+    overflow-wrap: break-word;
 }
 
 .goal-card__arrow {
-    position: absolute;
-    right: var(--space-4);
-    bottom: var(--space-4);
+    align-self: center;
     color: var(--text-light-muted);
     transition: transform var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out);
 }
@@ -267,9 +274,11 @@
     counter-increment: how-step;
 }
 
-/* The big step number, drawn as an outline so it stays decorative. */
+/* The big step number, drawn as an outline so it stays decorative. The second content line gives it
+   empty alt text, so screen readers stay silent; older browsers ignore it and keep the first. */
 .how-step::after {
     content: "0" counter(how-step);
+    content: "0" counter(how-step) / "";
     position: absolute;
     top: var(--space-4);
     right: var(--space-5);
@@ -303,7 +312,8 @@
     line-height: 1.6;
 }
 
-/* ---------- Member stories: a swipeable row on phones, a grid from 768 px ---------- */
+/* ---------- Popular programmes and member stories: swipeable rows on phones, grids from 768 px ---------- */
+.featured-grid,
 .testimonials-grid {
     display: grid;
     grid-auto-columns: min(85%, 22rem);
@@ -318,11 +328,13 @@
     scrollbar-width: thin;
 }
 
+.featured-grid:focus-visible,
 .testimonials-grid:focus-visible {
     outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
 }
 
+.featured-grid ::deep .course-card,
 .testimonials-grid ::deep .testimonial-card {
     scroll-snap-align: start;
 }
@@ -485,10 +497,12 @@
     list-style: none;
 }
 
+/* Phones stack the icon over the label, so long words like "Πιστοποιητικά" get the full tile width. */
 .explore-tile {
     display: flex;
-    align-items: center;
-    gap: var(--space-3);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
     height: 100%;
     min-height: 3.5rem;
     padding: var(--space-3);
@@ -515,8 +529,9 @@
 
 .explore-tile__label {
     min-width: 0;
+    font-size: 0.9375rem;
     line-height: 1.25;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 .explore-tile:hover {
@@ -533,6 +548,14 @@
 /* ================================================
    Larger screens
    ================================================ */
+/* The narrowest phones keep the labels a touch smaller so whole words fit. */
+@media (min-width: 400px) {
+    .goal-card__label,
+    .explore-tile__label {
+        font-size: 1rem;
+    }
+}
+
 @media (min-width: 576px) {
     .hero-cta {
         display: flex;
@@ -570,10 +593,27 @@
         object-position: 70% 50%;
     }
 
-    .stats-strip,
     .dashboard-stats {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--space-4);
+    }
+
+    /* One row of equal tiles, however many the strip shows. */
+    .stats-strip {
+        grid-template-columns: none;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        gap: var(--space-4);
+    }
+
+    .stats-strip ::deep .stat-tile:last-child:nth-child(odd) {
+        grid-column: auto;
+    }
+
+    .explore-tile {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-3);
     }
 
     .goal-grid {
@@ -586,13 +626,21 @@
         gap: var(--space-4);
     }
 
+    .featured-grid,
     .testimonials-grid {
         grid-auto-flow: row;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
         gap: var(--space-4);
         margin: 0;
         padding: 0;
         overflow: visible;
+    }
+
+    .featured-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .testimonials-grid {
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
     }
 
     .today-plan {
@@ -609,6 +657,13 @@
     .today-plan__body {
         justify-content: center;
         padding: var(--space-6);
+    }
+}
+
+/* Six programmes fill two even rows of three. */
+@media (min-width: 992px) {
+    .featured-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 

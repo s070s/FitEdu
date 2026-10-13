@@ -187,7 +187,7 @@
     <value>Εξερεύνηση</value>
   </data>
   <data name="DashboardBrowseCourses" xml:space="preserve">
-    <value>Δες τα μαθήματα</value>
+    <value>Δες τα προγράμματα</value>
   </data>
   <data name="BlogNotFoundTitle" xml:space="preserve">
     <value>Το άρθρο δεν βρέθηκε</value>
@@ -211,7 +211,7 @@
     <value>Δες τις ασκήσεις</value>
   </data>
   <data name="StatsCourses" xml:space="preserve">
-    <value>Μαθήματα</value>
+    <value>Προγράμματα</value>
   </data>
   <data name="StatsExercises" xml:space="preserve">
     <value>Ασκήσεις</value>

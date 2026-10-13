@@ -144,6 +144,7 @@ public class SeoHeadTests : BunitContext
         Services.AddSingleton(Substitute.For<ICourseConsumer>());
         Services.AddSingleton(Substitute.For<ILandingConsumer>());
         Services.AddSingleton(Substitute.For<IProfileConsumer>());
+        Services.AddSingleton(TimeProvider.System);
         AddBunitPersistentComponentState();
         var head = RenderHeadOutlet();
 

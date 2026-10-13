@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -24,6 +25,9 @@ public class HomeDashboardTests : BunitContext
     private static readonly Guid CurrentCourseId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     private static readonly Guid NextLessonId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
+    // Late on Tuesday 13 October in UTC; the dashboard date follows the UTC day like the streak.
+    private static readonly DateTimeOffset Now = new(2026, 10, 13, 23, 30, 0, TimeSpan.Zero);
+
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
     private readonly IProfileConsumer _profileConsumer = Substitute.For<IProfileConsumer>();
     private readonly BunitAuthorizationContext _authorization;
@@ -35,6 +39,7 @@ public class HomeDashboardTests : BunitContext
         Services.AddSingleton(Substitute.For<ITestimonialConsumer>());
         Services.AddSingleton(Substitute.For<IBlogConsumer>());
         Services.AddSingleton(Substitute.For<ILandingConsumer>());
+        Services.AddSingleton<TimeProvider>(new FixedTimeProvider(Now));
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddBunitPersistentComponentState();
         _authorization = AddAuthorization();
@@ -54,6 +59,16 @@ public class HomeDashboardTests : BunitContext
         page.Find(".today-plan__lesson").TextContent.ShouldBe("Day 2: Push");
         page.Find(".today-plan__cta").GetAttribute("href").ShouldBe($"/lessons/{NextLessonId}");
         page.Find(".today-plan__progress").TextContent.ShouldContain("1 of 3 workouts done");
+    }
+
+    [Fact]
+    public void Dashboard_EyebrowShowsTodaysUtcDate()
+    {
+        UseStudent(Stats(CurrentCourseId));
+
+        var page = Render<Home>();
+
+        page.Find(".dashboard-head .eyebrow").TextContent.ShouldBe("Tuesday 13 October");
     }
 
     [Fact]

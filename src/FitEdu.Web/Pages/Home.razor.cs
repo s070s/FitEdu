@@ -17,6 +17,10 @@ public partial class Home : IDisposable
     private const int BlogArticleCount = 3;
     private const int RecommendedCourseCount = 3;
     private const int EnrolledCourseCount = 6;
+    private const string TodayFormat = "dddd d MMMM";
+
+    // A handful of members is weak social proof, so the public numbers strip shows the tile from here.
+    private const int MinimumMemberCountShown = 100;
 
     // Ranking weights for "Recommended for you": the goal matters more than the level.
     private const int GoalMatchScore = 2;
@@ -42,6 +46,7 @@ public partial class Home : IDisposable
     [Inject] private IProfileConsumer ProfileConsumer { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+    [Inject] private TimeProvider TimeProvider { get; set; } = default!;
 
     private bool _isAuthenticated;
     private bool _isStudent;
@@ -69,6 +74,14 @@ public partial class Home : IDisposable
 
     /// <summary>The admin's uploaded hero photo when there is one, otherwise the shipped photo.</summary>
     private string HeroImageUrl => _landing?.HasCustomHeroImage == true ? CustomHeroImageUrl : DefaultHeroImageUrl;
+
+    /// <summary>
+    /// Today's date for the dashboard eyebrow ("Tuesday 13 October"). It is the UTC day, the same day
+    /// the training streak counts, so the two never disagree around midnight.
+    /// </summary>
+    private string TodayLabel => TimeProvider.GetUtcNow().ToString(TodayFormat, CultureInfo.CurrentCulture);
+
+    private bool ShowMemberCount => _landing?.MemberCount >= MinimumMemberCountShown;
 
     // Restore ALL persisted state BEFORE the first render so the first interactive render
     // exactly matches the SSR pre-rendered HTML — seamless hydration, zero flash.

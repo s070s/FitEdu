@@ -292,7 +292,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Courses.
+        ///   Looks up a localized string similar to Programmes.
         /// </summary>
         public static string StatsCourses {
             get {

@@ -1,5 +1,4 @@
 @page "/"
-@using System.Globalization
 @using FitEdu.Web.Extensions
 
 <PageTitle>@HomeRes.PageTitle</PageTitle>
@@ -11,7 +10,7 @@
 {
     <div class="page dashboard">
         <header class="dashboard-head">
-            <p class="eyebrow">@DateTime.Now.ToString("dddd d MMMM", CultureInfo.CurrentCulture)</p>
+            <p class="eyebrow">@TodayLabel</p>
             <h1 class="dashboard-title">@string.Format(HomeRes.WelcomeUser, _authenticatedUserName)</h1>
         </header>
 
@@ -78,7 +77,10 @@ else
             <StatTile Value="@Number(_landing.CourseCount)" Label="@HomeRes.StatsCourses" Icon="bi-collection-play" />
             <StatTile Value="@Number(_landing.ExerciseCount)" Label="@HomeRes.StatsExercises" Icon="bi-activity" />
             <StatTile Value="@Number(_landing.LessonCount)" Label="@HomeRes.StatsLessons" Icon="bi-stopwatch" />
-            <StatTile Value="@Number(_landing.MemberCount)" Label="@HomeRes.StatsMembers" Icon="bi-people" />
+            @if (ShowMemberCount)
+            {
+                <StatTile Value="@Number(_landing.MemberCount)" Label="@HomeRes.StatsMembers" Icon="bi-people" />
+            }
         </section>
     }
 
@@ -134,7 +136,8 @@ else
                     @HomeRes.FeaturedSeeAll <span class="bi bi-arrow-right" aria-hidden="true"></span>
                 </a>
             </div>
-            <div class="grid-auto">
+            @* A swipeable row on phones like the member stories, so the landing stays short. *@
+            <div class="featured-grid" role="region" tabindex="0" aria-labelledby="featured-title">
                 @foreach (var course in _landing.FeaturedCourses)
                 {
                     <CourseCard Course="course" @key="course.Id" />

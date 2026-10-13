@@ -33,6 +33,7 @@ public class HomeLandingTests : BunitContext
         Services.AddSingleton(_landingConsumer);
         Services.AddSingleton(Substitute.For<ICourseConsumer>());
         Services.AddSingleton(Substitute.For<IProfileConsumer>());
+        Services.AddSingleton(TimeProvider.System);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddBunitPersistentComponentState();
         AddAuthorization();
@@ -96,6 +97,18 @@ public class HomeLandingTests : BunitContext
     }
 
     [Fact]
+    public void StatsStrip_HidesTheMemberTileWhileTheCountIsSmall()
+    {
+        _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
+
+        var page = Render<Home>();
+
+        var labels = page.FindAll(".stats-strip .stat-tile__label").Select(label => label.TextContent).ToList();
+        labels.Count.ShouldBe(3);
+        labels.ShouldNotContain(HomeRes.StatsMembers);
+    }
+
+    [Fact]
     public void StatsStrip_IsHiddenWhenTheNumbersAreUnavailable()
     {
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns((LandingOverviewDto?)null);
@@ -134,6 +147,10 @@ public class HomeLandingTests : BunitContext
 
         page.FindAll(".section-featured .course-card").Count.ShouldBe(2);
         page.Find(".section-featured a.course-card-link").TextContent.ShouldBe("Strength basics");
+        // The swipe row on phones is a focusable, named region so keyboard users can scroll it.
+        var row = page.Find(".section-featured .featured-grid");
+        row.GetAttribute("tabindex").ShouldBe("0");
+        row.GetAttribute("aria-labelledby").ShouldBe("featured-title");
     }
 
     [Fact]
@@ -180,11 +197,11 @@ public class HomeLandingTests : BunitContext
         markup.ShouldNotContain("onerror=");
     }
 
-    private static LandingOverviewDto Overview(bool hasCustomHero = false) => new(
+    private static LandingOverviewDto Overview(bool hasCustomHero = false, int memberCount = 1240) => new(
         CourseCount: 19,
         LessonCount: 131,
         ExerciseCount: 873,
-        MemberCount: 1240,
+        MemberCount: memberCount,
         FeaturedCourses:
         [
             new(Guid.NewGuid(), "Strength basics", "Build a base.", false, 12, Level: CourseLevel.Beginner),
