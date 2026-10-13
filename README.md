@@ -721,7 +721,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | DB connection fails | `sqllocaldb info MSSQLLocalDB`. Verify connection string. If the instance is stopped: `sqllocaldb start MSSQLLocalDB`. |
 | Database missing / dropped | Just restart the app — `MigrateAsync` at startup recreates and reseeds it automatically. |
 | Adding a new migration | `dotnet ef migrations add <Name> --project src/FitEdu.Infrastructure --startup-project src/FitEdu.Web` — then restart; migrations apply on next run. |
-| Seed data missing | `SeedData:Enabled = true` in `appsettings.Development.json`. |
+| Seed data missing or out of date | `SeedData:Enabled = true` in `appsettings.Development.json`. Seeders only fill empty tables, so to load changed seed files drop `FitEduDb` and restart (see [docs/runbook.md](docs/runbook.md#reseeding-the-demo-content-development-only)). |
 | Email link not found | Search `STUB EMAIL` in `Logs/log-<today>.txt` or use dev endpoints. |
 | Role-based page inaccessible | Check `AspNetUserRoles` table. Admin pages require `Admin` role. |
 | Chat not connecting | JWT via `access_token` query string. Check token expiry (default 15 min) — use `api/auth/refresh` to rotate. |
