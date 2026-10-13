@@ -398,10 +398,12 @@ public class CourseService(
         await db.SaveChangesAsync(cancellationToken);
 
         var certificatePending = false;
+        var certificateIncluded = false;
         if (courseCompleted)
         {
             var subStatus = await subscriptionService.GetUserStatusAsync(userId, cancellationToken);
-            if (subStatus.Features?.CertificateAccess == true)
+            certificateIncluded = subStatus.Features?.CertificateAccess == true;
+            if (certificateIncluded)
             {
                 try
                 {
@@ -426,7 +428,8 @@ public class CourseService(
             totalLessons,
             progressPercent,
             courseCompleted,
-            certificatePending
+            certificatePending,
+            certificateIncluded
         ));
     }
 

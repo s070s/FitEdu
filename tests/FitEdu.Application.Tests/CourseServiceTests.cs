@@ -685,8 +685,28 @@ public class CourseServiceTests
 
         result.Value!.CourseCompleted.ShouldBeTrue();
         result.Value.CertificatePending.ShouldBeFalse();
+        result.Value.CertificateIncluded.ShouldBeTrue();
         (await db.Enrollments.SingleAsync()).Status.ShouldBe(EnrollmentStatus.Completed);
         await certs.Received(1).GetOrCreateAsync(UserId, course.Id, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task CompleteLesson_FinalLessonWithoutCertificatePlan_SaysNoCertificateIsIncluded()
+    {
+        // Free and Plus finish programmes too; the flag lets the lesson page offer the upgrade instead.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var lessonId = course.Modules.First().Lessons.First().Id;
+        var (svc, _, certs) = NewService(db, Status(certificateAccess: false));
+
+        var result = await svc.CompleteLessonAsync(UserId, lessonId);
+
+        result.Value!.CourseCompleted.ShouldBeTrue();
+        result.Value.CertificateIncluded.ShouldBeFalse();
+        await certs.DidNotReceive().GetOrCreateAsync(Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
