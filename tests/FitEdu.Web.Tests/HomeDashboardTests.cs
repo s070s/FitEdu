@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
@@ -92,6 +93,20 @@ public class HomeDashboardTests : BunitContext
         page.FindAll(".today-plan__lesson").ShouldBeEmpty();
         page.Find(".today-plan--empty .empty-state__action").GetAttribute("href").ShouldBe("/courses");
         page.FindAll("#programmes-title").ShouldBeEmpty();
+        page.Find(".today-plan--empty").TextContent.ShouldContain(HomeRes.TodayPlanEmpty);
+    }
+
+    [Fact]
+    public void Student_WhoFinishedEveryProgramme_IsToldToPickTheNextOne()
+    {
+        // Enrolled courses but no programme in progress: every joined programme is finished.
+        UseStudent(Stats(currentCourseId: null));
+
+        var page = Render<Home>();
+
+        var emptyPlan = page.Find(".today-plan--empty");
+        emptyPlan.TextContent.ShouldContain(HomeRes.TodayPlanAllDone);
+        emptyPlan.TextContent.ShouldNotContain(HomeRes.TodayPlanEmpty);
     }
 
     [Fact]

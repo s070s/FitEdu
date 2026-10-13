@@ -4,6 +4,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Layout;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -278,6 +279,13 @@ public partial class Home : IDisposable
             enrolled.Take(EnrolledCourseCount).ToList(),
             Recommend(catalog, stats));
     }
+
+    /// <summary>
+    /// Why there is no next workout: a member who joined programmes but has none in progress has
+    /// finished them all, which deserves different words than never having joined one.
+    /// </summary>
+    private static string TodayPlanEmptyText(DashboardData? dashboard) =>
+        dashboard?.EnrolledCount > 0 ? HomeRes.TodayPlanAllDone : HomeRes.TodayPlanEmpty;
 
     /// <summary>The first lesson not yet completed in the programme the member is following.</summary>
     private async Task<TodayPlan?> FindTodayPlanAsync(Guid? courseId)

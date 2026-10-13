@@ -267,6 +267,9 @@
   <data name="TodayPlanEmpty" xml:space="preserve">
     <value>No programme yet — pick one to get your first workout.</value>
   </data>
+  <data name="TodayPlanAllDone" xml:space="preserve">
+    <value>You've finished every programme you joined — pick your next one to keep the momentum going.</value>
+  </data>
   <data name="RecommendedTitle" xml:space="preserve">
     <value>Recommended for you</value>
   </data>

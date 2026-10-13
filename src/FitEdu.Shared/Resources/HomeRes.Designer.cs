@@ -463,6 +463,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to You've finished every programme you joined — pick your next one to keep the momentum going..
+        /// </summary>
+        public static string TodayPlanAllDone {
+            get {
+                return ResourceManager.GetString("TodayPlanAllDone", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Recommended for you.
         /// </summary>
         public static string RecommendedTitle {
