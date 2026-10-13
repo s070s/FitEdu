@@ -192,10 +192,10 @@
 		<value>Βρες το επόμενο πρόγραμμά σου</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
-		<value>Φόρτωση μαθημάτων...</value>
+		<value>Φόρτωση προγραμμάτων...</value>
 	</data>
 	<data name="NoCoursesAvailable" xml:space="preserve">
-		<value>Δεν υπάρχουν διαθέσιμα μαθήματα αυτή τη στιγμή.</value>
+		<value>Δεν υπάρχουν διαθέσιμα προγράμματα αυτή τη στιγμή.</value>
 	</data>
 	<data name="LessonsCountFormat" xml:space="preserve">
 		<value>{0} μαθήματα</value>
@@ -222,10 +222,10 @@
 		<value>Περιλαμβάνεται στο πλάνο {0} και πάνω.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
-		<value>Αναβάθμιση Πλάνου</value>
+		<value>Αναβάθμιση πλάνου</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>Όριο προγραμμάτων στο πλάνο {0}: {1}</value>
+		<value>Όριο προγραμμάτων στο πλάνο «{0}»: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
 		<value>Έχεις φτάσει το όριο του πλάνου σου.</value>

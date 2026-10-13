@@ -192,10 +192,10 @@
 		<value>Find your next programme</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
-		<value>Loading courses...</value>
+		<value>Loading programmes...</value>
 	</data>
 	<data name="NoCoursesAvailable" xml:space="preserve">
-		<value>No courses available at the moment.</value>
+		<value>No programmes available at the moment.</value>
 	</data>
 	<data name="LessonsCountFormat" xml:space="preserve">
 		<value>{0} lessons</value>
@@ -207,7 +207,7 @@
 		<value>Upgrade to {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
-		<value>{0} courses</value>
+		<value>{0} programmes</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Per page:</value>
@@ -222,13 +222,13 @@
 		<value>Included in the {0} plan and above.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
-		<value>Upgrade Plan</value>
+		<value>Upgrade plan</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>Course limit on the {0} plan: {1}</value>
+		<value>Programme limit on the {0} plan: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
-		<value>You have used all your course slots.</value>
+		<value>You have used all your programme slots.</value>
 	</data>
 	<data name="Level" xml:space="preserve">
 		<value>Level</value>
@@ -324,7 +324,7 @@
 		<value>Structured plans for every goal and level. Pick by what you want to achieve, how experienced you are and the kit you have.</value>
 	</data>
 	<data name="SearchCoursesPlaceholder" xml:space="preserve">
-		<value>Search courses</value>
+		<value>Search programmes</value>
 	</data>
 	<data name="NoMatchingCoursesHint" xml:space="preserve">
 		<value>Try another goal, level or piece of equipment, or clear the filters.</value>

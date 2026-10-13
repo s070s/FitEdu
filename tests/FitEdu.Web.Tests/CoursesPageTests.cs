@@ -64,7 +64,7 @@ public class CoursesPageTests : BunitContext
         page.FindAll(".courses-grid .course-card").Count.ShouldBe(CoursesOnPage);
         page.FindAll("a.course-card-link").Count.ShouldBe(CoursesOnPage);
         page.FindAll(".skeleton-grid").ShouldBeEmpty();
-        page.Find(".courses-toolbar__count").TextContent.Trim().ShouldBe("3 courses");
+        page.Find(".courses-toolbar__count").TextContent.Trim().ShouldBe("3 programmes");
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class CoursesPageTests : BunitContext
 
         var page = Render<Courses>();
 
-        page.Find(".plan-limit-banner").TextContent.ShouldContain("Course limit on the Plus plan: 10");
+        page.Find(".plan-limit-banner").TextContent.ShouldContain("Programme limit on the Plus plan: 10");
         page.FindAll(".plan-limit-full").ShouldBeEmpty();
         page.Find(".plan-limit-banner__action").ClassList.ShouldContain("btn-cta--ghost");
     }
@@ -159,7 +159,7 @@ public class CoursesPageTests : BunitContext
 
         var page = Render<Courses>();
 
-        page.Find(".empty-state__title").TextContent.ShouldBe("No courses available at the moment.");
+        page.Find(".empty-state__title").TextContent.ShouldBe("No programmes available at the moment.");
         page.FindAll(".category-filter-bar").ShouldBeEmpty();
     }
 
@@ -188,6 +188,18 @@ public class CoursesPageTests : BunitContext
         chipLabels.ShouldContain("Χωρίς εξοπλισμό");
         page.Find(".courses-toolbar__count").TextContent.Trim().ShouldBe("3 προγράμματα");
         _categoryConsumer.Received().GetCategoriesAsync("courses", "el");
+    }
+
+    [Fact]
+    public void Greek_PlanBannerQuotesThePlanNameAndUsesSentenceCase()
+    {
+        UseCulture("el");
+        _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Plus, maxCourses: 10));
+
+        var page = Render<Courses>();
+
+        page.Find(".plan-limit-banner__text").TextContent.ShouldContain("Όριο προγραμμάτων στο πλάνο «Plus»: 10");
+        page.Find(".plan-limit-banner__action").TextContent.Trim().ShouldBe("Αναβάθμιση πλάνου");
     }
 
     // ---- Helpers ------------------------------------------------------------------------------

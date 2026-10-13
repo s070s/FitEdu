@@ -340,7 +340,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Loading courses...
+        ///   Looks up a localized string similar to Loading programmes...
         /// </summary>
         public static string LoadingCourses {
             get {
@@ -349,7 +349,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to No courses available at the moment.
+        ///   Looks up a localized string similar to No programmes available at the moment.
         /// </summary>
         public static string NoCoursesAvailable {
             get {
@@ -385,7 +385,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} courses.
+        ///   Looks up a localized string similar to {0} programmes.
         /// </summary>
         public static string TotalCoursesFormat {
             get {
@@ -430,7 +430,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Upgrade Plan.
+        ///   Looks up a localized string similar to Upgrade plan.
         /// </summary>
         public static string UpgradePlan {
             get {
@@ -439,7 +439,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Course limit on the {0} plan: {1}.
+        ///   Looks up a localized string similar to Programme limit on the {0} plan: {1}.
         /// </summary>
         public static string PlanCourseLimitFormat {
             get {
@@ -448,7 +448,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You have used all your course slots.
+        ///   Looks up a localized string similar to You have used all your programme slots.
         /// </summary>
         public static string CourseSlotsFullNotice {
             get {
@@ -736,7 +736,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Search courses.
+        ///   Looks up a localized string similar to Search programmes.
         /// </summary>
         public static string SearchCoursesPlaceholder {
             get {
