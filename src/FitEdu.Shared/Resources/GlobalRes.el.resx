@@ -238,13 +238,13 @@
     <value>Κλείσιμο</value>
   </data>
   <data name="NotAuthorizedMessage" xml:space="preserve">
-    <value>Δεν έχετε άδεια για προβολή αυτής της σελίδας.</value>
+    <value>Δεν έχεις άδεια να δεις αυτή τη σελίδα.</value>
   </data>
   <data name="NotAuthorizedRoleMessage" xml:space="preserve">
-    <value>Δεν έχετε πρόσβαση σε αυτή την περιοχή.</value>
+    <value>Δεν έχεις πρόσβαση σε αυτή την περιοχή.</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
-    <value>Δοκιμάστε ξανά</value>
+    <value>Δοκίμασε ξανά</value>
   </data>
   <data name="PasswordRulesHint" xml:space="preserve">
     <value>Τουλάχιστον 8 χαρακτήρες, με έναν αριθμό και ένα κεφαλαίο γράμμα.</value>
@@ -283,7 +283,7 @@
     <value>Επιβεβαίωση</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Είστε σίγουροι;</value>
+    <value>Είσαι σίγουρος/η;</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Άκυρο</value>
@@ -292,7 +292,7 @@
     <value>Μη αποθηκευμένες αλλαγές</value>
   </data>
   <data name="UnsavedChangesMessage" xml:space="preserve">
-    <value>Έχετε μη αποθηκευμένες αλλαγές. Είστε σίγουροι ότι θέλετε να φύγετε από αυτή τη σελίδα;</value>
+    <value>Έχεις αλλαγές που δεν αποθηκεύτηκαν. Σίγουρα θέλεις να φύγεις από αυτή τη σελίδα;</value>
   </data>
   <data name="DiscardChanges" xml:space="preserve">
     <value>Απόρριψη Αλλαγών</value>

@@ -441,16 +441,21 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
-    public void AssistantRes_GreekAddressesTheMemberInformally()
+    public void GreekResx_AddressesTheMemberInformally()
     {
-        var greekValues = LoadResxValues(Path.Combine(RepoPaths.ResourcesRoot, "AssistantRes" + GreekResxSuffix));
+        var greekResxFiles = Directory.GetFiles(RepoPaths.ResourcesRoot, "*" + GreekResxSuffix, SearchOption.AllDirectories);
+        var formalValues = new List<string>();
 
-        var formalKeys = greekValues
-            .Where(pair => GreekFormalImperativeRegex().IsMatch(pair.Value))
-            .Select(pair => $"{pair.Key}: {pair.Value}")
-            .ToList();
+        foreach (var greekResxPath in greekResxFiles)
+        {
+            var resourceName = Path.GetRelativePath(RepoPaths.ResourcesRoot, greekResxPath);
+            formalValues.AddRange(LoadResxValues(greekResxPath)
+                .Where(pair => GreekFormalAddressRegex().IsMatch(pair.Value))
+                .Select(pair => $"{resourceName}.{pair.Key}: {pair.Value}"));
+        }
 
-        formalKeys.ShouldBeEmpty("the coach says εσύ (e.g. Δοκίμασε, not Δοκιμάστε)");
+        greekResxFiles.ShouldNotBeEmpty();
+        formalValues.ShouldBeEmpty("the Greek UI says εσύ (e.g. Δοκίμασε, not Δοκιμάστε; σου, not σας)");
     }
 
     [Fact]
@@ -763,11 +768,14 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekPastTenseCommandRegex();
 
-    // Polite-plural commands a UI string tends to use; the informal forms are Δοκίμασε, Κάνε,
-    // Επίλεξε, Πάτησε, Γράψε, Ρώτα and Έλεγξε.
-    [GeneratedRegex(@"\b(?:δοκιμάστε|κάντε|επιλέξτε|πατήστε|γράψτε|ρωτήστε|ελέγξτε)\b",
+    // The polite plural (εσείς) a UI string tends to use: commands whose informal forms are
+    // Δοκίμασε, Κάνε, Επίλεξε, Πάτησε, Γράψε, Ρώτα, Έλεγξε, Αναβάθμισε, Επικοινώνησε, Επιβεβαίωσε,
+    // Δες and Επανάφερε, plus είστε, θέλετε, έχετε and σας (εσύ: είσαι, θέλεις, έχεις, σου).
+    // "We" forms such as επεξεργαζόμαστε do not match.
+    [GeneratedRegex(@"\b(?:δοκιμάστε|κάντε|επιλέξτε|πατήστε|γράψτε|ρωτήστε|ελέγξτε|αναβαθμίστε|εισαγάγετε"
+        + @"|επικοινωνήστε|επιβεβαιώστε|δείτε|επαναφέρετε|είστε|θέλετε|έχετε|σας)\b",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex GreekFormalImperativeRegex();
+    private static partial Regex GreekFormalAddressRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and

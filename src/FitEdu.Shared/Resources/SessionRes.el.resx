@@ -194,7 +194,7 @@
     <value>Ακύρωση</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Αποτυχία αποθήκευσης του ζωντανού μαθήματος. Δοκιμάστε ξανά.</value>
+    <value>Αποτυχία αποθήκευσης του ζωντανού μαθήματος. Δοκίμασε ξανά.</value>
   </data>
   <data name="CancelConfirmFormat" xml:space="preserve">
     <value>Ακύρωση του "{0}"; Τα εγγεγραμμένα μέλη δεν θα το βλέπουν πλέον ως επερχόμενο.</value>

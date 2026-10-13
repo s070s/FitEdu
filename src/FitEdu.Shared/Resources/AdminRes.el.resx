@@ -274,7 +274,7 @@
     <value>Μετακίνηση κάτω</value>
   </data>
   <data name="ResetSortToReorder" xml:space="preserve">
-    <value>Επαναφέρετε την ταξινόμηση στη σειρά εμφάνισης για αναδιάταξη</value>
+    <value>Επανάφερε την ταξινόμηση στη σειρά εμφάνισης για να αλλάξεις τη σειρά</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Αφαίρεση</value>
@@ -520,7 +520,7 @@
     <value>Επιβεβαίωση Διαγραφής</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>Δεν έχετε πρόσβαση. Απαιτείται ρόλος Διαχειριστή.</value>
+    <value>Δεν έχεις πρόσβαση. Απαιτείται ρόλος διαχειριστή.</value>
   </data>
   <data name="ImpersonationAdminView" xml:space="preserve">
     <value>Προβολή διαχειριστή:</value>
@@ -595,22 +595,22 @@
     <value>Επιβεβαίωση</value>
   </data>
   <data name="ConfirmDeleteCourse" xml:space="preserve">
-    <value>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το μάθημα και όλες τις ενότητες/τα μαθήματά του;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτό το πρόγραμμα και όλες τις ενότητες και τα μαθήματά του;</value>
   </data>
   <data name="ConfirmDeleteAssessment" xml:space="preserve">
-    <value>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν την αξιολόγηση;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτή την αξιολόγηση;</value>
   </data>
   <data name="ConfirmDeleteLesson" xml:space="preserve">
     <value>Διαγραφή αυτού του μαθήματος;</value>
   </data>
   <data name="ConfirmDeleteUser" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον χρήστη; Αυτό αφαιρεί οριστικά τις εγγραφές, τις υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών/κλήσεών του.</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτόν τον χρήστη; Έτσι αφαιρούνται οριστικά οι εγγραφές, οι υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών/κλήσεών του.</value>
   </data>
   <data name="ConfirmDeleteArticle" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το άρθρο;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτό το άρθρο;</value>
   </data>
   <data name="ConfirmDeleteTestimonial" xml:space="preserve">
-    <value>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη μαρτυρία;</value>
+    <value>Σίγουρα θέλεις να διαγράψεις αυτή τη μαρτυρία;</value>
   </data>
   <data name="EditArticle" xml:space="preserve">
     <value>Επεξεργασία άρθρου</value>
@@ -862,7 +862,7 @@
     <value>Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</value>
   </data>
   <data name="PasswordUpdateFailed" xml:space="preserve">
-    <value>Απέτυχε η ενημέρωση του κωδικού πρόσβασης. Ελέγξτε τις απαιτήσεις κωδικού.</value>
+    <value>Απέτυχε η ενημέρωση του κωδικού πρόσβασης. Έλεγξε τις απαιτήσεις κωδικού.</value>
   </data>
   <data name="TitleEnglishRequired" xml:space="preserve">
     <value>Ο τίτλος (Αγγλικά) είναι υποχρεωτικός.</value>
