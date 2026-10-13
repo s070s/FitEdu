@@ -79,6 +79,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate.
+        /// </summary>
+        public static string PdfFileNamePrefix {
+            get {
+                return ResourceManager.GetString("PdfFileNamePrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load certificates..
         /// </summary>
         public static string FailedToLoad {

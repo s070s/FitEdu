@@ -128,6 +128,10 @@
 	<data name="DownloadPdf" xml:space="preserve">
 		<value>Download PDF</value>
 	</data>
+	<data name="PdfFileNamePrefix" xml:space="preserve">
+		<value>Certificate</value>
+		<comment>Start of the downloaded PDF's file name: "Certificate - {name} - {programme}.pdf".</comment>
+	</data>
 	<data name="Verify" xml:space="preserve">
 		<value>Verify</value>
 	</data>

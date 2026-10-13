@@ -147,6 +147,9 @@
   <data name="DownloadPdf" xml:space="preserve">
     <value>Λήψη PDF</value>
   </data>
+  <data name="PdfFileNamePrefix" xml:space="preserve">
+    <value>Πιστοποιητικό</value>
+  </data>
   <data name="Verify" xml:space="preserve">
     <value>Επαλήθευση</value>
   </data>

@@ -8,6 +8,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.ApiServices;
+using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using System.Globalization;
 using System.Security.Claims;
@@ -126,7 +127,7 @@ public class CertificatesController : ControllerBase
 
         var (stream, contentType) = await _storage.GetFileAsync(pdfPath);
         var courseTitle = CertificateService.ResolveCourseTitle(certificate.CourseTitleEn, certificate.CourseTitleEl, culture);
-        var fileName = ToSafeFileName($"Certificate - {certificate.RecipientName} - {courseTitle}") + ".pdf";
+        var fileName = ToSafeFileName($"{CertificateRes.PdfFileNamePrefix} - {certificate.RecipientName} - {courseTitle}") + ".pdf";
         return File(stream, contentType, fileName);
     }
 
