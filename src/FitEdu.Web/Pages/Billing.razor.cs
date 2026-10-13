@@ -5,6 +5,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Web.Extensions;
 
 namespace FitEdu.Web.Pages;
 
@@ -126,6 +127,10 @@ public partial class Billing
     private void CloseCancelDialog() => _showCancelConfirm = false;
 
     private void GoToPricing() => Navigation.NavigateTo("/pricing");
+
+    /// <summary>How many courses the current plan lets the member run at once.</summary>
+    private static string CourseLimitLabel(int maxCourses) =>
+        CourseLimitText.Describe(maxCourses, BillingRes.UnlimitedCourses, BillingRes.OneCourse, BillingRes.CoursesCountFormat);
 
     /// <summary>Lime for Pro, teal for Plus, the neutral chip for Free.</summary>
     private static string TierChipClass(SubscriptionTier? tier) => tier switch

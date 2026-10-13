@@ -57,9 +57,6 @@
 	<data name="MostPopular" xml:space="preserve">
 		<value>Πιο δημοφιλές</value>
 	</data>
-	<data name="PriceFree" xml:space="preserve">
-		<value>Δωρεάν</value>
-	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
 		<value>Απεριόριστα ενεργά προγράμματα</value>
 	</data>
@@ -149,5 +146,11 @@
 	</data>
 	<data name="Footnote" xml:space="preserve">
 		<value>Η βιβλιοθήκη ασκήσεων και τα ζωντανά μαθήματα είναι ανοιχτά σε κάθε μέλος. Άλλαξε ή ακύρωσε το πλάνο σου όποτε θέλεις.</value>
+	</data>
+	<data name="OneCourseAtATime" xml:space="preserve">
+		<value>1 ενεργό πρόγραμμα τη φορά</value>
+	</data>
+	<data name="PeriodForever" xml:space="preserve">
+		<value>για πάντα</value>
 	</data>
 </root>

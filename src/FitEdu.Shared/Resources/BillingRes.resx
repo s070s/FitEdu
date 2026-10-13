@@ -150,4 +150,10 @@
 	<data name="TxType_Expired" xml:space="preserve">
 		<value>Expired</value>
 	</data>
+	<data name="OneCourse" xml:space="preserve">
+		<value>1 active course</value>
+	</data>
+	<data name="PlanActive" xml:space="preserve">
+		<value>Active</value>
+	</data>
 </root>

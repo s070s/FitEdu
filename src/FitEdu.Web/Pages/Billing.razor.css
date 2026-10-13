@@ -170,6 +170,8 @@
     border-radius: 4px;
     margin-right: 0.4rem;
     text-transform: uppercase;
+    /* Long Greek labels ("ΑΝΑΒΑΘΜΙΣΗ") must not break mid-word in the phone card view. */
+    white-space: nowrap;
 }
 
 .tx-type-purchase {

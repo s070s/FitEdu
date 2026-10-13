@@ -95,6 +95,38 @@ public class PricingPageTests : BunitContext
             list.TextContent.Contains(PricingRes.FeatureExerciseLibrary) && list.TextContent.Contains(PricingRes.FeatureLiveClasses));
     }
 
+    [Theory]
+    [InlineData("en-GB")]
+    [InlineData("el-GR")]
+    public void FreeCard_NamesItsSingleCourseInTheSingular(string cultureName)
+    {
+        UseCulture(cultureName);
+
+        var page = Render<Pricing>();
+
+        page.WaitForAssertion(() => page.FindAll(".plan-card").Count.ShouldBe(3));
+        var limitRows = page.FindAll(".plan-card .plan-features")
+            .Select(list => list.QuerySelectorAll(".feature-item")[1].TextContent.Trim())
+            .ToList();
+        limitRows.ShouldBe([
+            PricingRes.OneCourseAtATime,
+            PricingRes.UpToCoursesFormat.Replace("{0}", "10", StringComparison.Ordinal),
+            PricingRes.UnlimitedCourses]);
+    }
+
+    [Fact]
+    public void FreeCard_ShowsAZeroPriceInsteadOfRepeatingItsName()
+    {
+        UseCulture("en-GB");
+
+        var page = Render<Pricing>();
+
+        page.WaitForAssertion(() => page.FindAll(".plan-card").Count.ShouldBe(3));
+        var freeCard = page.FindAll(".plan-card").Single(card => card.QuerySelector(".plan-name")!.TextContent == "Free");
+        freeCard.QuerySelector(".price-amount")!.TextContent.ShouldBe("€0.00");
+        freeCard.QuerySelector(".price-period")!.TextContent.ShouldBe(PricingRes.PeriodForever);
+    }
+
     [Fact]
     public void MissingFeature_IsCrossedOutWithHiddenNotIncludedText()
     {

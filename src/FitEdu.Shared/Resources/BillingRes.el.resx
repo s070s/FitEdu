@@ -150,4 +150,10 @@
 	<data name="TxType_Expired" xml:space="preserve">
 		<value>Λήξη</value>
 	</data>
+	<data name="OneCourse" xml:space="preserve">
+		<value>1 ενεργό πρόγραμμα</value>
+	</data>
+	<data name="PlanActive" xml:space="preserve">
+		<value>Ενεργό</value>
+	</data>
 </root>

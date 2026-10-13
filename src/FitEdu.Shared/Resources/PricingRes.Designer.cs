@@ -214,15 +214,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free.
-        /// </summary>
-        public static string PriceFree {
-            get {
-                return ResourceManager.GetString("PriceFree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Processing....
         /// </summary>
         public static string Processing {
@@ -250,7 +241,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Up to {0} active course(s) at a time.
+        ///   Looks up a localized string similar to Up to {0} active courses at a time.
         /// </summary>
         public static string UpToCoursesFormat {
             get {
@@ -390,6 +381,24 @@ namespace FitEdu.Shared.Resources {
         public static string Footnote {
             get {
                 return ResourceManager.GetString("Footnote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 active course at a time.
+        /// </summary>
+        public static string OneCourseAtATime {
+            get {
+                return ResourceManager.GetString("OneCourseAtATime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to forever.
+        /// </summary>
+        public static string PeriodForever {
+            get {
+                return ResourceManager.GetString("PeriodForever", resourceCulture);
             }
         }
     }

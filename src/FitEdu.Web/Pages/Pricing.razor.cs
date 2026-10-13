@@ -3,6 +3,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Web.Extensions;
 using System.Globalization;
 
 namespace FitEdu.Web.Pages;
@@ -25,8 +26,9 @@ public partial class Pricing
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
-    /// <summary>A plan whose MaxCourses reaches this counts as unlimited (Pro stores int.MaxValue).</summary>
-    private const int UnlimitedCoursesThreshold = 1000;
+    /// <summary>The second line of every plan card: how many courses can run at once.</summary>
+    private static string CourseLimitLabel(int maxCourses) =>
+        CourseLimitText.Describe(maxCourses, PricingRes.UnlimitedCourses, PricingRes.OneCourseAtATime, PricingRes.UpToCoursesFormat);
 
     /// <summary>A tick for an included feature, a cross for one the plan lacks.</summary>
     private static string FeatureIcon(bool included) => included ? "bi-check-lg" : "bi-x-lg";

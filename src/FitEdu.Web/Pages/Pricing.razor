@@ -49,15 +49,8 @@
                     }
                     <h2 class="plan-name" id="plan-name-@plan.Id">@plan.Name</h2>
                     <div class="plan-price">
-                        @if (plan.Price == 0)
-                        {
-                            <span class="price-amount">@PricingRes.PriceFree</span>
-                        }
-                        else
-                        {
-                            <span class="price-amount">@MoneyFormatter.Format(plan.Price)</span>
-                            <span class="price-period">@PeriodLabel(plan.BillingPeriod)</span>
-                        }
+                        <span class="price-amount">@MoneyFormatter.Format(plan.Price)</span>
+                        <span class="price-period">@(plan.Price == 0 ? PricingRes.PeriodForever : PeriodLabel(plan.BillingPeriod))</span>
                     </div>
                     <p class="plan-description">@plan.Description</p>
 
@@ -70,7 +63,7 @@
                             </li>
                             <li class="feature-item">
                                 <span class="feature-icon bi bi-check-lg" aria-hidden="true"></span>
-                                <span>@(plan.Features.MaxCourses >= UnlimitedCoursesThreshold ? PricingRes.UnlimitedCourses : string.Format(PricingRes.UpToCoursesFormat, plan.Features.MaxCourses))</span>
+                                <span>@CourseLimitLabel(plan.Features.MaxCourses)</span>
                             </li>
                             <li class="feature-item">
                                 <span class="feature-icon bi bi-check-lg" aria-hidden="true"></span>

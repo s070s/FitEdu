@@ -29,7 +29,7 @@
                     <div class="plan-name-row">
                         <span class="plan-name">@_overview.CurrentSubscription?.PlanName</span>
                         <span class="tier-badge chip @TierChipClass(_overview.CurrentSubscription?.Tier)">
-                            @_overview.CurrentSubscription?.Tier
+                            <span class="bi bi-check-circle-fill" aria-hidden="true"></span>@BillingRes.PlanActive
                         </span>
                     </div>
 
@@ -58,9 +58,7 @@
                     {
                         <div class="plan-features-summary">
                             <span class="feature-tag chip"><span class="bi bi-check-lg" aria-hidden="true"></span>
-                                @(_overview.CurrentSubscription.Features.MaxCourses >= 1000
-                                    ? BillingRes.UnlimitedCourses
-                                    : string.Format(BillingRes.CoursesCountFormat, _overview.CurrentSubscription.Features.MaxCourses))
+                                @CourseLimitLabel(_overview.CurrentSubscription.Features.MaxCourses)
                             </span>
                             @if (_overview.CurrentSubscription.Features.AssessmentAccess)
                             {

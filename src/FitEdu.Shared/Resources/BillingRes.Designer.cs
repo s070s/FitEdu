@@ -392,5 +392,23 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("TxType_Expired", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 active course.
+        /// </summary>
+        public static string OneCourse {
+            get {
+                return ResourceManager.GetString("OneCourse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string PlanActive {
+            get {
+                return ResourceManager.GetString("PlanActive", resourceCulture);
+            }
+        }
     }
 }

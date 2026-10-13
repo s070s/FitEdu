@@ -57,14 +57,11 @@
 	<data name="MostPopular" xml:space="preserve">
 		<value>Most Popular</value>
 	</data>
-	<data name="PriceFree" xml:space="preserve">
-		<value>Free</value>
-	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
 		<value>Unlimited active courses</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Up to {0} active course(s) at a time</value>
+		<value>Up to {0} active courses at a time</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
 		<value>Fitness self-assessments</value>
@@ -149,5 +146,11 @@
 	</data>
 	<data name="Footnote" xml:space="preserve">
 		<value>The exercise library and live classes are open to every member. Switch or cancel any time.</value>
+	</data>
+	<data name="OneCourseAtATime" xml:space="preserve">
+		<value>1 active course at a time</value>
+	</data>
+	<data name="PeriodForever" xml:space="preserve">
+		<value>forever</value>
 	</data>
 </root>
