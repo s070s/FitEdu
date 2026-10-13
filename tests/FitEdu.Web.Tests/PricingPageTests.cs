@@ -6,6 +6,7 @@ using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -19,6 +20,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class PricingPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
 
     public PricingPageTests()
@@ -150,5 +154,11 @@ public class PricingPageTests : BunitContext
 
         page.WaitForAssertion(() => page.Find(".plan-featured .plan-name").TextContent.ShouldBe("Pro"));
         page.Find(".plan-featured .plan-badge").TextContent.ShouldContain(PricingRes.MostPopular);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

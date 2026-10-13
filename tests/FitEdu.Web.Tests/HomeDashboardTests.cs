@@ -23,6 +23,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class HomeDashboardTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid CurrentCourseId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     private static readonly Guid NextLessonId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
@@ -225,4 +228,10 @@ public class HomeDashboardTests : BunitContext
             ]),
         ],
         RequiredTier: SubscriptionTier.Free);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

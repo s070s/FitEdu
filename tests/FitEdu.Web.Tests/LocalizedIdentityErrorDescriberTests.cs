@@ -1,7 +1,7 @@
-using System.Globalization;
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.DTOs;
+using FitEdu.TestSupport;
 using FitEdu.Web.Services;
 using Shouldly;
 using Xunit;
@@ -21,8 +21,7 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
     [Fact]
     public void English_PasswordRulesAndEmailErrors()
     {
-        CultureInfo.CurrentCulture = new CultureInfo("en-GB");
-        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+        using var cultureScope = new CultureScope("en-GB");
 
         _describer.PasswordTooShort(8).Description.ShouldBe("Your password needs at least 8 characters.");
         _describer.PasswordRequiresDigit().Description.ShouldBe("Your password needs at least one digit (0-9).");
@@ -37,8 +36,7 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
     [Fact]
     public void Greek_PasswordRulesAndEmailErrors()
     {
-        CultureInfo.CurrentCulture = new CultureInfo("el-GR");
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         _describer.PasswordTooShort(8).Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον 8 χαρακτήρες.");
         _describer.PasswordRequiresDigit().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον ένα ψηφίο (0-9).");
@@ -62,7 +60,7 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
     public async Task ApiRegister_FromAGreekPage_AnswersWithGreekPasswordErrors()
     {
         // The page's loopback client sends the Greek UI language, so the API's Identity errors are Greek.
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
         var client = _factory.Services.GetRequiredService<IHttpClientFactory>().CreateClient("SelfClient");
         var request = new RegisterRequestDto
         {

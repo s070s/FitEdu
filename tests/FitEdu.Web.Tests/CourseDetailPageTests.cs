@@ -3,6 +3,7 @@ using Bunit;
 using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class CourseDetailPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid CourseId = Guid.Parse("0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0");
 
     private readonly ICourseConsumer _courseService = Substitute.For<ICourseConsumer>();
@@ -420,4 +424,10 @@ public class CourseDetailPageTests : BunitContext
         int exerciseCount = 0,
         ContentType contentType = ContentType.Text) =>
         new(Guid.NewGuid(), title, (int)contentType, minutes, SortOrder: 1, IsCompleted: false, exerciseCount);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

@@ -129,7 +129,7 @@ public partial class CertificateServiceTests
         var svc = NewService(db, storage);
         var cert = await svc.GetOrCreateAsync(userId, course.Id);
         // The PDF is printed in the request's language; pin English so the title check below holds on any machine.
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         var withPdf = await svc.EnsurePdfAsync(cert.Id);
 
@@ -152,7 +152,7 @@ public partial class CertificateServiceTests
         await db.SaveChangesAsync();
         var storage = Substitute.For<IFileStorage>();
         storage.FileExists("certificates/old.pdf").Returns(true);
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         var result = await NewService(db, storage).EnsurePdfAsync(cert.Id);
 
@@ -171,9 +171,9 @@ public partial class CertificateServiceTests
         var storage = StorageThatSavesUnderTheRequestedName();
         var service = NewService(db, storage);
 
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
         await service.EnsurePdfAsync(cert.Id);
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("el");
+        using var greekCultureScope = new CultureScope("el");
         var result = await service.EnsurePdfAsync(cert.Id);
 
         result.PdfPath.ShouldBe($"certificates/{cert.VerificationId}.en.pdf");
@@ -191,7 +191,7 @@ public partial class CertificateServiceTests
         await db.SaveChangesAsync();
         var storage = StorageThatSavesUnderTheRequestedName();
         var service = NewService(db, storage);
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         var first = await service.EnsurePdfAsync(cert.Id);
         storage.FileExists(first.PdfPath!).Returns(true);
@@ -210,7 +210,7 @@ public partial class CertificateServiceTests
         db.Certificates.Add(cert);
         await db.SaveChangesAsync();
         var storage = StorageThatSavesUnderTheRequestedName();
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         var result = await NewService(db, storage).EnsurePdfAsync(cert.Id);
 

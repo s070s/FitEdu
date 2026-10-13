@@ -52,7 +52,7 @@ public class ExerciseLabelsTests
     [InlineData("el", "Κάτω πλάτη")]
     public void Muscle_MultiWordValue_ReturnsTheLabelOfTheCurrentLanguage(string culture, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         ExerciseLabels.Muscle("lower back").ShouldBe(expected);
     }
@@ -62,7 +62,7 @@ public class ExerciseLabelsTests
     [InlineData("el", "Μπάρα E-Z")]
     public void Equipment_HyphenatedValue_ReturnsTheLabelOfTheCurrentLanguage(string culture, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         ExerciseLabels.Equipment("e-z curl bar").ShouldBe(expected);
     }
@@ -70,7 +70,7 @@ public class ExerciseLabelsTests
     [Fact]
     public void Category_GreekCulture_ReturnsGreekLabel()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         ExerciseLabels.Category("olympic weightlifting").ShouldBe("Ολυμπιακή άρση βαρών");
     }
@@ -78,7 +78,7 @@ public class ExerciseLabelsTests
     [Fact]
     public void Label_UnknownValue_FallsBackToTheRawValue()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         ExerciseLabels.Equipment("suspension trainer").ShouldBe("suspension trainer");
     }

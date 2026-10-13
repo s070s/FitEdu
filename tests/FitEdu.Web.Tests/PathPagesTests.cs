@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -19,6 +20,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class PathPagesTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid PathId = Guid.Parse("3c1f2a9e-5b7d-4e8a-9c0b-1d2e3f4a5b6c");
     private static readonly Guid FirstCourseId = Guid.Parse("a1000000-0000-0000-0000-000000000001");
     private static readonly Guid SecondCourseId = Guid.Parse("a1000000-0000-0000-0000-000000000002");
@@ -244,4 +248,10 @@ public class PathPagesTests : BunitContext
 
     private static LearningPathStepDto Step(Guid courseId, int order, bool isCompleted = false, bool isLocked = false, bool isNext = false) =>
         new(courseId, $"Course {order}", order, isCompleted, isLocked, isNext);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

@@ -1,6 +1,6 @@
-using System.Globalization;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
@@ -19,7 +19,7 @@ public class CourseLabelsTests
     [Fact]
     public void Greek_EveryLevelAndGoal_HasAGreekLabel()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         var levelLabels = Enum.GetValues<CourseLevel>().Select(CourseLabels.Level);
         var goalLabels = Enum.GetValues<FitnessGoal>().Select(CourseLabels.Goal);
@@ -32,7 +32,7 @@ public class CourseLabelsTests
     [InlineData("el", CourseLevel.Beginner, "Αρχάριο")]
     public void Level_ReturnsTheLabelOfTheCurrentLanguage(string culture, CourseLevel level, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         CourseLabels.Level(level).ShouldBe(expected);
     }
@@ -42,7 +42,7 @@ public class CourseLabelsTests
     [InlineData("el", FitnessGoal.FatLoss, "Απώλεια λίπους")]
     public void Goal_ReturnsTheLabelOfTheCurrentLanguage(string culture, FitnessGoal goal, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         CourseLabels.Goal(goal).ShouldBe(expected);
     }
@@ -52,7 +52,7 @@ public class CourseLabelsTests
     [InlineData("el", "dumbbells, mat", "Αλτήρες|Στρωματάκι")]
     public void EquipmentList_LabelsEveryStoredCodeInOrder(string culture, string equipment, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         string.Join("|", CourseLabels.EquipmentList(equipment)).ShouldBe(expected);
     }
@@ -69,7 +69,7 @@ public class CourseLabelsTests
     [Fact]
     public void Equipment_UnknownCode_IsShownAsItIs()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         CourseLabels.Equipment("rowing machine").ShouldBe("rowing machine");
     }
@@ -77,7 +77,7 @@ public class CourseLabelsTests
     [Fact]
     public void Greek_EveryEquipmentCode_HasAGreekLabel()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         // "kettlebell" is the one code Greek also writes in Latin letters.
         var labels = Course.EquipmentCodes.Where(code => code != "kettlebell").Select(CourseLabels.Equipment);
@@ -92,7 +92,7 @@ public class CourseLabelsTests
     [InlineData("en", " ", "")]
     public void Equipment_ReturnsTheLabelOrTheCodeItself(string culture, string code, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         CourseLabels.Equipment(code).ShouldBe(expected);
     }
@@ -105,8 +105,7 @@ public class CourseLabelsTests
     [InlineData("el", 1, 2, "1 εβδομάδα · 2× την εβδομάδα")]
     public void Schedule_JoinsTheWeeksAndSessionsInThePageLanguage(string culture, int? weeks, int? sessions, string expected)
     {
-        CultureInfo.CurrentCulture = new CultureInfo(culture);
-        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        using var cultureScope = new CultureScope(culture);
 
         CourseLabels.Schedule(weeks, sessions).ShouldBe(expected);
     }

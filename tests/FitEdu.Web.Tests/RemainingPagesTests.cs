@@ -7,6 +7,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
@@ -21,6 +22,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class RemainingPagesTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private static readonly Guid ValidId = Guid.NewGuid();
     private static readonly Guid RevokedId = Guid.NewGuid();
     private static readonly Guid UnreachableId = Guid.NewGuid();
@@ -122,11 +126,20 @@ public class RemainingPagesTests : BunitContext
         page.Find(".completion-rate").TextContent.ShouldContain("33%");
         page.FindAll(".completion-rate").Count.ShouldBe(1, "a course nobody enrolled in shows a dash, not a bar");
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }
 
 /// <summary>The course editor's level and goal pickers show translated labels but still post the enum names.</summary>
 public class AdminCourseEditLabelTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     public AdminCourseEditLabelTests()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el");
@@ -181,6 +194,12 @@ public class AdminCourseEditLabelTests : BunitContext
 
         page.Find("#course-title-el").GetAttribute("lang").ShouldBe("el");
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }
 
 /// <summary>Placeholders of the English and Greek content columns follow the column, not the admin's UI language.</summary>
@@ -191,21 +210,13 @@ public class ContentLanguageTextTests
     [InlineData("el")]
     public void Placeholders_FollowTheContentLanguage_WhateverTheUiLanguage(string uiCulture)
     {
-        // Restored afterwards so the UI language does not leak into tests that run next on this thread.
-        var originalUiCulture = CultureInfo.CurrentUICulture;
-        CultureInfo.CurrentUICulture = new CultureInfo(uiCulture);
-        try
-        {
-            var english = ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder));
-            var greek = ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder));
+        using var cultureScope = new CultureScope(uiCulture);
 
-            english.ShouldBe("Article title");
-            greek.ShouldBe("Τίτλος άρθρου");
-        }
-        finally
-        {
-            CultureInfo.CurrentUICulture = originalUiCulture;
-        }
+        var english = ContentLanguageText.English(nameof(AdminRes.BlogTitlePlaceholder));
+        var greek = ContentLanguageText.Greek(nameof(AdminRes.BlogTitlePlaceholder));
+
+        english.ShouldBe("Article title");
+        greek.ShouldBe("Τίτλος άρθρου");
     }
 
     [Fact]

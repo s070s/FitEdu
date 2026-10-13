@@ -6,6 +6,7 @@ using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -20,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class HomeLandingTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string HomeRazorPath = "src/FitEdu.Web/Pages/Home.razor";
 
     private readonly ITestimonialConsumer _testimonialConsumer = Substitute.For<ITestimonialConsumer>();
@@ -241,5 +245,11 @@ public class HomeLandingTests : BunitContext
     {
         CultureInfo.CurrentCulture = new CultureInfo(culture);
         CultureInfo.CurrentUICulture = new CultureInfo(culture);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

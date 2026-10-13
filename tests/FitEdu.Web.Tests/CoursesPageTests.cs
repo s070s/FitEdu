@@ -3,6 +3,7 @@ using Bunit;
 using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Microsoft.AspNetCore.Components;
@@ -21,6 +22,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class CoursesPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const int CoursesOnPage = 3;
 
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
@@ -366,4 +370,10 @@ public class CoursesPageTests : BunitContext
 
     private static UserSubscriptionStatusDto Status(SubscriptionTier tier, int maxCourses) =>
         new(tier, tier.ToString(), DateTime.UtcNow, null, true, new PlanFeaturesDto { MaxCourses = maxCourses });
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

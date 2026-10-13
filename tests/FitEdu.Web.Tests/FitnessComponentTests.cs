@@ -21,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class FitnessComponentTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string StartUrl = "/images/exercises/bodyweight-squat/0.webp";
     private const string EndUrl = "/images/exercises/bodyweight-squat/1.webp";
 
@@ -536,4 +539,10 @@ public class FitnessComponentTests : BunitContext
         StartUrl,
         EndUrl,
         Instructions: ["Stand tall with your feet shoulder-width apart.", "Sit back and down, then stand up."]);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

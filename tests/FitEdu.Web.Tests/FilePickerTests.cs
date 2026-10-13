@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Shared.Components.Forms;
 using Shouldly;
 using Xunit;
@@ -16,6 +17,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class FilePickerTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string PickerId = "avatar";
 
     public FilePickerTests()
@@ -87,5 +91,11 @@ public class FilePickerTests : BunitContext
         var input = picker.Find("input[type=file]");
         input.HasAttribute("disabled").ShouldBeTrue();
         input.GetAttribute("accept").ShouldBe("image/*");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

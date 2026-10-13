@@ -1,7 +1,7 @@
-using System.Globalization;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
+using FitEdu.TestSupport;
 
 namespace FitEdu.Web.Tests;
 
@@ -14,7 +14,7 @@ public class AdminTextTests
     [Fact]
     public void Pick_GreekUiWithGreekValue_ReturnsGreek()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         AdminText.Pick("Strength 101", "Δύναμη 101").ShouldBe("Δύναμη 101");
     }
@@ -25,7 +25,7 @@ public class AdminTextTests
     [InlineData("   ")]
     public void Pick_GreekUiWithoutGreekValue_ReturnsEnglish(string? greek)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         AdminText.Pick("Strength 101", greek).ShouldBe("Strength 101");
     }
@@ -33,7 +33,7 @@ public class AdminTextTests
     [Fact]
     public void Pick_EnglishUi_ReturnsEnglishEvenWhenGreekIsSet()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+        using var cultureScope = new CultureScope("en-GB");
 
         AdminText.Pick("Strength 101", "Δύναμη 101").ShouldBe("Strength 101");
     }
@@ -41,7 +41,7 @@ public class AdminTextTests
     [Fact]
     public void Pick_NoValueInEitherLanguage_ReturnsNull()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         AdminText.Pick(null, null).ShouldBeNull();
     }

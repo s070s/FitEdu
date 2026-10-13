@@ -2,6 +2,7 @@ using System.Globalization;
 using Bunit;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Microsoft.AspNetCore.Components;
@@ -20,6 +21,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class ExercisePagesTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string Slug = "barbell-squat";
 
     private static readonly ExerciseFacetsDto Facets = new(
@@ -338,4 +342,10 @@ public class ExercisePagesTests : BunitContext
         Guid.NewGuid(), Slug, "Barbell squat", "strength", "beginner", "barbell", ["quadriceps"],
         $"/images/exercises/{Slug}/0.webp", $"/images/exercises/{Slug}/1.webp",
         SecondaryMuscles: ["glutes", "hamstrings"], Force: "push", Mechanic: "compound", instructions);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +25,7 @@ public class AcceptLanguageHandlerTests : IClassFixture<CustomWebAppFactory>
     [Fact]
     public async Task Handler_SendsTheCurrentUiLanguage()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
         var recorder = OkResponder();
         using var client = new HttpClient(new AcceptLanguageHandler { InnerHandler = recorder });
 
@@ -38,7 +37,7 @@ public class AcceptLanguageHandlerTests : IClassFixture<CustomWebAppFactory>
     [Fact]
     public async Task Handler_KeepsALanguageTheCallerSetItself()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
         var recorder = OkResponder();
         using var client = new HttpClient(new AcceptLanguageHandler { InnerHandler = recorder });
         using var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/thing");
@@ -56,7 +55,7 @@ public class AcceptLanguageHandlerTests : IClassFixture<CustomWebAppFactory>
         using var app = _factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             services.ConfigureAll<HttpClientFactoryOptions>(options =>
                 options.HttpMessageHandlerBuilderActions.Add(handlerBuilder => handlerBuilder.PrimaryHandler = recorder))));
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
         var client = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient("SelfClient");
 
         await client.GetAsync("api/thing");

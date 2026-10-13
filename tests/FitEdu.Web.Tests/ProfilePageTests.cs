@@ -9,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
@@ -24,6 +25,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class ProfilePageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private readonly IProfileConsumer _profileConsumer = Substitute.For<IProfileConsumer>();
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
     private readonly ICertificateConsumer _certificateConsumer = Substitute.For<ICertificateConsumer>();
@@ -198,5 +202,11 @@ public class ProfilePageTests : BunitContext
         alert.TextContent.ShouldContain(ProfileRes.ErrorUpdatingProfile);
         alert.ClassList.ShouldContain("alert-danger");
         alert.ClassList.ShouldNotContain("alert-info");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

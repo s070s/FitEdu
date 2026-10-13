@@ -5,6 +5,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.TestSupport;
 using FitEdu.Web.Pages;
 using FitEdu.Web.Services;
 using FitEdu.Web.Shared.Components.Data;
@@ -26,6 +27,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class AuthAndSiteChromeTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const string ValidPassword = "Password1";
     private const string RegisterEmail = "maria@fitedu.local";
 
@@ -303,5 +307,11 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("#password").Change(ValidPassword);
         page.Find("#confirmPassword").Change(ValidPassword);
         page.Find("#gdprConsent").Change(true);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
     }
 }

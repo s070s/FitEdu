@@ -6,6 +6,7 @@ using NSubstitute;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Web.Pages;
@@ -22,6 +23,9 @@ namespace FitEdu.Web.Tests;
 /// </summary>
 public class SessionsPageTests : BunitContext
 {
+    // The tests switch culture; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new();
+
     private const int MiddayHour = 12;
     private const int DaysAhead = 5;
 
@@ -129,4 +133,10 @@ public class SessionsPageTests : BunitContext
     private static ScheduledSessionListItemDto Session(string title, DateTimeOffset startsAt) => new(
         Guid.NewGuid(), title, "Coach Maria", null, startsAt.ToUniversalTime(), 45, 6, 2, "Scheduled",
         IsHost: false, IsRegistered: false, CallSessionId: null, OtherParticipantUserIds: ["other-user"]);
+
+    protected override void Dispose(bool disposing)
+    {
+        _cultureScope.Dispose();
+        base.Dispose(disposing);
+    }
 }

@@ -1,6 +1,6 @@
-using System.Globalization;
 using FitEdu.Application.Common;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
 
@@ -14,7 +14,7 @@ public class TierLabelsTests
     [InlineData(SubscriptionTier.Pro, "Pro")]
     public void English_NamesEveryTier(SubscriptionTier tier, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+        using var cultureScope = new CultureScope("en-GB");
 
         TierLabels.Name(tier).ShouldBe(expected);
     }
@@ -25,7 +25,7 @@ public class TierLabelsTests
     [InlineData(SubscriptionTier.Pro, "Pro")]
     public void Greek_TranslatesFree_AndKeepsThePlanBrands(SubscriptionTier tier, string expected)
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         TierLabels.Name(tier).ShouldBe(expected);
     }

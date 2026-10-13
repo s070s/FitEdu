@@ -1,12 +1,12 @@
-using System.Globalization;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Infrastructure.Configuration;
+using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
 
 namespace FitEdu.Infrastructure.Tests;
 
-public class SmtpEmailServiceTests
+public sealed class SmtpEmailServiceTests : IDisposable
 {
     // A link with a query string: the HTML body must encode the "&", the text body keeps it raw.
     private const string ConfirmationLink = "https://fitedu.test/confirm-email?userId=u1&token=abc";
@@ -18,7 +18,8 @@ public class SmtpEmailServiceTests
     };
 
     // The email language follows the UI culture of the sending request; English unless a test says otherwise.
-    public SmtpEmailServiceTests() => CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+    // Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new("en-GB");
 
     [Fact]
     public void BuildMessage_EmailConfirmation_IsTheFitnessWelcomeWithTheLink()
@@ -51,7 +52,7 @@ public class SmtpEmailServiceTests
     [Fact]
     public void BuildMessage_EmailConfirmation_InGreek_IsTheGreekWelcomeWithTheLink()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         var message = SmtpEmailService.BuildMessage(
             Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink));
@@ -69,7 +70,7 @@ public class SmtpEmailServiceTests
     [Fact]
     public void BuildMessage_PasswordReset_InGreek_IsTheGreekResetWithTheLink()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         var message = SmtpEmailService.BuildMessage(
             Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink));
@@ -89,4 +90,6 @@ public class SmtpEmailServiceTests
         content.HtmlBody.ShouldNotContain("<script>");
         content.HtmlBody.ShouldContain("&quot;&gt;&lt;script&gt;", Case.Sensitive);
     }
+
+    public void Dispose() => _cultureScope.Dispose();
 }

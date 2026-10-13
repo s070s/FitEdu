@@ -1,5 +1,5 @@
-using System.Globalization;
 using FitEdu.Application.DTOs;
+using FitEdu.TestSupport;
 using FitEdu.Web.Services;
 using Shouldly;
 using Xunit;
@@ -18,7 +18,7 @@ public class NotificationMessageFormatterTests
     [Fact]
     public void Greek_WithBothTitles_ShowsTheGreekTitle()
     {
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         var text = NotificationMessageFormatter.Format(Notification("CertificateIssued", "Strength Foundations", "Θεμέλια Δύναμης"));
 
@@ -31,7 +31,7 @@ public class NotificationMessageFormatterTests
     [InlineData("SessionReminder")]
     public void Greek_WithOnlyTheEnglishTitle_FallsBackToIt(string titleKey)
     {
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         var text = NotificationMessageFormatter.Format(Notification(titleKey, "Strength Foundations"));
 
@@ -42,7 +42,7 @@ public class NotificationMessageFormatterTests
     [Fact]
     public void English_WithBothTitles_ShowsTheEnglishTitle()
     {
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+        using var cultureScope = new CultureScope("en");
 
         var text = NotificationMessageFormatter.Format(Notification("ReviewApproved", "Strength Foundations", "Θεμέλια Δύναμης"));
 
@@ -52,7 +52,7 @@ public class NotificationMessageFormatterTests
     [Fact]
     public void Greek_SessionReminderWithBothTitles_ShowsTheGreekTitle()
     {
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("el");
+        using var cultureScope = new CultureScope("el");
 
         var text = NotificationMessageFormatter.Format(Notification("SessionReminder", "Mobility Class", "Μάθημα κινητικότητας"));
 

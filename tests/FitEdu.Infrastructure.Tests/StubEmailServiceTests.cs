@@ -1,4 +1,3 @@
-using System.Globalization;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.TestSupport;
 using Shouldly;
@@ -6,13 +5,14 @@ using Xunit;
 
 namespace FitEdu.Infrastructure.Tests;
 
-public class StubEmailServiceTests
+public sealed class StubEmailServiceTests : IDisposable
 {
     private readonly RecordingLogger<StubEmailService> _logger = new();
 
-    private StubEmailService NewService() => new(_logger);
+    // English unless a test says otherwise; Dispose puts the runner's cultures back.
+    private readonly CultureScope _cultureScope = new("en-GB");
 
-    public StubEmailServiceTests() => CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+    private StubEmailService NewService() => new(_logger);
 
     [Fact]
     public async Task SendEmailConfirmation_LogsTheWelcomeSubjectAndTheLink()
@@ -39,7 +39,7 @@ public class StubEmailServiceTests
     [Fact]
     public async Task SendEmailConfirmation_InGreek_LogsTheGreekSubject()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm");
 
@@ -49,10 +49,12 @@ public class StubEmailServiceTests
     [Fact]
     public async Task SendPasswordReset_InGreek_LogsTheGreekSubject()
     {
-        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        using var cultureScope = new CultureScope("el-GR");
 
         await NewService().SendPasswordResetAsync("u@x.com", "https://reset");
 
         _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού σου στο FitEdu", Case.Sensitive);
     }
+
+    public void Dispose() => _cultureScope.Dispose();
 }
