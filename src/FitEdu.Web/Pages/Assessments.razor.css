@@ -34,7 +34,9 @@
     font-weight: 600;
 }
 
+/* Slightly wider cards than the shared grid (3 per row on desktop) so the meta row stays on one line. */
 .assessments-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
     margin-top: var(--space-4);
     margin-bottom: var(--space-5);
 }
