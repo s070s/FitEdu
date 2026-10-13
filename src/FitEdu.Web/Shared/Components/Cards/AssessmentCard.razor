@@ -1,0 +1,66 @@
+@using FitEdu.Web.Extensions
+@* Catalogue card for one self-check: category icon tile, category and completed chips, title,
+   clamped description, then the question count, the estimated time and a start (or retake) cue.
+   The title link is stretched over the whole card. *@
+
+<article class="assessment-card card-surface card-surface--interactive @(IsCompleted ? "assessment-card--completed" : "")">
+    <div class="card-surface__body assessment-card__body">
+        <div class="assessment-card__head">
+            <span class="assessment-card__icon" aria-hidden="true">
+                <span class="bi @CategoryIcons.For(Assessment.CategoryName)"></span>
+            </span>
+            <div class="assessment-card__chips">
+                @if (Assessment.CategoryName is not null)
+                {
+                    <span class="chip chip--teal">@Assessment.CategoryName</span>
+                }
+                @if (IsCompleted)
+                {
+                    <span class="chip chip--lime">
+                        <span class="bi bi-check2-circle" aria-hidden="true"></span>
+                        @AssessmentRes.CompletedBadge
+                    </span>
+                }
+            </div>
+        </div>
+
+        <h3 class="assessment-card__title">
+            <a class="assessment-card__link stretched-link" href="@AssessmentUrl">@Assessment.Title</a>
+        </h3>
+
+        @if (!string.IsNullOrWhiteSpace(Assessment.Description))
+        {
+            <div class="assessment-card__description line-clamp-3">@((MarkupString)Assessment.Description)</div>
+        }
+
+        <div class="assessment-card__meta card-surface__meta">
+            <span class="assessment-card__fact">
+                <span class="bi bi-list-check" aria-hidden="true"></span>
+                @string.Format(AssessmentRes.QuestionsCountFormat, _questionCount)
+            </span>
+            <span class="assessment-card__fact">
+                <span class="bi bi-stopwatch" aria-hidden="true"></span>
+                @string.Format(AssessmentRes.EstimatedMinutesFormat, AssessmentSchemaInfo.EstimatedMinutes(_questionCount))
+            </span>
+            <span class="assessment-card__start" aria-hidden="true">
+                @(IsCompleted ? AssessmentRes.Retake : AssessmentRes.Start) <span class="bi bi-arrow-right"></span>
+            </span>
+        </div>
+    </div>
+</article>
+
+@code {
+    private const string AssessmentUrlPrefix = "/assessments/";
+
+    [Parameter, EditorRequired] public AssessmentDefinitionDto Assessment { get; set; } = default!;
+
+    /// <summary>True when the member has already sent this self-check at least once.</summary>
+    [Parameter] public bool IsCompleted { get; set; }
+
+    private int _questionCount;
+
+    private string AssessmentUrl => AssessmentUrlPrefix + Assessment.Id;
+
+    protected override void OnParametersSet() =>
+        _questionCount = AssessmentSchemaInfo.CountQuestions(Assessment.SchemaJson);
+}

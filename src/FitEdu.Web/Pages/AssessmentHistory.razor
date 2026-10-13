@@ -1,75 +1,93 @@
 @page "/assessments/mine"
 @attribute [Authorize(Roles = "Student")]
 
-<h1 class="h3">@AssessmentRes.HistoryTitle</h1>
+<PageTitle>@AssessmentRes.HistoryTitle</PageTitle>
 
-@if (pagedResult == null)
-{
-    <LoadingSpinner Label="@AssessmentRes.Loading" />
-}
-else if (pagedResult.TotalCount == 0)
-{
-    <div class="alert alert-info">
-        <p>@AssessmentRes.NoSubmissionsMessage</p>
-        <a href="/assessments" class="btn btn-primary">@AssessmentRes.TakeAssessment</a>
-    </div>
-}
-else
-{
-    @if (latestSubmission != null)
-    {
-        <div class="card mb-4 border-primary">
-            <div class="card-header bg-primary text-white">
-                <h5>@AssessmentRes.LatestSubmission</h5>
-            </div>
-            <div class="card-body">
-                <h6 class="card-title">@latestSubmission.AssessmentTitle</h6>
-                <p class="text-light-muted">@AssessmentRes.SubmittedLabel @latestSubmission.SubmittedAt.ToLocalTime().ToString("g")</p>
-                <button class="btn btn-primary" @onclick="() => ViewSubmission(latestSubmission.Id)">@AssessmentRes.ViewDetails</button>
-            </div>
+<div class="page assessment-history-page">
+    <a class="assessment-history__back" href="/assessments">
+        <span class="bi bi-arrow-left" aria-hidden="true"></span> @AssessmentRes.AllAssessments
+    </a>
+
+    <header class="section-head assessment-history__head">
+        <div class="assessment-history__intro">
+            <span class="eyebrow">@AssessmentRes.AssessmentsEyebrow</span>
+            <h1>@AssessmentRes.HistoryTitle</h1>
+            <p>@AssessmentRes.HistoryIntro</p>
         </div>
+    </header>
+
+    @if (pagedResult == null)
+    {
+        <LoadingSpinner Label="@AssessmentRes.Loading" />
     }
+    else if (pagedResult.TotalCount == 0)
+    {
+        <EmptyState Icon="bi-clipboard2-pulse"
+                    Title="@AssessmentRes.NoSubmissionsMessage"
+                    ActionHref="/assessments"
+                    ActionLabel="@AssessmentRes.TakeAssessment" />
+    }
+    else
+    {
+        @if (latestSubmission != null)
+        {
+            <section class="latest-submission card-surface" aria-labelledby="latest-submission-title">
+                <div class="card-surface__body latest-submission__body">
+                    <span class="latest-submission__icon" aria-hidden="true"><span class="bi bi-clipboard2-check"></span></span>
+                    <div class="latest-submission__text">
+                        <span class="chip chip--lime">@AssessmentRes.LatestSubmission</span>
+                        <h2 id="latest-submission-title" class="latest-submission__title">@latestSubmission.AssessmentTitle</h2>
+                        <p class="latest-submission__meta">
+                            <span class="bi bi-calendar-check" aria-hidden="true"></span>
+                            @AssessmentRes.SubmittedLabel @latestSubmission.SubmittedAt.ToLocalTime().ToString("g")
+                        </p>
+                    </div>
+                    <button type="button" class="btn-cta btn-cta--ghost latest-submission__action" @onclick="() => ViewSubmission(latestSubmission.Id)">@AssessmentRes.ViewDetails</button>
+                </div>
+            </section>
+        }
 
-    <h4>@AssessmentRes.AllSubmissions</h4>
-    <ScrollableTable Items="pagedResult.Items" TItem="AssessmentSubmissionDto">
-        <HeaderRow>
-            <tr>
-                <SortableColumnHeader ColumnKey="title" Label="@AssessmentRes.AssessmentHeader"
-                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
-                                      OnSort="OnSort" />
-                <SortableColumnHeader ColumnKey="category" Label="@AssessmentRes.CategoryHeader"
-                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
-                                      OnSort="OnSort" />
-                <SortableColumnHeader ColumnKey="submittedat" Label="@AssessmentRes.SubmittedHeader"
-                                      CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
-                                      OnSort="OnSort" />
-                <th>@AssessmentRes.Actions</th>
-            </tr>
-        </HeaderRow>
-        <RowTemplate Context="submission">
-            <tr @key="submission.Id">
-                <td data-label="@AssessmentRes.AssessmentHeader">@submission.AssessmentTitle</td>
-                <td data-label="@AssessmentRes.CategoryHeader">@(submission.CategoryName ?? "—")</td>
-                <td data-label="@AssessmentRes.SubmittedHeader">@submission.SubmittedAt.ToLocalTime().ToString("g")</td>
-                <td data-label="@AssessmentRes.Actions">
-                    <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewSubmission(submission.Id)">@AssessmentRes.ViewButton</button>
-                </td>
-            </tr>
-        </RowTemplate>
-    </ScrollableTable>
+        <h2 class="assessment-history__subtitle">@AssessmentRes.AllSubmissions</h2>
+        <ScrollableTable Items="pagedResult.Items" TItem="AssessmentSubmissionDto">
+            <HeaderRow>
+                <tr>
+                    <SortableColumnHeader ColumnKey="title" Label="@AssessmentRes.AssessmentHeader"
+                                          CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                          OnSort="OnSort" />
+                    <SortableColumnHeader ColumnKey="category" Label="@AssessmentRes.CategoryHeader"
+                                          CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                          OnSort="OnSort" />
+                    <SortableColumnHeader ColumnKey="submittedat" Label="@AssessmentRes.SubmittedHeader"
+                                          CurrentSortBy="@_sortBy" CurrentSortDir="@_sortDir"
+                                          OnSort="OnSort" />
+                    <th>@AssessmentRes.Actions</th>
+                </tr>
+            </HeaderRow>
+            <RowTemplate Context="submission">
+                <tr @key="submission.Id">
+                    <td data-label="@AssessmentRes.AssessmentHeader">@submission.AssessmentTitle</td>
+                    <td data-label="@AssessmentRes.CategoryHeader">@(submission.CategoryName ?? "—")</td>
+                    <td data-label="@AssessmentRes.SubmittedHeader">@submission.SubmittedAt.ToLocalTime().ToString("g")</td>
+                    <td data-label="@AssessmentRes.Actions">
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewSubmission(submission.Id)">@AssessmentRes.ViewButton</button>
+                    </td>
+                </tr>
+            </RowTemplate>
+        </ScrollableTable>
 
-    <AdminPaginationToolbar CurrentPage="pagedResult.Page"
-                            TotalPages="pagedResult.TotalPages"
-                            TotalCount="pagedResult.TotalCount"
-                            PageSize="pagedResult.PageSize"
-                            HasPreviousPage="pagedResult.HasPreviousPage"
-                            HasNextPage="pagedResult.HasNextPage"
-                            PageSizeOptions="PageSizeOptions"
-                            ItemLabel="@AssessmentRes.SubmissionsItemLabel"
-                            OnPageSizeChanged="OnPageSizeChanged"
-                            OnPreviousPage="PreviousPage"
-                            OnNextPage="NextPage" />
-}
+        <AdminPaginationToolbar CurrentPage="pagedResult.Page"
+                                TotalPages="pagedResult.TotalPages"
+                                TotalCount="pagedResult.TotalCount"
+                                PageSize="pagedResult.PageSize"
+                                HasPreviousPage="pagedResult.HasPreviousPage"
+                                HasNextPage="pagedResult.HasNextPage"
+                                PageSizeOptions="PageSizeOptions"
+                                ItemLabel="@AssessmentRes.SubmissionsItemLabel"
+                                OnPageSizeChanged="OnPageSizeChanged"
+                                OnPreviousPage="PreviousPage"
+                                OnNextPage="NextPage" />
+    }
+</div>
 
 <FormModal IsVisible="@(selectedSubmission != null)"
            Title="@(selectedSubmission?.AssessmentTitle ?? "")"

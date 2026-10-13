@@ -1,1 +1,40 @@
 /* Pagination styles are in shared-components.css */
+.assessments-page {
+    padding-bottom: var(--space-6);
+}
+
+.assessments-head__text {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 40rem;
+}
+
+.assessments-head__text h1 {
+    margin: 0;
+}
+
+.assessments-head__intro {
+    margin: 0;
+    color: var(--text-light-normal);
+    text-wrap: pretty;
+}
+
+/* Ring and history link sit under the title on phones and to its right from tablet width. */
+.assessments-head__actions {
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+}
+
+.assessments-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.assessments-grid {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-5);
+}

@@ -8,6 +8,9 @@ public static class AssessmentQuestionTypes
     public const string Choice = "choice";
     public const string MultiSelect = "multiselect";
 
+    /// <summary>Read by the student form only; the editor does not offer it.</summary>
+    public const string Date = "date";
+
     /// <summary>
     /// Types that list options. "single-select" and "multi-select" are other spellings the student form reads.
     /// </summary>
@@ -16,6 +19,12 @@ public static class AssessmentQuestionTypes
 
     /// <summary>Types shown as a number scale; the student form treats "likert" like "rating".</summary>
     public static bool IsRatingScale(string type) => type is Rating or "likert";
+
+    /// <summary>One answer from a list; seeds write "choice", older schemas "single-select".</summary>
+    public static bool IsSingleChoice(string type) => type is Choice or "single-select";
+
+    /// <summary>Any number of answers from a list; seeds write "multiselect", older schemas "multi-select".</summary>
+    public static bool IsMultiSelect(string type) => type is MultiSelect or "multi-select";
 }
 
 /// <summary>An assessment schema as the admin editor holds it: a list of sections of questions.</summary>

@@ -1,98 +1,215 @@
 @page "/assessments/{AssessmentId:guid}"
 @attribute [Authorize(Roles = "Student")]
+@using FitEdu.Web.Extensions
 
-<h1>@assessment?.Title</h1>
+<PageTitle>@(assessment?.Title ?? AssessmentRes.AssessmentsPageTitle)</PageTitle>
 
-@if (_loading)
-{
-    <LoadingSpinner Label="@AssessmentRes.Loading" />
-}
-else if (_loadError is not null)
-{
-    <p class="text-danger">@_loadError</p>
-    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AssessmentRes.Back</button>
-}
-else if (submitted)
-{
-    <div class="alert alert-success">
-        <h4>@AssessmentRes.SubmittedTitle</h4>
-        <p>@AssessmentRes.SubmittedMessage</p>
-        <button class="btn btn-primary" @onclick="ViewHistory">@AssessmentRes.ViewSubmissions</button>
-    </div>
-}
-else
-{
-    <div class="assessment-description">@((MarkupString)(assessment!.Description ?? ""))</div>
+<div class="page assessment-form-page">
+    <a class="assessment-form__back" href="/assessments">
+        <span class="bi bi-arrow-left" aria-hidden="true"></span> @AssessmentRes.AllAssessments
+    </a>
 
-    <EditForm Model="@answers" OnValidSubmit="@HandleSubmit">
-        @if (questions != null)
+    <header class="assessment-form__head">
+        @if (assessment?.CategoryName is { } categoryName)
         {
-            @foreach (var question in questions)
+            <span class="chip chip--teal">
+                <span class="bi @CategoryIcons.For(categoryName)" aria-hidden="true"></span> @categoryName
+            </span>
+        }
+        <h1>@assessment?.Title</h1>
+    </header>
+
+    @if (_loading)
+    {
+        <LoadingSpinner Label="@AssessmentRes.Loading" />
+    }
+    else if (_loadError is not null)
+    {
+        <p class="text-danger" role="alert">@_loadError</p>
+        <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AssessmentRes.Back</button>
+    }
+    else if (submitted)
+    {
+        <section class="assessment-done card-surface" role="status">
+            <span class="assessment-done__icon" aria-hidden="true"><span class="bi bi-check2-circle"></span></span>
+            <h2 class="assessment-done__title">@AssessmentRes.SubmittedTitle</h2>
+            <p class="assessment-done__text">@AssessmentRes.SubmittedMessage</p>
+            <div class="assessment-done__actions">
+                <button type="button" class="btn-cta" @onclick="ViewHistory">@AssessmentRes.ViewSubmissions</button>
+                <a class="btn-cta btn-cta--ghost" href="/assessments">@AssessmentRes.AllAssessments</a>
+            </div>
+        </section>
+    }
+    else
+    {
+        <div class="assessment-description">@((MarkupString)(assessment!.Description ?? ""))</div>
+        <p class="assessment-form__facts">
+            <span><span class="bi bi-list-check" aria-hidden="true"></span> @string.Format(AssessmentRes.QuestionsCountFormat, QuestionCount)</span>
+            <span><span class="bi bi-stopwatch" aria-hidden="true"></span> @string.Format(AssessmentRes.EstimatedMinutesFormat, AssessmentSchemaInfo.EstimatedMinutes(QuestionCount))</span>
+            <span class="assessment-form__legend">@AssessmentRes.RequiredLegend</span>
+        </p>
+
+        <EditForm Model="@answers" OnValidSubmit="@HandleSubmit" class="assessment-form">
+            @for (var sectionIndex = 0; sectionIndex < _sections.Count; sectionIndex++)
             {
-                <div class="mb-3">
-                    <label class="form-label" for="@((question.Type is "text" or "choice" or "single-select" or "date") ? $"q-{question.Id}" : null)">
-                        <strong>@question.DisplayLabel</strong>
-                        @if (question.Required)
-                        {
-                            <span class="text-danger" aria-hidden="true"> *</span>
-                        }
-                    </label>
-                    @if (question.Type == "text")
+                var index = sectionIndex;
+                var section = _sections[index];
+                <section class="assessment-section @(index == _currentSection ? "is-active" : "")" @key="index"
+                         aria-labelledby="@(HasSteps ? $"assessment-section-{index}" : null)">
+                    @if (HasSteps)
                     {
-                        <input id="@($"q-{question.Id}")" type="text" class="form-control @(_missingRequiredIds.Contains(question.Id) ? "is-invalid" : "")" aria-required="@(question.Required ? "true" : "false")" @bind="answers[question.Id]" />
+                        <header class="assessment-section__head">
+                            <span class="assessment-section__step">@string.Format(AssessmentRes.SectionOfFormat, index + 1, _sections.Count)</span>
+                            <h2 class="assessment-section__title" id="@($"assessment-section-{index}")" tabindex="-1"
+                                @ref="_sectionHeadings[index]">@(section.Title ?? string.Format(AssessmentRes.SectionOfFormat, index + 1, _sections.Count))</h2>
+                        </header>
                     }
-                    else if (question.Type is "choice" or "single-select")
+                    @foreach (var question in section.Questions)
                     {
-                        <select id="@($"q-{question.Id}")" class="form-select @(_missingRequiredIds.Contains(question.Id) ? "is-invalid" : "")" aria-required="@(question.Required ? "true" : "false")" @bind="answers[question.Id]">
-                            <option value="">@AssessmentRes.SelectPlaceholder</option>
-                            @foreach (var option in question.Options ?? new List<string>())
+                        @RenderQuestion(question)
+                    }
+                </section>
+            }
+
+            @if (_submitError is not null)
+            {
+                <p class="assessment-form__error text-danger" role="alert">
+                    <span class="bi bi-exclamation-circle" aria-hidden="true"></span> @_submitError
+                </p>
+            }
+
+            <div class="assessment-stepper">
+                @{ var answeredText = string.Format(AssessmentRes.AnsweredCountFormat, AnsweredCount, QuestionCount); }
+                <ProgressRing Value="@AnsweredPercent" Size="44" Label="@AnsweredRingText" AriaLabel="@answeredText" />
+                <div class="assessment-stepper__status">
+                    @if (HasSteps)
+                    {
+                        <span class="assessment-stepper__section">@string.Format(AssessmentRes.SectionOfFormat, _currentSection + 1, _sections.Count)</span>
+                    }
+                    <span class="assessment-stepper__answered">@answeredText</span>
+                </div>
+                <div class="assessment-stepper__actions">
+                    @if (_currentSection > 0)
+                    {
+                        <button type="button" class="btn-cta btn-cta--ghost assessment-stepper__back"
+                                aria-label="@AssessmentRes.PreviousSection" title="@AssessmentRes.PreviousSection"
+                                @onclick="GoToPreviousSection">
+                            <span class="bi bi-arrow-left" aria-hidden="true"></span>
+                        </button>
+                    }
+                    @if (!IsLastSection)
+                    {
+                        <button type="button" class="btn-cta assessment-stepper__next" @onclick="GoToNextSection">
+                            @AssessmentRes.NextSection <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                        </button>
+                    }
+                    <button type="submit" class="btn-cta assessment-stepper__submit @(IsLastSection ? "" : "assessment-stepper__submit--early")"
+                            disabled="@isSubmitting">
+                        @AssessmentRes.SubmitAssessment
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private RenderFragment RenderQuestion(QuestionSchema question) => __builder =>
+    {
+        var isInvalid = _missingRequiredIds.Contains(question.Id);
+        var errorId = $"q-{question.Id}-error";
+        var describedBy = isInvalid ? errorId : null;
+
+        if (AssessmentQuestionTypes.IsSingleChoice(question.Type) || AssessmentQuestionTypes.IsMultiSelect(question.Type))
+        {
+            var isMulti = AssessmentQuestionTypes.IsMultiSelect(question.Type);
+            <fieldset class="question @(isInvalid ? "question--invalid" : "")" aria-describedby="@describedBy">
+                <legend class="question__label">@question.DisplayLabel @RequiredMarker(question)</legend>
+                <div class="choice-list">
+                    @for (var optionIndex = 0; optionIndex < (question.Options?.Count ?? 0); optionIndex++)
+                    {
+                        var option = question.Options![optionIndex];
+                        var inputId = $"q-{question.Id}-{optionIndex}";
+                        <label class="choice-option" for="@inputId">
+                            @if (isMulti)
                             {
-                                <option value="@option">@option</option>
+                                <input class="form-check-input choice-option__input" type="checkbox" id="@inputId"
+                                       checked="@IsOptionSelected(question.Id, option)"
+                                       @onchange="@(e => ToggleMultiSelect(question.Id, option, e.Value is true))" />
                             }
-                        </select>
-                    }
-                    else if (question.Type == "multi-select")
-                    {
-                        <div role="group" aria-label="@question.DisplayLabel">
-                        @foreach (var option in question.Options ?? new List<string>())
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@($"{question.Id}_{option}")"
-                                       @onchange="@(e => ToggleMultiSelect(question.Id, option, (bool)e.Value!))" />
-                                <label class="form-check-label" for="@($"{question.Id}_{option}")">@option</label>
-                            </div>
-                        }
-                        </div>
-                    }
-                    else if (question.Type is "rating" or "likert")
-                    {
-                        <div class="btn-group" role="group" aria-label="@question.DisplayLabel">
-                            @for (int i = question.Min; i <= question.Max; i++)
+                            else
                             {
-                                var value = i;
-                                <input type="radio" class="btn-check" name="@question.Id" id="@($"{question.Id}_{i}")"
-                                       @onchange="@(() => answers[question.Id] = value.ToString())" />
-                                <label class="btn btn-outline-primary" for="@($"{question.Id}_{i}")">@i</label>
+                                <input class="form-check-input choice-option__input" type="radio" id="@inputId" name="@($"q-{question.Id}")"
+                                       checked="@(answers.GetValueOrDefault(question.Id) == option)"
+                                       @onchange="@(() => SetAnswer(question.Id, option))" />
                             }
-                        </div>
-                    }
-                    else if (question.Type == "date")
-                    {
-                        <input id="@($"q-{question.Id}")" type="date" class="form-control @(_missingRequiredIds.Contains(question.Id) ? "is-invalid" : "")"
-                               aria-required="@(question.Required ? "true" : "false")"
-                               value="@answers[question.Id]"
-                               @onchange="@(e => answers[question.Id] = e.Value?.ToString() ?? string.Empty)" />
+                            <span class="choice-option__text">@option</span>
+                        </label>
                     }
                 </div>
-            }
+                @QuestionError(question, errorId)
+            </fieldset>
         }
-
-        @if (_submitError is not null)
+        else if (AssessmentQuestionTypes.IsRatingScale(question.Type))
         {
-            <p class="text-danger" role="alert">@_submitError</p>
+            <fieldset class="question @(isInvalid ? "question--invalid" : "")" aria-describedby="@describedBy">
+                <legend class="question__label">@question.DisplayLabel @RequiredMarker(question)</legend>
+                <div class="rating-scale">
+                    @for (var ratingValue = question.Min; ratingValue <= question.Max; ratingValue++)
+                    {
+                        var value = ratingValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        var inputId = $"q-{question.Id}-{value}";
+                        <input type="radio" class="btn-check" name="@($"q-{question.Id}")" id="@inputId"
+                               checked="@(answers.GetValueOrDefault(question.Id) == value)"
+                               @onchange="@(() => SetAnswer(question.Id, value))" />
+                        <label class="rating-scale__option" for="@inputId">
+                            @value
+                            @if (RatingEndLabel(question, ratingValue) is { } endLabel)
+                            {
+                                <span class="visually-hidden">, @endLabel</span>
+                            }
+                        </label>
+                    }
+                </div>
+                @if (question.MinLabel is not null || question.MaxLabel is not null)
+                {
+                    <div class="rating-scale__ends" aria-hidden="true">
+                        <span>@question.Min · @question.MinLabel</span>
+                        <span>@question.Max · @question.MaxLabel</span>
+                    </div>
+                }
+                @QuestionError(question, errorId)
+            </fieldset>
         }
+        else
+        {
+            var inputId = $"q-{question.Id}";
+            var inputType = question.Type == AssessmentQuestionTypes.Date ? "date" : "text";
+            <div class="question @(isInvalid ? "question--invalid" : "")">
+                <label class="question__label" for="@inputId">@question.DisplayLabel @RequiredMarker(question)</label>
+                <input id="@inputId" type="@inputType" class="form-control @(isInvalid ? "is-invalid" : "")"
+                       aria-required="@(question.Required ? "true" : "false")" aria-describedby="@describedBy"
+                       value="@answers.GetValueOrDefault(question.Id)"
+                       @oninput="@(e => SetAnswer(question.Id, e.Value?.ToString()))" />
+                @QuestionError(question, errorId)
+            </div>
+        }
+    };
 
-        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">@AssessmentRes.SubmitAssessment</button>
-    </EditForm>
+    private RenderFragment RequiredMarker(QuestionSchema question) => __builder =>
+    {
+        if (!question.Required)
+            return;
+
+        <span class="question__required" aria-hidden="true">*</span>
+        <span class="visually-hidden">(@AssessmentRes.RequiredLabel)</span>
+    };
+
+    private RenderFragment QuestionError(QuestionSchema question, string errorId) => __builder =>
+    {
+        if (!_missingRequiredIds.Contains(question.Id))
+            return;
+
+        <p class="question__error" id="@errorId">@AssessmentRes.QuestionRequired</p>
+    };
 }
-

@@ -1,0 +1,364 @@
+/* Self-check form. Phones (< 768 px) show one section at a time with a sticky stepper above the
+   bottom nav; wider screens show every section as a card and a sticky summary bar with Submit. */
+.assessment-form-page {
+    max-width: 48rem;
+    padding-bottom: var(--space-6);
+}
+
+.assessment-form__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    color: var(--text-light-normal);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.assessment-form__back:hover {
+    color: var(--text-strong-accent);
+}
+
+.assessment-form__head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 var(--space-3);
+}
+
+.assessment-form__head h1 {
+    margin: 0;
+}
+
+.assessment-description {
+    color: var(--text-light-normal);
+    line-height: 1.6;
+    text-wrap: pretty;
+}
+
+.assessment-description ::deep p:last-child {
+    margin-bottom: 0;
+}
+
+.assessment-form__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin: var(--space-3) 0 var(--space-5);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.assessment-form__facts > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* ---- Sections and questions ---- */
+.assessment-section {
+    display: grid;
+    gap: var(--space-4);
+    scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+.assessment-section__head {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.assessment-section__step {
+    color: var(--color-info);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.assessment-section__title {
+    margin: 0;
+    font-size: var(--fs-3);
+}
+
+.assessment-section__title:focus {
+    outline: none;
+}
+
+.question {
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    transition: border-color var(--duration-base) var(--ease-out);
+}
+
+.question--invalid {
+    border-color: var(--color-error);
+}
+
+/* Bootstrap floats legends; a block legend keeps the long question text wrapping normally. */
+.question__label {
+    display: block;
+    float: none;
+    width: 100%;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-5);
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.question__required {
+    color: var(--color-attention);
+}
+
+.question__error {
+    margin: var(--space-2) 0 0;
+    color: var(--color-error);
+    font-size: var(--fs-6);
+    font-weight: 600;
+}
+
+/* Choice and multi-select: each option is a full-width tap row. */
+.choice-list {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.choice-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--bg-primary-rgb), 0.45);
+    color: var(--text-light-normal);
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.choice-option:hover {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+}
+
+.choice-option:has(.choice-option__input:checked) {
+    border-color: var(--text-strong-accent);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.08);
+    color: var(--text-strong-normal);
+}
+
+.choice-option:has(.choice-option__input:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+.choice-option__input {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+}
+
+.choice-option__input:focus-visible {
+    outline: none;
+}
+
+.choice-option__text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Rating: a wrapping row of 44 px buttons, so a 1-10 scale never scrolls sideways. */
+.rating-scale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.rating-scale__option {
+    display: grid;
+    flex: 1 0 var(--tap-min);
+    place-items: center;
+    max-width: 4.5rem;
+    min-height: var(--tap-min);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--bg-primary-rgb), 0.45);
+    color: var(--text-strong-normal);
+    font-size: 1.0625rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.rating-scale__option:hover {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+}
+
+.btn-check:checked + .rating-scale__option {
+    border-color: var(--text-strong-accent);
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+}
+
+.btn-check:focus-visible + .rating-scale__option {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+.rating-scale__ends {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.rating-scale__ends > span:last-child {
+    text-align: right;
+}
+
+.assessment-form__error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    font-weight: 600;
+}
+
+/* ---- Stepper / summary bar ---- */
+.assessment-stepper {
+    position: sticky;
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-5) calc(var(--page-gutter) * -1) 0;
+    padding: var(--space-3) var(--page-gutter);
+    border-top: 1px solid var(--border-subtle);
+    background-color: rgba(var(--bg-surface-rgb), 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.assessment-stepper__status {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: 0.1rem;
+    font-size: var(--fs-6);
+}
+
+.assessment-stepper__section {
+    color: var(--text-strong-normal);
+    font-weight: 700;
+}
+
+.assessment-stepper__answered {
+    color: var(--text-light-muted);
+}
+
+.assessment-stepper__actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.assessment-stepper__actions .btn-cta {
+    min-height: var(--tap-min);
+    padding: 0.6rem 1.1rem;
+    font-size: 0.9375rem;
+}
+
+.assessment-stepper__back {
+    width: var(--tap-min);
+    padding-inline: 0;
+}
+
+.assessment-stepper__submit:disabled {
+    opacity: 0.6;
+}
+
+/* ---- Success ---- */
+.assessment-done {
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-5);
+    background-image: radial-gradient(120% 70% at 50% 0%, rgba(var(--text-strong-accent-rgb), 0.12), transparent 70%);
+    text-align: center;
+}
+
+.assessment-done__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+    font-size: 2rem;
+}
+
+.assessment-done__title {
+    margin: 0;
+    color: var(--text-strong-normal);
+}
+
+.assessment-done__text {
+    margin: 0;
+    color: var(--text-light-normal);
+}
+
+.assessment-done__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+}
+
+@media (max-width: 767.98px) {
+    .assessment-section:not(.is-active),
+    .assessment-stepper__submit--early {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    /* The form element is rendered by EditForm, outside this file's CSS scope. */
+    .assessment-form-page ::deep .assessment-form {
+        display: grid;
+        gap: var(--space-6);
+    }
+
+    .assessment-stepper__back,
+    .assessment-stepper__next,
+    .assessment-stepper__section {
+        display: none;
+    }
+
+    /* No bottom nav from here on: the summary bar sits on the viewport edge as a floating card. */
+    .assessment-stepper {
+        bottom: var(--space-4);
+        margin: 0;
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-3);
+    }
+
+    .assessment-form__error {
+        margin: 0;
+    }
+}
