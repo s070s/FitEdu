@@ -109,13 +109,14 @@
     grid-column: 2;
 }
 
-.auth-card ::deep a {
+/* Text links only: a link styled as the lime .btn-cta keeps its dark label. */
+.auth-card ::deep a:not(.btn-cta) {
     color: var(--text-strong-accent);
     font-weight: 600;
     text-underline-offset: 0.2em;
 }
 
-.auth-card ::deep a:hover {
+.auth-card ::deep a:not(.btn-cta):hover {
     color: var(--text-accent);
 }
 

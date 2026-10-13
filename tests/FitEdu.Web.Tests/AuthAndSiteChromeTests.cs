@@ -38,6 +38,8 @@ public class AuthAndSiteChromeTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
         Services.AddSingleton(environment);
+        // Register scrolls its result into view after a submit.
+        JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
         Services.AddSingleton(Substitute.For<IHttpClientFactory>());
         Services.AddSingleton(new HttpClient());
     }
@@ -119,6 +121,7 @@ public class AuthAndSiteChromeTests : BunitContext
         page.FindAll("form").ShouldBeEmpty();
         page.Find(".register-success .alert-success").TextContent.ShouldContain(SuccessMessagesRes.RegistrationSuccess);
         page.Find(".register-success__login").GetAttribute("href").ShouldBe("/login");
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
     }
 
     [Fact]
@@ -134,7 +137,10 @@ public class AuthAndSiteChromeTests : BunitContext
         var feedback = page.Find("form .register-errors");
         feedback.GetAttribute("role").ShouldBe("alert");
         feedback.TextContent.ShouldContain(ErrorMessagesRes.EmailTakenError);
+        feedback.TextContent.ShouldNotContain("already taken");
         feedback.NextElementSibling!.GetAttribute("type").ShouldBe("submit");
+        // The phone user tapped at the bottom edge, so the alert is scrolled into view.
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
     }
 
     [Fact]

@@ -10,6 +10,15 @@ window.inputInterop = {
             el.value = '';
             el.style.height = '';
         }
+    },
+    // Brings a message into the middle of the screen, clear of the sticky header and the phone tab
+    // bar, and moves focus to it (the element needs tabindex="-1") so the next Tab starts there.
+    // 'instant' because Bootstrap makes the page scroll smoothly, which a later scroll can overtake.
+    scrollIntoView: function (el) {
+        if (el) {
+            el.focus({ preventScroll: true });
+            el.scrollIntoView({ block: 'center', behavior: 'instant' });
+        }
     }
 };
 

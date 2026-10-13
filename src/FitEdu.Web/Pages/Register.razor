@@ -6,11 +6,11 @@
 
 <AuthCard Title="@GlobalRes.Label_CreateAccount" Subtitle="@GlobalRes.AuthRegisterSubtitle" Wide="true">
     <ChildContent>
-        @* After a successful sign-up the form gives way to the result, so a phone user who tapped
-           Register at the bottom of the long form sees it right away. *@
+        @* After a successful sign-up the form gives way to the result, which is scrolled into view
+           for a phone user who tapped Register at the bottom of the long form. *@
         @if (!string.IsNullOrEmpty(successMessage))
         {
-            <div class="register-success" role="status">
+            <div class="register-success" role="status" tabindex="-1" @ref="successRegion">
                 <div class="alert alert-success">
                     @if (Env.IsDevelopment())
                     {
@@ -145,7 +145,7 @@
 
 @code {
     // One live region for the server's messages: screen readers announce whatever appears in it.
-    private RenderFragment RegisterErrors => @<div class="register-errors" role="alert">
+    private RenderFragment RegisterErrors => @<div class="register-errors" role="alert" tabindex="-1" @ref="errorRegion">
         @if (!string.IsNullOrEmpty(errorMessage))
         {
             <div class="alert alert-danger">@errorMessage</div>

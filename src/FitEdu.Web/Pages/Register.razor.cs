@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.JSInterop;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
@@ -16,6 +17,7 @@ public partial class Register : IDisposable
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IWebHostEnvironment Env { get; set; } = default!;
     [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
 
     // RegisterRequest.DateOfBirth is now DateTime? default to 2000-01-01 as requested
     private RegisterRequestDto registerRequest = new() { DateOfBirth = new DateTime(2000, 1, 1) };
@@ -27,6 +29,11 @@ public partial class Register : IDisposable
     private bool showPassword;
     private bool showConfirmPassword;
     private string registeredEmail = string.Empty;
+    private ElementReference errorRegion;
+    private ElementReference successRegion;
+    // A phone user taps Register at the bottom of a long form, far from where the result appears,
+    // so the render after a submit scrolls the result (or the error above the button) into view.
+    private bool scrollToFeedback;
 
     private string passwordInputType => showPassword ? "text" : "password";
     private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
@@ -51,6 +58,23 @@ public partial class Register : IDisposable
         if (e.FieldIdentifier.FieldName == nameof(RegisterRequestDto.Password))
         {
             editContext.NotifyFieldChanged(editContext.Field(nameof(RegisterRequestDto.ConfirmPassword)));
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!scrollToFeedback)
+            return;
+
+        scrollToFeedback = false;
+        var feedbackRegion = string.IsNullOrEmpty(successMessage) ? errorRegion : successRegion;
+        try
+        {
+            await JS.InvokeVoidAsync("inputInterop.scrollIntoView", feedbackRegion);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit closed; there is no page left to scroll.
         }
     }
 
@@ -112,10 +136,14 @@ public partial class Register : IDisposable
 
                 if (errors.Any(e => e.Contains("already taken") || e.Contains("duplicate") || e.Contains("exists")))
                 {
+                    // The translated message says it all; Identity's own text is English only.
                     errorMessage = ErrorMessagesRes.EmailTakenError;
+                    errors.Clear();
                 }
             }
         }
+
+        scrollToFeedback = true;
 
         isLoading = false;
     }
