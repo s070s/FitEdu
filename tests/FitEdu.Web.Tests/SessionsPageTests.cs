@@ -9,6 +9,7 @@ using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Web.Pages;
+using FitEdu.Web.Startup;
 using Shouldly;
 using Xunit;
 
@@ -83,6 +84,20 @@ public class SessionsPageTests : BunitContext
         CultureInfo.CurrentCulture = new CultureInfo("en-GB");
         CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
         // 18:00 UTC on 20 October is 21:00 in Athens (UTC+3), whatever the zone of the test machine.
+        ReturnSessions(Session("Evening stretch", new DateTimeOffset(2026, 10, 20, 18, 0, 0, TimeSpan.Zero)));
+
+        var page = Render<Sessions>();
+
+        page.Find(".session-time__start").TextContent.ShouldBe("21:00");
+    }
+
+    [Fact]
+    public void Greek_ShowsTheStartTimeOnA24HourClock()
+    {
+        // The site's Greek culture, as the request localization hands it to the page.
+        var greek = ServiceRegistrationExtensions.CreateGreekCulture();
+        CultureInfo.CurrentCulture = greek;
+        CultureInfo.CurrentUICulture = greek;
         ReturnSessions(Session("Evening stretch", new DateTimeOffset(2026, 10, 20, 18, 0, 0, TimeSpan.Zero)));
 
         var page = Render<Sessions>();

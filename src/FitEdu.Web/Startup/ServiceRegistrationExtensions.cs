@@ -1,7 +1,9 @@
+using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.AI;
@@ -39,6 +41,18 @@ public static class ServiceRegistrationExtensions
     /// interactive.
     /// </summary>
     public const int CircuitMessageLimitBytes = 128 * 1024;
+
+    /// <summary>
+    /// Greek as the site shows it: el-GR with a 24-hour clock ("21:00"), since the framework's Greek
+    /// time pattern prints "9:00 μ.μ.", which Greek timetables do not use.
+    /// </summary>
+    public static CultureInfo CreateGreekCulture()
+    {
+        var greek = (CultureInfo)CultureInfo.GetCultureInfo("el-GR").Clone();
+        greek.DateTimeFormat.ShortTimePattern = "HH:mm";
+        greek.DateTimeFormat.LongTimePattern = "HH:mm:ss";
+        return greek;
+    }
 
     public static WebApplicationBuilder AddFitEduServices(this WebApplicationBuilder builder)
     {
@@ -230,10 +244,13 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddLocalization();
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            var supportedCultures = new[] { "en-GB", "el-GR" };
-            options.SetDefaultCulture("en-GB")
-                .AddSupportedCultures(supportedCultures)
-                .AddSupportedUICultures(supportedCultures);
+            // The middleware hands out these very instances, so the Greek one's 24-hour clock is
+            // what the pages format with.
+            var english = new CultureInfo("en-GB");
+            var greek = CreateGreekCulture();
+            options.DefaultRequestCulture = new RequestCulture(english);
+            options.SupportedCultures = [english, greek];
+            options.SupportedUICultures = [english, greek];
         });
 
         // SCALE-7: this IMemoryCache is process-local. The short-TTL entries backed by it
