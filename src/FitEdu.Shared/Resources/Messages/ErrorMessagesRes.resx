@@ -130,7 +130,7 @@
     <value>Login Error</value>
   </data>
   <data name="AccountDisabled" xml:space="preserve">
-    <value>Account Disabled</value>
+    <value>Account disabled</value>
   </data>
   <data name="AccountDisabledMessage" xml:space="preserve">
     <value>Your account has been disabled by an administrator.</value>

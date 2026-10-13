@@ -166,7 +166,7 @@
     <value>Έλεγχος πιστοποιητικού…</value>
   </data>
   <data name="VerificationUnreachable" xml:space="preserve">
-    <value>Δεν είναι δυνατή η σύνδεση με την υπηρεσία επαλήθευσης. Δοκιμάστε ξανά αργότερα.</value>
+    <value>Δεν μπορούμε να συνδεθούμε με την υπηρεσία επαλήθευσης. Δοκίμασε ξανά αργότερα.</value>
   </data>
   <data name="VerificationValid" xml:space="preserve">
     <value>Έγκυρο πιστοποιητικό</value>

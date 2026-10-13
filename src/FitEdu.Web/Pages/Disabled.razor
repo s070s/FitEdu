@@ -2,17 +2,14 @@
 
 <PageTitle>@ErrorMessagesRes.AccountDisabled</PageTitle>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-            <h1 class="h2 text-danger mb-4">@ErrorMessagesRes.AccountDisabled</h1>
-            <p class="lead">
-                @ErrorMessagesRes.AccountDisabledMessage
-            </p>
-            <p>
-                @ErrorMessagesRes.AccountDisabledContact
-            </p>
-            <a href="/login" class="btn btn-primary mt-3">@ErrorMessagesRes.BackToLogin</a>
-        </div>
-    </div>
-</div>
+<StatusPanel Icon="bi-person-lock"
+             Tone="StatusPanel.StatusTone.Danger"
+             Title="@ErrorMessagesRes.AccountDisabled"
+             Lead="@ErrorMessagesRes.AccountDisabledMessage">
+    <ChildContent>
+        <p class="text-light-muted mb-0">@ErrorMessagesRes.AccountDisabledContact</p>
+    </ChildContent>
+    <Actions>
+        <a href="/login" class="btn-cta">@ErrorMessagesRes.BackToLogin</a>
+    </Actions>
+</StatusPanel>

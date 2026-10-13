@@ -130,13 +130,13 @@
     <value>Σφάλμα κατά τη σύνδεση.</value>
   </data>
   <data name="AccountDisabled" xml:space="preserve">
-    <value>Ο Λογαριασμός Απενεργοποιήθηκε</value>
+    <value>Ο λογαριασμός απενεργοποιήθηκε</value>
   </data>
   <data name="AccountDisabledMessage" xml:space="preserve">
-    <value>Ο λογαριασμός σας έχει απενεργοποιηθεί από διαχειριστή.</value>
+    <value>Ο λογαριασμός σου απενεργοποιήθηκε από διαχειριστή.</value>
   </data>
   <data name="AccountDisabledContact" xml:space="preserve">
-    <value>Εάν πιστεύετε ότι πρόκειται για λάθος, επικοινωνήστε με την υποστήριξη.</value>
+    <value>Αν πιστεύεις ότι έγινε λάθος, επικοινώνησε με την υποστήριξη.</value>
   </data>
   <data name="BackToLogin" xml:space="preserve">
     <value>Επιστροφή στη σύνδεση</value>
@@ -244,7 +244,7 @@
     <value>Απέτυχε η φόρτωση των μαθημάτων. Δοκιμάστε ξανά.</value>
   </data>
   <data name="FailedToLoadAnalytics" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση των αναλυτικών στοιχείων. Δοκιμάστε ξανά.</value>
+    <value>Η φόρτωση των στατιστικών απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadCourse" xml:space="preserve">
     <value>Απέτυχε η φόρτωση του μαθήματος. Δοκιμάστε ξανά.</value>

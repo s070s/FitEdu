@@ -2,44 +2,51 @@
 
 <PageTitle>@CertificateRes.VerificationTitle</PageTitle>
 
-<div class="container mt-5" style="max-width: 600px">
-    <h1 class="h2 mb-4 text-center">@CertificateRes.VerificationTitle</h1>
-
-    @if (_loading)
-    {
-        <p class="text-center">@CertificateRes.VerificationChecking</p>
-    }
-    else if (_result is null)
-    {
-        <div class="alert alert-danger text-center" role="alert">
-            <span class="bi bi-x-circle-fill fs-2 d-block mb-2" aria-hidden="true"></span>
-            @CertificateRes.VerificationUnreachable
-        </div>
-    }
-    else if (_result.IsValid)
-    {
-        <div class="alert alert-success" role="alert">
-            <span class="bi bi-patch-check-fill fs-2 d-block mb-2 text-center" aria-hidden="true"></span>
-            <h2 class="h5 text-center mb-3">@CertificateRes.VerificationValid</h2>
-            <hr />
-            <dl class="row mb-0">
-                <dt class="col-5">@CertificateRes.FieldRecipient</dt>
-                <dd class="col-7">@_result.RecipientName</dd>
-
-                <dt class="col-5">@CertificateRes.FieldCourse</dt>
-                <dd class="col-7">@_result.CourseTitle</dd>
-
-                <dt class="col-5">@CertificateRes.FieldIssuedOn</dt>
-                <dd class="col-7">@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
-            </dl>
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-danger text-center" role="alert">
-            <span class="bi bi-x-circle-fill fs-2 d-block mb-2" aria-hidden="true"></span>
-            <h2 class="h5 mb-2">@CertificateRes.VerificationInvalid</h2>
-            <p class="mb-0">@_result.Message</p>
-        </div>
-    }
-</div>
+@if (_loading)
+{
+    <LoadingSpinner Label="@CertificateRes.VerificationChecking" />
+}
+else if (_result is null)
+{
+    <StatusPanel Icon="bi-wifi-off"
+                 Title="@CertificateRes.VerificationTitle"
+                 Lead="@CertificateRes.VerificationUnreachable">
+        <Actions>
+            <a href="/" class="btn-cta btn-cta--ghost">@GlobalRes.BackToHome</a>
+        </Actions>
+    </StatusPanel>
+}
+else if (_result.IsValid)
+{
+    <StatusPanel Icon="bi-patch-check-fill"
+                 Tone="StatusPanel.StatusTone.Success"
+                 Eyebrow="@CertificateRes.VerificationTitle"
+                 Title="@CertificateRes.VerificationValid">
+        <dl class="certificate-details">
+            <div>
+                <dt>@CertificateRes.FieldRecipient</dt>
+                <dd>@_result.RecipientName</dd>
+            </div>
+            <div>
+                <dt>@CertificateRes.FieldCourse</dt>
+                <dd>@_result.CourseTitle</dd>
+            </div>
+            <div>
+                <dt>@CertificateRes.FieldIssuedOn</dt>
+                <dd>@_result.IssuedAt?.ToLocalTime().ToString("d")</dd>
+            </div>
+        </dl>
+    </StatusPanel>
+}
+else
+{
+    <StatusPanel Icon="bi-x-octagon-fill"
+                 Tone="StatusPanel.StatusTone.Danger"
+                 Eyebrow="@CertificateRes.VerificationTitle"
+                 Title="@CertificateRes.VerificationInvalid"
+                 Lead="@_result.Message">
+        <Actions>
+            <a href="/" class="btn-cta btn-cta--ghost">@GlobalRes.BackToHome</a>
+        </Actions>
+    </StatusPanel>
+}
