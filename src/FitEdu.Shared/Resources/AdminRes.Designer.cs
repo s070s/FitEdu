@@ -2391,6 +2391,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown equipment code: '{0}'. Use only the codes listed below the field..
+        /// </summary>
+        public static string UnknownEquipmentCodeFormat {
+            get {
+                return ResourceManager.GetString("UnknownEquipmentCodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No exercise with this slug.
         /// </summary>
         public static string UnknownExerciseSlug {
@@ -2623,16 +2632,7 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("OptionsPlaceholder", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown equipment code: '{0}'. Use only the codes listed below the field..
-        /// </summary>
-        public static string UnknownEquipmentCodeFormat {
-            get {
-                return ResourceManager.GetString("UnknownEquipmentCodeFormat", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Admin.
         /// </summary>
