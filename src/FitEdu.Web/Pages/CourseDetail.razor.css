@@ -29,18 +29,13 @@
     gap: var(--space-2);
 }
 
-/* ---- Hero ---- */
-.course-hero {
-    display: grid;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-}
-
+/* ---- Hero: back link, cover and text (direct children of .course-page) ---- */
 .course-hero__back {
-    display: inline-flex;
+    display: flex;
+    width: fit-content;
+    margin-bottom: var(--space-2);
     align-items: center;
     gap: var(--space-2);
-    justify-self: start;
     min-height: var(--tap-min);
     color: var(--text-light-normal);
     font-size: 0.9375rem;
@@ -54,6 +49,7 @@
 
 .course-hero__media {
     position: relative;
+    margin-bottom: var(--space-5);
     overflow: hidden;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-xl);
@@ -78,6 +74,7 @@
     align-content: start;
     gap: var(--space-4);
     min-width: 0;
+    margin-bottom: var(--space-6);
 }
 
 .course-hero__eyebrow {
@@ -514,6 +511,7 @@
 /* ---- Action card: a floating dock above the tab bar on phones ---- */
 .course-cta {
     bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-2));
+    flex-direction: row; /* .card-surface stacks its children; the dock lines them up */
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-3);
     min-height: 4.25rem;
@@ -545,6 +543,7 @@
 }
 
 .course-cta__status,
+.course-cta__next,
 .course-cta__included {
     display: none;
 }
@@ -570,8 +569,8 @@
 }
 
 .course-cta__next {
-    display: grid;
     gap: 0.15rem;
+    margin: 0;
     padding-top: var(--space-3);
     border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
 }
@@ -604,6 +603,15 @@
 .enroll-upgrade-notice p {
     margin: 0;
     color: var(--text-light-normal);
+    overflow-wrap: break-word;
+}
+
+/* Small phones: the plan notice takes its own line above the button. */
+@media (max-width: 419.98px) {
+    .enroll-upgrade-notice {
+        flex-basis: 100%;
+        padding-top: var(--space-1);
+    }
 }
 
 .enroll-error-notice {
@@ -621,27 +629,20 @@
     font-size: 0.9375rem;
 }
 
-/* ---- 768 px and up: outline left, sticky action card right ---- */
+/* ---- 768 px and up: text and outline left; cover and the sticky action card in the side
+   column, so the main button is in view without scrolling ---- */
 @media (min-width: 768px) {
     .course-page {
         display: grid;
         grid-template-areas:
-            "hero hero"
-            "main cta";
+            "back  back"
+            "text  media"
+            "text  cta"
+            "main  cta";
         grid-template-columns: minmax(0, 1fr) minmax(15rem, 18.5rem);
+        grid-template-rows: auto auto 1fr auto;
         align-items: start;
         column-gap: var(--space-6);
-    }
-
-    .course-hero {
-        grid-area: hero;
-        grid-template-areas:
-            "back back"
-            "text media";
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
-        align-items: center;
-        column-gap: var(--space-6);
-        margin-bottom: var(--space-6);
     }
 
     .course-hero__back {
@@ -654,6 +655,7 @@
 
     .course-hero__media {
         grid-area: media;
+        margin-bottom: var(--space-4);
     }
 
     .course-main {
@@ -700,6 +702,10 @@
         flex: 1;
     }
 
+    .course-cta__next {
+        display: grid;
+    }
+
     .course-cta__included {
         display: flex;
         align-items: center;
@@ -719,11 +725,7 @@
 
 @media (min-width: 1200px) {
     .course-page {
-        grid-template-columns: minmax(0, 1fr) 20rem;
-        column-gap: var(--space-6);
-    }
-
-    .course-hero {
+        grid-template-columns: minmax(0, 1fr) 21rem;
         column-gap: calc(var(--space-6) * 1.5);
     }
 }
