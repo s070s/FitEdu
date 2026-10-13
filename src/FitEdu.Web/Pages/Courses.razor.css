@@ -61,6 +61,11 @@
     color: var(--text-strong-normal);
 }
 
+.plan-limit-banner__usage {
+    color: var(--text-light-normal);
+    font-size: 0.875rem;
+}
+
 .slots-full-label {
     color: var(--color-attention);
     font-weight: 700;

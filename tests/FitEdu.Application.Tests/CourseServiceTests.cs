@@ -481,6 +481,40 @@ public class CourseServiceTests
         enrollment.Status.ShouldBe(EnrollmentStatus.Active);
     }
 
+    // ---- CountEnrollmentsAsync -----------------------------------------------
+
+    [Fact]
+    public async Task CountEnrollments_CountsEveryEnrolmentOfThatMemberOnly()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var first = CourseWithLessons("First", 0);
+        var second = CourseWithLessons("Second", 0, published: false);
+        db.Courses.AddRange(first, second);
+        db.Enrollments.AddRange(
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = first.Id },
+            new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = second.Id, Status = EnrollmentStatus.Completed },
+            new Enrollment { Id = Guid.NewGuid(), UserId = "someone-else", CourseId = first.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.CountEnrollmentsAsync(UserId)).ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Enroll_CapCountsEnrolmentsInUnpublishedCoursesToo()
+    {
+        // The plan limit and the count on the catalogue share one rule: every enrolment counts.
+        await using var db = DbContextFactory.CreateInMemory();
+        var retired = CourseWithLessons("Retired", 0, published: false);
+        var target = CourseWithLessons("Target", 0);
+        db.Courses.AddRange(retired, target);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = retired.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, Status(SubscriptionTier.Free, maxCourses: 1));
+
+        (await svc.EnrollAsync(UserId, target.Id)).StatusCode.ShouldBe(403);
+    }
+
     // ---- GetLessonDetailAsync ------------------------------------------------
 
     [Fact]

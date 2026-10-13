@@ -75,6 +75,16 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     }
 
     /// <summary>
+    /// How many programmes the current user has joined, counted the same way as the plan limit.
+    /// </summary>
+    [HttpGet("enrolment-count")]
+    public async Task<ActionResult<int>> GetEnrolmentCount(CancellationToken cancellationToken = default)
+    {
+        var count = await courseService.CountEnrollmentsAsync(UserId, cancellationToken);
+        return Ok(count);
+    }
+
+    /// <summary>
     /// Enroll the current user in a course.
     /// Admins cannot enroll - this is for students only.
     /// </summary>

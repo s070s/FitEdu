@@ -118,6 +118,25 @@ public class ConsumerTests
     }
 
     [Fact]
+    public async Task CourseConsumer_CountEnrollments_ReadsTheCount()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.OK, 4);
+        var consumer = new CourseConsumer(client, TokenProvider());
+
+        (await consumer.CountEnrollmentsAsync()).ShouldBe(4);
+        handler.LastRequest!.RequestUri!.AbsolutePath.ShouldBe("/api/courses/enrolment-count");
+    }
+
+    [Fact]
+    public async Task CourseConsumer_CountEnrollments_ServerError_ReturnsNull()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new CourseConsumer(client, TokenProvider());
+
+        (await consumer.CountEnrollmentsAsync()).ShouldBeNull();
+    }
+
+    [Fact]
     public async Task CourseConsumer_Enroll_ServerError_ReturnsNull()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);

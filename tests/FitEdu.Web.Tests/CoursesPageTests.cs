@@ -76,7 +76,7 @@ public class CoursesPageTests : BunitContext
     public void PlanLimitReached_ShowsFullBannerWithLimeUpgradeLink()
     {
         _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Free, maxCourses: 1));
-        ReturnCourses([Course("Enrolled course") with { IsEnrolled = true }]);
+        _courseConsumer.CountEnrollmentsAsync().Returns(1);
 
         var page = Render<Courses>();
 
@@ -87,15 +87,43 @@ public class CoursesPageTests : BunitContext
     }
 
     [Fact]
-    public void PlanWithFreeSlots_ShowsLimitWithoutFullNotice()
+    public void PlanLimitReached_ByAnEnrolmentOffThisPage_StillShowsTheFullBanner()
+    {
+        // The visible page holds none of the member's enrolments; the count comes from the API.
+        _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Free, maxCourses: 1));
+        _courseConsumer.CountEnrollmentsAsync().Returns(1);
+
+        var page = Render<Courses>();
+
+        page.FindAll(".plan-limit-full").Count.ShouldBe(1);
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("1 of 1 programmes used");
+    }
+
+    [Fact]
+    public void PlanWithFreeSlots_ShowsLimitAndUsageWithoutFullNotice()
     {
         _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Plus, maxCourses: 10));
+        _courseConsumer.CountEnrollmentsAsync().Returns(3);
 
         var page = Render<Courses>();
 
         page.Find(".plan-limit-banner").TextContent.ShouldContain("Programme limit on the Plus plan: 10");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("3 of 10 programmes used");
         page.FindAll(".plan-limit-full").ShouldBeEmpty();
         page.Find(".plan-limit-banner__action").ClassList.ShouldContain("btn-cta--ghost");
+    }
+
+    [Fact]
+    public void PlanCountFailed_ShowsTheLimitWithoutUsageOrFullNotice()
+    {
+        _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Free, maxCourses: 1));
+        _courseConsumer.CountEnrollmentsAsync().Returns((int?)null);
+
+        var page = Render<Courses>();
+
+        page.FindAll(".plan-limit-banner").Count.ShouldBe(1);
+        page.FindAll(".plan-limit-banner__usage").ShouldBeEmpty();
+        page.FindAll(".plan-limit-full").ShouldBeEmpty();
     }
 
     [Fact]
@@ -215,10 +243,12 @@ public class CoursesPageTests : BunitContext
     {
         UseCulture("el");
         _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Plus, maxCourses: 10));
+        _courseConsumer.CountEnrollmentsAsync().Returns(2);
 
         var page = Render<Courses>();
 
         page.Find(".plan-limit-banner__text").TextContent.ShouldContain("Όριο προγραμμάτων στο πλάνο «Plus»: 10");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("2 από 10 προγράμματα σε χρήση");
         page.Find(".plan-limit-banner__action").TextContent.Trim().ShouldBe("Αναβάθμιση πλάνου");
     }
 

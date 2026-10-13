@@ -207,6 +207,9 @@ public class CourseService(
             .Select(group => new { LessonId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.LessonId, row => row.Count, cancellationToken);
 
+    public Task<int> CountEnrollmentsAsync(string userId, CancellationToken cancellationToken = default) =>
+        db.Enrollments.CountAsync(enrollment => enrollment.UserId == userId, cancellationToken);
+
     public async Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default)
     {
         var course = await db.Courses.FirstOrDefaultAsync(c => c.Id == courseId && c.IsPublished, cancellationToken);
@@ -228,7 +231,7 @@ public class CourseService(
             // Note: count-then-insert is a TOCTOU — two concurrent requests for *different* courses
             // can both pass this gate and briefly exceed the limit. Fixing that requires serializable
             // isolation; the rare over-count is accepted here as a benign soft-limit edge case.
-            var enrollmentCount = await db.Enrollments.CountAsync(e => e.UserId == userId, cancellationToken);
+            var enrollmentCount = await CountEnrollmentsAsync(userId, cancellationToken);
             if (enrollmentCount >= maxCourses)
             {
                 return ServiceResult<EnrollmentResultDto>.Forbidden(new EnrollmentResultDto(

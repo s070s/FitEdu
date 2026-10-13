@@ -335,4 +335,7 @@
 	<data name="NoMatchingCoursesHint" xml:space="preserve">
 		<value>Δοκίμασε άλλον στόχο, επίπεδο ή εξοπλισμό, ή καθάρισε τα φίλτρα.</value>
 	</data>
+	<data name="PlanCourseUsageFormat" xml:space="preserve">
+		<value>{0} από {1} προγράμματα σε χρήση</value>
+	</data>
 </root>

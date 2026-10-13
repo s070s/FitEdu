@@ -52,7 +52,8 @@ public partial class Courses : IDisposable
     private UserSubscriptionStatusDto? _userStatus;
     private SubscriptionTier _userTier = SubscriptionTier.Free;
     private int _maxCourses = DefaultMaxCourses;
-    private int _enrolledCount;
+    // Null until the API says how many programmes the member joined (or when it could not say).
+    private int? _enrolledCount;
     private bool _statusLoaded;
     private bool _loading = true;
     private string? _error;
@@ -93,6 +94,8 @@ public partial class Courses : IDisposable
     private bool ShowPlanBanner => _userStatus is not null && _maxCourses != int.MaxValue;
 
     private bool IsPlanFull => _enrolledCount >= _maxCourses;
+
+    private bool HasEnrolledCount => _enrolledCount is not null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -175,6 +178,10 @@ public partial class Courses : IDisposable
 
             _userTier = _userStatus.Tier;
             _maxCourses = _userStatus.Features?.MaxCourses ?? DefaultMaxCourses;
+
+            // The API counts every enrolment, as the join check does; a page shows only some of them.
+            if (_maxCourses != int.MaxValue)
+                _enrolledCount = await CourseService.CountEnrollmentsAsync();
         }
         finally
         {
@@ -209,7 +216,6 @@ public partial class Courses : IDisposable
                 return;
 
             _pagedResult = result;
-            UpdateEnrolledCount();
         }
         catch (Exception ex)
         {
@@ -222,14 +228,6 @@ public partial class Courses : IDisposable
             if (requestNumber == _latestRequestNumber)
                 _loading = false;
         }
-    }
-
-    // A list shows only some of the member's enrolments (one page, maybe filtered), so each count
-    // is a lower bound; the highest one seen is the closest to the real total.
-    private void UpdateEnrolledCount()
-    {
-        var visibleEnrolments = _pagedResult?.Items.Count(course => course.IsEnrolled) ?? 0;
-        _enrolledCount = Math.Max(_enrolledCount, visibleEnrolments);
     }
 
     private bool IsLocked(CourseListItemDto course) => _userTier < course.RequiredTier && !course.IsEnrolled;
