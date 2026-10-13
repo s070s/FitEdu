@@ -118,6 +118,19 @@ public class AuthAndSiteChromeTests : BunitContext
         page.FindAll(".alert-success input[type=password]").ShouldBeEmpty();
     }
 
+    [Fact]
+    public void ForgotPassword_AfterTheLinkIsSent_DropsTheFormInstructions()
+    {
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true, Message = "sent" });
+        var page = Render<ForgotPassword>();
+        page.Find(".auth-card__subtitle").TextContent.ShouldBe(GlobalRes.ForgotPasswordInstructions);
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        page.FindAll(".auth-card__subtitle").ShouldBeEmpty();
+    }
+
     // ---- Legal pages --------------------------------------------------------------------------
 
     [Fact]
