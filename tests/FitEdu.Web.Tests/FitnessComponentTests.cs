@@ -240,8 +240,8 @@ public class FitnessComponentTests : BunitContext
     [Theory]
     [InlineData("beginner", "el", "chip--teal", "Αρχάριο")]
     [InlineData("intermediate", "el", "chip--lime", "Μεσαίο")]
-    [InlineData("expert", "en", "chip--coral", "Expert")]
-    [InlineData("expert", "el", "chip--coral", "Έμπειρο")]
+    [InlineData("expert", "en", "chip--coral", "Advanced")]
+    [InlineData("expert", "el", "chip--coral", "Προχωρημένο")]
     public void LevelBadge_ExerciseLevel_ShowsItsColourAndLabel(string level, string culture, string chipClass, string label)
     {
         UseCulture(culture);
