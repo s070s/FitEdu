@@ -32,6 +32,9 @@ public partial class SeedContentIntegrityTests
 
     private static readonly string ExerciseImagesFolder = Path.Combine(RepoPaths.WebRoot, "images", "exercises");
 
+    // The slugs the exercise image folders were made from (tools/assets/README.md).
+    private static readonly string ExerciseSlugListPath = Path.Combine(RepoPaths.RepoRoot, "docs", "assets", "exercise-slugs.txt");
+
     // Every exercise photo pair is a start and an end frame.
     private static readonly string[] ExerciseImageFileNames = ["0.webp", "1.webp"];
 
@@ -192,6 +195,32 @@ public partial class SeedContentIntegrityTests
     }
 
     // ---- Exercises ---------------------------------------------------------------------------
+
+    private static List<string> LibrarySlugs() =>
+        SeedJsonFiles.LoadExerciseLibrary().Select(exercise => SlugHelper.FromExerciseId(exercise.Id)).ToList();
+
+    [Fact]
+    public void ExerciseLibrary_EveryExerciseHasBothImagesOnDisk()
+    {
+        var problems = LibrarySlugs()
+            .SelectMany(slug => ExerciseImageFileNames.Select(imageFileName => Path.Combine(ExerciseImagesFolder, slug, imageFileName)))
+            .Where(imagePath => !File.Exists(imagePath))
+            .Select(imagePath => $"missing image {Path.GetRelativePath(RepoPaths.WebRoot, imagePath)}")
+            .ToList();
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ExerciseLibrary_SlugsMatchTheRecordedSlugList()
+    {
+        // A change to exercises.json or to the slug rule must update the list and the image folders too.
+        var recordedSlugs = File.ReadAllLines(ExerciseSlugListPath).Where(line => line.Length > 0).ToList();
+
+        var librarySlugs = LibrarySlugs().Order(StringComparer.Ordinal).ToList();
+
+        librarySlugs.ShouldBe(recordedSlugs);
+    }
 
     [Fact]
     public void GreekOverlay_ExerciseNamesUseSentenceCase()

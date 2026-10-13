@@ -32,42 +32,58 @@ function readExercises(exercisesJsonPath) {
     return exercises;
 }
 
+/** One { sourcePath, outputPath } job per photo of the exercise; stops on a row without an id or images. */
+function planExerciseImages(exercise, sourceFolder, targetFolder) {
+    const hasImagePaths = Array.isArray(exercise?.images)
+        && exercise.images.length > 0
+        && exercise.images.every(imagePath => typeof imagePath === 'string');
+    if (typeof exercise?.id !== 'string' || !hasImagePaths) {
+        fail(`exercise row without an id or an "images" array of paths: ${JSON.stringify(exercise)?.slice(0, 120)}`);
+    }
+
+    const slugFolder = join(targetFolder, toSlug(exercise.id));
+    // "images" holds paths like "Pushups/0.jpg", relative to the download's exercises folder.
+    return exercise.images.map(relativeImagePath => ({
+        sourcePath: join(sourceFolder, relativeImagePath),
+        outputPath: join(slugFolder, basename(relativeImagePath).replace(/\.jpe?g$/i, '.webp'))
+    }));
+}
+
 async function convertExercises(exercisesJsonPath, sourceFolder, targetFolder) {
     if (!existsSync(sourceFolder)) {
         fail(`source folder not found: ${sourceFolder}`);
     }
 
+    // Every row and every needed source photo is checked before a folder is made or Chrome starts,
+    // so a bad row stops the run without leaving half-made output behind.
     const exercises = readExercises(exercisesJsonPath);
-    const browser = await launchBrowser();
-    const page = await browser.newPage();
-    let convertedCount = 0;
-    let skippedCount = 0;
-
-    for (const exercise of exercises) {
-        const slugFolder = join(targetFolder, toSlug(exercise.id));
-        mkdirSync(slugFolder, { recursive: true });
-
-        // "images" holds paths like "Pushups/0.jpg", relative to the download's exercises folder.
-        for (const relativeImagePath of exercise.images) {
-            const outputPath = join(slugFolder, basename(relativeImagePath).replace(/\.jpe?g$/i, '.webp'));
-            if (existsSync(outputPath)) {
-                skippedCount++;
-                continue;
-            }
-
-            const sourcePath = join(sourceFolder, relativeImagePath);
-            if (!existsSync(sourcePath)) {
-                fail(`missing source image: ${sourcePath}`);
-            }
-
-            const webpBytes = await encodeWebp(page, fileToDataUrl(sourcePath), EXERCISE_MAX_WIDTH, EXERCISE_QUALITY);
-            writeFileSync(outputPath, webpBytes);
-            convertedCount++;
-        }
+    const jobs = exercises.flatMap(exercise => planExerciseImages(exercise, sourceFolder, targetFolder));
+    const pendingJobs = jobs.filter(job => !existsSync(job.outputPath));
+    const jobWithoutSource = pendingJobs.find(job => !existsSync(job.sourcePath));
+    if (jobWithoutSource) {
+        fail(`missing source image: ${jobWithoutSource.sourcePath}`);
     }
 
-    await browser.close();
-    console.log(`exercises: ${exercises.length}, converted ${convertedCount} images, skipped ${skippedCount} existing`);
+    if (pendingJobs.length > 0) {
+        await convertPendingImages(pendingJobs);
+    }
+
+    const skippedCount = jobs.length - pendingJobs.length;
+    console.log(`exercises: ${exercises.length}, converted ${pendingJobs.length} images, skipped ${skippedCount} existing`);
+}
+
+async function convertPendingImages(pendingJobs) {
+    const browser = await launchBrowser();
+    try {
+        const page = await browser.newPage();
+        for (const job of pendingJobs) {
+            mkdirSync(dirname(job.outputPath), { recursive: true });
+            const webpBytes = await encodeWebp(page, fileToDataUrl(job.sourcePath), EXERCISE_MAX_WIDTH, EXERCISE_QUALITY);
+            writeFileSync(job.outputPath, webpBytes);
+        }
+    } finally {
+        await browser.close();
+    }
 }
 
 async function convertSingle(inputPath, outputPath, maxWidth, quality) {

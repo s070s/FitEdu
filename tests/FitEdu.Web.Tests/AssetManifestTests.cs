@@ -9,12 +9,16 @@ namespace FitEdu.Web.Tests;
 /// <summary>
 /// Asset policy guard: every shipped image must be covered by a row in
 /// <c>docs/assets/asset-manifest.json</c> whose licence is on the allowed list (public domain,
-/// CC0 or our own work). A new image without a row, or a row with a placeholder, fails the build.
+/// CC0 or our own work). A new image without a row, or a row with a placeholder, fails the test run.
 /// </summary>
 [Trait("Category", "Assets")]
 public class AssetManifestTests
 {
     private const string PlaceholderPrefix = "<";
+
+    // The licence policy itself (ASSET-MANIFEST.md lists the same four). It lives here so that
+    // widening the list in asset-manifest.json alone fails a test instead of passing every row.
+    private static readonly string[] AllowedLicences = ["Unlicense", "CC0-1.0", "Public domain", "MIT (own work)"];
 
     // The shipped image files the policy covers, relative to wwwroot.
     private static readonly string[] ShippedImagePatterns = ["images/**/*", "favicon.*", "icon-*.png"];
@@ -48,6 +52,12 @@ public class AssetManifestTests
     }
 
     [Fact]
+    public void ManifestAllowedLicences_AreExactlyThePolicyList()
+    {
+        LoadManifest().AllowedLicences.ShouldBe(AllowedLicences, ignoreOrder: true);
+    }
+
+    [Fact]
     public void EveryManifestRow_HasAnAllowedLicenceAndNoPlaceholders()
     {
         var manifest = LoadManifest();
@@ -55,7 +65,7 @@ public class AssetManifestTests
 
         foreach (var row in manifest.Assets)
         {
-            manifest.AllowedLicences.ShouldContain(row.Licence, $"{row.Glob} licence");
+            AllowedLicences.ShouldContain(row.Licence, $"{row.Glob} licence");
             string[] requiredValues = [row.Glob, row.Name, row.SourceUrl, row.LicenceStatedAt, row.CheckedOn, row.Type];
             requiredValues.ShouldAllBe(
                 value => !string.IsNullOrWhiteSpace(value) && !value.StartsWith(PlaceholderPrefix, StringComparison.Ordinal),

@@ -38,7 +38,8 @@ quoted licence text.
 ## Re-running
 
 Run from the repository root (Git Bash). `<download>` is the extracted `free-exercise-db-main`
-folder.
+folder. `<staging>` is any folder outside the repo where you keep the other downloads; step 2
+expects the hero photo from Wikimedia Commons saved in its `wikimedia` subfolder.
 
 ```bash
 # 1. Exercise photos -> wwwroot/images/exercises/<slug>/0.webp, 1.webp (480 px wide, quality 0.8).

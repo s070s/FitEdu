@@ -29,7 +29,7 @@
       "licenceStatedAt": "https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md",
       "checkedOn": "2026-10-12",
       "type": "image/webp",
-      "notes": "1200x675, rendered by tools/assets/render-brand-images.mjs from images/exercises/<slug>/0.webp. Repository-wide Unlicense, credit \"free-exercise-db contributors\" (as for images/exercises)"
+      "notes": "1200x675, rendered by tools/assets/render-brand-images.mjs --photos from the original Free Exercise DB JPGs of the download (frame 0.jpg; the star-jump cover uses 1.jpg, mid-jump). Repository-wide Unlicense, credit \"free-exercise-db contributors\" (as for images/exercises)"
     },
     {
       "glob": "images/og-home.jpg",
