@@ -22,14 +22,13 @@ public class LandingServiceTests
 
     private readonly ApplicationDbContext _db = DbContextFactory.CreateInMemory();
     private readonly IFileStorage _fileStorage = Substitute.For<IFileStorage>();
-    private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
     private LandingService NewService()
     {
         var reviews = new CourseReviewService(_db, Substitute.For<INotificationDispatcher>(), NullLogger<CourseReviewService>.Instance);
         var courses = new CourseService(_db, Substitute.For<ISubscriptionService>(), Substitute.For<ICertificateService>(),
             reviews, NullLogger<CourseService>.Instance);
-        return new LandingService(_db, courses, _fileStorage, _cache);
+        return new LandingService(_db, courses, _fileStorage, new MemoryCache(new MemoryCacheOptions()));
     }
 
     [Fact]
