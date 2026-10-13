@@ -94,8 +94,15 @@
     transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
 }
 
+/* Touch screens with inline links (tablets in landscape) get the full 44 px target. */
+@media (pointer: coarse) {
+    .site-links ::deep .site-link {
+        min-height: var(--tap-min);
+    }
+}
+
 /* Tablets in landscape and small laptops: tighter links so the row fits beside the tools
-   (the search folds to an icon below 1200 px, see SiteSearchBox.razor.css). */
+   (the search folds to an icon below 1280 px, see SiteSearchBox.razor.css). */
 @media (min-width: 992px) and (max-width: 1199.98px) {
     .site-links {
         gap: 0;

@@ -1,6 +1,6 @@
 @implements IDisposable
 
-@* Wide screens (1200 px and up): an inline search field. Smaller screens: an icon button that
+@* Wide screens (1280 px and up): an inline search field. Smaller screens: an icon button that
    opens the field and its results as a panel under the header. *@
 <div class="site-search @(_expanded ? "site-search--expanded" : "")"
      @onfocusin="HandleFocusIn" @onfocusout="HandleFocusOut" tabindex="-1">
