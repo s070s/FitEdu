@@ -6,10 +6,12 @@ using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Pages;
+using FitEdu.Web.Services;
 using FitEdu.Web.Shared.Components.Data;
 using FitEdu.Web.Shared.Components.Layout;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -25,20 +27,23 @@ namespace FitEdu.Web.Tests;
 public class AuthAndSiteChromeTests : BunitContext
 {
     private const string ValidPassword = "Password1";
+    private const string RegisterEmail = "maria@fitedu.local";
 
     private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly IWebHostEnvironment _environment = Substitute.For<IWebHostEnvironment>();
+    private readonly LocalizedIdentityErrorDescriber _errorDescriber = new();
 
     public AuthAndSiteChromeTests()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en");
         CultureInfo.CurrentUICulture = new CultureInfo("en");
 
-        var environment = Substitute.For<IWebHostEnvironment>();
-        environment.EnvironmentName.Returns("Production");
+        _environment.EnvironmentName.Returns("Production");
 
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
-        Services.AddSingleton(environment);
+        Services.AddSingleton(_environment);
+        Services.AddSingleton<IdentityErrorDescriber>(_errorDescriber);
         // Register scrolls its result into view after a submit.
         JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
         Services.AddSingleton(Substitute.For<IHttpClientFactory>());
@@ -159,10 +164,27 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_InDevelopment_ShowsTheTranslatedResultNotTheServerMessage()
+    {
+        _environment.EnvironmentName.Returns("Development");
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = true, Message = "Raw server message" });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var result = page.Find(".register-success .alert-success").TextContent;
+        result.ShouldContain(SuccessMessagesRes.RegistrationSuccess);
+        result.ShouldNotContain("Raw server message");
+    }
+
+    [Fact]
     public void Register_ServerError_ShowsAnAlertRightAboveTheSubmitButton()
     {
+        var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
         _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
-            new AuthResponseDto { Success = false, Message = "failed", Errors = ["Email 'maria@fitedu.local' is already taken."] });
+            new AuthResponseDto { Success = false, Message = "failed", Errors = [emailTaken] });
         var page = Render<Register>();
 
         FillRequiredRegisterFields(page);
@@ -171,10 +193,27 @@ public class AuthAndSiteChromeTests : BunitContext
         var feedback = page.Find("form .register-errors");
         feedback.GetAttribute("role").ShouldBe("alert");
         feedback.TextContent.ShouldContain(ErrorMessagesRes.EmailTakenError);
-        feedback.TextContent.ShouldNotContain("already taken");
+        feedback.TextContent.ShouldNotContain(emailTaken);
         feedback.NextElementSibling!.GetAttribute("type").ShouldBe("submit");
         // The phone user tapped at the bottom edge, so the alert is scrolled into view.
         JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+    }
+
+    [Fact]
+    public void Register_EmailTakenInGreek_ShowsTheShortGreekMessage()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Errors = [emailTaken] });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var feedback = page.Find("form .register-errors").TextContent;
+        feedback.ShouldContain("Η διεύθυνση email είναι ήδη εγγεγραμένη");
+        feedback.ShouldNotContain(emailTaken);
     }
 
     [Fact]
@@ -260,7 +299,7 @@ public class AuthAndSiteChromeTests : BunitContext
     {
         page.Find("#firstName").Change("Maria");
         page.Find("#lastName").Change("Papadopoulou");
-        page.Find("#email").Change("maria@fitedu.local");
+        page.Find("#email").Change(RegisterEmail);
         page.Find("#password").Change(ValidPassword);
         page.Find("#confirmPassword").Change(ValidPassword);
         page.Find("#gdprConsent").Change(true);

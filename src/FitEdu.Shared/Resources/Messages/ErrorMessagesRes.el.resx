@@ -309,4 +309,28 @@
   <data name="Certificate_PdfUnavailable" xml:space="preserve">
     <value>Το PDF του πιστοποιητικού δεν είναι διαθέσιμο αυτή τη στιγμή. Δοκίμασε ξανά αργότερα.</value>
   </data>
+  <data name="IdentityPasswordTooShortFormat" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} χαρακτήρες.</value>
+  </data>
+  <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα ψηφίο (0-9).</value>
+  </data>
+  <data name="IdentityPasswordRequiresLower" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα πεζό γράμμα (a-z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresUpper" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα κεφαλαίο γράμμα (A-Z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα σύμβολο, όπως ! ή #.</value>
+  </data>
+  <data name="IdentityPasswordRequiresUniqueCharsFormat" xml:space="preserve">
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} διαφορετικούς χαρακτήρες.</value>
+  </data>
+  <data name="IdentityDuplicateEmailFormat" xml:space="preserve">
+    <value>Το email {0} είναι ήδη εγγεγραμμένο.</value>
+  </data>
+  <data name="IdentityInvalidEmailFormat" xml:space="preserve">
+    <value>Το email {0} δεν είναι έγκυρο.</value>
+  </data>
 </root>

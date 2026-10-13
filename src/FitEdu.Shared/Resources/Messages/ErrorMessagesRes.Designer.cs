@@ -635,5 +635,77 @@ namespace FitEdu.Shared.Resources.Messages {
                 return ResourceManager.GetString("Certificate_PdfUnavailable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least {0} characters..
+        /// </summary>
+        public static string IdentityPasswordTooShortFormat {
+            get {
+                return ResourceManager.GetString("IdentityPasswordTooShortFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one digit (0-9)..
+        /// </summary>
+        public static string IdentityPasswordRequiresDigit {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresDigit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one lowercase letter (a-z)..
+        /// </summary>
+        public static string IdentityPasswordRequiresLower {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresLower", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one uppercase letter (A-Z)..
+        /// </summary>
+        public static string IdentityPasswordRequiresUpper {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresUpper", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least one symbol, such as ! or #..
+        /// </summary>
+        public static string IdentityPasswordRequiresNonAlphanumeric {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresNonAlphanumeric", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your password needs at least {0} different characters..
+        /// </summary>
+        public static string IdentityPasswordRequiresUniqueCharsFormat {
+            get {
+                return ResourceManager.GetString("IdentityPasswordRequiresUniqueCharsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The email {0} is already registered..
+        /// </summary>
+        public static string IdentityDuplicateEmailFormat {
+            get {
+                return ResourceManager.GetString("IdentityDuplicateEmailFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The email {0} is not valid..
+        /// </summary>
+        public static string IdentityInvalidEmailFormat {
+            get {
+                return ResourceManager.GetString("IdentityInvalidEmailFormat", resourceCulture);
+            }
+        }
     }
 }

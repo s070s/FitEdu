@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
@@ -18,6 +19,7 @@ public partial class Register : IDisposable
     [Inject] private IWebHostEnvironment Env { get; set; } = default!;
     [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private IdentityErrorDescriber ErrorDescriber { get; set; } = default!;
 
     // RegisterRequest.DateOfBirth is now DateTime? default to 2000-01-01 as requested
     private RegisterRequestDto registerRequest = new() { DateOfBirth = new DateTime(2000, 1, 1) };
@@ -112,7 +114,8 @@ public partial class Register : IDisposable
 
         if (result.Success)
         {
-            successMessage = result.Message ?? SuccessMessagesRes.RegistrationSuccess;
+            // Always our own translated text, never the server's message.
+            successMessage = SuccessMessagesRes.RegistrationSuccess;
             registerRequest = new()
             {
                 DateOfBirth = new DateTime(2000, 1, 1)
@@ -134,9 +137,11 @@ public partial class Register : IDisposable
                                   || e?.Contains("UserName", StringComparison.OrdinalIgnoreCase) == true))
                     .ToList();
 
-                if (errors.Any(e => e.Contains("already taken") || e.Contains("duplicate") || e.Contains("exists")))
+                // Matched on the describer's own (translated) text, so it works in every language.
+                var emailTakenText = ErrorDescriber.DuplicateEmail(registeredEmail).Description;
+                if (errors.Contains(emailTakenText))
                 {
-                    // The translated message says it all; Identity's own text is English only.
+                    // The short translated message says it all.
                     errorMessage = ErrorMessagesRes.EmailTakenError;
                     errors.Clear();
                 }

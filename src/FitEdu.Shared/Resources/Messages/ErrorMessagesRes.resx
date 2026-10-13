@@ -309,4 +309,28 @@
   <data name="Certificate_PdfUnavailable" xml:space="preserve">
     <value>The certificate PDF isn't available right now. Please try again later.</value>
   </data>
+  <data name="IdentityPasswordTooShortFormat" xml:space="preserve">
+    <value>Your password needs at least {0} characters.</value>
+  </data>
+  <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
+    <value>Your password needs at least one digit (0-9).</value>
+  </data>
+  <data name="IdentityPasswordRequiresLower" xml:space="preserve">
+    <value>Your password needs at least one lowercase letter (a-z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresUpper" xml:space="preserve">
+    <value>Your password needs at least one uppercase letter (A-Z).</value>
+  </data>
+  <data name="IdentityPasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Your password needs at least one symbol, such as ! or #.</value>
+  </data>
+  <data name="IdentityPasswordRequiresUniqueCharsFormat" xml:space="preserve">
+    <value>Your password needs at least {0} different characters.</value>
+  </data>
+  <data name="IdentityDuplicateEmailFormat" xml:space="preserve">
+    <value>The email {0} is already registered.</value>
+  </data>
+  <data name="IdentityInvalidEmailFormat" xml:space="preserve">
+    <value>The email {0} is not valid.</value>
+  </data>
 </root>
