@@ -269,7 +269,7 @@ The public exercise library (published exercises only). Photos are served from `
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips) | No |
+| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips). Public for both scopes because the guest course catalogue shows the chips; for assessments a guest learns only category names and counts, while the assessments stay members-only | No |
 
 ### Certificates — `api/certificates`
 

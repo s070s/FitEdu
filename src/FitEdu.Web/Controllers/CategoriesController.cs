@@ -8,8 +8,9 @@ using FitEdu.Web.Startup;
 namespace FitEdu.Web.Controllers;
 
 /// <summary>
-/// Category discovery for browse/filter chips. The read is public, because the course catalogue
-/// that shows the chips is open to guests.
+/// Category discovery for browse/filter chips. The read is public for every scope, because the
+/// course catalogue that shows the chips is open to guests; for scope=assessments it gives away only
+/// category names and how many published assessments each has, never the assessments themselves.
 /// </summary>
 [ApiController]
 [Route("api/categories")]
