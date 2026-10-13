@@ -220,6 +220,24 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We could not find a certificate with this verification ID. Check the link, or ask the holder to share it again..
+        /// </summary>
+        public static string VerificationNotFoundLead {
+            get {
+                return ResourceManager.GetString("VerificationNotFoundLead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This certificate has been revoked and is no longer valid..
+        /// </summary>
+        public static string VerificationRevokedLead {
+            get {
+                return ResourceManager.GetString("VerificationRevokedLead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate Verification.
         /// </summary>
         public static string VerificationTitle {

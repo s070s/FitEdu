@@ -24,6 +24,7 @@ public class RemainingPagesTests : BunitContext
     private static readonly Guid ValidId = Guid.NewGuid();
     private static readonly Guid RevokedId = Guid.NewGuid();
     private static readonly Guid UnreachableId = Guid.NewGuid();
+    private static readonly Guid UnknownId = Guid.NewGuid();
 
     private readonly ICertificateConsumer _certificateConsumer = Substitute.For<ICertificateConsumer>();
     private readonly IAdminAnalyticsConsumer _analyticsConsumer = Substitute.For<IAdminAnalyticsConsumer>();
@@ -42,6 +43,8 @@ public class RemainingPagesTests : BunitContext
         _certificateConsumer.VerifyAsync(RevokedId, Arg.Any<string>()).Returns(
             new CertificateVerificationDto(false, null, null, null, "Revoked", "This certificate was revoked."));
         _certificateConsumer.VerifyAsync(UnreachableId, Arg.Any<string>()).Returns((CertificateVerificationDto?)null);
+        _certificateConsumer.VerifyAsync(UnknownId, Arg.Any<string>()).Returns(
+            new CertificateVerificationDto(false, null, null, null, null, "Certificate not found."));
     }
 
     [Fact]
@@ -77,13 +80,22 @@ public class RemainingPagesTests : BunitContext
     }
 
     [Fact]
-    public void VerifyCertificate_RevokedCertificate_ShowsServerMessage()
+    public void VerifyCertificate_RevokedCertificate_ShowsLocalizedRevokedMessage()
     {
         var page = Render<VerifyCertificate>(parameters => parameters.Add(p => p.VerificationId, RevokedId));
 
         page.Find(".status-panel").ClassList.ShouldContain("status-panel--danger");
         page.Find(".status-panel h1").TextContent.ShouldBe(CertificateRes.VerificationInvalid);
-        page.Find(".status-panel__lead").TextContent.ShouldBe("This certificate was revoked.");
+        page.Find(".status-panel__lead").TextContent.ShouldBe(CertificateRes.VerificationRevokedLead);
+    }
+
+    [Fact]
+    public void VerifyCertificate_UnknownId_ShowsLocalizedNotFoundMessageInsteadOfTheApiText()
+    {
+        var page = Render<VerifyCertificate>(parameters => parameters.Add(p => p.VerificationId, UnknownId));
+
+        page.Find(".status-panel").ClassList.ShouldContain("status-panel--danger");
+        page.Find(".status-panel__lead").TextContent.ShouldBe(CertificateRes.VerificationNotFoundLead);
     }
 
     [Fact]

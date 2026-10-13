@@ -155,6 +155,12 @@
 	<data name="VerificationInvalid" xml:space="preserve">
 		<value>Invalid or Revoked Certificate</value>
 	</data>
+	<data name="VerificationNotFoundLead" xml:space="preserve">
+		<value>We could not find a certificate with this verification ID. Check the link, or ask the holder to share it again.</value>
+	</data>
+	<data name="VerificationRevokedLead" xml:space="preserve">
+		<value>This certificate has been revoked and is no longer valid.</value>
+	</data>
 	<data name="FieldRecipient" xml:space="preserve">
 		<value>Recipient</value>
 	</data>
