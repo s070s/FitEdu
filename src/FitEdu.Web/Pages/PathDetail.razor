@@ -121,8 +121,8 @@
                             @if (IsStepOpen(step))
                             {
                                 <a class="step-link stretched-link" href="@CourseUrl(step)">
-                                    <span>@PathRes.GoToCourse<span class="visually-hidden">: @step.CourseTitle</span></span>
-                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                                    @* The no-break space keeps the arrow on the line of the last word when the label wraps. *@
+                                    <span class="step-link__label">@PathRes.GoToCourse<span class="visually-hidden">: @step.CourseTitle</span><span class="step-link__arrow">&nbsp;<span class="bi bi-arrow-right" aria-hidden="true"></span></span></span>
                                 </a>
                             }
                             else

@@ -130,6 +130,22 @@ public class PathPagesTests : BunitContext
     }
 
     [Fact]
+    public void StepLink_KeepsTheArrowOnTheLineOfTheLastWord()
+    {
+        ReturnPath(Step(FirstCourseId, 1));
+
+        var page = RenderDetail();
+
+        // In a narrow column the label wraps; the arrow is part of the label text, joined to the
+        // last word by a no-break space (kept unbroken by .step-link__arrow), so it never sits alone.
+        var label = page.Find("a.step-link > .step-link__label");
+        label.TextContent.ShouldContain(PathRes.GoToCourse);
+        var arrow = label.QuerySelector(".step-link__arrow")!;
+        arrow.TextContent.ShouldBe("\u00A0");
+        arrow.QuerySelector(".bi-arrow-right").ShouldNotBeNull();
+    }
+
+    [Fact]
     public void SignedIn_HeroShowsTheRingAndContinuesWithTheNextCourse()
     {
         _authorization.SetAuthorized("alice@fitedu.local");
