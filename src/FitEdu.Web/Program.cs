@@ -125,15 +125,16 @@ app.MapInfrastructureEndpoints();
 
 // Target of UseStatusCodePagesWithReExecute above — branches on the ORIGINAL request path
 // (available via IStatusCodeReExecuteFeature, since this endpoint itself is always reached at
-// /__status-code-dispatch) so /api/* keeps its JSON contract while page routes get the Blazor
-// NotFound component. Not meant for direct navigation. Re-execution preserves the ORIGINAL HTTP
+// /__status-code-dispatch) so /api/* keeps its JSON contract while page routes get the whole App:
+// no route matches this path, so the Router shows its NotFoundPage inside the shell (head, styles,
+// tab title, navigation). Rendering NotFound on its own would send a bare fragment. Not meant for direct navigation. Re-execution preserves the ORIGINAL HTTP
 // method (e.g. a POST that 403'd), so this must accept any verb — Map(), not MapGet().
 app.Map("/__status-code-dispatch", (HttpContext ctx) =>
 {
     var originalPath = ctx.Features.Get<IStatusCodeReExecuteFeature>()?.OriginalPath;
     return originalPath is not null && originalPath.StartsWith("/api", StringComparison.OrdinalIgnoreCase)
         ? Results.Problem(statusCode: ctx.Response.StatusCode)
-        : (IResult)new RazorComponentResult<FitEdu.Web.Pages.NotFound>();
+        : (IResult)new RazorComponentResult<App>();
 }).AllowAnonymous().ExcludeFromDescription();
 
 app.MapControllers();

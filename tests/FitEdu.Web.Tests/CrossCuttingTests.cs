@@ -70,6 +70,21 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task UnknownRoute_RendersInsideTheAppShell_WithItsOwnTitle()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/this-route-does-not-exist-e2e");
+        var body = await response.Content.ReadAsStringAsync();
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        // A bare component fragment has no head: no styles, no navigation and an empty tab title.
+        body.ShouldContain("<title>Page not found</title>");
+        body.ShouldContain("css/app.css");
+        body.ShouldContain("_framework/blazor.web.js");
+    }
+
+    [Fact]
     public async Task UnknownApiRoute_StaysJsonProblemDetails()
     {
         var client = _factory.CreateClient();
