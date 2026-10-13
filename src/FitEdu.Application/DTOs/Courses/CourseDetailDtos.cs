@@ -22,7 +22,8 @@ public record CourseDetailDto(
     string? Equipment = null,
     int? EstimatedWeeks = null,
     int? SessionsPerWeek = null,
-    string? CoverImageUrl = null
+    string? CoverImageUrl = null,
+    string? CategoryName = null
 );
 
 /// <summary>
@@ -37,7 +38,8 @@ public record ModuleDto(
 );
 
 /// <summary>
-/// Lesson summary for module listing.
+/// Lesson summary for module listing. ExerciseCount counts the published exercises the lesson
+/// prescribes, the same ones the lesson page shows.
 /// </summary>
 public record LessonSummaryDto(
     Guid Id,
@@ -45,5 +47,6 @@ public record LessonSummaryDto(
     int ContentType,
     int? DurationMinutes,
     int SortOrder,
-    bool IsCompleted
+    bool IsCompleted,
+    int ExerciseCount = 0
 );

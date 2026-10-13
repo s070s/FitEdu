@@ -128,6 +128,7 @@ public class CourseService(
 
         var course = await db.Courses
             .AsNoTracking()
+            .Include(c => c.Category)
             .Include(c => c.Modules.OrderBy(m => m.SortOrder))
                 .ThenInclude(m => m.Lessons.OrderBy(l => l.SortOrder))
             .Include(c => c.Enrollments.Where(e => e.UserId == userId))
@@ -143,6 +144,7 @@ public class CourseService(
             .Where(lc => lc.UserId == userId && allLessonIds.Contains(lc.LessonId))
             .Select(lc => lc.LessonId)
             .ToHashSetAsync(cancellationToken);
+        var exerciseCountByLessonId = await CountPublishedExercisesAsync(allLessonIds, cancellationToken);
 
         var totalLessons = allLessonIds.Count;
         var completedLessons = completedLessonIds.Count;
@@ -168,7 +170,8 @@ public class CourseService(
                     (int)GetContentType(l),
                     l.DurationMinutes,
                     l.SortOrder,
-                    completedLessonIds.Contains(l.Id)
+                    completedLessonIds.Contains(l.Id),
+                    exerciseCountByLessonId.GetValueOrDefault(l.Id, 0)
                 )).ToList()
             )).ToList(),
             course.RequiredTier,
@@ -177,9 +180,22 @@ public class CourseService(
             course.Equipment,
             course.EstimatedWeeks,
             course.SessionsPerWeek,
-            ExerciseImagePaths.CourseCoverUrl(course.CoverExerciseSlug)
+            ExerciseImagePaths.CourseCoverUrl(course.CoverExerciseSlug),
+            course.Category is null ? null : Localized.Pick(isEl, course.Category.NameEn, course.Category.NameEl)
         );
     }
+
+    /// <summary>
+    /// How many published exercises each lesson prescribes, in one grouped query. Unpublished
+    /// exercises are left out, as on the lesson page (<see cref="PublishedPrescriptions"/>).
+    /// </summary>
+    private async Task<Dictionary<Guid, int>> CountPublishedExercisesAsync(List<Guid> lessonIds, CancellationToken cancellationToken) =>
+        await db.LessonExercises
+            .AsNoTracking()
+            .Where(prescription => lessonIds.Contains(prescription.LessonId) && prescription.Exercise.IsPublished)
+            .GroupBy(prescription => prescription.LessonId)
+            .Select(group => new { LessonId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(row => row.LessonId, row => row.Count, cancellationToken);
 
     public async Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default)
     {

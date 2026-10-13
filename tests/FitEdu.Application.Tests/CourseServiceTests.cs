@@ -291,6 +291,59 @@ public class CourseServiceTests
     }
 
     [Fact]
+    public async Task GetCourseDetail_CountsEachLessonsPublishedExercises()
+    {
+        // The lesson page leaves out unpublished exercises, so the course outline counts the same ones.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 2);
+        var firstLesson = course.Modules.First().Lessons.First();
+        var squat = NewExercise("squat", "Squat");
+        var pushUp = NewExercise("pushups", "Pushups");
+        var hidden = NewExercise("hidden", "Hidden");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(squat, pushUp, hidden);
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 1 });
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = pushUp.Id, SortOrder = 2 });
+        firstLesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = hidden.Id, SortOrder = 3 });
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!;
+
+        var exerciseCounts = detail.Modules.Single().Lessons.Select(lesson => lesson.ExerciseCount);
+        string.Join("|", exerciseCounts).ShouldBe("2|0");
+    }
+
+    [Fact]
+    public async Task GetCourseDetail_CarriesTheCategoryNameInThePageLanguage()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength", NameEl = "Δύναμη" };
+        var course = CourseWithLessons("C", 0);
+        course.CategoryId = category.Id;
+        db.Categories.Add(category);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "el"))!.CategoryName.ShouldBe("Δύναμη");
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!.CategoryName.ShouldBe("Strength");
+    }
+
+    [Fact]
+    public async Task GetCourseDetail_NoCategory_LeavesTheCategoryNameEmpty()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 0);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        (await svc.GetCourseDetailAsync(UserId, course.Id, "en"))!.CategoryName.ShouldBeNull();
+    }
+
+    [Fact]
     public async Task GetCourseDetail_Missing_ReturnsNull()
     {
         await using var db = DbContextFactory.CreateInMemory();
