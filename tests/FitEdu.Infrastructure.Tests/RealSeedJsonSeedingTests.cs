@@ -19,8 +19,6 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
 {
     // exercises.json rows with photos (see src/FitEdu.Shared/JSON/Exercises/README.md).
     private const int ExpectedExerciseCount = 873;
-    private const int ExpectedCourseCount = 19;
-    private const int ExpectedAssessmentCount = 19;
     private const int ExpectedPathCount = 4;
     private const int ExpectedStepsPerPath = 4;
     private const int ExpectedTestimonialCount = 6;
@@ -55,7 +53,7 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
         var moduleCount = courses.Sum(course => course.Modules.Count);
         var lessonCount = courses.Sum(course => course.Modules.Sum(module => module.Lessons.Count));
 
-        (await Db.Courses.CountAsync()).ShouldBe(ExpectedCourseCount);
+        (await Db.Courses.CountAsync()).ShouldBe(SeedJsonFiles.ExpectedCourseCount);
         (await Db.Modules.CountAsync()).ShouldBe(moduleCount);
         (await Db.Lessons.CountAsync()).ShouldBe(lessonCount);
     }
@@ -94,7 +92,7 @@ public sealed class RealSeedJsonSeedingTests : IClassFixture<RealSeedJsonDatabas
 
         var seededKeys = await Db.AssessmentDefinitions.Select(definition => definition.Key).ToListAsync();
 
-        seededKeys.Count.ShouldBe(ExpectedAssessmentCount);
+        seededKeys.Count.ShouldBe(SeedJsonFiles.ExpectedAssessmentCount);
         seededKeys.Order(StringComparer.Ordinal).ShouldBe(fileKeys);
     }
 

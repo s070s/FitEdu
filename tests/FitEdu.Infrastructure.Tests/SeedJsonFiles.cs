@@ -10,6 +10,10 @@ namespace FitEdu.Infrastructure.Tests;
 /// </summary>
 internal static class SeedJsonFiles
 {
+    // How many course and assessment files the seed ships; the content gates and the seeding tests share these.
+    public const int ExpectedCourseCount = 19;
+    public const int ExpectedAssessmentCount = 19;
+
     private const string JsonFilePattern = "*.json";
     private const string GreekFragmentFilePattern = "*.el.json";
 

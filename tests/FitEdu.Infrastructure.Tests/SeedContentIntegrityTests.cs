@@ -22,10 +22,9 @@ namespace FitEdu.Infrastructure.Tests;
 [Trait("Category", "SeedContent")]
 public partial class SeedContentIntegrityTests
 {
-    private const int ExpectedCourseCount = 19;
-    private const int ExpectedAssessmentCount = 19;
     private const int ExpectedBlogArticleCount = 4;
     private const string RatingQuestionType = "rating";
+    private const string AssessmentSchemaVersion = "1.0";
     private const string EnglishResxPattern = "*.resx";
     private const string GreekResxSuffix = ".el.resx";
     private const string AllFilesPattern = "*";
@@ -48,6 +47,12 @@ public partial class SeedContentIntegrityTests
         ["Nutrition"] = "Διατροφή",
         ["Recovery"] = "Αποκατάσταση",
         ["Performance"] = "Απόδοση"
+    };
+
+    // The question types the student form renders ("multi-select" is an older spelling it still reads).
+    private static readonly HashSet<string> KnownQuestionTypes = new(StringComparer.Ordinal)
+    {
+        RatingQuestionType, "choice", "multiselect", "multi-select", "text"
     };
 
     // The blog tag vocabulary (tags stay English keywords in both languages).
@@ -83,7 +88,7 @@ public partial class SeedContentIntegrityTests
 
         var problems = courseFiles.SelectMany(FindCourseHeaderProblems).ToList();
 
-        courseFiles.Count.ShouldBe(ExpectedCourseCount);
+        courseFiles.Count.ShouldBe(SeedJsonFiles.ExpectedCourseCount);
         problems.ShouldBeEmpty();
     }
 
@@ -144,6 +149,30 @@ public partial class SeedContentIntegrityTests
             .ToList();
 
         problems.ShouldBeEmpty("reps show unchanged in both languages: keep numbers and unit symbols, move words to notes/notesEl");
+    }
+
+    [Fact]
+    public void Courses_EquipmentAndPrescriptionsFitTheirColumns()
+    {
+        // SQLite ignores HasMaxLength, so a too-long value would only fail on SQL Server.
+        var equipmentMaxLength = ColumnMaxLength<Course>(nameof(Course.Equipment));
+        var repsMaxLength = ColumnMaxLength<LessonExercise>(nameof(LessonExercise.Reps));
+        var notesMaxLength = ColumnMaxLength<LessonExercise>(nameof(LessonExercise.NotesEn));
+        var notesElMaxLength = ColumnMaxLength<LessonExercise>(nameof(LessonExercise.NotesEl));
+
+        var problems = SeedJsonFiles.LoadCourses()
+            .Where(file => file.Content.Equipment?.Length > equipmentMaxLength)
+            .Select(file => $"{file.Name}: equipment is {file.Content.Equipment!.Length} characters, limit {equipmentMaxLength}")
+            .ToList();
+        foreach (var prescription in FindPrescriptions())
+        {
+            var location = $"{prescription.Location} / {prescription.Exercise.Slug}";
+            problems.AddRange(FindTooLong(location, "reps", prescription.Exercise.Reps, repsMaxLength));
+            problems.AddRange(FindTooLong(location, "notes", prescription.Exercise.Notes, notesMaxLength));
+            problems.AddRange(FindTooLong(location, "notesEl", prescription.Exercise.NotesEl, notesElMaxLength));
+        }
+
+        problems.ShouldBeEmpty();
     }
 
     [Fact]
@@ -244,6 +273,25 @@ public partial class SeedContentIntegrityTests
     }
 
     [Fact]
+    public void GreekOverlay_NamesAndInstructionsFitTheirColumns()
+    {
+        // The seeder keeps a row English when its Greek text is too long, so check the files themselves.
+        var nameMaxLength = ColumnMaxLength<Exercise>(nameof(Exercise.NameEl));
+        var instructionsMaxLength = ColumnMaxLength<Exercise>(nameof(Exercise.InstructionsEl));
+        var problems = new List<string>();
+
+        foreach (var row in SeedJsonFiles.LoadGreekOverlay())
+        {
+            // Stored the way ExerciseSeeder joins the steps.
+            var instructionsEl = string.Join(Exercise.InstructionSeparator, row.InstructionsEl);
+            problems.AddRange(FindTooLong(row.Slug, "nameEl", row.NameEl, nameMaxLength));
+            problems.AddRange(FindTooLong(row.Slug, "instructionsEl", instructionsEl, instructionsMaxLength));
+        }
+
+        problems.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void GreekOverlay_ExerciseNamesUseSentenceCase()
     {
         var problems = SeedJsonFiles.LoadGreekOverlay()
@@ -263,7 +311,7 @@ public partial class SeedContentIntegrityTests
 
         var problems = assessmentFiles.SelectMany(FindAssessmentProblems).ToList();
 
-        assessmentFiles.Count.ShouldBe(ExpectedAssessmentCount);
+        assessmentFiles.Count.ShouldBe(SeedJsonFiles.ExpectedAssessmentCount);
         problems.ShouldBeEmpty();
     }
 
@@ -274,10 +322,17 @@ public partial class SeedContentIntegrityTests
     {
         var problems = new List<string>();
 
-        foreach (var article in BlogSeedData.SeedArticles.Where(article => !string.IsNullOrWhiteSpace(article.CoverImageUrl)))
+        foreach (var article in BlogSeedData.SeedArticles)
         {
+            // Every seeded article has a cover, so the checks below can never pass on an empty list.
+            var coverUrl = article.CoverImageUrl;
+            if (string.IsNullOrWhiteSpace(coverUrl))
+            {
+                problems.Add($"{article.Slug}: has no cover");
+                continue;
+            }
+
             // A relative path renders broken on nested pages, so covers must start at the site root.
-            var coverUrl = article.CoverImageUrl!;
             if (!coverUrl.StartsWith('/'))
             {
                 problems.Add($"{article.Slug}: cover '{coverUrl}' is not a site-root path");
@@ -289,6 +344,7 @@ public partial class SeedContentIntegrityTests
                 problems.Add($"{article.Slug}: cover '{coverUrl}' is missing under wwwroot");
         }
 
+        BlogSeedData.SeedArticles.ShouldNotBeEmpty();
         problems.ShouldBeEmpty();
     }
 
@@ -568,6 +624,8 @@ public partial class SeedContentIntegrityTests
     {
         if (ReadText(schema, "id") != key)
             yield return $"{location}: schema id does not equal the Key";
+        if (ReadText(schema, "version") != AssessmentSchemaVersion)
+            yield return $"{location}: schema version should be '{AssessmentSchemaVersion}'";
         if (string.IsNullOrWhiteSpace(ReadText(schema, "titleEl")))
             yield return $"{location}: schema titleEl is empty";
 
@@ -592,7 +650,11 @@ public partial class SeedContentIntegrityTests
         if (string.IsNullOrWhiteSpace(ReadText(question, "labelEl")))
             yield return $"{location}: labelEl is empty";
 
-        var isRating = ReadText(question, "type") == RatingQuestionType;
+        var questionType = ReadText(question, "type") ?? string.Empty;
+        if (!KnownQuestionTypes.Contains(questionType))
+            yield return $"{location}: unknown question type '{questionType}'";
+
+        var isRating = questionType == RatingQuestionType;
         var hasRatingLabels = !string.IsNullOrWhiteSpace(ReadText(question, "minLabelEl"))
             && !string.IsNullOrWhiteSpace(ReadText(question, "maxLabelEl"));
         if (isRating && !hasRatingLabels)
@@ -602,6 +664,20 @@ public partial class SeedContentIntegrityTests
         var optionCount = ReadArray(question, "options").Count;
         if (optionCount > 0 && ReadArray(question, "optionsEl").Count != optionCount)
             yield return $"{location}: optionsEl must have one entry per option";
+    }
+
+    /// <summary>The column limit the EF model sets (HasMaxLength), the same source the seeders read.</summary>
+    private static int ColumnMaxLength<TEntity>(string propertyName)
+    {
+        using var db = DbContextFactory.CreateInMemory();
+        var maxLength = db.Model.FindEntityType(typeof(TEntity))?.FindProperty(propertyName)?.GetMaxLength();
+        return maxLength ?? throw new InvalidOperationException($"{typeof(TEntity).Name}.{propertyName} has no max length");
+    }
+
+    private static IEnumerable<string> FindTooLong(string location, string field, string? value, int maxLength)
+    {
+        if (value?.Length > maxLength)
+            yield return $"{location}: {field} is {value.Length} characters, limit {maxLength}";
     }
 
     private static string? ReadText(JsonElement element, string propertyName) =>
