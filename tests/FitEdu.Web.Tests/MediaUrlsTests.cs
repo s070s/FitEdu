@@ -9,6 +9,7 @@ public class MediaUrlsTests
 {
     [Theory]
     [InlineData("blog/covers/a.jpg", "/api/media/blog/covers/a.jpg")]
+    [InlineData("testimonials/avatars/alice.jpg", "/api/media/testimonials/avatars/alice.jpg")]
     [InlineData(" testimonials/avatars/b.png ", "/api/media/testimonials/avatars/b.png")]
     public void Resolve_UploadedPath_PointsAtTheMediaEndpoint(string storedPath, string expected)
     {

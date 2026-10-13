@@ -1,12 +1,13 @@
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Extensions;
 using System.Net.Http.Json;
 
 namespace FitEdu.Web.Consumers;
 
 /// <summary>
 /// HTTP consumer for the public testimonials API.
-/// Transforms the raw AvatarPath into a fully-qualified media URL so Blazor
-/// components can use it directly as an img src without knowing the API base address.
+/// Turns the raw AvatarPath into a browser URL (see <see cref="MediaUrls"/>) so Blazor
+/// components can use it directly as an img src.
 /// </summary>
 public class TestimonialConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider tokenProvider) : ApiClientBase(http, tokenProvider), ITestimonialConsumer
 {
@@ -20,28 +21,14 @@ public class TestimonialConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenPr
         if (items is null)
             return null;
 
-        var apiBase = Http.BaseAddress?.ToString().TrimEnd('/') ?? string.Empty;
-
         return items.Select(t => new TestimonialDto(
             t.Id,
             t.FullName,
             t.RoleOrTitle,
             t.CompanyOrContext,
             t.QuoteText,
-            BuildAvatarUrl(t.AvatarPath, apiBase),
+            MediaUrls.Resolve(t.AvatarPath),
             t.DisplayOrder
         )).ToList();
-    }
-
-    private static string? BuildAvatarUrl(string? avatarPath, string apiBase)
-    {
-        if (string.IsNullOrWhiteSpace(avatarPath))
-            return null;
-
-        // If it's already a full URL, return as-is
-        if (avatarPath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            return avatarPath;
-
-        return $"{apiBase}/api/media/{avatarPath.TrimStart('/')}";
     }
 }

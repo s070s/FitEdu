@@ -33,7 +33,8 @@ public class TestimonialsIntegrationTests : IClassFixture<CustomWebAppFactory>
             {
                 Id = Guid.NewGuid(), FullName = fullName, DisplayOrder = 99, IsActive = true,
                 RoleOrTitle = "Runner", RoleOrTitleEl = "Δρομέας",
-                QuoteText = "Great programme.", QuoteTextEl = "Υπέροχο πρόγραμμα."
+                QuoteText = "Great programme.", QuoteTextEl = "Υπέροχο πρόγραμμα.",
+                AvatarPath = "testimonials/avatars/bilingual.jpg"
             });
             await db.SaveChangesAsync();
         });
@@ -46,6 +47,8 @@ public class TestimonialsIntegrationTests : IClassFixture<CustomWebAppFactory>
         greek.QuoteText.ShouldBe("Υπέροχο πρόγραμμα.");
         english.RoleOrTitle.ShouldBe("Runner");
         english.QuoteText.ShouldBe("Great programme.");
+        // Uploaded avatars resolve to the site-relative media endpoint, same rule as blog covers.
+        english.AvatarUrl.ShouldBe("/api/media/testimonials/avatars/bilingual.jpg");
     }
 
     [Fact]

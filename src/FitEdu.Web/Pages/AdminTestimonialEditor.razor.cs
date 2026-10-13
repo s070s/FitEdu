@@ -3,6 +3,7 @@ using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Pages;
@@ -58,7 +59,7 @@ public partial class AdminTestimonialEditor
                 _displayOrder = item.DisplayOrder;
                 _isActive = item.IsActive;
                 _avatarPath = item.AvatarPath;
-                _avatarPreviewUrl = BuildPreviewUrl(item.AvatarPath);
+                _avatarPreviewUrl = MediaUrls.Resolve(item.AvatarPath);
             }
         }
 
@@ -78,7 +79,7 @@ public partial class AdminTestimonialEditor
             if (path is not null)
             {
                 _avatarPath = path;
-                _avatarPreviewUrl = BuildPreviewUrl(path);
+                _avatarPreviewUrl = MediaUrls.Resolve(path);
             }
             else
             {
@@ -173,20 +174,4 @@ public partial class AdminTestimonialEditor
     /// <summary>Blank text is saved as null, so the public page falls back to the English text.</summary>
     private static string? TrimToNull(string value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-
-    /// <summary>
-    /// Builds a preview URL for the avatar using the API media endpoint.
-    /// IConfiguration is injected globally via _Imports.razor.
-    /// </summary>
-    private string? BuildPreviewUrl(string? path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-            return null;
-
-        if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            return path;
-
-        var apiBase = Configuration["ApiBaseUrl"]?.TrimEnd('/') ?? string.Empty;
-        return $"{apiBase}/api/media/{path.TrimStart('/')}";
-    }
 }
