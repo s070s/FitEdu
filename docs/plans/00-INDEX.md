@@ -49,8 +49,9 @@ of what was fixed lives in git (`git log docs/plans/`).
 > consciously deferred to keep the phase bounded and are the only outstanding polish — zero-risk, pick up any time:
 > - Mechanical sweep of hardcoded px/ms/hex literals → design tokens across the ~28 remaining `.razor.css`
 >   files (plus `shared-components.css`); do it file-by-file with a visual diff.
-> - One micro-interaction: nav-link underline scale-in. (The card hover lift shipped with the fitness redesign,
->   2026-10-13: `.card-surface` hover in `shared-components.css`.)
+> - One micro-interaction: nav-link underline scale-in. (A partial card hover shipped with the fitness redesign,
+>   2026-10-13: a 2px lift plus a border-colour change, only on `a.card-surface` and `.card-surface--interactive`
+>   in `shared-components.css`; no shadow crossfade, and legacy `.card` surfaces still have no hover.)
 > - `SkeletonBlock` swap on the list pages still using `LoadingSpinner` (spinner is correct for sub-second
 >   loads per the plan's Decision 5, but several are paged lists that would benefit); 13 pages use `SkeletonBlock`
 >   as of 2026-10-13 — grep `LoadingSpinner` under `Pages/` for the rest.
