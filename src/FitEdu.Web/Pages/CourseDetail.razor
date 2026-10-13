@@ -322,7 +322,7 @@ else
             </section>
         </div>
 
-        <aside class="course-cta card-surface sticky-bottom-bar" aria-labelledby="course-cta-title">
+        <aside class="course-cta card-surface sticky-bottom-bar@(_isGuest ? " course-cta--guest" : "")" aria-labelledby="course-cta-title">
             <h2 id="course-cta-title" class="course-cta__title">@(_course.IsEnrolled ? CourseRes.ProgressTitle : CourseRes.StartTitle)</h2>
 
             @if (_course.IsEnrolled)

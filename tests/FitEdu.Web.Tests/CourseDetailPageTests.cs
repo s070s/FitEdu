@@ -285,6 +285,22 @@ public class CourseDetailPageTests : BunitContext
         _subscriptionService.DidNotReceive().GetStatusAsync();
     }
 
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public void Dock_KeepsRoomForTheAssistantLauncherOnlyForMembers(bool signedIn, bool expectGuestDock)
+    {
+        // The assistant launcher sits at the dock's right end, but only signed-in users get it.
+        UseCulture("en");
+        if (!signedIn)
+            _authorization.SetNotAuthorized();
+        UseCourse(Course());
+
+        var page = RenderPage();
+
+        page.Find("aside.course-cta").ClassList.Contains("course-cta--guest").ShouldBe(expectGuestDock);
+    }
+
     [Fact]
     public void Guest_Greek_SignUpTextIsGreek()
     {
