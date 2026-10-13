@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using FitEdu.Application.ApiServices;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
@@ -222,6 +224,47 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
         var description = NewTools(_library.Db).GetToolsForUser(UserId, "el").Single(tool => tool.Name == "search_exercises").Description;
         description.ShouldContain(string.Join(", ", AssistantTools.MuscleFilterValues));
         description.ShouldContain(string.Join(", ", AssistantTools.EquipmentFilterValues));
+    }
+
+    [Fact]
+    public async Task SearchExercisesTool_InvokedWithOnlyAMuscle_UsesDefaultsForTheOtherInputs()
+    {
+        // The model calls the tool with only the inputs it needs, e.g. {"muscle":"lats"}.
+        var tool = FindTool(NewTools(_library.Db), "search_exercises");
+
+        var result = await tool.InvokeAsync(new AIFunctionArguments { ["muscle"] = "chest" });
+
+        var hits = JsonSerializer.SerializeToElement(result);
+        hits.GetArrayLength().ShouldBe(5); // the default cap
+        hits.EnumerateArray().ShouldAllBe(hit => hit.GetRawText().Contains("chest") && hit.GetRawText().Contains("/exercises/"));
+        RequiredInputs(tool).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchCoursesTool_InvokedWithOnlyAQuery_UsesTheDefaultCap()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        for (var i = 0; i < 7; i++)
+            db.Courses.Add(NewCourse($"Mobility Flow {i}"));
+        await db.SaveChangesAsync();
+        var tool = FindTool(NewTools(db), "search_courses");
+
+        var result = await tool.InvokeAsync(new AIFunctionArguments { ["query"] = "Mobility" });
+
+        JsonSerializer.SerializeToElement(result).GetArrayLength().ShouldBe(5);
+        RequiredInputs(tool).ShouldBe(["query"]); // a course search always needs a keyword
+    }
+
+    private static AIFunction FindTool(AssistantTools tools, string name) =>
+        tools.GetToolsForUser(UserId, "en").OfType<AIFunction>().Single(tool => tool.Name == name);
+
+    /// <summary>The inputs the JSON schema sent to the model marks as required.</summary>
+    private static List<string?> RequiredInputs(AIFunction tool)
+    {
+        if (!tool.JsonSchema.TryGetProperty("required", out var required))
+            return [];
+
+        return required.EnumerateArray().Select(input => input.GetString()).ToList();
     }
 
     [Fact]

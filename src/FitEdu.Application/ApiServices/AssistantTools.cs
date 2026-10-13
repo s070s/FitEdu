@@ -78,11 +78,15 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
                 "get_subscription_status",
                 "Returns the current user's subscription plan, tier and expiry."),
             AIFunctionFactory.Create(
-                (string query, int? maxResults, CancellationToken ct) => SearchCoursesAsync(query, maxResults, isEl, ct),
+                // Defaults mark an input as optional in the schema the model sees; without one,
+                // a call that leaves the input out fails before the method runs.
+                (string query, int? maxResults = null, CancellationToken ct = default) =>
+                    SearchCoursesAsync(query, maxResults, isEl, ct),
                 "search_courses",
                 "Searches published courses by a keyword in title or description. maxResults is optional (default 5, max 5)."),
             AIFunctionFactory.Create(
-                (string query, string? muscle, string? equipment, int? maxResults, CancellationToken ct) =>
+                (string query = "", string? muscle = null, string? equipment = null, int? maxResults = null,
+                    CancellationToken ct = default) =>
                     SearchExercisesAsync(query, muscle, equipment, maxResults, language, ct),
                 "search_exercises",
                 SearchExercisesDescription),
