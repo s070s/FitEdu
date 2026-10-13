@@ -105,3 +105,19 @@ public record ChatMessageExportDto(
     string Content,
     DateTime SentAt
 );
+
+/// <summary>
+/// The member's training at a glance for the home dashboard. WorkoutsCompleted counts completed
+/// lessons, MinutesTrained adds up their planned minutes, and CurrentStreak counts consecutive UTC
+/// days with a completion up to today (or yesterday, while today's workout is still to come).
+/// CurrentCourseId is the most recently enrolled programme that is still in progress; Goal and Level
+/// are the member's own choices, which the dashboard recommends courses for.
+/// </summary>
+public record TrainingStatsDto(
+    int WorkoutsCompleted,
+    int MinutesTrained,
+    int CurrentStreak,
+    Guid? CurrentCourseId,
+    FitnessGoal? Goal,
+    CourseLevel? Level
+);

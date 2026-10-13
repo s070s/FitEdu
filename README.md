@@ -201,6 +201,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | `POST` | `api/profile/avatar` | Upload avatar | Yes |
 | `GET` | `api/profile/avatar` | Get avatar | Yes |
 | `POST` | `api/profile/change-password` | Change password | Yes |
+| `GET` | `api/profile/training-stats` | Home dashboard stats: workouts completed, minutes trained, daily streak (UTC days), the programme to continue, goal and level | Yes |
 
 ### Courses — `api/courses`
 
@@ -263,6 +264,14 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 |--------|-------|-------------|------|
 | `GET` | `api/paths` | Published learning paths for the catalog (`?lang=en`) | No |
 | `GET` | `api/paths/{id}` | Path detail with ordered steps and, for signed-in users, per-step progress (locked / next / done) | No |
+
+### Landing — `api/landing`
+
+Numbers and showcase for the guest home page, which cannot read the member-only course catalog.
+
+| Method | Route | Description | Auth |
+|--------|-------|-------------|------|
+| `GET` | `api/landing` | Published course and lesson counts, exercise and member counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`) | No |
 
 ### Scheduled Sessions — `api/sessions`
 

@@ -229,4 +229,37 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
 
         export!.Profile.Goal.ShouldBe(nameof(FitnessGoal.Strength));
     }
+
+    [Fact]
+    public async Task GetTrainingStats_Anonymous_Returns401()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync("/api/profile/training-stats")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetTrainingStats_CountsTheMembersCompletedWorkouts()
+    {
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await _factory.SeedAsync(async db =>
+        {
+            var course = new Course { Id = Guid.NewGuid(), TitleEn = $"Stats-{Guid.NewGuid():N}", IsPublished = true };
+            var module = new Module { Id = Guid.NewGuid(), TitleEn = "Week 1", SortOrder = 1, CourseId = course.Id };
+            var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "Workout 1", SortOrder = 1, DurationMinutes = 25 };
+            module.Lessons.Add(lesson);
+            course.Modules.Add(module);
+            db.Courses.Add(course);
+            db.Enrollments.Add(new Enrollment { UserId = userId, CourseId = course.Id });
+            db.LessonCompletions.Add(new LessonCompletion { UserId = userId, LessonId = lesson.Id });
+            await db.SaveChangesAsync();
+        });
+
+        var stats = await client.GetFromJsonAsync<TrainingStatsDto>("/api/profile/training-stats");
+
+        stats!.WorkoutsCompleted.ShouldBe(1);
+        stats.MinutesTrained.ShouldBe(25);
+        stats.CurrentStreak.ShouldBe(1);
+        stats.CurrentCourseId.ShouldNotBeNull();
+    }
 }

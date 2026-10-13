@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using FitEdu.Application.ApiInterfaces;
@@ -119,6 +120,9 @@ public static class ServiceRegistrationExtensions
         // Scoped so it shares the circuit's single CallService hub connection for presence state.
         builder.Services.AddScoped<PresenceService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<ILandingService, LandingService>();
+        // The clock for date-based rules (the training streak); tests swap in a fixed one.
+        builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddScoped<IAssessmentService, AssessmentService>();
         builder.Services.AddScoped<AvatarChangedNotifier>();
         // Circuit-scoped bearer-token provider used by ApiClientBase so consumers authenticate
@@ -422,6 +426,8 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddHttpClient<IAdminBlogConsumer, AdminBlogConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<ITestimonialConsumer, TestimonialConsumer>(Configure);
+        // Public home page API (anonymous), so no SsrApiHandler.
+        builder.Services.AddHttpClient<ILandingConsumer, LandingConsumer>(Configure);
         builder.Services.AddHttpClient<IAdminTestimonialConsumer, AdminTestimonialConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IChatService, ChatService>(Configure)

@@ -43,4 +43,7 @@ public class ProfileConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvid
 
     public Task<bool> DeleteAccountAsync()
         => DeleteAsync("api/profile");
+
+    public Task<TrainingStatsDto?> GetTrainingStatsAsync()
+        => GetAsync<TrainingStatsDto>("api/profile/training-stats");
 }

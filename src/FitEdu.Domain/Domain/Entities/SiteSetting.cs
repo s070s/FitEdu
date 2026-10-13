@@ -6,6 +6,9 @@ namespace FitEdu.Domain.Entities;
 /// </summary>
 public class SiteSetting
 {
+    /// <summary>Key of the admin-uploaded home hero photo (a file path in storage).</summary>
+    public const string LandingBackgroundImageKey = "LandingBackgroundImage";
+
     public Guid Id { get; set; }
 
     /// <summary>
