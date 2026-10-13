@@ -396,6 +396,11 @@ public static class ServiceRegistrationExtensions
         // StreamChatAsync already catches connection failures itself.
         void ConfigureStreaming(HttpClient c) => c.BaseAddress = new Uri(selfBase);
 
+        // Every client below calls this app's own API, so each one sends the member's UI language:
+        // the API then answers (messages, Identity errors) in the language of the page.
+        builder.Services.AddTransient<AcceptLanguageHandler>();
+        builder.Services.ConfigureHttpClientDefaults(http => http.AddHttpMessageHandler<AcceptLanguageHandler>());
+
         // Named client for dev-only endpoints (no auth handler needed)
         builder.Services.AddHttpClient("SelfClient", Configure);
 
