@@ -99,31 +99,91 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="CourseDefault" xml:space="preserve">
-		<value>Μάθημα</value>
+		<value>Πρόγραμμα</value>
 	</data>
 	<data name="LoadingCourse" xml:space="preserve">
-		<value>Φόρτωση μαθήματος...</value>
+		<value>Φόρτωση προγράμματος...</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
 		<value>Πίσω στα Μαθήματα</value>
 	</data>
 	<data name="CourseNotFound" xml:space="preserve">
-		<value>Το μάθημα δεν βρέθηκε.</value>
+		<value>Το πρόγραμμα δεν βρέθηκε.</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
-		<value>{0} / {1} μαθήματα ολοκληρώθηκαν ({2}%)</value>
+		<value>{0} από {1} μαθήματα ολοκληρώθηκαν ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>Μάθημα Ολοκληρώθηκε!</value>
+		<value>Ολοκλήρωσες το πρόγραμμα</value>
 	</data>
 	<data name="Enrolling" xml:space="preserve">
-		<value>Εγγραφή...</value>
+		<value>Γίνεται εγγραφή…</value>
 	</data>
 	<data name="EnrollInThisCourse" xml:space="preserve">
-		<value>Εγγραφή σε αυτό το Μάθημα</value>
+		<value>Γράψου στο πρόγραμμα</value>
 	</data>
 	<data name="MinutesShort" xml:space="preserve">
-		<value>λεπ</value>
+		<value>λεπ.</value>
+	</data>
+	<data name="OutcomesTitle" xml:space="preserve">
+		<value>Τι θα δουλέψεις</value>
+	</data>
+	<data name="OutlineTitle" xml:space="preserve">
+		<value>Η δομή του προγράμματος</value>
+	</data>
+	<data name="ModuleCountOne" xml:space="preserve">
+		<value>1 ενότητα</value>
+	</data>
+	<data name="ModulesCountFormat" xml:space="preserve">
+		<value>{0} ενότητες</value>
+	</data>
+	<data name="LessonCountOne" xml:space="preserve">
+		<value>1 μάθημα</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 άσκηση</value>
+	</data>
+	<data name="ExercisesCountFormat" xml:space="preserve">
+		<value>{0} ασκήσεις</value>
+	</data>
+	<data name="LessonKind_Workout" xml:space="preserve">
+		<value>Προπόνηση</value>
+	</data>
+	<data name="LessonKind_Video" xml:space="preserve">
+		<value>Βίντεο</value>
+	</data>
+	<data name="LessonKind_Reading" xml:space="preserve">
+		<value>Ανάγνωση</value>
+	</data>
+	<data name="LessonKind_Pdf" xml:space="preserve">
+		<value>Οδηγός PDF</value>
+	</data>
+	<data name="ModuleProgressFormat" xml:space="preserve">
+		<value>{0}/{1} ολοκληρώθηκαν</value>
+	</data>
+	<data name="ProgressTitle" xml:space="preserve">
+		<value>Η πρόοδός σου</value>
+	</data>
+	<data name="StartTitle" xml:space="preserve">
+		<value>Ξεκίνα σήμερα</value>
+	</data>
+	<data name="UpNext" xml:space="preserve">
+		<value>Επόμενο</value>
+	</data>
+	<data name="ContinueTraining" xml:space="preserve">
+		<value>Συνέχισε την προπόνηση</value>
+	</data>
+	<data name="StartTraining" xml:space="preserve">
+		<value>Ξεκίνα την προπόνηση</value>
+	</data>
+	<data name="TrainAgain" xml:space="preserve">
+		<value>Προπονήσου ξανά</value>
+	</data>
+	<data name="IncludedInPlan" xml:space="preserve">
+		<value>Περιλαμβάνεται στο πλάνο σου</value>
+	</data>
+	<data name="JoinToUnlock" xml:space="preserve">
+		<value>Γράψου στο πρόγραμμα για να ανοίξεις τα μαθήματά του.</value>
 	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
 		<value>Μαθήματα - FitEdu</value>
@@ -159,7 +219,7 @@
 		<value>Επόμ.</value>
 	</data>
 	<data name="RequiresPlanFormat" xml:space="preserve">
-		<value>Αυτό το μάθημα απαιτεί το πλάνο {0} ή ανώτερο.</value>
+		<value>Περιλαμβάνεται στο πλάνο {0} και πάνω.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
 		<value>Αναβάθμιση Πλάνου</value>

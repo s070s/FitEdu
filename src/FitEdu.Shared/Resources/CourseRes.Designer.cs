@@ -97,7 +97,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} / {1} lessons completed ({2}%).
+        ///   Looks up a localized string similar to {0} of {1} lessons done ({2}%).
         /// </summary>
         public static string ProgressFormat {
             get {
@@ -106,7 +106,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Course Completed!
+        ///   Looks up a localized string similar to Programme completed.
         /// </summary>
         public static string CourseCompleted {
             get {
@@ -115,7 +115,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Enrolling...
+        ///   Looks up a localized string similar to Joining….
         /// </summary>
         public static string Enrolling {
             get {
@@ -124,7 +124,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Enroll in This Course.
+        ///   Looks up a localized string similar to Join the programme.
         /// </summary>
         public static string EnrollInThisCourse {
             get {
@@ -138,6 +138,186 @@ namespace FitEdu.Shared.Resources {
         public static string MinutesShort {
             get {
                 return ResourceManager.GetString("MinutesShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What you&apos;ll train.
+        /// </summary>
+        public static string OutcomesTitle {
+            get {
+                return ResourceManager.GetString("OutcomesTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Programme outline.
+        /// </summary>
+        public static string OutlineTitle {
+            get {
+                return ResourceManager.GetString("OutlineTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 module.
+        /// </summary>
+        public static string ModuleCountOne {
+            get {
+                return ResourceManager.GetString("ModuleCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} modules.
+        /// </summary>
+        public static string ModulesCountFormat {
+            get {
+                return ResourceManager.GetString("ModulesCountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 lesson.
+        /// </summary>
+        public static string LessonCountOne {
+            get {
+                return ResourceManager.GetString("LessonCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 exercise.
+        /// </summary>
+        public static string ExerciseCountOne {
+            get {
+                return ResourceManager.GetString("ExerciseCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} exercises.
+        /// </summary>
+        public static string ExercisesCountFormat {
+            get {
+                return ResourceManager.GetString("ExercisesCountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Workout.
+        /// </summary>
+        public static string LessonKind_Workout {
+            get {
+                return ResourceManager.GetString("LessonKind_Workout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Video.
+        /// </summary>
+        public static string LessonKind_Video {
+            get {
+                return ResourceManager.GetString("LessonKind_Video", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading.
+        /// </summary>
+        public static string LessonKind_Reading {
+            get {
+                return ResourceManager.GetString("LessonKind_Reading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PDF guide.
+        /// </summary>
+        public static string LessonKind_Pdf {
+            get {
+                return ResourceManager.GetString("LessonKind_Pdf", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}/{1} done.
+        /// </summary>
+        public static string ModuleProgressFormat {
+            get {
+                return ResourceManager.GetString("ModuleProgressFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your progress.
+        /// </summary>
+        public static string ProgressTitle {
+            get {
+                return ResourceManager.GetString("ProgressTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start today.
+        /// </summary>
+        public static string StartTitle {
+            get {
+                return ResourceManager.GetString("StartTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Up next.
+        /// </summary>
+        public static string UpNext {
+            get {
+                return ResourceManager.GetString("UpNext", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Continue training.
+        /// </summary>
+        public static string ContinueTraining {
+            get {
+                return ResourceManager.GetString("ContinueTraining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start training.
+        /// </summary>
+        public static string StartTraining {
+            get {
+                return ResourceManager.GetString("StartTraining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Train again.
+        /// </summary>
+        public static string TrainAgain {
+            get {
+                return ResourceManager.GetString("TrainAgain", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Included in your plan.
+        /// </summary>
+        public static string IncludedInPlan {
+            get {
+                return ResourceManager.GetString("IncludedInPlan", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join the programme to open its lessons..
+        /// </summary>
+        public static string JoinToUnlock {
+            get {
+                return ResourceManager.GetString("JoinToUnlock", resourceCulture);
             }
         }
 
@@ -241,7 +421,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to This course requires the {0} plan or higher.
+        ///   Looks up a localized string similar to Included in the {0} plan and above..
         /// </summary>
         public static string RequiresPlanFormat {
             get {

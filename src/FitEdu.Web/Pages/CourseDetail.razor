@@ -1,220 +1,405 @@
 @page "/courses/{CourseId:guid}"
 @attribute [Authorize]
+@using FitEdu.Web.Extensions
+@* Course page: cover hero with the programme chips, "What you'll train", the module outline
+   (one <details> per module, lessons with their kind, minutes and exercise count) and the reviews.
+   The action card (.course-cta) comes last: a dock pinned above the tab bar on phones, a sticky
+   side card from 768 px. *@
 
 <PageTitle>@(_course?.Title ?? CourseRes.CourseDefault) - FitEdu</PageTitle>
 
 @if (_loading)
 {
-    <LoadingSpinner Label="@CourseRes.LoadingCourse" />
+    <div class="page">
+        <LoadingSpinner Label="@CourseRes.LoadingCourse" />
+    </div>
 }
-else if (_error is not null)
+else if (_error is not null || _course is null)
 {
-    <p class="text-danger">@_error</p>
-    <button class="btn btn-primary me-2" @onclick="LoadAllAsync">@GlobalRes.TryAgain</button>
-    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
-}
-else if (_course is null)
-{
-    <p>@CourseRes.CourseNotFound</p>
-    <button class="btn btn-secondary" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
+    <div class="page course-state">
+        <p class="text-danger">@(_error ?? CourseRes.CourseNotFound)</p>
+        <div class="course-state__actions">
+            @if (_error is not null)
+            {
+                <button type="button" class="btn-cta" @onclick="LoadAllAsync">@GlobalRes.TryAgain</button>
+            }
+            <a class="btn-cta btn-cta--ghost" href="/courses">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses
+            </a>
+        </div>
+    </div>
 }
 else
 {
-    <div class="course-header">
-        <button class="btn-link" @onclick="GoBack"><span class="bi bi-arrow-left me-1" aria-hidden="true"></span>@CourseRes.BackToCourses</button>
-        <h1>@_course.Title</h1>
-        @if (!string.IsNullOrEmpty(_course.Description))
-        {
-            <div class="description">@((MarkupString)_course.Description)</div>
-        }
+    <div class="page course-page">
+        <header class="course-hero">
+            <a class="course-hero__back" href="/courses">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses
+            </a>
 
-        <div class="progress-section">
+            <div class="course-hero__media">
+                <CourseCover ImageUrl="@_course.CoverImageUrl" CategoryName="@_course.CategoryName" Eager="true">
+                    @if (_course.RequiredTier != SubscriptionTier.Free)
+                    {
+                        <span class="tier-badge course-hero__tier tier-@_course.RequiredTier.ToString().ToLowerInvariant()">@_course.RequiredTier</span>
+                    }
+                </CourseCover>
+            </div>
+
+            <div class="course-hero__text">
+                @if (!string.IsNullOrEmpty(_course.CategoryName))
+                {
+                    <span class="eyebrow course-hero__eyebrow">
+                        <span class="bi @CategoryIcons.For(_course.CategoryName)" aria-hidden="true"></span> @_course.CategoryName
+                    </span>
+                }
+
+                <h1 class="course-hero__title">@_course.Title</h1>
+
+                <div class="chip-row course-hero__chips">
+                    <LevelBadge Level="@_course.Level" />
+                    <span class="chip">
+                        <span class="bi bi-bullseye" aria-hidden="true"></span>
+                        <span class="visually-hidden">@CourseRes.Goal: </span>@CourseLabels.Goal(_course.Goal)
+                    </span>
+                    @if (ScheduleText() is { } schedule)
+                    {
+                        <span class="chip">
+                            <span class="bi bi-calendar-week" aria-hidden="true"></span> @schedule
+                        </span>
+                    }
+                    @if (_equipmentLabels.Count > 0)
+                    {
+                        <span class="chip course-hero__equipment">
+                            <span class="bi bi-tools" aria-hidden="true"></span>
+                            <span class="visually-hidden">@CourseRes.Equipment: </span>@string.Join(", ", _equipmentLabels)
+                        </span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(_course.Description))
+                {
+                    <div class="description course-hero__description">@((MarkupString)_course.Description)</div>
+                }
+
+                <ul class="course-hero__facts">
+                    <li>
+                        <span class="bi bi-layers" aria-hidden="true"></span>
+                        @CountText(_modules.Count, CourseRes.ModuleCountOne, CourseRes.ModulesCountFormat)
+                    </li>
+                    <li>
+                        <span class="bi bi-collection-play" aria-hidden="true"></span>
+                        @CountText(_course.TotalLessons, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)
+                    </li>
+                    @if (_totalMinutes > 0)
+                    {
+                        <li>
+                            <span class="bi bi-clock" aria-hidden="true"></span> @_totalMinutes @CourseRes.MinutesShort
+                        </li>
+                    }
+                    @if (_reviewsData?.Summary is { ReviewCount: > 0 } heroRating)
+                    {
+                        <li class="course-hero__rating">
+                            <StarRating Value="heroRating.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, heroRating.AverageRating, heroRating.ReviewCount)" />
+                            <span aria-hidden="true">@heroRating.AverageRating.ToString("0.0") (@heroRating.ReviewCount)</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </header>
+
+        <div class="course-main">
+            @if (_outcomes.Count > 0)
+            {
+                <section class="course-section" aria-labelledby="course-outcomes-title">
+                    <h2 id="course-outcomes-title" class="course-section__title">@CourseRes.OutcomesTitle</h2>
+                    <ul class="course-outcomes">
+                        @foreach (var outcome in _outcomes)
+                        {
+                            <li class="course-outcomes__item">
+                                <span class="bi bi-check2-circle course-outcomes__icon" aria-hidden="true"></span>
+                                <div class="course-outcomes__text">@((MarkupString)outcome)</div>
+                            </li>
+                        }
+                    </ul>
+                </section>
+            }
+
+            <section class="course-section" aria-labelledby="course-outline-title">
+                <div class="course-section__head">
+                    <h2 id="course-outline-title" class="course-section__title">@CourseRes.OutlineTitle</h2>
+                    @if (!_course.IsEnrolled)
+                    {
+                        <p class="course-outline__note">
+                            <span class="bi bi-lock" aria-hidden="true"></span> @CourseRes.JoinToUnlock
+                        </p>
+                    }
+                </div>
+
+                <div class="modules-list">
+                    @for (var index = 0; index < _modules.Count; index++)
+                    {
+                        var module = _modules[index];
+                        var moduleNumber = (index + 1).ToString("D2");
+                        var isDone = _course.IsEnrolled && IsModuleDone(module);
+                        var minutes = ModuleMinutes(module);
+                        <details class="module card-surface @(isDone ? "module--done" : "")" open="@(module.Id == _openModuleId)" @key="module.Id">
+                            <summary class="module__summary">
+                                <span class="module__index" aria-hidden="true">
+                                    @if (isDone)
+                                    {
+                                        <span class="bi bi-check-lg"></span>
+                                    }
+                                    else
+                                    {
+                                        @moduleNumber
+                                    }
+                                </span>
+                                <span class="module__heading">
+                                    <span class="module__title">@module.Title</span>
+                                    <span class="module__meta">
+                                        <span>@CountText(module.Lessons.Count, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
+                                        @if (minutes > 0)
+                                        {
+                                            <span>@minutes @CourseRes.MinutesShort</span>
+                                        }
+                                        @if (_course.IsEnrolled)
+                                        {
+                                            <span class="module__progress">@string.Format(CourseRes.ModuleProgressFormat, CompletedCount(module), module.Lessons.Count)</span>
+                                        }
+                                    </span>
+                                </span>
+                                <span class="bi bi-chevron-down module__chevron" aria-hidden="true"></span>
+                            </summary>
+
+                            <div class="module__body">
+                                @if (!string.IsNullOrEmpty(module.Description))
+                                {
+                                    <div class="module-description">@((MarkupString)module.Description)</div>
+                                }
+                                <ol class="lessons-list">
+                                    @foreach (var lesson in module.Lessons)
+                                    {
+                                        var kind = KindOf(lesson);
+                                        var isNext = _course.IsEnrolled && lesson.Id == _nextLesson?.Id;
+                                        <li @key="lesson.Id">
+                                            @* No href before enrolment: the row is then plain text, not a link. *@
+                                            <a class="lesson-item @(lesson.IsCompleted ? "completed" : "") @(isNext ? "lesson-item--next" : "")" href="@LessonHref(lesson)">
+                                                <span class="lesson-item__icon lesson-item__icon--@kind.ToString().ToLowerInvariant()" aria-hidden="true">
+                                                    <span class="bi @KindIcon(kind)"></span>
+                                                </span>
+                                                <span class="lesson-item__text">
+                                                    <span class="lesson-item__title">@lesson.Title</span>
+                                                    <span class="lesson-item__meta">
+                                                        @if (isNext)
+                                                        {
+                                                            <span class="lesson-item__next">@CourseRes.UpNext</span>
+                                                        }
+                                                        <span>@KindLabel(kind)</span>
+                                                        @if (lesson.DurationMinutes is { } lessonMinutes)
+                                                        {
+                                                            <span class="lesson-duration">@lessonMinutes @CourseRes.MinutesShort</span>
+                                                        }
+                                                        @if (lesson.ExerciseCount > 0)
+                                                        {
+                                                            <span class="lesson-exercises">@CountText(lesson.ExerciseCount, CourseRes.ExerciseCountOne, CourseRes.ExercisesCountFormat)</span>
+                                                        }
+                                                    </span>
+                                                </span>
+                                                <span class="lesson-item__status">
+                                                    @if (lesson.IsCompleted)
+                                                    {
+                                                        <span class="bi bi-check-circle-fill" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">@LessonRes.CompletedIndicator</span>
+                                                    }
+                                                    else if (_course.IsEnrolled)
+                                                    {
+                                                        <span class="bi bi-chevron-right" aria-hidden="true"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="bi bi-lock" aria-hidden="true"></span>
+                                                    }
+                                                </span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ol>
+                            </div>
+                        </details>
+                    }
+                </div>
+            </section>
+
+            <section class="course-section reviews-section" aria-labelledby="course-reviews-title">
+                <div class="course-section__head reviews-header">
+                    <h2 id="course-reviews-title" class="course-section__title">@ReviewRes.ReviewsTitle</h2>
+                    @if (_reviewsData?.Summary is { } summary)
+                    {
+                        <div class="reviews-summary">
+                            <StarRating Value="summary.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)" />
+                            <span>@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)</span>
+                        </div>
+                    }
+                </div>
+
+                @if (_course.IsEnrolled)
+                {
+                    @if (_showReviewForm)
+                    {
+                        <div class="review-form card-surface">
+                            <div class="card-surface__body">
+                                <h3 class="review-form__title">@(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)</h3>
+                                <div>
+                                    <label class="form-label" for="review-rating">@ReviewRes.RatingLabel</label>
+                                    <select id="review-rating" class="form-select rating-select" value="@_formRating"
+                                            @onchange="e => _formRating = int.Parse(e.Value!.ToString()!)">
+                                        @for (var i = 5; i >= 1; i--)
+                                        {
+                                            <option value="@i">@i ★</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" for="review-body">@ReviewRes.BodyLabel</label>
+                                    <textarea id="review-body" class="form-control" rows="4" maxlength="2000"
+                                              placeholder="@ReviewRes.BodyPlaceholder"
+                                              value="@_formBody" @oninput="e => _formBody = e.Value?.ToString() ?? string.Empty"></textarea>
+                                </div>
+                                @if (_reviewError is not null)
+                                {
+                                    <p class="text-danger" role="alert">@_reviewError</p>
+                                }
+                                <div class="review-form__actions">
+                                    <button type="button" class="btn-cta" disabled="@(_submittingReview || string.IsNullOrWhiteSpace(_formBody))" @onclick="SubmitReviewAsync">
+                                        @(_reviewsData?.MyReview is null ? ReviewRes.SubmitReview : ReviewRes.UpdateReview)
+                                    </button>
+                                    <button type="button" class="btn-cta btn-cta--ghost" @onclick="CloseReviewForm">@ReviewRes.Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @if (_reviewsData?.MyReview is { Status: "Pending" })
+                        {
+                            <p class="text-light-muted">@ReviewRes.MyReviewPending</p>
+                        }
+                        else if (_reviewsData?.MyReview is { Status: "Rejected" })
+                        {
+                            <p class="text-danger">@ReviewRes.MyReviewRejected</p>
+                        }
+                        <button type="button" class="btn-cta btn-cta--ghost review-open" @onclick="OpenReviewForm">
+                            <span class="bi bi-pencil" aria-hidden="true"></span>
+                            @(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)
+                        </button>
+                    }
+                }
+                else
+                {
+                    <p class="text-light-muted">@ReviewRes.EnrollToReview</p>
+                }
+
+                @if (_reviewsData is { Reviews.Count: > 0 })
+                {
+                    <div class="review-list">
+                        @foreach (var review in _reviewsData.Reviews)
+                        {
+                            <article class="review-item" @key="review.Id">
+                                <div class="review-item-header">
+                                    <span class="review-author">@review.AuthorName</span>
+                                    <StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" />
+                                </div>
+                                <p class="review-body">@review.Body</p>
+                                <span class="review-date">@review.CreatedAt.ToLocalTime().ToString("d")</span>
+                            </article>
+                        }
+                    </div>
+                }
+                else if (_reviewsData is not null)
+                {
+                    <p class="text-light-muted">@ReviewRes.NoReviewsYet</p>
+                }
+            </section>
+        </div>
+
+        <aside class="course-cta card-surface sticky-bottom-bar" aria-labelledby="course-cta-title">
+            <h2 id="course-cta-title" class="course-cta__title">@(_course.IsEnrolled ? CourseRes.ProgressTitle : CourseRes.StartTitle)</h2>
+
             @if (_course.IsEnrolled)
             {
-                <div class="progress-bar-container"
-                     role="progressbar"
-                     aria-valuenow="@_course.ProgressPercent"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     aria-label="@string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, _course.ProgressPercent)">
-                    <div class="progress-bar-fill" style="width: @(_course.ProgressPercent)%"></div>
+                <div class="course-cta__progress">
+                    <ProgressRing Value="@ProgressPercentRounded"
+                                  AriaLabel="@string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, ProgressPercentRounded)" />
+                    <div class="course-cta__status">
+                        @if (_course.IsCompleted)
+                        {
+                            <span class="completed-badge"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @CourseRes.CourseCompleted</span>
+                        }
+                        else
+                        {
+                            <span class="progress-text">@string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, ProgressPercentRounded)</span>
+                        }
+                        @if (_nextLesson is not null)
+                        {
+                            <span class="course-cta__next">
+                                <span class="course-cta__next-label">@CourseRes.UpNext</span>
+                                <span class="course-cta__next-title">@_nextLesson.Title</span>
+                            </span>
+                        }
+                    </div>
                 </div>
-                <span class="progress-text">
-                    @string.Format(CourseRes.ProgressFormat, _course.CompletedLessons, _course.TotalLessons, _course.ProgressPercent)
-                </span>
-                @if (_course.IsCompleted)
+                @if (ActionLesson is { } actionLesson)
                 {
-                    <span class="completed-badge"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @CourseRes.CourseCompleted</span>
+                    <a class="btn-cta course-cta__action" href="@(LessonPathPrefix + actionLesson.Id)">
+                        @ActionLabel <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                    </a>
                 }
             }
-            else if (_userTier < _course.RequiredTier)
+            else if (NeedsUpgrade)
             {
                 <div class="enroll-upgrade-notice">
+                    <span class="bi bi-lock-fill" aria-hidden="true"></span>
                     <p>@string.Format(CourseRes.RequiresPlanFormat, _course.RequiredTier)</p>
-                    <button class="btn btn-primary" @onclick="GoToPricing">@CourseRes.UpgradePlan</button>
                 </div>
+                <a class="btn-cta course-cta__action" href="/pricing">@CourseRes.UpgradePlan</a>
             }
             else
             {
-                <button class="btn btn-primary" @onclick="EnrollInCourse" disabled="@_enrolling">
+                <p class="course-cta__included">
+                    <span class="bi bi-check-circle-fill" aria-hidden="true"></span> @CourseRes.IncludedInPlan
+                </p>
+                <button type="button" class="btn-cta course-cta__action course-cta__enrol" @onclick="EnrollInCourse" disabled="@_enrolling">
                     @(_enrolling ? CourseRes.Enrolling : CourseRes.EnrollInThisCourse)
                 </button>
                 @if (_enrollError is not null)
                 {
-                    <div class="enroll-error-notice">
-                        <p class="text-danger">@_enrollError</p>
-                        <button class="btn btn-outline-primary btn-sm" @onclick="GoToPricing">@CourseRes.UpgradePlan</button>
+                    <div class="enroll-error-notice" role="alert">
+                        <p>@_enrollError</p>
+                        <a class="btn-cta btn-cta--ghost" href="/pricing">@CourseRes.UpgradePlan</a>
                     </div>
                 }
             }
-        </div>
-    </div>
-
-    <div class="modules-list">
-        @foreach (var module in _course.Modules.OrderBy(m => m.SortOrder))
-        {
-            var isExpanded = _expandedModules.Contains(module.Id);
-            <div class="card mb-3" @key="module.Id">
-                <div class="card-header d-flex justify-content-between align-items-center collapsible-header"
-                     role="button"
-                     tabindex="0"
-                     aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
-                     @onclick="() => ToggleModule(module.Id)"
-                     @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
-                    <span class="fw-semibold">@module.SortOrder. @module.Title</span>
-                    <i class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")"></i>
-                </div>
-                <div class="collapsible-body-wrapper @(isExpanded ? "expanded" : "collapsed")">
-                    <div class="collapsible-body-inner">
-                        <div class="card-body">
-                            @if (!string.IsNullOrEmpty(module.Description))
-                            {
-                                <div class="module-description">@((MarkupString)module.Description)</div>
-                            }
-                            <ul class="lessons-list">
-                                @foreach (var lesson in module.Lessons.OrderBy(l => l.SortOrder))
-                                {
-                                    <li class="lesson-item @(lesson.IsCompleted ? "completed" : "")"
-                                        role="button"
-                                        tabindex="0"
-                                        aria-label="@lesson.Title"
-                                        @onclick="() => ViewLesson(lesson.Id)"
-                                        @onkeydown="@(e => { if (e.IsActivationKey()) ViewLesson(lesson.Id); })">
-                                        <span class="lesson-icon" aria-hidden="true">
-                                            @if (lesson.IsCompleted)
-                                            {
-                                                <span class="bi bi-check-circle-fill"></span>
-                                            }
-                                            else if (lesson.ContentType == 2)
-                                            {
-                                                <span class="bi bi-play-circle"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="bi bi-file-earmark-text"></span>
-                                            }
-                                        </span>
-                                        <span class="lesson-title">@lesson.Title</span>
-                                        @if (lesson.DurationMinutes.HasValue)
-                                        {
-                                            <span class="lesson-duration">@lesson.DurationMinutes @CourseRes.MinutesShort</span>
-                                        }
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    <div class="reviews-section">
-        <div class="reviews-header">
-            <h2>@ReviewRes.ReviewsTitle</h2>
-            @if (_reviewsData?.Summary is { } summary)
-            {
-                <div class="reviews-summary">
-                    <StarRating Value="summary.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)" />
-                    <span>@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)</span>
-                </div>
-            }
-        </div>
-
-        @if (_course.IsEnrolled)
-        {
-            @if (_showReviewForm)
-            {
-                <div class="review-form card">
-                    <div class="card-body">
-                        <h3 class="h5">@(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)</h3>
-                        <div class="mb-2">
-                            <label class="form-label">@ReviewRes.RatingLabel</label>
-                            <select class="form-select" style="max-width:120px" value="@_formRating"
-                                    @onchange="e => _formRating = int.Parse(e.Value!.ToString()!)">
-                                @for (var i = 5; i >= 1; i--)
-                                {
-                                    <option value="@i">@i ★</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">@ReviewRes.BodyLabel</label>
-                            <textarea class="form-control" rows="4" maxlength="2000"
-                                      placeholder="@ReviewRes.BodyPlaceholder"
-                                      value="@_formBody" @oninput="e => _formBody = e.Value?.ToString() ?? string.Empty"></textarea>
-                        </div>
-                        @if (_reviewError is not null)
-                        {
-                            <p class="text-danger">@_reviewError</p>
-                        }
-                        <button class="btn btn-primary me-2" disabled="@(_submittingReview || string.IsNullOrWhiteSpace(_formBody))" @onclick="SubmitReviewAsync">
-                            @(_reviewsData?.MyReview is null ? ReviewRes.SubmitReview : ReviewRes.UpdateReview)
-                        </button>
-                        <button class="btn btn-secondary" @onclick="CloseReviewForm">@ReviewRes.Cancel</button>
-                    </div>
-                </div>
-            }
-            else
-            {
-                @if (_reviewsData?.MyReview is { Status: "Pending" })
-                {
-                    <p class="text-light-muted">@ReviewRes.MyReviewPending</p>
-                }
-                else if (_reviewsData?.MyReview is { Status: "Rejected" })
-                {
-                    <p class="text-danger">@ReviewRes.MyReviewRejected</p>
-                }
-                <button class="btn btn-outline-primary mb-3" @onclick="OpenReviewForm">
-                    @(_reviewsData?.MyReview is null ? ReviewRes.WriteReview : ReviewRes.EditReview)
-                </button>
-            }
-        }
-        else
-        {
-            <p class="text-light-muted">@ReviewRes.EnrollToReview</p>
-        }
-
-        @if (_reviewsData is { Reviews.Count: > 0 })
-        {
-            <div class="review-list">
-                @foreach (var review in _reviewsData.Reviews)
-                {
-                    <div class="review-item" @key="review.Id">
-                        <div class="review-item-header">
-                            <span class="review-author">@review.AuthorName</span>
-                            <StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" />
-                        </div>
-                        <p class="review-body">@review.Body</p>
-                        <span class="review-date">@review.CreatedAt.ToLocalTime().ToString("d")</span>
-                    </div>
-                }
-            </div>
-        }
-        else if (_reviewsData is not null)
-        {
-            <p class="text-light-muted">@ReviewRes.NoReviewsYet</p>
-        }
+        </aside>
     </div>
 }
 
+@code {
+    // Resource formats are filled in here, in the markup file, next to the text they build.
+
+    /// <summary>"1 lesson" or "3 lessons": the singular text for one, the plural format otherwise.</summary>
+    private static string CountText(int count, string singularText, string pluralFormat) =>
+        count == 1 ? singularText : string.Format(pluralFormat, count);
+
+    /// <summary>"8 weeks · 3× per week", either half alone, or null when the course has neither (as on CourseCard).</summary>
+    private string? ScheduleText()
+    {
+        var parts = new List<string>();
+        if (_course?.EstimatedWeeks is { } weeks)
+            parts.Add(string.Format(CourseRes.WeeksFormat, weeks));
+        if (_course?.SessionsPerWeek is { } sessions)
+            parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
+
+        return parts.Count == 0 ? null : string.Join(" · ", parts);
+    }
+}

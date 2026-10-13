@@ -68,7 +68,7 @@
     <value>{0} από 5 ({1} κριτικές)</value>
   </data>
   <data name="WriteReview" xml:space="preserve">
-    <value>Γράψτε μια κριτική</value>
+    <value>Γράψε μια κριτική</value>
   </data>
   <data name="EditReview" xml:space="preserve">
     <value>Επεξεργασία κριτικής</value>
@@ -77,10 +77,10 @@
     <value>Βαθμολογία</value>
   </data>
   <data name="BodyLabel" xml:space="preserve">
-    <value>Η κριτική σας</value>
+    <value>Η κριτική σου</value>
   </data>
   <data name="BodyPlaceholder" xml:space="preserve">
-    <value>Τι πιστεύετε για αυτό το μάθημα;</value>
+    <value>Τι γνώμη έχεις για αυτό το πρόγραμμα;</value>
   </data>
   <data name="SubmitReview" xml:space="preserve">
     <value>Υποβολή κριτικής</value>
@@ -92,16 +92,16 @@
     <value>Ακύρωση</value>
   </data>
   <data name="EnrollToReview" xml:space="preserve">
-    <value>Εγγραφείτε σε αυτό το μάθημα για να γράψετε κριτική.</value>
+    <value>Γράψου στο πρόγραμμα για να αφήσεις κριτική.</value>
   </data>
   <data name="MyReviewPending" xml:space="preserve">
-    <value>Η κριτική σας αναμένει έγκριση.</value>
+    <value>Η κριτική σου περιμένει έγκριση.</value>
   </data>
   <data name="MyReviewRejected" xml:space="preserve">
-    <value>Η κριτική σας δεν εγκρίθηκε. Μπορείτε να την επεξεργαστείτε και να την υποβάλετε ξανά.</value>
+    <value>Η κριτική σου δεν εγκρίθηκε. Μπορείς να την αλλάξεις και να τη στείλεις ξανά.</value>
   </data>
   <data name="SubmitError" xml:space="preserve">
-    <value>Αποτυχία υποβολής της κριτικής. Δοκιμάστε ξανά.</value>
+    <value>Δεν ήταν δυνατή η αποστολή της κριτικής σου. Δοκίμασε ξανά.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
     <value>Κριτικές Μαθημάτων</value>

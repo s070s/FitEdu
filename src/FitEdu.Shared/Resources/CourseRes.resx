@@ -111,19 +111,79 @@
 		<value>Course not found.</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
-		<value>{0} / {1} lessons completed ({2}%)</value>
+		<value>{0} of {1} lessons done ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>Course Completed!</value>
+		<value>Programme completed</value>
 	</data>
 	<data name="Enrolling" xml:space="preserve">
-		<value>Enrolling...</value>
+		<value>Joining…</value>
 	</data>
 	<data name="EnrollInThisCourse" xml:space="preserve">
-		<value>Enroll in This Course</value>
+		<value>Join the programme</value>
 	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>min</value>
+	</data>
+	<data name="OutcomesTitle" xml:space="preserve">
+		<value>What you'll train</value>
+	</data>
+	<data name="OutlineTitle" xml:space="preserve">
+		<value>Programme outline</value>
+	</data>
+	<data name="ModuleCountOne" xml:space="preserve">
+		<value>1 module</value>
+	</data>
+	<data name="ModulesCountFormat" xml:space="preserve">
+		<value>{0} modules</value>
+	</data>
+	<data name="LessonCountOne" xml:space="preserve">
+		<value>1 lesson</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 exercise</value>
+	</data>
+	<data name="ExercisesCountFormat" xml:space="preserve">
+		<value>{0} exercises</value>
+	</data>
+	<data name="LessonKind_Workout" xml:space="preserve">
+		<value>Workout</value>
+	</data>
+	<data name="LessonKind_Video" xml:space="preserve">
+		<value>Video</value>
+	</data>
+	<data name="LessonKind_Reading" xml:space="preserve">
+		<value>Reading</value>
+	</data>
+	<data name="LessonKind_Pdf" xml:space="preserve">
+		<value>PDF guide</value>
+	</data>
+	<data name="ModuleProgressFormat" xml:space="preserve">
+		<value>{0}/{1} done</value>
+	</data>
+	<data name="ProgressTitle" xml:space="preserve">
+		<value>Your progress</value>
+	</data>
+	<data name="StartTitle" xml:space="preserve">
+		<value>Start today</value>
+	</data>
+	<data name="UpNext" xml:space="preserve">
+		<value>Up next</value>
+	</data>
+	<data name="ContinueTraining" xml:space="preserve">
+		<value>Continue training</value>
+	</data>
+	<data name="StartTraining" xml:space="preserve">
+		<value>Start training</value>
+	</data>
+	<data name="TrainAgain" xml:space="preserve">
+		<value>Train again</value>
+	</data>
+	<data name="IncludedInPlan" xml:space="preserve">
+		<value>Included in your plan</value>
+	</data>
+	<data name="JoinToUnlock" xml:space="preserve">
+		<value>Join the programme to open its lessons.</value>
 	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
 		<value>Courses - FitEdu</value>
@@ -159,7 +219,7 @@
 		<value>Next</value>
 	</data>
 	<data name="RequiresPlanFormat" xml:space="preserve">
-		<value>This course requires the {0} plan or higher.</value>
+		<value>Included in the {0} plan and above.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
 		<value>Upgrade Plan</value>
