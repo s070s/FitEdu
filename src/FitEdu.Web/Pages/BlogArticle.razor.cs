@@ -53,19 +53,23 @@ public partial class BlogArticle : IDisposable
 
         // Restore from prerender state if available (avoids duplicate API call on circuit connect)
         var key = $"blog-article-{Slug}";
+        var requestFailed = false;
         if (ApplicationState.TryTakeFromJson<BlogArticleDto>(key, out var cached))
         {
             _article = cached;
         }
         else
         {
-            _article = await BlogConsumer.GetBySlugAsync(Slug, lang: CurrentLang);
+            var lookup = await BlogConsumer.GetBySlugAsync(Slug, lang: CurrentLang);
+            _article = lookup.Item;
+            requestFailed = lookup.RequestFailed;
         }
 
         if (_article is null)
         {
+            // A failed request still shows the "not found" view, but answers 503 instead of 404.
             _notFound = true;
-            PrerenderStatus.SetNotFound(HttpContext);
+            PrerenderStatus.SetMissing(HttpContext, requestFailed);
         }
         else
             _readingMinutes = EstimateReadingMinutes(_article.Content);

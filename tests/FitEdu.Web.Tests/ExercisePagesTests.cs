@@ -6,6 +6,7 @@ using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -328,6 +329,25 @@ public class ExercisePagesTests : BunitContext
 
         page.Find(".empty-state__title").TextContent.ShouldBe(ExerciseRes.NotFoundTitle);
         page.Find(".empty-state a").GetAttribute("href").ShouldBe("/exercises");
+    }
+
+    [Theory]
+    [InlineData(false, StatusCodes.Status404NotFound)]
+    [InlineData(true, StatusCodes.Status503ServiceUnavailable)]
+    public async Task Detail_Prerender_Answers404OnlyWhenTheExerciseIsReallyMissing(bool requestFailed, int expectedStatus)
+    {
+        // An API outage must not tell crawlers that a real exercise page is gone.
+        var missing = requestFailed ? ApiLookup.Failure<ExerciseDetailDto>() : ApiLookup.NotFound<ExerciseDetailDto>();
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(missing);
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+        var (httpContext, response) = PrerenderHttpContext.Create();
+
+        Render<ExerciseDetail>(parameters => parameters
+            .Add(component => component.Slug, Slug)
+            .AddCascadingValue(httpContext));
+        await response.StartAsync();
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatus);
     }
 
     // ---- Helpers ------------------------------------------------------------------------------

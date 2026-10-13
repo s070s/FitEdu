@@ -61,8 +61,11 @@ public partial class ExerciseDetail : IDisposable
         var lessonsTask = ExerciseConsumer.GetLessonsUsingExerciseAsync(Slug, CurrentLang);
         await Task.WhenAll(exerciseTask, lessonsTask);
 
-        // A failed request still shows the "not found" view, as before; only the admin editor needs the difference.
-        Show((await exerciseTask).Item, await lessonsTask);
+        // A failed request still shows the "not found" view, but answers 503 instead of 404.
+        var lookup = await exerciseTask;
+        Show(lookup.Item, await lessonsTask);
+        if (lookup.Item is null)
+            PrerenderStatus.SetMissing(HttpContext, lookup.RequestFailed);
     }
 
     private void Show(ExerciseDetailDto? exercise, IReadOnlyList<LessonUsingExerciseDto> lessons)
@@ -71,9 +74,6 @@ public partial class ExerciseDetail : IDisposable
         _lessons = lessons;
         _facts = exercise is null ? [] : BuildFacts(exercise);
         _loading = false;
-
-        if (exercise is null)
-            PrerenderStatus.SetNotFound(HttpContext);
     }
 
     /// <summary>

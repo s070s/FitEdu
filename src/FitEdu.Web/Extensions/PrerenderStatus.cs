@@ -4,11 +4,21 @@ namespace FitEdu.Web.Extensions;
 public static class PrerenderStatus
 {
     /// <summary>
-    /// Makes a page that found nothing answer 404, so search engines drop the address, while it
-    /// still shows its own friendly not-found view. Only the prerender has an HttpContext; the
-    /// interactive render gets null and nothing changes once the response has started.
+    /// For a detail page that has no item to show: 404 when the API said the item does not exist,
+    /// so search engines drop the address, or 503 when the API could not be asked (an outage), so
+    /// they keep a real address and try again later. The page still shows its own view.
     /// </summary>
-    public static void SetNotFound(HttpContext? httpContext)
+    public static void SetMissing(HttpContext? httpContext, bool requestFailed)
+    {
+        var statusCode = requestFailed ? StatusCodes.Status503ServiceUnavailable : StatusCodes.Status404NotFound;
+        SetStatus(httpContext, statusCode);
+    }
+
+    /// <summary>
+    /// Only the prerender has an HttpContext; the interactive render gets null and nothing changes
+    /// once the response has started.
+    /// </summary>
+    private static void SetStatus(HttpContext? httpContext, int statusCode)
     {
         if (httpContext is null || httpContext.Response.HasStarted)
             return;
@@ -18,7 +28,7 @@ public static class PrerenderStatus
         var response = httpContext.Response;
         response.OnStarting(() =>
         {
-            response.StatusCode = StatusCodes.Status404NotFound;
+            response.StatusCode = statusCode;
             return Task.CompletedTask;
         });
     }

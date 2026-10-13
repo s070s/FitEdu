@@ -1,4 +1,5 @@
 using Bunit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -84,7 +85,7 @@ public class BlogPagesTests : BunitContext
     public void BlogArticle_Missing_ShowsNotFoundWithLinkBackToTheBlog()
     {
         _blogConsumer.GetBySlugAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns((BlogArticleDto?)null);
+            .Returns(ApiLookup.NotFound<BlogArticleDto>());
 
         var page = RenderArticle();
 
@@ -92,11 +93,28 @@ public class BlogPagesTests : BunitContext
         page.Find(".empty-state__action").GetAttribute("href").ShouldBe("/blog");
     }
 
+    [Theory]
+    [InlineData(false, StatusCodes.Status404NotFound)]
+    [InlineData(true, StatusCodes.Status503ServiceUnavailable)]
+    public async Task BlogArticle_Prerender_Answers404OnlyWhenTheArticleIsReallyMissing(bool requestFailed, int expectedStatus)
+    {
+        var missing = requestFailed ? ApiLookup.Failure<BlogArticleDto>() : ApiLookup.NotFound<BlogArticleDto>();
+        _blogConsumer.GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(missing);
+        var (httpContext, response) = PrerenderHttpContext.Create();
+
+        Render<BlogArticle>(parameters => parameters
+            .Add(component => component.Slug, Slug)
+            .AddCascadingValue(httpContext));
+        await response.StartAsync();
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatus);
+    }
+
     private IRenderedComponent<BlogArticle> RenderArticle() =>
         Render<BlogArticle>(parameters => parameters.Add(component => component.Slug, Slug));
 
     private void ReturnArticle(BlogArticleDto article) =>
-        _blogConsumer.GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(article);
+        _blogConsumer.GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(ApiLookup.Found(article));
 
     private static BlogArticleSummaryDto Summary(string title) => new(
         Guid.NewGuid(), title, title.ToLowerInvariant(), "Add a little each week.",

@@ -95,6 +95,21 @@ public class ConsumerTests
     }
 
     [Fact]
+    public async Task CourseConsumer_LookupCourse_TellsNotFoundFromAFailedRequest()
+    {
+        var (missingClient, _) = TestHttp.Json(HttpStatusCode.NotFound);
+        var (failingClient, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+
+        var missing = await new CourseConsumer(missingClient, TokenProvider()).LookupCourseAsync(Guid.NewGuid());
+        var failed = await new CourseConsumer(failingClient, TokenProvider()).LookupCourseAsync(Guid.NewGuid());
+
+        missing.Item.ShouldBeNull();
+        missing.RequestFailed.ShouldBeFalse();
+        failed.Item.ShouldBeNull();
+        failed.RequestFailed.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task CourseConsumer_GetCourse_NotFound_ReturnsNull()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.NotFound);
@@ -177,12 +192,27 @@ public class ConsumerTests
     }
 
     [Fact]
-    public async Task BlogConsumer_GetBySlug_NotFound_ReturnsNull()
+    public async Task BlogConsumer_GetBySlug_NotFound_ReportsNotFound()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.NotFound);
         var consumer = new BlogConsumer(client, TokenProvider());
 
-        (await consumer.GetBySlugAsync("missing")).ShouldBeNull();
+        var lookup = await consumer.GetBySlugAsync("missing");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task BlogConsumer_GetBySlug_ServerError_ReportsAFailedRequest()
+    {
+        var (client, _) = TestHttp.Json(HttpStatusCode.ServiceUnavailable);
+        var consumer = new BlogConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("progressive-overload");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeTrue();
     }
 
     // ---- ExerciseConsumer ----------------------------------------------------

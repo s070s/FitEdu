@@ -181,11 +181,13 @@ public partial class CourseDetail
 
         try
         {
-            _course = await CourseService.GetCourseAsync(CourseId, CurrentLang);
+            var lookup = await CourseService.LookupCourseAsync(CourseId, CurrentLang);
+            _course = lookup.Item;
             if (_course is null)
             {
-                _error = ErrorMessagesRes.CourseNotFound;
-                PrerenderStatus.SetNotFound(HttpContext);
+                // A failed request offers Try again and answers 503, so crawlers keep the address.
+                _error = lookup.RequestFailed ? ErrorMessagesRes.FailedToLoadCourse : ErrorMessagesRes.CourseNotFound;
+                PrerenderStatus.SetMissing(HttpContext, lookup.RequestFailed);
             }
             else
                 PrepareView(_course);

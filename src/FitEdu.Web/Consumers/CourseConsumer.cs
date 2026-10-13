@@ -26,7 +26,12 @@ public class CourseConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvide
     }
 
     public Task<CourseDetailDto?> GetCourseAsync(Guid courseId, string lang = "en")
-        => GetAsync<CourseDetailDto>($"api/courses/{courseId}?lang={lang}");
+        => GetAsync<CourseDetailDto>(CourseUrl(courseId, lang));
+
+    public Task<ApiLookup<CourseDetailDto>> LookupCourseAsync(Guid courseId, string lang = "en")
+        => GetLookupAsync<CourseDetailDto>(CourseUrl(courseId, lang));
+
+    private static string CourseUrl(Guid courseId, string lang) => $"api/courses/{courseId}?lang={lang}";
 
     public Task<int?> CountEnrollmentsAsync()
         => GetAsync<int?>("api/courses/enrolment-count");

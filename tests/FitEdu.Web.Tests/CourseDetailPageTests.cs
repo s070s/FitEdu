@@ -3,9 +3,11 @@ using Bunit;
 using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -256,7 +258,8 @@ public class CourseDetailPageTests : BunitContext
     public void Enrol_Succeeds_ReloadsTheCourseAsEnrolled()
     {
         UseCulture("en");
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>()).Returns(Course(), Course(enrolled: true));
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>())
+            .Returns(ApiLookup.Found(Course()), ApiLookup.Found(Course(enrolled: true)));
         _courseService.EnrollAsync(CourseId).Returns(new EnrollmentResultDto(true, null, Guid.NewGuid()));
         var page = RenderPage();
 
@@ -341,14 +344,41 @@ public class CourseDetailPageTests : BunitContext
     public void LoadFails_ShowsTheErrorWithTryAgainAndBackLinks()
     {
         UseCulture("en");
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>())
-            .Returns(Task.FromException<CourseDetailDto?>(new HttpRequestException("boom")));
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.Failure<CourseDetailDto>());
 
         var page = RenderPage();
 
-        page.Find(".course-state .text-danger").TextContent.ShouldNotBeNullOrWhiteSpace();
+        page.Find(".course-state .text-danger").TextContent.ShouldBe(ErrorMessagesRes.FailedToLoadCourse);
         page.Find(".course-state button").TextContent.ShouldNotBeNullOrWhiteSpace();
         page.Find(".course-state a").GetAttribute("href").ShouldBe("/courses");
+    }
+
+    [Fact]
+    public void Missing_SaysTheProgrammeWasNotFound()
+    {
+        UseCulture("en");
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.NotFound<CourseDetailDto>());
+
+        var page = RenderPage();
+
+        page.Find(".course-state .text-danger").TextContent.ShouldBe(ErrorMessagesRes.CourseNotFound);
+    }
+
+    [Theory]
+    [InlineData(false, StatusCodes.Status404NotFound)]
+    [InlineData(true, StatusCodes.Status503ServiceUnavailable)]
+    public async Task Prerender_Answers404OnlyWhenTheProgrammeIsReallyMissing(bool requestFailed, int expectedStatus)
+    {
+        var missing = requestFailed ? ApiLookup.Failure<CourseDetailDto>() : ApiLookup.NotFound<CourseDetailDto>();
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(missing);
+        var (httpContext, response) = PrerenderHttpContext.Create();
+
+        Render<CourseDetail>(parameters => parameters
+            .Add(page => page.CourseId, CourseId)
+            .AddCascadingValue(httpContext));
+        await response.StartAsync();
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatus);
     }
 
     // ---- Helpers ------------------------------------------------------------------------------
@@ -357,7 +387,7 @@ public class CourseDetailPageTests : BunitContext
         Render<CourseDetail>(parameters => parameters.Add(page => page.CourseId, CourseId));
 
     private void UseCourse(CourseDetailDto course) =>
-        _courseService.GetCourseAsync(CourseId, Arg.Any<string>()).Returns(course);
+        _courseService.LookupCourseAsync(CourseId, Arg.Any<string>()).Returns(ApiLookup.Found(course));
 
     private void UsePlan(SubscriptionTier tier) =>
         _subscriptionService.GetStatusAsync().Returns(
