@@ -213,3 +213,26 @@
         padding: var(--space-5);
     }
 }
+
+/* Reduced motion puts start and finish side by side at half height, which leaves the narrow photo
+   column of a wide card mostly empty. There the two photos stack instead, each with its tag on top. */
+@media (prefers-reduced-motion: reduce) {
+    @container (min-width: 36rem) {
+        .exercise-card--workout ::deep .exercise-media--loop .exercise-media__frames {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        /* Two rows, one per photo: the gap matches the 2 px seam plus the two tag insets. */
+        .exercise-card--workout ::deep .exercise-media--loop .exercise-media__phases {
+            bottom: var(--space-2);
+            grid-template-columns: none;
+            grid-template-rows: 1fr 1fr;
+            align-items: start;
+            row-gap: calc(var(--space-4) + 2px);
+        }
+
+        .exercise-card--workout ::deep .exercise-media--loop .exercise-media__phase--end {
+            grid-area: 2 / 1;
+        }
+    }
+}
