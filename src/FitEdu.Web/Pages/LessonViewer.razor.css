@@ -1,202 +1,504 @@
-﻿.lesson-container {
-    max-width: 900px;
-    margin: 0 auto;
+﻿/* Lesson viewer, a workout layout. Phone first: one column of breadcrumb, header with progress,
+   the lesson text, the numbered exercise cards and the completion bar, which sticks above the
+   bottom tab bar while the lesson is still to do. From 768 px the bar is an ordinary card. */
+
+.lesson-container {
+    /* A reading column: the lesson text keeps a comfortable line length and the exercise cards
+       get wide enough (36rem) to put the photo beside the details. */
+    width: min(100%, 56rem);
+    padding-bottom: var(--space-4);
 }
 
+/* ---- Breadcrumb ---- */
 .lesson-nav-top {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    gap: 0 var(--space-2);
+    min-width: 0;
+    margin-bottom: var(--space-3);
+    color: var(--text-light-muted);
+    font-size: 0.875rem;
 }
 
-.btn-link {
-    background: none;
-    border: none;
+.lesson-nav-top__course {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    min-height: var(--tap-min);
     color: var(--text-accent);
-    cursor: pointer;
-    padding: 0;
+    font-weight: 600;
+    text-decoration: none;
+    overflow-wrap: anywhere;
 }
 
-    .btn-link:hover {
-        text-decoration: underline;
-    }
+.lesson-nav-top__course:hover {
+    color: var(--text-strong-accent);
+    text-decoration: underline;
+}
 
 .breadcrumb-separator {
     color: var(--text-light-muted);
 }
 
 .module-name {
+    min-width: 0;
     color: var(--text-light-muted);
+    overflow-wrap: anywhere;
 }
 
-h1 {
-    margin: 0 0 0.5rem 0;
+/* ---- Header: position, title, meta chips and course progress ---- */
+.lesson-header {
+    margin-bottom: var(--space-6);
 }
 
-.duration {
+.lesson-header__position {
+    margin: 0 0 var(--space-2);
+}
+
+.lesson-header h1 {
+    margin: 0 0 var(--space-4);
+    color: var(--text-strong-normal);
+    overflow-wrap: anywhere;
+}
+
+.lesson-meta {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lesson-meta__workout-link {
+    position: relative;
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+/* The chip stays small; an invisible frame makes it a 44 px touch target. */
+.lesson-meta__workout-link::after {
+    content: "";
+    position: absolute;
+    inset: -8px -2px;
+}
+
+.lesson-meta__workout-link:hover {
+    background-color: rgba(var(--color-info-rgb), 0.25);
+    color: var(--color-info);
+}
+
+.lesson-progress {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+}
+
+.lesson-progress__labels {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
     color: var(--text-light-muted);
-    margin-bottom: 1.5rem;
+    font-size: var(--fs-6);
 }
 
+.lesson-progress__percent {
+    color: var(--text-strong-accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.lesson-progress__track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background-color: rgba(var(--border-subtle-rgb), 0.14);
+}
+
+.lesson-progress__fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--color-info), var(--text-strong-accent));
+    transition: width var(--duration-slow) var(--ease-out);
+}
+
+/* ---- Lesson media and text ---- */
 .lesson-content {
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-6);
 }
 
 .video-container {
     position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    background: var(--bg-primary);
-    border-radius: 8px;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-primary);
 }
 
-    .video-container iframe,
-    .video-container video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Uploaded videos: letterbox within the 16:9 box instead of stretching */
-    .video-container video {
-        object-fit: contain;
-        background: var(--bg-primary);
-    }
-
-    /* Center the "media unavailable" fallback inside the aspect-ratio box */
-    .video-container .media-unavailable {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 1rem;
-        margin: 0;
-    }
-
-.text-content {
-    line-height: 1.7;
-    font-size: 1.1rem;
+.video-container iframe,
+.video-container video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
-    .text-content h1,
-    .text-content h2,
-    .text-content h3 {
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-    }
+/* Uploaded videos: letterbox within the 16:9 box instead of stretching */
+.video-container video {
+    object-fit: contain;
+    background-color: var(--bg-primary);
+}
 
-    .text-content ul,
-    .text-content ol {
-        margin-left: 1.5rem;
-    }
-
-    .text-content li {
-        margin-bottom: 0.5rem;
-    }
-
-.lesson-actions {
+/* Center the "media unavailable" fallback inside the aspect-ratio box */
+.video-container .media-unavailable {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: var(--bg-surface);
-    border-radius: 8px;
+    justify-content: center;
+    margin: 0;
+    padding: var(--space-4);
+    text-align: center;
+}
+
+.pdf-container iframe {
+    display: block;
+    width: 100%;
+    height: 80vh;
+    min-height: 60dvh;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+}
+
+/* The text arrives as a MarkupString, which carries no scope attribute: every rule below the
+   .text-content box itself needs ::deep. */
+.text-content {
+    max-width: var(--prose-max);
+    color: var(--text-light-normal);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    overflow-wrap: break-word;
+}
+
+.text-content ::deep :is(h1, h2, h3) {
+    margin: var(--space-6) 0 var(--space-3);
+    color: var(--text-strong-normal);
+}
+
+.text-content ::deep h1 {
+    font-size: var(--fs-3);
+}
+
+.text-content ::deep h2 {
+    font-size: var(--fs-3);
+}
+
+.text-content ::deep h3 {
+    font-size: var(--fs-4);
+}
+
+.text-content ::deep > :first-child {
+    margin-top: 0;
+}
+
+.text-content ::deep p {
+    margin: 0 0 var(--space-4);
+}
+
+.text-content ::deep :is(ul, ol) {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+    padding-left: 1.4rem;
+}
+
+.text-content ::deep li {
+    padding-left: var(--space-1);
+}
+
+.text-content ::deep ul > li::marker {
+    color: var(--color-info);
+}
+
+.text-content ::deep ol > li::marker {
+    color: var(--text-strong-accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.text-content ::deep strong {
+    color: var(--text-strong-normal);
+}
+
+.text-content ::deep a {
+    color: var(--text-accent);
+}
+
+/* Editor HTML may hold wide media or tables: none of them may widen the page. */
+.text-content ::deep :is(img, video, iframe, table, pre) {
+    max-width: 100%;
+}
+
+.text-content ::deep :is(img, video) {
+    height: auto;
+    border-radius: var(--radius-md);
+}
+
+.text-content ::deep :is(pre, table) {
+    display: block;
+    overflow-x: auto;
+}
+
+/* ---- Workout: the numbered exercise cards ---- */
+.lesson-workout {
+    margin-bottom: var(--space-6);
+    scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+.lesson-workout__head {
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.lesson-workout__summary {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lesson-workout__list {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* ---- Completion bar ---- */
+.lesson-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-5);
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+}
+
+/* The hint needs room next to the button, so phones show the button alone. */
+.lesson-actions__hint {
+    display: none;
+    flex: 1 1 14rem;
+    margin: 0;
+    color: var(--text-light-normal);
+}
+
+.lesson-actions__error {
+    flex-basis: 100%;
+    margin: 0;
 }
 
 .btn-success {
-    background: var(--color-success);
-    color: var(--bg-primary);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+    --bs-btn-color: var(--bg-primary);
+    --bs-btn-bg: var(--text-strong-accent);
+    --bs-btn-border-color: var(--text-strong-accent);
+    --bs-btn-hover-color: var(--bg-primary);
+    --bs-btn-hover-bg: var(--text-accent);
+    --bs-btn-hover-border-color: var(--text-accent);
+    --bs-btn-active-color: var(--bg-primary);
+    --bs-btn-active-bg: var(--text-accent);
+    --bs-btn-active-border-color: var(--text-accent);
+    --bs-btn-disabled-color: var(--text-light-normal);
+    --bs-btn-disabled-bg: var(--bg-neutral-subtle);
+    --bs-btn-disabled-border-color: transparent;
+    display: inline-flex;
+    flex: 1 1 100%;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
 }
 
-    .btn-success:hover {
-        filter: brightness(0.85);
-    }
-
-    .btn-success:disabled {
-        background: var(--bg-neutral-subtle);
-        cursor: not-allowed;
-    }
+.btn-success:disabled {
+    cursor: not-allowed;
+}
 
 .completed-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     color: var(--color-success);
-    font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
 }
 
 .progress-update {
+    flex: 1 1 12rem;
     color: var(--text-light-muted);
+    font-size: 0.9375rem;
+}
+
+.progress-update__certificate {
+    margin: var(--space-1) 0 0;
 }
 
 .course-completed {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-left: var(--space-2);
     color: var(--color-success);
-    font-weight: bold;
-    margin-left: 0.5rem;
+    font-weight: 700;
 }
 
-.lesson-navigation {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-subtle);
-}
-
+/* Phones: the bar floats above the bottom tab bar, level with the assistant launcher (56 px, 1 rem
+   from the right edge, AssistantWidget.razor.css), and leaves the launcher its own room. */
 @media (max-width: 767.98px) {
-    .lesson-navigation {
-        flex-direction: column;
-        gap: 0.75rem;
+    .lesson-actions--docked {
+        --assistant-launcher-room: calc(56px + var(--space-2));
+        bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 0.75rem);
+        margin-right: var(--assistant-launcher-room);
+        padding: 5px;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.45);
     }
 
-    .lesson-navigation .btn-primary,
-    .lesson-navigation .btn-secondary {
-        width: 100%;
-        text-align: center;
+    .lesson-actions--docked:has(.completed-indicator) {
+        padding: var(--space-2) var(--space-3);
     }
 
-    .lesson-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .lesson-actions .btn-success {
-        width: 100%;
+    /* Room below the last links so they can scroll clear of the assistant launcher. */
+    .lesson-container {
+        padding-bottom: 4.5rem;
     }
 }
 
-.btn-primary {
-    background: var(--text-strong-accent);
-    color: var(--bg-primary);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
+@media (min-width: 576px) {
+    .lesson-actions__hint {
+        display: block;
+    }
+
+    .btn-success {
+        flex: 0 0 auto;
+    }
 }
 
-    .btn-primary:hover {
-        background: var(--button-regular);
-    }
+/* ---- Previous / next ---- */
+.lesson-navigation {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+}
+
+.lesson-navigation__link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-1);
+    min-width: 0;
+    min-height: 4rem;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    text-align: left;
+    white-space: normal;
+}
+
+.lesson-navigation__link--forward {
+    grid-column: 2;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.lesson-navigation__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--fs-6);
+    font-weight: 700;
+}
+
+.lesson-navigation__title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
 
 .btn-secondary {
-    background: var(--bg-table-odd);
-    color: var(--text-light-normal);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
+    --bs-btn-color: var(--text-light-normal);
+    --bs-btn-bg: var(--bg-surface);
+    --bs-btn-border-color: var(--border-subtle);
+    --bs-btn-hover-color: var(--text-strong-normal);
+    --bs-btn-hover-bg: var(--bg-table-header-hover);
+    --bs-btn-hover-border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+    --bs-btn-active-color: var(--text-strong-normal);
+    --bs-btn-active-bg: var(--bg-table-header-active);
+    --bs-btn-active-border-color: rgba(var(--text-strong-accent-rgb), 0.5);
 }
 
-    .btn-secondary:hover {
-        background: var(--bg-table-header-hover);
+.btn-secondary .lesson-navigation__title {
+    color: var(--text-strong-normal);
+}
+
+/* Next is an outline until the lesson is done, then the filled lime call to action. */
+.btn-primary {
+    --bs-btn-color: var(--text-strong-accent);
+    --bs-btn-bg: rgba(var(--text-strong-accent-rgb), 0.06);
+    --bs-btn-border-color: rgba(var(--text-strong-accent-rgb), 0.55);
+    --bs-btn-hover-color: var(--bg-primary);
+    --bs-btn-hover-bg: var(--text-strong-accent);
+    --bs-btn-hover-border-color: var(--text-strong-accent);
+    --bs-btn-active-color: var(--bg-primary);
+    --bs-btn-active-bg: var(--text-accent);
+    --bs-btn-active-border-color: var(--text-accent);
+}
+
+.lesson-navigation--ready .btn-primary {
+    --bs-btn-color: var(--bg-primary);
+    --bs-btn-bg: var(--text-strong-accent);
+    --bs-btn-border-color: var(--text-strong-accent);
+    --bs-btn-hover-bg: var(--text-accent);
+    --bs-btn-hover-border-color: var(--text-accent);
+}
+
+/* app.css paints every .btn-primary lime directly, so the variables above are applied by hand. */
+.btn-primary {
+    border-color: var(--bs-btn-border-color);
+    background-color: var(--bs-btn-bg);
+    color: var(--bs-btn-color);
+}
+
+.btn-primary:hover {
+    border-color: var(--bs-btn-hover-border-color);
+    background-color: var(--bs-btn-hover-bg);
+    color: var(--bs-btn-hover-color);
+}
+
+.btn-primary:active {
+    border-color: var(--bs-btn-active-border-color);
+    background-color: var(--bs-btn-active-bg);
+    color: var(--bs-btn-active-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lesson-progress__fill,
+    .lesson-meta__workout-link {
+        transition: none;
     }
+}

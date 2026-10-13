@@ -111,10 +111,10 @@
 		<value>Το μάθημα δεν βρέθηκε.</value>
 	</data>
 	<data name="LessonNotFoundOrNotEnrolled" xml:space="preserve">
-		<value>Το μάθημα δεν βρέθηκε ή δεν είστε εγγεγραμμένος σε αυτό το μάθημα.</value>
+		<value>Το μάθημα δεν βρέθηκε ή δεν έχεις γραφτεί σε αυτό το πρόγραμμα.</value>
 	</data>
 	<data name="FailedToLoadLesson" xml:space="preserve">
-		<value>Αποτυχία φόρτωσης μαθήματος. Παρακαλώ δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση του μαθήματος. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="Minutes" xml:space="preserve">
 		<value>λεπτά</value>
@@ -123,7 +123,7 @@
 		<value>Αποθήκευση...</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
-		<value>Σήμανση ως Ολοκληρωμένο</value>
+		<value>Το ολοκλήρωσα</value>
 	</data>
 	<data name="CompletedIndicator" xml:space="preserve">
 		<value>Ολοκληρώθηκε</value>
@@ -132,25 +132,25 @@
 		<value>Πρόοδος: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>Μάθημα Ολοκληρώθηκε!</value>
+		<value>Ολοκλήρωσες το πρόγραμμα!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
-		<value>Προηγούμενο Μάθημα</value>
+		<value>Προηγούμενο μάθημα</value>
 	</data>
 	<data name="NextLesson" xml:space="preserve">
-		<value>Επόμενο Μάθημα</value>
+		<value>Επόμενο μάθημα</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Πίσω στο Μάθημα</value>
+		<value>Πίσω στο πρόγραμμα</value>
 	</data>
 	<data name="FailedToSaveCompletion" xml:space="preserve">
-		<value>Δεν ήταν δυνατή η αποθήκευση της προόδου σας. Δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η αποθήκευση της προόδου σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="MediaUnavailable" xml:space="preserve">
 		<value>Το περιεχόμενο αυτού του μαθήματος δεν είναι διαθέσιμο αυτή τη στιγμή.</value>
 	</data>
 	<data name="CertificatePending" xml:space="preserve">
-		<value>Το πιστοποιητικό σας ετοιμάζεται — ελέγξτε στα Πιστοποιητικά μου σε λίγα λεπτά.</value>
+		<value>Το πιστοποιητικό σου ετοιμάζεται — δες τα Πιστοποιητικά μου σε λίγα λεπτά.</value>
 	</data>
 	<data name="Exercises" xml:space="preserve">
 		<value>Ασκήσεις</value>
@@ -184,5 +184,32 @@
 	</data>
 	<data name="CoachNote" xml:space="preserve">
 		<value>Συμβουλή προπονητή</value>
+	</data>
+	<data name="LessonOfFormat" xml:space="preserve">
+		<value>Μάθημα {0} από {1}</value>
+	</data>
+	<data name="CourseProgressFormat" xml:space="preserve">
+		<value>Ολοκλήρωσες {0} από {1} μαθήματα</value>
+	</data>
+	<data name="CourseProgressLabel" xml:space="preserve">
+		<value>Πρόοδος στο πρόγραμμα</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 άσκηση</value>
+	</data>
+	<data name="ExerciseCountFormat" xml:space="preserve">
+		<value>{0} ασκήσεις</value>
+	</data>
+	<data name="TotalSetsFormat" xml:space="preserve">
+		<value>{0} σετ συνολικά</value>
+	</data>
+	<data name="CompleteHint" xml:space="preserve">
+		<value>Τελείωσες το μάθημα; Σημείωσέ το ως ολοκληρωμένο για να αποθηκευτεί η πρόοδός σου.</value>
+	</data>
+	<data name="BreadcrumbLabel" xml:space="preserve">
+		<value>Διαδρομή πλοήγησης</value>
+	</data>
+	<data name="LessonNavigationLabel" xml:space="preserve">
+		<value>Πλοήγηση στα μαθήματα</value>
 	</data>
 </root>

@@ -123,7 +123,7 @@
 		<value>Saving...</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
-		<value>Mark as Complete</value>
+		<value>Mark as complete</value>
 	</data>
 	<data name="CompletedIndicator" xml:space="preserve">
 		<value>Completed</value>
@@ -132,16 +132,16 @@
 		<value>Progress: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>Course Completed!</value>
+		<value>Course completed!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
-		<value>Previous Lesson</value>
+		<value>Previous lesson</value>
 	</data>
 	<data name="NextLesson" xml:space="preserve">
-		<value>Next Lesson</value>
+		<value>Next lesson</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Back to Course</value>
+		<value>Back to course</value>
 	</data>
 	<data name="FailedToSaveCompletion" xml:space="preserve">
 		<value>Couldn't save your progress. Please try again.</value>
@@ -184,5 +184,32 @@
 	</data>
 	<data name="CoachNote" xml:space="preserve">
 		<value>Coach's tip</value>
+	</data>
+	<data name="LessonOfFormat" xml:space="preserve">
+		<value>Lesson {0} of {1}</value>
+	</data>
+	<data name="CourseProgressFormat" xml:space="preserve">
+		<value>{0} of {1} lessons done</value>
+	</data>
+	<data name="CourseProgressLabel" xml:space="preserve">
+		<value>Course progress</value>
+	</data>
+	<data name="ExerciseCountOne" xml:space="preserve">
+		<value>1 exercise</value>
+	</data>
+	<data name="ExerciseCountFormat" xml:space="preserve">
+		<value>{0} exercises</value>
+	</data>
+	<data name="TotalSetsFormat" xml:space="preserve">
+		<value>{0} sets in total</value>
+	</data>
+	<data name="CompleteHint" xml:space="preserve">
+		<value>Done with this lesson? Mark it complete to save your progress.</value>
+	</data>
+	<data name="BreadcrumbLabel" xml:space="preserve">
+		<value>Breadcrumb</value>
+	</data>
+	<data name="LessonNavigationLabel" xml:space="preserve">
+		<value>Lesson navigation</value>
 	</data>
 </root>

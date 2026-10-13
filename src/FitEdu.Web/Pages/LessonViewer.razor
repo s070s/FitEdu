@@ -19,24 +19,63 @@ else if (_lesson is null)
 }
 else
 {
-    <div class="lesson-container">
-        <div class="lesson-nav-top">
-            <button class="btn-link" @onclick="() => GoToCourse(_lesson.CourseId)">
-                <span class="bi bi-arrow-left me-1" aria-hidden="true"></span>@_lesson.CourseTitle
-            </button>
-            <span class="breadcrumb-separator">/</span>
+    var exerciseCountText = Exercises.Count == 1
+        ? LessonRes.ExerciseCountOne
+        : string.Format(LessonRes.ExerciseCountFormat, Exercises.Count);
+    <div class="page lesson-container">
+        <nav class="lesson-nav-top" aria-label="@LessonRes.BreadcrumbLabel">
+            <a class="lesson-nav-top__course" href="@CourseHref(_lesson.CourseId)">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span>
+                <span>@_lesson.CourseTitle</span>
+            </a>
+            <span class="breadcrumb-separator" aria-hidden="true">/</span>
             <span class="module-name">@_lesson.ModuleTitle</span>
-        </div>
+        </nav>
 
-        <h1>@_lesson.Title</h1>
+        <header class="lesson-header">
+            @if (LessonNumber > 0)
+            {
+                <p class="eyebrow lesson-header__position">@string.Format(LessonRes.LessonOfFormat, LessonNumber, _courseLessons.Count)</p>
+            }
+            <h1>@_lesson.Title</h1>
 
-        @if (_lesson.DurationMinutes.HasValue)
-        {
-            <p class="duration"><span class="bi bi-stopwatch" aria-hidden="true"></span> @_lesson.DurationMinutes @LessonRes.Minutes</p>
-        }
+            <ul class="chip-row lesson-meta">
+                @if (_lesson.DurationMinutes.HasValue)
+                {
+                    <li class="chip duration"><span class="bi bi-stopwatch" aria-hidden="true"></span> @_lesson.DurationMinutes @LessonRes.Minutes</li>
+                }
+                @if (Exercises.Count > 0)
+                {
+                    <li>
+                        <a class="chip chip--teal lesson-meta__workout-link" href="@WorkoutHref">
+                            <span class="bi bi-list-ol" aria-hidden="true"></span> @exerciseCountText
+                            <span class="bi bi-arrow-down-short" aria-hidden="true"></span>
+                        </a>
+                    </li>
+                }
+                @if (_lesson.IsCompleted)
+                {
+                    <li class="chip chip--lime"><span class="bi bi-check2-circle" aria-hidden="true"></span> @LessonRes.CompletedIndicator</li>
+                }
+            </ul>
+
+            @if (_progress is not null)
+            {
+                <div class="lesson-progress">
+                    <div class="lesson-progress__labels">
+                        <span>@string.Format(LessonRes.CourseProgressFormat, _progress.CompletedLessons, _progress.TotalLessons)</span>
+                        <span class="lesson-progress__percent">@_progress.Percent%</span>
+                    </div>
+                    <div class="lesson-progress__track" role="progressbar" aria-label="@LessonRes.CourseProgressLabel"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="@_progress.Percent">
+                        <div class="lesson-progress__fill" style="width: @(_progress.Percent)%"></div>
+                    </div>
+                </div>
+            }
+        </header>
 
         <div class="lesson-content">
-            @if (_lesson.ContentType == 2)
+            @if (IsVideo(_lesson))
             {
                 @* Video lesson *@
                 <div class="video-container">
@@ -49,43 +88,67 @@ else
                         <iframe
                             src="@ToEmbedUrl(_lesson.Content)"
                             title="@_lesson.Title"
-                            frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
                     }
                     else
                     {
-                        <video controls controlsList="nodownload" oncontextmenu="return false;" preload="metadata" style="width:100%" @onerror="OnMediaError">
+                        <video controls controlsList="nodownload" preload="metadata" @onerror="OnMediaError">
                             <source src="@VideoAssetUrl" />
                         </video>
                     }
                 </div>
             }
-            else if (_lesson.ContentType == 3)
+            else if (IsPdf(_lesson))
             {
                 @* PDF lesson *@
                 <div class="pdf-container">
-                    <iframe
-                        src="@PdfAssetUrl"
-                        title="@_lesson.Title"
-                        style="width:100%; height:80vh; border:none;">
-                    </iframe>
+                    <iframe src="@PdfAssetUrl" title="@_lesson.Title"></iframe>
                 </div>
             }
             else
             {
                 @* Text lesson - render HTML from WYSIWYG or markdown from seed data *@
                 <div class="text-content">
-                    @((MarkupString)RenderContent(_lesson.Content ?? ""))
+                    @((MarkupString)ContentHtml)
                 </div>
             }
         </div>
 
-        <div class="lesson-actions">
+        @if (Exercises.Count > 0)
+        {
+            <section class="lesson-workout" id="@WorkoutSectionId" aria-labelledby="lesson-workout-title">
+                <div class="section-head lesson-workout__head">
+                    <h2 id="lesson-workout-title">@LessonRes.Exercises</h2>
+                    <ul class="chip-row lesson-workout__summary">
+                        <li class="chip">@exerciseCountText</li>
+                        @* A single set is not worth a total. *@
+                        @if (TotalSets > 1)
+                        {
+                            <li class="chip">@string.Format(LessonRes.TotalSetsFormat, TotalSets)</li>
+                        }
+                    </ul>
+                </div>
+
+                <ol class="lesson-workout__list">
+                    @for (var index = 0; index < Exercises.Count; index++)
+                    {
+                        var exerciseNumber = index + 1;
+                        var exercise = Exercises[index];
+                        <li @key="exerciseNumber">
+                            <ExerciseCard Prescription="exercise" Position="exerciseNumber" />
+                        </li>
+                    }
+                </ol>
+            </section>
+        }
+
+        <div class="lesson-actions @(IsActionBarDocked ? "sticky-bottom-bar lesson-actions--docked" : "")">
             @if (!_lesson.IsCompleted)
             {
-                <button class="btn btn-success" @onclick="MarkComplete" disabled="@_completing">
+                <p class="lesson-actions__hint">@LessonRes.CompleteHint</p>
+                <button type="button" class="btn btn-success" @onclick="MarkComplete" disabled="@_completing">
                     <span class="bi @(_completing ? "bi-hourglass-split" : "bi-check2")" aria-hidden="true"></span>
                     @(_completing ? LessonRes.Saving : LessonRes.MarkAsComplete)
                 </button>
@@ -97,51 +160,58 @@ else
 
             @if (_completionError is not null)
             {
-                <p class="text-danger mt-2" role="alert">@_completionError</p>
+                <p class="text-danger lesson-actions__error" role="alert">@_completionError</p>
             }
 
             @if (_completionResult is not null)
             {
-                <div class="progress-update">
-                    @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _completionResult.ProgressPercent)
+                <div class="progress-update" role="status">
+                    @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _progress?.Percent ?? 0)
                     @if (_completionResult.CourseCompleted)
                     {
                         <span class="course-completed"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @LessonRes.CourseCompleted</span>
                     }
                     @if (_completionResult.CertificatePending)
                     {
-                        <p class="text-light-muted mt-1 mb-0">@LessonRes.CertificatePending</p>
+                        <p class="progress-update__certificate">@LessonRes.CertificatePending</p>
                     }
                 </div>
             }
         </div>
 
-        <div class="lesson-navigation">
-            @if (_lesson.PreviousLessonId.HasValue)
+        <nav class="lesson-navigation @(_lesson.IsCompleted ? "lesson-navigation--ready" : "")" aria-label="@LessonRes.LessonNavigationLabel">
+            @if (_lesson.PreviousLessonId is { } previousLessonId)
             {
-                <button class="btn btn-secondary" @onclick="() => GoToLesson(_lesson.PreviousLessonId.Value)">
-                    <span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.PreviousLesson
-                </button>
+                <a class="btn btn-secondary lesson-navigation__link" href="@LessonHref(previousLessonId)">
+                    <span class="lesson-navigation__label"><span class="bi bi-arrow-left" aria-hidden="true"></span> @LessonRes.PreviousLesson</span>
+                    @if (LessonTitle(previousLessonId) is { } previousTitle)
+                    {
+                        <span class="lesson-navigation__title">@previousTitle</span>
+                    }
+                </a>
             }
             else
             {
                 <span></span>
             }
 
-            @if (_lesson.NextLessonId.HasValue)
+            @if (_lesson.NextLessonId is { } nextLessonId)
             {
-                <button class="btn btn-primary" @onclick="() => GoToLesson(_lesson.NextLessonId.Value)">
-                    @LessonRes.NextLesson <span class="bi bi-arrow-right" aria-hidden="true"></span>
-                </button>
+                <a class="btn btn-primary lesson-navigation__link lesson-navigation__link--forward" href="@LessonHref(nextLessonId)">
+                    <span class="lesson-navigation__label">@LessonRes.NextLesson <span class="bi bi-arrow-right" aria-hidden="true"></span></span>
+                    @if (LessonTitle(nextLessonId) is { } nextTitle)
+                    {
+                        <span class="lesson-navigation__title">@nextTitle</span>
+                    }
+                </a>
             }
             else
             {
-                <button class="btn btn-secondary" @onclick="() => GoToCourse(_lesson.CourseId)">
-                    @LessonRes.BackToCourse
-                </button>
+                <a class="btn btn-secondary lesson-navigation__link lesson-navigation__link--forward" href="@CourseHref(_lesson.CourseId)">
+                    <span class="lesson-navigation__label">@LessonRes.BackToCourse <span class="bi bi-grid" aria-hidden="true"></span></span>
+                    <span class="lesson-navigation__title">@_lesson.CourseTitle</span>
+                </a>
             }
-        </div>
+        </nav>
     </div>
 }
- 
-
