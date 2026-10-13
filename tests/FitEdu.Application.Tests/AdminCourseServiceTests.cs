@@ -668,6 +668,24 @@ public class AdminCourseServiceTests
     }
 
     [Fact]
+    public async Task UpdateLesson_ChangedByAnotherAdminMeanwhile_ReturnsConflict_AndKeepsTheirVersion()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var lesson = NewLesson();
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+        // The service reads this tracked lesson back; a stale original RowVersion is what a concurrent
+        // SQL Server write would leave behind, so the UPDATE's WHERE clause matches no row.
+        db.Entry(lesson).OriginalValues[nameof(Lesson.RowVersion)] = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        var result = await NewService(db).UpdateLessonAsync(lesson.Id, LessonRequest(lesson.ModuleId, titleEn: "Renamed"), Admin);
+
+        result.StatusCode.ShouldBe(409);
+        result.ErrorMessage.ShouldNotBeNullOrWhiteSpace();
+        (await db.Lessons.AsNoTracking().SingleAsync(l => l.Id == lesson.Id)).TitleEn.ShouldBe("Old lesson");
+    }
+
+    [Fact]
     public async Task UpdateLesson_Missing_ReturnsNotFound()
     {
         await using var db = DbContextFactory.CreateInMemory();

@@ -915,6 +915,9 @@
   <data name="NoExercisesFound" xml:space="preserve">
     <value>Δεν βρέθηκαν ασκήσεις.</value>
   </data>
+  <data name="LessonExerciseLimit" xml:space="preserve">
+    <value>Ένα μάθημα χωράει έως {0} ασκήσεις.</value>
+  </data>
   <data name="NoLessonExercises" xml:space="preserve">
     <value>Δεν υπάρχουν ακόμη ασκήσεις σε αυτό το μάθημα.</value>
   </data>

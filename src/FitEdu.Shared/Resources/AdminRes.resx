@@ -896,6 +896,9 @@
   <data name="NoExercisesFound" xml:space="preserve">
     <value>No exercises found.</value>
   </data>
+  <data name="LessonExerciseLimit" xml:space="preserve">
+    <value>A lesson can hold up to {0} exercises.</value>
+  </data>
   <data name="NoLessonExercises" xml:space="preserve">
     <value>No exercises in this lesson yet.</value>
   </data>

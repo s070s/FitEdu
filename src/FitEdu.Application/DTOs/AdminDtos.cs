@@ -126,7 +126,8 @@ public record AdminLessonDto(
 
 /// <summary>
 /// Request to create/update a lesson. <paramref name="Exercises"/> null keeps the lesson's current
-/// exercises; a list (even an empty one) replaces them wholesale, in list order.
+/// exercises; a list (even an empty one) replaces them wholesale, in list order, up to
+/// <see cref="MaxExercises"/> rows.
 /// </summary>
 public record SaveLessonRequest(
     [Required, MaxLength(200)] string TitleEn,
@@ -137,8 +138,12 @@ public record SaveLessonRequest(
     int? DurationMinutes,
     int SortOrder,
     Guid ModuleId,
-    [MaxLength(50)] List<LessonExerciseEditDto>? Exercises = null
-);
+    [MaxLength(SaveLessonRequest.MaxExercises)] List<LessonExerciseEditDto>? Exercises = null
+)
+{
+    /// <summary>The most exercise rows one lesson takes; the lesson editor stops adding rows here.</summary>
+    public const int MaxExercises = 50;
+}
 
 /// <summary>
 /// One exercise row of the admin lesson editor. Saves identify the exercise by

@@ -46,6 +46,9 @@ public partial class LessonEditorModal
     private List<ExerciseListItemDto>? _exerciseSearchResults;
     private bool _isSearching;
 
+    // The API refuses longer lists (SaveLessonRequest.Exercises), so the picker stops adding here.
+    private bool IsExerciseListFull => _exerciseRows.Count >= SaveLessonRequest.MaxExercises;
+
     protected override void OnParametersSet()
     {
         var justOpened = IsVisible && !_wasVisible;
@@ -94,6 +97,10 @@ public partial class LessonEditorModal
 
     private async Task SearchExercisesAsync()
     {
+        // The Enter key skips the disabled search button, so a running search is checked here too.
+        if (_isSearching)
+            return;
+
         var searchTerm = _exerciseSearch.Trim();
         if (searchTerm.Length == 0)
         {
@@ -102,11 +109,19 @@ public partial class LessonEditorModal
         }
 
         _isSearching = true;
+        _errorMessage = string.Empty;
         try
         {
             var filter = new ExerciseFilterDto(Search: searchTerm);
             var page = await ExerciseConsumer.ListAsync(1, ExerciseSearchPageSize, filter: filter);
             _exerciseSearchResults = page.Items;
+        }
+        catch (Exception)
+        {
+            // The consumer already turns network failures into an empty page; anything else
+            // (such as a response body that is not valid JSON) would otherwise break the circuit.
+            _exerciseSearchResults = null;
+            _errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
         finally
         {
@@ -120,8 +135,13 @@ public partial class LessonEditorModal
             await SearchExercisesAsync();
     }
 
-    private void AddExercise(ExerciseListItemDto exercise) =>
+    private void AddExercise(ExerciseListItemDto exercise)
+    {
+        if (IsExerciseListFull)
+            return;
+
         _exerciseRows.Add(new ExerciseRow { Slug = exercise.Slug, Name = exercise.Name });
+    }
 
     private void RemoveExercise(int index) => _exerciseRows.RemoveAt(index);
 

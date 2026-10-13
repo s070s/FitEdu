@@ -2454,6 +2454,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A lesson can hold up to {0} exercises..
+        /// </summary>
+        public static string LessonExerciseLimit {
+            get {
+                return ResourceManager.GetString("LessonExerciseLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No exercises in this lesson yet..
         /// </summary>
         public static string NoLessonExercises {

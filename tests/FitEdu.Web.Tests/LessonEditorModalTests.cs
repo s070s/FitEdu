@@ -1,8 +1,14 @@
+using System.Globalization;
+using System.Text.Json;
 using Bunit;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Shared.Components.Forms;
 using Shouldly;
@@ -171,5 +177,64 @@ public class LessonEditorModalTests : BunitContext
 
         _savedRequest!.TitleEn.ShouldBe("Core basics");
         _savedRequest.Exercises!.Single().Slug.ShouldBe("plank");
+    }
+
+    [Fact]
+    public void Search_ThatFails_ShowsTheGenericError_InsteadOfBreakingTheEditor()
+    {
+        // The consumer degrades network failures itself; anything else (here a bad JSON body) reaches the page.
+        _exerciseConsumer
+            .ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
+            .ThrowsAsync(new JsonException("bad body"));
+        var modal = RenderModal(Lesson([]));
+
+        modal.Find("#exercise-search").Input("push");
+        modal.Find(".exercise-search-button").Click();
+
+        modal.Markup.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        modal.FindAll(".exercise-search-result").ShouldBeEmpty();
+        modal.Find(".exercise-search-button").HasAttribute("disabled").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void EnterWhileASearchIsRunning_DoesNotStartASecondSearch()
+    {
+        var pendingSearch = new TaskCompletionSource<PagedResult<ExerciseListItemDto>>();
+        _exerciseConsumer
+            .ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
+            .Returns(pendingSearch.Task);
+        var modal = RenderModal(Lesson([]));
+
+        modal.Find("#exercise-search").Input("push");
+        modal.Find("#exercise-search").KeyDown(new KeyboardEventArgs { Key = "Enter" });
+        modal.Find("#exercise-search").KeyDown(new KeyboardEventArgs { Key = "Enter" });
+        pendingSearch.SetResult(new PagedResult<ExerciseListItemDto>([ListItem("push-ups", "Push-Ups")], 1, 1, 10));
+
+        _exerciseConsumer.Received(1)
+            .ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>());
+        modal.WaitForAssertion(() => modal.FindAll(".exercise-search-result").Count.ShouldBe(1));
+    }
+
+    [Fact]
+    public void FullLesson_DoesNotAddAnotherRow_AndSaysWhy()
+    {
+        // The API refuses more rows than SaveLessonRequest allows, so the picker stops at that limit.
+        var fullList = Enumerable.Range(1, SaveLessonRequest.MaxExercises)
+            .Select(number => new LessonExerciseEditDto($"move-{number}", Name: $"Move {number}"))
+            .ToList();
+        _exerciseConsumer
+            .ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
+            .Returns(new PagedResult<ExerciseListItemDto>([ListItem("plank", "Plank")], 1, 1, 10));
+        var modal = RenderModal(Lesson(fullList));
+
+        modal.Find("#exercise-search").Input("plank");
+        modal.Find(".exercise-search-button").Click();
+        modal.Find(".exercise-search-result").Click();
+
+        modal.FindAll(".lesson-exercise-row").Count.ShouldBe(SaveLessonRequest.MaxExercises);
+        var expectedLimitText = AdminRes.LessonExerciseLimit.Replace(
+            "{0}", SaveLessonRequest.MaxExercises.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        modal.Find(".exercise-limit").TextContent.ShouldBe(expectedLimitText);
+        modal.Find(".exercise-search-result").HasAttribute("disabled").ShouldBeTrue();
     }
 }
