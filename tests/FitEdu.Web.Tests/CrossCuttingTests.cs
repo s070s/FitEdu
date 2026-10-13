@@ -65,7 +65,8 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         body.ShouldContain("Page not found");
-        body.ShouldNotContain("FitEdu - Home Page");
+        // The home hero is the page a broken route used to fall back to.
+        body.ShouldNotContain("hero-title");
     }
 
     [Fact]

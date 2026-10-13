@@ -67,6 +67,9 @@ public partial class CircuitStartSizeTests : IClassFixture<CircuitStartSizeTests
         // Proves the loopback API calls reach the seeded data, so the size test measures real content.
         html.ShouldContain("blog-card");
         html.ShouldContain("testimonials-grid");
+        // The guest landing API (anonymous) reaches the seeded catalog too: numbers and featured courses.
+        html.ShouldContain("stats-strip");
+        html.ShouldContain("section-featured");
     }
 
     [Fact]

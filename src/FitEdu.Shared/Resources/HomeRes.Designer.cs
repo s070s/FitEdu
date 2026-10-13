@@ -61,15 +61,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are logged in. Visit your &lt;a href=&quot;/profile&quot;&gt;profile&lt;/a&gt; to see your details..
-        /// </summary>
-        public static string AuthenticatedMessage {
-            get {
-                return ResourceManager.GetString("AuthenticatedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create free account.
         /// </summary>
         public static string CtaButton {
@@ -246,12 +237,6 @@ namespace FitEdu.Shared.Resources {
         public static string DashboardExplore {
             get {
                 return ResourceManager.GetString("DashboardExplore", resourceCulture);
-            }
-        }
-
-        public static string DashboardNoEnrollments {
-            get {
-                return ResourceManager.GetString("DashboardNoEnrollments", resourceCulture);
             }
         }
 
@@ -519,6 +504,60 @@ namespace FitEdu.Shared.Resources {
         public static string FooterFollow {
             get {
                 return ResourceManager.GetString("FooterFollow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Train at home or in the gym.
+        /// </summary>
+        public static string HeroEyebrow {
+            get {
+                return ResourceManager.GetString("HeroEyebrow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FitEdu in numbers.
+        /// </summary>
+        public static string StatsAriaLabel {
+            get {
+                return ResourceManager.GetString("StatsAriaLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Day streak.
+        /// </summary>
+        public static string StatsStreakDays {
+            get {
+                return ResourceManager.GetString("StatsStreakDays", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to See all programmes.
+        /// </summary>
+        public static string FeaturedSeeAll {
+            get {
+                return ResourceManager.GetString("FeaturedSeeAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All articles.
+        /// </summary>
+        public static string BlogSeeAll {
+            get {
+                return ResourceManager.GetString("BlogSeeAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} workouts done.
+        /// </summary>
+        public static string TodayPlanProgressFormat {
+            get {
+                return ResourceManager.GetString("TodayPlanProgressFormat", resourceCulture);
             }
         }
     }

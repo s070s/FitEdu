@@ -123,9 +123,6 @@
   <data name="WelcomeUser" xml:space="preserve">
     <value>Welcome, {0}!</value>
   </data>
-  <data name="AuthenticatedMessage" xml:space="preserve">
-    <value>You are logged in. Visit your &lt;a href="/profile"&gt;profile&lt;/a&gt; to see your details.</value>
-  </data>
   <data name="HeroTitleLine1" xml:space="preserve">
     <value>Train with a plan.</value>
   </data>
@@ -189,11 +186,8 @@
   <data name="DashboardExplore" xml:space="preserve">
     <value>Explore</value>
   </data>
-  <data name="DashboardNoEnrollments" xml:space="preserve">
-    <value>You're not enrolled in any courses yet.</value>
-  </data>
   <data name="DashboardBrowseCourses" xml:space="preserve">
-    <value>Browse Courses</value>
+    <value>Browse courses</value>
   </data>
   <data name="BlogNotFoundTitle" xml:space="preserve">
     <value>Article not found</value>
@@ -288,4 +282,22 @@
     <data name="FooterFollow" xml:space="preserve">
       <value>Follow us</value>
     </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>Train at home or in the gym</value>
+  </data>
+  <data name="StatsAriaLabel" xml:space="preserve">
+    <value>FitEdu in numbers</value>
+  </data>
+  <data name="StatsStreakDays" xml:space="preserve">
+    <value>Day streak</value>
+  </data>
+  <data name="FeaturedSeeAll" xml:space="preserve">
+    <value>See all programmes</value>
+  </data>
+  <data name="BlogSeeAll" xml:space="preserve">
+    <value>All articles</value>
+  </data>
+  <data name="TodayPlanProgressFormat" xml:space="preserve">
+    <value>{0} of {1} workouts done</value>
+  </data>
 </root>

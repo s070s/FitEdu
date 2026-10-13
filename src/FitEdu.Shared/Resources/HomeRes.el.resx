@@ -123,9 +123,6 @@
   <data name="WelcomeUser" xml:space="preserve">
     <value>Καλώς ήρθες, {0}!</value>
   </data>
-  <data name="AuthenticatedMessage" xml:space="preserve">
-    <value>Είσαι συνδεδεμένος. Επισκέψου το &lt;a href="/profile"&gt;προφίλ&lt;/a&gt; σου για να δεις τα στοιχεία σου.</value>
-  </data>
   <data name="HeroTitleLine1" xml:space="preserve">
     <value>Προπονήσου με σχέδιο.</value>
   </data>
@@ -145,10 +142,10 @@
     <value>μελών</value>
   </data>
   <data name="CtaTitle" xml:space="preserve">
-    <value>Έτοιμος/η για την πρώτη σου</value>
+    <value>Ήρθε η ώρα για την πρώτη σου</value>
   </data>
   <data name="CtaTitleHighlight" xml:space="preserve">
-    <value>προπόνηση;</value>
+    <value>προπόνηση</value>
   </data>
   <data name="CtaText" xml:space="preserve">
     <value>Φτιάξε δωρεάν λογαριασμό, διάλεξε στόχο και ακολούθησε ένα πρόγραμμα για το επίπεδό σου.</value>
@@ -189,11 +186,8 @@
   <data name="DashboardExplore" xml:space="preserve">
     <value>Εξερεύνηση</value>
   </data>
-  <data name="DashboardNoEnrollments" xml:space="preserve">
-    <value>Δεν έχεις εγγραφεί ακόμη σε κανένα μάθημα.</value>
-  </data>
   <data name="DashboardBrowseCourses" xml:space="preserve">
-    <value>Περιήγηση Μαθημάτων</value>
+    <value>Δες τα μαθήματα</value>
   </data>
   <data name="BlogNotFoundTitle" xml:space="preserve">
     <value>Το άρθρο δεν βρέθηκε</value>
@@ -288,4 +282,22 @@
     <data name="FooterFollow" xml:space="preserve">
       <value>Ακολούθησέ μας</value>
     </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>Προπόνηση στο σπίτι ή στο γυμναστήριο</value>
+  </data>
+  <data name="StatsAriaLabel" xml:space="preserve">
+    <value>Το FitEdu σε αριθμούς</value>
+  </data>
+  <data name="StatsStreakDays" xml:space="preserve">
+    <value>Μέρες στη σειρά</value>
+  </data>
+  <data name="FeaturedSeeAll" xml:space="preserve">
+    <value>Δες όλα τα προγράμματα</value>
+  </data>
+  <data name="BlogSeeAll" xml:space="preserve">
+    <value>Όλα τα άρθρα</value>
+  </data>
+  <data name="TodayPlanProgressFormat" xml:space="preserve">
+    <value>{0} από {1} προπονήσεις έγιναν</value>
+  </data>
 </root>
