@@ -1,3 +1,4 @@
+using System.Globalization;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Infrastructure.Configuration;
 using Shouldly;
@@ -15,6 +16,9 @@ public class SmtpEmailServiceTests
     {
         Smtp = new SmtpOptions { FromAddress = "no-reply@fitedu.test", FromName = "FitEdu" }
     };
+
+    // The email language follows the UI culture of the sending request; English unless a test says otherwise.
+    public SmtpEmailServiceTests() => CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
 
     [Fact]
     public void BuildMessage_EmailConfirmation_IsTheFitnessWelcomeWithTheLink()
@@ -41,6 +45,39 @@ public class SmtpEmailServiceTests
         var html = message.HtmlBody.ShouldNotBeNull();
         html.ShouldContain("https://fitedu.test/reset-password?email=u%40x.com&amp;token=xyz", Case.Sensitive);
         html.ShouldContain("If you did not ask for this");
+        message.TextBody.ShouldNotBeNull().ShouldContain(ResetLink, Case.Sensitive);
+    }
+
+    [Fact]
+    public void BuildMessage_EmailConfirmation_InGreek_IsTheGreekWelcomeWithTheLink()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+
+        var message = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink));
+
+        message.Subject.ShouldBe("Καλώς ήρθες στο FitEdu — ώρα για κίνηση");
+        var html = message.HtmlBody.ShouldNotBeNull();
+        html.ShouldContain("βιβλιοθήκη ασκήσεων");
+        html.ShouldContain("Επιβεβαίωση email");
+        html.ShouldContain("https://fitedu.test/confirm-email?userId=u1&amp;token=abc", Case.Sensitive);
+        var text = message.TextBody.ShouldNotBeNull();
+        text.ShouldContain(ConfirmationLink, Case.Sensitive);
+        text.ShouldContain("Καλή προπόνηση");
+    }
+
+    [Fact]
+    public void BuildMessage_PasswordReset_InGreek_IsTheGreekResetWithTheLink()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+
+        var message = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink));
+
+        message.Subject.ShouldBe("Επαναφορά του κωδικού σου στο FitEdu");
+        var html = message.HtmlBody.ShouldNotBeNull();
+        html.ShouldContain("https://fitedu.test/reset-password?email=u%40x.com&amp;token=xyz", Case.Sensitive);
+        html.ShouldContain("Αν δεν το ζήτησες εσύ");
         message.TextBody.ShouldNotBeNull().ShouldContain(ResetLink, Case.Sensitive);
     }
 
