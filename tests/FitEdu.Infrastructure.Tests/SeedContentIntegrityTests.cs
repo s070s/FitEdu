@@ -810,9 +810,11 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekFormalAddressRegex();
 
-    // Two capitalised Greek words in a row, the title case of "Διαχείριση Χρηστών", also after a
-    // short abbreviation such as "Ημ. Γέννησης".
-    [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+ [ΆΈ-ΏΑ-Ω][ά-ώ]+|\b[ΆΈ-ΏΑ-Ω][ά-ώ]{1,3}\. [ΆΈ-ΏΑ-Ω][ά-ώ]+", RegexOptions.CultureInvariant)]
+    // Two capitalised Greek words in a row, the title case of "Διαχείριση Χρηστών", also when a
+    // short connector ("Πίσω στο Πρόγραμμα"), "&" or "/" ("Χρεώσεις & Συναλλαγές") sits between
+    // them, or after a short abbreviation such as "Ημ. Γέννησης".
+    [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+(?:(?: [α-ωά-ώ]{1,3})? | ?[&/] ?)[ΆΈ-ΏΑ-Ω][ά-ώ]+|\b[ΆΈ-ΏΑ-Ω][ά-ώ]{1,3}\. [ΆΈ-ΏΑ-Ω][ά-ώ]+",
+        RegexOptions.CultureInvariant)]
     private static partial Regex GreekTitleCaseRegex();
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
