@@ -50,3 +50,10 @@
     color: var(--text-light-muted);
     flex-shrink: 0;
 }
+
+/* Phones: portrait tiles in ActiveCallView's two-column grid. */
+@media (max-width: 767.98px) {
+    .participant-tile {
+        aspect-ratio: 3 / 4;
+    }
+}

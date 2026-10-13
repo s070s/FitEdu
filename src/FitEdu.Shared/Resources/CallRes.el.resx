@@ -109,10 +109,10 @@
 		<value>Κανείς δεν ήταν διαθέσιμος να απαντήσει.</value>
 	</data>
 	<data name="CallerBusy" xml:space="preserve">
-		<value>Βρίσκεστε ήδη σε κλήση.</value>
+		<value>Είσαι ήδη σε κλήση.</value>
 	</data>
 	<data name="NoAccess" xml:space="preserve">
-		<value>Οι βιντεοκλήσεις δεν είναι διαθέσιμες στο πλάνο σας.</value>
+		<value>Οι βιντεοκλήσεις δεν είναι διαθέσιμες στο πλάνο σου.</value>
 	</data>
 	<data name="CallDeclined" xml:space="preserve">
 		<value>Η κλήση απορρίφθηκε.</value>
@@ -121,10 +121,10 @@
 		<value>Αυτός ο συμμετέχων δεν είναι διαθέσιμος.</value>
 	</data>
 	<data name="MediaPermissionDenied" xml:space="preserve">
-		<value>Δεν δόθηκε πρόσβαση σε κάμερα/μικρόφωνο. Ελέγξτε τα δικαιώματα του προγράμματος περιήγησης και δοκιμάστε ξανά.</value>
+		<value>Δεν δόθηκε πρόσβαση σε κάμερα και μικρόφωνο. Έλεγξε τα δικαιώματα του προγράμματος περιήγησης και δοκίμασε ξανά.</value>
 	</data>
 	<data name="You" xml:space="preserve">
-		<value>Εσείς</value>
+		<value>Εσύ</value>
 	</data>
 	<data name="ParticipantLimitReached" xml:space="preserve">
 		<value>Αυτή η κλήση έχει φτάσει το όριο των {0} συμμετεχόντων.</value>

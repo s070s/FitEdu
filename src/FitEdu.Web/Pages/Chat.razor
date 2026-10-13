@@ -4,6 +4,9 @@
 
 <PageTitle>@ChatRes.PageTitle</PageTitle>
 
+@* UX-15: FocusOnNavigate moves focus to the h1; the chat layout has no visible title. *@
+<h1 class="visually-hidden">@ChatRes.PageTitle</h1>
+
 @if ( !_initialized )
 {
     <div class="text-center p-5">

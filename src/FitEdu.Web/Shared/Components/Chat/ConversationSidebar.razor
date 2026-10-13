@@ -29,7 +29,7 @@
     }
     else
     {
-        <div class="conversation-list" style="max-height:60vh; overflow-y:auto">
+        <div class="conversation-list">
             <Virtualize Items="Conversations.Items" Context="convo" OverscanCount="10">
                 @{ var isActive = SelectedConversationId == convo.Id; }
                 <div class="conversation-item @(isActive ? "active" : "")"

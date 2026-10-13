@@ -45,6 +45,7 @@ All nine Medium findings have been resolved: action feedback is now typed and re
 - **Evidence:** `Routes.razor:8` — `<FocusOnNavigate Selector="h1"/>`. Login (`Login.razor:6`), Register (`Register.razor:7`), ForgotPassword (`ForgotPassword.razor:6`), Profile (`Profile.razor:7`) use `<h2>` as their top heading; Chat (`Chat.razor`) has no heading element at all. All other 27 pages have an `h1`.
 - **Impact:** Keyboard/screen-reader users navigating to these five pages get no focus move and no announced page context (the mechanism works everywhere else); document outline starts at h2.
 - **Recommendation:** Promote the top heading to `<h1 class="h2">` (the admin pages' exact idiom, e.g. `AdminUsers.razor:8`) and give Chat a visually-hidden `h1` with `ChatRes.PageTitle`.
+- **Progress:** Chat now has a visually-hidden `h1` with `ChatRes.PageTitle` (D11); the auth/profile pages remain.
 
 ### UX-16: Mock-checkout success on Pricing gives no confirmation feedback  [Info] [Effort: S]
 - **Evidence:** `Pricing.razor.cs:52-56` — when checkout returns no redirect URL (the mock/dev path), the code silently reloads `_currentStatus`; the only visible change is the button flipping to "Current plan". The real-checkout path lands on `SubscriptionSuccess` with a full celebration screen (`SubscriptionSuccess.razor:13-31`).
@@ -58,7 +59,7 @@ All nine Medium items (UX-5 through UX-13) are resolved. The remaining backlog:
 | ID | Severity | Effort | Action |
 |----|----------|--------|--------|
 | UX-14 | Low | S | Add PageTitle to AssessmentHistory and AssessmentForm |
-| UX-15 | Low | S | Promote h2→h1 on auth/profile pages; hidden h1 on Chat |
+| UX-15 | Low | S | Promote h2→h1 on auth/profile pages (Chat done) |
 | UX-16 | Info | S | Acknowledge mock-checkout success on Pricing |
 
 ## 5. Related Findings Elsewhere

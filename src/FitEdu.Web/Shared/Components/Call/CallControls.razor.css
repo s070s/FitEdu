@@ -45,15 +45,26 @@
     background-color: #C81E3F;
 }
 
-@media (max-width: 480px) {
+.control-btn:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+/* Phones: above the home indicator, never wider than the screen, buttons still 44 px. */
+@media (max-width: 767.98px) {
     .call-controls {
-        bottom: 0.75rem;
+        bottom: calc(0.75rem + env(safe-area-inset-bottom));
         gap: 0.5rem;
+        max-width: calc(100vw - 1.5rem);
         padding: 0.4rem;
+        background-color: rgba(var(--bg-surface-rgb), 0.92);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .control-btn {
-        width: 42px;
-        height: 42px;
+        flex-shrink: 0;
+        width: var(--tap-min);
+        height: var(--tap-min);
     }
 }
