@@ -294,4 +294,7 @@
   <data name="Course_UnknownEquipmentCode" xml:space="preserve">
     <value>Unknown equipment code</value>
   </data>
+  <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
+    <value>This lesson was modified by someone else. Reload and try again.</value>
+  </data>
 </root>

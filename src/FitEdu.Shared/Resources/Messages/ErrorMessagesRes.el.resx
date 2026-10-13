@@ -294,4 +294,7 @@
   <data name="Course_UnknownEquipmentCode" xml:space="preserve">
     <value>Άγνωστος κωδικός εξοπλισμού</value>
   </data>
+  <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
+    <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά και δοκίμασε πάλι.</value>
+  </data>
 </root>

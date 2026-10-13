@@ -19,8 +19,6 @@ public class AdminCourseService(
     ILogger<AdminCourseService> logger,
     IHtmlSanitizer sanitizer) : IAdminCourseService
 {
-    private const string LessonConflictMessage = "This lesson was modified by someone else. Reload and try again.";
-
     public async Task<AdminCourseDto?> GetCourseByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var course = await db.Courses
@@ -323,7 +321,7 @@ public class AdminCourseService(
         }
         catch (DbUpdateConcurrencyException)
         {
-            return ServiceResult<AdminLessonDto>.Conflict(error: LessonConflictMessage);
+            return ServiceResult<AdminLessonDto>.Conflict(error: ErrorMessagesRes.Lesson_ModifiedConcurrently);
         }
 
         return ServiceResult<AdminLessonDto>.Ok(lesson.ToAdminDto());

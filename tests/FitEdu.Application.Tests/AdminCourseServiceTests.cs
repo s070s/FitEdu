@@ -681,7 +681,7 @@ public class AdminCourseServiceTests
         var result = await NewService(db).UpdateLessonAsync(lesson.Id, LessonRequest(lesson.ModuleId, titleEn: "Renamed"), Admin);
 
         result.StatusCode.ShouldBe(409);
-        result.ErrorMessage.ShouldNotBeNullOrWhiteSpace();
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.Lesson_ModifiedConcurrently);
         (await db.Lessons.AsNoTracking().SingleAsync(l => l.Id == lesson.Id)).TitleEn.ShouldBe("Old lesson");
     }
 

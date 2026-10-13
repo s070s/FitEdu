@@ -590,5 +590,14 @@ namespace FitEdu.Shared.Resources.Messages {
                 return ResourceManager.GetString("Course_UnknownEquipmentCode", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This lesson was modified by someone else. Reload and try again..
+        /// </summary>
+        public static string Lesson_ModifiedConcurrently {
+            get {
+                return ResourceManager.GetString("Lesson_ModifiedConcurrently", resourceCulture);
+            }
+        }
     }
 }
