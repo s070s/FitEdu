@@ -67,6 +67,17 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void PreferNotToSayLevel_ShowsNoLevelChip()
+    {
+        _profileConsumer.GetProfileAsync().Returns(AliceProfile with { Status = UserStatus.Other });
+
+        var page = Render<Profile>();
+
+        page.WaitForAssertion(() => page.Find(".profile-hero .chip--teal").TextContent.ShouldContain(CourseRes.Goal_Strength));
+        page.FindAll(".profile-hero .chip--lime").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Loaded_RendersThreeStatTiles()
     {
         var page = Render<Profile>();

@@ -38,13 +38,19 @@
                         <span class="eyebrow">@ProfileRes.Heading</span>
                         <h1 id="profile-name" class="profile-hero__name">@HeroName</h1>
                         <p class="profile-hero__email">@profile.Email</p>
-                        <div class="chip-row">
-                            <span class="chip chip--lime"><span class="bi bi-bar-chart-steps" aria-hidden="true"></span>@UserStatusLabels.Label(profile.Status)</span>
-                            @if (profile.Goal is { } goal)
-                            {
-                                <span class="chip chip--teal"><span class="bi bi-bullseye" aria-hidden="true"></span>@CourseLabels.Goal(goal)</span>
-                            }
-                        </div>
+                        @if (HasLevelChip || profile.Goal is not null)
+                        {
+                            <div class="chip-row">
+                                @if (HasLevelChip)
+                                {
+                                    <span class="chip chip--lime"><span class="bi bi-bar-chart-steps" aria-hidden="true"></span>@UserStatusLabels.Label(profile.Status)</span>
+                                }
+                                @if (profile.Goal is { } goal)
+                                {
+                                    <span class="chip chip--teal"><span class="bi bi-bullseye" aria-hidden="true"></span>@CourseLabels.Goal(goal)</span>
+                                }
+                            </div>
+                        }
                     </div>
                 </section>
 
@@ -120,7 +126,7 @@
                             <div><dt>@ProfileRes.LabelDateOfBirth</dt><dd>@(profile.DateOfBirth?.ToString("d") ?? ProfileRes.NotSpecified)</dd></div>
                         </dl>
 
-                        <button class="btn btn-primary" @onclick="UpdateProfile" disabled="@isSaving">@ProfileRes.BtnSaveProfile</button>
+                        <button type="button" class="btn-cta" @onclick="UpdateProfile" disabled="@isSaving">@ProfileRes.BtnSaveProfile</button>
                     </ChildContent>
                 </FormCardSection>
 

@@ -56,6 +56,9 @@ public partial class Profile
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
+    /// <summary>Only a real training level earns a header chip; "Prefer not to say" would read oddly as a badge.</summary>
+    private bool HasLevelChip => profile?.Status is UserStatus.Beginner or UserStatus.Intermediate or UserStatus.Advanced;
+
     private bool HasAnyStat => _enrolledCourses is not null || _certificates is not null || _assessments is not null;
 
     /// <summary>The display name when set, else the full name.</summary>
