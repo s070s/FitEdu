@@ -38,12 +38,6 @@ robocopy "<uploads-path>" "D:\backups\uploads-$(date +%F)" /MIR
 Restore is the reverse: `RESTORE DATABASE ... WITH REPLACE` (or `sqlpackage /a:Import`) and copy the
 uploads back, then restart the app.
 
-Certificate PDFs are the one kind of upload the app can rebuild: each language renders again on its
-next download. At every start-up, right after the migrations, the app deletes any file in
-`certificates/` that no certificate row points to (for example the PDFs whose paths the
-`FIT2_CertificatePdfPerLanguage` migration cleared), because those files hold a member's name. So
-after restoring an older database, PDFs it does not know are removed and simply render again.
-
 ---
 
 ## Update / migration procedure (OPS-3)

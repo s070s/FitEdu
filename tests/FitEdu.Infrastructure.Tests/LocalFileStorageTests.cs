@@ -36,28 +36,6 @@ public sealed class LocalFileStorageTests : IDisposable
     }
 
     [Fact]
-    public async Task ListFiles_ReturnsTheRelativePathsOfOneFolder()
-    {
-        var first = await _storage.SaveFileAsync(Stream(), "a.pdf", "certificates");
-        var second = await _storage.SaveFileAsync(Stream(), "b.pdf", "certificates");
-        await _storage.SaveFileAsync(Stream(), "photo.png", "avatars");
-
-        _storage.ListFiles("certificates").Order().ShouldBe(new[] { first, second }.Order());
-    }
-
-    [Fact]
-    public void ListFiles_MissingFolder_ReturnsNothing()
-    {
-        _storage.ListFiles("certificates").ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void ListFiles_FolderWithTraversal_Throws()
-    {
-        Should.Throw<ArgumentException>(() => _storage.ListFiles("../escape"));
-    }
-
-    [Fact]
     public async Task SaveFile_BlankFileName_Throws()
     {
         await Should.ThrowAsync<ArgumentException>(

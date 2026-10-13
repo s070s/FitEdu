@@ -36,11 +36,4 @@ public interface ICertificateService
     /// Throws <see cref="KeyNotFoundException"/> when the certificate does not exist.
     /// </summary>
     Task RegenerateAsync(Guid certificateId, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Deletes the stored certificate PDFs that no certificate points to any more (for example the
-    /// ones whose paths the per-language migration cleared), since they hold a member's name.
-    /// Returns how many files were deleted.
-    /// </summary>
-    Task<int> DeleteUnreferencedPdfsAsync(CancellationToken cancellationToken = default);
 }

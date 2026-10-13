@@ -67,27 +67,6 @@ public partial class CertificateServiceTests
     };
 
     [Fact]
-    public async Task DeleteUnreferencedPdfs_DeletesOnlyFilesNoCertificateNames()
-    {
-        // The per-language migration cleared the old paths; those PDFs still hold a member's name.
-        await using var db = DbContextFactory.CreateInMemory();
-        var english = ExistingCert("u1", Guid.NewGuid(), pdfPath: "certificates/kept-en.pdf");
-        var greek = ExistingCert("u2", Guid.NewGuid());
-        greek.PdfPathEl = "certificates/kept-el.pdf";
-        db.Certificates.AddRange(english, greek);
-        await db.SaveChangesAsync();
-        var storage = Substitute.For<IFileStorage>();
-        storage.ListFiles(CertificateService.PdfFolder).Returns(
-            ["certificates/kept-en.pdf", "certificates/kept-el.pdf", "certificates/old.pdf"]);
-
-        var deleted = await NewService(db, storage).DeleteUnreferencedPdfsAsync();
-
-        deleted.ShouldBe(1);
-        await storage.Received(1).DeleteFileAsync("certificates/old.pdf", Arg.Any<CancellationToken>());
-        await storage.Received(1).DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
     public async Task GetOrCreate_New_BuildsAndPersistsRowWithoutRenderingPdf()
     {
         await using var db = DbContextFactory.CreateInMemory();
