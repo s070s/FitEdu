@@ -222,7 +222,8 @@ public class CardComponentTests : BunitContext
         var ring = card.Find("[role=progressbar]");
         ring.GetAttribute("aria-valuenow").ShouldBe("50");
         ring.GetAttribute("aria-label").ShouldBe("2 από 4 ολοκληρώθηκαν");
-        card.Find(".path-card__steps").TextContent.ShouldContain("4 μαθήματα");
+        // Courses ("προγράμματα"), not the lessons ("μαθήματα") a course card counts.
+        card.Find(".path-card__steps").TextContent.ShouldContain("4 προγράμματα");
         card.Find(".path-card__progress").TextContent.ShouldBe("2 από 4 ολοκληρώθηκαν");
         card.Find(".path-card__more").TextContent.ShouldContain("Προβολή διαδρομής");
         card.Find(".chip").TextContent.ShouldContain("Κινητικότητα");

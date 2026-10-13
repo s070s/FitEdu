@@ -65,7 +65,7 @@
     <value>Δεν υπάρχουν ακόμη διαθέσιμες διαδρομές προπόνησης.</value>
   </data>
   <data name="StepsCountFormat" xml:space="preserve">
-    <value>{0} μαθήματα</value>
+    <value>{0} προγράμματα</value>
   </data>
   <data name="ProgressFormat" xml:space="preserve">
     <value>{0} από {1} ολοκληρώθηκαν</value>
