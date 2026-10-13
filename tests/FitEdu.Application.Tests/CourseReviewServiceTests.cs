@@ -202,7 +202,7 @@ public class CourseReviewServiceTests
         // Both titles are stored so each language's template can show its own.
         await notifications.Received(1).DispatchAsync(
             UserId, NotificationType.ReviewApproved, "ReviewApproved",
-            Arg.Is<IReadOnlyList<string>>(args => args.SequenceEqual(new[] { "Strength Basics", "Βασικά δύναμης" })),
+            Arg.Is<IReadOnlyList<string>>(args => args.Count == 2 && args[0] == "Strength Basics" && args[1] == "Βασικά δύναμης"),
             Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
