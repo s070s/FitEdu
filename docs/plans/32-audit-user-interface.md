@@ -34,7 +34,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 ## 3. Findings
 
 ### UI-11: Static inline styles scattered through markup instead of scoped CSS  [Low] [Effort: S]
-- **Evidence (rechecked 2026-10-13):** 17 `style="` occurrences in `.razor` files. Eight are dynamic (`style="@..."`, e.g. progress widths and `ScrollableTable`'s parameterized height); nine are static offenders: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AvatarDropdown.razor:27` (`cursor:default`), `AdminCourseEdit.razor:238` and `:240-243` (five lesson-table column widths) and `AdminPaginationToolbar.razor:9` (`width:auto` on the page-size select).
+- **Evidence (rechecked 2026-10-13):** 16 `style="` occurrences in `.razor` files. Eight are style values that embed Razor expressions (e.g. `style="width: @(...)%"`: progress widths and `ScrollableTable`'s parameterized height); eight are static offenders: `SortableColumnHeader.razor:11` (cursor/user-select/white-space), `MessagePane.razor:7` (font-size), `AvatarDropdown.razor:27` (`cursor:default`), `AdminCourseEdit.razor:240` and `:242-244` (four lesson-table column widths) and `AdminPaginationToolbar.razor:9` (`width:auto` on the page-size select).
 - **Impact:** Bypasses the documented consolidation rule and the token system, so theme adjustments (like the deferred hardcoded-value token sweep — see the plan-13 note in 00-INDEX.md) miss these.
 - **Recommendation:** Fold each static style into the owning component's `.razor.css`; do it alongside the deferred token sweep to avoid touching the same lines twice.
 - **Progress:** D11 removed `BlogArticle.razor`'s container padding (now in `BlogArticle.razor.css`) and `ConversationSidebar.razor`'s list max-height (the list already fills the sidebar through its scoped CSS).
@@ -50,7 +50,7 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 - **Evidence:** `AdminCourseEdit.razor:263` — `badge bg-light text-dark` (the "Text" lesson-type badge); `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).
 - **Impact:** Light badges are near-white blobs on dark cards.
 - **Recommendation:** Use `--bg-neutral-subtle` badges as elsewhere.
-- **Progress (fitness redesign, D9):** the stock blue `card-header bg-primary text-white` on `AssessmentHistory` is gone; the page uses the palette classes.
+- **Progress (fitness redesign, 2026-10-13):** the stock blue `card-header bg-primary text-white` on `AssessmentHistory` is gone; the page uses the palette classes.
 
 ### UI-15: `role="menu"` dropdown without arrow-key or Escape handling  [Info] [Effort: S]
 - **Evidence:** `src/FitEdu.Web/Layout/AvatarDropdown.razor:5-38` — declares `aria-haspopup="menu"`/`role="menu"`/`role="menuitem"` and closes on focus-out, but implements no ArrowUp/ArrowDown/Escape/Home/End keyboard model that the `menu` role promises.
