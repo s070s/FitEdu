@@ -48,6 +48,7 @@ public partial class CourseDetail
     // View data prepared once per load (PrepareView).
     private List<ModuleDto> _modules = [];
     private List<string> _outcomes = [];
+    private HashSet<Guid> _outcomeModuleIds = [];
     private IReadOnlyList<string> _equipmentLabels = [];
     private LessonSummaryDto? _firstLesson;
     private LessonSummaryDto? _nextLesson;
@@ -207,13 +208,14 @@ public partial class CourseDetail
         _totalMinutes = lessons.Sum(lesson => lesson.DurationMinutes ?? 0);
         _equipmentLabels = CourseLabels.EquipmentList(course.Equipment);
 
-        // Module descriptions are the sanitized rich text the module body shows too.
-        _outcomes = _modules
-            .Select(module => module.Description)
-            .OfType<string>()
-            .Where(description => !string.IsNullOrWhiteSpace(description))
+        // The outcomes are the first module descriptions (sanitized rich text); the outline leaves
+        // those modules' descriptions out, so the page does not say the same thing twice.
+        var outcomeModules = _modules
+            .Where(module => !string.IsNullOrWhiteSpace(module.Description))
             .Take(MaxOutcomes)
             .ToList();
+        _outcomes = outcomeModules.Select(module => module.Description!).ToList();
+        _outcomeModuleIds = outcomeModules.Select(module => module.Id).ToHashSet();
 
         // Open the module the member trains next, or the first one.
         var nextModule = _modules.FirstOrDefault(module => module.Lessons.Any(lesson => lesson.Id == _nextLesson?.Id));

@@ -97,6 +97,26 @@ public class CourseLabelsTests
         CourseLabels.Equipment(code).ShouldBe(expected);
     }
 
+    [Theory]
+    [InlineData("en", 8, 3, "8 weeks · 3× per week")]
+    [InlineData("en", 1, null, "1 week")]
+    [InlineData("en", null, 4, "4× per week")]
+    [InlineData("el", 8, 3, "8 εβδομάδες · 3× την εβδομάδα")]
+    [InlineData("el", 1, 2, "1 εβδομάδα · 2× την εβδομάδα")]
+    public void Schedule_JoinsTheWeeksAndSessionsInThePageLanguage(string culture, int? weeks, int? sessions, string expected)
+    {
+        CultureInfo.CurrentCulture = new CultureInfo(culture);
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+
+        CourseLabels.Schedule(weeks, sessions).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Schedule_WithoutWeeksOrSessions_IsNull()
+    {
+        CourseLabels.Schedule(null, null).ShouldBeNull();
+    }
+
     private static bool IsGreekLetter(char character) =>
         character >= FirstGreekLetter && character <= LastGreekLetter;
 }

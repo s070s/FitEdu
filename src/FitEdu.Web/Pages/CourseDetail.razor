@@ -62,7 +62,7 @@ else
                     <span class="bi bi-bullseye" aria-hidden="true"></span>
                     <span class="visually-hidden">@CourseRes.Goal: </span>@CourseLabels.Goal(_course.Goal)
                 </span>
-                @if (ScheduleText() is { } schedule)
+                @if (CourseLabels.Schedule(_course.EstimatedWeeks, _course.SessionsPerWeek) is { } schedule)
                 {
                     <span class="chip">
                         <span class="bi bi-calendar-week" aria-hidden="true"></span> @schedule
@@ -172,7 +172,8 @@ else
                             </summary>
 
                             <div class="module__body">
-                                @if (!string.IsNullOrEmpty(module.Description))
+                                @* A description already listed under "What you'll train" is not repeated here. *@
+                                @if (!string.IsNullOrEmpty(module.Description) && !_outcomeModuleIds.Contains(module.Id))
                                 {
                                     <div class="module-description">@((MarkupString)module.Description)</div>
                                 }
@@ -386,20 +387,4 @@ else
             }
         </aside>
     </div>
-}
-
-@code {
-    // Resource formats are filled in here, in the markup file, next to the text they build.
-
-    /// <summary>"8 weeks · 3× per week", either half alone, or null when the course has neither (as on CourseCard).</summary>
-    private string? ScheduleText()
-    {
-        var parts = new List<string>();
-        if (_course?.EstimatedWeeks is { } weeks)
-            parts.Add(ResourceFormat.Count(weeks, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
-        if (_course?.SessionsPerWeek is { } sessions)
-            parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
-
-        return parts.Count == 0 ? null : string.Join(" · ", parts);
-    }
 }

@@ -96,6 +96,22 @@ public class CourseDetailPageTests : BunitContext
     }
 
     [Fact]
+    public void Outline_LeavesOutTheDescriptionsAlreadyListedAsOutcomes()
+    {
+        UseCulture("en");
+        var modules = Enumerable.Range(1, 6)
+            .Select(number => Module($"Module {number}", $"Outcome {number}", Lesson($"Lesson {number}")))
+            .ToArray();
+        UseCourse(Course(modules: modules));
+
+        var page = RenderPage();
+
+        // Modules 1-4 are the outcomes; only 5 and 6 keep their description in the outline.
+        page.FindAll(".module-description").Select(description => description.TextContent.Trim())
+            .ShouldBe(["Outcome 5", "Outcome 6"]);
+    }
+
+    [Fact]
     public void Outline_ShowsEachLessonsKindMinutesAndExerciseCount()
     {
         UseCulture("en");
