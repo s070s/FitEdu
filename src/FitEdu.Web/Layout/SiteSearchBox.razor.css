@@ -1,10 +1,36 @@
 .site-search {
+    display: flex;
+    align-items: center;
+}
+
+.site-search-panel {
     position: relative;
     display: flex;
     align-items: center;
     width: 220px;
     max-width: 40vw;
 }
+
+/* Icon button that opens the field on phones */
+.site-search-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-light-normal);
+    font-size: 1.2rem;
+}
+
+    .site-search-toggle:hover,
+    .site-search-toggle[aria-expanded="true"] {
+        color: var(--text-strong-accent);
+        background-color: rgba(var(--text-strong-accent-rgb), 0.08);
+    }
 
 .site-search-icon {
     position: absolute;
@@ -21,6 +47,7 @@
     border-radius: 999px;
     color: var(--text-light-normal);
     font-size: 0.85rem;
+    min-height: 2.5rem;
     padding: 0.35rem 0.75rem 0.35rem 1.9rem;
 }
 
@@ -119,3 +146,53 @@
     .site-search-see-all:hover {
         background-color: var(--bg-table-header-hover);
     }
+
+/* ================================================
+   Phones (below 768 px): icon button + full-width panel under the header.
+   .site-search stays unpositioned here, so the panel is placed against the header row
+   (.site-header__inner in NavMenu.razor.css) and spans its width.
+   ================================================ */
+@media (max-width: 767.98px) {
+    .site-search-toggle {
+        display: inline-flex;
+    }
+
+    .site-search-panel {
+        display: none;
+    }
+
+    .site-search--expanded .site-search-panel {
+        position: absolute;
+        top: calc(100% + var(--space-2));
+        left: max(var(--page-gutter), env(safe-area-inset-left));
+        right: max(var(--page-gutter), env(safe-area-inset-right));
+        z-index: 3;
+        display: flex;
+        width: auto;
+        max-width: none;
+    }
+
+    .site-search-input {
+        min-height: 48px;
+        padding-left: 2.4rem;
+        font-size: 16px; /* 16px or more stops iOS zooming the page on focus */
+        background-color: var(--bg-surface);
+        border-color: rgba(var(--text-strong-accent-rgb), 0.45);
+        box-shadow: var(--shadow-3);
+    }
+
+    .site-search-icon {
+        left: 0.95rem;
+        font-size: 1rem;
+    }
+
+    .site-search-flyout {
+        min-width: 0;
+        max-height: min(60dvh, 400px);
+        border-radius: var(--radius-lg);
+    }
+
+    .site-search-hit {
+        min-height: var(--tap-min);
+    }
+}

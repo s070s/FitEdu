@@ -1,101 +1,262 @@
-.navbar {
-    background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
-    border-bottom: 1px solid var(--border-subtle);
-    min-height: 3.5rem;
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--text-accent);
-}
-
-.navbar-toggler {
-    background-color: var(--overlay-soft);
-    border: none;
-}
-
-.bi {
-    display: inline-block;
+/* ================================================
+   Sticky glass header (the <header> wrapper in MainLayout is the sticky element)
+   ================================================ */
+.site-header {
     position: relative;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.5rem;
-    top: -1px;
-    background-size: cover;
+    isolation: isolate;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
+/* The glass sits on a pseudo-element: a backdrop-filter on the nav itself would make it the
+   containing block of the panels inside it (search, menu), which must size against the page. */
+.site-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(var(--bg-primary-rgb), 0.8);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
 
-/* Nav links */
-.nav-item ::deep .nav-link {
-    color: var(--text-light-normal);
-    padding: 0.5rem 1rem;
+/* Positioned so the phone flyouts (search, notifications, menu) can span the header width. */
+.site-header__inner {
+    position: relative;
     display: flex;
     align-items: center;
+    gap: var(--space-2);
+    max-width: var(--layout-max);
+    min-height: var(--nav-height);
+    margin-inline: auto;
+    padding-inline: max(var(--page-gutter), env(safe-area-inset-left)) max(var(--page-gutter), env(safe-area-inset-right));
 }
 
-.nav-item ::deep .nav-link:hover {
-    color: var(--text-accent);
-    background-color: var(--bg-table-header-hover);
-    border-radius: 4px;
-}
-
-.nav-item ::deep .nav-link.active {
-    color: var(--text-accent);
-    background-color: var(--bg-table-row-hover);
-    border-radius: 4px;
-}
-
-/* Mobile dropdown menu */
-@media (max-width: 767.98px) {
-    .navbar-collapse {
-        background-color: var(--bg-surface);
-        padding: 0.5rem;
-        margin-top: 0.5rem;
-        border-radius: 4px;
-    }
-
-    .navbar-nav {
-        width: 100%;
-    }
-
-    .nav-item {
-        width: 100%;
-    }
-
-    .nav-item ::deep .nav-link {
-        padding: 0.75rem 1rem;
-    }
-
-    .nav-item ::deep .nav-link.active {
-        border-left: 3px solid var(--text-strong-accent);
-        padding-left: calc(1rem - 3px);
-    }
-}
-
-/* Desktop horizontal nav */
-@media (min-width: 768px) {
-    .navbar-nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 0.125rem;
-    }
-
-    .collapse {
-        display: block;
-    }
-}
-
-/* Tighten nav link padding on medium screens to prevent overflow with many items */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .nav-item ::deep .nav-link {
-        padding: 0.5rem 0.6rem;
-    }
-}
-
-/* Trailing content (CultureSelector + AvatarDropdown) — always visible, never collapses */
-.trailing-content {
+/* ── Brand ── */
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: var(--tap-min);
+    margin-right: var(--space-3);
+    color: var(--text-strong-normal);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-decoration: none;
     flex-shrink: 0;
-    padding: 0.25rem 0;
+}
+
+.site-brand:hover {
+    color: var(--text-strong-normal);
+}
+
+/* The smallest phones keep only the mark so every header tool still fits. */
+@media (max-width: 359.98px) {
+    .site-brand__name {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+}
+
+/* ── Inline links (wide screens only; the menu panel and bottom bar cover the rest) ── */
+.site-links {
+    display: none;
+}
+
+@media (min-width: 1200px) {
+    .site-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+.site-links ::deep .site-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-pill);
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.site-links ::deep .site-link:hover {
+    color: var(--text-strong-normal);
+    background-color: rgba(var(--border-subtle-rgb), 0.08);
+}
+
+.site-links ::deep .site-link.active {
+    color: var(--text-strong-accent);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+}
+
+.site-links ::deep .site-link--cta,
+.site-links ::deep .site-link--cta:hover,
+.site-links ::deep .site-link--cta.active {
+    margin-left: var(--space-1);
+    color: var(--bg-primary);
+    background-color: var(--text-strong-accent);
+}
+
+/* ── Trailing tools (search, language, bell, avatar) ── */
+.trailing-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Phones: the language switch moves into the menu panel to free header room. */
+@media (max-width: 575.98px) {
+    .trailing-content ::deep .culture-selector {
+        display: none;
+    }
+}
+
+/* ── Menu button and panel ── */
+.site-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-strong-normal);
+    font-size: 1.35rem;
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.site-menu-toggle:hover,
+.site-menu-toggle[aria-expanded="true"] {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.08);
+}
+
+@media (min-width: 1200px) {
+    .site-menu-toggle--compact-only {
+        display: none;
+    }
+}
+
+/* Dims the page below the header and closes the panel on a tap outside it. */
+.site-menu-backdrop {
+    position: fixed;
+    inset: var(--nav-height) 0 0 0;
+    z-index: 1;
+    background: rgba(var(--bg-primary-rgb), 0.55);
+}
+
+.site-menu {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: max(var(--page-gutter), env(safe-area-inset-left));
+    right: max(var(--page-gutter), env(safe-area-inset-right));
+    z-index: 2;
+    max-height: calc(100dvh - var(--nav-height) - var(--bottom-nav-height) - env(safe-area-inset-bottom) - 1.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-3);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-3);
+    animation: site-menu-in var(--duration-base) var(--ease-out);
+}
+
+@media (min-width: 768px) {
+    .site-menu {
+        left: auto;
+        width: 24rem;
+        max-height: calc(100dvh - var(--nav-height) - 2rem);
+    }
+}
+
+@keyframes site-menu-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.site-menu__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.site-menu ::deep .site-menu__link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--border-subtle-rgb), 0.06);
+    color: var(--text-light-normal);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.site-menu ::deep .site-menu__link:hover {
+    color: var(--text-strong-normal);
+    background-color: rgba(var(--border-subtle-rgb), 0.12);
+}
+
+.site-menu ::deep .site-menu__link.active {
+    color: var(--text-strong-accent);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+}
+
+.site-menu ::deep .site-menu__icon {
+    flex-shrink: 0;
+    font-size: 1.15rem;
+    color: var(--color-info);
+}
+
+.site-menu ::deep .site-menu__link.active .site-menu__icon {
+    color: var(--text-strong-accent);
+}
+
+/* Phones only: the language switch the header hid. */
+.site-menu__language {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.site-menu__language-label {
+    color: var(--text-light-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+@media (min-width: 576px) {
+    .site-menu__language {
+        display: none;
+    }
 }

@@ -1,0 +1,16 @@
+@* FitEdu dumbbell mark: the wwwroot/favicon.svg shapes drawn inline, so the header needs no extra
+   request and the colours come from the palette tokens. Decorative: the brand name sits next to it. *@
+<svg class="brand-mark" viewBox="0 0 64 64" width="@Size" height="@Size"
+     xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <rect class="brand-mark__tile" width="64" height="64" rx="14" />
+    <rect class="brand-mark__bar" x="20" y="28" width="24" height="8" />
+    <rect class="brand-mark__plate" x="12" y="12" width="8" height="40" rx="2" />
+    <rect class="brand-mark__plate" x="44" y="12" width="8" height="40" rx="2" />
+    <rect class="brand-mark__plate" x="8" y="20" width="4" height="24" rx="1" />
+    <rect class="brand-mark__plate" x="52" y="20" width="4" height="24" rx="1" />
+</svg>
+
+@code {
+    /// <summary>Rendered width and height in CSS pixels.</summary>
+    [Parameter] public int Size { get; set; } = 32;
+}

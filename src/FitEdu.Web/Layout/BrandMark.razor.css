@@ -1,0 +1,19 @@
+.brand-mark {
+    display: block;
+    flex-shrink: 0;
+}
+
+/* A lime-tinted tile reads as the favicon's charcoal square on the dark glass header. */
+.brand-mark__tile {
+    fill: rgba(var(--text-strong-accent-rgb), 0.12);
+    stroke: rgba(var(--text-strong-accent-rgb), 0.35);
+    stroke-width: 2;
+}
+
+.brand-mark__bar {
+    fill: var(--color-info);
+}
+
+.brand-mark__plate {
+    fill: var(--text-strong-accent);
+}

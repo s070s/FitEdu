@@ -11,6 +11,9 @@ public partial class SiteSearchBox : IDisposable
 {
     private const int FlyoutLimit = 5;
 
+    // Long enough for a tap on a result link to land before the flyout closes.
+    private const int BlurCloseDelayMilliseconds = 200;
+
     [Inject] private ISearchConsumer Consumer { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
@@ -20,30 +23,72 @@ public partial class SiteSearchBox : IDisposable
     private SiteSearchResultDto? _result;
     private CancellationTokenSource? _debounceCts;
 
+    // Phones: the field is hidden behind an icon button until opened.
+    private bool _expanded;
+    private bool _focusInputAfterRender;
+    private ElementReference _input;
+
+    // Bumped on every focus inside the box, so a blur followed by focus elsewhere inside it
+    // (toggle button to input, input to a result link) does not close anything.
+    private int _focusVersion;
+
     private static string Lang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
     private void HandleFocus() => _open = true;
 
+    private void HandleFocusIn() => _focusVersion++;
+
     private async Task HandleFocusOut()
     {
-        await Task.Delay(200);
-        _open = false;
+        var versionAtBlur = _focusVersion;
+        await Task.Delay(BlurCloseDelayMilliseconds);
+        if (_focusVersion != versionAtBlur)
+        {
+            return; // focus moved to another element inside the box
+        }
+
+        Close();
         StateHasChanged();
     }
 
-    private void Close() => _open = false;
+    private void Close()
+    {
+        _open = false;
+        _expanded = false;
+    }
+
+    private void ToggleExpanded()
+    {
+        _expanded = !_expanded;
+        _focusInputAfterRender = _expanded;
+        if (!_expanded)
+        {
+            _open = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_focusInputAfterRender)
+        {
+            return;
+        }
+
+        _focusInputAfterRender = false;
+        await _input.FocusAsync();
+    }
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" && _query.Trim().Length > 0)
         {
-            _open = false;
+            Close();
             Navigation.NavigateTo($"/search?q={Uri.EscapeDataString(_query.Trim())}");
         }
         else if (e.Key == "Escape")
         {
-            _open = false;
+            Close();
         }
     }
 
@@ -79,15 +124,6 @@ public partial class SiteSearchBox : IDisposable
             _loading = false;
         }
     }
-
-    private static string IconFor(string sourceType) => sourceType switch
-    {
-        "Course" => "bi-book",
-        "Assessment" => "bi-list-check",
-        "BlogArticle" => "bi-newspaper",
-        "Exercise" => "bi-activity",
-        _ => "bi-file-earmark"
-    };
 
     public void Dispose()
     {
