@@ -1,4 +1,5 @@
 using System.Globalization;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Web.Extensions;
 using Shouldly;
@@ -6,7 +7,10 @@ using Xunit;
 
 namespace FitEdu.Web.Tests;
 
-/// <summary>Course levels, goals and equipment show CourseRes labels, so Greek pages never show an enum name or code.</summary>
+/// <summary>
+/// Course levels, goals and equipment codes show CourseRes labels, so Greek pages never show an
+/// enum name or a raw code.
+/// </summary>
 public class CourseLabelsTests
 {
     private const char FirstGreekLetter = 'Ά';
@@ -68,6 +72,29 @@ public class CourseLabelsTests
         CultureInfo.CurrentUICulture = new CultureInfo("en");
 
         CourseLabels.Equipment("rowing machine").ShouldBe("rowing machine");
+    }
+
+    [Fact]
+    public void Greek_EveryEquipmentCode_HasAGreekLabel()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el");
+
+        // "kettlebell" is the one code Greek also writes in Latin letters.
+        var labels = Course.EquipmentCodes.Where(code => code != "kettlebell").Select(CourseLabels.Equipment);
+
+        labels.ShouldAllBe(label => label.Any(IsGreekLetter));
+    }
+
+    [Theory]
+    [InlineData("en", "none", "No equipment")]
+    [InlineData("el", "dumbbells", "Αλτήρες")]
+    [InlineData("en", "unknown-code", "unknown-code")]
+    [InlineData("en", " ", "")]
+    public void Equipment_ReturnsTheLabelOrTheCodeItself(string culture, string code, string expected)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+
+        CourseLabels.Equipment(code).ShouldBe(expected);
     }
 
     private static bool IsGreekLetter(char character) =>

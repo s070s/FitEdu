@@ -48,6 +48,27 @@ public class CategoryServiceTests
     }
 
     [Fact]
+    public async Task GetCategories_CoursesScope_LeavesOutAssessmentOnlyCategories()
+    {
+        // The catalogue chips must not offer Readiness, Safety, Mindset or Setup: only
+        // self-assessments use them, so picking one would always show an empty list.
+        await using var db = DbContextFactory.CreateInMemory();
+        var strength = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
+        var readiness = new Category { Id = Guid.NewGuid(), NameEn = "Readiness" };
+        db.Categories.AddRange(strength, readiness);
+        db.Courses.Add(new Course { Id = Guid.NewGuid(), TitleEn = "C1", IsPublished = true, CategoryId = strength.Id });
+        db.AssessmentDefinitions.Add(new AssessmentDefinition
+        {
+            Id = Guid.NewGuid(), Key = "k1", TitleEn = "A1", SchemaJson = "{}", IsPublished = true, CategoryId = readiness.Id
+        });
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).GetCategoriesAsync("courses", "en");
+
+        result.ShouldHaveSingleItem().Name.ShouldBe("Strength");
+    }
+
+    [Fact]
     public async Task GetCategories_CategoryWithNoPublishedItems_IsExcluded()
     {
         await using var db = DbContextFactory.CreateInMemory();

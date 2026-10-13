@@ -37,6 +37,9 @@ public static class CourseLabels
     /// <summary>The label of one stored equipment code ("bands" → "Bands"); an unknown code is shown as it is.</summary>
     public static string Equipment(string code)
     {
+        if (string.IsNullOrWhiteSpace(code))
+            return string.Empty;
+
         var trimmedCode = code.Trim();
 
         // ResourceManager follows the current UI culture, like the generated CourseRes properties.

@@ -88,7 +88,7 @@
 		<value>Αναζήτηση...</value>
 	</data>
 	<data name="NoMatchingResults" xml:space="preserve">
-		<value>Κανένα αποτέλεσμα δεν ταιριάζει με τα φίλτρα σας.</value>
+		<value>Κανένα αποτέλεσμα δεν ταιριάζει με τα φίλτρα σου.</value>
 	</data>
 	<data name="NoneCategory" xml:space="preserve">
 		<value>— Καμία —</value>
@@ -113,5 +113,11 @@
 	</data>
 	<data name="ErrorDeletingCategory" xml:space="preserve">
 		<value>Σφάλμα κατά τη διαγραφή της κατηγορίας</value>
+	</data>
+	<data name="Filters" xml:space="preserve">
+		<value>Φίλτρα</value>
+	</data>
+	<data name="ClearFilters" xml:space="preserve">
+		<value>Καθαρισμός φίλτρων</value>
 	</data>
 </root>

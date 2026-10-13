@@ -284,5 +284,23 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("ErrorDeletingCategory", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filters.
+        /// </summary>
+        public static string Filters {
+            get {
+                return ResourceManager.GetString("Filters", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear filters.
+        /// </summary>
+        public static string ClearFilters {
+            get {
+                return ResourceManager.GetString("ClearFilters", resourceCulture);
+            }
+        }
     }
 }

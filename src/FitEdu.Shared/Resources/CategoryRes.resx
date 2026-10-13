@@ -114,4 +114,10 @@
 	<data name="ErrorDeletingCategory" xml:space="preserve">
 		<value>Error deleting category</value>
 	</data>
+	<data name="Filters" xml:space="preserve">
+		<value>Filters</value>
+	</data>
+	<data name="ClearFilters" xml:space="preserve">
+		<value>Clear filters</value>
+	</data>
 </root>
