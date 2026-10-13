@@ -23,6 +23,10 @@ public class BillingPageTests : BunitContext
 
     private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
 
+    // Each test switches the thread culture, so the originals are put back after it.
+    private readonly CultureInfo _originalCulture = CultureInfo.CurrentCulture;
+    private readonly CultureInfo _originalUICulture = CultureInfo.CurrentUICulture;
+
     public BillingPageTests()
     {
         Services.AddSingleton(_subscriptionConsumer);
@@ -45,6 +49,13 @@ public class BillingPageTests : BunitContext
     {
         CultureInfo.CurrentCulture = new CultureInfo(name);
         CultureInfo.CurrentUICulture = new CultureInfo(name);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        CultureInfo.CurrentCulture = _originalCulture;
+        CultureInfo.CurrentUICulture = _originalUICulture;
+        base.Dispose(disposing);
     }
 
     [Fact]
