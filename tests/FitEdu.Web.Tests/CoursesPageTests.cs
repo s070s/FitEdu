@@ -261,7 +261,8 @@ public class CoursesPageTests : BunitContext
         NavigateTo("/courses?goal=Strength");
         var page = Render<Courses>();
 
-        page.FindAll(".courses-pagination button").Last().Click();
+        var pageButtons = page.FindAll(".courses-pagination button");
+        pageButtons[pageButtons.Count - 1].Click();
 
         Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/courses?goal=Strength&page=2");
         page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
