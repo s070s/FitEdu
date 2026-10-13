@@ -127,6 +127,21 @@ public class ExercisePagesTests : BunitContext
     }
 
     [Fact]
+    public void Library_HandTypedCapitalisedFilters_MatchTheLowerCaseFacets()
+    {
+        NavigateTo("/exercises?muscle=Chest&level=EXPERT&equipment=Body%20Only&category=Strength");
+
+        var page = Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
+            new ExerciseFilterDto(null, "chest", "body only", "expert", "strength"));
+        page.Find("button.filter-chip.is-selected").TextContent.ShouldContain(ExerciseRes.Muscle_chest);
+        page.Find("#exercise-level option[value='expert']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-equipment option[value='body only']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-category option[value='strength']").HasAttribute("selected").ShouldBeTrue();
+    }
+
+    [Fact]
     public void Library_MalformedAddressPage_StartsOnPageOne()
     {
         NavigateTo("/exercises?page=zero");

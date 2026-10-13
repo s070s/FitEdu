@@ -112,10 +112,10 @@ public partial class Exercises : IDisposable
     {
         var filter = new LibraryFilter(
             QueryValues.Text(SearchQuery),
-            QueryValues.Text(MuscleQuery),
-            QueryValues.Text(LevelQuery),
-            QueryValues.Text(EquipmentQuery),
-            QueryValues.Text(CategoryQuery));
+            FacetValue(MuscleQuery),
+            FacetValue(LevelQuery),
+            FacetValue(EquipmentQuery),
+            FacetValue(CategoryQuery));
         var page = QueryValues.PageNumber(PageQuery);
 
         var changed = filter != _filter || page != _page;
@@ -130,6 +130,12 @@ public partial class Exercises : IDisposable
 
         return changed;
     }
+
+    /// <summary>
+    /// A filter value from the address in lower case, as the facet values are, so a hand-typed
+    /// ?level=Beginner still selects its option and chip; null when blank.
+    /// </summary>
+    private static string? FacetValue(string? value) => QueryValues.Text(value)?.ToLowerInvariant();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
