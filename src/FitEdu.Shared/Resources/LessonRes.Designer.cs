@@ -446,5 +446,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("CompletedShort", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Time {
+            get {
+                return ResourceManager.GetString("Time", resourceCulture);
+            }
+        }
     }
 }

@@ -181,6 +181,20 @@ public class FitnessComponentTests : BunitContext
         card.FindAll(".level-badge").ShouldBeEmpty(); // prescriptions carry no level
     }
 
+    [Theory]
+    [InlineData("en", "Time")]
+    [InlineData("el", "Χρόνος")]
+    public void ExerciseCard_TimedPrescription_LabelsTheValueTime(string culture, string expectedLabel)
+    {
+        UseCulture(culture);
+
+        var card = Render<ExerciseCard>(parameters => parameters
+            .Add(component => component.Prescription, Prescription() with { Reps = "20 s" }));
+
+        card.FindAll(".exercise-card__dose dt")[1].TextContent.ShouldBe(expectedLabel);
+        card.FindAll(".exercise-card__dose dd")[1].TextContent.ShouldBe("20 s");
+    }
+
     [Fact]
     public void ExerciseCard_PrescriptionInGreek_ShowsGreekLabels()
     {

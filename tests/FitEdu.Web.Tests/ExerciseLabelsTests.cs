@@ -92,6 +92,25 @@ public class ExerciseLabelsTests
         ExerciseLabels.Force(value).ShouldBe(string.Empty);
     }
 
+    [Theory]
+    [InlineData("20 s", true)]
+    [InlineData("30-45 s", true)]
+    [InlineData("30–45 s", true)]
+    [InlineData("45 sec", true)]
+    [InlineData("1 min + 1 min", true)]
+    [InlineData("30–35 min @ RPE 5–6", true)]
+    [InlineData("8-12", false)]
+    [InlineData("8–12", false)]
+    [InlineData("10 each side", false)]
+    [InlineData("15 m", false)]
+    [InlineData("5 sets", false)]
+    [InlineData(null, false)]
+    [InlineData("  ", false)]
+    public void IsDuration_TellsTimedValuesFromRepetitionCounts(string? reps, bool expected)
+    {
+        ExerciseLabels.IsDuration(reps).ShouldBe(expected);
+    }
+
     private static List<ExerciseSeedDto> LoadExerciseLibrary()
     {
         var json = File.ReadAllText(ExerciseLibraryPath);

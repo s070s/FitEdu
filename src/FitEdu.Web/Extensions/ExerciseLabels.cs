@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FitEdu.Shared.Resources;
 
 namespace FitEdu.Web.Extensions;
@@ -8,7 +9,7 @@ namespace FitEdu.Web.Extensions;
 /// key made of a prefix and the value with spaces and hyphens turned into underscores
 /// (Muscle_lower_back, Equipment_e_z_curl_bar). A value with no key is shown as it is.
 /// </summary>
-public static class ExerciseLabels
+public static partial class ExerciseLabels
 {
     public const string MusclePrefix = "Muscle_";
     public const string EquipmentPrefix = "Equipment_";
@@ -31,6 +32,13 @@ public static class ExerciseLabels
 
     public static string Category(string? value) => Label(CategoryPrefix, value);
 
+    /// <summary>
+    /// True when a prescribed "reps" value is a time ("20 s", "30–45 s", "1 min + 1 min") rather than
+    /// a count ("8–12", "10 each side"), so a workout card can label it Time instead of Reps.
+    /// </summary>
+    public static bool IsDuration(string? reps) =>
+        !string.IsNullOrWhiteSpace(reps) && DurationRegex().IsMatch(reps.Trim());
+
     /// <summary>The ExerciseRes key for a metadata value, e.g. ("Muscle_", "lower back") → "Muscle_lower_back".</summary>
     public static string ResourceKey(string prefix, string value)
     {
@@ -49,4 +57,8 @@ public static class ExerciseLabels
         var label = ExerciseRes.ResourceManager.GetString(ResourceKey(prefix, value), ExerciseRes.Culture);
         return label ?? value;
     }
+
+    // A number or a range, then a time unit: "20 s", "30-45 s", "30–35 min @ RPE 5". "15 m" (metres) is not a time.
+    [GeneratedRegex(@"^\d+(\s*[-–]\s*\d+)?\s*(s|sec|min)\b", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
+    private static partial Regex DurationRegex();
 }

@@ -227,4 +227,7 @@
 	<data name="CompletedShort" xml:space="preserve">
 		<value>Έγινε</value>
 	</data>
+	<data name="Time" xml:space="preserve">
+		<value>Χρόνος</value>
+	</data>
 </root>
