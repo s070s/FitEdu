@@ -94,4 +94,7 @@
   <data name="EnterQuery" xml:space="preserve">
     <value>Γράψε τι ψάχνεις: προγράμματα, ασκήσεις, αξιολογήσεις ή άρθρα.</value>
   </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Τι ψάχνεις;</value>
+  </data>
 </root>

@@ -211,4 +211,7 @@
   <data name="SessionReminder" xml:space="preserve">
     <value>"{0}" starts in 15 minutes</value>
   </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Your notifications</value>
+  </data>
 </root>

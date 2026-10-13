@@ -119,6 +119,9 @@ public class MemberPagesTests : BunitContext
         var eyebrow = page.Find(".notifications-head__text .eyebrow");
         eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Notifications);
         eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-bell");
+        // The heading says something of its own instead of repeating the eyebrow.
+        page.Find("h1").TextContent.ShouldBe(NotificationRes.Heading);
+        NotificationRes.Heading.ShouldNotBe(NavMenuRes.Notifications);
     }
 
     [Fact]
@@ -129,6 +132,9 @@ public class MemberPagesTests : BunitContext
         var eyebrow = page.Find(".search-head__text .eyebrow");
         eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Search);
         eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-search");
+        // Without a query the heading asks a question instead of repeating the eyebrow.
+        page.Find("h1").TextContent.ShouldBe(SearchRes.Heading);
+        SearchRes.Heading.ShouldNotBe(NavMenuRes.Search);
     }
 
     [Fact]

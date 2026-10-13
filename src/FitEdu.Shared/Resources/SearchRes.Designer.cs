@@ -167,5 +167,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("EnterQuery", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What are you looking for?.
+        /// </summary>
+        public static string Heading {
+            get {
+                return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
     }
 }

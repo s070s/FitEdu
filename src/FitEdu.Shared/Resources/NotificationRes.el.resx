@@ -151,4 +151,7 @@
   <data name="SessionReminder" xml:space="preserve">
     <value>Το "{1}" ξεκινά σε 15 λεπτά</value>
   </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Οι ειδοποιήσεις σου</value>
+  </data>
 </root>

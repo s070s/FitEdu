@@ -6,7 +6,7 @@
     <header class="search-head">
         <div class="search-head__text">
             <span class="eyebrow"><span class="bi @AppIcons.Search" aria-hidden="true"></span> @NavMenuRes.Search</span>
-            <h1>@(string.IsNullOrWhiteSpace(Q) ? SearchRes.PageTitle : string.Format(SearchRes.ResultsForFormat, Q))</h1>
+            <h1>@(string.IsNullOrWhiteSpace(Q) ? SearchRes.Heading : string.Format(SearchRes.ResultsForFormat, Q))</h1>
         </div>
 
         @* A plain GET form, so searching also works before the page turns interactive; once it is,
