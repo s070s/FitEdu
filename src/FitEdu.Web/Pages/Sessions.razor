@@ -1,86 +1,116 @@
 @page "/sessions"
 @attribute [Authorize]
+@using System.Globalization
+@using FitEdu.Domain.Entities
 
 <PageTitle>@SessionRes.PageTitle</PageTitle>
 
-<h1>@SessionRes.PageTitle</h1>
+<div class="page sessions-page">
+    <header class="sessions-head">
+        <span class="eyebrow"><span class="bi @AppIcons.Session" aria-hidden="true"></span> @NavMenuRes.Sessions</span>
+        <h1>@SessionRes.PageTitle</h1>
+        <p class="sessions-head__lead">@string.Format(SessionRes.PageSubtitleFormat, ScheduledSession.MaxParticipantsLimit)</p>
+    </header>
 
-@if (_error is not null)
-{
-    <div class="alert alert-danger">@_error</div>
-}
+    @if (_error is not null)
+    {
+        <div class="alert alert-danger" role="alert">@_error</div>
+    }
 
-@if (_loading)
-{
-    <SkeletonBlock Rows="3" Height="7rem" Gap="1rem" />
-}
-else if (_sessions.Count == 0)
-{
-    <p>@SessionRes.NoUpcomingSessions</p>
-}
-else
-{
-    <div class="sessions-list stagger">
-        @foreach (var session in _sessions)
+    @if (_loading)
+    {
+        <SkeletonBlock Rows="3" Height="7rem" Gap="1rem" />
+    }
+    else if (_sessions.Count == 0)
+    {
+        <EmptyState Icon="@AppIcons.Session" Title="@SessionRes.NoUpcomingSessions" Text="@SessionRes.NoUpcomingSessionsHint" />
+    }
+    else
+    {
+        @foreach (var day in ScheduleDays)
         {
-            <div class="session-card" @key="session.Id">
-                <div class="session-card-header">
-                    <h3>@session.Title</h3>
-                    <span class="status-chip status-@session.Status.ToLowerInvariant()">
-                        @(session.Status switch
-                        {
-                            "Live" => SessionRes.StatusLive,
-                            "Ended" => SessionRes.StatusEnded,
-                            "Cancelled" => SessionRes.StatusCancelled,
-                            _ => SessionRes.StatusScheduled
-                        })
-                    </span>
-                </div>
-                <div class="session-meta">
-                    <span>@string.Format(SessionRes.HostedByFormat, session.HostName)</span>
-                    @if (session.CourseTitle is not null)
+            <section class="schedule-day" aria-labelledby="@DayHeadingId(day.Key)" @key="day.Key">
+                <h2 class="schedule-date" id="@DayHeadingId(day.Key)">
+                    @if (RelativeDayLabel(day.Key) is { } relativeLabel)
                     {
-                        <span class="category-chip">@session.CourseTitle</span>
+                        <span class="schedule-date__relative">@relativeLabel</span>
                     }
-                </div>
-                <div class="session-meta">
-                    <span>@session.StartsAtUtc.ToLocalTime().ToString("f")</span>
-                    <span>@string.Format(SessionRes.DurationFormat, session.DurationMinutes)</span>
-                    <span>@string.Format(SessionRes.ParticipantsFormat, session.RegisteredCount, session.MaxParticipants)</span>
-                </div>
+                    <span class="schedule-date__full">@day.Key.ToString(DayHeadingFormat, CultureInfo.CurrentCulture)</span>
+                </h2>
 
-                <div class="session-actions">
-                    @if (session.IsHost || session.IsRegistered)
+                <ul class="schedule-list stagger">
+                    @foreach (var session in day)
                     {
-                        @if (session.CallSessionId is not null)
-                        {
-                            <span class="text-light-muted">@SessionRes.CallInProgress</span>
-                        }
-                        else if (session.Status == "Live")
-                        {
-                            <button class="btn btn-sm btn-success" disabled="@_joining" @onclick="() => JoinOrStartAsync(session)">
-                                @(session.IsHost ? SessionRes.StartSession : SessionRes.JoinSession)
-                            </button>
-                        }
-                        else if (session.IsRegistered)
-                        {
-                            <span class="registered-badge">@SessionRes.Registered</span>
-                            <button class="btn btn-sm btn-outline-danger" @onclick="() => UnregisterAsync(session.Id)">@SessionRes.Unregister</button>
-                        }
+                        <li class="session-card @(IsLive(session) ? "session-card--live" : "")" @key="session.Id">
+                            <div class="session-time">
+                                <time class="session-time__start" datetime="@session.StartsAtUtc.ToString("o", CultureInfo.InvariantCulture)">@session.StartsAtUtc.ToLocalTime().ToString("t", CultureInfo.CurrentCulture)</time>
+                                <span class="session-time__duration">@string.Format(SessionRes.DurationFormat, session.DurationMinutes)</span>
+                            </div>
+
+                            <div class="session-body">
+                                <div class="session-body__top">
+                                    <span class="status-chip status-@session.Status.ToLowerInvariant()">@StatusLabel(session.Status)</span>
+                                    @if (session.CourseTitle is not null)
+                                    {
+                                        <span class="chip chip--teal session-course">@session.CourseTitle</span>
+                                    }
+                                </div>
+                                <h3 class="session-title">@session.Title</h3>
+                                <ul class="session-meta">
+                                    <li><span class="bi bi-person-badge" aria-hidden="true"></span> @string.Format(SessionRes.HostedByFormat, session.HostName)</li>
+                                    <li><span class="bi bi-people" aria-hidden="true"></span> @string.Format(SessionRes.ParticipantsFormat, session.RegisteredCount, session.MaxParticipants)</li>
+                                </ul>
+                                <div class="session-capacity" aria-hidden="true">
+                                    <span class="session-capacity__fill" style="width:@CapacityPercent(session)%"></span>
+                                </div>
+                            </div>
+
+                            <div class="session-actions">
+                                @SessionAction(session)
+                            </div>
+                        </li>
                     }
-                    else if (session.Status == "Scheduled")
-                    {
-                        @if (session.RegisteredCount >= session.MaxParticipants)
-                        {
-                            <span class="text-light-muted">@SessionRes.Full</span>
-                        }
-                        else
-                        {
-                            <button class="btn btn-sm btn-primary" @onclick="() => RegisterAsync(session.Id)">@SessionRes.Register</button>
-                        }
-                    }
-                </div>
-            </div>
+                </ul>
+            </section>
         }
-    </div>
+    }
+</div>
+
+@code {
+    // Join/start, registered + unregister, register, or a plain state label. Classes .btn-success and
+    // .registered-badge are kept for the page tests.
+    private RenderFragment SessionAction(ScheduledSessionListItemDto session) => __builder =>
+    {
+        if (session.IsHost || session.IsRegistered)
+        {
+            if (session.CallSessionId is not null)
+            {
+                <span class="session-state session-state--live">@SessionRes.CallInProgress</span>
+            }
+            else if (IsLive(session))
+            {
+                <button type="button" class="btn-cta btn-success session-join" disabled="@_joining" @onclick="() => JoinOrStartAsync(session)">
+                    <span class="bi bi-camera-video-fill" aria-hidden="true"></span>
+                    @(session.IsHost ? SessionRes.StartSession : SessionRes.JoinSession)
+                </button>
+            }
+            else if (session.IsRegistered)
+            {
+                <span class="registered-badge"><span class="bi bi-check-circle-fill" aria-hidden="true"></span> @SessionRes.Registered</span>
+                <button type="button" class="btn-cta btn-cta--ghost session-secondary" @onclick="() => UnregisterAsync(session.Id)">@SessionRes.Unregister</button>
+            }
+            return;
+        }
+
+        if (session.Status != ScheduledStatus)
+            return;
+
+        if (session.RegisteredCount >= session.MaxParticipants)
+        {
+            <span class="session-state">@SessionRes.Full</span>
+            return;
+        }
+
+        <button type="button" class="btn-cta session-register" @onclick="() => RegisterAsync(session.Id)">@SessionRes.Register</button>
+    };
 }

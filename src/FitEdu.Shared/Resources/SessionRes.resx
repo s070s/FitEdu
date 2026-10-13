@@ -67,6 +67,18 @@
   <data name="NoUpcomingSessions" xml:space="preserve">
     <value>No upcoming live classes right now.</value>
   </data>
+  <data name="PageSubtitleFormat" xml:space="preserve">
+    <value>Train live with a coach in small groups of up to {0}. Register, then join when the class goes live.</value>
+  </data>
+  <data name="NoUpcomingSessionsHint" xml:space="preserve">
+    <value>Check back soon for the next class.</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Tomorrow</value>
+  </data>
   <data name="StatusScheduled" xml:space="preserve">
     <value>Scheduled</value>
   </data>
@@ -110,7 +122,7 @@
     <value>Register</value>
   </data>
   <data name="RegisterError" xml:space="preserve">
-    <value>Failed to register for this class.</value>
+    <value>Couldn't register you for this class. Please try again.</value>
   </data>
   <data name="JoinError" xml:space="preserve">
     <value>Failed to start the call. Please try again.</value>

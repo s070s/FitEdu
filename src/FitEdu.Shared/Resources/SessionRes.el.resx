@@ -67,6 +67,18 @@
   <data name="NoUpcomingSessions" xml:space="preserve">
     <value>Δεν υπάρχουν προσεχή ζωντανά μαθήματα αυτή τη στιγμή.</value>
   </data>
+  <data name="PageSubtitleFormat" xml:space="preserve">
+    <value>Προπονήσου ζωντανά με προπονητή σε μικρές ομάδες έως {0} ατόμων. Κάνε εγγραφή και μπες μόλις ξεκινήσει το μάθημα.</value>
+  </data>
+  <data name="NoUpcomingSessionsHint" xml:space="preserve">
+    <value>Έλα ξανά σύντομα για το επόμενο μάθημα.</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Σήμερα</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Αύριο</value>
+  </data>
   <data name="StatusScheduled" xml:space="preserve">
     <value>Προγραμματισμένο</value>
   </data>
@@ -80,7 +92,7 @@
     <value>Ακυρώθηκε</value>
   </data>
   <data name="HostedByFormat" xml:space="preserve">
-    <value>Οικοδεσπότης: {0}</value>
+    <value>Καθοδήγηση: {0}</value>
   </data>
   <data name="DurationFormat" xml:space="preserve">
     <value>{0} λεπτά</value>
@@ -98,7 +110,7 @@
     <value>Συμμετοχή</value>
   </data>
   <data name="Registered" xml:space="preserve">
-    <value>Είστε εγγεγραμμένοι</value>
+    <value>Έχεις εγγραφεί</value>
   </data>
   <data name="Unregister" xml:space="preserve">
     <value>Ακύρωση εγγραφής</value>
@@ -110,10 +122,10 @@
     <value>Εγγραφή</value>
   </data>
   <data name="RegisterError" xml:space="preserve">
-    <value>Αποτυχία εγγραφής σε αυτό το μάθημα.</value>
+    <value>Η εγγραφή σε αυτό το μάθημα δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
   </data>
   <data name="JoinError" xml:space="preserve">
-    <value>Αποτυχία έναρξης της κλήσης. Δοκιμάστε ξανά.</value>
+    <value>Η κλήση δεν ξεκίνησε. Δοκίμασε ξανά.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
     <value>Ζωντανά μαθήματα</value>

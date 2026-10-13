@@ -1,73 +1,316 @@
-.sessions-list {
+/* Live classes as a schedule: one section per day with a sticky date, then one card per class.
+   Mobile first: the card is a single column with the time as an eyebrow; from 576 px the time
+   moves into its own column and from 768 px the actions get a third column. */
+
+.sessions-page {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 60rem;
+}
+
+.sessions-head {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.sessions-head h1,
+.sessions-head__lead {
+    margin: 0;
+}
+
+.sessions-head__lead {
+    max-width: var(--prose-max);
+    color: var(--text-light-normal);
+}
+
+.schedule-day {
+    display: grid;
+    gap: var(--space-3);
+}
+
+/* Sticky under the glass header, so the day stays visible while its classes scroll by. */
+.schedule-date {
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 2;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-    max-width: 860px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+    margin: 0;
+    padding: var(--space-3) 0;
+    background-color: rgba(var(--bg-primary-rgb), 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    font-size: var(--fs-4);
+}
+
+.schedule-date__relative {
+    color: var(--text-strong-accent);
+}
+
+.schedule-date__full {
+    color: var(--text-strong-normal);
+    font-weight: 600;
+}
+
+.schedule-date__relative + .schedule-date__full {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.schedule-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .session-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    transition: border-color var(--duration-base) var(--ease-out);
 }
 
-    .session-card h3 {
-        margin: 0;
-        color: var(--text-light-normal);
-    }
+.session-card:focus-within {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+}
 
-.session-card-header {
+/* A live class gets a lime edge so it stands out in the list. */
+.session-card--live {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.55);
+    box-shadow: inset 3px 0 0 var(--text-strong-accent);
+}
+
+.session-time {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.5rem;
+    align-items: baseline;
+    gap: var(--space-2);
+}
+
+.session-time__start {
+    color: var(--text-strong-normal);
+    font-size: var(--fs-3);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.session-time__duration {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    white-space: nowrap;
+}
+
+.session-body {
+    display: grid;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.session-body__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.session-course {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-title {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
 }
 
 .session-meta {
     display: flex;
-    gap: 1rem;
-    align-items: center;
     flex-wrap: wrap;
-    font-size: 0.9rem;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
     color: var(--text-light-muted);
-    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.session-meta .bi {
+    margin-right: 0.25rem;
+    color: var(--color-info);
+}
+
+/* Thin capacity bar: how many of the places are taken. */
+.session-capacity {
+    height: 4px;
+    max-width: 14rem;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-neutral-subtle);
+}
+
+.session-capacity__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--color-info);
 }
 
 .session-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: var(--space-2) var(--space-3);
 }
 
-.status-chip {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    border-radius: 12px;
-    white-space: nowrap;
-    flex-shrink: 0;
+/* Full-width buttons on phones: easy thumb targets. */
+.session-actions .btn-cta {
+    flex: 1 1 100%;
+    min-height: var(--tap-min);
+    padding: 0.55rem 1.25rem;
+    font-size: 0.9375rem;
 }
 
-    .status-chip.status-scheduled {
-        background: var(--bg-info-subtle);
-        color: var(--text-accent);
-    }
-
-    .status-chip.status-live {
-        background: var(--bg-success-subtle, rgba(25, 135, 84, 0.15));
-        color: var(--color-success);
-    }
-
-    .status-chip.status-ended,
-    .status-chip.status-cancelled {
-        background: var(--bg-warning-subtle);
-        color: var(--text-light-muted);
-    }
+.session-actions .btn-cta:disabled {
+    cursor: progress;
+    opacity: 0.7;
+}
 
 .registered-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     color: var(--color-success);
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.session-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: var(--tap-min);
+    color: var(--text-light-muted);
     font-weight: 600;
-    font-size: 0.9rem;
+}
+
+.session-state--live {
+    color: var(--text-strong-accent);
+}
+
+.session-state--live::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: session-live-pulse 1.6s var(--ease-in-out) infinite;
+}
+
+/* Status chips: teal for scheduled, lime with a pulsing dot for live, muted for the rest. */
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.status-chip.status-scheduled {
+    background-color: rgba(var(--color-info-rgb), 0.15);
+    color: var(--color-info);
+}
+
+.status-chip.status-live {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.15);
+    color: var(--text-strong-accent);
+    text-transform: uppercase;
+}
+
+.status-chip.status-live::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: session-live-pulse 1.6s var(--ease-in-out) infinite;
+}
+
+.status-chip.status-ended,
+.status-chip.status-cancelled {
+    background-color: var(--bg-neutral-subtle);
+    color: var(--text-light-muted);
+}
+
+@keyframes session-live-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .status-chip.status-live::before,
+    .session-state--live::before {
+        animation: none;
+    }
+}
+
+/* From 576 px: the time sits in its own column beside the class. */
+@media (min-width: 576px) {
+    .session-card {
+        grid-template-columns: 5.5rem minmax(0, 1fr);
+        gap: var(--space-3) var(--space-4);
+        padding: var(--space-4) var(--space-5);
+    }
+
+    .session-time {
+        flex-direction: column;
+        gap: var(--space-1);
+        padding-top: 0.15rem;
+    }
+
+    .session-actions {
+        grid-column: 2;
+    }
+
+    .session-actions .btn-cta {
+        flex: 0 0 auto;
+    }
+}
+
+/* From 768 px: actions get their own column on the right. */
+@media (min-width: 768px) {
+    .session-card {
+        grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .session-time {
+        align-self: start;
+    }
+
+    .session-actions {
+        grid-column: auto;
+        justify-content: flex-end;
+        max-width: 16rem;
+    }
 }
