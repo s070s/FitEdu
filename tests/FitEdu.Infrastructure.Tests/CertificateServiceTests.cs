@@ -87,6 +87,29 @@ public partial class CertificateServiceTests
             Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>());
     }
 
+    [Theory]
+    [InlineData("Βασικά C#", "Βασικά C#")]
+    [InlineData(null, "C# Basics")] // no Greek title: the Greek notification shows the English one
+    public async Task GetOrCreate_New_NotifiesWithTheEnglishAndGreekTitles(string? greekTitle, string expectedGreekArgument)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var (course, userId) = await SeedCompletedAsync(db);
+        course.TitleEl = greekTitle;
+        await db.SaveChangesAsync();
+        var notifications = Substitute.For<INotificationDispatcher>();
+        var service = new CertificateService(db, Substitute.For<IFileStorage>(), notifications, NullLogger<CertificateService>.Instance);
+
+        await service.GetOrCreateAsync(userId, course.Id);
+
+        await notifications.Received(1).DispatchAsync(
+            userId,
+            NotificationType.CertificateIssued,
+            "CertificateIssued",
+            Arg.Is<IReadOnlyList<string>>(args => args.SequenceEqual(new[] { "C# Basics", expectedGreekArgument })),
+            "/my-certificates",
+            Arg.Any<CancellationToken>());
+    }
+
     [Fact]
     public async Task EnsurePdf_FirstCall_RendersAndStoresPdf()
     {

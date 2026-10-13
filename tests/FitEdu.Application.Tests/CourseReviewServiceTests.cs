@@ -188,6 +188,7 @@ public class CourseReviewServiceTests
     {
         await using var db = DbContextFactory.CreateInMemory();
         var course = NewCourse("Strength Basics");
+        course.TitleEl = "Βασικά δύναμης";
         db.Courses.Add(course);
         var review = new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "great", Status = ReviewStatus.Pending };
         db.CourseReviews.Add(review);
@@ -198,8 +199,11 @@ public class CourseReviewServiceTests
 
         result.IsSuccess.ShouldBeTrue();
         (await db.CourseReviews.FindAsync(review.Id))!.Status.ShouldBe(ReviewStatus.Approved);
+        // Both titles are stored so each language's template can show its own.
         await notifications.Received(1).DispatchAsync(
-            UserId, NotificationType.ReviewApproved, "ReviewApproved", Arg.Any<IReadOnlyList<string>>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+            UserId, NotificationType.ReviewApproved, "ReviewApproved",
+            Arg.Is<IReadOnlyList<string>>(args => args.SequenceEqual(new[] { "Strength Basics", "Βασικά δύναμης" })),
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

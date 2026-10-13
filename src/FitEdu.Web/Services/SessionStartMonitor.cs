@@ -89,7 +89,8 @@ public sealed class SessionStartMonitor : BackgroundService
                 {
                     await notifications.DispatchAsync(
                         userId, NotificationType.SessionReminder, "SessionReminder",
-                        [session.TitleEn], "sessions", cancellationToken);
+                        [session.TitleEn, session.TitleEl ?? session.TitleEn], // {0} English, {1} Greek title
+                        "sessions", cancellationToken);
                 }
                 catch (Exception ex)
                 {

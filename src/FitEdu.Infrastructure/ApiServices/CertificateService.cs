@@ -154,7 +154,7 @@ public class CertificateService : ICertificateService
             userId,
             NotificationType.CertificateIssued,
             "CertificateIssued",
-            [course.TitleEn],
+            [course.TitleEn, course.TitleEl ?? course.TitleEn], // {0} English, {1} Greek title
             "/my-certificates",
             cancellationToken);
 

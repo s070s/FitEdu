@@ -669,7 +669,7 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 - **What triggers one:** a new chat message, a subscription activating or nearing expiry, an approaching scheduled-session reminder, a certificate being issued, and a course review being approved.
 - **Inbox:** a paged, sortable history (`api/notifications`) with an unread count for the badge, plus mark-one-read and mark-all-read. New notifications arrive live without a refresh, falling back to the stored history on reconnect.
-- **Bilingual:** titles and bodies are resource-keyed (EN/EL) and formatted with per-notification arguments, and each carries a deep link to the relevant page.
+- **Bilingual:** titles and bodies are resource-keyed (EN/EL) and formatted with per-notification arguments, and each carries a deep link to the relevant page. Certificate, review and session-reminder notifications store both the English and the Greek title, so each language shows its own (older rows hold only the English title, which both languages then show).
 
 ---
 

@@ -131,11 +131,13 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
         review.UpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
 
+        var titleEn = review.Course?.TitleEn ?? string.Empty;
+        var titleEl = review.Course?.TitleEl ?? titleEn;
         try
         {
             await notifications.DispatchAsync(
                 review.UserId, NotificationType.ReviewApproved, "ReviewApproved",
-                [review.Course?.TitleEn ?? string.Empty], $"courses/{review.CourseId}", cancellationToken);
+                [titleEn, titleEl], $"courses/{review.CourseId}", cancellationToken); // {0} English, {1} Greek title
         }
         catch (Exception ex)
         {
