@@ -64,10 +64,10 @@
 		<value>No expiry (lifetime)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Unlimited active courses</value>
+		<value>Unlimited active programmes</value>
 	</data>
 	<data name="CoursesCountFormat" xml:space="preserve">
-		<value>Up to {0} active courses</value>
+		<value>Up to {0} active programmes</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
 		<value>Self-assessments</value>
@@ -151,7 +151,7 @@
 		<value>Expired</value>
 	</data>
 	<data name="OneCourse" xml:space="preserve">
-		<value>1 active course</value>
+		<value>1 active programme</value>
 	</data>
 	<data name="PlanActive" xml:space="preserve">
 		<value>Active</value>

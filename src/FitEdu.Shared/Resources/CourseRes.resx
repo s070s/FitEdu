@@ -99,16 +99,16 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="CourseDefault" xml:space="preserve">
-		<value>Course</value>
+		<value>Programme</value>
 	</data>
 	<data name="LoadingCourse" xml:space="preserve">
-		<value>Loading course...</value>
+		<value>Loading programme...</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>Back to Courses</value>
+		<value>Back to programmes</value>
 	</data>
 	<data name="CourseNotFound" xml:space="preserve">
-		<value>Course not found.</value>
+		<value>Programme not found.</value>
 	</data>
 	<data name="ProgressFormat" xml:space="preserve">
 		<value>{0} of {1} lessons done ({2}%)</value>
@@ -186,7 +186,7 @@
 		<value>Join the programme to open its lessons.</value>
 	</data>
 	<data name="CoursesPageTitle" xml:space="preserve">
-		<value>Courses - FitEdu</value>
+		<value>Programmes - FitEdu</value>
 	</data>
 	<data name="AvailableCourses" xml:space="preserve">
 		<value>Find your next programme</value>

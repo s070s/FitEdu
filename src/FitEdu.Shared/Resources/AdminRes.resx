@@ -114,13 +114,13 @@
 		<value>Total Enrollments</value>
 	</data>
 	<data name="CompletedCourses" xml:space="preserve">
-		<value>Completed Courses</value>
+		<value>Completed Programmes</value>
 	</data>
 	<data name="CourseEnrollmentStats" xml:space="preserve">
-		<value>Course Enrollment Stats</value>
+		<value>Programme Enrollment Stats</value>
 	</data>
 	<data name="ColCourse" xml:space="preserve">
-		<value>Course</value>
+		<value>Programme</value>
 	</data>
 	<data name="ColEnrollments" xml:space="preserve">
 		<value>Enrollments</value>
@@ -129,7 +129,7 @@
 		<value>Completions</value>
 	</data>
 	<data name="NoCourseData" xml:space="preserve">
-		<value>No course data available</value>
+		<value>No programme data available</value>
 	</data>
 	<data name="AssessmentStats" xml:space="preserve">
 		<value>Assessment Stats</value>
@@ -321,22 +321,22 @@
 		<value>Summary</value>
 	</data>
 	<data name="CreateCourse" xml:space="preserve">
-		<value>Create Course</value>
+		<value>Create Programme</value>
 	</data>
 	<data name="EditCourse" xml:space="preserve">
-		<value>Edit Course</value>
+		<value>Edit Programme</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>Back to Courses</value>
+		<value>Back to Programmes</value>
 	</data>
 	<data name="CourseDetails" xml:space="preserve">
-		<value>Course Details</value>
+		<value>Programme Details</value>
 	</data>
 	<data name="SaveCourse" xml:space="preserve">
-		<value>Save Course</value>
+		<value>Save Programme</value>
 	</data>
 	<data name="SaveCourseFirstHint" xml:space="preserve">
-		<value>Save the course first, then you can add &lt;strong&gt;Modules&lt;/strong&gt;, &lt;strong&gt;Lessons&lt;/strong&gt; (with the WYSIWYG editor, videos, PDFs), preview the course structure, and publish it.</value>
+		<value>Save the programme first, then you can add &lt;strong&gt;Modules&lt;/strong&gt;, &lt;strong&gt;Lessons&lt;/strong&gt; (with the WYSIWYG editor, videos, PDFs), preview the programme structure, and publish it.</value>
 	</data>
 	<data name="ModulesAndLessons" xml:space="preserve">
 		<value>Modules &amp; Lessons</value>
@@ -384,13 +384,13 @@
 		<value>Live</value>
 	</data>
 	<data name="CourseStructurePreview" xml:space="preserve">
-		<value>Course Structure Preview</value>
+		<value>Programme Structure Preview</value>
 	</data>
 	<data name="PublishCourse" xml:space="preserve">
-		<value>Publish Course</value>
+		<value>Publish Programme</value>
 	</data>
 	<data name="UnpublishCourse" xml:space="preserve">
-		<value>Unpublish Course</value>
+		<value>Unpublish Programme</value>
 	</data>
 	<data name="SortOrder" xml:space="preserve">
 		<value>Sort Order</value>
@@ -426,19 +426,19 @@
 		<value>Save Lesson</value>
 	</data>
 	<data name="CourseManagement" xml:space="preserve">
-		<value>Course Management</value>
+		<value>Programme Management</value>
 	</data>
 	<data name="CreateNewCourse" xml:space="preserve">
-		<value>Create New Course</value>
+		<value>Create New Programme</value>
 	</data>
 	<data name="NoCourses" xml:space="preserve">
-		<value>No courses found.</value>
+		<value>No programmes found.</value>
 	</data>
 	<data name="ManageLessons" xml:space="preserve">
 		<value>Manage Lessons</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Back to Course</value>
+		<value>Back to Programme</value>
 	</data>
 	<data name="MinutesFormat" xml:space="preserve">
 		<value> · {0} min</value>
@@ -576,7 +576,7 @@
 		<value>Confirm</value>
 	</data>
 	<data name="ConfirmDeleteCourse" xml:space="preserve">
-		<value>Are you sure you want to delete this course and all its modules/lessons?</value>
+		<value>Are you sure you want to delete this programme and all its modules/lessons?</value>
 	</data>
 	<data name="ConfirmDeleteAssessment" xml:space="preserve">
 		<value>Are you sure you want to delete this assessment?</value>
@@ -669,7 +669,7 @@
 		<value>Required Subscription Tier</value>
 	</data>
 	<data name="RequiredTierHint" xml:space="preserve">
-		<value>Users must be on this plan or higher to enroll in this course.</value>
+		<value>Users must be on this plan or higher to enroll in this programme.</value>
 	</data>
 	<data name="ColCreated" xml:space="preserve">
 		<value>Created</value>
@@ -693,7 +693,7 @@
     <value>users</value>
   </data>
   <data name="ItemLabelCourses" xml:space="preserve">
-    <value>courses</value>
+    <value>programmes</value>
   </data>
   <data name="ItemLabelAssessments" xml:space="preserve">
     <value>assessments</value>
@@ -714,16 +714,16 @@
     <value>live classes</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
-    <value>Course saved successfully.</value>
+    <value>Programme saved successfully.</value>
   </data>
   <data name="CourseSaveFailed" xml:space="preserve">
-    <value>Error saving course.</value>
+    <value>Error saving programme.</value>
   </data>
   <data name="CoursePublished" xml:space="preserve">
-    <value>Course published.</value>
+    <value>Programme published.</value>
   </data>
   <data name="CourseUnpublished" xml:space="preserve">
-    <value>Course unpublished.</value>
+    <value>Programme unpublished.</value>
   </data>
   <data name="ArticlePublished" xml:space="preserve">
     <value>Article published.</value>
@@ -732,10 +732,10 @@
     <value>Article unpublished.</value>
   </data>
   <data name="CourseDeleted" xml:space="preserve">
-    <value>Course deleted.</value>
+    <value>Programme deleted.</value>
   </data>
   <data name="CourseDeleteFailed" xml:space="preserve">
-    <value>Error deleting course.</value>
+    <value>Error deleting programme.</value>
   </data>
   <data name="PublishStatusUpdateFailed" xml:space="preserve">
     <value>Failed to update publish status.</value>

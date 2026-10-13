@@ -179,7 +179,7 @@
     <value>Βήματα</value>
   </data>
   <data name="NoStepsYet" xml:space="preserve">
-    <value>Δεν υπάρχουν ακόμη βήματα. Πρόσθεσε ένα μάθημα παρακάτω.</value>
+    <value>Δεν υπάρχουν ακόμη βήματα. Πρόσθεσε ένα πρόγραμμα παρακάτω.</value>
   </data>
   <data name="AddStepsHint" xml:space="preserve">
     <value>Αποθήκευσε πρώτα τη διαδρομή για να προσθέσεις βήματα.</value>
@@ -188,7 +188,7 @@
     <value>Προσθήκη βήματος</value>
   </data>
   <data name="SelectCourse" xml:space="preserve">
-    <value>Διάλεξε μάθημα…</value>
+    <value>Διάλεξε πρόγραμμα…</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>Μετακίνηση επάνω</value>

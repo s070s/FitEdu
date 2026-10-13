@@ -49,7 +49,7 @@
 		<value>Όνομα (EL)</value>
 	</data>
 	<data name="ColCourseCount" xml:space="preserve">
-		<value>Μαθήματα</value>
+		<value>Προγράμματα</value>
 	</data>
 	<data name="ColAssessmentCount" xml:space="preserve">
 		<value>Αξιολογήσεις</value>
@@ -67,7 +67,7 @@
 		<value>Μετονομασία</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Διαγραφή '{0}'; {1} μάθημα/τα και {2} αξιολόγηση/εις θα μείνουν χωρίς κατηγορία.</value>
+		<value>Διαγραφή '{0}'; Θα μείνουν χωρίς κατηγορία: προγράμματα {1}, αξιολογήσεις {2}.</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>Δεν υπάρχουν ακόμα κατηγορίες.</value>

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>FitEdu | Fitness Courses &amp; Exercise Library</value>
+    <value>FitEdu | Fitness Programmes &amp; Exercise Library</value>
   </data>
   <data name="WelcomeUser" xml:space="preserve">
     <value>Welcome, {0}!</value>
@@ -130,7 +130,7 @@
     <value>Move better every week.</value>
   </data>
   <data name="HeroSubtitle" xml:space="preserve">
-    <value>Structured fitness courses, a public-domain exercise library with start-and-finish photos, and self-checks that keep you training safely — in English and Greek.</value>
+    <value>Structured fitness programmes, a public-domain exercise library with start-and-finish photos, and self-checks that keep you training safely — in English and Greek.</value>
   </data>
   <data name="HeroCtaButton" xml:space="preserve">
     <value>Start free</value>

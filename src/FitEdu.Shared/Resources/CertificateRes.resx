@@ -105,19 +105,19 @@
 		<value>My Certificates</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
-		<value>Every course you finish earns a certificate that anyone can verify.</value>
+		<value>Every programme you finish earns a certificate that anyone can verify.</value>
 	</data>
 	<data name="CardEyebrow" xml:space="preserve">
-		<value>Course completed</value>
+		<value>Programme completed</value>
 	</data>
 	<data name="BrowseCourses" xml:space="preserve">
-		<value>Browse courses</value>
+		<value>Browse programmes</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
 		<value>Loading certificates…</value>
 	</data>
 	<data name="NoCertificates" xml:space="preserve">
-		<value>No certificates yet. Complete a course to earn one.</value>
+		<value>No certificates yet. Complete a programme to earn one.</value>
 	</data>
 	<data name="Issued" xml:space="preserve">
 		<value>Issued:</value>
@@ -159,7 +159,7 @@
 		<value>Recipient</value>
 	</data>
 	<data name="FieldCourse" xml:space="preserve">
-		<value>Course</value>
+		<value>Programme</value>
 	</data>
 	<data name="FieldIssuedOn" xml:space="preserve">
 		<value>Issued on</value>

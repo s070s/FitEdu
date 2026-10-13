@@ -146,7 +146,7 @@
     <value>Οικοδεσπότης</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Μάθημα</value>
+    <value>Πρόγραμμα</value>
   </data>
   <data name="ColWhen" xml:space="preserve">
     <value>Έναρξη</value>
@@ -173,10 +173,10 @@
     <value>Τίτλος (Ελληνικά)</value>
   </data>
   <data name="FieldCourse" xml:space="preserve">
-    <value>Σχετικό μάθημα</value>
+    <value>Σχετικό πρόγραμμα</value>
   </data>
   <data name="NoCourse" xml:space="preserve">
-    <value>Χωρίς σχετικό μάθημα</value>
+    <value>Χωρίς σχετικό πρόγραμμα</value>
   </data>
   <data name="FieldStartsAt" xml:space="preserve">
     <value>Ώρα έναρξης</value>

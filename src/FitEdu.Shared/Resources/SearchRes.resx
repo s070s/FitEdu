@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Placeholder" xml:space="preserve">
-    <value>Search courses, exercises, assessments, articles…</value>
+    <value>Search programmes, exercises, assessments, articles…</value>
   </data>
   <data name="SearchLabel" xml:space="preserve">
     <value>Search</value>
@@ -80,7 +80,7 @@
     <value>Results for "{0}"</value>
   </data>
   <data name="TypeCourse" xml:space="preserve">
-    <value>Course</value>
+    <value>Programme</value>
   </data>
   <data name="TypeAssessment" xml:space="preserve">
     <value>Assessment</value>
@@ -92,6 +92,6 @@
     <value>Exercise</value>
   </data>
   <data name="EnterQuery" xml:space="preserve">
-    <value>Type what you're looking for: courses, exercises, assessments or articles.</value>
+    <value>Type what you're looking for: programmes, exercises, assessments or articles.</value>
   </data>
 </root>

@@ -111,7 +111,7 @@
 		<value>Lesson not found.</value>
 	</data>
 	<data name="LessonNotFoundOrNotEnrolled" xml:space="preserve">
-		<value>Lesson not found or you are not enrolled in this course.</value>
+		<value>Lesson not found or you are not enrolled in this programme.</value>
 	</data>
 	<data name="FailedToLoadLesson" xml:space="preserve">
 		<value>Failed to load lesson. Please try again.</value>
@@ -132,7 +132,7 @@
 		<value>Progress: {0} / {1} ({2}%)</value>
 	</data>
 	<data name="CourseCompleted" xml:space="preserve">
-		<value>Course completed!</value>
+		<value>Programme completed!</value>
 	</data>
 	<data name="PreviousLesson" xml:space="preserve">
 		<value>Previous lesson</value>
@@ -141,7 +141,7 @@
 		<value>Next lesson</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Back to course</value>
+		<value>Back to programme</value>
 	</data>
 	<data name="FailedToSaveCompletion" xml:space="preserve">
 		<value>Couldn't save your progress. Please try again.</value>
@@ -192,7 +192,7 @@
 		<value>{0} of {1} lessons done</value>
 	</data>
 	<data name="CourseProgressLabel" xml:space="preserve">
-		<value>Course progress</value>
+		<value>Programme progress</value>
 	</data>
 	<data name="ExerciseCountOne" xml:space="preserve">
 		<value>1 exercise</value>

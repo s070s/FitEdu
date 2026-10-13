@@ -187,22 +187,22 @@
     <value>Αυτή η αξιολόγηση απαιτεί συνδρομή {0} ή ανώτερη.</value>
   </data>
   <data name="CourseNotFound" xml:space="preserve">
-    <value>Το μάθημα δεν βρέθηκε</value>
+    <value>Το πρόγραμμα δεν βρέθηκε</value>
   </data>
   <data name="CourseRequiresTierFormat" xml:space="preserve">
-    <value>Αυτό το μάθημα απαιτεί συνδρομή {0} ή ανώτερη. Αναβαθμίστε το πλάνο σας.</value>
+    <value>Αυτό το πρόγραμμα απαιτεί συνδρομή {0} ή ανώτερη. Αναβαθμίστε το πλάνο σας.</value>
   </data>
   <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
-    <value>Το πλάνο {0} επιτρέπει έως {1} μάθημα/μαθήματα. Αναβαθμίστε για εγγραφή σε περισσότερα μαθήματα.</value>
+    <value>Το πλάνο {0} επιτρέπει έως {1} ενεργά προγράμματα. Αναβαθμίστε για εγγραφή σε περισσότερα προγράμματα.</value>
   </data>
   <data name="LessonNotFound" xml:space="preserve">
     <value>Το μάθημα δεν βρέθηκε</value>
   </data>
   <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
-    <value>Πρέπει να είστε εγγεγραμμένος σε αυτό το μάθημα για να δείτε τα μαθήματα</value>
+    <value>Πρέπει να είστε εγγεγραμμένος σε αυτό το πρόγραμμα για να δείτε τα μαθήματα</value>
   </data>
   <data name="NotEnrolledInCourse" xml:space="preserve">
-    <value>Δεν είστε εγγεγραμμένος σε αυτό το μάθημα</value>
+    <value>Δεν είστε εγγεγραμμένος σε αυτό το πρόγραμμα</value>
   </data>
   <data name="NoFileProvided" xml:space="preserve">
     <value>Δεν παρέχεται αρχείο</value>
@@ -241,13 +241,13 @@
     <value>Η ακύρωση απέτυχε. Δοκιμάστε ξανά.</value>
   </data>
   <data name="FailedToLoadCourses" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση των μαθημάτων. Δοκιμάστε ξανά.</value>
+    <value>Απέτυχε η φόρτωση των προγραμμάτων. Δοκιμάστε ξανά.</value>
   </data>
   <data name="FailedToLoadAnalytics" xml:space="preserve">
     <value>Η φόρτωση των στατιστικών απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadCourse" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση του μαθήματος. Δοκιμάστε ξανά.</value>
+    <value>Απέτυχε η φόρτωση του προγράμματος. Δοκιμάστε ξανά.</value>
   </data>
   <data name="FailedToEnroll" xml:space="preserve">
     <value>Η εγγραφή απέτυχε. Δοκιμάστε ξανά.</value>

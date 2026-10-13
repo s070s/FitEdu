@@ -104,10 +104,10 @@
     <value>Δεν ήταν δυνατή η αποστολή της κριτικής σου. Δοκίμασε ξανά.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Κριτικές Μαθημάτων</value>
+    <value>Κριτικές προγραμμάτων</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Μάθημα</value>
+    <value>Πρόγραμμα</value>
   </data>
   <data name="ColAuthor" xml:space="preserve">
     <value>Συγγραφέας</value>

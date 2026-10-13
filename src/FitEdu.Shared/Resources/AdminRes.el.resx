@@ -133,13 +133,13 @@
     <value>Συνολικές Εγγραφές</value>
   </data>
   <data name="CompletedCourses" xml:space="preserve">
-    <value>Ολοκληρωμένα Μαθήματα</value>
+    <value>Ολοκληρωμένα προγράμματα</value>
   </data>
   <data name="CourseEnrollmentStats" xml:space="preserve">
-    <value>Στατιστικά Εγγραφών Μαθημάτων</value>
+    <value>Εγγραφές ανά πρόγραμμα</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Μάθημα</value>
+    <value>Πρόγραμμα</value>
   </data>
   <data name="ColEnrollments" xml:space="preserve">
     <value>Εγγραφές</value>
@@ -148,7 +148,7 @@
     <value>Ολοκληρώσεις</value>
   </data>
   <data name="NoCourseData" xml:space="preserve">
-    <value>Δεν υπάρχουν διαθέσιμα δεδομένα μαθημάτων</value>
+    <value>Δεν υπάρχουν ακόμη δεδομένα προγραμμάτων</value>
   </data>
   <data name="AssessmentStats" xml:space="preserve">
     <value>Στατιστικά Αξιολογήσεων</value>
@@ -340,25 +340,25 @@
     <value>Σύνοψη</value>
   </data>
   <data name="CreateCourse" xml:space="preserve">
-    <value>Δημιουργία Μαθήματος</value>
+    <value>Δημιουργία προγράμματος</value>
   </data>
   <data name="EditCourse" xml:space="preserve">
-    <value>Επεξεργασία Μαθήματος</value>
+    <value>Επεξεργασία προγράμματος</value>
   </data>
   <data name="BackToCourses" xml:space="preserve">
-    <value>Πίσω στα Μαθήματα</value>
+    <value>Πίσω στα προγράμματα</value>
   </data>
   <data name="CourseDetails" xml:space="preserve">
-    <value>Λεπτομέρειες Μαθήματος</value>
+    <value>Λεπτομέρειες προγράμματος</value>
   </data>
   <data name="SaveCourse" xml:space="preserve">
-    <value>Αποθήκευση Μαθήματος</value>
+    <value>Αποθήκευση προγράμματος</value>
   </data>
   <data name="SaveCourseFirstHint" xml:space="preserve">
-    <value>Αποθήκευσε πρώτα το μάθημα. Μετά μπορείς να προσθέσεις &lt;strong&gt;Ενότητες&lt;/strong&gt; και &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
+    <value>Αποθήκευσε πρώτα το πρόγραμμα. Μετά μπορείς να προσθέσεις &lt;strong&gt;Ενότητες&lt;/strong&gt; και &lt;strong&gt;Μαθήματα&lt;/strong&gt; (με τον επεξεργαστή κειμένου, βίντεο και PDF), να δεις τη δομή του και να το δημοσιεύσεις.</value>
   </data>
   <data name="ModulesAndLessons" xml:space="preserve">
-    <value>Ενότητες &amp; Μαθήματα</value>
+    <value>Ενότητες &amp; μαθήματα</value>
   </data>
   <data name="AddModule" xml:space="preserve">
     <value>+ Προσθήκη Ενότητας</value>
@@ -379,7 +379,7 @@
     <value>Επεξεργασία Ενότητας</value>
   </data>
   <data name="AddLesson" xml:space="preserve">
-    <value>+ Προσθήκη Μαθήματος</value>
+    <value>+ Προσθήκη μαθήματος</value>
   </data>
   <data name="LoadingLessons" xml:space="preserve">
     <value>Φόρτωση μαθημάτων...</value>
@@ -403,13 +403,13 @@
     <value>Ενεργό</value>
   </data>
   <data name="CourseStructurePreview" xml:space="preserve">
-    <value>Προεπισκόπηση Δομής Μαθήματος</value>
+    <value>Προεπισκόπηση δομής προγράμματος</value>
   </data>
   <data name="PublishCourse" xml:space="preserve">
-    <value>Δημοσίευση Μαθήματος</value>
+    <value>Δημοσίευση προγράμματος</value>
   </data>
   <data name="UnpublishCourse" xml:space="preserve">
-    <value>Κατάργηση Δημοσίευσης Μαθήματος</value>
+    <value>Κατάργηση δημοσίευσης προγράμματος</value>
   </data>
   <data name="SortOrder" xml:space="preserve">
     <value>Σειρά Ταξινόμησης</value>
@@ -418,7 +418,7 @@
     <value>Αποθήκευση</value>
   </data>
   <data name="EditLesson" xml:space="preserve">
-    <value>Επεξεργασία Μαθήματος</value>
+    <value>Επεξεργασία μαθήματος</value>
   </data>
   <data name="DurationMinutes" xml:space="preserve">
     <value>Διάρκεια (λεπτά)</value>
@@ -442,22 +442,22 @@
     <value>Τρέχον:</value>
   </data>
   <data name="SaveLesson" xml:space="preserve">
-    <value>Αποθήκευση Μαθήματος</value>
+    <value>Αποθήκευση μαθήματος</value>
   </data>
   <data name="CourseManagement" xml:space="preserve">
-    <value>Διαχείριση Μαθημάτων</value>
+    <value>Διαχείριση προγραμμάτων</value>
   </data>
   <data name="CreateNewCourse" xml:space="preserve">
-    <value>Δημιουργία Νέου Μαθήματος</value>
+    <value>Δημιουργία νέου προγράμματος</value>
   </data>
   <data name="NoCourses" xml:space="preserve">
-    <value>Δεν βρέθηκαν μαθήματα.</value>
+    <value>Δεν βρέθηκαν προγράμματα.</value>
   </data>
   <data name="ManageLessons" xml:space="preserve">
-    <value>Διαχείριση Παραδόσεων</value>
+    <value>Διαχείριση μαθημάτων</value>
   </data>
   <data name="BackToCourse" xml:space="preserve">
-    <value>Πίσω στο Μάθημα</value>
+    <value>Πίσω στο πρόγραμμα</value>
   </data>
   <data name="MinutesFormat" xml:space="preserve">
     <value> · {0} λεπ.</value>
@@ -688,7 +688,7 @@
     <value>Απαιτούμενο πακέτο συνδρομής</value>
   </data>
   <data name="RequiredTierHint" xml:space="preserve">
-    <value>Οι χρήστες πρέπει να έχουν αυτό το πακέτο ή ανώτερο για να εγγραφούν σε αυτό το μάθημα.</value>
+    <value>Τα μέλη χρειάζονται αυτό το πλάνο ή ανώτερο για να γραφτούν σε αυτό το πρόγραμμα.</value>
   </data>
   <data name="ColCreated" xml:space="preserve">
     <value>Δημιουργήθηκε</value>
@@ -712,7 +712,7 @@
     <value>χρήστες</value>
   </data>
   <data name="ItemLabelCourses" xml:space="preserve">
-    <value>μαθήματα</value>
+    <value>προγράμματα</value>
   </data>
   <data name="ItemLabelAssessments" xml:space="preserve">
     <value>αξιολογήσεις</value>
@@ -733,16 +733,16 @@
     <value>ζωντανά μαθήματα</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
-    <value>Το μάθημα αποθηκεύτηκε επιτυχώς.</value>
+    <value>Το πρόγραμμα αποθηκεύτηκε.</value>
   </data>
   <data name="CourseSaveFailed" xml:space="preserve">
-    <value>Σφάλμα κατά την αποθήκευση του μαθήματος.</value>
+    <value>Σφάλμα κατά την αποθήκευση του προγράμματος.</value>
   </data>
   <data name="CoursePublished" xml:space="preserve">
-    <value>Το μάθημα δημοσιεύτηκε.</value>
+    <value>Το πρόγραμμα δημοσιεύτηκε.</value>
   </data>
   <data name="CourseUnpublished" xml:space="preserve">
-    <value>Η δημοσίευση του μαθήματος αναιρέθηκε.</value>
+    <value>Η δημοσίευση του προγράμματος αναιρέθηκε.</value>
   </data>
   <data name="ArticlePublished" xml:space="preserve">
     <value>Το άρθρο δημοσιεύτηκε.</value>
@@ -751,10 +751,10 @@
     <value>Η δημοσίευση του άρθρου αναιρέθηκε.</value>
   </data>
   <data name="CourseDeleted" xml:space="preserve">
-    <value>Το μάθημα διαγράφηκε.</value>
+    <value>Το πρόγραμμα διαγράφηκε.</value>
   </data>
   <data name="CourseDeleteFailed" xml:space="preserve">
-    <value>Σφάλμα κατά τη διαγραφή του μαθήματος.</value>
+    <value>Σφάλμα κατά τη διαγραφή του προγράμματος.</value>
   </data>
   <data name="PublishStatusUpdateFailed" xml:space="preserve">
     <value>Απέτυχε η ενημέρωση της κατάστασης δημοσίευσης.</value>

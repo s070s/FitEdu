@@ -139,7 +139,7 @@
     <value>Ο κωδικός πρόσβασης επαναφέρθηκε επιτυχώς.</value>
   </data>
   <data name="EnrolledSuccessfully" xml:space="preserve">
-    <value>Επιτυχής εγγραφή στο μάθημα</value>
+    <value>Γράφτηκες στο πρόγραμμα</value>
   </data>
   <data name="AlreadyEnrolled" xml:space="preserve">
     <value>Ήδη εγγεγραμμένος</value>

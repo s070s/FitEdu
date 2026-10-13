@@ -124,19 +124,19 @@
     <value>Τα Πιστοποιητικά μου</value>
   </data>
   <data name="Subtitle" xml:space="preserve">
-    <value>Κάθε μάθημα που ολοκληρώνεις σου δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
+    <value>Κάθε πρόγραμμα που ολοκληρώνεις σου δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
   </data>
   <data name="CardEyebrow" xml:space="preserve">
-    <value>Ολοκληρωμένο μάθημα</value>
+    <value>Ολοκληρωμένο πρόγραμμα</value>
   </data>
   <data name="BrowseCourses" xml:space="preserve">
-    <value>Δες τα μαθήματα</value>
+    <value>Δες τα προγράμματα</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Φόρτωση πιστοποιητικών…</value>
   </data>
   <data name="NoCertificates" xml:space="preserve">
-    <value>Δεν έχεις ακόμη πιστοποιητικά. Ολοκλήρωσε ένα μάθημα για να κερδίσεις το πρώτο σου.</value>
+    <value>Δεν έχεις ακόμη πιστοποιητικά. Ολοκλήρωσε ένα πρόγραμμα για να κερδίσεις το πρώτο σου.</value>
   </data>
   <data name="Issued" xml:space="preserve">
     <value>Εκδόθηκε:</value>
@@ -178,7 +178,7 @@
     <value>Παραλήπτης</value>
   </data>
   <data name="FieldCourse" xml:space="preserve">
-    <value>Μάθημα</value>
+    <value>Πρόγραμμα</value>
   </data>
   <data name="FieldIssuedOn" xml:space="preserve">
     <value>Ημερομηνία έκδοσης</value>

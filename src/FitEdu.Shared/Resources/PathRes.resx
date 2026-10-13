@@ -65,7 +65,7 @@
     <value>No training paths available yet.</value>
   </data>
   <data name="StepsCountFormat" xml:space="preserve">
-    <value>{0} courses</value>
+    <value>{0} programmes</value>
   </data>
   <data name="ProgressFormat" xml:space="preserve">
     <value>{0} of {1} completed</value>
@@ -86,7 +86,7 @@
     <value>Completed</value>
   </data>
   <data name="GoToCourse" xml:space="preserve">
-    <value>Go to course</value>
+    <value>Open programme</value>
   </data>
   <data name="SignInToTrackProgress" xml:space="preserve">
     <value>Sign in to track your progress through this path.</value>
@@ -179,7 +179,7 @@
     <value>Steps</value>
   </data>
   <data name="NoStepsYet" xml:space="preserve">
-    <value>No steps yet. Add a course below.</value>
+    <value>No steps yet. Add a programme below.</value>
   </data>
   <data name="AddStepsHint" xml:space="preserve">
     <value>Save the path first to start adding steps.</value>
@@ -188,7 +188,7 @@
     <value>Add step</value>
   </data>
   <data name="SelectCourse" xml:space="preserve">
-    <value>Select a course…</value>
+    <value>Select a programme…</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>Move up</value>
@@ -206,10 +206,10 @@
     <value>Step by step</value>
   </data>
   <data name="PathsSubtitle" xml:space="preserve">
-    <value>Follow a set of courses in order, from your first workout to your goal. Each one you finish unlocks the next.</value>
+    <value>Follow a set of programmes in order, from your first workout to your goal. Each one you finish unlocks the next.</value>
   </data>
   <data name="BrowseCourses" xml:space="preserve">
-    <value>Browse courses</value>
+    <value>Browse programmes</value>
   </data>
   <data name="StartPath" xml:space="preserve">
     <value>Start the path</value>
@@ -221,13 +221,13 @@
     <value>Path completed</value>
   </data>
   <data name="JourneyTitle" xml:space="preserve">
-    <value>Courses in this path</value>
+    <value>Programmes in this path</value>
   </data>
   <data name="StepNumberFormat" xml:space="preserve">
     <value>Step {0}</value>
   </data>
   <data name="StepLockedHint" xml:space="preserve">
-    <value>Finish the previous course to unlock this one.</value>
+    <value>Finish the previous programme to unlock this one.</value>
   </data>
   <data name="PathsListHeading" xml:space="preserve">
     <value>All training paths</value>

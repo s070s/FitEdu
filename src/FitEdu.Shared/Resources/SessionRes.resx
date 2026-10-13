@@ -146,7 +146,7 @@
     <value>Host</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
-    <value>Course</value>
+    <value>Programme</value>
   </data>
   <data name="ColWhen" xml:space="preserve">
     <value>Starts</value>
@@ -173,10 +173,10 @@
     <value>Title (Greek)</value>
   </data>
   <data name="FieldCourse" xml:space="preserve">
-    <value>Related course</value>
+    <value>Related programme</value>
   </data>
   <data name="NoCourse" xml:space="preserve">
-    <value>No related course</value>
+    <value>No related programme</value>
   </data>
   <data name="FieldStartsAt" xml:space="preserve">
     <value>Starts at</value>

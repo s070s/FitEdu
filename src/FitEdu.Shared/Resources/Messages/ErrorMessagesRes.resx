@@ -187,22 +187,22 @@
     <value>This assessment requires a {0} subscription or higher.</value>
   </data>
   <data name="CourseNotFound" xml:space="preserve">
-    <value>Course not found</value>
+    <value>Programme not found</value>
   </data>
   <data name="CourseRequiresTierFormat" xml:space="preserve">
-    <value>This course requires a {0} subscription or higher. Please upgrade your plan.</value>
+    <value>This programme requires a {0} subscription or higher. Please upgrade your plan.</value>
   </data>
   <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
-    <value>Your {0} plan allows up to {1} course(s). Please upgrade to enroll in more courses.</value>
+    <value>Your {0} plan allows up to {1} active programme(s). Please upgrade to enroll in more programmes.</value>
   </data>
   <data name="LessonNotFound" xml:space="preserve">
     <value>Lesson not found</value>
   </data>
   <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
-    <value>You must be enrolled in this course to view lessons</value>
+    <value>You must be enrolled in this programme to view lessons</value>
   </data>
   <data name="NotEnrolledInCourse" xml:space="preserve">
-    <value>Not enrolled in this course</value>
+    <value>Not enrolled in this programme</value>
   </data>
   <data name="NoFileProvided" xml:space="preserve">
     <value>No file provided</value>
@@ -241,13 +241,13 @@
     <value>Failed to cancel. Please try again.</value>
   </data>
   <data name="FailedToLoadCourses" xml:space="preserve">
-    <value>Failed to load courses. Please try again.</value>
+    <value>Failed to load programmes. Please try again.</value>
   </data>
   <data name="FailedToLoadAnalytics" xml:space="preserve">
     <value>Failed to load analytics. Please try again.</value>
   </data>
   <data name="FailedToLoadCourse" xml:space="preserve">
-    <value>Failed to load course. Please try again.</value>
+    <value>Failed to load programme. Please try again.</value>
   </data>
   <data name="FailedToEnroll" xml:space="preserve">
     <value>Failed to enroll. Please try again.</value>

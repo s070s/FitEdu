@@ -49,7 +49,7 @@
 		<value>Name (EL)</value>
 	</data>
 	<data name="ColCourseCount" xml:space="preserve">
-		<value>Courses</value>
+		<value>Programmes</value>
 	</data>
 	<data name="ColAssessmentCount" xml:space="preserve">
 		<value>Assessments</value>
@@ -67,7 +67,7 @@
 		<value>Rename</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Delete '{0}'? {1} course(s) and {2} assessment(s) will become uncategorized.</value>
+		<value>Delete '{0}'? {1} programme(s) and {2} assessment(s) will become uncategorized.</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>No categories yet.</value>
