@@ -401,5 +401,41 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("LessonNavigationLabel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your certificate is ready. You will find it in My Certificates..
+        /// </summary>
+        public static string CertificateReady {
+            get {
+                return ResourceManager.GetString("CertificateReady", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to View certificate.
+        /// </summary>
+        public static string ViewCertificate {
+            get {
+                return ResourceManager.GetString("ViewCertificate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates come with Pro. Upgrade to get one for every programme you finish..
+        /// </summary>
+        public static string CertificateWithPro {
+            get {
+                return ResourceManager.GetString("CertificateWithPro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade to Pro.
+        /// </summary>
+        public static string UpgradeToPro {
+            get {
+                return ResourceManager.GetString("UpgradeToPro", resourceCulture);
+            }
+        }
     }
 }

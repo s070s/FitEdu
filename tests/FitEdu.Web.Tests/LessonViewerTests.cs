@@ -7,6 +7,7 @@ using NSubstitute;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -414,8 +415,8 @@ public class LessonViewerTests : BunitContext
         var lesson = Lesson(isCompleted: false, nextLessonId: nextLessonId);
         _courseService.GetLessonAsync(_lessonId, Arg.Any<string>()).Returns(lesson);
         _courseService.CompleteLessonAsync(_lessonId).Returns(
-            new LessonCompletionResultDto(true, "ok", CompletedLessons: 5, TotalLessons: 5, ProgressPercent: 100,
-                CourseCompleted: true, CertificatePending: true));
+            new LessonCompletionResultDto(true, "ok", CompletedLessons: 4, TotalLessons: 5, ProgressPercent: 80,
+                CourseCompleted: false));
 
         var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
         cut.Find(".btn-success").Click();
@@ -424,8 +425,47 @@ public class LessonViewerTests : BunitContext
         dock.QuerySelector(".completed-indicator").ShouldNotBeNull();
         dock.QuerySelector(".lesson-actions__next")!.GetAttribute("href").ShouldBe($"/lessons/{nextLessonId}");
         dock.QuerySelector(".progress-update").ShouldBeNull();
-        cut.Find(".progress-update .course-completed").ShouldNotBeNull();
-        cut.Find(".progress-update__certificate").ShouldNotBeNull();
+        dock.QuerySelector(".course-celebration").ShouldBeNull();
+        cut.Find(".progress-update").ShouldNotBeNull();
+    }
+
+    [Theory]
+    [InlineData(true, false, "/my-certificates")]
+    [InlineData(true, true, "/my-certificates")]
+    [InlineData(false, false, "/pricing")]
+    public void MarkComplete_LastWorkout_CelebratesInTheDockWithTheCertificateOrTheUpgrade(
+        bool certificateIncluded, bool certificatePending, string expectedHref)
+    {
+        // On a phone the dock is in view when the last workout is ticked off; the page end is far below.
+        var lesson = Lesson(isCompleted: false, nextLessonId: null);
+        _courseService.GetLessonAsync(_lessonId, Arg.Any<string>()).Returns(lesson);
+        _courseService.CompleteLessonAsync(_lessonId).Returns(
+            new LessonCompletionResultDto(true, "ok", CompletedLessons: 5, TotalLessons: 5, ProgressPercent: 100,
+                CourseCompleted: true, CertificatePending: certificatePending, CertificateIncluded: certificateIncluded));
+
+        var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
+        cut.Find(".btn-success").Click();
+
+        var celebration = cut.Find(".lesson-actions--docked .course-celebration");
+        celebration.QuerySelector(".course-celebration__title")!.TextContent.ShouldBe(LessonRes.CourseCompleted);
+        celebration.QuerySelector(".course-celebration__certificate")!.GetAttribute("href").ShouldBe(expectedHref);
+        celebration.QuerySelector(".course-celebration__course")!.GetAttribute("href").ShouldBe($"/courses/{lesson.CourseId}");
+    }
+
+    [Fact]
+    public void MarkComplete_LastWorkoutWithoutCertificatePlan_SaysCertificatesComeWithPro()
+    {
+        var lesson = Lesson(isCompleted: false, nextLessonId: null);
+        _courseService.GetLessonAsync(_lessonId, Arg.Any<string>()).Returns(lesson);
+        _courseService.CompleteLessonAsync(_lessonId).Returns(
+            new LessonCompletionResultDto(true, "ok", CompletedLessons: 5, TotalLessons: 5, ProgressPercent: 100,
+                CourseCompleted: true));
+
+        var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
+        cut.Find(".btn-success").Click();
+
+        cut.Find(".course-celebration__note").TextContent.ShouldBe(LessonRes.CertificateWithPro);
+        cut.Find(".course-celebration__certificate").TextContent.ShouldBe(LessonRes.UpgradeToPro);
     }
 
     [Fact]

@@ -18,6 +18,9 @@ public partial class LessonViewer
 
     private const int MaxPercent = 100;
 
+    private const string MyCertificatesPath = "/my-certificates";
+    private const string PricingPath = "/pricing";
+
     [Parameter]
     public Guid LessonId
     {
@@ -55,6 +58,24 @@ public partial class LessonViewer
     // after a completion so its confirmation and the next-lesson button stay in view (the progress
     // details sit in the flow below it). A lesson completed earlier shows the bar in the flow.
     private bool IsActionBarDocked => _lesson is { IsCompleted: false } || _completionResult is not null;
+
+    // After the last workout: the certificate when the plan includes one, otherwise the upgrade to Pro.
+    private bool CertificateIncluded => _completionResult?.CertificateIncluded == true;
+
+    private string CertificateHref => CertificateIncluded ? MyCertificatesPath : PricingPath;
+
+    private string CertificateLinkText => CertificateIncluded ? LessonRes.ViewCertificate : LessonRes.UpgradeToPro;
+
+    private string CertificateNote
+    {
+        get
+        {
+            if (_completionResult?.CertificatePending == true)
+                return LessonRes.CertificatePending;
+
+            return CertificateIncluded ? LessonRes.CertificateReady : LessonRes.CertificateWithPro;
+        }
+    }
 
     /// <summary>The lesson's 1-based place in the course ("Lesson 3 of 12"), or 0 when the outline did not load.</summary>
     private int LessonNumber => _lesson is null ? 0 : IndexOfLesson(_lesson.Id) + 1;

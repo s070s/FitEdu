@@ -212,4 +212,16 @@
 	<data name="LessonNavigationLabel" xml:space="preserve">
 		<value>Lesson navigation</value>
 	</data>
+	<data name="CertificateReady" xml:space="preserve">
+		<value>Your certificate is ready. You will find it in My Certificates.</value>
+	</data>
+	<data name="ViewCertificate" xml:space="preserve">
+		<value>View certificate</value>
+	</data>
+	<data name="CertificateWithPro" xml:space="preserve">
+		<value>Certificates come with Pro. Upgrade to get one for every programme you finish.</value>
+	</data>
+	<data name="UpgradeToPro" xml:space="preserve">
+		<value>Upgrade to Pro</value>
+	</data>
 </root>

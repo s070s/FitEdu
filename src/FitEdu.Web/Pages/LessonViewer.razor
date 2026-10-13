@@ -153,6 +153,22 @@ else
                     @(_completing ? LessonRes.Saving : LessonRes.MarkAsComplete)
                 </button>
             }
+            else if (_completionResult is { CourseCompleted: true })
+            {
+                @* The dock is what a phone shows when the last workout is done, so the celebration and
+                   the certificate (or the upgrade to get one) sit in it, not 7000 px down the page. *@
+                <section class="course-celebration" role="status" aria-labelledby="course-celebration-title">
+                    <span class="course-celebration__icon" aria-hidden="true"><span class="bi bi-trophy-fill"></span></span>
+                    <div class="course-celebration__text">
+                        <h2 id="course-celebration-title" class="course-celebration__title">@LessonRes.CourseCompleted</h2>
+                        <p class="course-celebration__note">@CertificateNote</p>
+                    </div>
+                    <div class="course-celebration__actions">
+                        <a class="btn btn-success course-celebration__certificate" href="@CertificateHref">@CertificateLinkText</a>
+                        <a class="btn btn-secondary course-celebration__course" href="@CourseHref(_lesson.CourseId)">@LessonRes.BackToCourse</a>
+                    </div>
+                </section>
+            }
             else
             {
                 <span class="completed-indicator">
@@ -174,20 +190,12 @@ else
             }
         </div>
 
-        @* In the flow, not in the dock: the progress line, trophy and certificate note would make the
-           docked bar several lines tall on a phone. *@
+        @* In the flow, not in the dock: the progress line would make the docked bar taller on a
+           phone. A finished programme celebrates in the dock instead (above). *@
         @if (_completionResult is not null)
         {
             <div class="progress-update" role="status">
                 @string.Format(LessonRes.ProgressFormat, _completionResult.CompletedLessons, _completionResult.TotalLessons, _progress?.Percent ?? 0)
-                @if (_completionResult.CourseCompleted)
-                {
-                    <span class="course-completed"><span class="bi bi-trophy-fill" aria-hidden="true"></span> @LessonRes.CourseCompleted</span>
-                }
-                @if (_completionResult.CertificatePending)
-                {
-                    <p class="progress-update__certificate">@LessonRes.CertificatePending</p>
-                }
             </div>
         }
 
