@@ -30,6 +30,7 @@ public class UserStatusLabelsTests
     [InlineData(UserStatus.Intermediate, "Intermediate")]
     [InlineData(UserStatus.Advanced, "Advanced")]
     [InlineData(UserStatus.Other, "Prefer not to say")]
+    [InlineData(UserStatus.Unknown, "Not set")]
     public void Label_English_ReturnsTrainingLevelName(UserStatus status, string expected)
     {
         CultureInfo.CurrentUICulture = new CultureInfo("en");
@@ -42,6 +43,7 @@ public class UserStatusLabelsTests
     [InlineData(UserStatus.Intermediate, "Μεσαίο επίπεδο")]
     [InlineData(UserStatus.Advanced, "Προχωρημένος/η")]
     [InlineData(UserStatus.Other, "Προτιμώ να μην απαντήσω")]
+    [InlineData(UserStatus.Unknown, "Δεν ορίστηκε")]
     public void Label_Greek_ReturnsTrainingLevelName(UserStatus status, string expected)
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el");

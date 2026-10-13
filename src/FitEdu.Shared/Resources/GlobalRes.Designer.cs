@@ -708,6 +708,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Not set.
+        /// </summary>
+        public static string StatusNotSet {
+            get {
+                return ResourceManager.GetString("StatusNotSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Navigation menu.
         /// </summary>
         public static string NavigationMenu {

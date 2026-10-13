@@ -24,6 +24,7 @@ public static class UserStatusLabels
         UserStatus.Intermediate => GlobalRes.StatusIntermediate,
         UserStatus.Advanced => GlobalRes.StatusAdvanced,
         UserStatus.Other => GlobalRes.StatusOther,
+        UserStatus.Unknown => GlobalRes.StatusNotSet,
         _ => status.ToString()
     };
 

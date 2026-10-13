@@ -333,6 +333,9 @@
   <data name="StatusOther" xml:space="preserve">
     <value>Prefer not to say</value>
   </data>
+  <data name="StatusNotSet" xml:space="preserve">
+    <value>Not set</value>
+  </data>
   <data name="NavigationMenu" xml:space="preserve">
     <value>Navigation menu</value>
   </data>
