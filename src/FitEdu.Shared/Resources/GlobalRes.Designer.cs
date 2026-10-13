@@ -735,15 +735,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this feature.
-        /// </summary>
-        public static string ThisFeature {
-            get {
-                return ResourceManager.GetString("ThisFeature", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Progress.
         /// </summary>
         public static string Progress {

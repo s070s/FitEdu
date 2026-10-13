@@ -342,9 +342,6 @@
   <data name="Reload" xml:space="preserve">
     <value>Reload</value>
   </data>
-  <data name="ThisFeature" xml:space="preserve">
-    <value>this feature</value>
-  </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
   </data>
