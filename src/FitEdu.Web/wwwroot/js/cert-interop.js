@@ -19,6 +19,9 @@ window.downloadFile = (fileName, contentType, bytes) => {
 
     function ensureObserver() {
         if (revealObserver) return revealObserver;
+        // A share-of-the-element threshold never fires for a grid taller than the screen (a phone
+        // page of 12 programme cards is about 6 screens), so reveal once the top edge is a little
+        // way into the viewport instead.
         revealObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
@@ -26,7 +29,7 @@ window.downloadFile = (fileName, contentType, bytes) => {
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
         return revealObserver;
     }
 
