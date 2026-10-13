@@ -26,4 +26,8 @@ public static class UserStatusLabels
         UserStatus.Other => GlobalRes.StatusOther,
         _ => status.ToString()
     };
+
+    /// <summary>Label for a level sent as its enum name (the admin user list); unknown names are shown as they are.</summary>
+    public static string Label(string statusName) =>
+        Enum.TryParse<UserStatus>(statusName, out var status) ? Label(status) : statusName;
 }

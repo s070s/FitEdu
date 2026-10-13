@@ -21,7 +21,7 @@ else if (_pagedResult.TotalCount == 0)
 }
 else
 {
-    <ScrollableTable Items="_pagedResult.Items" TItem="AssessmentSubmissionListItemDto" TableCssClass="table table-striped align-middle">
+    <ScrollableTable Items="_pagedResult.Items" TItem="AssessmentSubmissionListItemDto" Caption="@AdminRes.ColSubmissions" TableCssClass="table table-striped align-middle">
         <HeaderRow>
             <tr>
                 <SortableColumnHeader ColumnKey="user" Label="@AdminRes.ColUser"
@@ -41,7 +41,7 @@ else
                 <td data-label="@AdminRes.ColUser">@sub.UserDisplayName</td>
                 <td data-label="@AdminRes.ColEmail">@sub.UserEmail</td>
                 <td data-label="@AdminRes.ColSubmittedAt">@sub.SubmittedAt.LocalDateTime.ToString("g")</td>
-                <td data-label="@AdminRes.ColActions">
+                <td class="table-actions" data-label="@AdminRes.ColActions">
                     <button class="btn btn-sm btn-outline-primary"
                             aria-expanded="@((expandedSubmissionId == sub.Id).ToString().ToLowerInvariant())"
                             @onclick="() => ToggleAnswers(sub.Id)">

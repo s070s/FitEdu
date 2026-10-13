@@ -42,11 +42,13 @@ The UI layer is in better shape than most student projects: a coherent dark-them
 - **Evidence:** `ScrollableTable.razor:6-18` renders a bare `<table>` with no `<caption>`, `aria-label`, or `aria-labelledby` parameter; no `<caption>` exists anywhere in the repo (grep). Every ScrollableTable consumer (now including Billing) plus AdminAnalytics' inline tables are affected.
 - **Impact:** Screen-reader table navigation announces an anonymous table; on pages with two tables (AdminAnalytics courses + assessments, `AdminAnalytics.razor:58-111`) they are indistinguishable in the rotor.
 - **Recommendation:** Add an optional `AriaLabel`/`Caption` parameter to ScrollableTable (visually-hidden `<caption>`) and pass the page heading string at each call site.
+- **Status (D12):** `ScrollableTable` has a `Caption` parameter (visually-hidden `<caption>`), passed by the ten admin list pages. Still open: Billing, Notifications, AssessmentHistory and the AdminAnalytics inline tables.
 
 ### UI-13: Mobile card-table CSS couples to localized label text values  [Low] [Effort: S]
 - **Evidence:** `wwwroot/css/shared-components.css:222-236` targets `td[data-label="Actions"]` and `td[data-label="Ενέργειες"]` to suppress the label and lay action buttons out horizontally. The values must stay in lockstep with `AdminRes.ColActions`, `CategoryRes.ColActions`, `AssessmentRes.Actions` (`AdminRes.resx:257-259`, `AdminRes.el.resx:276-278`, etc. — currently all aligned).
 - **Impact:** Renaming the resx value (or adding a third language) silently degrades every admin table's mobile action row into a mislabeled stacked cell — a failure no compiler or test catches.
 - **Recommendation:** Switch the hook to a locale-independent class (`<td class="actions-cell" data-label=…>`) and match `.table-responsive td.actions-cell` in the CSS; one mechanical sweep of the 10 action cells.
+- **Status (D12):** `shared-components.css` also matches `td.table-actions`, and the admin list pages use it. Still open: Notifications, AssessmentHistory and AdminCourseEdit; drop the `data-label` literal selectors once they move to the class.
 
 ### UI-14: Bootstrap default palette leaks into the themed UI  [Low] [Effort: S]
 - **Evidence:** `AssessmentHistory.razor:22` — `card-header bg-primary text-white` renders Bootstrap's stock blue header on the otherwise volt-lime (`--text-strong-accent`) theme; `AdminCourseEdit.razor:124` — `badge bg-light text-dark`; `ImpersonationBanner.razor:9` — `btn-light` (acceptable on the coral banner, but the only `btn-light` in the app).

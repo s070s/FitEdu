@@ -9,7 +9,7 @@
 
     <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
-    <div class="d-flex gap-2 mb-3">
+    <div class="admin-toolbar">
         <input type="text" class="form-control" placeholder="@AdminRes.SearchByTitleSlugAuthor"
                aria-label="@AdminRes.SearchByTitleSlugAuthor"
                value="@searchTerm" @oninput="OnSearchInput" />
@@ -28,7 +28,7 @@
             }
             else
             {
-                <ScrollableTable Items="pagedResult.Items" TItem="AdminBlogArticleDto">
+                <ScrollableTable Items="pagedResult.Items" TItem="AdminBlogArticleDto" Caption="@AdminRes.BlogArticlesPageTitle">
                     <HeaderRow>
                         <tr>
                             <SortableColumnHeader ColumnKey="title" Label="@AdminRes.FieldTitle"
@@ -64,7 +64,7 @@
                             </td>
                             <td data-label="@AdminRes.ColCreated">@article.CreatedAt.ToLocalTime().ToString("d")</td>
                             <td data-label="@AdminRes.ColPublishedAt">@(article.PublishedAt?.ToLocalTime().ToString("d") ?? "—")</td>
-                            <td data-label="@AdminRes.ColActions">
+                            <td class="table-actions" data-label="@AdminRes.ColActions">
                                 <button class="btn btn-sm btn-primary me-1" @onclick="() => EditArticle(article.Id)">@AdminRes.Edit</button>
                                 @if (article.IsPublished)
                                 {

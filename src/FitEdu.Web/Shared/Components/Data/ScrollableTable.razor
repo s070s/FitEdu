@@ -3,9 +3,15 @@
    because it does not use <Virtualize>; see UX_UI_Report.md Rank 15. *@
 @typeparam TItem
 
-<div class="table-responsive" style="max-height:@MaxHeight; overflow-y:auto">
+@* The height limit applies from 768 px only (ScrollableTable.razor.css): on phones the rows are
+   stacked cards (shared-components.css), and a second scroller inside the page would trap the thumb. *@
+<div class="table-responsive scrollable-table" style="--table-max-height:@MaxHeight">
     <table class="@TableCssClass">
-        <thead style="position:sticky; top:0; z-index:1">
+        @if (!string.IsNullOrWhiteSpace(Caption))
+        {
+            <caption class="visually-hidden">@Caption</caption>
+        }
+        <thead class="scrollable-table__head">
             @HeaderRow
         </thead>
         <tbody>
@@ -23,4 +29,7 @@
     [Parameter, EditorRequired] public RenderFragment<TItem> RowTemplate { get; set; } = default!;
     [Parameter] public string MaxHeight { get; set; } = "60vh";
     [Parameter] public string TableCssClass { get; set; } = "table table-striped";
+
+    /// <summary>Accessible name of the table for screen readers (usually the page heading); not shown on screen.</summary>
+    [Parameter] public string? Caption { get; set; }
 }

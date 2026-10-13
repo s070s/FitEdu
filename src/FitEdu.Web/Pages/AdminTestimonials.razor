@@ -9,7 +9,7 @@
 
     <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
-    <div class="d-flex gap-2 mb-3">
+    <div class="admin-toolbar">
         <button class="btn btn-primary text-nowrap" @onclick="NewTestimonial">@AdminRes.NewTestimonial</button>
     </div>
 
@@ -25,7 +25,7 @@
             }
             else
             {
-                <ScrollableTable Items="pagedResult.Items" TItem="AdminTestimonialDto">
+                <ScrollableTable Items="pagedResult.Items" TItem="AdminTestimonialDto" Caption="@AdminRes.TestimonialsPageTitle">
                     <HeaderRow>
                         <tr>
                             <SortableColumnHeader ColumnKey="displayorder" Label="@AdminRes.ColOrder"
@@ -83,7 +83,7 @@
                                              InactiveText="@AdminRes.StatusInactive" />
                             </td>
                             <td data-label="@AdminRes.ColCreated">@item.CreatedAt.ToLocalTime().ToString("d")</td>
-                            <td data-label="@AdminRes.ColActions">
+                            <td class="table-actions" data-label="@AdminRes.ColActions">
                                 <button class="btn btn-sm btn-primary me-1" @onclick="() => EditTestimonial(item.Id)">@AdminRes.Edit</button>
                                 @if (item.IsActive)
                                 {

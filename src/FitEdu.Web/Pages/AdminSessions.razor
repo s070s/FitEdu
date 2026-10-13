@@ -4,9 +4,11 @@
 <PageTitle>@SessionRes.AdminPageTitle</PageTitle>
 
 <div class="admin-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="section-head">
         <h1 class="h2">@SessionRes.AdminPageTitle</h1>
-        <button class="btn btn-primary text-nowrap" @onclick="ShowAddModal">@SessionRes.NewSession</button>
+        <div class="section-head__actions">
+            <button class="btn btn-primary text-nowrap" @onclick="ShowAddModal">@SessionRes.NewSession</button>
+        </div>
     </div>
 
     <DismissibleAlert Message="@message" AlertType="success" OnDismiss="@(() => message = string.Empty)" />
@@ -21,7 +23,7 @@
     }
     else
     {
-        <ScrollableTable Items="pagedResult.Items" TItem="AdminScheduledSessionDto">
+        <ScrollableTable Items="pagedResult.Items" TItem="AdminScheduledSessionDto" Caption="@SessionRes.AdminPageTitle">
             <HeaderRow>
                 <tr>
                     <SortableColumnHeader ColumnKey="titleen" Label="@SessionRes.ColTitle"
@@ -47,7 +49,7 @@
                     <td data-label="@SessionRes.ColWhen">@session.StartsAtUtc.ToLocalTime().ToString("g")</td>
                     <td data-label="@SessionRes.ColParticipants">@session.RegisteredCount / @session.MaxParticipants</td>
                     <td data-label="@SessionRes.ColStatus">@session.Status</td>
-                    <td data-label="@SessionRes.ColActions">
+                    <td class="table-actions" data-label="@SessionRes.ColActions">
                         @if (session.Status is "Scheduled")
                         {
                             <button class="btn btn-sm btn-primary me-1" @onclick="() => ShowEditModal(session)">@SessionRes.Edit</button>

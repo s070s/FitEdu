@@ -50,6 +50,18 @@ public class UserStatusLabelsTests
     }
 
     [Theory]
+    [InlineData("Other", "Prefer not to say")]
+    [InlineData("Advanced", "Advanced")]
+    [InlineData("NotAStatus", "NotAStatus")]
+    public void Label_StoredName_ReturnsTheLocalizedLabelOrTheNameItself(string statusName, string expected)
+    {
+        // The admin user list receives the level as its enum name (AdminUserDto.Status).
+        CultureInfo.CurrentUICulture = new CultureInfo("en");
+
+        UserStatusLabels.Label(statusName).ShouldBe(expected);
+    }
+
+    [Theory]
     [InlineData("en", "Training level")]
     [InlineData("el", "Επίπεδο προπόνησης")]
     public void StatusFieldLabel_IsTrainingLevel(string culture, string expected)
