@@ -213,7 +213,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 ### Courses — `api/courses`
 
-The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member. The pages `/courses` and `/courses/{id}` are open to guests too: a guest sees no plan banner, paid programmes link to `/pricing`, and a programme page offers **Sign up free to start** (`/register`) and **Log in** (`/login?returnUrl=/courses/{id}`, which brings them back) in place of Join.
+The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member. The catalogue keeps its filters and page number in the address (`/courses?category={id}&search=core&goal=FatLoss&level=Beginner&equipment=none&page=2`), so other pages can link to a filtered list and Back returns to it. The pages `/courses` and `/courses/{id}` are open to guests too: a guest sees no plan banner, paid programmes link to `/pricing`, and a programme page offers **Sign up free to start** (`/register`) and **Log in** (`/login?returnUrl=/courses/{id}`, which brings them back) in place of Join.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
@@ -228,7 +228,7 @@ The catalogue reads are public so guests can browse programmes: a guest gets no 
 
 ### Exercises — `api/exercises`
 
-The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position). The public pages `/exercises` (library grid with muscle, level, type and equipment filters, search and pages) and `/exercises/{slug}` (photos, muscles, steps and the workouts that use it) read these endpoints.
+The public exercise library (published exercises only). Photos are served from `/images/exercises/{slug}/0.webp` (start position) and `1.webp` (end position). The public pages `/exercises` (library grid with muscle, level, type and equipment filters, search and pages, all kept in the address such as `/exercises?muscle=chest&page=2`, so a link or Back shows the same list) and `/exercises/{slug}` (photos, muscles, steps and the workouts that use it) read these endpoints.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|

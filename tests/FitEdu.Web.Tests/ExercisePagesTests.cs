@@ -4,6 +4,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -35,6 +36,7 @@ public class ExercisePagesTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddBunitPersistentComponentState();
         UseCulture("en");
+        NavigateTo("/exercises"); // the library keeps its filters in this address
 
         _exerciseConsumer.GetFacetsAsync().Returns(Facets);
         _exerciseConsumer.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
@@ -92,9 +94,41 @@ public class ExercisePagesTests : BunitContext
         selectedChip.GetAttribute("aria-pressed").ShouldBe("true");
         selectedChip.TextContent.ShouldContain(ExerciseRes.Muscle_abdominals);
 
+        CurrentUri().ShouldEndWith("/exercises?muscle=abdominals");
+
         selectedChip.Click();
 
         page.Find("button.filter-chip.is-selected").TextContent.Trim().ShouldBe(ExerciseRes.AllMuscles);
+        CurrentUri().ShouldEndWith("/exercises");
+    }
+
+    [Fact]
+    public void Library_AddressFilters_AreSentToTheApiAndShown()
+    {
+        _exerciseConsumer.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())
+            .Returns(Page(totalCount: 60, ListItem("barbell-squat", "Barbell squat")));
+        NavigateTo("/exercises?search=squat&muscle=chest&level=expert&equipment=barbell&category=strength&page=2");
+
+        var page = Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(2, ExerciseLibraryPaging.DefaultPageSize, "en",
+            new ExerciseFilterDto("squat", "chest", "barbell", "expert", "strength"));
+        page.Find(".exercise-filters__search input").GetAttribute("value").ShouldBe("squat");
+        page.Find("button.filter-chip.is-selected").TextContent.ShouldContain(ExerciseRes.Muscle_chest);
+        page.Find("#exercise-level option[value='expert']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-equipment option[value='barbell']").HasAttribute("selected").ShouldBeTrue();
+        page.Find("#exercise-category option[value='strength']").HasAttribute("selected").ShouldBeTrue();
+        page.Find(".exercise-library__clear").ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Library_MalformedAddressPage_StartsOnPageOne()
+    {
+        NavigateTo("/exercises?page=zero");
+
+        Render<Exercises>();
+
+        _exerciseConsumer.Received().ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en", Arg.Any<ExerciseFilterDto?>());
     }
 
     [Fact]
@@ -121,6 +155,7 @@ public class ExercisePagesTests : BunitContext
 
         page.WaitForAssertion(() => _exerciseConsumer.Received(1).ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
             Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "squat")));
+        CurrentUri().ShouldEndWith("/exercises?search=squat");
         _exerciseConsumer.DidNotReceive().ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(),
             Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "squ"));
     }
@@ -136,6 +171,7 @@ public class ExercisePagesTests : BunitContext
         pageButtons[pageButtons.Count - 1].Click();
 
         _exerciseConsumer.Received().ListAsync(2, ExerciseLibraryPaging.DefaultPageSize, "en", Arg.Any<ExerciseFilterDto?>());
+        CurrentUri().ShouldEndWith("/exercises?page=2");
     }
 
     [Fact]
@@ -150,9 +186,11 @@ public class ExercisePagesTests : BunitContext
 
         page.FindAll(".exercise-card").ShouldBeEmpty();
         page.Find(".empty-state__title").TextContent.ShouldBe(ExerciseRes.NoResults);
+        CurrentUri().ShouldEndWith("/exercises?level=expert");
         page.Find(".empty-state button").Click();
         page.FindAll(".exercise-card").Count.ShouldBe(2);
         page.FindAll(".exercise-library__clear").ShouldBeEmpty();
+        CurrentUri().ShouldEndWith("/exercises");
     }
 
     [Fact]
@@ -250,6 +288,11 @@ public class ExercisePagesTests : BunitContext
 
     private IRenderedComponent<ExerciseDetail> RenderDetail() =>
         Render<ExerciseDetail>(parameters => parameters.Add(component => component.Slug, Slug));
+
+    private void NavigateTo(string relativeUri) =>
+        Services.GetRequiredService<NavigationManager>().NavigateTo(relativeUri);
+
+    private string CurrentUri() => Services.GetRequiredService<NavigationManager>().Uri;
 
     private static void UseCulture(string culture)
     {

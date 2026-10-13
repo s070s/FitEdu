@@ -16,7 +16,7 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// The course catalogue: skeleton grid while loading, cards in the grid, the plan limit banner,
-/// and the goal, level and equipment chips that live in the address (?goal=…). The tests run as a
+/// and the filters and page number that live in the address (?goal=…&amp;page=2). The tests run as a
 /// signed-in member unless they say otherwise; guests see the catalogue without a plan.
 /// </summary>
 public class CoursesPageTests : BunitContext
@@ -27,6 +27,7 @@ public class CoursesPageTests : BunitContext
     private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
     private readonly ICategoryConsumer _categoryConsumer = Substitute.For<ICategoryConsumer>();
     private readonly BunitAuthorizationContext _authorization;
+    private readonly Guid _strengthCategoryId = Guid.NewGuid();
 
     public CoursesPageTests()
     {
@@ -40,7 +41,7 @@ public class CoursesPageTests : BunitContext
 
         _subscriptionConsumer.GetStatusAsync().Returns(Status(SubscriptionTier.Pro, int.MaxValue));
         _categoryConsumer.GetCategoriesAsync(Arg.Any<string>(), Arg.Any<string>())
-            .Returns([new CategoryDto(Guid.NewGuid(), "Strength", 4)]);
+            .Returns([new CategoryDto(_strengthCategoryId, "Strength", 4)]);
         ReturnCourses(Courses(CoursesOnPage));
     }
 
@@ -190,7 +191,7 @@ public class CoursesPageTests : BunitContext
     public void NoMatches_ClearFiltersDropsEveryFilter()
     {
         ReturnCourses([]);
-        NavigateTo("/courses?level=Advanced");
+        NavigateTo($"/courses?level=Advanced&category={_strengthCategoryId}&search=yoga&page=2");
         var page = Render<Courses>();
 
         page.Find(".empty-state .courses-clear-filters").Click();
@@ -198,6 +199,73 @@ public class CoursesPageTests : BunitContext
         Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/courses");
         page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
             1, Arg.Any<int>(), "en", null, string.Empty, null, null, null));
+    }
+
+    [Fact]
+    public void AddressCategorySearchAndPage_AreSentToTheApiAndShown()
+    {
+        ReturnCourses(Courses(CoursesOnPage), totalCount: 30, page: 2);
+        NavigateTo($"/courses?category={_strengthCategoryId}&search=core&page=2");
+
+        var page = Render<Courses>();
+
+        _courseConsumer.Received().GetCoursesAsync(
+            2, Arg.Any<int>(), "en", _strengthCategoryId, "core", null, null, null);
+        page.Find(".category-filter-search").GetAttribute("value").ShouldBe("core");
+        PressedChipLabels(page).ShouldContain(label => label.StartsWith("Strength", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MalformedAddressCategoryAndPage_AreIgnored()
+    {
+        NavigateTo("/courses?category=not-a-guid&page=abc");
+
+        Render<Courses>();
+
+        _courseConsumer.Received().GetCoursesAsync(
+            1, Arg.Any<int>(), "en", null, string.Empty, null, null, null);
+    }
+
+    [Fact]
+    public void CategoryChip_PutsTheCategoryInTheAddressAndGoesBackToPageOne()
+    {
+        ReturnCourses(Courses(CoursesOnPage), totalCount: 30, page: 2);
+        NavigateTo("/courses?page=2");
+        var page = Render<Courses>();
+
+        page.FindAll(".category-chip-option").First(chip => chip.TextContent.Contains("Strength", StringComparison.Ordinal)).Click();
+
+        Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith($"/courses?category={_strengthCategoryId}");
+        page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
+            1, Arg.Any<int>(), "en", _strengthCategoryId, string.Empty, null, null, null));
+    }
+
+    [Fact]
+    public void Search_PutsTheSearchInTheAddressOnceTypingStops()
+    {
+        NavigateTo("/courses");
+        var page = Render<Courses>();
+
+        page.Find(".category-filter-search").Input("core");
+
+        page.WaitForAssertion(() =>
+            Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/courses?search=core"));
+        page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
+            1, Arg.Any<int>(), "en", null, "core", null, null, null));
+    }
+
+    [Fact]
+    public void NextPage_PutsThePageInTheAddress()
+    {
+        ReturnCourses(Courses(CoursesOnPage), totalCount: 30);
+        NavigateTo("/courses?goal=Strength");
+        var page = Render<Courses>();
+
+        page.FindAll(".courses-pagination button").Last().Click();
+
+        Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/courses?goal=Strength&page=2");
+        page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
+            2, Arg.Any<int>(), "en", null, string.Empty, FitnessGoal.Strength, null, null));
     }
 
     [Fact]
@@ -263,11 +331,11 @@ public class CoursesPageTests : BunitContext
     private void NavigateTo(string relativeUri) =>
         Services.GetRequiredService<NavigationManager>().NavigateTo(relativeUri);
 
-    private void ReturnCourses(List<CourseListItemDto> courses) =>
+    private void ReturnCourses(List<CourseListItemDto> courses, int? totalCount = null, int page = 1) =>
         _courseConsumer.GetCoursesAsync(
                 Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<Guid?>(), Arg.Any<string?>(),
                 Arg.Any<FitnessGoal?>(), Arg.Any<CourseLevel?>(), Arg.Any<string?>())
-            .Returns(new PagedResult<CourseListItemDto>(courses, courses.Count, 1, 12));
+            .Returns(new PagedResult<CourseListItemDto>(courses, totalCount ?? courses.Count, page, 12));
 
     private static List<string> PressedChipLabels(IRenderedComponent<Courses> page) =>
         page.FindAll(".category-chip-option[aria-pressed=true]")
