@@ -75,15 +75,17 @@ public partial class ExerciseDetail : IDisposable
             PrerenderStatus.SetNotFound(HttpContext);
     }
 
-    /// <summary>The "at a glance" tiles; a value the source data leaves empty gets no tile.</summary>
+    /// <summary>
+    /// The "at a glance" tiles; a value the source data leaves empty gets no tile. The category is
+    /// the page's eyebrow, so it has no tile of its own.
+    /// </summary>
     private static List<ExerciseFact> BuildFacts(ExerciseDetailDto exercise)
     {
         ExerciseFact[] candidates =
         [
             new("bi-tools", ExerciseRes.Equipment, ExerciseLabels.Equipment(exercise.Equipment)),
             new("bi-arrow-left-right", ExerciseRes.Force, ExerciseLabels.Force(exercise.Force)),
-            new("bi-diagram-3", ExerciseRes.Mechanic, ExerciseLabels.Mechanic(exercise.Mechanic)),
-            new("bi-grid", ExerciseRes.Category, ExerciseLabels.Category(exercise.Category))
+            new("bi-diagram-3", ExerciseRes.Mechanic, ExerciseLabels.Mechanic(exercise.Mechanic))
         ];
 
         return candidates.Where(fact => !string.IsNullOrWhiteSpace(fact.Value)).ToList();

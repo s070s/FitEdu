@@ -53,7 +53,8 @@ public class ExercisePagesTests : BunitContext
         page.FindAll(".exercise-card").Count.ShouldBe(2);
         page.Find(".exercise-card a.stretched-link").GetAttribute("href").ShouldBe("/exercises/barbell-squat");
         page.Find(".exercise-library__count").TextContent.Trim().ShouldBe("2 exercises");
-        page.Find(".exercise-library__hero .eyebrow").TextContent.ShouldBe("100 exercises");
+        // A fixed eyebrow: the total would only repeat the results heading below.
+        page.Find(".exercise-library__hero .eyebrow").TextContent.ShouldBe("Public-domain library");
         page.Find(".exercise-source").TextContent.ShouldContain(ExerciseRes.Source);
     }
 
@@ -222,7 +223,7 @@ public class ExercisePagesTests : BunitContext
         page.FindAll(".exercise-media img").ShouldAllBe(image => image.GetAttribute("loading") == "eager");
         page.Find(".level-badge").TextContent.ShouldContain(ExerciseRes.Level_beginner);
         page.FindAll(".exercise-facts__item dd").Select(value => value.TextContent).ShouldBe([
-            ExerciseRes.Equipment_barbell, ExerciseRes.Force_push, ExerciseRes.Mechanic_compound, ExerciseRes.Category_strength
+            ExerciseRes.Equipment_barbell, ExerciseRes.Force_push, ExerciseRes.Mechanic_compound
         ]);
         page.FindAll(".muscle-chips").Count.ShouldBe(2);
         page.FindAll(".exercise-steps li").Select(step => step.TextContent).ShouldBe(["Stand tall.", "Sit back and down."]);
@@ -263,13 +264,25 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_WithoutForceOrMechanics_LeavesThoseTilesOut()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail([]) with { Force = null, Mechanic = null, Equipment = null });
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail([]) with { Force = null, Mechanic = null });
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
 
         page.FindAll(".exercise-facts__item dt").Select(label => label.TextContent.Trim())
-            .ShouldBe([ExerciseRes.Category]);
+            .ShouldBe([ExerciseRes.Equipment]);
+    }
+
+    [Fact]
+    public void Detail_ShowsTheCategoryOnceAsTheEyebrowNotAsATile()
+    {
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(Detail([]) with { Force = null, Mechanic = null, Equipment = null });
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+
+        var page = RenderDetail();
+
+        page.Find(".exercise-detail__header .eyebrow").TextContent.ShouldBe(ExerciseRes.Category_strength);
+        page.FindAll(".exercise-facts").ShouldBeEmpty();
     }
 
     [Fact]

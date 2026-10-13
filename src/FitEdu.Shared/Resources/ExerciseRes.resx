@@ -301,4 +301,7 @@
   <data name="LoadFailed" xml:space="preserve">
     <value>We couldn't load the exercise library right now.</value>
   </data>
+  <data name="LibraryEyebrow" xml:space="preserve">
+    <value>Public-domain library</value>
+  </data>
 </root>

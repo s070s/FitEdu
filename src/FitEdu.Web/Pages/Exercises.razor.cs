@@ -73,14 +73,8 @@ public partial class Exercises : IDisposable
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
-    private int LibraryTotal => _facets.Levels.Sum(level => level.Count);
-
-    private string LibraryTotalText => ExerciseCountText(LibraryTotal);
-
-    private string ResultCountText => ExerciseCountText(_result?.TotalCount ?? 0);
-
-    private static string ExerciseCountText(int count) =>
-        ResourceFormat.Count(count, ExerciseRes.ResultCountOne, ExerciseRes.ResultsFormat);
+    private string ResultCountText =>
+        ResourceFormat.Count(_result?.TotalCount ?? 0, ExerciseRes.ResultCountOne, ExerciseRes.ResultsFormat);
 
     private bool HasResults => _result is { Items.Count: > 0 };
 

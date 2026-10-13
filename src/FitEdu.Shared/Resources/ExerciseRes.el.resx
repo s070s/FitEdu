@@ -301,4 +301,7 @@
   <data name="LoadFailed" xml:space="preserve">
     <value>Δεν μπορέσαμε να φορτώσουμε τη βιβλιοθήκη ασκήσεων αυτή τη στιγμή.</value>
   </data>
+  <data name="LibraryEyebrow" xml:space="preserve">
+    <value>Βιβλιοθήκη ελεύθερης χρήσης</value>
+  </data>
 </root>

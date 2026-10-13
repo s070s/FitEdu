@@ -545,5 +545,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("LoadFailed", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Public-domain library.
+        /// </summary>
+        public static string LibraryEyebrow {
+            get {
+                return ResourceManager.GetString("LibraryEyebrow", resourceCulture);
+            }
+        }
     }
 }
