@@ -17,7 +17,8 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/api/courses");
+        // The course catalogue is public; the profile stays members-only.
+        var response = await client.GetAsync("/api/profile");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }

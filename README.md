@@ -213,14 +213,16 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 ### Courses — `api/courses`
 
+The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member.
+
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week and a cover image URL | Yes |
-| `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | Yes |
+| `GET` | `api/courses` | List published courses (optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories) — plus `?goal=` and `?level=` by enum name and `?equipment=` by one equipment code). Items carry level, goal, equipment, weeks, sessions per week and a cover image URL | No |
+| `GET` | `api/courses/{courseId}` | Course detail with modules, lessons and the same fitness fields | No |
 | `POST` | `api/courses/{courseId}/enroll` | Enroll in a course | Yes |
 | `GET` | `api/courses/lessons/{lessonId}` | Lesson detail, including the prescribed exercises (sets, reps, rest, notes, photos) in lesson order | Yes |
 | `POST` | `api/courses/lessons/{lessonId}/complete` | Mark lesson complete | Yes |
-| `GET` | `api/courses/{courseId}/reviews` | Approved reviews, aggregate rating, and the caller's own review — see [Course Reviews](#course-reviews) | Yes |
+| `GET` | `api/courses/{courseId}/reviews` | Approved reviews, aggregate rating, and the caller's own review (none for a guest) — see [Course Reviews](#course-reviews) | No |
 | `POST` | `api/courses/{courseId}/reviews` | Create/update own review (enrolled only; edits reset it to Pending for moderation) | Yes |
 
 ### Exercises — `api/exercises`
@@ -253,7 +255,7 @@ The public exercise library (published exercises only). Photos are served from `
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips) | Yes |
+| `GET` | `api/categories?scope=courses\|assessments&lang=en` | Categories with ≥1 published item in the scope, with counts (drives the browse/filter chips) | No |
 
 ### Certificates — `api/certificates`
 
@@ -275,7 +277,7 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 
 ### Landing — `api/landing`
 
-Numbers and showcase for the guest home page, which cannot read the member-only course catalog.
+Numbers and showcase for the guest home page in one call.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|

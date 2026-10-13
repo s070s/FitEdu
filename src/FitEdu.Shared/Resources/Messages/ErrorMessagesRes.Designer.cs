@@ -268,6 +268,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Administrators cannot join programmes..
+        /// </summary>
+        public static string AdminCannotEnroll {
+            get {
+                return ResourceManager.GetString("AdminCannotEnroll", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Course not found.
         /// </summary>
         public static string CourseNotFound {

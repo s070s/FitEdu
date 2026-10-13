@@ -6,7 +6,8 @@ using FitEdu.Application.DTOs;
 namespace FitEdu.Web.Controllers;
 
 /// <summary>
-/// Category discovery for browse/filter chips (requires authentication).
+/// Category discovery for browse/filter chips. The read is public, because the course catalogue
+/// that shows the chips is open to guests.
 /// </summary>
 [ApiController]
 [Route("api/categories")]
@@ -19,6 +20,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     /// Get categories that have at least one published item in the given scope, with counts.
     /// </summary>
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<List<CategoryDto>>> GetCategories(
         [FromQuery] string scope = "courses",
         [FromQuery] string lang = "en",

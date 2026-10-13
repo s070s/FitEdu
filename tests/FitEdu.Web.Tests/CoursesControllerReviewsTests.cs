@@ -50,12 +50,20 @@ public class CoursesControllerReviewsTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
-    public async Task GetReviews_Anonymous_Returns401()
+    public async Task GetReviews_Anonymous_Returns200WithoutMyReview()
     {
+        // Guests browse the public course page, so they read the approved reviews too; a guest
+        // has no review of their own.
         var course = await SeedPublishedCourseAsync();
+        await SeedApprovedReviewAsync($"author-{Guid.NewGuid():N}", course.Id);
         var client = _factory.CreateClient();
 
-        (await client.GetAsync($"/api/courses/{course.Id}/reviews")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        var response = await client.GetAsync($"/api/courses/{course.Id}/reviews");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<CourseReviewsResponseDto>();
+        result!.Reviews.ShouldHaveSingleItem();
+        result.MyReview.ShouldBeNull();
     }
 
     [Fact]

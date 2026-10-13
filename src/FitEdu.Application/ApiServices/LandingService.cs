@@ -14,9 +14,6 @@ public class LandingService(IApplicationDbContext db, ICourseService courseServi
 
     private const string MemberRoleName = "Student";
 
-    // Nobody is signed in on the public page, so no course reads as enrolled.
-    private const string NoUserId = "";
-
     public async Task<LandingOverviewDto> GetOverviewAsync(string lang, CancellationToken cancellationToken = default)
     {
         var courseCount = await db.Courses.CountAsync(c => c.IsPublished, cancellationToken);
@@ -41,8 +38,9 @@ public class LandingService(IApplicationDbContext db, ICourseService courseServi
     /// </summary>
     private async Task<IReadOnlyList<CourseListItemDto>> GetFeaturedCoursesAsync(string lang, CancellationToken cancellationToken)
     {
+        // Nobody is signed in on the public page, so no course reads as enrolled.
         var catalog = await courseService.GetPublishedCoursesAsync(
-            NoUserId, page: 1, PagingParams.MaxPageSize, lang, cancellationToken: cancellationToken);
+            AnonymousUser.Id, page: 1, PagingParams.MaxPageSize, lang, cancellationToken: cancellationToken);
 
         var enrolmentCountByCourseId = await db.Enrollments
             .AsNoTracking()

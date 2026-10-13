@@ -6,8 +6,8 @@ using FitEdu.Application.DTOs;
 namespace FitEdu.Web.Controllers;
 
 /// <summary>
-/// The public home page's numbers and showcase courses. Anonymous, because the course catalog API
-/// (<see cref="CoursesController"/>) is for signed-in members only.
+/// The public home page's numbers and showcase courses in one anonymous call, so the guest home
+/// page needs no separate catalogue (<see cref="CoursesController"/>) and count queries.
 /// </summary>
 [ApiController]
 [Route("api/landing")]

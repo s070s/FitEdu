@@ -67,5 +67,7 @@ public class CoursesIntegrationTests : IClassFixture<CustomWebAppFactory>
         var response = await client.PostAsync($"/api/courses/{Guid.NewGuid()}/enroll", content: null);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        var result = await response.Content.ReadFromJsonAsync<EnrollmentResultDto>();
+        result!.Message.ShouldBe("Administrators cannot join programmes.");
     }
 }

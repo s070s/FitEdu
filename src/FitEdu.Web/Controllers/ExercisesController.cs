@@ -8,7 +8,9 @@ namespace FitEdu.Web.Controllers;
 
 /// <summary>
 /// Public exercise library — no authentication required, like <see cref="BlogController"/>.
-/// Only published exercises are visible.
+/// Only published exercises are visible. The "used in lessons" list is public too: it shows only
+/// lesson and course titles, which the public course catalogue (<see cref="CoursesController"/>)
+/// already shows to guests.
 /// </summary>
 [ApiController]
 [Route("api/exercises")]

@@ -186,6 +186,9 @@
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
     <value>This assessment requires a {0} subscription or higher.</value>
   </data>
+  <data name="AdminCannotEnroll" xml:space="preserve">
+    <value>Administrators cannot join programmes.</value>
+  </data>
   <data name="CourseNotFound" xml:space="preserve">
     <value>Programme not found</value>
   </data>
