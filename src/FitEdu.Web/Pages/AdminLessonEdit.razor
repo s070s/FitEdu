@@ -32,7 +32,7 @@
                 <div class="list-group-item" @key="lesson.Id">
                     <div class="lesson-row">
                         <div class="lesson-row__text">
-                            <h2 class="lesson-row__title">@lesson.TitleEn</h2>
+                            <h2 class="lesson-row__title">@AdminText.Pick(lesson.TitleEn, lesson.TitleEl)</h2>
                             <small class="lesson-row__meta">
                                 @string.Format(AdminRes.OrderFormat, lesson.SortOrder)
                                 @if (lesson.DurationMinutes.HasValue)

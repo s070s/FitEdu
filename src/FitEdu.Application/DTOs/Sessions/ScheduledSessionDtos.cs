@@ -36,7 +36,8 @@ public record AdminScheduledSessionDto(
     int MaxParticipants,
     int RegisteredCount,
     string Status,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    string? CourseTitleEl = null);
 
 public record SaveScheduledSessionRequest(
     string TitleEn,

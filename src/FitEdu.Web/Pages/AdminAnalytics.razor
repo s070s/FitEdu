@@ -1,5 +1,6 @@
 @page "/admin/analytics"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@AdminRes.PageTitle" />
 
@@ -48,7 +49,7 @@ else if (stats is not null)
                                 {
                                     var completionPercent = CompletionPercent(courseStat);
                                     <tr @key="courseStat.CourseTitle">
-                                        <td data-label="@AdminRes.ColCourse">@courseStat.CourseTitle</td>
+                                        <td data-label="@AdminRes.ColCourse">@AdminText.Pick(courseStat.CourseTitle, courseStat.CourseTitleEl)</td>
                                         <td data-label="@AdminRes.ColEnrollments">@FormatCount(courseStat.EnrollmentCount)</td>
                                         <td data-label="@AdminRes.ColCompletions">@FormatCount(courseStat.CompletionCount)</td>
                                         <td data-label="@AdminRes.ColCompletionRate">
@@ -94,7 +95,7 @@ else if (stats is not null)
                                 @foreach (var assessmentStat in stats.AssessmentStats)
                                 {
                                     <tr @key="assessmentStat.AssessmentTitle">
-                                        <td data-label="@AdminRes.ColAssessment">@assessmentStat.AssessmentTitle</td>
+                                        <td data-label="@AdminRes.ColAssessment">@AdminText.Pick(assessmentStat.AssessmentTitle, assessmentStat.AssessmentTitleEl)</td>
                                         <td data-label="@AdminRes.ColSubmissions">@FormatCount(assessmentStat.SubmissionCount)</td>
                                     </tr>
                                 }

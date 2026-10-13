@@ -75,7 +75,7 @@
                         <option value="none">@CategoryRes.NoneCategory</option>
                         @foreach (var cat in categories)
                         {
-                            <option value="@cat.Id">@cat.NameEn</option>
+                            <option value="@cat.Id">@AdminText.Pick(cat.NameEn, cat.NameEl)</option>
                         }
                         <option value="new">@CategoryRes.NewCategoryOption</option>
                     </select>
@@ -193,7 +193,7 @@
                                      @onclick="() => ToggleModule(module.Id)"
                                      @onkeydown="@(e => { if (e.IsActivationKey()) ToggleModule(module.Id); })">
                                     <div class="module-header__text">
-                                        <span class="module-header__title">@module.TitleEn</span>
+                                        <span class="module-header__title">@AdminText.Pick(module.TitleEn, module.TitleEl)</span>
                                         <span class="chip-row">
                                             <span class="chip chip--teal">@ResourceFormat.Count(module.LessonCount, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
                                             <span class="chip">@string.Format(AdminRes.OrderFormat, module.SortOrder)</span>
@@ -247,7 +247,7 @@
                                                         {
                                                             <tr @key="lesson.Id">
                                                                 <td data-label="#">@lesson.SortOrder</td>
-                                                                <td data-label="@AdminRes.FieldTitle">@lesson.TitleEn</td>
+                                                                <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(lesson.TitleEn, lesson.TitleEl)</td>
                                                                 <td data-label="@AdminRes.FieldType">
                                                                     @if (!string.IsNullOrEmpty(lesson.VideoPath))
                                                                     {

@@ -1,5 +1,6 @@
 @page "/admin/blog"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 @using FitEdu.Web.Shared.Components.Data
 
 <AppPageTitle Text="@AdminRes.BlogArticlesPageTitle" />
@@ -54,7 +55,7 @@
                     </HeaderRow>
                     <RowTemplate Context="article">
                         <tr @key="article.Id">
-                            <td data-label="@AdminRes.FieldTitle">@article.TitleEn</td>
+                            <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(article.TitleEn, article.TitleEl)</td>
                             <td data-label="@AdminRes.ColSlug"><code>@article.Slug</code></td>
                             <td data-label="@AdminRes.ColAuthor">@article.AuthorName</td>
                             <td data-label="@AdminRes.ColStatus">

@@ -1,5 +1,6 @@
 @page "/admin/assessments"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@AdminRes.AssessmentManagement" />
 
@@ -49,9 +50,9 @@ else
         </HeaderRow>
         <RowTemplate Context="assessment">
             <tr @key="assessment.Id">
-                <td data-label="@AdminRes.FieldTitle">@assessment.Title</td>
+                <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(assessment.Title, assessment.TitleEl)</td>
                 <td data-label="@AdminRes.FieldKey">@assessment.Key</td>
-                <td data-label="@AdminRes.ColCategory">@(assessment.CategoryNameEn ?? "—")</td>
+                <td data-label="@AdminRes.ColCategory">@(AdminText.Pick(assessment.CategoryNameEn, assessment.CategoryNameEl) ?? "—")</td>
                 <td data-label="@AdminRes.ColTier">@TierLabels.Name(assessment.RequiredTier)</td>
                 <td data-label="@AdminRes.ColStatus">
                     <StatusBadge IsActive="assessment.IsPublished"

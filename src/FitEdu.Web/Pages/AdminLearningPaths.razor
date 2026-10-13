@@ -1,5 +1,6 @@
 @page "/admin/paths"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@PathRes.AdminPageTitle" />
 
@@ -43,8 +44,8 @@
             <RowTemplate Context="path">
                 <tr @key="path.Id">
                     <td data-label="@PathRes.ColOrder">@path.DisplayOrder</td>
-                    <td data-label="@PathRes.ColTitle">@path.TitleEn</td>
-                    <td data-label="@PathRes.ColCategory">@(path.CategoryName ?? "—")</td>
+                    <td data-label="@PathRes.ColTitle">@AdminText.Pick(path.TitleEn, path.TitleEl)</td>
+                    <td data-label="@PathRes.ColCategory">@(AdminText.Pick(path.CategoryName, path.CategoryNameEl) ?? "—")</td>
                     <td data-label="@PathRes.ColSteps">@path.StepCount</td>
                     <td data-label="@PathRes.ColStatus">
                         <StatusBadge IsActive="path.IsPublished"

@@ -108,6 +108,22 @@ public class AdminCourseServiceTests
     }
 
     [Fact]
+    public async Task GetCourses_CarriesTheGreekCategoryName_ForTheGreekAdminList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Strength", NameEl = "Δύναμη" };
+        db.Categories.Add(category);
+        db.Courses.Add(new Course { Id = Guid.NewGuid(), TitleEn = "Strength 101", CategoryId = category.Id });
+        await db.SaveChangesAsync();
+
+        var page = await NewService(db).GetCoursesAsync(1, 10, "createdat", "desc");
+
+        var row = page.Items.ShouldHaveSingleItem();
+        row.CategoryNameEn.ShouldBe("Strength");
+        row.CategoryNameEl.ShouldBe("Δύναμη");
+    }
+
+    [Fact]
     public async Task GetCourses_SearchFiltersByTitle_OnSqlite()
     {
         // UX-13: EF.Functions.Like is unsupported on the InMemory provider — use the relational SQLite fixture.

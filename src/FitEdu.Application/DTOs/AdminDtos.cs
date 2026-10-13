@@ -21,7 +21,8 @@ public record AnalyticsSummaryDto(
 public record CourseStatDto(
     string CourseTitle,
     int EnrollmentCount,
-    int CompletionCount
+    int CompletionCount,
+    string? CourseTitleEl = null
 );
 
 /// <summary>
@@ -29,7 +30,8 @@ public record CourseStatDto(
 /// </summary>
 public record AssessmentStatDto(
     string AssessmentTitle,
-    int SubmissionCount
+    int SubmissionCount,
+    string? AssessmentTitleEl = null
 );
 
 /// <summary>
@@ -55,7 +57,8 @@ public record AdminCourseDto(
     string? Equipment = null,
     int? EstimatedWeeks = null,
     int? SessionsPerWeek = null,
-    string? CoverExerciseSlug = null
+    string? CoverExerciseSlug = null,
+    string? CategoryNameEl = null
 );
 
 /// <summary>

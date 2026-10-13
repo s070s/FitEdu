@@ -151,7 +151,8 @@ public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathS
                 p.Id, p.TitleEn, p.TitleEl, p.CategoryId,
                 p.Category != null ? p.Category.NameEn : null,
                 p.DisplayOrder, p.IsPublished, p.Steps.Count,
-                p.CreatedAt, p.UpdatedAt))
+                p.CreatedAt, p.UpdatedAt,
+                p.Category != null ? p.Category.NameEl : null))
             .ToListAsync(cancellationToken);
 
         return new PagedResult<AdminLearningPathDto>(items, totalCount, page, pageSize, sortBy, sortDir);
@@ -171,7 +172,7 @@ public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathS
             .AsNoTracking()
             .Where(s => s.LearningPathId == id)
             .OrderBy(s => s.StepOrder)
-            .Select(s => new AdminLearningPathStepDto(s.Id, s.CourseId, s.Course!.TitleEn, s.StepOrder))
+            .Select(s => new AdminLearningPathStepDto(s.Id, s.CourseId, s.Course!.TitleEn, s.StepOrder, s.Course.TitleEl))
             .ToListAsync(cancellationToken);
 
         return ToAdminDetailDto(path, steps);

@@ -1,6 +1,7 @@
 @page "/admin/paths/new"
 @page "/admin/paths/{Id:guid}"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@(_isEditMode ? PathRes.EditPath : PathRes.NewPath)" />
 
@@ -41,7 +42,7 @@
                 <option value="">@PathRes.NoCategory</option>
                 @foreach (var category in _categories)
                 {
-                    <option value="@category.Id">@category.NameEn</option>
+                    <option value="@category.Id">@AdminText.Pick(category.NameEn, category.NameEl)</option>
                 }
             </select>
         </div>
@@ -92,7 +93,7 @@
                                     @onclick="() => MoveStepDown(step.Id)"><span class="bi bi-arrow-down" aria-hidden="true"></span></button>
                         </div>
                         <span class="step-order">@step.StepOrder.</span>
-                        <span class="step-course-title">@step.CourseTitle</span>
+                        <span class="step-course-title">@AdminText.Pick(step.CourseTitle, step.CourseTitleEl)</span>
                         <button class="btn btn-sm btn-outline-danger step-row__remove" @onclick="() => RemoveStep(step.Id)">@PathRes.Remove</button>
                     </li>
                 }
@@ -104,7 +105,7 @@
                 <option value="">@PathRes.SelectCourse</option>
                 @foreach (var course in AvailableCoursesToAdd)
                 {
-                    <option value="@course.Id">@course.TitleEn</option>
+                    <option value="@course.Id">@AdminText.Pick(course.TitleEn, course.TitleEl)</option>
                 }
             </select>
             <button class="btn btn-primary" disabled="@(_selectedCourseIdToAdd is null)" @onclick="AddStep">@PathRes.AddStep</button>

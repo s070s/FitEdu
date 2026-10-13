@@ -138,6 +138,37 @@ public class LearningPathServiceTests
     // --- Admin CRUD ---
 
     [Fact]
+    public async Task GetAllForAdminAsync_CarriesTheGreekCategoryName_ForTheGreekAdminList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Mobility", NameEl = "Κινητικότητα" };
+        db.Categories.Add(category);
+        db.LearningPaths.Add(new LearningPath { Id = Guid.NewGuid(), TitleEn = "Mobility Starter", CategoryId = category.Id });
+        await db.SaveChangesAsync();
+
+        var page = await NewService(db).GetAllForAdminAsync(1, 10, "displayorder", "asc");
+
+        var row = page.Items.ShouldHaveSingleItem();
+        row.CategoryName.ShouldBe("Mobility");
+        row.CategoryNameEl.ShouldBe("Κινητικότητα");
+    }
+
+    [Fact]
+    public async Task GetAdminByIdAsync_StepsCarryTheGreekCourseTitle()
+    {
+        var (db, path, courseA, _, _) = await SeedPublishedPathAsync();
+        await using var _ = db;
+        courseA.TitleEl = "Μάθημα Α";
+        await db.SaveChangesAsync();
+
+        var detail = await NewService(db).GetAdminByIdAsync(path.Id);
+
+        var firstStep = detail!.Steps.Single(step => step.CourseId == courseA.Id);
+        firstStep.CourseTitle.ShouldBe("Course A");
+        firstStep.CourseTitleEl.ShouldBe("Μάθημα Α");
+    }
+
+    [Fact]
     public async Task CreateAsync_PersistsUnpublishedPath()
     {
         await using var db = DbContextFactory.CreateInMemory();

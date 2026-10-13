@@ -91,7 +91,9 @@ public record AssessmentDefinitionListItemDto(
     int SubmissionCount,
     DateTimeOffset CreatedAt,
     string? CategoryNameEn = null,
-    SubscriptionTier RequiredTier = SubscriptionTier.Free
+    SubscriptionTier RequiredTier = SubscriptionTier.Free,
+    string? TitleEl = null,
+    string? CategoryNameEl = null
 );
 
 /// <summary>

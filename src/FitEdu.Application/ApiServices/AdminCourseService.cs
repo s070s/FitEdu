@@ -78,7 +78,8 @@ public class AdminCourseService(
                 c.Equipment,
                 c.EstimatedWeeks,
                 c.SessionsPerWeek,
-                c.CoverExerciseSlug
+                c.CoverExerciseSlug,
+                c.Category != null ? c.Category.NameEl : null
             ))
             .ToListAsync(cancellationToken);
 
@@ -253,7 +254,8 @@ public class AdminCourseService(
         course.Equipment,
         course.EstimatedWeeks,
         course.SessionsPerWeek,
-        course.CoverExerciseSlug
+        course.CoverExerciseSlug,
+        course.Category?.NameEl
     );
 
     // ── Lessons ──

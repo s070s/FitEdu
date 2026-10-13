@@ -267,4 +267,22 @@ public class CourseReviewServiceTests
         pending.Items.ShouldHaveSingleItem().Status.ShouldBe("Pending");
         all.TotalCount.ShouldBe(2);
     }
+
+    [Fact]
+    public async Task GetPagedAsync_CarriesTheGreekCourseTitle_ForTheGreekAdminList()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = NewCourse("Strength 101");
+        course.TitleEl = "Δύναμη 101";
+        db.Courses.Add(course);
+        db.Users.Add(AppUser(UserId, "Author"));
+        db.CourseReviews.Add(new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "a", Status = ReviewStatus.Pending });
+        await db.SaveChangesAsync();
+
+        var page = await NewService(db).GetPagedAsync(1, 10, "createdat", "desc", null);
+
+        var row = page.Items.ShouldHaveSingleItem();
+        row.CourseTitle.ShouldBe("Strength 101");
+        row.CourseTitleEl.ShouldBe("Δύναμη 101");
+    }
 }

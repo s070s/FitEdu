@@ -115,7 +115,7 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
             .Select(r => new AdminCourseReviewDto(
                 r.Id, r.CourseId!.Value, r.Course!.TitleEn,
                 !string.IsNullOrWhiteSpace(r.User!.DisplayName) ? r.User.DisplayName! : (r.User.FirstName + " " + r.User.LastName).Trim(),
-                r.Rating, r.Body, r.Status.ToString(), r.CreatedAt))
+                r.Rating, r.Body, r.Status.ToString(), r.CreatedAt, r.Course.TitleEl))
             .ToListAsync(cancellationToken);
 
         return new PagedResult<AdminCourseReviewDto>(items, totalCount, page, pageSize, sortBy, sortDir);

@@ -9,5 +9,6 @@ public record AdminCourseReviewDto(
     int Rating,
     string Body,
     string Status,
-    DateTimeOffset CreatedAt
+    DateTimeOffset CreatedAt,
+    string? CourseTitleEl = null
 );

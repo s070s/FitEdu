@@ -1,5 +1,6 @@
 @page "/admin/course-reviews"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@ReviewRes.AdminPageTitle" />
 
@@ -46,7 +47,7 @@
             </HeaderRow>
             <RowTemplate Context="review">
                 <tr @key="review.Id">
-                    <td data-label="@ReviewRes.ColCourse">@review.CourseTitle</td>
+                    <td data-label="@ReviewRes.ColCourse">@AdminText.Pick(review.CourseTitle, review.CourseTitleEl)</td>
                     <td data-label="@ReviewRes.ColAuthor">@review.AuthorName</td>
                     <td data-label="@ReviewRes.ColRating"><StarRating Value="review.Rating" AriaLabel="@review.Rating.ToString()" /></td>
                     <td data-label="@ReviewRes.ColReview" class="review-body-cell">@review.Body</td>

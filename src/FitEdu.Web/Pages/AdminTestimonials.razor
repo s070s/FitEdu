@@ -1,5 +1,6 @@
 @page "/admin/testimonials"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 @using FitEdu.Web.Shared.Components.Data
 
 <AppPageTitle Text="@AdminRes.TestimonialsPageTitle" />
@@ -63,10 +64,11 @@
                             </td>
                             <td data-label="@AdminRes.ColName">@item.FullName</td>
                             <td data-label="@AdminRes.ColRoleCompany">
-                                @if (!string.IsNullOrEmpty(item.RoleOrTitle) || !string.IsNullOrEmpty(item.CompanyOrContext))
+                                @{ var roleOrTitle = AdminText.Pick(item.RoleOrTitle, item.RoleOrTitleEl); }
+                                @if (!string.IsNullOrEmpty(roleOrTitle) || !string.IsNullOrEmpty(item.CompanyOrContext))
                                 {
-                                    <span>@item.RoleOrTitle</span>
-                                    @if (!string.IsNullOrEmpty(item.RoleOrTitle) && !string.IsNullOrEmpty(item.CompanyOrContext))
+                                    <span>@roleOrTitle</span>
+                                    @if (!string.IsNullOrEmpty(roleOrTitle) && !string.IsNullOrEmpty(item.CompanyOrContext))
                                     {
                                         <span class="text-light-muted"> · </span>
                                     }

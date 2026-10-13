@@ -1,5 +1,6 @@
 @page "/admin/courses"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@AdminRes.CourseManagement" />
 
@@ -51,8 +52,8 @@ else
         </HeaderRow>
         <RowTemplate Context="course">
             <tr @key="course.Id">
-                <td data-label="@AdminRes.FieldTitle">@course.TitleEn</td>
-                <td data-label="@AdminRes.ColCategory">@(course.CategoryNameEn ?? "—")</td>
+                <td data-label="@AdminRes.FieldTitle">@AdminText.Pick(course.TitleEn, course.TitleEl)</td>
+                <td data-label="@AdminRes.ColCategory">@(AdminText.Pick(course.CategoryNameEn, course.CategoryNameEl) ?? "—")</td>
                 <td data-label="@AdminRes.ColTier">@TierLabels.Name(course.RequiredTier)</td>
                 <td data-label="@AdminRes.ColStatus">
                     <StatusBadge IsActive="course.IsPublished"

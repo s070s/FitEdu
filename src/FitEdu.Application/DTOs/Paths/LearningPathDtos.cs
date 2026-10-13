@@ -39,13 +39,15 @@ public record AdminLearningPathDto(
     bool IsPublished,
     int StepCount,
     DateTimeOffset CreatedAt,
-    DateTimeOffset? UpdatedAt);
+    DateTimeOffset? UpdatedAt,
+    string? CategoryNameEl = null);
 
 public record AdminLearningPathStepDto(
     Guid Id,
     Guid CourseId,
     string CourseTitle,
-    int StepOrder);
+    int StepOrder,
+    string? CourseTitleEl = null);
 
 public record AdminLearningPathDetailDto(
     Guid Id,

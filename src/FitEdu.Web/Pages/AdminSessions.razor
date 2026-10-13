@@ -45,9 +45,9 @@
             </HeaderRow>
             <RowTemplate Context="session">
                 <tr @key="session.Id">
-                    <td data-label="@SessionRes.ColTitle">@session.TitleEn</td>
+                    <td data-label="@SessionRes.ColTitle">@AdminText.Pick(session.TitleEn, session.TitleEl)</td>
                     <td data-label="@SessionRes.ColHost">@session.HostName</td>
-                    <td data-label="@SessionRes.ColCourse">@(session.CourseTitle ?? "—")</td>
+                    <td data-label="@SessionRes.ColCourse">@(AdminText.Pick(session.CourseTitle, session.CourseTitleEl) ?? "—")</td>
                     <td data-label="@SessionRes.ColWhen">@SiteClock.ToSiteTime(session.StartsAtUtc).ToString("g")</td>
                     <td data-label="@SessionRes.ColParticipants">@session.RegisteredCount / @session.MaxParticipants</td>
                     <td data-label="@SessionRes.ColStatus">@SessionLabels.Status(session.Status)</td>
@@ -98,7 +98,7 @@
                 <option value="">@SessionRes.NoCourse</option>
                 @foreach (var course in _courses)
                 {
-                    <option value="@course.Id">@course.TitleEn</option>
+                    <option value="@course.Id">@AdminText.Pick(course.TitleEn, course.TitleEl)</option>
                 }
             </select>
         </div>
@@ -131,7 +131,7 @@
 
 <ConfirmModal IsVisible="@(_pendingCancel is not null)"
               Title="@SessionRes.CancelSession"
-              Message="@(_pendingCancel is not null ? string.Format(SessionRes.CancelConfirmFormat, _pendingCancel.TitleEn) : "")"
+              Message="@(_pendingCancel is not null ? string.Format(SessionRes.CancelConfirmFormat, AdminText.Pick(_pendingCancel.TitleEn, _pendingCancel.TitleEl)) : "")"
               ConfirmLabel="@SessionRes.CancelSession"
               CancelLabel="@SessionRes.Cancel"
               OnConfirm="ConfirmCancel"
