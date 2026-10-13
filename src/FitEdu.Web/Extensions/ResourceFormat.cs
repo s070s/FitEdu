@@ -14,4 +14,8 @@ public static class ResourceFormat
     /// </summary>
     public static string Fill(string resourceFormat, params object?[] values) =>
         string.Format(CultureInfo.CurrentCulture, CompositeFormat.Parse(resourceFormat), values);
+
+    /// <summary>"1 lesson" or "3 lessons": the singular text for one, the plural format filled in otherwise.</summary>
+    public static string Count(int count, string singularText, string pluralFormat) =>
+        count == 1 ? singularText : Fill(pluralFormat, count);
 }

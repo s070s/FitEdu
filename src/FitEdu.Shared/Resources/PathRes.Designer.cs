@@ -72,6 +72,10 @@ namespace FitEdu.Shared.Resources {
             get { return ResourceManager.GetString("StepsCountFormat", resourceCulture); }
         }
 
+        public static string StepCountOne {
+            get { return ResourceManager.GetString("StepCountOne", resourceCulture); }
+        }
+
         public static string ProgressFormat {
             get { return ResourceManager.GetString("ProgressFormat", resourceCulture); }
         }

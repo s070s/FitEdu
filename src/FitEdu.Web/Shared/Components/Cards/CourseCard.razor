@@ -43,7 +43,7 @@
         <div class="course-card__meta card-surface__meta">
             <span class="course-card__lessons">
                 <span class="bi bi-collection-play" aria-hidden="true"></span>
-                @string.Format(CourseRes.LessonsCountFormat, Course.TotalLessons)
+                @ResourceFormat.Count(Course.TotalLessons, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)
             </span>
             @if (Course.AverageRating is { } rating)
             {
@@ -90,7 +90,7 @@
         {
             var parts = new List<string>();
             if (Course.EstimatedWeeks is { } weeks)
-                parts.Add(string.Format(CourseRes.WeeksFormat, weeks));
+                parts.Add(ResourceFormat.Count(weeks, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
             if (Course.SessionsPerWeek is { } sessions)
                 parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
 

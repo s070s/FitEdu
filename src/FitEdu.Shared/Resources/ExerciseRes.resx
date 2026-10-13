@@ -103,6 +103,9 @@
   <data name="ResultsFormat" xml:space="preserve">
     <value>{0} exercises</value>
   </data>
+  <data name="ResultCountOne" xml:space="preserve">
+    <value>1 exercise</value>
+  </data>
   <data name="Source" xml:space="preserve">
     <value>Photos and instructions: Free Exercise DB (public domain).</value>
   </data>

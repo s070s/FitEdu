@@ -28,7 +28,7 @@
         <div class="path-card__meta card-surface__meta">
             <span class="path-card__steps">
                 <span class="bi bi-signpost-split" aria-hidden="true"></span>
-                @string.Format(PathRes.StepsCountFormat, Path.StepCount)
+                @ResourceFormat.Count(Path.StepCount, PathRes.StepCountOne, PathRes.StepsCountFormat)
             </span>
             @if (Path.CompletedSteps > 0)
             {

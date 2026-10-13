@@ -242,6 +242,9 @@
 	<data name="WeeksFormat" xml:space="preserve">
 		<value>{0} εβδομάδες</value>
 	</data>
+	<data name="WeekCountOne" xml:space="preserve">
+		<value>1 εβδομάδα</value>
+	</data>
 	<data name="SessionsPerWeekFormat" xml:space="preserve">
 		<value>{0}× την εβδομάδα</value>
 	</data>

@@ -44,7 +44,7 @@
     {
         <div class="assessment-description">@((MarkupString)(assessment!.Description ?? ""))</div>
         <p class="assessment-form__facts">
-            <span><span class="bi bi-list-check" aria-hidden="true"></span> @string.Format(AssessmentRes.QuestionsCountFormat, QuestionCount)</span>
+            <span><span class="bi bi-list-check" aria-hidden="true"></span> @ResourceFormat.Count(QuestionCount, AssessmentRes.QuestionCountOne, AssessmentRes.QuestionsCountFormat)</span>
             <span><span class="bi bi-stopwatch" aria-hidden="true"></span> @string.Format(AssessmentRes.EstimatedMinutesFormat, AssessmentSchemaInfo.EstimatedMinutes(QuestionCount))</span>
             <span class="assessment-form__legend">@AssessmentRes.RequiredLegend</span>
         </p>

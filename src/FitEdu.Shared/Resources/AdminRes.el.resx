@@ -369,9 +369,6 @@
   <data name="NoModules" xml:space="preserve">
     <value>Δεν υπάρχουν ενότητες ακόμα. Πρόσθεσε μία για να ξεκινήσεις.</value>
   </data>
-  <data name="LessonsCountFormat" xml:space="preserve">
-    <value>{0} μάθημα/τα</value>
-  </data>
   <data name="OrderFormat" xml:space="preserve">
     <value>Σειρά: {0}</value>
   </data>

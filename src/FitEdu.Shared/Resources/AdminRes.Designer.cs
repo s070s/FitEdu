@@ -1069,15 +1069,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} lesson(s).
-        /// </summary>
-        public static string LessonsCountFormat {
-            get {
-                return ResourceManager.GetString("LessonsCountFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to PDF.
         /// </summary>
         public static string LessonTypePdf {

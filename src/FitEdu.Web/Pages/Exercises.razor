@@ -7,7 +7,7 @@
     <header class="exercise-library__hero">
         @if (LibraryTotal > 0)
         {
-            <p class="eyebrow">@string.Format(ExerciseRes.ResultsFormat, LibraryTotal)</p>
+            <p class="eyebrow">@LibraryTotalText</p>
         }
         <h1>@ExerciseRes.Library</h1>
         <p class="exercise-library__lead">@ExerciseRes.Subtitle</p>
@@ -63,7 +63,7 @@
     {
         <div class="exercise-library__results-head">
             <h2 class="exercise-library__count" tabindex="-1" @ref="_resultsHeading" aria-live="polite">
-                @string.Format(ExerciseRes.ResultsFormat, _result?.TotalCount ?? 0)
+                @ResultCountText
             </h2>
             @if (_filter.IsActive)
             {

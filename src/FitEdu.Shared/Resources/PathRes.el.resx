@@ -67,6 +67,9 @@
   <data name="StepsCountFormat" xml:space="preserve">
     <value>{0} προγράμματα</value>
   </data>
+  <data name="StepCountOne" xml:space="preserve">
+    <value>1 πρόγραμμα</value>
+  </data>
   <data name="ProgressFormat" xml:space="preserve">
     <value>{0} από {1} ολοκληρώθηκαν</value>
   </data>

@@ -493,6 +493,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 1 week.
+        /// </summary>
+        public static string WeekCountOne {
+            get {
+                return ResourceManager.GetString("WeekCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to {0}× per week.
         /// </summary>
         public static string SessionsPerWeekFormat {

@@ -195,7 +195,7 @@
                                     <div class="module-header__text">
                                         <span class="module-header__title">@module.TitleEn</span>
                                         <span class="chip-row">
-                                            <span class="chip chip--teal">@string.Format(AdminRes.LessonsCountFormat, module.LessonCount)</span>
+                                            <span class="chip chip--teal">@ResourceFormat.Count(module.LessonCount, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
                                             <span class="chip">@string.Format(AdminRes.OrderFormat, module.SortOrder)</span>
                                         </span>
                                     </div>

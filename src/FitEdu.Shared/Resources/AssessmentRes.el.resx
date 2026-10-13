@@ -224,6 +224,9 @@
 	<data name="QuestionsCountFormat" xml:space="preserve">
 		<value>{0} ερωτήσεις</value>
 	</data>
+	<data name="QuestionCountOne" xml:space="preserve">
+		<value>1 ερώτηση</value>
+	</data>
 	<data name="EstimatedMinutesFormat" xml:space="preserve">
 		<value>~{0} λεπτά</value>
 	</data>

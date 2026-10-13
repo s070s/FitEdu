@@ -84,6 +84,17 @@ public class CardComponentTests : BunitContext
     }
 
     [Fact]
+    public void CourseCard_OneLessonAndOneWeek_UsesTheSingular()
+    {
+        UseCulture("el");
+
+        var card = RenderCourseCard(Course() with { TotalLessons = 1, EstimatedWeeks = 1 });
+
+        card.Find(".course-card__chips").TextContent.ShouldContain("1 εβδομάδα · 3× την εβδομάδα");
+        card.Find(".course-card__lessons").TextContent.Trim().ShouldEndWith("1 μάθημα");
+    }
+
+    [Fact]
     public void CourseCard_CompactWithoutScheduleOrCover_HidesDescriptionAndShowsTheCategoryIcon()
     {
         var course = Course() with { EstimatedWeeks = null, SessionsPerWeek = null, CoverImageUrl = null };
@@ -227,6 +238,18 @@ public class CardComponentTests : BunitContext
         card.Find(".path-card__progress").TextContent.ShouldBe("2 από 4 ολοκληρώθηκαν");
         card.Find(".path-card__more").TextContent.ShouldContain("Προβολή διαδρομής");
         card.Find(".chip").TextContent.ShouldContain("Κινητικότητα");
+    }
+
+    [Theory]
+    [InlineData("en", "1 programme")]
+    [InlineData("el", "1 πρόγραμμα")]
+    public void PathCard_OneStep_UsesTheSingular(string culture, string expectedSteps)
+    {
+        UseCulture(culture);
+
+        var card = RenderPathCard(PathItem(stepCount: 1, completedSteps: 0));
+
+        card.Find(".path-card__steps").TextContent.Trim().ShouldEndWith(expectedSteps);
     }
 
     [Fact]

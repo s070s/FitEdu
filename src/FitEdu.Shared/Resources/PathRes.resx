@@ -67,6 +67,9 @@
   <data name="StepsCountFormat" xml:space="preserve">
     <value>{0} programmes</value>
   </data>
+  <data name="StepCountOne" xml:space="preserve">
+    <value>1 programme</value>
+  </data>
   <data name="ProgressFormat" xml:space="preserve">
     <value>{0} of {1} completed</value>
   </data>

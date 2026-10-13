@@ -350,9 +350,6 @@
 	<data name="NoModules" xml:space="preserve">
 		<value>No modules yet. Add one to get started.</value>
 	</data>
-	<data name="LessonsCountFormat" xml:space="preserve">
-		<value>{0} lesson(s)</value>
-	</data>
 	<data name="OrderFormat" xml:space="preserve">
 		<value>Order: {0}</value>
 	</data>

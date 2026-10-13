@@ -242,6 +242,9 @@
 	<data name="WeeksFormat" xml:space="preserve">
 		<value>{0} weeks</value>
 	</data>
+	<data name="WeekCountOne" xml:space="preserve">
+		<value>1 week</value>
+	</data>
 	<data name="SessionsPerWeekFormat" xml:space="preserve">
 		<value>{0}× per week</value>
 	</data>

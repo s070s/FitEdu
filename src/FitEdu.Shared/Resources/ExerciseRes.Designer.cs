@@ -150,6 +150,12 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
+        public static string ResultCountOne {
+            get {
+                return ResourceManager.GetString("ResultCountOne", resourceCulture);
+            }
+        }
+
         public static string Source {
             get {
                 return ResourceManager.GetString("Source", resourceCulture);

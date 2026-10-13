@@ -45,7 +45,7 @@ public partial class PathDetail
         ResourceFormat.Fill(PathRes.ProgressFormat, CompletedCount, StepCount);
 
     private string StepsCountText =>
-        ResourceFormat.Fill(PathRes.StepsCountFormat, StepCount);
+        ResourceFormat.Count(StepCount, PathRes.StepCountOne, PathRes.StepsCountFormat);
 
     protected override async Task OnParametersSetAsync()
     {

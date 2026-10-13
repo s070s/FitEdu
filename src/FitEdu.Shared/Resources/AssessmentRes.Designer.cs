@@ -439,6 +439,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 1 question.
+        /// </summary>
+        public static string QuestionCountOne {
+            get {
+                return ResourceManager.GetString("QuestionCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to ~{0} min.
         /// </summary>
         public static string EstimatedMinutesFormat {

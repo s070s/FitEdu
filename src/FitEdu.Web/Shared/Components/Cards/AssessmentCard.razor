@@ -36,7 +36,7 @@
         <div class="assessment-card__meta card-surface__meta">
             <span class="assessment-card__fact">
                 <span class="bi bi-list-check" aria-hidden="true"></span>
-                @string.Format(AssessmentRes.QuestionsCountFormat, _questionCount)
+                @ResourceFormat.Count(_questionCount, AssessmentRes.QuestionCountOne, AssessmentRes.QuestionsCountFormat)
             </span>
             <span class="assessment-card__fact">
                 <span class="bi bi-stopwatch" aria-hidden="true"></span>

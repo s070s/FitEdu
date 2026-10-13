@@ -86,11 +86,11 @@ else
             <ul class="course-hero__facts">
                 <li>
                     <span class="bi bi-layers" aria-hidden="true"></span>
-                    @CountText(_modules.Count, CourseRes.ModuleCountOne, CourseRes.ModulesCountFormat)
+                    @ResourceFormat.Count(_modules.Count, CourseRes.ModuleCountOne, CourseRes.ModulesCountFormat)
                 </li>
                 <li>
                     <span class="bi bi-collection-play" aria-hidden="true"></span>
-                    @CountText(_course.TotalLessons, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)
+                    @ResourceFormat.Count(_course.TotalLessons, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)
                 </li>
                 @if (_totalMinutes > 0)
                 {
@@ -158,7 +158,7 @@ else
                                 <span class="module__heading">
                                     <span class="module__title">@module.Title</span>
                                     <span class="module__meta">
-                                        <span>@CountText(module.Lessons.Count, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
+                                        <span>@ResourceFormat.Count(module.Lessons.Count, CourseRes.LessonCountOne, CourseRes.LessonsCountFormat)</span>
                                         @if (minutes > 0)
                                         {
                                             <span>@minutes @CourseRes.MinutesShort</span>
@@ -202,7 +202,7 @@ else
                                                         }
                                                         @if (lesson.ExerciseCount > 0)
                                                         {
-                                                            <span class="lesson-exercises">@CountText(lesson.ExerciseCount, CourseRes.ExerciseCountOne, CourseRes.ExercisesCountFormat)</span>
+                                                            <span class="lesson-exercises">@ResourceFormat.Count(lesson.ExerciseCount, CourseRes.ExerciseCountOne, CourseRes.ExercisesCountFormat)</span>
                                                         }
                                                     </span>
                                                 </span>
@@ -387,16 +387,12 @@ else
 @code {
     // Resource formats are filled in here, in the markup file, next to the text they build.
 
-    /// <summary>"1 lesson" or "3 lessons": the singular text for one, the plural format otherwise.</summary>
-    private static string CountText(int count, string singularText, string pluralFormat) =>
-        count == 1 ? singularText : string.Format(pluralFormat, count);
-
     /// <summary>"8 weeks · 3× per week", either half alone, or null when the course has neither (as on CourseCard).</summary>
     private string? ScheduleText()
     {
         var parts = new List<string>();
         if (_course?.EstimatedWeeks is { } weeks)
-            parts.Add(string.Format(CourseRes.WeeksFormat, weeks));
+            parts.Add(ResourceFormat.Count(weeks, CourseRes.WeekCountOne, CourseRes.WeeksFormat));
         if (_course?.SessionsPerWeek is { } sessions)
             parts.Add(string.Format(CourseRes.SessionsPerWeekFormat, sessions));
 

@@ -103,6 +103,9 @@
   <data name="ResultsFormat" xml:space="preserve">
     <value>{0} ασκήσεις</value>
   </data>
+  <data name="ResultCountOne" xml:space="preserve">
+    <value>1 άσκηση</value>
+  </data>
   <data name="Source" xml:space="preserve">
     <value>Φωτογραφίες και οδηγίες: Free Exercise DB (κοινό κτήμα).</value>
   </data>
