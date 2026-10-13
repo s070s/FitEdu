@@ -1,5 +1,6 @@
 @page "/admin/lessons/{ModuleId:guid}"
 @using FitEdu.Web.Shared
+@using FitEdu.Web.Extensions
 @attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>@AdminRes.ManageLessons</PageTitle>
@@ -88,12 +89,12 @@
 
         <div class="mb-3">
             <label class="form-label">@AdminRes.FieldContent (EN)</label>
-            <QuillEditor @ref="lessonContentEditorEn" Content="@lessonContentEn" MinHeight="300px" />
+            <QuillEditor @ref="lessonContentEditorEn" Content="@lessonContentEn" MinHeight="300px" Placeholder="@ContentLanguageText.English(nameof(AdminRes.EditorPlaceholder))" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">@AdminRes.FieldContent (EL)</label>
-            <QuillEditor @ref="lessonContentEditorEl" Content="@lessonContentEl" MinHeight="300px" />
+            <QuillEditor @ref="lessonContentEditorEl" Content="@lessonContentEl" MinHeight="300px" Placeholder="@ContentLanguageText.Greek(nameof(AdminRes.EditorPlaceholder))" />
         </div>
 
         <div class="mb-3">

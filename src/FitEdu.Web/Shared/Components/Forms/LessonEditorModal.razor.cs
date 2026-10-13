@@ -211,13 +211,13 @@ public partial class LessonEditorModal
             if (_pendingPdf != null)
             {
                 var result = await LessonConsumer.UploadPdfAsync(lessonId, _pendingPdf);
-                if (result is null) uploadErrors.AppendLine("Error uploading pdf.");
+                if (result is null) uploadErrors.AppendLine(AdminRes.PdfUploadFailed);
             }
 
             if (_pendingVideo != null)
             {
                 var result = await LessonConsumer.UploadVideoAsync(lessonId, _pendingVideo);
-                if (result is null) uploadErrors.AppendLine("Error uploading video.");
+                if (result is null) uploadErrors.AppendLine(AdminRes.VideoUploadFailed);
             }
 
             if (uploadErrors.Length > 0)

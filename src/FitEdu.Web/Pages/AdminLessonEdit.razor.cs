@@ -178,13 +178,13 @@ public partial class AdminLessonEdit
             var uploadErrors = new System.Text.StringBuilder();
             if (pendingPdf != null)
             {
-                var err = await UploadFileAsync(lessonId, pendingPdf, "pdf");
-                if (err is not null) uploadErrors.AppendLine(err);
+                var result = await LessonConsumer.UploadPdfAsync(lessonId, pendingPdf);
+                if (result is null) uploadErrors.AppendLine(AdminRes.PdfUploadFailed);
             }
             if (pendingVideo != null)
             {
-                var err = await UploadFileAsync(lessonId, pendingVideo, "video");
-                if (err is not null) uploadErrors.AppendLine(err);
+                var result = await LessonConsumer.UploadVideoAsync(lessonId, pendingVideo);
+                if (result is null) uploadErrors.AppendLine(AdminRes.VideoUploadFailed);
             }
 
             await LoadLessons();
@@ -209,14 +209,6 @@ public partial class AdminLessonEdit
         {
             isSaving = false;
         }
-    }
-
-    private async Task<string?> UploadFileAsync(Guid lessonId, IBrowserFile file, string type)
-    {
-        var result = type == "pdf"
-            ? await LessonConsumer.UploadPdfAsync(lessonId, file)
-            : await LessonConsumer.UploadVideoAsync(lessonId, file);
-        return result is not null ? null : $"Error uploading {type}";
     }
 
     private void DeleteLesson(Guid lessonId)

@@ -1,4 +1,5 @@
 @* Lesson create/edit modal for admin course editing. *@
+@using FitEdu.Web.Extensions
 
 <FormModal IsVisible="IsVisible"
            Title="@(EditingLesson == null ? AdminRes.AddLesson : AdminRes.EditLesson)"
@@ -30,12 +31,12 @@
 
         <div class="mb-3">
             <label class="form-label">@AdminRes.FieldContent (EN)</label>
-            <QuillEditor @ref="_contentEditorEn" Content="@_contentEn" MinHeight="300px" />
+            <QuillEditor @ref="_contentEditorEn" Content="@_contentEn" MinHeight="300px" Placeholder="@ContentLanguageText.English(nameof(AdminRes.EditorPlaceholder))" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">@AdminRes.FieldContent (EL)</label>
-            <QuillEditor @ref="_contentEditorEl" Content="@_contentEl" MinHeight="300px" />
+            <QuillEditor @ref="_contentEditorEl" Content="@_contentEl" MinHeight="300px" Placeholder="@ContentLanguageText.Greek(nameof(AdminRes.EditorPlaceholder))" />
         </div>
 
         <div class="mb-3">

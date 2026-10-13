@@ -2659,5 +2659,32 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("RoleStudent", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PDF upload failed..
+        /// </summary>
+        public static string PdfUploadFailed {
+            get {
+                return ResourceManager.GetString("PdfUploadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Video upload failed..
+        /// </summary>
+        public static string VideoUploadFailed {
+            get {
+                return ResourceManager.GetString("VideoUploadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Write the content here....
+        /// </summary>
+        public static string EditorPlaceholder {
+            get {
+                return ResourceManager.GetString("EditorPlaceholder", resourceCulture);
+            }
+        }
     }
 }

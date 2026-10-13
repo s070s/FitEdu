@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using Bunit;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -259,5 +260,36 @@ public class LessonEditorModalTests : BunitContext
             "<h2>Warm-up</h2><ol><li>March in place</li><li>Squat to a box</li></ol>",
             "<ul><li>Βαθύ κάθισμα</li></ul>"
         ]);
+    }
+
+    [Fact]
+    public void FailedUploads_ShowTheirMessagesInTheAdminsLanguage()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el");
+        _lessonConsumer.UploadPdfAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>()).Returns((string?)null);
+        _lessonConsumer.UploadVideoAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>()).Returns((string?)null);
+        var modal = RenderModal(Lesson([]));
+        var fileInputs = modal.FindComponents<InputFile>();
+
+        fileInputs[0].UploadFiles(InputFileContent.CreateFromText("pdf", "notes.pdf"));
+        fileInputs[1].UploadFiles(InputFileContent.CreateFromText("video", "clip.mp4"));
+        ClickSave(modal);
+
+        var error = modal.Find(".alert-danger").TextContent;
+        error.ShouldContain("Το ανέβασμα του PDF απέτυχε.");
+        error.ShouldContain("Το ανέβασμα του βίντεο απέτυχε.");
+    }
+
+    [Fact]
+    public void ContentEditors_GetAPlaceholderInTheirOwnContentLanguage()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("el");
+
+        RenderModal(Lesson([]));
+
+        var placeholders = JSInterop.Invocations["quillInterop.init"]
+            .Select(invocation => invocation.Arguments[2] as string)
+            .ToList();
+        placeholders.ShouldBe(["Write the content here...", "Γράψε το περιεχόμενο εδώ..."]);
     }
 }

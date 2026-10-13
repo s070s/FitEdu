@@ -967,4 +967,13 @@ Option 3</value>
   <data name="RoleStudent" xml:space="preserve">
     <value>Member</value>
   </data>
+  <data name="PdfUploadFailed" xml:space="preserve">
+    <value>PDF upload failed.</value>
+  </data>
+  <data name="VideoUploadFailed" xml:space="preserve">
+    <value>Video upload failed.</value>
+  </data>
+  <data name="EditorPlaceholder" xml:space="preserve">
+    <value>Write the content here...</value>
+  </data>
 </root>

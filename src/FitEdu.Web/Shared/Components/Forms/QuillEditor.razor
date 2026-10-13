@@ -23,6 +23,13 @@
     [Parameter]
     public string MinHeight { get; set; } = "200px";
 
+    /// <summary>
+    /// Hint shown while the editor is empty. Editors in an English or Greek column pass that
+    /// column's language (see ContentLanguageText); otherwise it follows the UI language.
+    /// </summary>
+    [Parameter]
+    public string Placeholder { get; set; } = AdminRes.EditorPlaceholder;
+
     private readonly string _editorId = $"quill-{Guid.NewGuid():N}";
     private bool _initialized;
 
@@ -30,7 +37,7 @@
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("quillInterop.init", _editorId, Content);
+            await JS.InvokeVoidAsync("quillInterop.init", _editorId, Content, Placeholder);
             _initialized = true;
         }
     }

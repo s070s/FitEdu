@@ -41,12 +41,12 @@
 
                 <div class="mb-3">
                     <label class="form-label">@AdminRes.FieldDescription (EN)</label>
-                    <QuillEditor @ref="descriptionEditorEn" Content="@courseDescriptionEn" MinHeight="150px" />
+                    <QuillEditor @ref="descriptionEditorEn" Content="@courseDescriptionEn" MinHeight="150px" Placeholder="@ContentLanguageText.English(nameof(AdminRes.EditorPlaceholder))" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">@AdminRes.FieldDescription (EL)</label>
-                    <QuillEditor @ref="descriptionEditorEl" Content="@courseDescriptionEl" MinHeight="150px" />
+                    <QuillEditor @ref="descriptionEditorEl" Content="@courseDescriptionEl" MinHeight="150px" Placeholder="@ContentLanguageText.Greek(nameof(AdminRes.EditorPlaceholder))" />
                 </div>
 
                 <div class="mb-3">

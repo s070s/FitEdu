@@ -986,4 +986,13 @@
   <data name="RoleStudent" xml:space="preserve">
     <value>Μέλος</value>
   </data>
+  <data name="PdfUploadFailed" xml:space="preserve">
+    <value>Το ανέβασμα του PDF απέτυχε.</value>
+  </data>
+  <data name="VideoUploadFailed" xml:space="preserve">
+    <value>Το ανέβασμα του βίντεο απέτυχε.</value>
+  </data>
+  <data name="EditorPlaceholder" xml:space="preserve">
+    <value>Γράψε το περιεχόμενο εδώ...</value>
+  </data>
 </root>

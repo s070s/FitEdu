@@ -38,7 +38,7 @@
 
             <div class="mb-3">
                 <label class="form-label">@AdminRes.FieldContent <span class="text-danger" aria-hidden="true">*</span></label>
-                <QuillEditor @ref="_editorEn" Content="@_contentEn" MinHeight="400px" />
+                <QuillEditor @ref="_editorEn" Content="@_contentEn" MinHeight="400px" Placeholder="@ContentLanguageText.English(nameof(AdminRes.EditorPlaceholder))" />
             </div>
         </section>
 
@@ -59,7 +59,7 @@
 
             <div class="mb-3">
                 <label class="form-label">@AdminRes.FieldContent</label>
-                <QuillEditor @ref="_editorEl" Content="@_contentEl" MinHeight="400px" />
+                <QuillEditor @ref="_editorEl" Content="@_contentEl" MinHeight="400px" Placeholder="@ContentLanguageText.Greek(nameof(AdminRes.EditorPlaceholder))" />
             </div>
         </section>
     </div>
