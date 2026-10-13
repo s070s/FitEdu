@@ -66,7 +66,8 @@
 }
 
 /* ── Stats ── */
-/* Phones: two columns, and an odd last tile spans the row so three tiles never leave one alone. */
+/* Phones: two columns, and an odd last tile spans the row as a compact icon-left strip, so three
+   tiles never leave one tall tile alone. */
 .profile-stats {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -75,7 +76,15 @@
 
     .profile-stats ::deep .stat-tile:last-of-type:nth-of-type(odd) {
         grid-column: 1 / -1;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        column-gap: var(--space-3);
     }
+
+        .profile-stats ::deep .stat-tile:last-of-type:nth-of-type(odd) .stat-tile__icon {
+            grid-row: span 2;
+            margin-bottom: 0;
+        }
 
 /* ── Settings cards ── */
 .profile-fields-row {
@@ -145,5 +154,12 @@
 
         .profile-stats ::deep .stat-tile:last-of-type:nth-of-type(odd) {
             grid-column: auto;
+            grid-template-columns: none;
+            align-items: normal;
         }
+
+            .profile-stats ::deep .stat-tile:last-of-type:nth-of-type(odd) .stat-tile__icon {
+                grid-row: auto;
+                margin-bottom: var(--space-2);
+            }
 }
