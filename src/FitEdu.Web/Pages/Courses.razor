@@ -2,6 +2,8 @@
 @using FitEdu.Web.Extensions
 
 <AppPageTitle Text="@CourseRes.CoursesPageTitle" />
+@* The filters live in the address; the canonical link leaves them out, so the sitemap's /courses is the one address. *@
+<SeoHead Title="@CourseRes.CoursesPageTitle" Description="@CourseRes.CatalogueIntro" CanonicalUrl="/courses" />
 
 <div class="page courses-page">
     <header class="courses-head">

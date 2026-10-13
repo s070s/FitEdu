@@ -30,6 +30,11 @@ else if (_error is not null || _course is null)
 }
 else
 {
+    <SeoHead Title="@_course.Title"
+             Description="@_metaDescription"
+             CanonicalUrl="@(CoursePathPrefix + _course.Id)"
+             ImageUrl="@_course.CoverImageUrl" />
+
     <div class="page course-page">
         @* The hero parts are direct children of .course-page so the grid from 768 px can put the
            cover and the action card together in the side column. *@

@@ -3,7 +3,6 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace FitEdu.Web.Pages;
 
@@ -77,14 +76,11 @@ public partial class BlogArticle : IDisposable
     /// <summary>Reading time from the word count of the article HTML with its tags removed.</summary>
     private static int EstimateReadingMinutes(string html)
     {
-        var text = HtmlTag().Replace(html, " ");
+        var text = HtmlText.ToPlainText(html);
         var wordCount = text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;
         var minutes = (int)Math.Round(wordCount / (double)WordsPerMinute);
         return Math.Max(MinimumReadingMinutes, minutes);
     }
-
-    [GeneratedRegex("<[^>]+>")]
-    private static partial Regex HtmlTag();
 
     private Task PersistArticle()
     {

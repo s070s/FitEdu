@@ -18,6 +18,8 @@ public partial class CourseDetail
 {
     // "What you'll train" lists the first module summaries, enough to scan at a glance.
     private const int MaxOutcomes = 4;
+    // Search engines show about 160 characters of a page description.
+    private const int MetaDescriptionLength = 160;
     private const string LessonPathPrefix = "/lessons/";
     private const string CoursePathPrefix = "/courses/";
     private const string LoginPath = "/login";
@@ -55,6 +57,7 @@ public partial class CourseDetail
     private LessonSummaryDto? _nextLesson;
     private Guid? _openModuleId;
     private int _totalMinutes;
+    private string _metaDescription = string.Empty;
 
     private CourseReviewsResponseDto? _reviewsData;
     private bool _showReviewForm;
@@ -201,6 +204,7 @@ public partial class CourseDetail
     /// <summary>Sorts the outline once and works out the totals, the outcomes and the next lesson.</summary>
     private void PrepareView(CourseDetailDto course)
     {
+        _metaDescription = HtmlText.Summary(course.Description, MetaDescriptionLength);
         _modules = course.Modules
             .OrderBy(module => module.SortOrder)
             .Select(module => module with { Lessons = module.Lessons.OrderBy(lesson => lesson.SortOrder).ToList() })
