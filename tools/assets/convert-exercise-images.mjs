@@ -1,4 +1,4 @@
-// Converts photos to WebP with headless Chrome (see browser.mjs).
+// Converts photos to WebP with headless Chrome (see ../shared/browser.mjs and images.mjs).
 //
 // Exercise mode: converts the JPG pairs of every exercise listed in the repo's exercises.json
 // to <target>/<slug>/0.webp and 1.webp, max 480 px wide, quality 0.8.
@@ -8,7 +8,8 @@
 //   node tools/assets/convert-exercise-images.mjs --single <input> <output.webp> <maxWidth> [quality]
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
-import { encodeWebp, fail, fileToDataUrl, launchBrowser } from './browser.mjs';
+import { fail, launchBrowser } from '../shared/browser.mjs';
+import { encodeWebp, fileToDataUrl } from './images.mjs';
 
 const EXERCISE_MAX_WIDTH = 480;
 const EXERCISE_QUALITY = 0.8;

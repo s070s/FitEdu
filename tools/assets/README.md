@@ -8,7 +8,7 @@ when a shipped image has no manifest row.
 
 | File | What it does |
 |---|---|
-| `browser.mjs` | Shared helpers: starts Chrome, reads images as `data:` URLs, makes the charcoal/lime duotone, encodes WebP. |
+| `images.mjs` | Image helpers: reads images as `data:` URLs, makes the charcoal/lime duotone, encodes WebP. |
 | `convert-exercise-images.mjs` | Converts the Free Exercise DB photo pairs, and single photos such as the Home hero. |
 | `render-brand-images.mjs` | Renders the favicon PNGs, the social preview image and the blog covers. |
 | `og-template.html`, `blog-cover-template.html`, `brand-templates.css` | The layouts the render script screenshots. |
@@ -17,12 +17,13 @@ when a shipped image has no manifest row.
 
 - Node.js (tested with 24).
 - **playwright-core**, used as a library. It is not a dependency of this repo and nothing is
-  installed: set `PLAYWRIGHT_CORE` to the folder of an existing `playwright-core` package (tested
-  with 1.61.1). Default: `C:/Users/GS/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright-core`.
+  installed: set `PLAYWRIGHT_CORE` (required, no default) to the folder of an existing
+  `playwright-core` package (tested with 1.61.1), for example one left in the npm cache by `npx`.
 - **Chrome or Chromium**: set `CHROME_PATH` to the executable. Default:
   `C:/Program Files/Google/Chrome/Application/chrome.exe`.
 
-When either path is missing the scripts stop with a message naming the variable to set.
+Chrome is started by [`tools/shared/browser.mjs`](../shared/browser.mjs), which the responsive check
+uses too. When either path is missing the scripts stop with a message naming the variable to set.
 
 ## Sources
 

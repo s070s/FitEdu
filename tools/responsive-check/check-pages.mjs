@@ -8,7 +8,7 @@ import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { launchBrowser } from '../assets/browser.mjs';
+import { launchBrowser } from '../shared/browser.mjs';
 import { PAGES_BY_ROLE, PARAMETER_SOURCES, fillTemplate, findUncoveredRoutes, readPageRoutes } from './routes.mjs';
 import { measure, scrollThroughPage, waitForRender } from './page-checks.mjs';
 import { writeReports } from './report.mjs';

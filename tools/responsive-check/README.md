@@ -33,9 +33,9 @@ that is not possible, rather than checking the "not enrolled" page.
 
 ## Requirements
 
-- Node.js (tested with 24). Nothing is installed: the script reuses `tools/assets/browser.mjs`,
-  which loads an existing **playwright-core** (`PLAYWRIGHT_CORE`) and starts the installed
-  **Chrome** (`CHROME_PATH`); see [`tools/assets/README.md`](../assets/README.md).
+- Node.js (tested with 24). Nothing is installed: the script reuses `tools/shared/browser.mjs`,
+  which loads an existing **playwright-core** (`PLAYWRIGHT_CORE`, required) and starts the
+  installed **Chrome** (`CHROME_PATH`); see [`tools/assets/README.md`](../assets/README.md).
 - The app running with the Development seed data, for example the `fitedu-main` preview server on
   `http://localhost:5090`.
 

@@ -103,7 +103,8 @@ FitEdu.sln
 ├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
 ├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
-└── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
+├── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
+└── tools/shared/                        Headless Chrome launcher both tool folders use (needs PLAYWRIGHT_CORE)
 ```
 
 > Adding a field to an entity touches several layers (entity → EF config → migration → DTO → mapping helper → controller → consumer → page → resx). Follow the checklist in [docs/ADDING-A-FIELD.md](docs/ADDING-A-FIELD.md) so no step is missed — a skipped step surfaces as a silently blank value, not an error.
@@ -137,7 +138,7 @@ npx playwright test
 
 ### Responsive sweep (local)
 
-[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, visible error messages, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. When the student is enrolled nowhere it first enrols them in a free programme, so the lesson page itself is checked. It needs no `npm install` (it borrows an existing `playwright-core` and the installed Chrome). With the app running, pass the seeded passwords in `FITEDU_STUDENT_PASSWORD` and `FITEDU_ADMIN_PASSWORD` and run `node tools/responsive-check/check-pages.mjs http://localhost:5090 <output-folder>` (keep the folder outside the repo); it writes `report.md`, `report.json` and two screenshots per visit, and exits non-zero on any defect. The 2026-10-13 sweep visited 65 role and page pairs at both sizes in both languages (260 visits) with no defects.
+[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, visible error messages, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. When the student is enrolled nowhere it first enrols them in a free programme, so the lesson page itself is checked. It needs no `npm install` (it borrows an existing `playwright-core`, named by the required `PLAYWRIGHT_CORE` variable, and the installed Chrome). With the app running, pass the seeded passwords in `FITEDU_STUDENT_PASSWORD` and `FITEDU_ADMIN_PASSWORD` and run `node tools/responsive-check/check-pages.mjs http://localhost:5090 <output-folder>` (keep the folder outside the repo); it writes `report.md`, `report.json` and two screenshots per visit, and exits non-zero on any defect. The 2026-10-13 sweep visited 65 role and page pairs at both sizes in both languages (260 visits) with no defects.
 
 ### Monitoring & diagnostics
 
