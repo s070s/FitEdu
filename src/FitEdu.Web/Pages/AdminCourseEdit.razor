@@ -114,6 +114,7 @@
                                class="form-control @(unknownEquipmentCode is not null ? "is-invalid" : "")"
                                maxlength="120"
                                @bind="courseEquipment"
+                               @bind:after="ClearEquipmentError"
                                aria-invalid="@(unknownEquipmentCode is not null ? "true" : null)"
                                aria-describedby="@EquipmentDescribedBy" />
                         @if (unknownEquipmentCode is not null)
@@ -138,6 +139,7 @@
                            class="form-control @(coverExerciseSlugInvalid ? "is-invalid" : "")"
                            maxlength="120"
                            @bind="courseCoverExerciseSlug"
+                           @bind:after="ClearCoverExerciseError"
                            aria-invalid="@(coverExerciseSlugInvalid ? "true" : null)"
                            aria-describedby="@CoverExerciseDescribedBy" />
                     @if (coverExerciseSlugInvalid)

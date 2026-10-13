@@ -5,6 +5,7 @@ using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -51,9 +52,9 @@ public class AdminCourseEditTests : BunitContext
         Level: CourseLevel.Intermediate, Goal: FitnessGoal.MuscleGain, Equipment: "dumbbells,mat",
         EstimatedWeeks: 6, SessionsPerWeek: 4, CoverExerciseSlug: coverExerciseSlug);
 
-    private static ExerciseDetailDto Detail(string slug) => new(
+    private static ApiLookup<ExerciseDetailDto> Detail(string slug) => ApiLookup<ExerciseDetailDto>.Found(new(
         Guid.NewGuid(), slug, "Barbell Squat", "strength", "beginner", "barbell", ["quadriceps"],
-        $"/images/exercises/{slug}/0.webp", $"/images/exercises/{slug}/1.webp", [], null, null, []);
+        $"/images/exercises/{slug}/0.webp", $"/images/exercises/{slug}/1.webp", [], null, null, []));
 
     private IRenderedComponent<AdminCourseEdit> RenderNewCourse() =>
         Render<AdminCourseEdit>(parameters => parameters.Add(page => page.CourseId, Guid.Empty));
@@ -80,7 +81,7 @@ public class AdminCourseEditTests : BunitContext
     [Fact]
     public void Save_UnknownCoverExerciseSlug_ShowsValidationMessage_AndDoesNotSave()
     {
-        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns((ExerciseDetailDto?)null);
+        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.NotFound);
         var page = RenderNewCourse();
 
         page.Find("#course-title-en").Change("Strength 101");
@@ -89,6 +90,38 @@ public class AdminCourseEditTests : BunitContext
 
         page.Find("#course-cover-exercise").ClassList.ShouldContain("is-invalid");
         page.Find("#course-cover-exercise-error").TextContent.ShouldContain(AdminRes.UnknownExerciseSlug);
+        _courseConsumer.DidNotReceive().CreateCourseAsync(Arg.Any<SaveCourseRequest>());
+    }
+
+    [Fact]
+    public void UnknownCoverExerciseSlugError_ClearsWhenTheSlugChanges()
+    {
+        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.NotFound);
+        var page = RenderNewCourse();
+        page.Find("#course-title-en").Change("Strength 101");
+        page.Find("#course-cover-exercise").Change("no-such-move");
+        ClickSave(page);
+
+        page.Find("#course-cover-exercise").Change("barbell-squat");
+
+        page.Find("#course-cover-exercise").ClassList.ShouldNotContain("is-invalid");
+        page.FindAll("#course-cover-exercise-error").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Save_CoverExerciseLookupFails_ShowsTheGenericError_NotUnknownExercise()
+    {
+        // A failed request says nothing about the slug, so the field must not be marked as wrong.
+        _exerciseConsumer.GetBySlugAsync("barbell-squat", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.Failure);
+        var page = RenderNewCourse();
+
+        page.Find("#course-title-en").Change("Strength 101");
+        page.Find("#course-cover-exercise").Change("barbell-squat");
+        ClickSave(page);
+
+        page.Markup.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.Find("#course-cover-exercise").ClassList.ShouldNotContain("is-invalid");
+        page.FindAll("#course-cover-exercise-error").ShouldBeEmpty();
         _courseConsumer.DidNotReceive().CreateCourseAsync(Arg.Any<SaveCourseRequest>());
     }
 
@@ -106,6 +139,20 @@ public class AdminCourseEditTests : BunitContext
         error.ShouldContain("yoga-mat");
         error.ShouldNotContain("{0}");
         _courseConsumer.DidNotReceive().CreateCourseAsync(Arg.Any<SaveCourseRequest>());
+    }
+
+    [Fact]
+    public void UnknownEquipmentCodeError_ClearsWhenTheEquipmentChanges()
+    {
+        var page = RenderNewCourse();
+        page.Find("#course-title-en").Change("Strength 101");
+        page.Find("#course-equipment").Change("dumbbells, Yoga-Mat");
+        ClickSave(page);
+
+        page.Find("#course-equipment").Change("dumbbells, mat");
+
+        page.Find("#course-equipment").ClassList.ShouldNotContain("is-invalid");
+        page.FindAll("#course-equipment-error").ShouldBeEmpty();
     }
 
     [Fact]

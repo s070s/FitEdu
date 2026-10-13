@@ -61,7 +61,8 @@ public partial class ExerciseDetail : IDisposable
         var lessonsTask = ExerciseConsumer.GetLessonsUsingExerciseAsync(Slug, CurrentLang);
         await Task.WhenAll(exerciseTask, lessonsTask);
 
-        Show(await exerciseTask, await lessonsTask);
+        // A failed request still shows the "not found" view, as before; only the admin editor needs the difference.
+        Show((await exerciseTask).Item, await lessonsTask);
     }
 
     private void Show(ExerciseDetailDto? exercise, IReadOnlyList<LessonUsingExerciseDto> lessons)

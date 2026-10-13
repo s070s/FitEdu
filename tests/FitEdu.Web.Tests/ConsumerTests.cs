@@ -239,13 +239,43 @@ public class ConsumerTests
     }
 
     [Fact]
-    public async Task ExerciseConsumer_GetBySlug_NotFound_ReturnsNull()
+    public async Task ExerciseConsumer_GetBySlug_NotFound_ReportsNotFound()
     {
         var (client, handler) = TestHttp.Json(HttpStatusCode.NotFound);
         var consumer = new ExerciseConsumer(client, TokenProvider());
 
-        (await consumer.GetBySlugAsync("pushups", "el")).ShouldBeNull();
+        var lookup = await consumer.GetBySlugAsync("pushups", "el");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeFalse();
         handler.LastRequest!.RequestUri!.PathAndQuery.ShouldBe("/api/exercises/pushups?lang=el");
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetBySlug_ServerError_ReportsAFailedRequest()
+    {
+        // A 500 says nothing about whether the exercise exists, so it must not read as "not found".
+        var (client, _) = TestHttp.Json(HttpStatusCode.InternalServerError);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("pushups");
+
+        lookup.Item.ShouldBeNull();
+        lookup.RequestFailed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ExerciseConsumer_GetBySlug_Found_ReturnsTheExercise()
+    {
+        var exercise = new ExerciseDetailDto(Guid.NewGuid(), "pushups", "Pushups", "strength", "beginner", "body only",
+            ["chest"], "/0.webp", "/1.webp", [], null, null, []);
+        var (client, _) = TestHttp.Json(HttpStatusCode.OK, exercise);
+        var consumer = new ExerciseConsumer(client, TokenProvider());
+
+        var lookup = await consumer.GetBySlugAsync("pushups");
+
+        lookup.Item!.Slug.ShouldBe("pushups");
+        lookup.RequestFailed.ShouldBeFalse();
     }
 
     [Fact]

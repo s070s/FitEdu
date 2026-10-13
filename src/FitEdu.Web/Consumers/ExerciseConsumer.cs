@@ -21,8 +21,8 @@ public class ExerciseConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvi
            ?? new PagedResult<ExerciseListItemDto>([], 0, page, pageSize);
     }
 
-    public Task<ExerciseDetailDto?> GetBySlugAsync(string slug, string lang = "en")
-        => GetAsync<ExerciseDetailDto>($"api/exercises/{Uri.EscapeDataString(slug)}?lang={lang}");
+    public Task<ApiLookup<ExerciseDetailDto>> GetBySlugAsync(string slug, string lang = "en")
+        => GetLookupAsync<ExerciseDetailDto>($"api/exercises/{Uri.EscapeDataString(slug)}?lang={lang}");
 
     public async Task<ExerciseFacetsDto> GetFacetsAsync()
         => await GetAsync<ExerciseFacetsDto>("api/exercises/facets") ?? ExerciseFacetsDto.Empty;
