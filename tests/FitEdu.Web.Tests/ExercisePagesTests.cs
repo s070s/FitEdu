@@ -162,6 +162,20 @@ public class ExercisePagesTests : BunitContext
     }
 
     [Fact]
+    public void Library_Search_KeepsTheTrailingSpaceInTheBoxOnceTypingStops()
+    {
+        var page = Render<Exercises>();
+
+        page.Find(".exercise-filters__search input").Input("push ");
+
+        // The address holds the trimmed search, but the box keeps the space so the next word stays apart.
+        page.WaitForAssertion(() => _exerciseConsumer.Received(1).ListAsync(1, ExerciseLibraryPaging.DefaultPageSize, "en",
+            Arg.Is<ExerciseFilterDto?>(filter => filter != null && filter.Search == "push")));
+        CurrentUri().ShouldEndWith("/exercises?search=push");
+        page.Find(".exercise-filters__search input").GetAttribute("value").ShouldBe("push ");
+    }
+
+    [Fact]
     public void Library_NextPage_LoadsPageTwoWithTheSameFilter()
     {
         _exerciseConsumer.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<ExerciseFilterDto?>())

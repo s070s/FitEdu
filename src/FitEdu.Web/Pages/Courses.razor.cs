@@ -163,8 +163,10 @@ public partial class Courses : IDisposable
         _appliedSearch = search;
         _page = page;
 
-        // While a newer search is still waiting, the box keeps what the member is typing.
-        if (_searchCts is null)
+        // While a newer search is still waiting, the box keeps what the member is typing. It also
+        // keeps a trailing space when the address holds the same search, so the next word stays apart.
+        var boxMatchesAddress = (QueryValues.Text(_search) ?? string.Empty) == search;
+        if (_searchCts is null && !boxMatchesAddress)
             _search = search;
 
         return changed;

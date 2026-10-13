@@ -122,8 +122,10 @@ public partial class Exercises : IDisposable
         _filter = filter;
         _page = page;
 
-        // While a newer search is still waiting, the box keeps what the reader is typing.
-        if (_searchDebounce is null)
+        // While a newer search is still waiting, the box keeps what the reader is typing. It also
+        // keeps a trailing space when the address holds the same search, so the next word stays apart.
+        var boxMatchesAddress = QueryValues.Text(_searchText) == filter.Search;
+        if (_searchDebounce is null && !boxMatchesAddress)
             _searchText = filter.Search ?? string.Empty;
 
         return changed;

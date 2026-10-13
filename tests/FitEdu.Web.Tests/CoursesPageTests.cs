@@ -255,6 +255,21 @@ public class CoursesPageTests : BunitContext
     }
 
     [Fact]
+    public void Search_KeepsTheTrailingSpaceInTheBoxOnceTypingStops()
+    {
+        NavigateTo("/courses");
+        var page = Render<Courses>();
+
+        page.Find(".category-filter-search").Input("full ");
+
+        // The address holds the trimmed search, but the box keeps the space so the next word stays apart.
+        page.WaitForAssertion(() => _courseConsumer.Received().GetCoursesAsync(
+            1, Arg.Any<int>(), "en", null, "full", null, null, null));
+        Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/courses?search=full");
+        page.Find(".category-filter-search").GetAttribute("value").ShouldBe("full ");
+    }
+
+    [Fact]
     public void NextPage_PutsThePageInTheAddress()
     {
         ReturnCourses(Courses(CoursesOnPage), totalCount: 30);
