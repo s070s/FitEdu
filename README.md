@@ -99,7 +99,8 @@ FitEdu.sln
 │   ├── FitEdu.Web/             Blazor SSR + API controllers — the only deployable project
 │   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
-└── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
+├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
+└── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
 ```
 
 > Adding a field to an entity touches several layers (entity → EF config → migration → DTO → mapping helper → controller → consumer → page → resx). Follow the checklist in [docs/ADDING-A-FIELD.md](docs/ADDING-A-FIELD.md) so no step is missed — a skipped step surfaces as a silently blank value, not an error.
@@ -122,7 +123,7 @@ GitHub Actions runs on every push and pull request, and can also be started by h
 
 ### End-to-end tests (local)
 
-A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, and a two-user video call connecting with fake media. It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
+A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, the key public pages fitting phone and desktop screens with working images, and a two-user video call connecting with fake media. It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
 
 ```bash
 cd tests/e2e
@@ -130,6 +131,10 @@ npm install
 npx playwright install chromium   # first time only
 npx playwright test
 ```
+
+### Responsive sweep (local)
+
+[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. It needs no `npm install` (it borrows an existing `playwright-core` and the installed Chrome).
 
 ### Monitoring & diagnostics
 
