@@ -27,6 +27,8 @@
         <ul class="grid-auto certificate-grid">
             @foreach (var cert in _certificates)
             {
+                // The machine-readable date and the shown date are the same local day.
+                var issuedLocal = cert.IssuedAt.ToLocalTime();
                 <li class="card-surface certificate-card" @key="cert.Id">
                     <div class="certificate-card__band">
                         <span class="certificate-card__seal" aria-hidden="true"><span class="bi bi-award-fill"></span></span>
@@ -39,7 +41,7 @@
                         <dl class="certificate-card__facts">
                             <div>
                                 <dt>@CertificateRes.FieldIssuedOn</dt>
-                                <dd><time datetime="@cert.IssuedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@cert.IssuedAt.ToLocalTime().ToString("d MMMM yyyy", CultureInfo.CurrentCulture)</time></dd>
+                                <dd><time datetime="@issuedLocal.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@issuedLocal.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)</time></dd>
                             </div>
                             <div>
                                 <dt>@CertificateRes.FieldVerificationId</dt>
