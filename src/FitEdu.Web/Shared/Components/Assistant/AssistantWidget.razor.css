@@ -17,6 +17,13 @@
     box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.35);
 }
 
+/* An open dialog (FormModal, ConfirmModal) sits at Bootstrap's 1055, below the launcher's 1070,
+   so the launcher and panel step aside rather than cover its fields and buttons. */
+body:has(.modal.show) .assistant-launcher,
+body:has(.modal.show) .assistant-panel {
+    display: none;
+}
+
 .assistant-panel {
     position: fixed;
     right: 1.5rem;
