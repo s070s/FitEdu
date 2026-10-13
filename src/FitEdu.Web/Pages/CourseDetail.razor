@@ -21,7 +21,7 @@ else if (_course is null)
 else
 {
     <div class="course-header">
-        <button class="btn-link" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @CourseRes.BackToCourses</button>
+        <button class="btn-link" @onclick="GoBack"><span class="bi bi-arrow-left me-1" aria-hidden="true"></span>@CourseRes.BackToCourses</button>
         <h1>@_course.Title</h1>
         @if (!string.IsNullOrEmpty(_course.Description))
         {

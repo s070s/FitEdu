@@ -151,8 +151,8 @@
 
 /* ================================================
    Below 1280 px: an icon button that opens a panel under the header (full width on phones,
-   right-aligned on tablets), which leaves room for the main links from 992 px (the longest
-   row, the Greek admin links, needs the room up to about 1220 px).
+   right-aligned on tablets), which leaves room for the main links from 992 px. The inline
+   field waits for 1280 px so the longest row, the Greek admin links, keeps room to spare.
    .site-search stays unpositioned here, so the panel is placed against the header row
    (.site-header__inner in NavMenu.razor.css).
    ================================================ */
