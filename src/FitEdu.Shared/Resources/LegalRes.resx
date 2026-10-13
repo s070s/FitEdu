@@ -65,19 +65,19 @@
     <value>Educational project</value>
   </data>
   <data name="EducationalNotice" xml:space="preserve">
-    <value>FitEdu is a university certificate project that demonstrates a fitness-education platform. Its courses, exercise library and self-assessments are general education, not medical advice. The policies below describe how the platform actually handles data, but FitEdu is not a commercial service and these pages are not legal advice.</value>
+    <value>FitEdu is a university certificate project that demonstrates a fitness-education platform. Its programmes, exercise library and self-assessments are general education, not medical advice. The policies below describe how the platform actually handles data, but FitEdu is not a commercial service and these pages are not legal advice.</value>
   </data>
   <data name="PrivacyTitle" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>
   <data name="PrivacyIntro" xml:space="preserve">
-    <value>FitEdu is an online fitness-courses platform with an exercise library. This policy explains what personal data we collect when you create an account, enrol in programmes, complete workouts, answer self-assessments or use chat, video calls, live classes and the AI coach; why we process that data; how long we keep it; and the rights you have over it. FitEdu is a university certificate project built for educational purposes, not a commercial service, so please do not enter detailed medical records or other highly sensitive information.</value>
+    <value>FitEdu is an online fitness platform with training programmes and an exercise library. This policy explains what personal data we collect when you create an account, enrol in programmes, complete workouts, answer self-assessments or use chat, video calls, live classes and the AI coach; why we process that data; how long we keep it; and the rights you have over it. FitEdu is a university certificate project built for educational purposes, not a commercial service, so please do not enter detailed medical records or other highly sensitive information.</value>
   </data>
   <data name="PrivacyDataTitle" xml:space="preserve">
     <value>What data we collect</value>
   </data>
   <data name="PrivacyDataBody" xml:space="preserve">
-    <value>When you create an account we store your name, email address, date of birth, training level and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your course reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
+    <value>When you create an account we store your name, email address, date of birth, training level and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your programme reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
   </data>
   <data name="PrivacyPurposeTitle" xml:space="preserve">
     <value>Why we process your data</value>
@@ -125,7 +125,7 @@
     <value>The service</value>
   </data>
   <data name="TermsServiceBody" xml:space="preserve">
-    <value>FitEdu offers online fitness courses and training programmes, an exercise library, self-assessments, certificates, live classes, an AI coach, and chat and video features. Because it is a student project, features may change, break or be reset without notice, and availability is not guaranteed.</value>
+    <value>FitEdu offers online fitness training programmes, an exercise library, self-assessments, certificates, live classes, an AI coach, and chat and video features. Because it is a student project, features may change, break or be reset without notice, and availability is not guaranteed.</value>
   </data>
   <data name="TermsAccountsTitle" xml:space="preserve">
     <value>Your account</value>
@@ -143,13 +143,13 @@
     <value>Content and intellectual property</value>
   </data>
   <data name="TermsContentBody" xml:space="preserve">
-    <value>Course materials, workout text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Exercise photos and instructions come from the public-domain Free Exercise DB. Content you submit — such as profile details, reviews and assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
+    <value>Programme materials, workout text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Exercise photos and instructions come from the public-domain Free Exercise DB. Content you submit — such as profile details, reviews and assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
   </data>
   <data name="TermsAssessmentsTitle" xml:space="preserve">
     <value>Not medical advice</value>
   </data>
   <data name="TermsAssessmentsBody" xml:space="preserve">
-    <value>Courses, workouts, self-assessments and the AI coach give general fitness education. They are not medical, physiotherapy or nutrition advice and do not replace an assessment by a qualified professional. Talk to a doctor or physiotherapist before you start training if you have a medical condition or an injury, are pregnant or have recently given birth, or have not exercised for a long time. Warm up, train within your limits and stop straight away if you feel pain, dizziness, chest discomfort or unusual shortness of breath. You train at your own risk.</value>
+    <value>Programmes, workouts, self-assessments and the AI coach give general fitness education. They are not medical, physiotherapy or nutrition advice and do not replace an assessment by a qualified professional. Talk to a doctor or physiotherapist before you start training if you have a medical condition or an injury, are pregnant or have recently given birth, or have not exercised for a long time. Warm up, train within your limits and stop straight away if you feel pain, dizziness, chest discomfort or unusual shortness of breath. You train at your own risk.</value>
   </data>
   <data name="TermsDisclaimerTitle" xml:space="preserve">
     <value>Disclaimers and liability</value>
