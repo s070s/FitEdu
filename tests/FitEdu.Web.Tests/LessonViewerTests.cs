@@ -66,7 +66,7 @@ public class LessonViewerTests : BunitContext
 
         var cut = Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
 
-        cut.Find(".compass-spinner").ShouldNotBeNull();
+        cut.Find(".pulse-loader").ShouldNotBeNull();
     }
 
     [Fact]

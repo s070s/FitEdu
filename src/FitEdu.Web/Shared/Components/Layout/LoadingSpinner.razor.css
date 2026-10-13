@@ -1,132 +1,88 @@
 /* ================================================
-   LoadingSpinner component — compass-themed
-   (keyframes compass-needle-seek / compass-arc-spin
-   and the prefers-reduced-motion override live in
-   app.css since the boot loader shares them too)
+   LoadingSpinner component: pulse (ECG) trace.
+   A lime trace sweeps along a faint teal baseline. The path has
+   pathLength="100", so one dash of 100 units slides in and out.
    ================================================ */
-.compass-spinner {
+.pulse-loader {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 /* Fills the nearest positioned ancestor with a soft blur overlay */
-.compass-spinner--overlay {
+.pulse-loader--overlay {
     position: absolute;
     inset: 0;
+    z-index: 100;
     background-color: rgba(var(--bg-primary-rgb), 0.78);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
-    z-index: 100;
 }
 
-.compass-spinner__container {
+.pulse-loader__container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
 }
 
-.compass-spinner__svg {
+.pulse-loader__svg {
+    display: block;
+    height: auto;
     overflow: visible;
 }
 
-/* Size variants */
-.compass-spinner--small  .compass-spinner__svg { width: 48px;  height: 48px; }
-.compass-spinner--medium .compass-spinner__svg { width: 80px;  height: 80px; }
-.compass-spinner--large  .compass-spinner__svg { width: 120px; height: 120px; }
+/* Size variants (the viewBox is 3:1) */
+.pulse-loader--small .pulse-loader__svg { width: 72px; }
+.pulse-loader--medium .pulse-loader__svg { width: 120px; }
+.pulse-loader--large .pulse-loader__svg { width: 180px; }
 
-/* SVG element classes */
-.compass-spinner__ring-outer {
+.pulse-loader__track,
+.pulse-loader__line {
     fill: none;
-    stroke: rgba(var(--border-subtle-rgb), 0.22);
-    stroke-width: 1.5px;
-}
-
-.compass-spinner__tick-cardinal {
-    stroke: rgba(var(--text-accent-rgb), 0.65);
-    stroke-width: 2;
-    stroke-linecap: round;
-}
-
-.compass-spinner__tick-minor {
-    stroke: rgba(var(--text-accent-rgb), 0.25);
-    stroke-width: 1;
-    stroke-linecap: round;
-}
-
-.compass-spinner__cardinal-n {
-    fill: rgba(var(--text-accent-rgb), 0.65);
-    font-size: 9px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    text-anchor: middle;
-}
-
-/* Hide "N" label on the smallest size — too tiny to read */
-.compass-spinner--small .compass-spinner__cardinal-n {
-    display: none;
-}
-
-.compass-spinner__arc-track {
-    fill: none;
-    stroke: rgba(var(--text-strong-accent-rgb), 0.14);
     stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-/* Main arc — spins continuously */
-.compass-spinner__arc {
-    fill: none;
+.pulse-loader__track {
+    stroke: rgba(var(--color-info-rgb), 0.35);
+}
+
+.pulse-loader__line {
     stroke: var(--text-strong-accent);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 88 207;
-    transform-origin: 60px 60px;
-    animation: compass-arc-spin 1.8s linear infinite;
-    filter: drop-shadow(0 0 5px rgba(var(--text-strong-accent-rgb), 0.6));
-    will-change: transform;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    filter: drop-shadow(0 0 4px rgba(var(--text-strong-accent-rgb), 0.6));
+    animation: pulse-loader-draw 1.2s linear infinite;
 }
 
-/* Ghost trail arc — offset behind the main arc for a comet effect */
-.compass-spinner__arc-trail {
-    fill: none;
-    stroke: rgba(var(--text-strong-accent-rgb), 0.22);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 26 269;
-    transform-origin: 60px 60px;
-    animation: compass-arc-spin 1.8s linear infinite;
-    animation-delay: -0.35s;
-    will-change: transform;
+@keyframes pulse-loader-draw {
+    to { stroke-dashoffset: -100; }
 }
 
-.compass-spinner__ring-inner {
-    fill: none;
-    stroke: rgba(var(--border-subtle-rgb), 0.12);
-    stroke-width: 0.8px;
-}
-
-/* Needle — seeks north like a real compass */
-.compass-spinner__needle-group {
-    transform-origin: 60px 60px;
-    animation: compass-needle-seek 4s linear infinite;
-    will-change: transform;
-}
-
-.compass-spinner__needle-north { fill: var(--text-strong-accent); }
-.compass-spinner__needle-south { fill: rgba(var(--text-accent-rgb), 0.45); }
-
-.compass-spinner__center       { fill: var(--text-strong-accent); }
-.compass-spinner__center-inner { fill: var(--bg-primary); }
-
-.compass-spinner__label {
+.pulse-loader__label {
     color: var(--text-light-muted);
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
-/* No label on small spinners */
-.compass-spinner--small .compass-spinner__label {
+/* No label on small loaders */
+.pulse-loader--small .pulse-loader__label {
     display: none;
+}
+
+/* Reduced motion: a still, complete trace (the global rule would otherwise end the sweep on an
+   empty line). */
+@media (prefers-reduced-motion: reduce) {
+    .pulse-loader__line {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+}
+
+/* WI-7: pause the loop while the tab is hidden (cert-interop.js toggles .tab-hidden on <html>). */
+.tab-hidden .pulse-loader__line {
+    animation-play-state: paused;
 }
