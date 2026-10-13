@@ -550,19 +550,146 @@ public sealed class SeederTests : IDisposable
     }
 
     [Fact]
-    public async Task ExerciseSeeder_DuplicateGreekSlug_KeepsRowFromFirstFileByName()
+    public async Task ExerciseSeeder_DuplicateGreekSlug_KeepsRowFromFirstFileByOrdinalName()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        // Written in reverse order so the test proves files are read by name, not creation order.
+        // "B-" sorts before "a-" in ordinal order but after it in a case-insensitive listing (the
+        // Windows directory order), and the files are written in neither order, so the test fails
+        // when the seeder relies on how the file system lists the folder.
         var dir = TempDirWithFiles(
             ("exercises.json", SampleExercisesJson),
-            (Path.Combine("el", "b-course.el.json"), GreekRowsJson("pushups", "Δεύτερο")),
-            (Path.Combine("el", "a-course.el.json"), GreekRowsJson("pushups", "Πρώτο")));
+            (Path.Combine("el", "a-course.el.json"), GreekRowsJson("pushups", "Δεύτερο")),
+            (Path.Combine("el", "B-course.el.json"), GreekRowsJson("pushups", "Πρώτο")));
 
         await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
 
         var pushups = await db.Exercises.SingleAsync(e => e.Slug == "pushups");
         pushups.NameEl.ShouldBe("Πρώτο");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_OverlayFileIsReadBeforeTheFragmentFolder()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            (Path.Combine("el", "0-first-by-name.el.json"), GreekRowsJson("pushups", "Από το el")),
+            ("exercises.el.json", GreekRowsJson("pushups", "Από το overlay")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
+
+        (await db.Exercises.SingleAsync(e => e.Slug == "pushups")).NameEl.ShouldBe("Από το overlay");
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_RowWithoutName_IsSkippedWithWarning_AndTheOtherRowsSeed()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWith("exercises.json", """
+        [
+          { "id": "Plank", "name": "Plank", "level": "beginner", "category": "strength" },
+          { "id": "No_Name", "level": "beginner", "category": "strength" },
+          { "id": "Blank_Level", "name": "Blank Level", "level": " ", "category": "strength" }
+        ]
+        """);
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.Select(e => e.Slug).ToListAsync()).ShouldBe(["plank"]);
+        logger.Warnings.ShouldContain(warning => warning.Contains("No_Name"));
+        logger.Warnings.ShouldContain(warning => warning.Contains("Blank_Level"));
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_TwoIdsWithTheSameSlug_KeepsTheFirstWithWarning()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWith("exercises.json", """
+        [
+          { "id": "Push_Up", "name": "First", "level": "beginner", "category": "strength" },
+          { "id": "Push-Up", "name": "Second", "level": "beginner", "category": "strength" }
+        ]
+        """);
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.SingleAsync()).NameEn.ShouldBe("First");
+        logger.Warnings.ShouldContain(warning => warning.Contains("push-up"));
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_GreekTextLongerThanItsColumn_IsSkippedWithWarning()
+    {
+        // SQL Server would refuse the whole save (SQLite and InMemory ignore the limit), so the
+        // seeder keeps such a row in English instead of failing start-up.
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var longName = new string('α', 151);
+        var longStep = new string('β', 4001);
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            ("exercises.el.json", $$"""
+            [
+              { "slug": "pushups", "nameEl": "{{longName}}", "instructionsEl": ["Βήμα."] },
+              { "slug": "3-4-sit-up", "nameEl": "Κοιλιακοί", "instructionsEl": ["{{longStep}}"] }
+            ]
+            """));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.AnyAsync(e => e.NameEl != null || e.InstructionsEl != null)).ShouldBeFalse();
+        logger.Warnings.ShouldContain(warning => warning.Contains("pushups"));
+        logger.Warnings.ShouldContain(warning => warning.Contains("3-4-sit-up"));
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_MalformedGreekFile_IsSkippedWithError_AndTheOtherFilesApply()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            (Path.Combine("el", "a-broken.el.json"), "[ { \"slug\": "),
+            (Path.Combine("el", "b-good.el.json"), GreekRowsJson("pushups", "Κάμψεις")));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.SingleAsync(e => e.Slug == "pushups")).NameEl.ShouldBe("Κάμψεις");
+        logger.Errors.ShouldContain(error => error.Contains("a-broken.el.json"));
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_GreekFileHoldingNull_IsSkippedWithWarning()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWithFiles(("exercises.json", SampleExercisesJson), ("exercises.el.json", "null"));
+
+        await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.Exercises.CountAsync()).ShouldBe(2);
+        logger.Warnings.ShouldContain(warning => warning.Contains("exercises.el.json"));
+    }
+
+    [Fact]
+    public async Task ExerciseSeeder_LockedGreekFile_IsSkippedWithError_AndTheLibraryStillSeeds()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var logger = new RecordingLogger();
+        var dir = TempDirWithFiles(
+            ("exercises.json", SampleExercisesJson),
+            ("exercises.el.json", GreekRowsJson("pushups", "Κάμψεις")));
+
+        // Another process holding the file open without sharing it makes File.OpenRead throw IOException.
+        await using (File.Open(Path.Combine(dir, "exercises.el.json"), FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            await ExerciseSeeder.SeedFromJsonAsync(db, dir, logger);
+        }
+
+        (await db.Exercises.CountAsync()).ShouldBe(2);
+        logger.Errors.ShouldContain(error => error.Contains("exercises.el.json"));
     }
 
     [Fact]

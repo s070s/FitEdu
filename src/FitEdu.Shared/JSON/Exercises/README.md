@@ -67,12 +67,16 @@ starts with a capital (`Πιέσεις ώμων με αλτήρες (Dumbbell sh
 Arnold aside; `SeedContentIntegrityTests` checks it.
 
 The first row for a slug wins; later rows for the same slug are skipped with a warning. A row whose
-slug is not in `exercises.json` is skipped with a warning. A missing Greek name or instruction list
-falls back to English in the app.
+slug is not in `exercises.json` is skipped with a warning, and so is a row whose name or joined
+instructions are longer than the `NameEl` (150) or `InstructionsEl` (4000) column, because SQL Server
+would refuse the whole save. A missing Greek name or instruction list falls back to English in the
+app. A Greek file that cannot be read, is not valid JSON or holds no array is skipped with a logged
+error or warning; the other files still apply.
 
 ## Seeding
 
 `ExerciseSeeder` loads this folder in Development when `SeedData:Enabled` is true, after the blog
 articles and before the courses. The folder path is `SeedData:JsonPaths:Exercises` in
 `appsettings.Development.json`. It seeds only when the `Exercises` table is empty, so a change here
-needs an empty table or a fresh database.
+needs an empty table or a fresh database. An `exercises.json` row without an id, name, level or
+category, or whose slug repeats an earlier row's, is skipped with a warning; the other rows still seed.
