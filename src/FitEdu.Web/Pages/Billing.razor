@@ -144,7 +144,10 @@
                             <td data-label="@BillingRes.ColDate">@tx.CreatedAt.ToLocalTime().ToString("g")</td>
                             <td data-label="@BillingRes.ColDescription">
                                 <span class="tx-type tx-type-@tx.Type.ToLowerInvariant()">@TransactionTypeLabel(tx.Type)</span>
-                                <span>@tx.Description</span>
+                                @if (ShowTransactionDescription)
+                                {
+                                    <span class="tx-description">@tx.Description</span>
+                                }
                             </td>
                             <td data-label="@BillingRes.ColPlan">@tx.PlanName</td>
                             <td data-label="@BillingRes.ColAmount" class="@(tx.Amount > 0 ? "amount-charge" : "amount-zero")">

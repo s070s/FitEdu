@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
@@ -11,6 +12,8 @@ namespace FitEdu.Web.Pages;
 
 public partial class Billing
 {
+    private const string GreekLanguageCode = "el";
+
     [Inject] private ISubscriptionConsumer SubscriptionService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private ILogger<Billing> _logger { get; set; } = default!;
@@ -139,6 +142,13 @@ public partial class Billing
         SubscriptionTier.Plus => "chip--teal",
         _ => string.Empty
     };
+
+    /// <summary>
+    /// The server writes each transaction description in English ("Upgraded from Plus to Pro").
+    /// The type chip and the plan column already say the same, so the Greek page leaves it out.
+    /// </summary>
+    private static bool ShowTransactionDescription =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName != GreekLanguageCode;
 
     /// <summary>The localized name of a transaction type; the API sends the enum name.</summary>
     private static string TransactionTypeLabel(string type)
