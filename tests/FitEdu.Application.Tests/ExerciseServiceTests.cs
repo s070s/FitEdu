@@ -114,6 +114,31 @@ public class ExerciseServiceTests
     }
 
     [Fact]
+    public async Task GetPublishedExercises_FiltersByWholePrimaryMuscleName_OnSqlite()
+    {
+        // The InMemory test above runs the predicate as LINQ to objects; this one runs the
+        // concatenation + Contains through a relational provider's SQL translation.
+        await using var db = DbContextFactory.CreateSqlite();
+        var pushUp = NewExercise("pushups", "Pushups");
+        pushUp.PrimaryMuscles = "chest, triceps";
+        var dip = NewExercise("dips", "Dips");
+        dip.PrimaryMuscles = "triceps";
+        var hyperextension = NewExercise("hyperextensions", "Hyperextensions");
+        hyperextension.PrimaryMuscles = "lower back";
+        db.Exercises.AddRange(pushUp, dip, hyperextension);
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+
+        var triceps = await service.GetPublishedExercisesAsync(1, 10, "en", new ExerciseFilterDto(Muscle: "triceps"));
+        var lowerBack = await service.GetPublishedExercisesAsync(1, 10, "en", new ExerciseFilterDto(Muscle: "lower back"));
+        var back = await service.GetPublishedExercisesAsync(1, 10, "en", new ExerciseFilterDto(Muscle: "back"));
+
+        Joined(triceps.Items.Select(item => item.Slug)).ShouldBe("dips|pushups");
+        lowerBack.Items.ShouldHaveSingleItem().Slug.ShouldBe("hyperextensions");
+        back.TotalCount.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task GetPublishedExercises_PaginatesWithCorrectTotal()
     {
         await using var db = DbContextFactory.CreateInMemory();
@@ -184,6 +209,37 @@ public class ExerciseServiceTests
         Joined(english.Instructions).ShouldBe("Step one.|Step two.");
         greek!.Name.ShouldBe("Κάμψεις");
         Joined(greek.Instructions).ShouldBe("Βήμα ένα.|Βήμα δύο.");
+    }
+
+    [Fact]
+    public async Task GetPublishedBySlug_GreekStepsThatAreAllBlank_FallBackToTheEnglishSteps()
+    {
+        // A Greek column holding only separators or spaces has no step to show, so the Greek page
+        // shows the English steps instead of an empty list.
+        await using var db = DbContextFactory.CreateInMemory();
+        var pushUp = NewExercise("pushups", "Pushups");
+        pushUp.InstructionsEl = "\n  \n";
+        db.Exercises.Add(pushUp);
+        await db.SaveChangesAsync();
+
+        var greek = await NewService(db).GetPublishedBySlugAsync("pushups", "el");
+
+        Joined(greek!.Instructions).ShouldBe("Step one.|Step two.");
+    }
+
+    [Fact]
+    public async Task GetPublishedBySlug_ExerciseWithoutAnyInstructions_ReturnsAnEmptyList()
+    {
+        // Five library exercises have no instructions at all (e.g. Iron_Cross).
+        await using var db = DbContextFactory.CreateInMemory();
+        var ironCross = NewExercise("iron-cross", "Iron Cross");
+        ironCross.InstructionsEn = string.Empty;
+        db.Exercises.Add(ironCross);
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+
+        (await service.GetPublishedBySlugAsync("iron-cross", "en"))!.Instructions.ShouldBeEmpty();
+        (await service.GetPublishedBySlugAsync("iron-cross", "el"))!.Instructions.ShouldBeEmpty();
     }
 
     [Fact]

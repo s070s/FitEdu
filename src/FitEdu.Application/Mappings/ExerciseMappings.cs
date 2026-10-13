@@ -46,7 +46,7 @@ public static class ExerciseMappings
             SplitMuscles(exercise.SecondaryMuscles),
             exercise.Force,
             exercise.Mechanic,
-            SplitInstructions(Localized.Pick(isEl, exercise.InstructionsEn, exercise.InstructionsEl)));
+            PickInstructions(exercise, isEl));
 
     /// <summary>Materialized prescription; requires the Exercise navigation to be loaded.</summary>
     public static LessonExerciseDto ToLessonExerciseDto(this LessonExercise prescription, bool isEl)
@@ -64,7 +64,23 @@ public static class ExerciseMappings
             Localized.Pick(isEl, prescription.NotesEn, prescription.NotesEl),
             ExerciseImagePaths.StartUrl(exercise.Slug),
             ExerciseImagePaths.EndUrl(exercise.Slug, exercise.ImageCount),
-            SplitInstructions(Localized.Pick(isEl, exercise.InstructionsEn, exercise.InstructionsEl)));
+            PickInstructions(exercise, isEl));
+    }
+
+    /// <summary>
+    /// The steps in the caller's language. Greek steps that are missing or only blank fall back to
+    /// the English ones, as every other bilingual field does (Localized.Pick only checks for null).
+    /// </summary>
+    private static string[] PickInstructions(Exercise exercise, bool isEl)
+    {
+        if (isEl && exercise.InstructionsEl is not null)
+        {
+            var greekSteps = SplitInstructions(exercise.InstructionsEl);
+            if (greekSteps.Length > 0)
+                return greekSteps;
+        }
+
+        return SplitInstructions(exercise.InstructionsEn);
     }
 
     /// <summary>Splits a muscle column ("chest, triceps") into its names.</summary>

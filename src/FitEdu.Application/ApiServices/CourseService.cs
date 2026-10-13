@@ -310,11 +310,18 @@ public class CourseService(
             Localized.Pick(isEl, course.TitleEn, course.TitleEl),
             previousLessonId,
             nextLessonId,
-            lesson.Exercises.Select(x => x.ToLessonExerciseDto(isEl)).ToList()
+            PublishedPrescriptions(lesson, isEl)
         );
 
         return ServiceResult<LessonDetailDto>.Ok(dto);
     }
+
+    /// <summary>The lesson's prescriptions in order; an unpublished exercise has no public page, so it is left out.</summary>
+    private static List<LessonExerciseDto> PublishedPrescriptions(Lesson lesson, bool isEl) =>
+        lesson.Exercises
+            .Where(prescription => prescription.Exercise.IsPublished)
+            .Select(prescription => prescription.ToLessonExerciseDto(isEl))
+            .ToList();
 
     public async Task<ServiceResult<LessonCompletionResultDto>> CompleteLessonAsync(string userId, Guid lessonId, CancellationToken cancellationToken = default)
     {

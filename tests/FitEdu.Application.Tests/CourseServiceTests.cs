@@ -247,6 +247,25 @@ public class CourseServiceTests
         string.Join("|", result.Items.Select(i => i.Title)).ShouldBe("First|Last|Only");
     }
 
+    [Fact]
+    public async Task GetPublishedCourses_EquipmentFilterMatchesWholeCodes_OnSqlite()
+    {
+        // Same predicate as above, but translated to SQL by a relational provider.
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Courses.AddRange(
+            FitnessCourse("First", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell,mat"),
+            FitnessCourse("Last", FitnessGoal.Strength, CourseLevel.Beginner, "mat,kettlebell"),
+            FitnessCourse("Only", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebell"),
+            FitnessCourse("Longer Code", FitnessGoal.Strength, CourseLevel.Beginner, "kettlebells"),
+            FitnessCourse("No Equipment Listed", FitnessGoal.Strength, CourseLevel.Beginner, null));
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en", equipment: "kettlebell");
+
+        string.Join("|", result.Items.Select(i => i.Title)).ShouldBe("First|Last|Only");
+    }
+
     // ---- GetCourseDetailAsync -----------------------------------------------
 
     [Fact]
@@ -506,6 +525,29 @@ public class CourseServiceTests
         first.Image0Url.ShouldBe("/images/exercises/pushups/0.webp");
         first.Image1Url.ShouldBe("/images/exercises/pushups/1.webp");
         detail.Exercises[1].Name.ShouldBe("Squat"); // no Greek name: English fallback
+    }
+
+    [Fact]
+    public async Task GetLessonDetail_LeavesOutExercisesThatAreNotPublished()
+    {
+        // The exercise page of an unpublished exercise is a 404, so the lesson must not link to it.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("C", 1);
+        var lesson = course.Modules.First().Lessons.First();
+        var squat = NewExercise("squat", "Squat");
+        var hidden = NewExercise("hidden", "Hidden");
+        hidden.IsPublished = false;
+        db.Exercises.AddRange(squat, hidden);
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = hidden.Id, SortOrder = 1 });
+        lesson.Exercises.Add(new LessonExercise { Id = Guid.NewGuid(), ExerciseId = squat.Id, SortOrder = 2 });
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = course.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db);
+
+        var detail = (await svc.GetLessonDetailAsync(UserId, lesson.Id, "en")).Value!;
+
+        detail.Exercises.ShouldHaveSingleItem().Slug.ShouldBe("squat");
     }
 
     [Fact]
