@@ -15,7 +15,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// <summary>
 /// Issues, revokes, and regenerates PDF certificates for completed course enrollments.
 /// </summary>
-public class CertificateService : ICertificateService
+public partial class CertificateService : ICertificateService
 {
     private readonly IApplicationDbContext _db;
     private readonly IFileStorage _storage;
@@ -245,10 +245,14 @@ public class CertificateService : ICertificateService
             await _storage.DeleteFileAsync(path, cancellationToken);
 
         if (unreferencedFiles.Count > 0)
-            _logger.LogInformation("Deleted {Count} certificate PDFs that no certificate points to.", unreferencedFiles.Count);
+            LogUnreferencedPdfsDeleted(_logger, unreferencedFiles.Count);
 
         return unreferencedFiles.Count;
     }
+
+    // Source-generated log method (LoggerMessage) avoids the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Deleted {Count} certificate PDFs that no certificate points to.")]
+    private static partial void LogUnreferencedPdfsDeleted(ILogger logger, int count);
 
     private async Task DeleteStoredFileAsync(string? path, CancellationToken cancellationToken)
     {

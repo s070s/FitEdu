@@ -14,7 +14,7 @@ namespace FitEdu.Web.Startup;
 /// course/assessment/student/learning-path/testimonial/live-class sample data — none of which
 /// belongs in a real deployment.
 /// </summary>
-public static class DatabaseSeedingExtensions
+public static partial class DatabaseSeedingExtensions
 {
     /// <summary>
     /// Bounded retry-with-backoff wrapper around <see cref="PrewarmAndSeedDatabaseAsync"/> (AVAIL-2):
@@ -69,9 +69,13 @@ public static class DatabaseSeedingExtensions
         }
         catch (Exception ex)
         {
-            startupLogger.LogWarning(ex, "Could not delete the certificate PDFs that no certificate points to.");
+            LogPdfCleanupFailed(startupLogger, ex);
         }
     }
+
+    // Source-generated log method (LoggerMessage) avoids the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not delete the certificate PDFs that no certificate points to.")]
+    private static partial void LogPdfCleanupFailed(ILogger logger, Exception exception);
 
     public static async Task PrewarmAndSeedDatabaseAsync(this WebApplication app)
     {
