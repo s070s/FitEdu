@@ -778,3 +778,171 @@ input[type="date"].form-control:focus {
 .legal-footer a:hover {
     text-decoration: underline;
 }
+
+/* ================================================================
+   FitEdu design system (Phase D1): cards, chips, stat tiles,
+   duotone photos and the sticky mobile action bar
+   ================================================================ */
+
+/* Bootstrap cards take the design radius (both variables, so headers keep matching corners). */
+.card {
+    --bs-card-border-radius: var(--radius-lg);
+    --bs-card-inner-border-radius: calc(var(--radius-lg) - 1px);
+}
+
+/* Content card for new pages. No padding of its own, so a cover image can sit flush at the top;
+   wrap the text in .card-surface__body. Links and .card-surface--interactive lift on hover. */
+.card-surface {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    color: var(--text-light-normal);
+    transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out);
+}
+
+.card-surface__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+}
+
+a.card-surface {
+    text-decoration: none;
+}
+
+.card-surface:focus-within {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+}
+
+@media (hover: hover) {
+    a.card-surface:hover,
+    .card-surface--interactive:hover {
+        transform: translateY(-2px);
+        border-color: rgba(var(--text-strong-accent-rgb), 0.5);
+    }
+}
+
+/* Chips: small labels for level, muscles, equipment. Lime = primary, teal = info, coral = attention. */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-neutral-subtle);
+    color: var(--text-light-normal);
+    font-size: var(--fs-6);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.chip--lime {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.15);
+    color: var(--text-strong-accent);
+}
+
+.chip--coral {
+    background-color: rgba(var(--color-attention-rgb), 0.15);
+    color: var(--color-attention);
+}
+
+.chip--teal {
+    background-color: rgba(var(--color-info-rgb), 0.15);
+    color: var(--color-info);
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Stat tile: one big number and its label. */
+.stat-tile {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.stat-tile__value {
+    color: var(--text-strong-accent);
+    font-size: var(--fs-2);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+}
+
+.stat-tile__label {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+/* Duotone photo: greyscale exercise photo under a lime-to-charcoal wash (course covers). */
+.duotone {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-table-header);
+}
+
+.duotone > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.15);
+    mix-blend-mode: luminosity;
+    opacity: 0.9;
+}
+
+.duotone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(var(--text-strong-accent-rgb), 0.35), rgba(var(--bg-primary-rgb), 0.85));
+    pointer-events: none;
+}
+
+/* Sticky action bar: pinned above the bottom tab bar on phones, an ordinary row from 768 px. */
+.sticky-bottom-bar {
+    position: sticky;
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: rgba(var(--bg-surface-rgb), 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 768px) {
+    .sticky-bottom-bar {
+        position: static;
+        padding: 0;
+        background-color: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.card-surface:hover,
+    .card-surface--interactive:hover {
+        transform: none;
+    }
+}
