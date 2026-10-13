@@ -80,7 +80,7 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         // A bare component fragment has no head: no styles, no navigation and an empty tab title.
-        body.ShouldContain("<title>Page not found</title>");
+        body.ShouldContain("<title>Page not found - FitEdu</title>");
         body.ShouldContain("css/app.css");
         body.ShouldContain("_framework/blazor.web.js");
     }

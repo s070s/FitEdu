@@ -4,7 +4,7 @@
 @* Every state sets a title: App.razor has no static fallback. *@
 @if (_loading)
 {
-    <PageTitle>@ExerciseRes.PageTitle</PageTitle>
+    <AppPageTitle Text="@ExerciseRes.PageTitle" />
     <div class="page exercise-detail" aria-hidden="true">
         <div class="exercise-detail__layout">
             <SkeletonBlock Height="16rem" CssClass="exercise-detail__skeleton" />
@@ -14,7 +14,7 @@
 }
 else if (_exercise is null)
 {
-    <PageTitle>@ExerciseRes.NotFoundTitle</PageTitle>
+    <AppPageTitle Text="@ExerciseRes.NotFoundTitle" />
     <div class="page exercise-detail">
         <h1 class="visually-hidden">@ExerciseRes.NotFoundTitle</h1>
         <EmptyState Icon="bi-search" Title="@ExerciseRes.NotFoundTitle" Text="@ExerciseRes.NotFoundText"
@@ -23,7 +23,7 @@ else if (_exercise is null)
 }
 else
 {
-    <PageTitle>@string.Format(ExerciseRes.DetailPageTitleFormat, _exercise.Name)</PageTitle>
+    <AppPageTitle Text="@_exercise.Name" />
     <SeoHead Title="@_exercise.Name"
              Description="@string.Format(ExerciseRes.DetailDescriptionFormat, _exercise.Name)"
              CanonicalUrl="@CanonicalPath"

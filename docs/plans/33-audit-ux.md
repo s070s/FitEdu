@@ -37,7 +37,7 @@ All nine Medium findings have been resolved: action feedback is now typed and re
 > The nine Medium findings (UX-5 through UX-13) are resolved and have been removed from this list; see §2 for the summary and the git history (`Fix UX-5` … `Fix UX-13`) for the changes. UX-15 is resolved too (see §2). The remaining open items are one Low and one Info.
 
 ### UX-14: AssessmentForm's `h1` is empty while the assessment loads  [Low] [Effort: S]
-- **Evidence:** `AssessmentForm.razor:19` renders `<h1>@assessment?.Title</h1>`, which is empty until the assessment arrives. The missing tab titles of the original finding are fixed: every page now has a `<PageTitle>`, and `AssessmentForm.razor:5` falls back to `AssessmentRes.AssessmentsPageTitle` (fitness redesign, 2026-10-13).
+- **Evidence:** `AssessmentForm.razor:19` renders `<h1>@assessment?.Title</h1>`, which is empty until the assessment arrives. The missing tab titles of the original finding are fixed: every page now has a tab title (`AppPageTitle`, "page name - FitEdu"; the home page keeps its own), and `AssessmentForm.razor:5` falls back to `AssessmentRes.AssessmentsPageTitle` (fitness redesign, 2026-10-13).
 - **Impact:** The empty `<h1>` gives `FocusOnNavigate` (`Routes.razor:28`) a blank announcement target during the load.
 - **Recommendation:** Use the same fallback in the heading (`@(assessment?.Title ?? AssessmentRes.AssessmentsPageTitle)`).
 

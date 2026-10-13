@@ -540,12 +540,6 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
-        public static string DetailPageTitleFormat {
-            get {
-                return ResourceManager.GetString("DetailPageTitleFormat", resourceCulture);
-            }
-        }
-
         public static string LoadFailed {
             get {
                 return ResourceManager.GetString("LoadFailed", resourceCulture);

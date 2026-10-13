@@ -40,7 +40,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Billing &amp; Transactions - FitEdu</value>
+		<value>Billing &amp; Transactions</value>
 	</data>
 	<data name="PageHeading" xml:space="preserve">
 		<value>Billing &amp; Transactions</value>

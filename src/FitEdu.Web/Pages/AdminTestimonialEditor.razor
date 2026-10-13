@@ -2,7 +2,7 @@
 @page "/admin/testimonials/{Id:guid}"
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)</PageTitle>
+<AppPageTitle Text="@(_isEditMode ? AdminRes.EditTestimonial : AdminRes.NewTestimonial)" />
 
 <div class="admin-editor admin-editor--narrow">
     <header class="section-head">

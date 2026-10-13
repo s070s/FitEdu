@@ -5,7 +5,7 @@
    The action card (.course-cta) comes last: a dock pinned above the tab bar on phones, a sticky
    side card from 768 px. *@
 
-<PageTitle>@(_course?.Title ?? CourseRes.CourseDefault) - FitEdu</PageTitle>
+<AppPageTitle Text="@(_course?.Title ?? CourseRes.CourseDefault)" />
 
 @if (_loading)
 {

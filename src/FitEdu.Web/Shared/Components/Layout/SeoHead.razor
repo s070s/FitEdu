@@ -4,7 +4,7 @@
     <meta name="description" content="@_description" />
 
     @* Open Graph *@
-    <meta property="og:site_name" content="@SiteName" />
+    <meta property="og:site_name" content="@AppPageTitle.SiteName" />
     <meta property="og:type" content="@OgType" />
     <meta property="og:title" content="@Title" />
     <meta property="og:description" content="@_description" />
@@ -33,9 +33,9 @@
 </HeadContent>
 
 @code {
-    private const string SiteName = "FitEdu";
     private const string DefaultImagePath = "/images/og-home.jpg";
 
+    /// <summary>The page name alone (og:title); og:site_name already carries the site name.</summary>
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
 
     /// <summary>Falls back to the site description (the home hero subtitle) when empty.</summary>

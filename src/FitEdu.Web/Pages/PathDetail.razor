@@ -1,7 +1,7 @@
 @page "/paths/{Id:guid}"
 @using FitEdu.Web.Extensions
 
-<PageTitle>@(_path?.Title ?? PathRes.PathsTitle)</PageTitle>
+<AppPageTitle Text="@(_path?.Title ?? PathRes.PathsTitle)" />
 
 <section class="page path-detail">
     @if (_loading)

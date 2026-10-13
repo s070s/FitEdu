@@ -2,7 +2,7 @@
 @page "/admin/paths/{Id:guid}"
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(_isEditMode ? PathRes.EditPath : PathRes.NewPath)</PageTitle>
+<AppPageTitle Text="@(_isEditMode ? PathRes.EditPath : PathRes.NewPath)" />
 
 <div class="admin-editor admin-editor--narrow">
     <header class="section-head">

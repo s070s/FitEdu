@@ -124,7 +124,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscription Updated - FitEdu.
+        ///   Looks up a localized string similar to Subscription Updated.
         /// </summary>
         public static string PageTitle {
             get {

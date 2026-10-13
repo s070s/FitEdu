@@ -4,7 +4,7 @@
 @using FitEdu.Web.Extensions
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)</PageTitle>
+<AppPageTitle Text="@(IsNew ? AdminRes.CreateCourse : AdminRes.EditCourse)" />
 
 <div class="admin-editor">
     <header class="section-head">

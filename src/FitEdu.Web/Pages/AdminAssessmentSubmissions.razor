@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "Admin")]
 @using FitEdu.Application.Common
 
-<PageTitle>@AdminRes.AssessmentSubmissions</PageTitle>
+<AppPageTitle Text="@AdminRes.AssessmentSubmissions" />
 
 <div class="mb-3">
     <button type="button" class="btn-cta btn-cta--ghost" @onclick="GoBack"><span class="bi bi-arrow-left" aria-hidden="true"></span> @AdminRes.BackToAssessments</button>

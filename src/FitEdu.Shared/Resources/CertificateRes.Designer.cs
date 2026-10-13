@@ -193,7 +193,7 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Certificates - FitEdu.
+        ///   Looks up a localized string similar to My Certificates.
         /// </summary>
         public static string PageTitle {
             get {
