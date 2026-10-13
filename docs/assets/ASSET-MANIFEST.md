@@ -57,6 +57,12 @@ Text the app seeds into the database. It is not an image, so it is not a row in
 | `Exercises/exercises.el.json`, `Exercises/el/*.el.json` (Greek names and steps) | Our own translation of the rows above | MIT (own work) | [`LICENSE`](../../LICENSE) |
 | `Courses`, `Assessments`, `Paths`, `Showcase`, `Students` | Our own writing | MIT (own work) | [`LICENSE`](../../LICENSE) |
 
+## README screenshots (not shipped)
+
+`docs/assets/screenshots/*.webp` are screenshots of the running app taken on 2026-10-13 for the
+README; the app never serves them, so they are outside the image guard. Everything they show is listed
+above: own work (MIT), Free Exercise DB photos (the Unlicense) and the CC0 Home hero.
+
 ## Third-party code (not media)
 
 These are code libraries, not media assets, so they are not rows in `asset-manifest.json`. Each

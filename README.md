@@ -2,6 +2,18 @@
 
 A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-check assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
 
+## Screenshots
+
+<p>
+  <img src="docs/assets/screenshots/home-guest-375.webp" width="250" alt="Guest Home page on a phone: the hero with the Start free and Browse exercises buttons above the bottom tab bar">
+  <img src="docs/assets/screenshots/course-detail-375.webp" width="250" alt="Course detail page on a phone: the Bodyweight Basics programme with its level, goal and schedule chips and a Continue training bar">
+  <img src="docs/assets/screenshots/workout-lesson-375.webp" width="250" alt="Workout lesson on a phone: The Push-Up, Done Right, with its exercise count, progress bar and coaching text">
+</p>
+
+<img src="docs/assets/screenshots/dashboard-1280.webp" alt="Student dashboard on a desktop: today's planned workout with a Continue workout button and four progress stat tiles">
+
+Phone shots are 375 px wide and the dashboard is 1280 px, all in English with the Development seed data (student Alice). They are the first-screen captures of the [responsive sweep](#responsive-sweep-local), converted to WebP with `tools/assets/convert-exercise-images.mjs --single <capture> <output.webp> <width> 0.8`.
+
 ---
 
 ## Quickstart
