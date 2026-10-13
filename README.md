@@ -1,6 +1,6 @@
 # FitEdu
 
-A bilingual (English/Greek) fitness-courses platform with training courses, an exercise library, learning paths, assessments, course reviews, scheduled live sessions, real-time chat, video calls, in-app notifications, subscriptions, blog, testimonials, site search, certificate generation, and a local AI assistant.
+A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-check assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
 
 ---
 
@@ -37,11 +37,13 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 > **Database is created and migrated automatically on first run.** If you drop the database (e.g. from SSMS), just restart the app — it will recreate and reseed it.
 
+> **Reseeding after a seed file changes:** each seeder fills its table only when that table is empty, so an edited JSON file does not reach a database that was already seeded. To reseed everything, stop the app, drop the `FitEduDb` database and start the app again (LocalDB: `sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"`). The startup log then reports what each seeder wrote; a fresh Development database gets 873 exercises, 19 courses, 19 assessments, 4 learning paths, 6 testimonials, 6 live classes and 10 students. Dropping the database also deletes users, enrollments and chat history, so do it only on a development machine.
+
 > **Database connection string — do you need to change it on a new PC?** The default targets SQL Server **LocalDB** (`Server=(localdb)\MSSQLLocalDB`), whose instance name is the same on every machine, so **cloning onto a new PC needs no change** — just have LocalDB installed (it ships with Visual Studio and SQL Server Express). Only set `ConnectionStrings__DefaultConnection` in `.env` if you point the app at a **different** SQL Server — a named instance, SQL Express, a remote server, or SQL authentication — because that server name is specific to the machine it runs on. Since `.env` is gitignored it never travels with a clone: on a new PC you recreate it from `.env.template` (LocalDB default) and adjust the connection string only if you are *not* using LocalDB. The app reads `.env` first and falls back to the dev default in `appsettings.Development.json`.
 
 **Admin:** `admin@fitedu.local` / *(password you set in `.env`)*
 
-> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths, testimonials, live classes) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). The seed catalogue, all in English and Greek:
+> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths, testimonials, live classes) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). Each folder below is named by a `SeedData:JsonPaths:<Folder>` key in `appsettings.Development.json` (for example `SeedData:JsonPaths:Exercises` = `../FitEdu.Shared/JSON/Exercises`, resolved from `src/FitEdu.Web`); when a key is missing the app falls back to the same folder next to the web project. The exercise library is seeded first, because course lessons name their exercises by slug. The seed catalogue, all in English and Greek:
 >
 > | Folder under `src/FitEdu.Shared/JSON/` | What it seeds |
 > |---|---|
@@ -56,7 +58,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 >
 > The three subscription plans are seeded from code in every environment, once, when the table is empty: `SubscriptionPlanSeeder` writes Free (starter courses and the exercise library, 1 active course), Plus (every Free and Plus course plus assessments, 10 active courses) and Pro (everything, plus certificates and priority support), each with an English and a Greek description. Live classes are open to every signed-in member, so no plan sells them. A database seeded before this change keeps its old plan descriptions until the plans table is emptied.
 >
-> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos — every library exercise has both photos and its slugs match docs/assets/exercise-slugs.txt — language-neutral `reps`, Greek imperatives) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). It also keeps career-era wording out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`, the email wording in `EmailTemplates.cs`, the Swagger request examples in `OpenApiExtensions.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
+> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos — every library exercise has both photos and its slugs match docs/assets/exercise-slugs.txt — language-neutral `reps`, Greek imperatives) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). It also keeps vocabulary left over from the previous, non-fitness product out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`, the email wording in `EmailTemplates.cs`, the Swagger request examples in `OpenApiExtensions.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
 
@@ -98,6 +100,7 @@ FitEdu.sln
 │   ├── FitEdu.Infrastructure/  EF Core DbContext, migrations, service implementations
 │   ├── FitEdu.Web/             Blazor SSR + API controllers — the only deployable project
 │   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
+├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
 ├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
 └── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
@@ -115,7 +118,7 @@ Run the full suite locally:
 dotnet test FitEdu.sln
 ```
 
-The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `FitEdu.TestSupport` for shared fixtures. The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
+The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `FitEdu.TestSupport` for shared fixtures. On 2026-10-13 the suite ran 1,694 tests, all passing: Domain 190, Application 482, Infrastructure 250 and Web 772 (the Web project includes the bUnit component tests, the seed-content and asset-licence guards, and the integration tests). The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
 
 Web integration tests boot the real ASP.NET Core pipeline through `WebApplicationFactory<Program>`. The test host supplies dummy JWT/admin settings, runs in Development, swaps SQL Server for InMemory, and uses SQLite only for provider behaviors InMemory cannot execute, such as `EF.Functions.Like` or `ExecuteUpdateAsync`.
 
@@ -123,7 +126,7 @@ GitHub Actions runs on every push and pull request, and can also be started by h
 
 ### End-to-end tests (local)
 
-A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, the key public pages fitting phone and desktop screens with working images, and a two-user video call connecting with fake media. It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
+A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, the key public pages fitting phone and desktop screens with working images, and a two-user video call connecting with fake media (seven tests in four spec files). It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
 
 ```bash
 cd tests/e2e
@@ -134,7 +137,7 @@ npx playwright test
 
 ### Responsive sweep (local)
 
-[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. It needs no `npm install` (it borrows an existing `playwright-core` and the installed Chrome).
+[`tools/responsive-check/`](tools/responsive-check/README.md) opens every page of a running app as a guest, a student and an admin, at 375×812 and 1280×800, in English and Greek, and reports sideways scrolling, broken images, console errors and failed requests, the phone tab bar, small tap targets, raw resource keys and English-looking text on Greek pages. It needs no `npm install` (it borrows an existing `playwright-core` and the installed Chrome). With the app running, pass the seeded passwords in `FITEDU_STUDENT_PASSWORD` and `FITEDU_ADMIN_PASSWORD` and run `node tools/responsive-check/check-pages.mjs http://localhost:5090 <output-folder>` (keep the folder outside the repo); it writes `report.md`, `report.json` and two screenshots per visit, and exits non-zero on any defect. The 2026-10-13 sweep visited 65 role and page pairs at both sizes in both languages (260 visits) with no defects.
 
 ### Monitoring & diagnostics
 
@@ -588,6 +591,19 @@ Dev shortcuts for bypassing email confirmation:
 
 ---
 
+## Exercise Library (public domain)
+
+The app ships 873 exercises from [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), which is released under the Unlicense (a public-domain dedication). Its names, steps and photos may be reused word for word; we credit the project on the exercise pages anyway.
+
+- **Data:** each exercise has a slug, name, category, level, force, mechanic, equipment, primary and secondary muscles and numbered steps, in English and Greek. The English text is the upstream `exercises.json`, trimmed as described in [its README](src/FitEdu.Shared/JSON/Exercises/README.md); `exercises.el.json` adds the Greek name and steps. The full slug list is [docs/assets/exercise-slugs.txt](docs/assets/exercise-slugs.txt).
+- **Photos:** a start and an end photo per exercise, converted to 480 px WebP by [`tools/assets/`](tools/assets/README.md) and served from `/images/exercises/{slug}/0.webp` and `1.webp`. The UI loops between the two to show the movement; when the visitor asks for reduced motion it shows both photos side by side instead.
+- **Pages:** `/exercises` is the public library (search, muscle, level, type and equipment filters, pages); `/exercises/{slug}` shows the photos, muscles, steps and the workouts that use the exercise.
+- **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400) and fails `SeedContentIntegrityTests`.
+
+## Assets & Licences
+
+Every image the app ships is public domain (Free Exercise DB, the Unlicense), CC0 (the Home hero photo from Wikimedia Commons) or our own work (logo, icons, social preview). [docs/assets/ASSET-MANIFEST.md](docs/assets/ASSET-MANIFEST.md) records the source, licence, where the licence is stated and the download date for each file family, quotes the licence text as it was on the download date, and lists the front-end code libraries (Bootstrap, Bootstrap Icons, Quill) and the seed data. `AssetManifestTests` fails when a shipped image has no licence row, when a row matches no file, or when a row names any other licence. Videos are deliberately not used: no CC0 exercise videos could be verified.
+
 ## Content Categories
 
 Admins classify **courses and assessments** with a shared pool of categories, and students browse/filter the public Courses and Assessments pages by them.
@@ -628,7 +644,7 @@ One-to-one and group video calls, started from the existing chat. Self-hosted **
 
 ## Scheduled Sessions
 
-Admin-scheduled live sessions (e.g. group coaching or Q&A) that users register for and join over the existing video-call stack.
+Admin-scheduled live classes (e.g. a group mobility class or a coach Q&A) that users register for and join over the existing video-call stack.
 
 - **Schedule:** an admin creates a session with a start time and becomes its host (`api/admin/sessions`); it can be updated or cancelled.
 - **Register:** users see upcoming sessions and register or unregister (`api/sessions`). A background monitor sends registrants a reminder as the start time approaches (see [Notifications](#notifications)).
