@@ -61,7 +61,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Search courses, assessments, articles….
+        ///   Looks up a localized string similar to Search courses, exercises, assessments, articles….
         /// </summary>
         public static string Placeholder {
             get {

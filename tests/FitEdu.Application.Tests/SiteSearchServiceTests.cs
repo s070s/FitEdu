@@ -181,6 +181,54 @@ public class SiteSearchServiceTests
         hit.Url.ShouldBe("exercises/plank");
     }
 
+    private static void AddTwoPowerMatchesPerSource(ApplicationDbContext db)
+    {
+        for (var number = 1; number <= 2; number++)
+        {
+            db.Courses.Add(new Course { Id = Guid.NewGuid(), TitleEn = $"Power Course {number}", IsPublished = true });
+            db.AssessmentDefinitions.Add(new AssessmentDefinition
+            {
+                Id = Guid.NewGuid(), Key = $"power-{number}", TitleEn = $"Power Check {number}", SchemaJson = "{}", IsPublished = true
+            });
+            db.BlogArticles.Add(new BlogArticle
+            {
+                Id = Guid.NewGuid(), TitleEn = $"Power Tips {number}", Slug = $"power-tips-{number}", SummaryEn = "s",
+                ContentEn = "c", AuthorName = "A", IsPublished = true
+            });
+            db.Exercises.Add(PublishedExercise($"power-clean-{number}", $"Power Clean {number}"));
+        }
+    }
+
+    [Fact]
+    public async Task TitleFallback_ShortLimit_KeepsAHitFromEverySource_GroupedBySource()
+    {
+        // The search box asks for 5: the best hit of every source comes before anyone's second hit,
+        // so exercises (queried last) are not the first to be cut.
+        await using var db = DbContextFactory.CreateInMemory();
+        AddTwoPowerMatchesPerSource(db);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, AssistantAvailability.Disabled);
+
+        var result = await svc.SearchAsync("Power", "en", 5);
+
+        result.Hits.Select(hit => hit.Title)
+            .ShouldBe(["Power Course 1", "Power Course 2", "Power Check 1", "Power Tips 1", "Power Clean 1"]);
+    }
+
+    [Fact]
+    public async Task TitleFallback_OnlyOneSourceMatches_FillsTheWholeLimitFromIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        for (var number = 1; number <= 8; number++)
+            db.Courses.Add(new Course { Id = Guid.NewGuid(), TitleEn = $"Power Course {number}", IsPublished = true });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, AssistantAvailability.Disabled);
+
+        var result = await svc.SearchAsync("Power", "en", 20);
+
+        result.Hits.Count.ShouldBe(8);
+    }
+
     [Fact]
     public async Task TitleFallback_NoMatch_ReturnsEmptyHits()
     {

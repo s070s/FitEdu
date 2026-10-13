@@ -48,7 +48,6 @@ public class SiteSearchService(
         string query, string language, int limit, CancellationToken cancellationToken)
     {
         var isEl = Localized.IsEl(language);
-        var perType = Math.Max(1, limit / TitleSearchSourceCount + 1); // spread the cap roughly evenly across the sources
 
         // Plain .Contains (not EF.Functions.Like): translates to a sargable LIKE '%term%' on SQL
         // Server under its default case-insensitive collation, and — unlike EF.Functions.Like —
@@ -56,36 +55,49 @@ public class SiteSearchService(
         var courses = await db.Courses.AsNoTracking()
             .Where(c => c.IsPublished && (c.TitleEn.Contains(query) || (c.TitleEl != null && c.TitleEl.Contains(query))))
             .OrderBy(c => c.TitleEn)
-            .Take(perType)
+            .Take(limit)
             .Select(c => new SiteSearchHitDto("Course", isEl ? (c.TitleEl ?? c.TitleEn) : c.TitleEn, null, $"courses/{c.Id}"))
             .ToListAsync(cancellationToken);
 
         var assessments = await db.AssessmentDefinitions.AsNoTracking()
             .Where(a => a.IsPublished && (a.TitleEn.Contains(query) || (a.TitleEl != null && a.TitleEl.Contains(query))))
             .OrderBy(a => a.TitleEn)
-            .Take(perType)
+            .Take(limit)
             .Select(a => new SiteSearchHitDto("Assessment", isEl ? (a.TitleEl ?? a.TitleEn) : a.TitleEn, null, $"assessments/{a.Id}"))
             .ToListAsync(cancellationToken);
 
         var articles = await db.BlogArticles.AsNoTracking()
             .Where(a => a.IsPublished && (a.TitleEn.Contains(query) || (a.TitleEl != null && a.TitleEl.Contains(query))))
             .OrderBy(a => a.TitleEn)
-            .Take(perType)
+            .Take(limit)
             .Select(a => new SiteSearchHitDto("BlogArticle", isEl ? (a.TitleEl ?? a.TitleEn) : a.TitleEn, null, $"blog/{a.Slug}"))
             .ToListAsync(cancellationToken);
 
         var exercises = await db.Exercises.AsNoTracking()
             .Where(e => e.IsPublished && (e.NameEn.Contains(query) || (e.NameEl != null && e.NameEl.Contains(query))))
             .OrderBy(e => e.NameEn)
-            .Take(perType)
+            .Take(limit)
             .Select(e => new SiteSearchHitDto("Exercise", isEl ? (e.NameEl ?? e.NameEn) : e.NameEn, null, $"exercises/{e.Slug}"))
             .ToListAsync(cancellationToken);
 
-        return courses.Concat(assessments).Concat(articles).Concat(exercises).Take(limit).ToList();
+        // Each source may fill the whole limit on its own; TakeFairly then shares the places out.
+        return TakeFairly([courses, assessments, articles, exercises], limit);
     }
 
-    // Courses, assessments, blog articles and exercises.
-    private const int TitleSearchSourceCount = 4;
+    /// <summary>
+    /// Picks up to <paramref name="limit"/> hits round-robin (every source's best hit before any
+    /// source's second one), so no source is cut first, then lists them grouped by source again.
+    /// </summary>
+    private static List<SiteSearchHitDto> TakeFairly(List<List<SiteSearchHitDto>> sources, int limit) =>
+        sources
+            .SelectMany((hits, sourceIndex) => hits.Select((hit, rank) => (Hit: hit, SourceIndex: sourceIndex, Rank: rank)))
+            .OrderBy(entry => entry.Rank)
+            .ThenBy(entry => entry.SourceIndex)
+            .Take(limit)
+            .OrderBy(entry => entry.SourceIndex)
+            .ThenBy(entry => entry.Rank)
+            .Select(entry => entry.Hit)
+            .ToList();
 
     private const int MaxSnippetLength = 160;
 
