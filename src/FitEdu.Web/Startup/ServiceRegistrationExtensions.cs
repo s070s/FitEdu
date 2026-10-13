@@ -417,8 +417,12 @@ public static class ServiceRegistrationExtensions
         // StreamChatAsync already catches connection failures itself.
         void ConfigureStreaming(HttpClient c) => c.BaseAddress = new Uri(selfBase);
 
-        // Every client below calls this app's own API, so each one sends the member's UI language:
-        // the API then answers (messages, Identity errors) in the language of the page.
+        // ConfigureHttpClientDefaults adds the handler to every IHttpClientFactory client in the app,
+        // not only the ones below. That is right today: every factory client calls this app's own API,
+        // which then answers (messages, Identity errors) in the language of the page. The Ollama
+        // assistant makes its own HttpClient, so it is not affected. A future factory client for an
+        // outside service would send the member's language too; add it to the loopback clients by
+        // name instead if that matters.
         builder.Services.AddTransient<AcceptLanguageHandler>();
         builder.Services.ConfigureHttpClientDefaults(http => http.AddHttpMessageHandler<AcceptLanguageHandler>());
 
