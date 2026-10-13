@@ -318,4 +318,7 @@
   <data name="BlogTag_Beginners" xml:space="preserve">
     <value>Beginners</value>
   </data>
+  <data name="StatsAssessments" xml:space="preserve">
+    <value>Self-checks</value>
+  </data>
 </root>

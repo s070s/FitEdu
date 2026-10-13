@@ -278,11 +278,11 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 
 ### Landing — `api/landing`
 
-Numbers and showcase for the guest home page in one call.
+Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-checks take the fourth place).
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/landing` | Published course and lesson counts, exercise and member counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
+| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-check (assessment) counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
 
 ### Scheduled Sessions — `api/sessions`
 

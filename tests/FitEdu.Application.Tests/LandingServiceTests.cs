@@ -13,7 +13,8 @@ using Xunit;
 namespace FitEdu.Application.Tests;
 
 /// <summary>
-/// The public home page's numbers count only published content and members, the showcase lists
+/// The public home page's numbers count only published content (courses, lessons, exercises and
+/// self-checks) and members, the showcase lists
 /// the most-enrolled courses first, and the admin's hero photo counts only when its file exists.
 /// </summary>
 public class LandingServiceTests
@@ -50,6 +51,19 @@ public class LandingServiceTests
         overview.LessonCount.ShouldBe(3);
         overview.ExerciseCount.ShouldBe(2);
         overview.MemberCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Counts_PublishedAssessmentsOnly()
+    {
+        _db.AssessmentDefinitions.Add(Assessment("readiness", published: true));
+        _db.AssessmentDefinitions.Add(Assessment("goals", published: true));
+        _db.AssessmentDefinitions.Add(Assessment("draft", published: false));
+        await _db.SaveChangesAsync();
+
+        var overview = await NewService().GetOverviewAsync("en");
+
+        overview.AssessmentCount.ShouldBe(2);
     }
 
     [Fact]
@@ -137,6 +151,15 @@ public class LandingServiceTests
         _db.Courses.Add(course);
         return course;
     }
+
+    private static AssessmentDefinition Assessment(string key, bool published) => new()
+    {
+        Id = Guid.NewGuid(),
+        Key = key,
+        TitleEn = key,
+        SchemaJson = "{}",
+        IsPublished = published
+    };
 
     private static Exercise Exercise(string slug, bool published = true) => new()
     {

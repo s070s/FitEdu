@@ -161,7 +161,8 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-/* The member tile only shows past a threshold; an odd last tile takes the whole row. */
+/* The fourth tile is the members past a threshold, otherwise the self-checks; when there are
+   none of either, the odd last tile takes the whole row. */
 .stats-strip ::deep .stat-tile:last-child:nth-child(odd) {
     grid-column: 1 / -1;
 }

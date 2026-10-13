@@ -38,10 +38,12 @@ public class LandingService(
         var lessonCount = await db.Lessons.CountAsync(l => l.Module.Course.IsPublished, cancellationToken);
         var exerciseCount = await db.Exercises.CountAsync(e => e.IsPublished, cancellationToken);
         var memberCount = await CountMembersAsync(cancellationToken);
+        var assessmentCount = await db.AssessmentDefinitions.CountAsync(a => a.IsPublished, cancellationToken);
         var featuredCourses = await GetFeaturedCoursesAsync(lang, cancellationToken);
         var hasCustomHeroImage = await HasCustomHeroImageAsync(cancellationToken);
 
-        return new LandingOverviewDto(courseCount, lessonCount, exerciseCount, memberCount, featuredCourses, hasCustomHeroImage);
+        return new LandingOverviewDto(
+            courseCount, lessonCount, exerciseCount, memberCount, assessmentCount, featuredCourses, hasCustomHeroImage);
     }
 
     private Task<int> CountMembersAsync(CancellationToken cancellationToken)

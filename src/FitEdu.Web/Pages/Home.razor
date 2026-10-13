@@ -81,6 +81,11 @@ else
             {
                 <StatTile Value="@Number(_landing.MemberCount)" Label="@HomeRes.StatsMembers" Icon="bi-people" />
             }
+            else if (_landing.AssessmentCount > 0)
+            {
+                @* Keeps the strip at four tiles while the member count is still too small to show. *@
+                <StatTile Value="@Number(_landing.AssessmentCount)" Label="@HomeRes.StatsAssessments" Icon="bi-clipboard2-pulse" />
+            }
         </section>
     }
 

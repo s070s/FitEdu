@@ -97,15 +97,38 @@ public class HomeLandingTests : BunitContext
     }
 
     [Fact]
-    public void StatsStrip_HidesTheMemberTileWhileTheCountIsSmall()
+    public void StatsStrip_ShowsTheSelfChecksInPlaceOfASmallMemberCount()
     {
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
 
         var page = Render<Home>();
 
         var labels = page.FindAll(".stats-strip .stat-tile__label").Select(label => label.TextContent).ToList();
-        labels.Count.ShouldBe(3);
+        labels.Count.ShouldBe(4);
         labels.ShouldNotContain(HomeRes.StatsMembers);
+        labels[3].ShouldBe("Self-checks");
+        page.FindAll(".stats-strip .stat-tile__value")[3].TextContent.ShouldBe("19");
+    }
+
+    [Fact]
+    public void StatsStrip_InGreek_NamesTheSelfChecks()
+    {
+        UseCulture("el");
+        _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
+
+        var page = Render<Home>();
+
+        page.FindAll(".stats-strip .stat-tile__label")[3].TextContent.ShouldBe("Αυτοαξιολογήσεις");
+    }
+
+    [Fact]
+    public void StatsStrip_WithoutSelfChecksOrManyMembers_ShowsThreeTiles()
+    {
+        _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11, assessmentCount: 0));
+
+        var page = Render<Home>();
+
+        page.FindAll(".stats-strip .stat-tile").Count.ShouldBe(3);
     }
 
     [Fact]
@@ -197,11 +220,12 @@ public class HomeLandingTests : BunitContext
         markup.ShouldNotContain("onerror=");
     }
 
-    private static LandingOverviewDto Overview(bool hasCustomHero = false, int memberCount = 1240) => new(
+    private static LandingOverviewDto Overview(bool hasCustomHero = false, int memberCount = 1240, int assessmentCount = 19) => new(
         CourseCount: 19,
         LessonCount: 131,
         ExerciseCount: 873,
         MemberCount: memberCount,
+        AssessmentCount: assessmentCount,
         FeaturedCourses:
         [
             new(Guid.NewGuid(), "Strength basics", "Build a base.", false, 12, Level: CourseLevel.Beginner),
