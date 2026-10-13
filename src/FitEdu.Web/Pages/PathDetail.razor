@@ -50,25 +50,24 @@
 
             <AuthorizeView>
                 <Authorized>
+                    @{ var progressText = string.Format(PathRes.ProgressFormat, CompletedCount, StepCount); }
                     <div class="path-hero__progress">
-                        <ProgressRing Value="@PercentComplete" Size="HeroRingSize" Label="@RingLabel" AriaLabel="@ProgressText" />
-                        <div class="path-hero__progress-text">
-                            <span class="path-hero__progress-label">@ProgressText</span>
-                            @if (NextStep is not null)
-                            {
-                                <a class="btn-cta path-hero__cta" href="@CourseUrl(NextStep)">
-                                    @NextStepLabel
-                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
-                                </a>
-                            }
-                            else if (IsPathComplete)
-                            {
-                                <span class="chip chip--lime path-hero__done">
-                                    <span class="bi bi-trophy" aria-hidden="true"></span>
-                                    @PathRes.PathCompleted
-                                </span>
-                            }
-                        </div>
+                        <ProgressRing Value="@PercentComplete" Size="HeroRingSize" Label="@RingLabel" AriaLabel="@progressText" />
+                        <span class="path-hero__progress-label">@progressText</span>
+                        @if (NextStep is not null)
+                        {
+                            <a class="btn-cta path-hero__cta" href="@CourseUrl(NextStep)">
+                                @NextStepLabel
+                                <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                            </a>
+                        }
+                        else if (IsPathComplete)
+                        {
+                            <span class="chip chip--lime path-hero__done">
+                                <span class="bi bi-trophy" aria-hidden="true"></span>
+                                @PathRes.PathCompleted
+                            </span>
+                        }
                     </div>
                 </Authorized>
                 <NotAuthorized>

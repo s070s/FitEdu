@@ -12,9 +12,6 @@ public partial class PathDetail
     private const int FullPercent = 100;
     private const string CourseUrlPrefix = "/courses/";
 
-    /// <summary>The ring's centre shows "completed/total" (a number pair, the same in every language).</summary>
-    private const string RingLabelFormat = "{0}/{1}";
-
     [Parameter] public Guid Id { get; set; }
 
     [Inject] private IPathConsumer PathConsumer { get; set; } = default!;
@@ -39,9 +36,8 @@ public partial class PathDetail
 
     private string NextStepLabel => CompletedCount == 0 ? PathRes.StartPath : PathRes.ContinuePath;
 
-    private string RingLabel => string.Format(CultureInfo.CurrentCulture, RingLabelFormat, CompletedCount, StepCount);
-
-    private string ProgressText => string.Format(PathRes.ProgressFormat, CompletedCount, StepCount);
+    /// <summary>The ring's centre shows "completed/total": a number pair, the same in every language.</summary>
+    private string RingLabel => $"{CompletedCount}/{StepCount}";
 
     protected override async Task OnParametersSetAsync()
     {
