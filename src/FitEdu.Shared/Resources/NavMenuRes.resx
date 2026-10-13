@@ -201,6 +201,9 @@
   <data name="PathsShort" xml:space="preserve">
     <value>Paths</value>
   </data>
+  <data name="SessionsShort" xml:space="preserve">
+    <value>Live classes</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>

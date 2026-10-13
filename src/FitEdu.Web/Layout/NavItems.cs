@@ -29,7 +29,7 @@ public static class NavItems
         new("courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, InBottomNav: true),
         new("exercises", AppIcons.Exercise, () => NavMenuRes.Exercises, InHeader: true, InBottomNav: true),
         new("paths", AppIcons.Path, () => NavMenuRes.Paths, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.PathsShort),
-        new("sessions", AppIcons.Session, () => NavMenuRes.Sessions, InHeader: true),
+        new("sessions", AppIcons.Session, () => NavMenuRes.Sessions, InHeader: true, ShortLabel: () => NavMenuRes.SessionsShort),
         new("assessments", AppIcons.Assessment, () => NavMenuRes.Assessments),
         new("my-certificates", AppIcons.Certificate, () => NavMenuRes.Certificates),
         new("chat", AppIcons.Chat, () => NavMenuRes.Chat),

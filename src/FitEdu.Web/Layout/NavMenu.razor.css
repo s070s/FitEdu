@@ -26,7 +26,9 @@
     align-items: center;
     gap: var(--space-2);
     max-width: var(--layout-max);
-    min-height: var(--nav-height);
+    /* Minus the 1px bottom border, so the whole header is exactly --nav-height tall and the
+       menu backdrop (inset from --nav-height) starts right under it. */
+    min-height: calc(var(--nav-height) - 1px);
     margin-inline: auto;
     padding-inline: max(var(--page-gutter), env(safe-area-inset-left)) max(var(--page-gutter), env(safe-area-inset-right));
 }
@@ -62,12 +64,12 @@
     }
 }
 
-/* ── Inline links (wide screens only; the menu panel and bottom bar cover the rest) ── */
+/* ── Inline links (992 px and up; the menu panel and bottom bar cover smaller screens) ── */
 .site-links {
     display: none;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
     .site-links {
         display: flex;
         align-items: center;
@@ -90,6 +92,19 @@
     text-decoration: none;
     white-space: nowrap;
     transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+/* Tablets in landscape and small laptops: tighter links so the row fits beside the tools
+   (the search folds to an icon below 1200 px, see SiteSearchBox.razor.css). */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .site-links {
+        gap: 0;
+    }
+
+    .site-links ::deep .site-link {
+        padding-inline: 0.6rem;
+        font-size: 0.875rem;
+    }
 }
 
 .site-links ::deep .site-link:hover {
@@ -149,7 +164,7 @@
     background-color: rgba(var(--text-strong-accent-rgb), 0.08);
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
     .site-menu-toggle--compact-only {
         display: none;
     }

@@ -148,11 +148,12 @@
     }
 
 /* ================================================
-   Phones (below 768 px): icon button + full-width panel under the header.
+   Below 1200 px: an icon button that opens a panel under the header (full width on phones,
+   right-aligned on tablets), which leaves room for the main links from 992 px.
    .site-search stays unpositioned here, so the panel is placed against the header row
-   (.site-header__inner in NavMenu.razor.css) and spans its width.
+   (.site-header__inner in NavMenu.razor.css).
    ================================================ */
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
     .site-search-toggle {
         display: inline-flex;
     }
@@ -194,5 +195,13 @@
 
     .site-search-hit {
         min-height: var(--tap-min);
+    }
+}
+
+/* Tablets and small laptops: a right-aligned panel instead of the full header width. */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .site-search--expanded .site-search-panel {
+        left: auto;
+        width: min(26rem, 100% - 2 * var(--page-gutter));
     }
 }

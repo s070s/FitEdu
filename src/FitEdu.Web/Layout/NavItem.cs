@@ -9,7 +9,7 @@ namespace FitEdu.Web.Layout;
 /// <param name="Href">Relative route; an empty string is the home page.</param>
 /// <param name="Icon">Bootstrap Icons class from <see cref="AppIcons"/>.</param>
 /// <param name="Label">Reads the label from the resources at render time, so it follows the culture.</param>
-/// <param name="InHeader">Shown inline in the header on wide screens (1200 px and up).</param>
+/// <param name="InHeader">Shown inline in the header from 992 px up.</param>
 /// <param name="InBottomNav">Shown as a tab in the bottom bar on phones (below 768 px).</param>
 /// <param name="ShortLabel">Optional shorter label for the tight places (inline header, tabs).</param>
 /// <param name="Highlight">Drawn as the lime call-to-action pill in the header (e.g. Register).</param>

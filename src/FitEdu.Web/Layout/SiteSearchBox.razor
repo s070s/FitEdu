@@ -1,7 +1,7 @@
 @implements IDisposable
 
-@* Wide screens: an inline search field. Phones (below 768 px): an icon button that opens the
-   field and its results as a full-width panel under the header. *@
+@* Wide screens (1200 px and up): an inline search field. Smaller screens: an icon button that
+   opens the field and its results as a panel under the header. *@
 <div class="site-search @(_expanded ? "site-search--expanded" : "")"
      @onfocusin="HandleFocusIn" @onfocusout="HandleFocusOut" tabindex="-1">
     <button type="button" class="site-search-toggle" @onclick="ToggleExpanded"

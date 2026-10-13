@@ -201,6 +201,9 @@
   <data name="PathsShort" xml:space="preserve">
     <value>Διαδρομές</value>
   </data>
+  <data name="SessionsShort" xml:space="preserve">
+    <value>Ζωντανά</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Γλώσσα</value>
   </data>

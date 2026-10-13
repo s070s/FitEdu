@@ -313,6 +313,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Live classes.
+        /// </summary>
+        public static string SessionsShort {
+            get {
+                return ResourceManager.GetString("SessionsShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Language {
