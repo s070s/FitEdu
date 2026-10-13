@@ -29,8 +29,3 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
 }
-
-/* InputFile is a child component, so its input only takes this page's styles through ::deep. */
-::deep .cover-file-input {
-    max-width: 20rem;
-}

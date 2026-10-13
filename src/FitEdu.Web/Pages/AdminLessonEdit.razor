@@ -106,7 +106,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-pdf">@AdminRes.UploadPdf</label>
-                <InputFile id="lesson-pdf" class="form-control" OnChange="OnPdfSelected" accept=".pdf" />
+                <FilePicker Id="lesson-pdf" OnChange="OnPdfSelected" Accept=".pdf" />
                 @if (!string.IsNullOrEmpty(lessonPdfPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonPdfPath</small>
@@ -114,7 +114,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-video">@AdminRes.UploadVideo</label>
-                <InputFile id="lesson-video" class="form-control" OnChange="OnVideoSelected" accept="video/*" />
+                <FilePicker Id="lesson-video" OnChange="OnVideoSelected" Accept="video/*" />
                 @if (!string.IsNullOrEmpty(lessonVideoPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonVideoPath</small>

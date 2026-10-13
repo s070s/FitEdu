@@ -1,0 +1,27 @@
+.file-picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    min-width: 0;
+}
+
+/* The hidden input keeps the keyboard focus, so the button shows the focus ring for it.
+   InputFile is a child component, so its input only takes these styles through ::deep. */
+.file-picker ::deep .file-picker__input:focus-visible + .file-picker__button {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+.file-picker ::deep .file-picker__input:disabled + .file-picker__button {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.file-picker__name {
+    min-width: 0;
+    color: var(--text-light-muted);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}

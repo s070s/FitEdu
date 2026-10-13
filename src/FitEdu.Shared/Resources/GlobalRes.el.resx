@@ -375,4 +375,10 @@
   <data name="Label_GoToLogin" xml:space="preserve">
     <value>Πήγαινε στη σύνδεση</value>
   </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Επίλεξε αρχείο</value>
+  </data>
+  <data name="NoFileChosen" xml:space="preserve">
+    <value>Δεν επιλέχτηκε αρχείο</value>
+  </data>
 </root>
