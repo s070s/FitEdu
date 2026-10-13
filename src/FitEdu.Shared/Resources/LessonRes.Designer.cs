@@ -302,5 +302,23 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("WorkoutProgressFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} s.
+        /// </summary>
+        public static string SecondsFormat {
+            get {
+                return ResourceManager.GetString("SecondsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Coach's tip.
+        /// </summary>
+        public static string CoachNote {
+            get {
+                return ResourceManager.GetString("CoachNote", resourceCulture);
+            }
+        }
     }
 }

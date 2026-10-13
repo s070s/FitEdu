@@ -203,7 +203,7 @@
     <value>Triceps</value>
   </data>
   <data name="Equipment_body_only" xml:space="preserve">
-    <value>Body only</value>
+    <value>Bodyweight</value>
   </data>
   <data name="Equipment_dumbbell" xml:space="preserve">
     <value>Dumbbell</value>
@@ -237,5 +237,17 @@
   </data>
   <data name="Equipment_other" xml:space="preserve">
     <value>Other</value>
+  </data>
+  <data name="PauseAnimation" xml:space="preserve">
+    <value>Pause animation</value>
+  </data>
+  <data name="StartPositionAltFormat" xml:space="preserve">
+    <value>{0} — start position</value>
+  </data>
+  <data name="EndPositionAltFormat" xml:space="preserve">
+    <value>{0} — finish position</value>
+  </data>
+  <data name="MoreMusclesFormat" xml:space="preserve">
+    <value>+{0} more</value>
   </data>
 </root>

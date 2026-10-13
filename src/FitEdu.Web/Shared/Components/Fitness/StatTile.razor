@@ -1,0 +1,20 @@
+@* One headline number and its label (landing stats strip, dashboard, profile). Value is text the
+   page has already formatted, so "1,240", "12 h" or "7 days" all fit. *@
+
+<div class="stat-tile">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="stat-tile__icon bi @Icon" aria-hidden="true"></span>
+    }
+    <span class="stat-tile__value">@Value</span>
+    <span class="stat-tile__label">@Label</span>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Value { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+
+    /// <summary>Optional Bootstrap Icons class, e.g. "bi-fire".</summary>
+    [Parameter] public string? Icon { get; set; }
+}

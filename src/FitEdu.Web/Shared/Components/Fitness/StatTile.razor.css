@@ -1,0 +1,13 @@
+/* The tile, number and label styles are the shared .stat-tile primitive (shared-components.css). */
+.stat-tile__icon {
+    display: inline-grid;
+    place-items: center;
+    justify-self: start;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.12);
+    color: var(--text-strong-accent);
+    font-size: 1.125rem;
+}

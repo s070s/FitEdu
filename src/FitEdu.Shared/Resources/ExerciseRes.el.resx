@@ -128,7 +128,7 @@
     <value>Μεσαίο</value>
   </data>
   <data name="Level_expert" xml:space="preserve">
-    <value>Προχωρημένο</value>
+    <value>Έμπειρο</value>
   </data>
   <data name="Category_strength" xml:space="preserve">
     <value>Δύναμη</value>
@@ -237,5 +237,17 @@
   </data>
   <data name="Equipment_other" xml:space="preserve">
     <value>Άλλο</value>
+  </data>
+  <data name="PauseAnimation" xml:space="preserve">
+    <value>Παύση κίνησης</value>
+  </data>
+  <data name="StartPositionAltFormat" xml:space="preserve">
+    <value>{0} — αρχική θέση</value>
+  </data>
+  <data name="EndPositionAltFormat" xml:space="preserve">
+    <value>{0} — τελική θέση</value>
+  </data>
+  <data name="MoreMusclesFormat" xml:space="preserve">
+    <value>+{0} ακόμη</value>
   </data>
 </root>

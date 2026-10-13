@@ -1,0 +1,39 @@
+@using System.Globalization
+@* Circular progress meter: a lime arc over a faint track, with the percentage (or Label) in the
+   middle. Value is clamped to 0-100. pathLength="100" lets the dash offset be the percentage itself. *@
+
+<div class="progress-ring @(_value >= MaxPercent ? "progress-ring--complete" : "")" role="progressbar"
+     aria-valuemin="0" aria-valuemax="@MaxPercent" aria-valuenow="@_value"
+     aria-label="@(string.IsNullOrEmpty(AriaLabel) ? GlobalRes.Progress : AriaLabel)"
+     style="--progress-ring-size: @(Size)px">
+    <svg class="progress-ring__svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <circle class="progress-ring__track" cx="24" cy="24" r="21" pathLength="100" />
+        <circle class="progress-ring__arc" cx="24" cy="24" r="21" pathLength="100"
+                stroke-dasharray="100" stroke-dashoffset="@(MaxPercent - _value)" />
+    </svg>
+    <span class="progress-ring__text" aria-hidden="true">@CentreText</span>
+</div>
+
+@code {
+    private const int MaxPercent = 100;
+
+    /// <summary>Progress in percent; values outside 0-100 are clamped.</summary>
+    [Parameter] public int Value { get; set; }
+
+    /// <summary>Width and height in CSS pixels.</summary>
+    [Parameter] public int Size { get; set; } = 56;
+
+    /// <summary>Text in the middle instead of the percentage (e.g. "3/5").</summary>
+    [Parameter] public string? Label { get; set; }
+
+    /// <summary>Accessible name, e.g. "2 of 5 completed". Defaults to "Progress".</summary>
+    [Parameter] public string? AriaLabel { get; set; }
+
+    private int _value;
+
+    private string CentreText => string.IsNullOrEmpty(Label)
+        ? ((double)_value / MaxPercent).ToString("P0", CultureInfo.CurrentCulture)
+        : Label;
+
+    protected override void OnParametersSet() => _value = Math.Clamp(Value, 0, MaxPercent);
+}

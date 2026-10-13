@@ -1,0 +1,66 @@
+@using FitEdu.Web.Extensions
+@* Difficulty chip with a signal-bars icon: teal for beginner, lime for intermediate, coral for
+   advanced. Takes a course level (Level) or an exercise library level (ExerciseLevel, stored as
+   "beginner", "intermediate" or "expert"). Renders nothing when neither is set. *@
+
+@if (_tier is not null)
+{
+    <span class="chip level-badge @_tier.ChipClass">
+        <span class="bi @_tier.Icon" aria-hidden="true"></span>
+        <span class="visually-hidden">@ExerciseRes.Level: </span>@_label
+    </span>
+}
+
+@code {
+    private static readonly LevelTier BeginnerTier = new("chip--teal", "bi-reception-2");
+    private static readonly LevelTier IntermediateTier = new("chip--lime", "bi-reception-3");
+    private static readonly LevelTier AdvancedTier = new("chip--coral", "bi-reception-4");
+    private static readonly LevelTier UnknownTier = new(string.Empty, "bi-reception-0");
+
+    /// <summary>A course's level. Takes precedence over <see cref="ExerciseLevel"/>.</summary>
+    [Parameter] public CourseLevel? Level { get; set; }
+
+    /// <summary>An exercise library level as stored in the database ("beginner", "expert", …).</summary>
+    [Parameter] public string? ExerciseLevel { get; set; }
+
+    private LevelTier? _tier;
+    private string _label = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Level is { } courseLevel)
+        {
+            _tier = TierFor(courseLevel);
+            _label = CourseLabels.Level(courseLevel);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(ExerciseLevel))
+        {
+            _tier = null;
+            return;
+        }
+
+        _tier = TierFor(ExerciseLevel);
+        _label = ExerciseLabels.Level(ExerciseLevel);
+    }
+
+    private static LevelTier TierFor(CourseLevel level) => level switch
+    {
+        CourseLevel.Beginner => BeginnerTier,
+        CourseLevel.Intermediate => IntermediateTier,
+        CourseLevel.Advanced => AdvancedTier,
+        _ => UnknownTier
+    };
+
+    private static LevelTier TierFor(string exerciseLevel) => exerciseLevel.Trim().ToLowerInvariant() switch
+    {
+        "beginner" => BeginnerTier,
+        "intermediate" => IntermediateTier,
+        "expert" => AdvancedTier,
+        _ => UnknownTier
+    };
+
+    /// <summary>The chip colour class and the icon of one difficulty step.</summary>
+    private sealed record LevelTier(string ChipClass, string Icon);
+}

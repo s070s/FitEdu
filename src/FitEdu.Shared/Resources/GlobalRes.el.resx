@@ -339,4 +339,7 @@
   <data name="ThisFeature" xml:space="preserve">
     <value>αυτή τη λειτουργία</value>
   </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Πρόοδος</value>
+  </data>
 </root>

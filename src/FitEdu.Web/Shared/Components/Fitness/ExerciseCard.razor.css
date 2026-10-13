@@ -1,0 +1,210 @@
+/* The card shell is the shared .card-surface primitive; the photos sit flush at the top.
+   The card is a size container, so give it a width from its parent (a grid cell or a block),
+   not from its content: a shrink-to-fit flex item would collapse. */
+.exercise-card {
+    container-type: inline-size;
+}
+
+.exercise-card__layout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.exercise-card ::deep .exercise-media {
+    border-radius: 0;
+}
+
+.exercise-card__body {
+    gap: var(--space-3);
+}
+
+.exercise-card__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.exercise-card__position {
+    flex-shrink: 0;
+    color: var(--text-strong-accent);
+    font-size: var(--fs-4);
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+}
+
+.exercise-card__name {
+    min-width: 0;
+    margin: 0;
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+.exercise-card__link {
+    color: var(--text-strong-normal);
+    text-decoration: none;
+}
+
+.exercise-card__link:hover {
+    color: var(--text-strong-accent);
+}
+
+.exercise-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.exercise-card__tags:empty {
+    display: none;
+}
+
+.exercise-card__equipment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* ---- Library card: one stretched link over the whole card ---- */
+.exercise-card--library .exercise-card__name {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.exercise-card--library .exercise-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+}
+
+.exercise-card--library .exercise-card__link:focus-visible {
+    outline: none;
+}
+
+.exercise-card--library:has(.exercise-card__link:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+/* ---- Workout card: the dose strip, the coach's note and the steps ---- */
+/* One equal column per value (sets, reps, rest), so two or three always share the row. */
+.exercise-card__dose {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: var(--space-2);
+    margin: 0;
+}
+
+/* Tight padding and a small label keep the longest Greek label ("Επαναλήψεις") whole on a phone. */
+.exercise-card__dose-item {
+    display: grid;
+    gap: 0.15rem;
+    padding: var(--space-2);
+    border: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    border-radius: var(--radius-md);
+    background-color: rgba(var(--border-subtle-rgb), 0.05);
+}
+
+.exercise-card__dose-item dt {
+    overflow: hidden;
+    color: var(--text-light-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exercise-card__dose-item dd {
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.exercise-card__note {
+    display: flex;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-3);
+    border-left: 3px solid var(--text-strong-accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background-color: rgba(var(--text-strong-accent-rgb), 0.06);
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+}
+
+.exercise-card__note .bi {
+    flex-shrink: 0;
+    color: var(--text-strong-accent);
+}
+
+.exercise-card__steps {
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+}
+
+.exercise-card__steps summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    color: var(--text-strong-normal);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.exercise-card__steps summary::-webkit-details-marker {
+    display: none;
+}
+
+.exercise-card__steps-chevron {
+    color: var(--text-light-muted);
+    transition: transform var(--duration-base) var(--ease-out);
+}
+
+.exercise-card__steps[open] .exercise-card__steps-chevron {
+    transform: rotate(180deg);
+}
+
+.exercise-card__steps ol {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-2);
+    padding-left: 1.25rem;
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.exercise-card__steps li::marker {
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}
+
+/* A wide workout card (its own width, not the viewport's) puts the photos beside the details. */
+@container (min-width: 36rem) {
+    .exercise-card--workout .exercise-card__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+        align-items: start;
+    }
+
+    .exercise-card--workout .exercise-card__body {
+        padding: var(--space-5);
+    }
+}

@@ -179,4 +179,10 @@
 	<data name="WorkoutProgressFormat" xml:space="preserve">
 		<value>Workout {0} of {1}</value>
 	</data>
+  <data name="SecondsFormat" xml:space="preserve">
+    <value>{0} s</value>
+  </data>
+  <data name="CoachNote" xml:space="preserve">
+    <value>Coach's tip</value>
+  </data>
 </root>

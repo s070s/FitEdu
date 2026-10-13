@@ -419,5 +419,29 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Equipment_other", resourceCulture);
             }
         }
+
+        public static string PauseAnimation {
+            get {
+                return ResourceManager.GetString("PauseAnimation", resourceCulture);
+            }
+        }
+
+        public static string StartPositionAltFormat {
+            get {
+                return ResourceManager.GetString("StartPositionAltFormat", resourceCulture);
+            }
+        }
+
+        public static string EndPositionAltFormat {
+            get {
+                return ResourceManager.GetString("EndPositionAltFormat", resourceCulture);
+            }
+        }
+
+        public static string MoreMusclesFormat {
+            get {
+                return ResourceManager.GetString("MoreMusclesFormat", resourceCulture);
+            }
+        }
     }
 }

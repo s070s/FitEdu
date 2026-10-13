@@ -179,4 +179,10 @@
 	<data name="WorkoutProgressFormat" xml:space="preserve">
 		<value>Προπόνηση {0} από {1}</value>
 	</data>
+  <data name="SecondsFormat" xml:space="preserve">
+    <value>{0} δευτ.</value>
+  </data>
+  <data name="CoachNote" xml:space="preserve">
+    <value>Συμβουλή προπονητή</value>
+  </data>
 </root>

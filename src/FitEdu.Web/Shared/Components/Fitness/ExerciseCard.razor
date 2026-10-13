@@ -1,0 +1,167 @@
+@using FitEdu.Web.Extensions
+@* One exercise as a card. Library mode (Exercise): the whole card links to the exercise page and shows
+   level, equipment and muscles. Workout mode (Prescription): the photos can be paused, and the card
+   adds sets x reps, rest, the coach's note and the steps in an expandable <details>. *@
+
+@if (_content is not null)
+{
+    <article class="exercise-card card-surface @ModeClass">
+        <div class="exercise-card__layout">
+            <ExerciseMedia StartUrl="@_content.StartUrl" EndUrl="@_content.EndUrl" Name="@_content.Name"
+                           Interactive="@IsWorkout" />
+
+            <div class="card-surface__body exercise-card__body">
+                <div class="exercise-card__head">
+                    @if (Position is { } position)
+                    {
+                        <span class="exercise-card__position" aria-hidden="true">@position.ToString("00")</span>
+                    }
+                    <h3 class="exercise-card__name">
+                        <a class="exercise-card__link" href="@ExercisePageUrl">@_content.Name</a>
+                    </h3>
+                </div>
+
+                <div class="exercise-card__tags">
+                    <LevelBadge ExerciseLevel="@_content.Level" />
+                    @if (!string.IsNullOrWhiteSpace(_content.Equipment))
+                    {
+                        <span class="exercise-card__equipment">
+                            <span class="bi bi-tools" aria-hidden="true"></span>
+                            <span class="visually-hidden">@ExerciseRes.Equipment: </span>@ExerciseLabels.Equipment(_content.Equipment)
+                        </span>
+                    }
+                </div>
+
+                <MuscleChips Muscles="@_content.Muscles" Max="@(IsWorkout ? 0 : LibraryMuscleChipLimit)" />
+
+                @if (Prescription is not null)
+                {
+                    @PrescriptionDetails(Prescription)
+                }
+            </div>
+        </div>
+    </article>
+}
+
+@code {
+    /// <summary>Library cards list at most this many muscles; the rest become "+N more".</summary>
+    public const int LibraryMuscleChipLimit = 2;
+
+    private const string ExercisePagePrefix = "/exercises/";
+
+    /// <summary>A library exercise (grid card). Set this or <see cref="Prescription"/>.</summary>
+    [Parameter] public ExerciseListItemDto? Exercise { get; set; }
+
+    /// <summary>An exercise as prescribed in a lesson; takes precedence over <see cref="Exercise"/>.</summary>
+    [Parameter] public LessonExerciseDto? Prescription { get; set; }
+
+    /// <summary>1-based order inside the workout, shown as "01", "02", … when set.</summary>
+    [Parameter] public int? Position { get; set; }
+
+    private CardContent? _content;
+
+    private bool IsWorkout => Prescription is not null;
+
+    private string ModeClass => IsWorkout ? "exercise-card--workout" : "exercise-card--library card-surface--interactive";
+
+    private string ExercisePageUrl => ExercisePagePrefix + _content?.Slug;
+
+    protected override void OnParametersSet()
+    {
+        if (Prescription is not null)
+        {
+            _content = FromPrescription(Prescription);
+            return;
+        }
+
+        _content = Exercise is null ? null : FromLibrary(Exercise);
+    }
+
+    private static bool HasDose(LessonExerciseDto prescription) =>
+        prescription.Sets is not null
+        || !string.IsNullOrWhiteSpace(prescription.Reps)
+        || prescription.RestSeconds is not null;
+
+    private static CardContent FromLibrary(ExerciseListItemDto exercise) => new(
+        exercise.Slug,
+        exercise.Name,
+        exercise.Image0Url,
+        exercise.Image1Url,
+        exercise.Level,
+        exercise.Equipment,
+        exercise.PrimaryMuscles);
+
+    // A prescription carries no level: the lesson sets the dose instead.
+    private static CardContent FromPrescription(LessonExerciseDto prescription) => new(
+        prescription.Slug,
+        prescription.Name,
+        prescription.Image0Url,
+        prescription.Image1Url,
+        Level: null,
+        prescription.Equipment,
+        prescription.PrimaryMuscles);
+
+    /// <summary>The fields both card modes show, whichever DTO they came from.</summary>
+    private sealed record CardContent(
+        string Slug,
+        string Name,
+        string StartUrl,
+        string EndUrl,
+        string? Level,
+        string? Equipment,
+        string[] Muscles);
+
+    private RenderFragment PrescriptionDetails(LessonExerciseDto prescription) =>
+        @<text>
+            @if (HasDose(prescription))
+            {
+                <dl class="exercise-card__dose">
+                    @if (prescription.Sets is { } sets)
+                    {
+                        <div class="exercise-card__dose-item">
+                            <dt>@LessonRes.Sets</dt>
+                            <dd>@sets</dd>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(prescription.Reps))
+                    {
+                        <div class="exercise-card__dose-item">
+                            <dt>@LessonRes.Reps</dt>
+                            <dd>@prescription.Reps</dd>
+                        </div>
+                    }
+                    @if (prescription.RestSeconds is { } restSeconds)
+                    {
+                        <div class="exercise-card__dose-item">
+                            <dt>@LessonRes.Rest</dt>
+                            <dd>@string.Format(LessonRes.SecondsFormat, restSeconds)</dd>
+                        </div>
+                    }
+                </dl>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(prescription.Notes))
+            {
+                <p class="exercise-card__note">
+                    <span class="bi bi-lightbulb" aria-hidden="true"></span>
+                    <span><span class="visually-hidden">@LessonRes.CoachNote: </span>@prescription.Notes</span>
+                </p>
+            }
+
+            @if (prescription.Instructions.Length > 0)
+            {
+                <details class="exercise-card__steps">
+                    <summary>
+                        <span>@LessonRes.ShowInstructions</span>
+                        <span class="bi bi-chevron-down exercise-card__steps-chevron" aria-hidden="true"></span>
+                    </summary>
+                    <ol>
+                        @foreach (var step in prescription.Instructions)
+                        {
+                            <li>@step</li>
+                        }
+                    </ol>
+                </details>
+            }
+        </text>;
+}
