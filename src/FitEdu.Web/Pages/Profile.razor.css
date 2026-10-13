@@ -60,6 +60,11 @@
     overflow-wrap: anywhere;
 }
 
+/* Long level labels ("Προτιμώ να μην απαντήσω") wrap inside the chip on a 320 px phone. */
+.profile-hero .chip {
+    white-space: normal;
+}
+
 /* ── Stats ── */
 .profile-stats {
     display: grid;
