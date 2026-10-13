@@ -8,14 +8,21 @@
     <header class="certificates-head">
         <span class="eyebrow"><span class="bi @AppIcons.Certificate" aria-hidden="true"></span> @NavMenuRes.Certificates</span>
         <h1>@CertificateRes.Heading</h1>
-        <p class="certificates-head__lead">@CertificateRes.Subtitle</p>
+        <p class="certificates-head__lead">@(_certificateAccess ? CertificateRes.Subtitle : CertificateRes.SubtitleNoAccess)</p>
     </header>
 
     @if (_loading)
     {
         <LoadingSpinner Label="@CertificateRes.Loading" />
     }
-    else if (_certificates is null || _certificates.Count == 0)
+    else if (HasNoCertificates && !_certificateAccess)
+    {
+        @* Only Pro issues certificates, so Free and Plus members learn why the list stays empty. *@
+        <UpgradePrompt PlanName="@CertificatePlanName"
+                       Description="@CertificateRes.UpgradeDescription"
+                       UpgradeButtonText="@LessonRes.UpgradeToPro" />
+    }
+    else if (HasNoCertificates)
     {
         <EmptyState Icon="@AppIcons.Certificate"
                     Title="@CertificateRes.NoCertificates"

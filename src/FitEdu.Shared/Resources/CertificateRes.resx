@@ -173,4 +173,10 @@
 	<data name="FieldVerificationId" xml:space="preserve">
 		<value>Verification ID</value>
 	</data>
+	<data name="SubtitleNoAccess" xml:space="preserve">
+		<value>Certificates come with Pro. Upgrade and every programme you finish earns one that anyone can verify.</value>
+	</data>
+	<data name="UpgradeDescription" xml:space="preserve">
+		<value>Finish a programme on Pro to get a certificate with a verification link you can share.</value>
+	</data>
 </root>

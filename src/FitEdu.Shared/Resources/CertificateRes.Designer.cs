@@ -272,5 +272,23 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Verify", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates come with Pro. Upgrade and every programme you finish earns one that anyone can verify..
+        /// </summary>
+        public static string SubtitleNoAccess {
+            get {
+                return ResourceManager.GetString("SubtitleNoAccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Finish a programme on Pro to get a certificate with a verification link you can share..
+        /// </summary>
+        public static string UpgradeDescription {
+            get {
+                return ResourceManager.GetString("UpgradeDescription", resourceCulture);
+            }
+        }
     }
 }

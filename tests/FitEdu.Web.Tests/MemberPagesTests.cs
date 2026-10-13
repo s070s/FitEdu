@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
@@ -21,12 +22,14 @@ public class MemberPagesTests : BunitContext
     private readonly ICertificateConsumer _certificateConsumer = Substitute.For<ICertificateConsumer>();
     private readonly INotificationConsumer _notificationConsumer = Substitute.For<INotificationConsumer>();
     private readonly ISearchConsumer _searchConsumer = Substitute.For<ISearchConsumer>();
+    private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
 
     public MemberPagesTests()
     {
         Services.AddSingleton(_certificateConsumer);
         Services.AddSingleton(_notificationConsumer);
         Services.AddSingleton(_searchConsumer);
+        Services.AddSingleton(_subscriptionConsumer);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddAuthorization();
     }
@@ -53,6 +56,20 @@ public class MemberPagesTests : BunitContext
         var page = Render<MyCertificates>();
 
         page.Find(".empty-state__action").GetAttribute("href").ShouldBe("/courses");
+    }
+
+    [Fact]
+    public void MyCertificates_NoneOnAPlanWithoutCertificates_OffersTheProUpgrade()
+    {
+        _certificateConsumer.GetMyCertificatesAsync(Arg.Any<string>()).Returns([]);
+        _subscriptionConsumer.GetStatusAsync().Returns(new UserSubscriptionStatusDto(
+            SubscriptionTier.Free, "Free", DateTime.UtcNow, null, false, new PlanFeaturesDto { CertificateAccess = false }));
+
+        var page = Render<MyCertificates>();
+
+        page.Find(".certificates-head__lead").TextContent.ShouldBe(CertificateRes.SubtitleNoAccess);
+        page.Find(".upgrade-prompt__action").GetAttribute("href").ShouldBe("/pricing");
+        page.FindAll(".empty-state").ShouldBeEmpty();
     }
 
     [Fact]

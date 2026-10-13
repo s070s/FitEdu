@@ -192,4 +192,10 @@
   <data name="FieldVerificationId" xml:space="preserve">
     <value>Κωδικός επαλήθευσης</value>
   </data>
+  <data name="SubtitleNoAccess" xml:space="preserve">
+    <value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση και κάθε πρόγραμμα που ολοκληρώνεις σού χαρίζει ένα, που μπορεί να το επαληθεύσει οποιοσδήποτε.</value>
+  </data>
+  <data name="UpgradeDescription" xml:space="preserve">
+    <value>Ολοκλήρωσε ένα πρόγραμμα με το Pro και πάρε πιστοποιητικό με σύνδεσμο επαλήθευσης που μπορείς να μοιραστείς.</value>
+  </data>
 </root>
