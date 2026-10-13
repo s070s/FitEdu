@@ -251,5 +251,41 @@ namespace FitEdu.Shared.Resources {
         public static string SaveError {
             get { return ResourceManager.GetString("SaveError", resourceCulture); }
         }
+
+        public static string PathsEyebrow {
+            get { return ResourceManager.GetString("PathsEyebrow", resourceCulture); }
+        }
+
+        public static string PathsSubtitle {
+            get { return ResourceManager.GetString("PathsSubtitle", resourceCulture); }
+        }
+
+        public static string BrowseCourses {
+            get { return ResourceManager.GetString("BrowseCourses", resourceCulture); }
+        }
+
+        public static string StartPath {
+            get { return ResourceManager.GetString("StartPath", resourceCulture); }
+        }
+
+        public static string ContinuePath {
+            get { return ResourceManager.GetString("ContinuePath", resourceCulture); }
+        }
+
+        public static string PathCompleted {
+            get { return ResourceManager.GetString("PathCompleted", resourceCulture); }
+        }
+
+        public static string JourneyTitle {
+            get { return ResourceManager.GetString("JourneyTitle", resourceCulture); }
+        }
+
+        public static string StepNumberFormat {
+            get { return ResourceManager.GetString("StepNumberFormat", resourceCulture); }
+        }
+
+        public static string StepLockedHint {
+            get { return ResourceManager.GetString("StepLockedHint", resourceCulture); }
+        }
     }
 }

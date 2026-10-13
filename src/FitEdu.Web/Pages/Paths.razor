@@ -1,45 +1,41 @@
 @page "/paths"
 
 <PageTitle>@PathRes.PathsTitle</PageTitle>
-<SeoHead Title="@PathRes.PathsTitle" CanonicalUrl="/paths" />
+<SeoHead Title="@PathRes.PathsTitle" Description="@PathRes.PathsSubtitle" CanonicalUrl="/paths" />
 
-<h1>@PathRes.PathsTitle</h1>
+<section class="page paths-page">
+    <header class="paths-hero">
+        <span class="eyebrow">
+            <span class="bi bi-signpost-split" aria-hidden="true"></span>
+            @PathRes.PathsEyebrow
+        </span>
+        <h1 class="paths-hero__title">@PathRes.PathsTitle</h1>
+        <p class="paths-hero__lead">@PathRes.PathsSubtitle</p>
+    </header>
 
-@if (_loading)
-{
-    <SkeletonBlock Rows="3" Height="7rem" Gap="1rem" />
-}
-else if (_paths.Count == 0)
-{
-    <p>@PathRes.NoPathsYet</p>
-}
-else
-{
-    <div class="paths-list stagger">
-        @foreach (var path in _paths)
-        {
-            <div class="path-card" @key="path.Id" role="button" tabindex="0"
-                 @onclick="() => ViewPath(path.Id)"
-                 @onkeydown="@(e => { if (e.IsActivationKey()) ViewPath(path.Id); })">
-                <div class="path-card-header">
-                    <h3>@path.Title</h3>
-                    @if (path.CategoryName is not null)
-                    {
-                        <span class="category-chip">@path.CategoryName</span>
-                    }
-                </div>
-                @if (!string.IsNullOrEmpty(path.Description))
-                {
-                    <p class="description">@path.Description</p>
-                }
-                <div class="meta">
-                    <span class="steps-count">@string.Format(PathRes.StepsCountFormat, path.StepCount)</span>
-                    @if (path.CompletedSteps > 0)
-                    {
-                        <span class="progress-badge">@string.Format(PathRes.ProgressFormat, path.CompletedSteps, path.StepCount)</span>
-                    }
-                </div>
-            </div>
-        }
-    </div>
-}
+    @if (_loading)
+    {
+        <div class="grid-auto" aria-busy="true">
+            @for (var index = 0; index < SkeletonCardCount; index++)
+            {
+                <SkeletonBlock Height="12rem" CssClass="paths-skeleton" />
+            }
+        </div>
+    }
+    else if (_paths.Count == 0)
+    {
+        <EmptyState Icon="bi-signpost-split"
+                    Title="@PathRes.NoPathsYet"
+                    ActionHref="/courses"
+                    ActionLabel="@PathRes.BrowseCourses" />
+    }
+    else
+    {
+        <div class="paths-list grid-auto stagger">
+            @foreach (var path in _paths)
+            {
+                <PathCard @key="path.Id" Path="path" />
+            }
+        </div>
+    }
+</section>

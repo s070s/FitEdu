@@ -7,8 +7,10 @@ namespace FitEdu.Web.Pages;
 
 public partial class Paths
 {
+    /// <summary>Placeholder cards while loading: the seeded catalogue has four paths.</summary>
+    private const int SkeletonCardCount = 4;
+
     [Inject] private IPathConsumer PathConsumer { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
 
     private List<LearningPathListItemDto> _paths = [];
     private bool _loading = true;
@@ -21,6 +23,4 @@ public partial class Paths
         _paths = [.. await PathConsumer.GetPathsAsync(CurrentLang)];
         _loading = false;
     }
-
-    private void ViewPath(Guid id) => Navigation.NavigateTo($"/paths/{id}");
 }

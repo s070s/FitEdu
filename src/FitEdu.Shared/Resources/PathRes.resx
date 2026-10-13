@@ -202,4 +202,31 @@
   <data name="SaveError" xml:space="preserve">
     <value>Failed to save the training path. Please try again.</value>
   </data>
+  <data name="PathsEyebrow" xml:space="preserve">
+    <value>Step by step</value>
+  </data>
+  <data name="PathsSubtitle" xml:space="preserve">
+    <value>Follow a set of courses in order, from your first workout to your goal. Each one you finish unlocks the next.</value>
+  </data>
+  <data name="BrowseCourses" xml:space="preserve">
+    <value>Browse courses</value>
+  </data>
+  <data name="StartPath" xml:space="preserve">
+    <value>Start the path</value>
+  </data>
+  <data name="ContinuePath" xml:space="preserve">
+    <value>Continue the path</value>
+  </data>
+  <data name="PathCompleted" xml:space="preserve">
+    <value>Path completed</value>
+  </data>
+  <data name="JourneyTitle" xml:space="preserve">
+    <value>Courses in this path</value>
+  </data>
+  <data name="StepNumberFormat" xml:space="preserve">
+    <value>Step {0}</value>
+  </data>
+  <data name="StepLockedHint" xml:space="preserve">
+    <value>Finish the previous course to unlock it.</value>
+  </data>
 </root>

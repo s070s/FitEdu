@@ -1,71 +1,139 @@
 @page "/paths/{Id:guid}"
+@using FitEdu.Web.Extensions
 
 <PageTitle>@(_path?.Title ?? PathRes.PathsTitle)</PageTitle>
 
-@if (_loading)
-{
-    <LoadingSpinner Label="@PathRes.Loading" />
-}
-else if (_path is null)
-{
-    <p>@PathRes.PathNotFound</p>
-    <a class="btn btn-secondary" href="/paths">@PathRes.BackToPaths</a>
-}
-else
-{
-    <SeoHead Title="@_path.Title"
-             Description="@_path.Description"
-             CanonicalUrl="@($"/paths/{_path.Id}")" />
-
-    <a class="back-link" href="/paths">&larr; @PathRes.BackToPaths</a>
-
-    <div class="path-detail-header">
-        <h1>@_path.Title</h1>
-        @if (_path.CategoryName is not null)
-        {
-            <span class="category-chip">@_path.CategoryName</span>
-        }
-    </div>
-
-    @if (!string.IsNullOrEmpty(_path.Description))
+<section class="page path-detail">
+    @if (_loading)
     {
-        <p class="description">@_path.Description</p>
+        <LoadingSpinner Label="@PathRes.Loading" />
     }
+    else if (_path is null)
+    {
+        <EmptyState Icon="bi-signpost-split"
+                    Title="@PathRes.PathNotFound"
+                    ActionHref="/paths"
+                    ActionLabel="@PathRes.BackToPaths" />
+    }
+    else
+    {
+        <SeoHead Title="@_path.Title"
+                 Description="@_path.Description"
+                 CanonicalUrl="@($"/paths/{_path.Id}")" />
 
-    <AuthorizeView>
-        <NotAuthorized>
-            <div class="alert alert-info">@PathRes.SignInToTrackProgress</div>
-        </NotAuthorized>
-    </AuthorizeView>
+        <a class="back-link" href="/paths">
+            <span class="bi bi-arrow-left" aria-hidden="true"></span>
+            @PathRes.BackToPaths
+        </a>
 
-    <ol class="path-steps">
-        @foreach (var step in _path.Steps)
-        {
-            <li class="path-step @(step.IsCompleted ? "step-completed" : "") @(step.IsLocked ? "step-locked" : "") @(step.IsNext ? "step-next" : "")"
-                @key="step.CourseId">
-                <div class="step-marker">@step.StepOrder</div>
-                <div class="step-body">
-                    <div class="step-title-row">
-                        <span class="step-title">@step.CourseTitle</span>
+        <header class="path-hero">
+            <div class="path-hero__text">
+                <div class="chip-row">
+                    @if (_path.CategoryName is not null)
+                    {
+                        <span class="chip chip--teal category-chip">
+                            <span class="bi @CategoryIcons.For(_path.CategoryName)" aria-hidden="true"></span>
+                            @_path.CategoryName
+                        </span>
+                    }
+                    <span class="chip path-hero__count">
+                        <span class="bi bi-signpost-split" aria-hidden="true"></span>
+                        @string.Format(PathRes.StepsCountFormat, _path.Steps.Count)
+                    </span>
+                </div>
+                <h1 class="path-hero__title">@_path.Title</h1>
+                @if (!string.IsNullOrEmpty(_path.Description))
+                {
+                    <p class="description">@_path.Description</p>
+                }
+            </div>
+
+            <AuthorizeView>
+                <Authorized>
+                    <div class="path-hero__progress">
+                        <ProgressRing Value="@PercentComplete" Size="HeroRingSize" Label="@RingLabel" AriaLabel="@ProgressText" />
+                        <div class="path-hero__progress-text">
+                            <span class="path-hero__progress-label">@ProgressText</span>
+                            @if (NextStep is not null)
+                            {
+                                <a class="btn-cta path-hero__cta" href="@CourseUrl(NextStep)">
+                                    @NextStepLabel
+                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                                </a>
+                            }
+                            else if (IsPathComplete)
+                            {
+                                <span class="chip chip--lime path-hero__done">
+                                    <span class="bi bi-trophy" aria-hidden="true"></span>
+                                    @PathRes.PathCompleted
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="path-signin">
+                        <span class="path-signin__icon bi bi-person-check" aria-hidden="true"></span>
+                        <p class="path-signin__text">@PathRes.SignInToTrackProgress</p>
+                        <a class="btn-cta path-signin__action" href="/login">@NavMenuRes.Login</a>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+        </header>
+
+        <h2 class="journey-title">@PathRes.JourneyTitle</h2>
+        <ol class="journey path-steps">
+            @foreach (var step in _path.Steps)
+            {
+                <li class="path-step @StepStateClasses(step)" aria-current="@(step.IsNext ? "step" : null)"
+                    @key="step.CourseId">
+                    <span class="step-marker" aria-hidden="true">
                         @if (step.IsCompleted)
                         {
-                            <span class="step-badge badge-completed">@PathRes.StepCompleted</span>
-                        }
-                        else if (step.IsNext)
-                        {
-                            <span class="step-badge badge-next">@PathRes.StepNext</span>
+                            <span class="bi bi-check-lg"></span>
                         }
                         else if (step.IsLocked)
                         {
-                            <span class="step-badge badge-locked">@PathRes.StepLocked</span>
+                            <span class="bi bi-lock-fill"></span>
                         }
+                        else
+                        {
+                            @step.StepOrder
+                        }
+                    </span>
+                    <div class="step-body card-surface @(step.IsLocked ? "" : "card-surface--interactive")">
+                        <div class="card-surface__body">
+                            <div class="step-title-row">
+                                <span class="step-kicker">@string.Format(PathRes.StepNumberFormat, step.StepOrder)</span>
+                                @if (step.IsCompleted)
+                                {
+                                    <span class="step-badge badge-completed chip chip--lime">@PathRes.StepCompleted</span>
+                                }
+                                else if (step.IsNext)
+                                {
+                                    <span class="step-badge badge-next chip chip--teal">@PathRes.StepNext</span>
+                                }
+                                else if (step.IsLocked)
+                                {
+                                    <span class="step-badge badge-locked chip">@PathRes.StepLocked</span>
+                                }
+                            </div>
+                            <h3 class="step-title">@step.CourseTitle</h3>
+                            @if (step.IsLocked)
+                            {
+                                <p class="step-hint">@PathRes.StepLockedHint</p>
+                            }
+                            else
+                            {
+                                <a class="step-link stretched-link" href="@CourseUrl(step)">
+                                    @PathRes.GoToCourse
+                                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                                </a>
+                            }
+                        </div>
                     </div>
-                    @if (!step.IsLocked)
-                    {
-                        <a class="btn btn-sm btn-outline-primary" href="@($"/courses/{step.CourseId}")">@PathRes.GoToCourse</a>
-                    }
-                </div>
-            </li>
-        }
-    </ol>
-}
+                </li>
+            }
+        </ol>
+    }
+</section>

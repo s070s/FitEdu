@@ -86,10 +86,10 @@
     <value>Ολοκληρώθηκε</value>
   </data>
   <data name="GoToCourse" xml:space="preserve">
-    <value>Μετάβαση στο μάθημα</value>
+    <value>Άνοιξε το πρόγραμμα</value>
   </data>
   <data name="SignInToTrackProgress" xml:space="preserve">
-    <value>Συνδεθείτε για να παρακολουθείτε την πρόοδό σας σε αυτή τη διαδρομή.</value>
+    <value>Συνδέσου για να βλέπεις την πρόοδό σου σε αυτή τη διαδρομή.</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Φόρτωση διαδρομών…</value>
@@ -201,5 +201,32 @@
   </data>
   <data name="SaveError" xml:space="preserve">
     <value>Αποτυχία αποθήκευσης της διαδρομής προπόνησης. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="PathsEyebrow" xml:space="preserve">
+    <value>Βήμα βήμα</value>
+  </data>
+  <data name="PathsSubtitle" xml:space="preserve">
+    <value>Ακολούθησε μια σειρά προγραμμάτων με τη σειρά, από την πρώτη σου προπόνηση μέχρι τον στόχο σου. Κάθε πρόγραμμα που ολοκληρώνεις ξεκλειδώνει το επόμενο.</value>
+  </data>
+  <data name="BrowseCourses" xml:space="preserve">
+    <value>Δες τα προγράμματα</value>
+  </data>
+  <data name="StartPath" xml:space="preserve">
+    <value>Ξεκίνα τη διαδρομή</value>
+  </data>
+  <data name="ContinuePath" xml:space="preserve">
+    <value>Συνέχισε τη διαδρομή</value>
+  </data>
+  <data name="PathCompleted" xml:space="preserve">
+    <value>Ολοκλήρωσες τη διαδρομή</value>
+  </data>
+  <data name="JourneyTitle" xml:space="preserve">
+    <value>Τα προγράμματα της διαδρομής</value>
+  </data>
+  <data name="StepNumberFormat" xml:space="preserve">
+    <value>Βήμα {0}</value>
+  </data>
+  <data name="StepLockedHint" xml:space="preserve">
+    <value>Ολοκλήρωσε το προηγούμενο πρόγραμμα για να το ξεκλειδώσεις.</value>
   </data>
 </root>

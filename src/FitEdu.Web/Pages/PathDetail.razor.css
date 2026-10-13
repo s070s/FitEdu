@@ -1,111 +1,294 @@
+.path-detail {
+    --marker-size: 2.75rem;
+    --journey-gap: var(--space-4);
+    padding-block: var(--space-4) var(--space-6);
+}
+
 .back-link {
-    display: inline-block;
-    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    margin-bottom: var(--space-3);
     color: var(--text-light-muted);
+    font-weight: 600;
     text-decoration: none;
 }
 
     .back-link:hover {
-        text-decoration: underline;
+        color: var(--text-strong-normal);
     }
 
-.path-detail-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+/* ---- Hero: title and description, then the member's progress (or the sign-in prompt) ---- */
+
+.path-hero {
+    display: grid;
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    background:
+        radial-gradient(120% 140% at 100% 0%, rgba(var(--text-strong-accent-rgb), 0.12), transparent 60%),
+        var(--bg-surface);
+}
+
+.path-hero__text {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.path-hero__title {
+    margin: 0;
+    font-size: var(--fs-1);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    overflow-wrap: anywhere;
+    text-wrap: balance;
 }
 
 .description {
+    max-width: var(--prose-max);
+    margin: 0;
     color: var(--text-light-normal);
-    max-width: 700px;
-    margin: 0.5rem 0 1.5rem;
+    line-height: 1.6;
 }
 
-.path-steps {
-    list-style: none;
+.path-hero__progress,
+.path-signin {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+}
+
+.path-hero__progress-text {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.path-hero__progress-label {
+    color: var(--text-strong-normal);
+    font-weight: 700;
+}
+
+.path-signin__icon {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border-radius: 50%;
+    background-color: rgba(var(--color-info-rgb), 0.15);
+    color: var(--color-info);
+    font-size: 1.25rem;
+}
+
+.path-signin__text {
+    flex: 1 1 14rem;
+    margin: 0;
+    color: var(--text-light-normal);
+}
+
+/* From tablet width the progress panel sits beside the title instead of under it. */
+@media (min-width: 768px) {
+    .path-hero {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .path-hero__progress,
+    .path-signin {
+        max-width: 22rem;
+        padding-top: 0;
+        padding-left: var(--space-5);
+        border-top: 0;
+        border-left: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    }
+}
+
+/* ---- Journey: a vertical timeline on phones, a horizontal one from 992 px ---- */
+
+.journey-title {
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-3);
+}
+
+.journey {
+    display: grid;
+    gap: var(--journey-gap);
     margin: 0;
     padding: 0;
-    max-width: 700px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    list-style: none;
 }
 
 .path-step {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--marker-size) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-3);
 }
 
-    .path-step.step-next {
-        border-color: var(--text-accent);
+    /* Connector from this step's marker to the next one; lime once this step is done. */
+    .path-step::before {
+        content: "";
+        position: absolute;
+        top: var(--marker-size);
+        bottom: calc(-1 * var(--journey-gap));
+        left: calc(var(--marker-size) / 2 - 1px);
+        width: 2px;
+        background-color: rgba(var(--border-subtle-rgb), 0.22);
     }
 
-    .path-step.step-locked {
-        opacity: 0.6;
+    .path-step:last-child::before {
+        display: none;
+    }
+
+    .path-step.step-completed::before {
+        background-color: var(--text-strong-accent);
     }
 
 .step-marker {
-    flex-shrink: 0;
-    width: 2rem;
-    height: 2rem;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--marker-size);
+    height: var(--marker-size);
+    border: 2px solid rgba(var(--border-subtle-rgb), 0.3);
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    background: var(--bg-info-subtle);
-    color: var(--text-accent);
+    background-color: var(--bg-surface);
+    color: var(--text-strong-normal);
+    font-size: 1rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
 }
 
-    .step-completed .step-marker {
-        background: var(--color-success);
-        color: #fff;
-    }
+.step-completed .step-marker {
+    border-color: var(--text-strong-accent);
+    background-color: var(--text-strong-accent);
+    color: var(--bg-primary);
+    font-size: 1.25rem;
+}
+
+.step-next .step-marker {
+    border-color: var(--text-strong-accent);
+    background-color: var(--bg-primary);
+    color: var(--text-strong-accent);
+    animation: step-marker-glow 2.4s var(--ease-in-out) infinite;
+}
+
+.step-locked .step-marker {
+    color: var(--text-light-muted);
+    font-size: 0.9375rem;
+}
+
+.step-completed.step-locked .step-marker {
+    color: var(--bg-primary);
+}
+
+@keyframes step-marker-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(var(--text-strong-accent-rgb), 0.45); }
+    50% { box-shadow: 0 0 0 8px rgba(var(--text-strong-accent-rgb), 0); }
+}
 
 .step-body {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+    min-height: 100%;
+}
+
+.step-next .step-body {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+    box-shadow: 0 0 0 1px rgba(var(--text-strong-accent-rgb), 0.25);
+}
+
+.step-locked:not(.step-completed) .step-body {
+    background-color: transparent;
+    border-style: dashed;
 }
 
 .step-title-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.step-kicker {
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .step-title {
-    font-weight: 600;
+    margin: 0;
+    color: var(--text-strong-normal);
+    font-size: var(--fs-4);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.step-locked:not(.step-completed) .step-title {
     color: var(--text-light-normal);
 }
 
-.step-badge {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    border-radius: 12px;
-    white-space: nowrap;
+.step-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: auto 0 0;
+    color: var(--text-light-muted);
+    font-size: 0.875rem;
 }
 
-    .badge-completed {
-        background: var(--bg-success-subtle, rgba(25, 135, 84, 0.15));
-        color: var(--color-success);
+/* The link is stretched over the whole step card (shared .card-surface rules). */
+.step-link.stretched-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    margin-top: auto;
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}
+
+@media (min-width: 992px) {
+    .journey {
+        grid-auto-columns: minmax(13rem, 1fr);
+        grid-auto-flow: column;
+        /* Room for the focus ring and the glow; many steps scroll inside the list, never the page. */
+        margin: calc(-1 * var(--space-3));
+        padding: var(--space-3);
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
     }
 
-    .badge-next {
-        background: var(--bg-info-subtle);
-        color: var(--text-accent);
+    .path-step {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+        scroll-snap-align: start;
     }
 
-    .badge-locked {
-        background: var(--bg-warning-subtle);
-        color: var(--text-light-muted);
+        .path-step::before {
+            top: calc(var(--marker-size) / 2 - 1px);
+            right: calc(-1 * var(--journey-gap));
+            bottom: auto;
+            left: var(--marker-size);
+            width: auto;
+            height: 2px;
+        }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .step-next .step-marker {
+        animation: none;
+        box-shadow: 0 0 0 4px rgba(var(--text-strong-accent-rgb), 0.2);
     }
+}
