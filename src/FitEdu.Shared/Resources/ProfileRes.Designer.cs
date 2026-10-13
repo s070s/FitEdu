@@ -464,5 +464,50 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("StreakDaysFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your training at a glance.
+        /// </summary>
+        public static string StatsHeading {
+            get {
+                return ResourceManager.GetString("StatsHeading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Courses joined.
+        /// </summary>
+        public static string StatsCourses {
+            get {
+                return ResourceManager.GetString("StatsCourses", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificates earned.
+        /// </summary>
+        public static string StatsCertificates {
+            get {
+                return ResourceManager.GetString("StatsCertificates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Self-assessments done.
+        /// </summary>
+        public static string StatsAssessments {
+            get {
+                return ResourceManager.GetString("StatsAssessments", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not chosen yet.
+        /// </summary>
+        public static string GoalNotSet {
+            get {
+                return ResourceManager.GetString("GoalNotSet", resourceCulture);
+            }
+        }
     }
 }

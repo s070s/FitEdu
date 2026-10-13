@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Globalization;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
@@ -18,11 +19,16 @@ public partial class Profile
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
     [Inject] private AvatarChangedNotifier AvatarNotifier { get; set; } = default!;
+    [Inject] private ICourseConsumer CourseConsumer { get; set; } = default!;
+    [Inject] private ICertificateConsumer CertificateConsumer { get; set; } = default!;
+    [Inject] private IAssessmentConsumer AssessmentConsumer { get; set; } = default!;
+    [Inject] private ILogger<Profile> Logger { get; set; } = default!;
 
     private ProfileDto? profile;
     private bool _isImpersonating;
     private string displayName = string.Empty;
     private UserStatus profileStatus;
+    private FitnessGoal? profileGoal;
     private string currentPassword = string.Empty;
     private string newPassword = string.Empty;
     private string confirmPassword = string.Empty;
@@ -36,14 +42,42 @@ public partial class Profile
     private bool _isDeleting;
     private string? _deleteError;
 
+    // Stat tiles: null hides that tile (its call failed), so one broken endpoint never blanks the rest.
+    private int? _enrolledCourses;
+    private int? _certificates;
+    private int? _assessments;
+
     private static readonly string[] AllowedAvatarTypes =
         { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
+
+    // The catalogue call Home makes too; one page of this size covers every published course.
+    private const int CoursePageSize = 100;
+
+    private static string CurrentLang =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+
+    private bool HasAnyStat => _enrolledCourses is not null || _certificates is not null || _assessments is not null;
+
+    /// <summary>The display name when set, else the full name.</summary>
+    private string HeroName
+    {
+        get
+        {
+            if (profile is null)
+                return string.Empty;
+            if (!string.IsNullOrWhiteSpace(profile.DisplayName))
+                return profile.DisplayName;
+            return $"{profile.FirstName} {profile.LastName}".Trim();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthStateProvider.GetAuthenticationStateAsync();
         _isImpersonating = state.User.FindFirst("impersonatedBy") is not null;
         await LoadProfileAsync();
+        if (profile is not null)
+            await LoadStatsAsync();
     }
 
     private async Task LoadProfileAsync()
@@ -61,6 +95,7 @@ public partial class Profile
             }
             displayName = profile.DisplayName ?? string.Empty;
             profileStatus = profile.Status;
+            profileGoal = profile.Goal;
             await LoadAvatarAsync();
         }
         catch (Exception)
@@ -68,6 +103,63 @@ public partial class Profile
             _loadError = ProfileRes.FailedToLoadProfile;
         }
     }
+
+    private async Task LoadStatsAsync()
+    {
+        var coursesTask = CountEnrolledCoursesAsync();
+        var certificatesTask = CountCertificatesAsync();
+        var assessmentsTask = CountAssessmentsAsync();
+        await Task.WhenAll(coursesTask, certificatesTask, assessmentsTask);
+
+        _enrolledCourses = coursesTask.Result;
+        _certificates = certificatesTask.Result;
+        _assessments = assessmentsTask.Result;
+    }
+
+    private async Task<int?> CountEnrolledCoursesAsync()
+    {
+        try
+        {
+            var courses = await CourseConsumer.GetCoursesAsync(page: 1, pageSize: CoursePageSize, lang: CurrentLang);
+            return courses?.Items.Count(course => course.IsEnrolled);
+        }
+        catch (Exception ex)
+        {
+            LogStatFailed(Logger, ex, "EnrolledCourses");
+            return null;
+        }
+    }
+
+    private async Task<int?> CountCertificatesAsync()
+    {
+        try
+        {
+            var certificates = await CertificateConsumer.GetMyCertificatesAsync(CurrentLang);
+            return certificates?.Count;
+        }
+        catch (Exception ex)
+        {
+            LogStatFailed(Logger, ex, "Certificates");
+            return null;
+        }
+    }
+
+    private async Task<int?> CountAssessmentsAsync()
+    {
+        try
+        {
+            var submissions = await AssessmentConsumer.GetMySubmissionsAsync(page: 1, pageSize: 1);
+            return submissions?.TotalCount;
+        }
+        catch (Exception ex)
+        {
+            LogStatFailed(Logger, ex, "Assessments");
+            return null;
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Profile could not load the {StatName} stat tile.")]
+    private static partial void LogStatFailed(ILogger logger, Exception exception, string statName);
 
     private async Task LoadAvatarAsync()
     {
@@ -146,7 +238,8 @@ public partial class Profile
                 profile.LastName,
                 string.IsNullOrWhiteSpace(displayName) ? null : displayName,
                 profile.DateOfBirth,
-                profileStatus
+                profileStatus,
+                profileGoal
             );
 
             var updated = await ProfileConsumer.UpdateProfileAsync(updateRequest);
@@ -155,6 +248,7 @@ public partial class Profile
             {
                 profile = updated;
                 profileStatus = updated.Status;
+                profileGoal = updated.Goal;
                 message = ProfileRes.ProfileUpdatedSuccess;
             }
             else

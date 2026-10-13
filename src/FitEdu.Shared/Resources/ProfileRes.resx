@@ -174,4 +174,19 @@
 	<data name="StreakDaysFormat" xml:space="preserve">
 		<value>{0} days</value>
 	</data>
+	<data name="StatsHeading" xml:space="preserve">
+		<value>Your training at a glance</value>
+	</data>
+	<data name="StatsCourses" xml:space="preserve">
+		<value>Courses joined</value>
+	</data>
+	<data name="StatsCertificates" xml:space="preserve">
+		<value>Certificates earned</value>
+	</data>
+	<data name="StatsAssessments" xml:space="preserve">
+		<value>Self-assessments done</value>
+	</data>
+	<data name="GoalNotSet" xml:space="preserve">
+		<value>Not chosen yet</value>
+	</data>
 </root>

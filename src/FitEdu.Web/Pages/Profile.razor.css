@@ -1,1 +1,125 @@
-/* Profile page specific styles */
+/* Profile: identity header, stat tiles, then the settings cards. Mobile first; the settings stay
+   one readable column. */
+.profile-container {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 52rem;
+    padding-block: var(--space-5) var(--space-6);
+}
+
+/* ── Identity header ── */
+.profile-hero {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-4);
+    background:
+        radial-gradient(90% 120% at 0% 0%, rgba(var(--text-strong-accent-rgb), 0.12), transparent 60%),
+        var(--bg-surface);
+}
+
+.profile-hero__avatar {
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    display: block;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 2px solid rgba(var(--text-strong-accent-rgb), 0.7);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-avatar--empty {
+    display: grid;
+    place-items: center;
+    border-color: var(--border-subtle);
+    background: var(--bg-neutral-subtle);
+    color: var(--text-light-muted);
+    font-size: 2.75rem;
+    line-height: 1;
+}
+
+.profile-hero__text {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+}
+
+.profile-hero__name {
+    margin: 0;
+    color: var(--text-strong-normal);
+    overflow-wrap: anywhere;
+}
+
+.profile-hero__email {
+    margin: 0 0 var(--space-2);
+    color: var(--text-light-muted);
+    font-size: 0.9375rem;
+    overflow-wrap: anywhere;
+}
+
+/* ── Stats ── */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+    gap: var(--space-3);
+}
+
+/* ── Settings cards ── */
+.profile-fields-row {
+    display: grid;
+    gap: 0 var(--space-4);
+}
+
+.profile-facts {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--bg-table-odd);
+}
+
+    .profile-facts > div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 var(--space-2);
+    }
+
+    .profile-facts dt {
+        color: var(--text-light-muted);
+        font-weight: 600;
+    }
+
+    .profile-facts dd {
+        margin: 0;
+        color: var(--text-strong-normal);
+        overflow-wrap: anywhere;
+    }
+
+::deep .card-header {
+    min-height: var(--tap-min);
+    font-weight: 700;
+}
+
+@media (min-width: 576px) {
+    .profile-hero {
+        gap: var(--space-5);
+        padding: var(--space-5);
+    }
+
+    .profile-avatar {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .profile-avatar--empty {
+        font-size: 3.5rem;
+    }
+
+    .profile-fields-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
