@@ -183,6 +183,6 @@
         <button class="btn btn-primary" @onclick="SaveAsync" disabled="@_isSaving">
             @(_isSaving ? AdminRes.Saving : AdminRes.SaveLesson)
         </button>
-        <button class="btn btn-secondary" @onclick="OnClose">@AdminRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="OnClose">@AdminRes.Cancel</button>
     </Footer>
 </FormModal>

@@ -118,7 +118,7 @@
         </div>
     </Body>
     <Footer>
-        <button class="btn btn-secondary" @onclick="CloseFormModal" disabled="@_isSaving">@SessionRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="CloseFormModal" disabled="@_isSaving">@SessionRes.Cancel</button>
         <button class="btn btn-primary" @onclick="SubmitForm" disabled="@(_isSaving || string.IsNullOrWhiteSpace(_formTitleEn))">
             @if (_isSaving)
             {

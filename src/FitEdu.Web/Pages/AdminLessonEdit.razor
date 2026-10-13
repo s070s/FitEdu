@@ -116,7 +116,7 @@
         <button class="btn btn-primary" @onclick="SaveLesson" disabled="@isSaving">
             @(isSaving ? AdminRes.Saving : AdminRes.SaveLesson)
         </button>
-        <button class="btn btn-secondary" @onclick="CloseLessonModal">@AdminRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="CloseLessonModal">@AdminRes.Cancel</button>
     </Footer>
 </FormModal>
 

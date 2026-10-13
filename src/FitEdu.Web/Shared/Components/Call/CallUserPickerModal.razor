@@ -48,7 +48,7 @@
                 ? string.Format(CallRes.ParticipantLimitReached, MaxSelectable)
                 : string.Format(CallRes.SelectedCountFormat, _selected.Count, MaxSelectable))
         </span>
-        <button class="btn btn-secondary" @onclick="Close">@ChatRes.Cancel</button>
+        <button class="btn-cta btn-cta--ghost" @onclick="Close">@ChatRes.Cancel</button>
         <button class="btn btn-primary" @onclick="Confirm" disabled="@(_selected.Count == 0)">
             @ConfirmLabel
         </button>
