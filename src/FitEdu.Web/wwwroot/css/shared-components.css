@@ -373,7 +373,8 @@ th.sort-active {
     color: var(--color-success);
 }
 
-/* Admin hints ("save it first, then ..."): a quiet note on the dark surface, not Bootstrap's light grey box. */
+/* Every .alert-secondary in the app, like the two alerts above: a quiet note on the dark surface,
+   not Bootstrap's light grey box. Today only the admin hints ("save it first, then ...") use it. */
 .alert-secondary {
     background-color: var(--bg-neutral-subtle);
     border-color: var(--border-subtle);
