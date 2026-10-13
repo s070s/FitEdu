@@ -1,0 +1,163 @@
+/* Notifications as a feed: one row per notification with a type icon, the message, its age and
+   a mark-read button. Unread rows get a lime edge and a tinted icon. */
+
+.notifications-page {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 52rem;
+}
+
+.notifications-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.notifications-head__text {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.notifications-head h1,
+.notifications-head__lead {
+    margin: 0;
+}
+
+.notifications-head__lead {
+    color: var(--text-light-normal);
+}
+
+.notifications-head__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    width: 100%;
+}
+
+.notifications-sort {
+    flex: 1 1 11rem;
+    width: auto;
+    min-height: var(--tap-min);
+    border-radius: var(--radius-pill);
+}
+
+.notifications-mark-all {
+    flex: 1 1 11rem;
+    min-height: var(--tap-min);
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9375rem;
+}
+
+.notification-feed {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.notification-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.notification-row--unread {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.4);
+    box-shadow: inset 3px 0 0 var(--text-strong-accent);
+}
+
+.notification-row__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba(var(--color-info-rgb), 0.14);
+    color: var(--color-info);
+    font-size: 1.1rem;
+}
+
+.notification-row--unread .notification-row__icon {
+    background-color: rgba(var(--text-strong-accent-rgb), 0.14);
+    color: var(--text-strong-accent);
+}
+
+.notification-row__body {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.notification-row__message {
+    margin: 0;
+    color: var(--text-light-normal);
+    overflow-wrap: anywhere;
+}
+
+.notification-row--unread .notification-row__message {
+    color: var(--text-strong-normal);
+    font-weight: 600;
+}
+
+.notification-row__message a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--text-strong-accent-rgb), 0.5);
+    text-underline-offset: 0.2em;
+}
+
+.notification-row__message a:hover {
+    color: var(--text-strong-accent);
+}
+
+.notification-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: 0;
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.notification-row__unread {
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}
+
+.notification-row__mark {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--text-strong-normal);
+    font-size: 1.2rem;
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.notification-row__mark:hover {
+    border-color: rgba(var(--text-strong-accent-rgb), 0.6);
+    background-color: rgba(var(--text-strong-accent-rgb), 0.1);
+    color: var(--text-strong-accent);
+}
+
+@media (min-width: 576px) {
+    .notifications-head__actions {
+        width: auto;
+    }
+
+    .notifications-sort,
+    .notifications-mark-all {
+        flex: 0 0 auto;
+    }
+}

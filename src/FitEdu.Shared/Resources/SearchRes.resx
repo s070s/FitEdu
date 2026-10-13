@@ -92,6 +92,6 @@
     <value>Exercise</value>
   </data>
   <data name="EnterQuery" xml:space="preserve">
-    <value>Type to search the site.</value>
+    <value>Type what you're looking for: courses, exercises, assessments or articles.</value>
   </data>
 </root>

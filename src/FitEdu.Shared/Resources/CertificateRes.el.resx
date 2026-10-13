@@ -123,11 +123,20 @@
   <data name="Heading" xml:space="preserve">
     <value>Τα Πιστοποιητικά μου</value>
   </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Κάθε μάθημα που ολοκληρώνεις σου δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
+  </data>
+  <data name="CardEyebrow" xml:space="preserve">
+    <value>Ολοκληρωμένο μάθημα</value>
+  </data>
+  <data name="BrowseCourses" xml:space="preserve">
+    <value>Δες τα μαθήματα</value>
+  </data>
   <data name="Loading" xml:space="preserve">
     <value>Φόρτωση πιστοποιητικών…</value>
   </data>
   <data name="NoCertificates" xml:space="preserve">
-    <value>Δεν υπάρχουν πιστοποιητικά ακόμα. Ολοκληρώστε ένα μάθημα για να αποκτήσετε ένα.</value>
+    <value>Δεν έχεις ακόμη πιστοποιητικά. Ολοκλήρωσε ένα μάθημα για να κερδίσεις το πρώτο σου.</value>
   </data>
   <data name="Issued" xml:space="preserve">
     <value>Εκδόθηκε:</value>
@@ -148,7 +157,7 @@
     <value>Το PDF πιστοποιητικού δεν είναι διαθέσιμο.</value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Αποτυχία λήψης. Παρακαλώ δοκιμάστε ξανά.</value>
+    <value>Η λήψη απέτυχε. Δοκίμασε ξανά.</value>
   </data>
   <data name="VerificationTitle" xml:space="preserve">
     <value>Επαλήθευση πιστοποιητικού</value>
@@ -173,5 +182,8 @@
   </data>
   <data name="FieldIssuedOn" xml:space="preserve">
     <value>Ημερομηνία έκδοσης</value>
+  </data>
+  <data name="FieldVerificationId" xml:space="preserve">
+    <value>Κωδικός επαλήθευσης</value>
   </data>
 </root>

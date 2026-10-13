@@ -141,6 +141,36 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
+        public static string Subtitle {
+            get {
+                return ResourceManager.GetString("Subtitle", resourceCulture);
+            }
+        }
+
+        public static string SortLabel {
+            get {
+                return ResourceManager.GetString("SortLabel", resourceCulture);
+            }
+        }
+
+        public static string SortNewest {
+            get {
+                return ResourceManager.GetString("SortNewest", resourceCulture);
+            }
+        }
+
+        public static string SortOldest {
+            get {
+                return ResourceManager.GetString("SortOldest", resourceCulture);
+            }
+        }
+
+        public static string SortUnreadFirst {
+            get {
+                return ResourceManager.GetString("SortUnreadFirst", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>

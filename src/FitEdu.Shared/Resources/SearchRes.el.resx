@@ -92,6 +92,6 @@
     <value>Άσκηση</value>
   </data>
   <data name="EnterQuery" xml:space="preserve">
-    <value>Πληκτρολογήστε για αναζήτηση στην ιστοσελίδα.</value>
+    <value>Γράψε τι ψάχνεις: μαθήματα, ασκήσεις, αξιολογήσεις ή άρθρα.</value>
   </data>
 </root>

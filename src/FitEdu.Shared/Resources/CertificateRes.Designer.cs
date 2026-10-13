@@ -104,6 +104,12 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("FieldIssuedOn", resourceCulture);
             }
         }
+
+        public static string FieldVerificationId {
+            get {
+                return ResourceManager.GetString("FieldVerificationId", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Recipient.
@@ -120,6 +126,24 @@ namespace FitEdu.Shared.Resources {
         public static string Heading {
             get {
                 return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
+
+        public static string Subtitle {
+            get {
+                return ResourceManager.GetString("Subtitle", resourceCulture);
+            }
+        }
+
+        public static string CardEyebrow {
+            get {
+                return ResourceManager.GetString("CardEyebrow", resourceCulture);
+            }
+        }
+
+        public static string BrowseCourses {
+            get {
+                return ResourceManager.GetString("BrowseCourses", resourceCulture);
             }
         }
         

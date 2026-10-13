@@ -104,6 +104,15 @@
 	<data name="Heading" xml:space="preserve">
 		<value>My Certificates</value>
 	</data>
+	<data name="Subtitle" xml:space="preserve">
+		<value>Every course you finish earns a certificate that anyone can verify.</value>
+	</data>
+	<data name="CardEyebrow" xml:space="preserve">
+		<value>Course completed</value>
+	</data>
+	<data name="BrowseCourses" xml:space="preserve">
+		<value>Browse courses</value>
+	</data>
 	<data name="Loading" xml:space="preserve">
 		<value>Loading certificates…</value>
 	</data>
@@ -154,5 +163,8 @@
 	</data>
 	<data name="FieldIssuedOn" xml:space="preserve">
 		<value>Issued on</value>
+	</data>
+	<data name="FieldVerificationId" xml:space="preserve">
+		<value>Verification ID</value>
 	</data>
 </root>
