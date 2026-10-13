@@ -227,22 +227,19 @@ th.sort-active {
         min-width: fit-content;
     }
 
-    /* Action cell: no label, buttons flow horizontally and wrap if needed */
-    .table-responsive > table tbody td[data-label="Actions"],
-    .table-responsive > table tbody td[data-label="Ενέργειες"] {
+    /* Action cell (td.table-actions, in every language): no label, buttons flow in a row and wrap */
+    .table-responsive > table tbody td.table-actions {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         gap: 0.375rem;
     }
 
-    .table-responsive > table tbody td[data-label="Actions"]::before,
-    .table-responsive > table tbody td[data-label="Ενέργειες"]::before {
+    .table-responsive > table tbody td.table-actions::before {
         display: none;
     }
 
-    .table-responsive > table tbody td[data-label="Actions"] .btn,
-    .table-responsive > table tbody td[data-label="Ενέργειες"] .btn {
+    .table-responsive > table tbody td.table-actions .btn {
         flex: 1 1 auto;
         min-width: 80px;
         text-align: center;
@@ -948,28 +945,10 @@ a.card-surface {
     }
 }
 
-/* Phones: stacked rows take the card radius. The action cell is found by its .table-actions class,
-   which works in every language (the data-label="Actions" rules above stay for older pages). */
+/* Phones: stacked rows take the card radius. */
 @media (max-width: 767.98px) {
     .table-responsive > table tbody tr {
         border-radius: var(--radius-lg);
-    }
-
-    .table-responsive > table tbody td.table-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.375rem;
-    }
-
-    .table-responsive > table tbody td.table-actions::before {
-        display: none;
-    }
-
-    .table-responsive > table tbody td.table-actions .btn {
-        flex: 1 1 auto;
-        min-width: 80px;
-        text-align: center;
     }
 }
 

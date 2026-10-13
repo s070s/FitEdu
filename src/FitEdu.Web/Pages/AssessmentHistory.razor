@@ -68,7 +68,7 @@
                     <td data-label="@AssessmentRes.AssessmentHeader">@submission.AssessmentTitle</td>
                     <td data-label="@AssessmentRes.CategoryHeader">@(submission.CategoryName ?? "—")</td>
                     <td data-label="@AssessmentRes.SubmittedHeader">@submission.SubmittedAt.ToLocalTime().ToString("g")</td>
-                    <td data-label="@AssessmentRes.Actions">
+                    <td class="table-actions" data-label="@AssessmentRes.Actions">
                         <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewSubmission(submission.Id)">@AssessmentRes.ViewButton</button>
                     </td>
                 </tr>
