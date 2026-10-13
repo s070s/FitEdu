@@ -392,9 +392,10 @@ public class AssessmentService(
 
         foreach (var requiredId in requiredIds)
         {
+            // A multi-select answer is a JSON array of options; an empty one is no answer.
             if (!answersRoot.TryGetProperty(requiredId, out var value) ||
                 value.ValueKind != JsonValueKind.String ||
-                string.IsNullOrWhiteSpace(value.GetString()))
+                MultiSelectAnswer.IsBlank(value.GetString()))
                 return false;
         }
 

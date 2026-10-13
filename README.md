@@ -248,7 +248,7 @@ The public exercise library (published exercises only). Photos are served from `
 |--------|-------|-------------|------|
 | `GET` | `api/assessments` | List published assessments (paged; optional `?categoryId=` and `?search=` filters — see [Content Categories](#content-categories)) | Yes |
 | `GET` | `api/assessments/{id}` | Assessment detail | Yes |
-| `POST` | `api/assessments/{id}/submit` | Submit answers (`AnswersJson` max 50 000 chars) | Yes |
+| `POST` | `api/assessments/{id}/submit` | Submit answers (`AnswersJson` max 50 000 chars; a multi-select answer is a JSON array of the ticked options, since options may contain commas) | Yes |
 | `GET` | `api/assessments/mine` | Current user's submissions | Yes |
 
 ### Categories — `api/categories`

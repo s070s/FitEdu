@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using FitEdu.Web.Consumers;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using System.Globalization;
@@ -15,7 +16,6 @@ namespace FitEdu.Web.Pages;
 public partial class AssessmentForm
 {
     private const int FullPercent = 100;
-    private const string MultiSelectSeparator = ",";
 
     [Parameter]
     public Guid AssessmentId
@@ -174,8 +174,8 @@ public partial class AssessmentForm
     private void GoBack() => Nav.NavigateTo("/assessments");
 
     /// <summary>
-    /// Keeps the ticked options in a list, so an option that itself contains a comma is still
-    /// added and removed whole; the stored answer stays the comma-joined text.
+    /// Keeps the ticked options in a list and stores them as a JSON array, so an option that itself
+    /// contains a comma stays whole; nothing ticked stores no answer.
     /// </summary>
     private void ToggleMultiSelect(string questionId, string option, bool isChecked)
     {
@@ -190,7 +190,7 @@ public partial class AssessmentForm
         else if (!isChecked)
             selected.Remove(option);
 
-        SetAnswer(questionId, string.Join(MultiSelectSeparator, selected));
+        SetAnswer(questionId, MultiSelectAnswer.Serialize(selected));
     }
 
     private HashSet<string> FindMissingRequired(IEnumerable<QuestionSchema> questionsToCheck) =>

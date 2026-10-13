@@ -2,6 +2,8 @@ using Bunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using System.Text.Json;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Web.Consumers;
@@ -77,8 +79,46 @@ public class AssessmentFormTests : BunitContext
         cut.FindAll("input[type=checkbox]")[0].Change(false);
         cut.Find("form").Submit();
 
-        _assessmentConsumer.Received(1).SubmitAssessmentAsync(_assessmentId,
-            Arg.Is<SubmitAssessmentRequest>(request => request.AnswersJson == """{"q1":"Yoga"}"""));
+        // The answer is a JSON array, so the stored answer keeps each option whole.
+        SubmittedAnswer("q1").ShouldBe("""["Yoga"]""");
+    }
+
+    [Fact]
+    public void Multiselect_OptionsWithCommas_AreStoredAsAJsonArray()
+    {
+        var schema = """{"questions":[{"id":"q1","type":"multiselect","label":"x","options":["Chest pain, pressure or discomfort","Dizziness"],"required":true}]}""";
+        _assessmentConsumer.SubmitAssessmentAsync(_assessmentId, Arg.Any<SubmitAssessmentRequest>())
+            .Returns(new AssessmentSubmissionDto(Guid.NewGuid(), _assessmentId, "Readiness Check", "{}", null, DateTimeOffset.UtcNow));
+        var cut = RenderWithSchema(schema);
+
+        cut.FindAll("input[type=checkbox]")[0].Change(true);
+        cut.FindAll("input[type=checkbox]")[1].Change(true);
+        cut.Find("form").Submit();
+
+        MultiSelectAnswer.TryParse(SubmittedAnswer("q1")).ShouldBe(["Chest pain, pressure or discomfort", "Dizziness"]);
+    }
+
+    [Fact]
+    public void Multiselect_AllOptionsUnticked_LeavesTheRequiredQuestionUnanswered()
+    {
+        var schema = """{"questions":[{"id":"q1","type":"multiselect","label":"x","options":["a","b"],"required":true}]}""";
+        var cut = RenderWithSchema(schema);
+
+        cut.FindAll("input[type=checkbox]")[0].Change(true);
+        cut.FindAll("input[type=checkbox]")[0].Change(false);
+        cut.Find("form").Submit();
+
+        _assessmentConsumer.DidNotReceive().SubmitAssessmentAsync(Arg.Any<Guid>(), Arg.Any<SubmitAssessmentRequest>());
+    }
+
+    /// <summary>The answer the form sent for one question.</summary>
+    private string SubmittedAnswer(string questionId)
+    {
+        var request = (SubmitAssessmentRequest)_assessmentConsumer.ReceivedCalls()
+            .Single(call => call.GetMethodInfo().Name == nameof(IAssessmentConsumer.SubmitAssessmentAsync))
+            .GetArguments()[1]!;
+        var answers = JsonSerializer.Deserialize<Dictionary<string, string>>(request.AnswersJson)!;
+        return answers[questionId];
     }
 
     [Fact]

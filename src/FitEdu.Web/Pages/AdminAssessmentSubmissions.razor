@@ -1,5 +1,6 @@
 @page "/admin/assessments/{AssessmentId:guid}/submissions"
 @attribute [Authorize(Roles = "Admin")]
+@using FitEdu.Application.Common
 
 <PageTitle>@AdminRes.AssessmentSubmissions</PageTitle>
 
@@ -61,7 +62,7 @@ else
                                     @foreach (var kv in parsed)
                                     {
                                         <dt class="col-sm-4">@ResolveLabel(kv.Key)</dt>
-                                        <dd class="col-sm-8">@(string.IsNullOrEmpty(kv.Value) ? "—" : kv.Value)</dd>
+                                        <dd class="col-sm-8">@(string.IsNullOrEmpty(kv.Value) ? "—" : MultiSelectAnswer.ToDisplayText(kv.Value))</dd>
                                     }
                                 </dl>
                             }
