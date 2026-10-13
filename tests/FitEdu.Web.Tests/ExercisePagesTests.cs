@@ -226,7 +226,7 @@ public class ExercisePagesTests : BunitContext
     public void Detail_RendersPhotosFactsMusclesStepsWorkoutsAndCredit()
     {
         var courseId = Guid.NewGuid();
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup<ExerciseDetailDto>.Found(Detail(["Stand tall.", " ", "Sit back and down."])));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail(["Stand tall.", " ", "Sit back and down."])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en")
             .Returns([new LessonUsingExerciseDto(Guid.NewGuid(), "Leg day", courseId, "Strength basics")]);
 
@@ -252,7 +252,7 @@ public class ExercisePagesTests : BunitContext
     public void Detail_InGreek_ShowsGreekLabelsAndAsksForGreekContent()
     {
         UseCulture("el");
-        _exerciseConsumer.GetBySlugAsync(Slug, "el").Returns(ApiLookup<ExerciseDetailDto>.Found(Detail(["Στάσου όρθιος."])));
+        _exerciseConsumer.GetBySlugAsync(Slug, "el").Returns(ApiLookup.Found(Detail(["Στάσου όρθιος."])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "el").Returns([]);
 
         var page = RenderDetail();
@@ -265,7 +265,7 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_WithoutInstructions_ShowsANoteInsteadOfAnEmptyList()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup<ExerciseDetailDto>.Found(Detail([])));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([])));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
@@ -278,7 +278,7 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_WithoutForceOrMechanics_LeavesThoseTilesOut()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup<ExerciseDetailDto>.Found(Detail([]) with { Force = null, Mechanic = null }));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([]) with { Force = null, Mechanic = null }));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
@@ -290,7 +290,7 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_ShowsTheCategoryOnceAsTheEyebrowNotAsATile()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup<ExerciseDetailDto>.Found(Detail([]) with { Force = null, Mechanic = null, Equipment = null }));
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Found(Detail([]) with { Force = null, Mechanic = null, Equipment = null }));
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();
@@ -302,7 +302,7 @@ public class ExercisePagesTests : BunitContext
     [Fact]
     public void Detail_UnknownSlug_ShowsNotFoundWithALinkToTheLibrary()
     {
-        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup<ExerciseDetailDto>.NotFound);
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.NotFound<ExerciseDetailDto>());
         _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
 
         var page = RenderDetail();

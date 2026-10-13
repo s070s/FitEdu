@@ -52,7 +52,7 @@ public class AdminCourseEditTests : BunitContext
         Level: CourseLevel.Intermediate, Goal: FitnessGoal.MuscleGain, Equipment: "dumbbells,mat",
         EstimatedWeeks: 6, SessionsPerWeek: 4, CoverExerciseSlug: coverExerciseSlug);
 
-    private static ApiLookup<ExerciseDetailDto> Detail(string slug) => ApiLookup<ExerciseDetailDto>.Found(new(
+    private static ApiLookup<ExerciseDetailDto> Detail(string slug) => ApiLookup.Found<ExerciseDetailDto>(new(
         Guid.NewGuid(), slug, "Barbell Squat", "strength", "beginner", "barbell", ["quadriceps"],
         $"/images/exercises/{slug}/0.webp", $"/images/exercises/{slug}/1.webp", [], null, null, []));
 
@@ -81,7 +81,7 @@ public class AdminCourseEditTests : BunitContext
     [Fact]
     public void Save_UnknownCoverExerciseSlug_ShowsValidationMessage_AndDoesNotSave()
     {
-        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.NotFound);
+        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup.NotFound<ExerciseDetailDto>());
         var page = RenderNewCourse();
 
         page.Find("#course-title-en").Change("Strength 101");
@@ -96,7 +96,7 @@ public class AdminCourseEditTests : BunitContext
     [Fact]
     public void UnknownCoverExerciseSlugError_ClearsWhenTheSlugChanges()
     {
-        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.NotFound);
+        _exerciseConsumer.GetBySlugAsync("no-such-move", Arg.Any<string>()).Returns(ApiLookup.NotFound<ExerciseDetailDto>());
         var page = RenderNewCourse();
         page.Find("#course-title-en").Change("Strength 101");
         page.Find("#course-cover-exercise").Change("no-such-move");
@@ -112,7 +112,7 @@ public class AdminCourseEditTests : BunitContext
     public void Save_CoverExerciseLookupFails_ShowsTheGenericError_NotUnknownExercise()
     {
         // A failed request says nothing about the slug, so the field must not be marked as wrong.
-        _exerciseConsumer.GetBySlugAsync("barbell-squat", Arg.Any<string>()).Returns(ApiLookup<ExerciseDetailDto>.Failure);
+        _exerciseConsumer.GetBySlugAsync("barbell-squat", Arg.Any<string>()).Returns(ApiLookup.Failure<ExerciseDetailDto>());
         var page = RenderNewCourse();
 
         page.Find("#course-title-en").Change("Strength 101");
