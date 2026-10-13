@@ -51,12 +51,14 @@
                                     <button class="btn btn-sm btn-outline-secondary"
                                             title="@(IsDefaultSort ? AdminRes.MoveUp : AdminRes.ResetSortToReorder)"
                                             disabled="@(!IsDefaultSort)"
-                                            @onclick="() => MoveUp(item.Id)">↑</button>
+                                            aria-label="@AdminRes.MoveUp"
+                                            @onclick="() => MoveUp(item.Id)"><span class="bi bi-arrow-up" aria-hidden="true"></span></button>
                                     <span class="px-1 align-self-center">@item.DisplayOrder</span>
                                     <button class="btn btn-sm btn-outline-secondary"
                                             title="@(IsDefaultSort ? AdminRes.MoveDown : AdminRes.ResetSortToReorder)"
                                             disabled="@(!IsDefaultSort)"
-                                            @onclick="() => MoveDown(item.Id)">↓</button>
+                                            aria-label="@AdminRes.MoveDown"
+                                            @onclick="() => MoveDown(item.Id)"><span class="bi bi-arrow-down" aria-hidden="true"></span></button>
                                 </div>
                             </td>
                             <td data-label="@AdminRes.ColName">@item.FullName</td>

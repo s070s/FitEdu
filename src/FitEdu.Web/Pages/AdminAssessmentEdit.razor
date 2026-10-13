@@ -116,11 +116,11 @@ else
                                     <div class="d-flex align-items-center gap-2" @onclick:stopPropagation="true">
                                         @if (index > 0)
                                         {
-                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, -1)" title="@AdminRes.MoveUp">↑</button>
+                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, -1)" title="@AdminRes.MoveUp" aria-label="@AdminRes.MoveUp"><span class="bi bi-arrow-up" aria-hidden="true"></span></button>
                                         }
                                         @if (index < section.Questions.Count - 1)
                                         {
-                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, 1)" title="@AdminRes.MoveDown">↓</button>
+                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => MoveQuestion(section, index, 1)" title="@AdminRes.MoveDown" aria-label="@AdminRes.MoveDown"><span class="bi bi-arrow-down" aria-hidden="true"></span></button>
                                         }
                                         <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveQuestion(section, index)" title="@AdminRes.Remove" aria-label="@AdminRes.Remove"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
                                         <i class="bi bi-chevron-down chevron-icon @(isExpanded ? "expanded" : "")"></i>

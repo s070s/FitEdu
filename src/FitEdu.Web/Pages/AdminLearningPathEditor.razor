@@ -82,12 +82,12 @@
                 {
                     <li class="step-row" @key="step.Id">
                         <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-outline-secondary" title="@PathRes.MoveUp"
+                            <button class="btn btn-sm btn-outline-secondary" title="@PathRes.MoveUp" aria-label="@PathRes.MoveUp"
                                     disabled="@(step.StepOrder == 1)"
-                                    @onclick="() => MoveStepUp(step.Id)">↑</button>
-                            <button class="btn btn-sm btn-outline-secondary" title="@PathRes.MoveDown"
+                                    @onclick="() => MoveStepUp(step.Id)"><span class="bi bi-arrow-up" aria-hidden="true"></span></button>
+                            <button class="btn btn-sm btn-outline-secondary" title="@PathRes.MoveDown" aria-label="@PathRes.MoveDown"
                                     disabled="@(step.StepOrder == _steps.Count)"
-                                    @onclick="() => MoveStepDown(step.Id)">↓</button>
+                                    @onclick="() => MoveStepDown(step.Id)"><span class="bi bi-arrow-down" aria-hidden="true"></span></button>
                         </div>
                         <span class="step-order">@step.StepOrder.</span>
                         <span class="step-course-title">@step.CourseTitle</span>

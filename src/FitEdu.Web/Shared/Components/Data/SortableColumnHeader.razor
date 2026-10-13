@@ -12,11 +12,11 @@
     @Label
     @if ( IsActive )
     {
-        <span class="sort-arrow" aria-hidden="true">@( CurrentSortDir == "desc" ? " ▼" : " ▲" )</span>
+        <span class="sort-arrow ms-1 bi @( CurrentSortDir == "desc" ? "bi-caret-down-fill" : "bi-caret-up-fill" )" aria-hidden="true"></span>
     }
     else
     {
-        <span class="sort-arrow sort-arrow--inactive" aria-hidden="true"> ⇅</span>
+        <span class="sort-arrow sort-arrow--inactive ms-1 bi bi-arrow-down-up" aria-hidden="true"></span>
     }
 </th>
 
