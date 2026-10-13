@@ -47,3 +47,8 @@
     display: flex;
     gap: var(--space-2);
 }
+
+/* Short labels such as "Edit" still give a full-size touch target. */
+.lesson-row__actions .btn {
+    min-width: var(--tap-min);
+}

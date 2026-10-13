@@ -6,22 +6,25 @@
 @implements IDisposable
 @inject PresenceService Presence
 
-@if (Presence.IsOnline(UserId))
-{
-    <span class="presence-dot online" role="img" aria-label="@GlobalRes.PresenceOnline" title="@GlobalRes.PresenceOnline"></span>
-    @if (ShowLabel)
+@* One wrapper keeps the dot beside its label, also inside the flex cells of phone card tables. *@
+<span class="presence">
+    @if (Presence.IsOnline(UserId))
     {
-        <span class="presence-label online">@GlobalRes.PresenceOnline</span>
+        <span class="presence-dot online" role="img" aria-label="@GlobalRes.PresenceOnline" title="@GlobalRes.PresenceOnline"></span>
+        @if (ShowLabel)
+        {
+            <span class="presence-label online">@GlobalRes.PresenceOnline</span>
+        }
     }
-}
-else
-{
-    <span class="presence-dot offline" role="img" aria-label="@OfflineText" title="@OfflineText"></span>
-    @if (ShowLabel)
+    else
     {
-        <span class="presence-label">@OfflineText</span>
+        <span class="presence-dot offline" role="img" aria-label="@OfflineText" title="@OfflineText"></span>
+        @if (ShowLabel)
+        {
+            <span class="presence-label">@OfflineText</span>
+        }
     }
-}
+</span>
 
 @code {
     [Parameter, EditorRequired] public string UserId { get; set; } = string.Empty;
