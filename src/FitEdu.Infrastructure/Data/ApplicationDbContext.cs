@@ -13,7 +13,7 @@ namespace FitEdu.Infrastructure.Data;
 
 /// <summary>
 /// EF Core DbContext with ASP.NET Identity configured for ApplicationUser.
-/// Includes core domain entities for the psychosocial career guidance platform.
+/// Includes core domain entities for the FitEdu fitness-courses platform.
 /// </summary>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext,
     Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.IDataProtectionKeyContext

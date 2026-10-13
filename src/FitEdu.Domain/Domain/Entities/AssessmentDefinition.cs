@@ -4,7 +4,7 @@ using FitEdu.Domain.Enums;
 namespace FitEdu.Domain.Entities;
 
 /// <summary>
-/// Defines a psychosocial assessment template with its questions and structure.
+/// Defines a self-assessment template (e.g. goals, training readiness) with its questions and structure.
 /// Admins create and publish these; students submit responses via AssessmentSubmission.
 /// </summary>
 public class AssessmentDefinition : AuditableEntity
@@ -15,7 +15,7 @@ public class AssessmentDefinition : AuditableEntity
     }
 
     /// <summary>
-    /// Unique identifier key (e.g., "career_clarity_v1").
+    /// Unique identifier key (e.g., "goal_clarity_v1").
     /// </summary>
     public required string Key
     {

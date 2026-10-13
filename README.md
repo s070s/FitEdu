@@ -1,6 +1,6 @@
 # FitEdu
 
-A psychosocial career counseling platform with courses, learning paths, assessments, course reviews, scheduled live sessions, real-time chat, video calls, in-app notifications, subscriptions, blog, testimonials, site search, certificate generation, and a local AI assistant.
+A bilingual (English/Greek) fitness-courses platform with training courses, an exercise library, learning paths, assessments, course reviews, scheduled live sessions, real-time chat, video calls, in-app notifications, subscriptions, blog, testimonials, site search, certificate generation, and a local AI assistant.
 
 ---
 
@@ -623,7 +623,7 @@ One-to-one and group video calls, started from the existing chat. Self-hosted **
 
 ## Scheduled Sessions
 
-Admin-scheduled live sessions (e.g. group counseling or Q&A) that users register for and join over the existing video-call stack.
+Admin-scheduled live sessions (e.g. group coaching or Q&A) that users register for and join over the existing video-call stack.
 
 - **Schedule:** an admin creates a session with a start time and becomes its host (`api/admin/sessions`); it can be updated or cancelled.
 - **Register:** users see upcoming sessions and register or unregister (`api/sessions`). A background monitor sends registrants a reminder as the start time approaches (see [Notifications](#notifications)).
@@ -689,7 +689,7 @@ You can install or start Ollama **after** the app is already running — it keep
 
 **Hardware guidance:** runs CPU-only on any ~2020+ 4-core machine with 8 GB RAM — no GPU required. Expect a few seconds to the first token (streaming masks this); the 1.7B default model is comfortably faster than the previous 4B one.
 
-**Live smoke test** (optional, needs Ollama running): `RYF_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke` boots the app against local Ollama, waits for Ready, and asserts a real streamed answer. Without the variable the test self-passes, so CI never needs Ollama.
+**Live smoke test** (optional, needs Ollama running): `FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke` boots the app against local Ollama, waits for Ready, and asserts a real streamed answer. Without the variable the test self-passes, so CI never needs Ollama.
 
 ---
 

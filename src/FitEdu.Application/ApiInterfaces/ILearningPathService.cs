@@ -4,7 +4,7 @@ using FitEdu.Application.DTOs;
 namespace FitEdu.Application.ApiInterfaces;
 
 /// <summary>
-/// Ordered course sequences ("Career Change Starter → CV Lab → Interview Mastery"). Progress is
+/// Ordered course sequences ("Bodyweight Basics → Mobility &amp; Flexibility → Strength Foundations"). Progress is
 /// projected from the existing Enrollment/LessonCompletion data — no dedicated progress table.
 /// </summary>
 public interface ILearningPathService
