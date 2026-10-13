@@ -118,7 +118,7 @@ Run the full suite locally:
 dotnet test FitEdu.sln
 ```
 
-The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `FitEdu.TestSupport` for shared fixtures. On 2026-10-13 the suite ran 1,694 tests, all passing: Domain 190, Application 482, Infrastructure 250 and Web 772 (the Web project includes the bUnit component tests, the seed-content and asset-licence guards, and the integration tests). The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
+The test projects mirror the application layers under `tests/`: `Domain.Tests`, `Application.Tests`, `Infrastructure.Tests`, and `Web.Tests`, plus `FitEdu.TestSupport` for shared fixtures. On 2026-10-13 the suite ran 1,694 tests, all passing: Domain 190, Application 482, Infrastructure 250 and Web 772 (the Web project includes the bUnit component tests, the asset-licence guard and the integration tests; Infrastructure includes the seed-content guards). The suite uses free/permissive test dependencies only: xUnit, Shouldly, NSubstitute, EF Core InMemory/SQLite, and `Microsoft.AspNetCore.Mvc.Testing`.
 
 Web integration tests boot the real ASP.NET Core pipeline through `WebApplicationFactory<Program>`. The test host supplies dummy JWT/admin settings, runs in Development, swaps SQL Server for InMemory, and uses SQLite only for provider behaviors InMemory cannot execute, such as `EF.Functions.Like` or `ExecuteUpdateAsync`.
 
@@ -126,7 +126,7 @@ GitHub Actions runs on every push and pull request, and can also be started by h
 
 ### End-to-end tests (local)
 
-A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, the key public pages fitting phone and desktop screens with working images, and a two-user video call connecting with fake media (seven tests in four spec files). It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
+A Playwright smoke suite under [`tests/e2e/`](tests/e2e/README.md) covers the browser-only behaviors the .NET suite can't reach: login through the real auth redirect chain, a consumer-backed page actually rendering data (the silent-blank-render failure mode), the Greek culture switch, the key public pages fitting phone and desktop screens with working images, and a two-user video call connecting with fake media (22 tests in four spec files: 16 of them are the eight public pages on a phone and a desktop screen). It runs locally on demand (needs Node.js and the seeded Development database — it is not part of CI):
 
 ```bash
 cd tests/e2e
