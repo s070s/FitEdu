@@ -141,8 +141,9 @@ else
                     @HomeRes.FeaturedSeeAll <span class="bi bi-arrow-right" aria-hidden="true"></span>
                 </a>
             </div>
-            @* A swipeable row on phones like the member stories, so the landing stays short. *@
-            <div class="featured-grid" role="region" tabindex="0" aria-labelledby="featured-title">
+            @* A swipeable row on phones like the member stories, so the landing stays short.
+               js/scroll-regions.js makes it a tab stop only while it scrolls sideways. *@
+            <div class="featured-grid" role="region" data-scroll-region aria-labelledby="featured-title">
                 @foreach (var course in _landing.FeaturedCourses)
                 {
                     <CourseCard Course="course" @key="course.Id" />
@@ -166,8 +167,9 @@ else
             <h2 id="stories-title" class="section-title">
                 @HomeRes.TestimonialsTitle <span class="text-volt">@HomeRes.TestimonialsTitleHighlight</span>
             </h2>
-            @* A swipeable row on phones, so keyboard users can scroll it too (focusable region). *@
-            <div class="testimonials-grid" role="region" tabindex="0" aria-labelledby="stories-title">
+            @* A swipeable row on phones; js/scroll-regions.js makes it a tab stop while it scrolls
+               sideways, so keyboard users can scroll it too. *@
+            <div class="testimonials-grid" role="region" data-scroll-region aria-labelledby="stories-title">
                 @foreach (var testimonial in _testimonials)
                 {
                     <TestimonialCard Testimonial="testimonial" @key="testimonial.Id" />
