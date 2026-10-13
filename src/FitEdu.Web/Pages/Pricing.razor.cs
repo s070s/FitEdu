@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using System.Globalization;
 
@@ -24,8 +25,37 @@ public partial class Pricing
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
+    /// <summary>A plan whose MaxCourses reaches this counts as unlimited (Pro stores int.MaxValue).</summary>
+    private const int UnlimitedCoursesThreshold = 1000;
+
     /// <summary>A tick for an included feature, a cross for one the plan lacks.</summary>
     private static string FeatureIcon(bool included) => included ? "bi-check-lg" : "bi-x-lg";
+
+    /// <summary>Pro is the highlighted plan: lime border, badge, and first in the list on phones.</summary>
+    private static bool IsFeatured(SubscriptionPlanDto plan) => plan.Tier == SubscriptionTier.Pro;
+
+    /// <summary>Which courses the tier opens, the first line of every plan card.</summary>
+    private static string CourseAccessLabel(SubscriptionTier tier) => tier switch
+    {
+        SubscriptionTier.Plus => PricingRes.FeatureCoursesPlus,
+        SubscriptionTier.Pro => PricingRes.FeatureCoursesPro,
+        _ => PricingRes.FeatureCoursesFree
+    };
+
+    /// <summary>The "/ month" suffix after a price; the API sends the BillingPeriod enum name.</summary>
+    private static string PeriodLabel(string billingPeriod)
+    {
+        if (!Enum.TryParse<BillingPeriod>(billingPeriod, ignoreCase: true, out var period))
+            return string.Empty;
+
+        return period switch
+        {
+            BillingPeriod.Quarterly => PricingRes.PeriodQuarterly,
+            BillingPeriod.Yearly => PricingRes.PeriodYearly,
+            BillingPeriod.Lifetime => PricingRes.PeriodLifetime,
+            _ => PricingRes.PeriodMonthly
+        };
+    }
 
     protected override async Task OnInitializedAsync()
     {

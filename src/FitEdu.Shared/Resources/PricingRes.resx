@@ -73,7 +73,7 @@
 		<value>Completion certificates</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Priority coaching</value>
+		<value>Priority support</value>
 	</data>
 	<data name="BtnCurrentPlan" xml:space="preserve">
 		<value>Current Plan</value>
@@ -116,5 +116,38 @@
 	</data>
 	<data name="FeatureLiveClasses" xml:space="preserve">
 		<value>Live classes</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Membership</value>
+	</data>
+	<data name="PeriodMonthly" xml:space="preserve">
+		<value>/ month</value>
+	</data>
+	<data name="PeriodQuarterly" xml:space="preserve">
+		<value>/ quarter</value>
+	</data>
+	<data name="PeriodYearly" xml:space="preserve">
+		<value>/ year</value>
+	</data>
+	<data name="PeriodLifetime" xml:space="preserve">
+		<value>one-off</value>
+	</data>
+	<data name="FeatureCoursesFree" xml:space="preserve">
+		<value>Every free course</value>
+	</data>
+	<data name="FeatureCoursesPlus" xml:space="preserve">
+		<value>Every Free and Plus course</value>
+	</data>
+	<data name="FeatureCoursesPro" xml:space="preserve">
+		<value>Every course, including the advanced Pro programmes</value>
+	</data>
+	<data name="FeaturesListLabel" xml:space="preserve">
+		<value>What the {0} plan includes</value>
+	</data>
+	<data name="FeatureNotIncluded" xml:space="preserve">
+		<value>Not included:</value>
+	</data>
+	<data name="Footnote" xml:space="preserve">
+		<value>The exercise library and live classes are open to every member. Switch or cancel any time.</value>
 	</data>
 </root>

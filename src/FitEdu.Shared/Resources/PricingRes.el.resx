@@ -43,28 +43,28 @@
 		<value>Τιμολόγηση - FitEdu</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
-		<value>Επιλέξτε το Πλάνο σας</value>
+		<value>Διάλεξε το πλάνο σου</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
 		<value>Προπονήσου έξυπνα με το πλάνο που ταιριάζει στους στόχους σου.</value>
 	</data>
 	<data name="CurrentPlanLabel" xml:space="preserve">
-		<value>Τρέχον πλάνο σας:</value>
+		<value>Το πλάνο σου:</value>
 	</data>
 	<data name="LoadingPlans" xml:space="preserve">
 		<value>Φόρτωση πλάνων...</value>
 	</data>
 	<data name="MostPopular" xml:space="preserve">
-		<value>Πιο Δημοφιλές</value>
+		<value>Πιο δημοφιλές</value>
 	</data>
 	<data name="PriceFree" xml:space="preserve">
 		<value>Δωρεάν</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
-		<value>Απεριόριστα ενεργά μαθήματα</value>
+		<value>Απεριόριστα ενεργά προγράμματα</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Ενεργά μαθήματα τη φορά: έως {0}</value>
+		<value>Έως {0} ενεργά προγράμματα τη φορά</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
 		<value>Αξιολογήσεις αυτοελέγχου φυσικής κατάστασης</value>
@@ -73,10 +73,10 @@
 		<value>Πιστοποιητικά ολοκλήρωσης</value>
 	</data>
 	<data name="FeaturePrioritySupport" xml:space="preserve">
-		<value>Καθοδήγηση από προπονητή με προτεραιότητα</value>
+		<value>Υποστήριξη με προτεραιότητα</value>
 	</data>
 	<data name="BtnCurrentPlan" xml:space="preserve">
-		<value>Τρέχον Πλάνο</value>
+		<value>Τρέχον πλάνο</value>
 	</data>
 	<data name="Processing" xml:space="preserve">
 		<value>Επεξεργασία...</value>
@@ -91,19 +91,19 @@
 		<value>Συμπεριλαμβάνεται</value>
 	</data>
 	<data name="BtnSelectPlan" xml:space="preserve">
-		<value>Επιλογή Πλάνου</value>
+		<value>Επίλεξε πλάνο</value>
 	</data>
 	<data name="BtnGetStarted" xml:space="preserve">
-		<value>Ξεκινήστε</value>
+		<value>Ξεκίνα</value>
 	</data>
 	<data name="FailedToLoadPlans" xml:space="preserve">
-		<value>Αποτυχία φόρτωσης πλάνων. Παρακαλώ δοκιμάστε ξανά.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση των πλάνων. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="CheckoutFailed" xml:space="preserve">
-		<value>Αποτυχία ολοκλήρωσης αγοράς. Παρακαλώ δοκιμάστε ξανά.</value>
+		<value>Η αγορά δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="FailedToCancel" xml:space="preserve">
-		<value>Αποτυχία ακύρωσης. Παρακαλώ δοκιμάστε ξανά.</value>
+		<value>Η ακύρωση δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="PlanRequired" xml:space="preserve">
 		<value>Απαιτείται Πλάνο {0}</value>
@@ -116,5 +116,38 @@
 	</data>
 	<data name="FeatureLiveClasses" xml:space="preserve">
 		<value>Ζωντανά μαθήματα</value>
+	</data>
+	<data name="Eyebrow" xml:space="preserve">
+		<value>Συνδρομή</value>
+	</data>
+	<data name="PeriodMonthly" xml:space="preserve">
+		<value>/ μήνα</value>
+	</data>
+	<data name="PeriodQuarterly" xml:space="preserve">
+		<value>/ τρίμηνο</value>
+	</data>
+	<data name="PeriodYearly" xml:space="preserve">
+		<value>/ χρόνο</value>
+	</data>
+	<data name="PeriodLifetime" xml:space="preserve">
+		<value>εφάπαξ</value>
+	</data>
+	<data name="FeatureCoursesFree" xml:space="preserve">
+		<value>Όλα τα δωρεάν προγράμματα</value>
+	</data>
+	<data name="FeatureCoursesPlus" xml:space="preserve">
+		<value>Όλα τα προγράμματα Free και Plus</value>
+	</data>
+	<data name="FeatureCoursesPro" xml:space="preserve">
+		<value>Όλα τα προγράμματα, μαζί με τα προχωρημένα Pro</value>
+	</data>
+	<data name="FeaturesListLabel" xml:space="preserve">
+		<value>Τι περιλαμβάνει το πλάνο {0}</value>
+	</data>
+	<data name="FeatureNotIncluded" xml:space="preserve">
+		<value>Δεν περιλαμβάνεται:</value>
+	</data>
+	<data name="Footnote" xml:space="preserve">
+		<value>Η βιβλιοθήκη ασκήσεων και τα ζωντανά μαθήματα είναι ανοιχτά σε κάθε μέλος. Άλλαξε ή ακύρωσε το πλάνο σου όποτε θέλεις.</value>
 	</data>
 </root>
