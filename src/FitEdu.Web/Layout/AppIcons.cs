@@ -26,6 +26,8 @@ public static class AppIcons
     public const string Testimonials = "bi-chat-quote";
     public const string Reviews = "bi-star";
     public const string Document = "bi-file-earmark";
+    public const string Notification = "bi-bell";
+    public const string Search = "bi-search";
 
     /// <summary>The icon for a site-search hit, by its <c>SourceType</c> ("Course", "Exercise", …).</summary>
     public static string ForSearchSource(string sourceType) => sourceType switch

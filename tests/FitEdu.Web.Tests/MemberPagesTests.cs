@@ -96,6 +96,28 @@ public class MemberPagesTests : BunitContext
     }
 
     [Fact]
+    public void Notifications_ShowsAnEyebrowWithTheBellIcon()
+    {
+        ReturnNotifications(Notification(isRead: false));
+
+        var page = Render<Notifications>();
+
+        var eyebrow = page.Find(".notifications-head__text .eyebrow");
+        eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Notifications);
+        eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-bell");
+    }
+
+    [Fact]
+    public void Search_ShowsAnEyebrowWithTheSearchIcon()
+    {
+        var page = Render<Search>();
+
+        var eyebrow = page.Find(".search-head__text .eyebrow");
+        eyebrow.TextContent.Trim().ShouldBe(NavMenuRes.Search);
+        eyebrow.QuerySelector(".bi")!.ClassList.ShouldContain("bi-search");
+    }
+
+    [Fact]
     public void Search_SubmittingTheForm_NavigatesToTheQuery()
     {
         var navigation = Services.GetRequiredService<NavigationManager>();
