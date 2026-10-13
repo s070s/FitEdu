@@ -82,7 +82,7 @@
 		<value>Αναβάθμιση</value>
 	</data>
 	<data name="BtnDowngradeToFree" xml:space="preserve">
-		<value>Υποβάθμιση σε Δωρεάν</value>
+		<value>Μετάβαση στο δωρεάν πλάνο</value>
 	</data>
 	<data name="BtnIncluded" xml:space="preserve">
 		<value>Συμπεριλαμβάνεται</value>
@@ -103,10 +103,10 @@
 		<value>Η ακύρωση δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="PlanRequired" xml:space="preserve">
-		<value>Απαιτείται Πλάνο {0}</value>
+		<value>Απαιτείται πλάνο {0}</value>
 	</data>
 	<data name="UpgradeNow" xml:space="preserve">
-		<value>Αναβάθμιση Τώρα</value>
+		<value>Αναβάθμιση τώρα</value>
 	</data>
 	<data name="FeatureExerciseLibrary" xml:space="preserve">
 		<value>Πλήρης βιβλιοθήκη ασκήσεων</value>

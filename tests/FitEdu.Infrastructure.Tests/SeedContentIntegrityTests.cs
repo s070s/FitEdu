@@ -61,7 +61,13 @@ public partial class SeedContentIntegrityTests
         "Strength", "Nutrition", "Recovery", "Mobility", "Beginners"
     };
 
-    private static readonly string SourceRoot = Path.Combine(RepoPaths.RepoRoot, "src");
+    // Greek values that show a person's name, where every word is capitalised.
+    private static readonly HashSet<string> GreekPersonNameKeys = new(StringComparer.Ordinal)
+    {
+        "AdminRes.TestimonialNamePlaceholder"
+    };
+
+    private static readonly string SourceRoot =Path.Combine(RepoPaths.RepoRoot, "src");
 
     // Where the text gates (career vocabulary, Greek command forms) look: the seed JSON, every
     // resx file, the seed data written in C# (blog articles, plans, the seeders) and the other
@@ -443,19 +449,30 @@ public partial class SeedContentIntegrityTests
     [Fact]
     public void GreekResx_AddressesTheMemberInformally()
     {
-        var greekResxFiles = Directory.GetFiles(RepoPaths.ResourcesRoot, "*" + GreekResxSuffix, SearchOption.AllDirectories);
-        var formalValues = new List<string>();
+        var greekValues = LoadAllGreekResxValues();
 
-        foreach (var greekResxPath in greekResxFiles)
-        {
-            var resourceName = Path.GetRelativePath(RepoPaths.ResourcesRoot, greekResxPath);
-            formalValues.AddRange(LoadResxValues(greekResxPath)
-                .Where(pair => GreekFormalAddressRegex().IsMatch(pair.Value))
-                .Select(pair => $"{resourceName}.{pair.Key}: {pair.Value}"));
-        }
+        var formalValues = greekValues
+            .Where(value => GreekFormalAddressRegex().IsMatch(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .ToList();
 
-        greekResxFiles.ShouldNotBeEmpty();
+        greekValues.ShouldNotBeEmpty();
         formalValues.ShouldBeEmpty("the Greek UI says εσύ (e.g. Δοκίμασε, not Δοκιμάστε; σου, not σας)");
+    }
+
+    [Fact]
+    public void GreekResx_UsesSentenceCase()
+    {
+        var greekValues = LoadAllGreekResxValues();
+
+        var titleCaseValues = greekValues
+            .Where(value => !GreekPersonNameKeys.Contains(value.Location))
+            .Where(value => GreekTitleCaseRegex().IsMatch(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .ToList();
+
+        greekValues.ShouldNotBeEmpty();
+        titleCaseValues.ShouldBeEmpty("Greek capitalises only the first word (Διαχείριση χρηστών, not Διαχείριση Χρηστών)");
     }
 
     [Fact]
@@ -726,6 +743,21 @@ public partial class SeedContentIntegrityTests
                 StringComparer.Ordinal);
     }
 
+    /// <summary>Every value of every .el.resx (Messages/ included), located as "ResourceName.Key".</summary>
+    private static List<ResxValue> LoadAllGreekResxValues()
+    {
+        var greekValues = new List<ResxValue>();
+
+        foreach (var greekResxPath in Directory.GetFiles(RepoPaths.ResourcesRoot, "*" + GreekResxSuffix, SearchOption.AllDirectories))
+        {
+            var resourceName = Path.GetFileName(greekResxPath)[..^GreekResxSuffix.Length];
+            greekValues.AddRange(LoadResxValues(greekResxPath)
+                .Select(pair => new ResxValue($"{resourceName}.{pair.Key}", pair.Value)));
+        }
+
+        return greekValues;
+    }
+
     /// <summary>
     /// True when the value has words to translate once the terms Greek keeps in English
     /// (the brand, "Email", "PDF", ...) are removed; numbers and symbols need no translation.
@@ -777,6 +809,10 @@ public partial class SeedContentIntegrityTests
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex GreekFormalAddressRegex();
 
+    // Two capitalised Greek words in a row, the title case of "Διαχείριση Χρηστών".
+    [GeneratedRegex(@"\b[ΆΈ-ΏΑ-Ω][ά-ώ]+ [ΆΈ-ΏΑ-Ω][ά-ώ]+", RegexOptions.CultureInvariant)]
+    private static partial Regex GreekTitleCaseRegex();
+
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and
     // the letter or acronym names of equipment and moves (EZ bar, SMR, T-bar, V-up) keep theirs.
@@ -796,6 +832,8 @@ public partial class SeedContentIntegrityTests
 
     [GeneratedRegex(@"\d[.,]\d", RegexOptions.CultureInvariant)]
     private static partial Regex DecimalNumberRegex();
+
+    private sealed record ResxValue(string Location, string Text);
 
     private sealed record ExerciseReference(string Location, string Slug);
 

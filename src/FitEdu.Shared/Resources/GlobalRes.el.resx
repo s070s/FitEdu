@@ -172,7 +172,7 @@
     <value>Νέος κωδικός</value>
   </data>
   <data name="Label_DevResetPassword" xml:space="preserve">
-    <value>Dev: Επαναφορά Κωδικού</value>
+    <value>Dev: Επαναφορά κωδικού</value>
   </data>
   <data name="Label_Sending" xml:space="preserve">
     <value>Αποστολή...</value>
@@ -295,10 +295,10 @@
     <value>Έχεις αλλαγές που δεν αποθηκεύτηκαν. Σίγουρα θέλεις να φύγεις από αυτή τη σελίδα;</value>
   </data>
   <data name="DiscardChanges" xml:space="preserve">
-    <value>Απόρριψη Αλλαγών</value>
+    <value>Απόρριψη αλλαγών</value>
   </data>
   <data name="KeepEditing" xml:space="preserve">
-    <value>Συνέχιση Επεξεργασίας</value>
+    <value>Συνέχιση επεξεργασίας</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>Προηγούμενο</value>

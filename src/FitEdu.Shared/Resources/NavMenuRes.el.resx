@@ -148,7 +148,7 @@
     <value>Εικόνα προφίλ</value>
   </data>
   <data name="UserProfile" xml:space="preserve">
-    <value>Προφίλ Χρήστη</value>
+    <value>Προφίλ χρήστη</value>
   </data>
   <data name="ImpersonatingHint" xml:space="preserve">
     <value>Πάτα «Έξοδος από την προβολή χρήστη» για να σταματήσεις</value>
@@ -172,7 +172,7 @@
     <value>Άρθρα</value>
   </data>
   <data name="Testimonials" xml:space="preserve">
-    <value>Ευχαριστημένοι Χρήστες</value>
+    <value>Ευχαριστημένοι χρήστες</value>
   </data>
   <data name="LanguageSelectorLabel" xml:space="preserve">
     <value>Επιλογή γλώσσας</value>

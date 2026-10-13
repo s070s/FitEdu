@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Πίνακας Στατιστικών</value>
+    <value>Πίνακας στατιστικών</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Φόρτωση...</value>
   </data>
   <data name="TotalUsers" xml:space="preserve">
-    <value>Συνολικοί Χρήστες</value>
+    <value>Συνολικοί χρήστες</value>
   </data>
   <data name="ActiveUsers" xml:space="preserve">
-    <value>Ενεργοί Χρήστες</value>
+    <value>Ενεργοί χρήστες</value>
   </data>
   <data name="TotalEnrollments" xml:space="preserve">
-    <value>Συνολικές Εγγραφές</value>
+    <value>Συνολικές εγγραφές</value>
   </data>
   <data name="CompletedCourses" xml:space="preserve">
     <value>Ολοκληρωμένα προγράμματα</value>
@@ -151,7 +151,7 @@
     <value>Δεν υπάρχουν ακόμη δεδομένα προγραμμάτων</value>
   </data>
   <data name="AssessmentStats" xml:space="preserve">
-    <value>Στατιστικά Αξιολογήσεων</value>
+    <value>Στατιστικά αξιολογήσεων</value>
   </data>
   <data name="ColAssessment" xml:space="preserve">
     <value>Αξιολόγηση</value>
@@ -163,16 +163,16 @@
     <value>Δεν υπάρχουν διαθέσιμα δεδομένα αξιολογήσεων</value>
   </data>
   <data name="CreateAssessment" xml:space="preserve">
-    <value>Δημιουργία Αξιολόγησης</value>
+    <value>Δημιουργία αξιολόγησης</value>
   </data>
   <data name="EditAssessment" xml:space="preserve">
-    <value>Επεξεργασία Αξιολόγησης</value>
+    <value>Επεξεργασία αξιολόγησης</value>
   </data>
   <data name="BackToAssessments" xml:space="preserve">
-    <value>Πίσω στις Αξιολογήσεις</value>
+    <value>Πίσω στις αξιολογήσεις</value>
   </data>
   <data name="AssessmentDetails" xml:space="preserve">
-    <value>Λεπτομέρειες Αξιολόγησης</value>
+    <value>Λεπτομέρειες αξιολόγησης</value>
   </data>
   <data name="FieldKey" xml:space="preserve">
     <value>Κλειδί</value>
@@ -190,10 +190,10 @@
     <value>Ερωτήσεις</value>
   </data>
   <data name="AddQuestion" xml:space="preserve">
-    <value>+ Προσθήκη Ερώτησης</value>
+    <value>+ Προσθήκη ερώτησης</value>
   </data>
   <data name="AddSection" xml:space="preserve">
-    <value>+ Προσθήκη Ενότητας</value>
+    <value>+ Προσθήκη ενότητας</value>
   </data>
   <data name="NoQuestions" xml:space="preserve">
     <value>Δεν υπάρχουν ερωτήσεις ακόμα. Πάτησε «Προσθήκη ερώτησης» για να ξεκινήσεις.</value>
@@ -205,7 +205,7 @@
     <value>Ενότητα {0}</value>
   </data>
   <data name="QuestionId" xml:space="preserve">
-    <value>ID Ερώτησης</value>
+    <value>ID ερώτησης</value>
   </data>
   <data name="FieldType" xml:space="preserve">
     <value>Τύπος</value>
@@ -232,7 +232,7 @@
     <value>Όχι</value>
   </data>
   <data name="QuestionLabel" xml:space="preserve">
-    <value>Ετικέτα / Κείμενο Ερώτησης</value>
+    <value>Ετικέτα / κείμενο ερώτησης</value>
   </data>
   <data name="QuestionLabelPlaceholder" xml:space="preserve">
     <value>Γράψε το κείμενο της ερώτησης…</value>
@@ -256,13 +256,13 @@
     <value>μία ανά γραμμή</value>
   </data>
   <data name="SchemaPreview" xml:space="preserve">
-    <value>Προεπισκόπηση Σχήματος</value>
+    <value>Προεπισκόπηση σχήματος</value>
   </data>
   <data name="Saving" xml:space="preserve">
     <value>Αποθήκευση...</value>
   </data>
   <data name="SaveAssessment" xml:space="preserve">
-    <value>Αποθήκευση Αξιολόγησης</value>
+    <value>Αποθήκευση αξιολόγησης</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Ακύρωση</value>
@@ -280,10 +280,10 @@
     <value>Αφαίρεση</value>
   </data>
   <data name="AssessmentManagement" xml:space="preserve">
-    <value>Διαχείριση Αξιολογήσεων</value>
+    <value>Διαχείριση αξιολογήσεων</value>
   </data>
   <data name="CreateNewAssessment" xml:space="preserve">
-    <value>Δημιουργία Νέας Αξιολόγησης</value>
+    <value>Δημιουργία νέας αξιολόγησης</value>
   </data>
   <data name="ColStatus" xml:space="preserve">
     <value>Κατάσταση</value>
@@ -304,7 +304,7 @@
     <value>Επεξεργασία</value>
   </data>
   <data name="Unpublish" xml:space="preserve">
-    <value>Κατάργηση Δημοσίευσης</value>
+    <value>Κατάργηση δημοσίευσης</value>
   </data>
   <data name="Publish" xml:space="preserve">
     <value>Δημοσίευση</value>
@@ -313,7 +313,7 @@
     <value>Διαγραφή</value>
   </data>
   <data name="AssessmentSubmissions" xml:space="preserve">
-    <value>Υποβολές Αξιολόγησης</value>
+    <value>Υποβολές αξιολόγησης</value>
   </data>
   <data name="SubmissionsWithTitle" xml:space="preserve">
     <value>Υποβολές — {0}</value>
@@ -328,13 +328,13 @@
     <value>Email</value>
   </data>
   <data name="ColSubmittedAt" xml:space="preserve">
-    <value>Ημερομηνία Υποβολής</value>
+    <value>Ημερομηνία υποβολής</value>
   </data>
   <data name="HideAnswers" xml:space="preserve">
-    <value>Απόκρυψη Απαντήσεων</value>
+    <value>Απόκρυψη απαντήσεων</value>
   </data>
   <data name="ViewAnswers" xml:space="preserve">
-    <value>Προβολή Απαντήσεων</value>
+    <value>Προβολή απαντήσεων</value>
   </data>
   <data name="Summary" xml:space="preserve">
     <value>Σύνοψη</value>
@@ -361,7 +361,7 @@
     <value>Ενότητες &amp; μαθήματα</value>
   </data>
   <data name="AddModule" xml:space="preserve">
-    <value>+ Προσθήκη Ενότητας</value>
+    <value>+ Προσθήκη ενότητας</value>
   </data>
   <data name="LoadingModules" xml:space="preserve">
     <value>Φόρτωση ενοτήτων...</value>
@@ -376,7 +376,7 @@
     <value>Σειρά: {0}</value>
   </data>
   <data name="EditModule" xml:space="preserve">
-    <value>Επεξεργασία Ενότητας</value>
+    <value>Επεξεργασία ενότητας</value>
   </data>
   <data name="AddLesson" xml:space="preserve">
     <value>+ Προσθήκη μαθήματος</value>
@@ -412,7 +412,7 @@
     <value>Κατάργηση δημοσίευσης προγράμματος</value>
   </data>
   <data name="SortOrder" xml:space="preserve">
-    <value>Σειρά Ταξινόμησης</value>
+    <value>Σειρά ταξινόμησης</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Αποθήκευση</value>
@@ -427,7 +427,7 @@
     <value>Περιεχόμενο</value>
   </data>
   <data name="VideoUrlLabel" xml:space="preserve">
-    <value>URL Βίντεο (YouTube embed ή απευθείας σύνδεσμος)</value>
+    <value>URL βίντεο (YouTube embed ή απευθείας σύνδεσμος)</value>
   </data>
   <data name="VideoUrlHint" xml:space="preserve">
     <value>Επικόλλησε ένα URL ενσωμάτωσης YouTube ή έναν απευθείας σύνδεσμο βίντεο. Έχει προτεραιότητα έναντι αρχείων και κειμένου.</value>
@@ -436,7 +436,7 @@
     <value>Μεταφόρτωση PDF</value>
   </data>
   <data name="UploadVideo" xml:space="preserve">
-    <value>Μεταφόρτωση Αρχείου Βίντεο</value>
+    <value>Μεταφόρτωση αρχείου βίντεο</value>
   </data>
   <data name="Current" xml:space="preserve">
     <value>Τρέχον:</value>
@@ -463,7 +463,7 @@
     <value> · {0} λεπ.</value>
   </data>
   <data name="UserManagement" xml:space="preserve">
-    <value>Διαχείριση Χρηστών</value>
+    <value>Διαχείριση χρηστών</value>
   </data>
   <data name="SearchByEmailOrName" xml:space="preserve">
     <value>Αναζήτηση με email ή όνομα...</value>
@@ -490,19 +490,19 @@
     <value>Σύνδεση ως</value>
   </data>
   <data name="ResetPassword" xml:space="preserve">
-    <value>Επαναφορά Κωδικού</value>
+    <value>Επαναφορά κωδικού</value>
   </data>
   <data name="ResetPasswordFor" xml:space="preserve">
     <value>Επαναφορά κωδικού για {0}</value>
   </data>
   <data name="NewPassword" xml:space="preserve">
-    <value>Νέος Κωδικός</value>
+    <value>Νέος κωδικός</value>
   </data>
   <data name="ConfirmPasswordLabel" xml:space="preserve">
-    <value>Επιβεβαίωση Κωδικού</value>
+    <value>Επιβεβαίωση κωδικού</value>
   </data>
   <data name="SetPassword" xml:space="preserve">
-    <value>Ορισμός Κωδικού</value>
+    <value>Ορισμός κωδικού</value>
   </data>
   <data name="PasswordUpdated" xml:space="preserve">
     <value>Ο κωδικός ενημερώθηκε επιτυχώς</value>
@@ -517,7 +517,7 @@
     <value>Ενεργοποίηση</value>
   </data>
   <data name="ConfirmDelete" xml:space="preserve">
-    <value>Επιβεβαίωση Διαγραφής</value>
+    <value>Επιβεβαίωση διαγραφής</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
     <value>Δεν έχεις πρόσβαση. Απαιτείται ρόλος διαχειριστή.</value>
@@ -535,7 +535,7 @@
     <value>Η προσομοίωση απέτυχε.</value>
   </data>
   <data name="TestimonialsPageTitle" xml:space="preserve">
-    <value>Ευχαριστημένοι Χρήστες</value>
+    <value>Ευχαριστημένοι χρήστες</value>
   </data>
   <data name="NewTestimonial" xml:space="preserve">
     <value>Νέα μαρτυρία</value>
@@ -547,7 +547,7 @@
     <value>Σειρά</value>
   </data>
   <data name="ColRoleCompany" xml:space="preserve">
-    <value>Ρόλος / Πλαίσιο</value>
+    <value>Ρόλος / πλαίσιο</value>
   </data>
   <data name="StatusActive" xml:space="preserve">
     <value>Ενεργό</value>
@@ -577,7 +577,7 @@
     <value>Αναζήτηση με τίτλο ή κλειδί...</value>
   </data>
   <data name="NewArticle" xml:space="preserve">
-    <value>Νέο Άρθρο</value>
+    <value>Νέο άρθρο</value>
   </data>
   <data name="NoBlogArticlesFound" xml:space="preserve">
     <value>Δεν βρέθηκαν άρθρα blog.</value>
@@ -652,13 +652,13 @@
     <value>Ονοματεπώνυμο</value>
   </data>
   <data name="FieldRoleTitle" xml:space="preserve">
-    <value>Ρόλος / Τίτλος</value>
+    <value>Ρόλος / τίτλος</value>
   </data>
   <data name="FieldRoleTitleEl" xml:space="preserve">
-    <value>Ρόλος / Τίτλος (στα ελληνικά)</value>
+    <value>Ρόλος / τίτλος (στα ελληνικά)</value>
   </data>
   <data name="FieldCompanyContext" xml:space="preserve">
-    <value>Γυμναστήριο / Πλαίσιο</value>
+    <value>Γυμναστήριο / πλαίσιο</value>
   </data>
   <data name="FieldQuote" xml:space="preserve">
     <value>Παράθεση</value>
@@ -703,10 +703,10 @@
     <value>Επιβεβαιωμένο Email</value>
   </data>
   <data name="ColModulesLessons" xml:space="preserve">
-    <value>Ενότητες / Μαθήματα</value>
+    <value>Ενότητες / μαθήματα</value>
   </data>
   <data name="ColCompletionRate" xml:space="preserve">
-    <value>% Ολοκλήρωσης</value>
+    <value>% ολοκλήρωσης</value>
   </data>
   <data name="ItemLabelUsers" xml:space="preserve">
     <value>χρήστες</value>

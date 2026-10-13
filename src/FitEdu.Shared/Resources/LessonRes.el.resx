@@ -150,7 +150,7 @@
 		<value>Το περιεχόμενο αυτού του μαθήματος δεν είναι διαθέσιμο αυτή τη στιγμή.</value>
 	</data>
 	<data name="CertificatePending" xml:space="preserve">
-		<value>Το πιστοποιητικό σου ετοιμάζεται — δες τα Πιστοποιητικά μου σε λίγα λεπτά.</value>
+		<value>Το πιστοποιητικό σου ετοιμάζεται — δες τα πιστοποιητικά σου σε λίγα λεπτά.</value>
 	</data>
 	<data name="Exercises" xml:space="preserve">
 		<value>Ασκήσεις</value>

@@ -102,7 +102,7 @@
 		<value>Φόρτωση...</value>
 	</data>
 	<data name="SubmittedTitle" xml:space="preserve">
-		<value>Η Αξιολόγηση Υποβλήθηκε Επιτυχώς!</value>
+		<value>Η αξιολόγηση υποβλήθηκε επιτυχώς!</value>
 	</data>
 	<data name="SubmittedMessage" xml:space="preserve">
 		<value>Ευχαριστούμε που συμπλήρωσες την αξιολόγηση.</value>
@@ -114,10 +114,10 @@
 		<value>-- Επίλεξε --</value>
 	</data>
 	<data name="SubmitAssessment" xml:space="preserve">
-		<value>Υποβολή Αξιολόγησης</value>
+		<value>Υποβολή αξιολόγησης</value>
 	</data>
 	<data name="HistoryTitle" xml:space="preserve">
-		<value>Οι Υποβολές Αξιολόγησης μου</value>
+		<value>Οι αξιολογήσεις μου</value>
 	</data>
 	<data name="NoSubmissionsMessage" xml:space="preserve">
 		<value>Δεν έχεις υποβάλει ακόμα καμία αξιολόγηση.</value>
@@ -126,19 +126,19 @@
 		<value>Κάνε μια αξιολόγηση</value>
 	</data>
 	<data name="LatestSubmission" xml:space="preserve">
-		<value>Τελευταία Υποβολή</value>
+		<value>Τελευταία υποβολή</value>
 	</data>
 	<data name="SubmittedLabel" xml:space="preserve">
 		<value>Υποβλήθηκε:</value>
 	</data>
 	<data name="ViewDetails" xml:space="preserve">
-		<value>Προβολή Λεπτομερειών</value>
+		<value>Προβολή λεπτομερειών</value>
 	</data>
 	<data name="SubmissionsItemLabel" xml:space="preserve">
 		<value>υποβολές</value>
 	</data>
 	<data name="AllSubmissions" xml:space="preserve">
-		<value>Όλες οι Υποβολές</value>
+		<value>Όλες οι υποβολές</value>
 	</data>
 	<data name="AssessmentHeader" xml:space="preserve">
 		<value>Αξιολόγηση</value>
@@ -168,7 +168,7 @@
 		<value>Αξιολογήσεις - FitEdu</value>
 	</data>
 	<data name="AvailableAssessments" xml:space="preserve">
-		<value>Διαθέσιμες Αξιολογήσεις</value>
+		<value>Διαθέσιμες αξιολογήσεις</value>
 	</data>
 	<data name="LoadingAssessments" xml:space="preserve">
 		<value>Φόρτωση αξιολογήσεων...</value>
@@ -231,7 +231,7 @@
 		<value>Ολοκληρωμένη</value>
 	</data>
 	<data name="Retake" xml:space="preserve">
-		<value>Κάν' την ξανά</value>
+		<value>Επανάληψη</value>
 	</data>
 	<data name="SectionOfFormat" xml:space="preserve">
 		<value>Ενότητα {0} από {1}</value>

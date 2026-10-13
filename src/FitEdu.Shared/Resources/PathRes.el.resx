@@ -104,7 +104,7 @@
     <value>Νέα διαδρομή</value>
   </data>
   <data name="EditPath" xml:space="preserve">
-    <value>Επεξεργασία Διαδρομής</value>
+    <value>Επεξεργασία διαδρομής</value>
   </data>
   <data name="NoPathsFound" xml:space="preserve">
     <value>Δεν βρέθηκαν διαδρομές προπόνησης.</value>
