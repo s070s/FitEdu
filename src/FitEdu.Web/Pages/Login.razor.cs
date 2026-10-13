@@ -27,7 +27,7 @@ public partial class Login
     private string pendingUnconfirmedEmail = string.Empty;
 
     private string passwordInputType => showPassword ? "text" : "password";
-    private string passwordIconClass => showPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
 
     private void TogglePasswordVisibility()
     {

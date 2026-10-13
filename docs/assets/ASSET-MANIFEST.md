@@ -22,6 +22,7 @@ All sources were downloaded and their licences checked on **2026-10-12**.
 | `images/blog/*.webp` | Free Exercise DB photos (as above), credit "free-exercise-db contributors" | The Unlicense | as above | Four 1200x675 duotone covers: barbell-squat, dumbbell-bench-press, plank, star-jump. Rendered from the original JPGs of the download (frame `0.jpg`; star-jump uses `1.jpg`). |
 | `images/og-home.jpg` | Own layout, `tools/assets/og-template.html` | MIT (own work) | [`LICENSE`](../../LICENSE) | 1200x630 social preview. The six collage frames are Free Exercise DB photos (Unlicense). |
 | `favicon.svg`, `favicon.png` (64 px), `icon-192.png` | Own artwork, `wwwroot/favicon.svg` | MIT (own work) | [`LICENSE`](../../LICENSE) | Dumbbell mark in the brand palette; the PNGs are rendered from the SVG. |
+| `manifest.webmanifest` | Own file, `wwwroot/manifest.webmanifest` | MIT (own work) | [`LICENSE`](../../LICENSE) | Web app manifest (name, colours, icon list), checked 2026-10-13. Not an image; recorded so the brand files are complete. |
 
 ## Licence text as seen on 2026-10-12
 
@@ -66,7 +67,6 @@ keeps its own licence.
 | Bootstrap (CSS) | 5.3.3 | Vendored in `wwwroot/lib/bootstrap` | MIT | Header of `bootstrap.min.css`; <https://github.com/twbs/bootstrap/blob/main/LICENSE> |
 | Bootstrap Icons | 1.11.3 | jsDelivr CDN, linked from `App.razor` | MIT | <https://github.com/twbs/icons/blob/main/LICENSE> |
 | Quill (rich-text editor) | 2.0.3 | jsDelivr CDN, linked from `App.razor` | BSD-3-Clause | <https://github.com/slab/quill/blob/main/LICENSE> |
-| Font Awesome Free | 6.5.1 | cdnjs CDN, linked from `App.razor` | Icons CC BY 4.0, fonts SIL OFL 1.1, code MIT | <https://fontawesome.com/license/free> (attribution is kept in the file headers) |
 
 ## Excluded
 

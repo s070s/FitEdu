@@ -28,9 +28,9 @@ public partial class Register : IDisposable
     private string registeredEmail = string.Empty;
 
     private string passwordInputType => showPassword ? "text" : "password";
-    private string passwordIconClass => showPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    private string passwordIconClass => showPassword ? "bi bi-eye-slash" : "bi bi-eye";
     private string confirmPasswordInputType => showConfirmPassword ? "text" : "password";
-    private string confirmPasswordIconClass => showConfirmPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    private string confirmPasswordIconClass => showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye";
 
     protected override void OnInitialized()
     {

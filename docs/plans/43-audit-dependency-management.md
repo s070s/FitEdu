@@ -44,9 +44,9 @@ The dependency foundation is genuinely good for a solo project: central package 
 
 > The three Medium findings are resolved — DEP-1 (Dependabot + `NuGetAuditMode=all`), DEP-2 (Bootstrap provenance via `libman.json` + trimmed dist), DEP-4 (OpenApi pin rationale in `Directory.Packages.props`); see git (`Fix DEP-1`, `Fix DEP-2 and DEP-4`). DEP-7 (lock files) was closed under BUILD-1, and DEP-3 / DEP-10 on 2026-09-05. The remaining open items are two Low and one Info.
 
-### DEP-5: Three runtime CDN dependencies with no local fallback  [Low] [Effort: M]
-- **Evidence:** `src/FitEdu.Web/App.razor` loads bootstrap-icons 1.11.3 from jsDelivr (line 27, render-blocking by design per its own comment), Font Awesome 6.5.1 from cdnjs (line 32, the only one with an SRI hash), and Quill 2.0.3 CSS+JS from jsDelivr (lines 36, 53). Versions are pinned in the URLs, but none of these appear in any manifest, and there is no local fallback.
-- **Impact:** Dependency-hygiene angle (the missing-SRI/supply-chain security angle belongs to SEC 25): these four assets are invisible to every update/audit mechanism, the app's icon set and rich-text editor break offline or if a CDN is unreachable (relevant for a university demo on venue Wi-Fi), and the strategy is inconsistent with Bootstrap CSS being vendored — a maintainer has to discover two different asset regimes.
+### DEP-5: Two runtime CDN dependencies with no local fallback  [Low] [Effort: M]
+- **Evidence:** `src/FitEdu.Web/App.razor` loads bootstrap-icons 1.11.3 from jsDelivr (render-blocking by design per its own comment) and Quill 2.0.3 CSS+JS from jsDelivr. Font Awesome 6.5.1 from cdnjs was removed in Phase D1 (2026-10-13). Versions are pinned in the URLs, but none of these appear in any manifest, and there is no local fallback.
+- **Impact:** Dependency-hygiene angle (the missing-SRI/supply-chain security angle belongs to SEC 25): these three assets are invisible to every update/audit mechanism, the app's icon set and rich-text editor break offline or if a CDN is unreachable (relevant for a university demo on venue Wi-Fi), and the strategy is inconsistent with Bootstrap CSS being vendored — a maintainer has to discover two different asset regimes.
 - **Recommendation:** Fold these into the same `libman.json` as DEP-2 and serve them from `wwwroot/lib/`, eliminating the CDN coupling and unifying the update path. (Quill JS is `defer`-loaded, so vendoring does not change load behavior.)
 
 ### DEP-6: QuestPDF Community-license condition is relied on but recorded nowhere  [Low] [Effort: S]
@@ -66,7 +66,7 @@ All three Medium items (DEP-1, DEP-2, DEP-4) are resolved, as is DEP-7 (under BU
 | ID | Severity | Effort | Action |
 |----|----------|--------|--------|
 | DEP-6 | Low | S | Comment the QuestPDF Community-license eligibility; README third-party note |
-| DEP-5 | Low | M | Vendor bootstrap-icons / Font Awesome / Quill via libman; drop CDN coupling |
+| DEP-5 | Low | M | Vendor bootstrap-icons / Quill via libman; drop CDN coupling |
 | DEP-8 | Info | S | Document the dotnet-ef ↔ EF Core version coupling |
 
 ## 5. Related Findings Elsewhere

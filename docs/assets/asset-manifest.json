@@ -69,6 +69,16 @@
       "checkedOn": "2026-10-12",
       "type": "image/png",
       "notes": "rendered from favicon.svg by tools/assets/render-brand-images.mjs"
+    },
+    {
+      "glob": "manifest.webmanifest",
+      "name": "FitEdu web app manifest (name, colours, icon list)",
+      "sourceUrl": "repo",
+      "licence": "MIT (own work)",
+      "licenceStatedAt": "LICENSE",
+      "checkedOn": "2026-10-13",
+      "type": "application/manifest+json",
+      "notes": "lists icon-192.png and favicon.svg; linked from App.razor"
     }
   ]
 }
