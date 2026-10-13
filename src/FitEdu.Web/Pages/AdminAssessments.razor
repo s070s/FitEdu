@@ -52,7 +52,7 @@ else
                 <td data-label="@AdminRes.FieldTitle">@assessment.Title</td>
                 <td data-label="@AdminRes.FieldKey">@assessment.Key</td>
                 <td data-label="@AdminRes.ColCategory">@(assessment.CategoryNameEn ?? "—")</td>
-                <td data-label="@AdminRes.ColTier">@assessment.RequiredTier</td>
+                <td data-label="@AdminRes.ColTier">@TierLabels.Name(assessment.RequiredTier)</td>
                 <td data-label="@AdminRes.ColStatus">
                     <StatusBadge IsActive="assessment.IsPublished"
                                  ActiveText="@AdminRes.StatusPublished"

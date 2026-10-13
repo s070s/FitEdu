@@ -13,13 +13,13 @@
         <section class="success-card card-surface" aria-labelledby="success-heading">
             <div class="success-icon" aria-hidden="true"><span class="bi bi-trophy-fill"></span></div>
             <span class="eyebrow">@SubscriptionSuccessRes.Eyebrow</span>
-            <h1 id="success-heading">@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, _status.PlanName)</h1>
+            <h1 id="success-heading">@string.Format(SubscriptionSuccessRes.PlanHeadingFormat, TierLabels.Name(_status.Tier))</h1>
             <p class="success-lead">@SubscriptionSuccessRes.SubscriptionActive</p>
 
             <dl class="plan-details">
                 <div>
                     <dt>@SubscriptionSuccessRes.LabelPlan</dt>
-                    <dd>@_status.PlanName</dd>
+                    <dd>@TierLabels.Name(_status.Tier)</dd>
                 </div>
                 <div>
                     <dt>@SubscriptionSuccessRes.LabelStarted</dt>

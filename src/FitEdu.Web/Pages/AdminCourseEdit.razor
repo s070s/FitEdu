@@ -60,7 +60,7 @@
                                        value="@tier"
                                        checked="@(courseRequiredTier == tier)"
                                        @onchange="() => courseRequiredTier = tier" />
-                                @tier
+                                @TierLabels.Name(tier)
                             </label>
                         }
                     </div>

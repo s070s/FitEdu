@@ -165,6 +165,16 @@ public class AdminCourseEditLabelTests : BunitContext
     }
 
     [Fact]
+    public void TierPicker_ShowsGreekTierNames_AndKeepsTheEnumValues()
+    {
+        var page = Render<AdminCourseEdit>(parameters => parameters.Add(p => p.CourseId, Guid.Empty));
+
+        var freeOption = page.FindAll(".tier-option")[0];
+        freeOption.TextContent.Trim().ShouldBe("Δωρεάν");
+        freeOption.QuerySelector("input")!.GetAttribute("value").ShouldBe(nameof(SubscriptionTier.Free));
+    }
+
+    [Fact]
     public void GreekTitleInput_IsMarkedAsGreek()
     {
         var page = Render<AdminCourseEdit>(parameters => parameters.Add(p => p.CourseId, Guid.Empty));

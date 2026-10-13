@@ -173,7 +173,7 @@ public record AdminUserDto(
     bool IsEnabled,
     string Status,
     List<string> Roles,
-    string SubscriptionTier,
+    SubscriptionTier SubscriptionTier,
     DateTime CreatedAt,
     DateTime? LastSeenAt = null
 );

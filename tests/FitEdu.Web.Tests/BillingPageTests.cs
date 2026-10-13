@@ -33,7 +33,7 @@ public class BillingPageTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         AddAuthorization();
 
-        var upgrade = new BillingTransactionDto(Guid.NewGuid(), "Pro", 19.99m, "eur",
+        var upgrade = new BillingTransactionDto(Guid.NewGuid(), "Pro", SubscriptionTier.Pro, 19.99m, "eur",
             nameof(BillingTransactionType.Upgrade), EnglishDescription, StripeSessionId: null, DateTime.UtcNow);
         var overview = new BillingOverviewDto
         {

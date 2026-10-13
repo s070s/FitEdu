@@ -20,7 +20,7 @@
             <div class="plan-limit-banner @(IsPlanFull ? "plan-limit-full" : "")">
                 <span class="plan-limit-banner__icon bi @(IsPlanFull ? "bi-exclamation-circle" : "bi-stars")" aria-hidden="true"></span>
                 <p class="plan-limit-banner__text">
-                    <span>@string.Format(CourseRes.PlanCourseLimitFormat, _userStatus!.PlanName, _maxCourses)</span>
+                    <span>@string.Format(CourseRes.PlanCourseLimitFormat, TierLabels.Name(_userStatus!.Tier), _maxCourses)</span>
                     @if (IsPlanFull)
                     {
                         <span class="slots-full-label">@CourseRes.CourseSlotsFullNotice</span>

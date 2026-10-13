@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -29,6 +30,10 @@ public partial class Pricing
     /// <summary>The second line of every plan card: how many courses can run at once.</summary>
     private static string CourseLimitLabel(int maxCourses) =>
         CourseLimitText.Describe(maxCourses, PricingRes.UnlimitedCourses, PricingRes.OneCourseAtATime, PricingRes.UpToCoursesFormat);
+
+    /// <summary>The member's current plan name in their language; empty while nothing is loaded.</summary>
+    private string CurrentPlanName =>
+        _currentStatus is null ? string.Empty : TierLabels.Name(_currentStatus.Tier);
 
     /// <summary>A tick for an included feature, a cross for one the plan lacks.</summary>
     private static string FeatureIcon(bool included) => included ? "bi-check-lg" : "bi-x-lg";

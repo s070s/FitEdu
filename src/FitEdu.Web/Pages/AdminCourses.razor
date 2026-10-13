@@ -53,7 +53,7 @@ else
             <tr @key="course.Id">
                 <td data-label="@AdminRes.FieldTitle">@course.TitleEn</td>
                 <td data-label="@AdminRes.ColCategory">@(course.CategoryNameEn ?? "—")</td>
-                <td data-label="@AdminRes.ColTier">@course.RequiredTier</td>
+                <td data-label="@AdminRes.ColTier">@TierLabels.Name(course.RequiredTier)</td>
                 <td data-label="@AdminRes.ColStatus">
                     <StatusBadge IsActive="course.IsPublished"
                                  ActiveText="@AdminRes.StatusPublished"

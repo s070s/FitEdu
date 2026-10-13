@@ -27,7 +27,7 @@
             <div class="current-plan-card card-surface">
                 <div class="plan-info">
                     <div class="plan-name-row">
-                        <span class="plan-name">@_overview.CurrentSubscription?.PlanName</span>
+                        <span class="plan-name">@CurrentPlanName</span>
                         <span class="tier-badge chip @TierChipClass(_overview.CurrentSubscription?.Tier)">
                             <span class="bi bi-check-circle-fill" aria-hidden="true"></span>@BillingRes.PlanActive
                         </span>
@@ -102,7 +102,7 @@
                               OnConfirm="CancelSubscription"
                               OnCancel="CloseCancelDialog">
                     <BodyContent>
-                        <p>@string.Format(BillingRes.CancelConfirmBody, _overview.CurrentSubscription?.PlanName)</p>
+                        <p>@string.Format(BillingRes.CancelConfirmBody, CurrentPlanName)</p>
                         @if (_overview.CurrentSubscription?.ExpiresAt is not null)
                         {
                             <p class="mb-0">@string.Format(BillingRes.CancelConfirmAccessUntil, _overview.CurrentSubscription.ExpiresAt.Value.ToLocalTime().ToString("d"))</p>
@@ -149,7 +149,7 @@
                                     <span class="tx-description">@tx.Description</span>
                                 }
                             </td>
-                            <td data-label="@BillingRes.ColPlan">@tx.PlanName</td>
+                            <td data-label="@BillingRes.ColPlan">@TierLabels.Name(tx.Tier)</td>
                             <td data-label="@BillingRes.ColAmount" class="@(tx.Amount > 0 ? "amount-charge" : "amount-zero")">
                                 @if (tx.Amount == 0)
                                 {

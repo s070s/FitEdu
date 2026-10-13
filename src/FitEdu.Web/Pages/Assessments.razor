@@ -32,7 +32,7 @@
     }
     else if (!_assessmentAccess)
     {
-        <UpgradePrompt PlanName="Plus"
+        <UpgradePrompt Tier="SubscriptionTier.Plus"
                        Description="@AssessmentRes.UpgradeDescription" />
     }
     else if (_error is not null)

@@ -409,6 +409,7 @@ public class SubscriptionService : ISubscriptionService
             .Select(bt => new BillingTransactionDto(
                 bt.Id,
                 bt.SubscriptionPlan.Name,
+                bt.SubscriptionPlan.Tier,
                 bt.Amount,
                 bt.Currency,
                 bt.Type.ToString(),

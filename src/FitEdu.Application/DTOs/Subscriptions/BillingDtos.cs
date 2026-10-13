@@ -1,3 +1,5 @@
+using FitEdu.Domain.Enums;
+
 namespace FitEdu.Application.DTOs;
 
 /// <summary>
@@ -6,6 +8,7 @@ namespace FitEdu.Application.DTOs;
 public record BillingTransactionDto(
     Guid Id,
     string PlanName,
+    SubscriptionTier Tier,
     decimal Amount,
     string Currency,
     string Type,

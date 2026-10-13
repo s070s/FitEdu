@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Web.Consumers;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using System.Globalization;
 
@@ -9,7 +10,7 @@ namespace FitEdu.Web.Pages;
 public partial class MyCertificates
 {
     /// <summary>The plan that includes certificates (SubscriptionPlanSeeder).</summary>
-    private const string CertificatePlanName = "Pro";
+    private const SubscriptionTier CertificateTier = SubscriptionTier.Pro;
 
     [Inject] private ICertificateConsumer CertificateConsumer { get; set; } = default!;
     [Inject] private ISubscriptionConsumer SubscriptionConsumer { get; set; } = default!;

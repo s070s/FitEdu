@@ -15,7 +15,7 @@
         }
         @if (Course.RequiredTier != SubscriptionTier.Free)
         {
-            <span class="tier-badge course-card__tier tier-@Course.RequiredTier.ToString().ToLowerInvariant()">@Course.RequiredTier</span>
+            <span class="tier-badge course-card__tier tier-@Course.RequiredTier.ToString().ToLowerInvariant()">@TierLabels.Name(Course.RequiredTier)</span>
         }
     </CourseCover>
 
@@ -62,7 +62,7 @@
             {
                 @* A visual label only: the stretched title link already leads to /pricing. *@
                 <span class="locked-badge">
-                    <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, Course.RequiredTier)
+                    <span class="bi bi-lock-fill" aria-hidden="true"></span> @string.Format(CourseRes.UpgradeToFormat, TierLabels.Name(Course.RequiredTier))
                 </span>
             }
         </div>

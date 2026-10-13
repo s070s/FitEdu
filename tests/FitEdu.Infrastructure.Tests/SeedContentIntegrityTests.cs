@@ -831,8 +831,8 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"\p{IsGreekandCoptic}", RegexOptions.CultureInvariant)]
     private static partial Regex GreekLetterRegex();
 
-    // The brand and the terms the Greek UI keeps in English.
-    [GeneratedRegex(@"\b(?:FitEdu|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]
+    // The brand, the Plus and Pro plan names and the terms the Greek UI keeps in English.
+    [GeneratedRegex(@"\b(?:FitEdu|Plus|Pro|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]
     private static partial Regex TermsKeptInEnglishRegex();
 
     [GeneratedRegex(@"\b(?:s|min|m|rpm|RPE|AMRAP)\b", RegexOptions.CultureInvariant)]

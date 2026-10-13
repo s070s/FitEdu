@@ -41,7 +41,7 @@ else
             <CourseCover ImageUrl="@_course.CoverImageUrl" CategoryName="@_course.CategoryName" Eager="true">
                 @if (_course.RequiredTier != SubscriptionTier.Free)
                 {
-                    <span class="tier-badge course-hero__tier tier-@_course.RequiredTier.ToString().ToLowerInvariant()">@_course.RequiredTier</span>
+                    <span class="tier-badge course-hero__tier tier-@_course.RequiredTier.ToString().ToLowerInvariant()">@TierLabels.Name(_course.RequiredTier)</span>
                 }
             </CourseCover>
         </div>
@@ -364,7 +364,7 @@ else
             {
                 <div class="enroll-upgrade-notice">
                     <span class="bi bi-lock-fill" aria-hidden="true"></span>
-                    <p>@string.Format(CourseRes.RequiresPlanFormat, _course.RequiredTier)</p>
+                    <p>@string.Format(CourseRes.RequiresPlanFormat, TierLabels.Name(_course.RequiredTier))</p>
                 </div>
                 <a class="btn-cta course-cta__action" href="/pricing">@CourseRes.UpgradePlan</a>
             }
