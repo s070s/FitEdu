@@ -587,6 +587,11 @@
     .today-plan__cta {
         width: auto;
     }
+
+    /* Dashboard course rows: even columns, so a short row never leaves an empty track. */
+    .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (min-width: 768px) {
@@ -666,9 +671,10 @@
     }
 }
 
-/* Six programmes fill two even rows of three. */
+/* Six programmes fill two even rows of three; the dashboard rows match them. */
 @media (min-width: 992px) {
-    .featured-grid {
+    .featured-grid,
+    .dashboard-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }

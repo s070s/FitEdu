@@ -276,7 +276,7 @@ else
         {
             <section class="dashboard-section" aria-labelledby="programmes-title">
                 <h2 id="programmes-title" class="dashboard-section__title">@HomeRes.DashboardContinueLearning</h2>
-                <div class="grid-auto">
+                <div class="grid-auto dashboard-grid">
                     @foreach (var course in dashboard.EnrolledCourses)
                     {
                         <CourseCard Course="course" Compact="true" @key="course.Id" />
@@ -289,7 +289,7 @@ else
         {
             <section class="dashboard-section" aria-labelledby="recommended-title">
                 <h2 id="recommended-title" class="dashboard-section__title">@HomeRes.RecommendedTitle</h2>
-                <div class="grid-auto">
+                <div class="grid-auto dashboard-grid">
                     @foreach (var course in dashboard.RecommendedCourses)
                     {
                         <CourseCard Course="course" Compact="true" @key="course.Id" />
