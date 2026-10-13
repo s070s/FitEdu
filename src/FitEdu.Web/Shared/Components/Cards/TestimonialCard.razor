@@ -1,0 +1,72 @@
+@* One member story: quote, then the member's photo (or initials when there is none or it fails to
+   load), name and role. The failed-photo fallback is a Blazor @onerror handler, which the CSP allows
+   (an inline onerror attribute would be blocked). *@
+
+<figure class="testimonial-card card-surface">
+    <div class="card-surface__body testimonial-card__body">
+        <span class="testimonial-card__quote-icon bi bi-quote" aria-hidden="true"></span>
+        <blockquote class="testimonial-card__quote">
+            <p>@Testimonial.QuoteText</p>
+        </blockquote>
+
+        <figcaption class="testimonial-card__author">
+            <span class="testimonial-card__avatar">
+                @if (ShowPhoto)
+                {
+                    <img src="@Testimonial.AvatarUrl" alt="" width="@AvatarSize" height="@AvatarSize"
+                         loading="lazy" decoding="async" @onerror="OnPhotoError" />
+                }
+                else
+                {
+                    <span class="testimonial-card__initials" aria-hidden="true">@Initials(Testimonial.FullName)</span>
+                }
+            </span>
+            <span class="testimonial-card__who">
+                <span class="testimonial-card__name">@Testimonial.FullName</span>
+                @if (RoleText is { } role)
+                {
+                    <span class="testimonial-card__role">@role</span>
+                }
+            </span>
+        </figcaption>
+    </div>
+</figure>
+
+@code {
+    private const int AvatarSize = 48;
+    private const int MaxInitials = 2;
+    private const string UnknownInitial = "?";
+
+    [Parameter, EditorRequired] public TestimonialDto Testimonial { get; set; } = default!;
+
+    private bool _photoFailed;
+
+    private bool ShowPhoto => !string.IsNullOrWhiteSpace(Testimonial.AvatarUrl) && !_photoFailed;
+
+    /// <summary>"Role · Context", either half alone, or null when both are empty.</summary>
+    private string? RoleText
+    {
+        get
+        {
+            var parts = new[] { Testimonial.RoleOrTitle, Testimonial.CompanyOrContext }
+                .Where(part => !string.IsNullOrWhiteSpace(part))
+                .ToList();
+            return parts.Count == 0 ? null : string.Join(" · ", parts);
+        }
+    }
+
+    private void OnPhotoError() => _photoFailed = true;
+
+    /// <summary>The first letters of the first two words of the name ("Alice Johnson" → "AJ").</summary>
+    public static string Initials(string? fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return UnknownInitial;
+
+        var firstLetters = fullName
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Take(MaxInitials)
+            .Select(word => char.ToUpperInvariant(word[0]));
+        return string.Concat(firstLetters);
+    }
+}

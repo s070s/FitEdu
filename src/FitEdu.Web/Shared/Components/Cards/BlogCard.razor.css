@@ -1,0 +1,118 @@
+/* The card shell is the shared .card-surface primitive (hover lift, focus border). */
+.blog-card__cover {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background:
+        radial-gradient(110% 90% at 88% 0%, rgba(var(--text-strong-accent-rgb), 0.18), transparent 58%),
+        var(--bg-table-header);
+}
+
+.blog-card__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .blog-card:hover .blog-card__cover img {
+        transform: scale(1.04);
+    }
+}
+
+.blog-card__cover-icon {
+    color: rgba(var(--text-strong-accent-rgb), 0.7);
+    font-size: 2.5rem;
+}
+
+.blog-card__body {
+    gap: var(--space-3);
+}
+
+.blog-card__tags {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.blog-card__title {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: var(--fs-4);
+}
+
+.blog-card__link {
+    color: var(--text-strong-normal);
+    text-decoration: none;
+}
+
+/* Stretched link: the title is the one real link, its hit area covers the card. */
+.blog-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.blog-card__link:focus-visible {
+    outline: none;
+}
+
+.blog-card:has(.blog-card__link:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+.blog-card__summary {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.blog-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.blog-card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}
+
+.blog-card__more .bi {
+    transition: transform var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .blog-card:hover .blog-card__more .bi {
+        transform: translateX(3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .blog-card:hover .blog-card__cover img,
+    .blog-card:hover .blog-card__more .bi {
+        transform: none;
+    }
+}

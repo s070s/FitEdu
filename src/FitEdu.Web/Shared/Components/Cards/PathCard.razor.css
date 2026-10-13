@@ -1,0 +1,94 @@
+/* The card shell is the shared .card-surface primitive (hover lift, focus border). */
+.path-card__body {
+    gap: var(--space-3);
+}
+
+.path-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.path-card__heading {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.path-card__title {
+    margin: 0;
+    font-size: var(--fs-4);
+    overflow-wrap: anywhere;
+}
+
+.path-card__link {
+    color: var(--text-strong-normal);
+    text-decoration: none;
+}
+
+/* Stretched link: the title is the one real link, its hit area covers the card. */
+.path-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.path-card__link:focus-visible {
+    outline: none;
+}
+
+.path-card:has(.path-card__link:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+@media (hover: hover) {
+    .path-card:hover .path-card__link {
+        color: var(--text-strong-accent);
+    }
+}
+
+.path-card__description {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    color: var(--text-light-normal);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.path-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(var(--border-subtle-rgb), 0.14);
+    color: var(--text-light-muted);
+    font-size: var(--fs-6);
+}
+
+.path-card__steps {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.path-card__progress {
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+.path-card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    color: var(--text-strong-accent);
+    font-weight: 700;
+}
