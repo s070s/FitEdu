@@ -366,6 +366,10 @@ public static class ServiceRegistrationExtensions
             // Only the circuit hub gets the larger limit; the app's own hubs keep AppHubMessageLimitBytes.
             .AddHubOptions(options => options.MaximumReceiveMessageSize = CircuitMessageLimitBytes);
 
+        // App.razor links the own stylesheets with a content version, so a deploy is never hidden by the browser cache.
+        builder.Services.AddSingleton(services =>
+            new StaticAssetVersions(services.GetRequiredService<IWebHostEnvironment>().WebRootFileProvider));
+
         // Suppress noisy info-level authorization logs
         builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Warning);
 
