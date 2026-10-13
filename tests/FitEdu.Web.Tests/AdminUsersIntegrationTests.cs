@@ -1,4 +1,8 @@
 using System.Net;
+using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using FitEdu.Application.DTOs;
+using FitEdu.Domain.Enums;
 using Shouldly;
 using Xunit;
 
@@ -43,6 +47,23 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
         var client = await _factory.CreateAuthenticatedClientAsync("Admin");
 
         (await client.GetAsync("/api/admin/users/does-not-exist")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetUser_Admin_ShowsTheTrainingGoal()
+    {
+        var (_, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await _factory.SeedAsync(async db =>
+        {
+            var user = await db.Users.SingleAsync(u => u.Id == userId);
+            user.Goal = FitnessGoal.FatLoss;
+            await db.SaveChangesAsync();
+        });
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var detail = await admin.GetFromJsonAsync<AdminUserDetailDto>($"/api/admin/users/{userId}");
+
+        detail!.Goal.ShouldBe(nameof(FitnessGoal.FatLoss));
     }
 
     [Fact]

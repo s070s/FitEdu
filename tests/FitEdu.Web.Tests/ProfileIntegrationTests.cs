@@ -182,4 +182,21 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
         export.BillingTransactions.Single().PlanName.ShouldBe("Pro");
         export.ChatMessages.Single().Content.ShouldBe("Hello export test");
     }
+
+    [Fact]
+    public async Task ExportMyData_IncludesTheTrainingGoal()
+    {
+        // The goal is personal data like the training level, so the GDPR export carries it too.
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await _factory.SeedAsync(async db =>
+        {
+            var user = await db.Users.SingleAsync(u => u.Id == userId);
+            user.Goal = FitnessGoal.Strength;
+            await db.SaveChangesAsync();
+        });
+
+        var export = await client.GetFromJsonAsync<MyDataExportDto>("/api/profile/export");
+
+        export!.Profile.Goal.ShouldBe(nameof(FitnessGoal.Strength));
+    }
 }

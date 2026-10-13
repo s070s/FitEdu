@@ -110,7 +110,8 @@ public class ProfileService(
             user.CreatedAt,
             user.GdprConsentGiven,
             user.GdprConsentDate,
-            user.ParentalConsentGiven);
+            user.ParentalConsentGiven,
+            user.Goal?.ToString());
 
         var enrollments = await db.Enrollments
             .AsNoTracking()

@@ -63,7 +63,8 @@ public record ProfileExportDto(
     DateTime AccountCreatedAt,
     bool GdprConsentGiven,
     DateTime? GdprConsentDate,
-    bool ParentalConsentGiven
+    bool ParentalConsentGiven,
+    string? Goal = null
 );
 
 public record EnrollmentExportDto(
