@@ -51,7 +51,7 @@ Day-to-day maintainability rests on strong foundations: central package manageme
 - **Recommendation:** Move `Domain/Entities` → `Entities`, `Domain/Enums` → `Enums` (namespaces unchanged, so it is a pure file move; csproj globbing needs no edits).
 
 ### MAINT-8: The "Shared" project is a resources-and-seed-data project wearing a shared-kernel name  [Low] [Effort: S]
-- **Evidence:** `src/FitEdu.Shared/` contains exactly: 18 resx families under `Resources/` (+ hand-edited Designers, see MAINT-2) and JSON seed fixtures under `JSON/{Assessments,Courses,Students}` consumed only by Development seeders (`Startup/DatabaseSeedingExtensions.cs:96-111`). Zero hand-written C#.
+- **Evidence:** `src/FitEdu.Shared/` contains exactly: 18 resx families under `Resources/` (+ hand-edited Designers, see MAINT-2) and JSON seed fixtures under `JSON/{Assessments,Courses,Exercises,Paths,Showcase,Students}` consumed only by Development seeders (`Startup/DatabaseSeedingExtensions.cs:96-111`). Zero hand-written C#.
 - **Impact:** The name invites dumping genuinely shared code there (its referenced-by-everyone position makes it the path of least resistance), which would create a fifth layer with no rules. Dev-only seed JSON also ships with every environment's dependency graph.
 - **Recommendation:** Rename to `FitEdu.Resources` (or fold resources into Application) and relocate seed JSON under `tests/` or a `seed/` content folder. Low urgency; do it before the project accumulates a second purpose.
 
