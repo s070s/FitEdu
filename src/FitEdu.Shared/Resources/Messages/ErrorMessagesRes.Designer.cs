@@ -592,6 +592,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Exercise is not published.
+        /// </summary>
+        public static string Exercise_NotPublished {
+            get {
+                return ResourceManager.GetString("Exercise_NotPublished", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unknown equipment code.
         /// </summary>
         public static string Course_UnknownEquipmentCode {

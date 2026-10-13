@@ -265,7 +265,7 @@ public class AdminCourseService(
         var exercisesBySlug = await LoadRequestedExercisesAsync(request.Exercises, cancellationToken);
         var unknownSlug = FindUnknownSlug(request.Exercises, exercisesBySlug);
         if (unknownSlug is not null)
-            return ServiceResult<AdminLessonDto>.BadRequest(error: UnknownSlugMessage(unknownSlug));
+            return ServiceResult<AdminLessonDto>.BadRequest(error: await SlugErrorAsync(unknownSlug, cancellationToken));
 
         var lesson = new Lesson
         {
@@ -302,7 +302,7 @@ public class AdminCourseService(
         var exercisesBySlug = await LoadRequestedExercisesAsync(request.Exercises, cancellationToken);
         var unknownSlug = FindUnknownSlug(request.Exercises, exercisesBySlug);
         if (unknownSlug is not null)
-            return ServiceResult<AdminLessonDto>.BadRequest(error: UnknownSlugMessage(unknownSlug));
+            return ServiceResult<AdminLessonDto>.BadRequest(error: await SlugErrorAsync(unknownSlug, cancellationToken));
 
         lesson.TitleEn = request.TitleEn;
         lesson.TitleEl = request.TitleEl;
@@ -410,7 +410,7 @@ public class AdminCourseService(
     private async Task<string?> FindFitnessFieldErrorAsync(string? coverExerciseSlug, string? equipment, CancellationToken cancellationToken)
     {
         if (!await CoverExerciseExistsAsync(coverExerciseSlug, cancellationToken))
-            return UnknownSlugMessage(coverExerciseSlug!);
+            return await SlugErrorAsync(coverExerciseSlug!, cancellationToken);
 
         var unknownCode = EquipmentCodeList.FindUnknownCode(equipment);
         return unknownCode is null ? null : $"{ErrorMessagesRes.Course_UnknownEquipmentCode}: '{unknownCode}'";
@@ -444,5 +444,14 @@ public class AdminCourseService(
     private static string? BlankToNull(string? text) =>
         string.IsNullOrWhiteSpace(text) ? null : text.Trim();
 
-    private static string UnknownSlugMessage(string slug) => $"{ErrorMessagesRes.Exercise_UnknownSlug}: '{slug}'";
+    /// <summary>
+    /// Why a slug was refused: the exercise exists but is not published, or there is no such exercise.
+    /// An admin who only renamed a lesson whose row names a hidden exercise then sees the real reason.
+    /// </summary>
+    private async Task<string> SlugErrorAsync(string slug, CancellationToken cancellationToken)
+    {
+        var isUnpublished = await db.Exercises.AnyAsync(e => e.Slug == slug && !e.IsPublished, cancellationToken);
+        var reason = isUnpublished ? ErrorMessagesRes.Exercise_NotPublished : ErrorMessagesRes.Exercise_UnknownSlug;
+        return $"{reason}: '{slug}'";
+    }
 }

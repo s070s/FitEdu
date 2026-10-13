@@ -294,6 +294,9 @@
   <data name="Exercise_UnknownSlug" xml:space="preserve">
     <value>Unknown exercise slug</value>
   </data>
+  <data name="Exercise_NotPublished" xml:space="preserve">
+    <value>Exercise is not published</value>
+  </data>
   <data name="Course_UnknownEquipmentCode" xml:space="preserve">
     <value>Unknown equipment code</value>
   </data>

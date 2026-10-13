@@ -414,6 +414,7 @@ public class AdminCourseServiceTests
         var result = await NewService(db).CreateCourseAsync(Request(coverExerciseSlug: "hidden-move"), Admin);
 
         result.StatusCode.ShouldBe(400);
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_NotPublished}: 'hidden-move'");
         (await db.Courses.CountAsync()).ShouldBe(0);
     }
 
@@ -722,7 +723,8 @@ public class AdminCourseServiceTests
         ]), Admin);
 
         result.StatusCode.ShouldBe(400);
-        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_UnknownSlug}: 'hidden-move'");
+        // The slug exists, so the message says why it is refused instead of calling it unknown.
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_NotPublished}: 'hidden-move'");
         (await RowsOfLessonAsync(db, lesson.Id)).Single().ExerciseId.ShouldBe(squat.Id);
     }
 
@@ -739,6 +741,7 @@ public class AdminCourseServiceTests
             LessonRequest(Guid.NewGuid(), [new LessonExerciseEditDto("hidden-move")]), Admin);
 
         result.StatusCode.ShouldBe(400);
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_NotPublished}: 'hidden-move'");
         (await db.Lessons.CountAsync()).ShouldBe(0);
     }
 
