@@ -6,6 +6,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Domain.Enums;
 using FitEdu.Application.DTOs;
+using FitEdu.Application.Common;
 
 namespace FitEdu.Web.Pages;
 
@@ -252,7 +253,8 @@ public partial class AdminCourseEdit
             var categoryIdArg = creatingNewCategory ? null : courseCategoryId;
             var newCategoryNameArg = creatingNewCategory ? newCategoryName : null;
 
-            var coverExerciseSlug = string.IsNullOrWhiteSpace(courseCoverExerciseSlug) ? null : courseCoverExerciseSlug.Trim();
+            // Same normal form as the API, so the page checks exactly the slug the server will.
+            var coverExerciseSlug = SlugHelper.NormalizeTypedSlug(courseCoverExerciseSlug);
             coverExerciseSlugInvalid = !await CoverExerciseExistsAsync(coverExerciseSlug);
             if (coverExerciseSlugInvalid)
                 return;

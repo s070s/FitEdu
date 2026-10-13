@@ -8,6 +8,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources.Messages;
 using Shouldly;
 using Xunit;
 
@@ -370,6 +371,64 @@ public class AdminCourseServiceTests
         result.StatusCode.ShouldBe(400);
         result.ErrorMessage!.ShouldContain("no-such-move");
         (await db.Courses.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CreateCourse_UnknownCoverExerciseSlug_UsesTheApiErrorMessage()
+    {
+        // API errors come from ErrorMessagesRes like every other service; AdminRes is the page's family.
+        await using var db = DbContextFactory.CreateInMemory();
+
+        var result = await NewService(db).CreateCourseAsync(Request(coverExerciseSlug: "no-such-move"), Admin);
+
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Exercise_UnknownSlug}: 'no-such-move'");
+    }
+
+    [Fact]
+    public async Task CreateCourse_CoverExerciseThatIsNotPublished_ReturnsValidationError_AndSavesNothing()
+    {
+        // The editor checks the cover through the public library, which finds published exercises
+        // only, so the server applies the same rule and the two can never disagree.
+        await using var db = DbContextFactory.CreateInMemory();
+        var hidden = NewExercise("hidden-move");
+        hidden.IsPublished = false;
+        db.Exercises.Add(hidden);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).CreateCourseAsync(Request(coverExerciseSlug: "hidden-move"), Admin);
+
+        result.StatusCode.ShouldBe(400);
+        (await db.Courses.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CreateCourse_UnknownEquipmentCode_ReturnsValidationError_AndSavesNothing()
+    {
+        // A typo such as "dumbell" would never match the catalogue's equipment filter.
+        await using var db = DbContextFactory.CreateInMemory();
+        var request = Request() with { Equipment = "dumbbells, Dumbell" };
+
+        var result = await NewService(db).CreateCourseAsync(request, Admin);
+
+        result.StatusCode.ShouldBe(400);
+        result.ErrorMessage!.ShouldBe($"{ErrorMessagesRes.Course_UnknownEquipmentCode}: 'dumbell'");
+        (await db.Courses.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UpdateCourse_UnknownEquipmentCode_ReturnsValidationError_AndKeepsCourse()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "Original", Equipment = "mat" };
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).UpdateCourseAsync(course.Id, Request("Renamed") with { Equipment = "yoga-mat" }, Admin);
+
+        result.StatusCode.ShouldBe(400);
+        var stored = await db.Courses.AsNoTracking().SingleAsync(c => c.Id == course.Id);
+        stored.TitleEn.ShouldBe("Original");
+        stored.Equipment.ShouldBe("mat");
     }
 
     [Fact]

@@ -25,6 +25,14 @@ public static partial class SlugHelper
         return dashedId.Trim(Separator);
     }
 
+    /// <summary>
+    /// The library form of a slug an admin typed: trimmed and lower-cased, so slips such as
+    /// " Push-Ups " still match. Null when nothing is left. The admin pages and the API both use it,
+    /// so a page never refuses a slug the API would accept.
+    /// </summary>
+    public static string? NormalizeTypedSlug(string? typedSlug) =>
+        string.IsNullOrWhiteSpace(typedSlug) ? null : typedSlug.Trim().ToLowerInvariant();
+
     [GeneratedRegex("[^a-z0-9]+")]
     private static partial Regex NonSlugCharactersRegex();
 }

@@ -13,6 +13,12 @@ public class Course : AuditableEntity
     /// </summary>
     public const string EquipmentSeparator = ",";
 
+    /// <summary>
+    /// The equipment codes a course may list; the catalogue filter and its labels know only these.
+    /// </summary>
+    public static readonly IReadOnlyList<string> EquipmentCodes =
+        ["none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"];
+
     public Guid Id
     {
         get; set;

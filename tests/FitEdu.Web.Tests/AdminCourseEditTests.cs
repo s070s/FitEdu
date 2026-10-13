@@ -118,6 +118,23 @@ public class AdminCourseEditTests : BunitContext
     }
 
     [Fact]
+    public void Save_CoverSlugWithCapitals_IsCheckedAndSentInTheServersLowercaseForm()
+    {
+        // The server lower-cases the slug, so the page checks and sends the same form; otherwise it
+        // would block "Barbell-Squat" (case-sensitive on SQLite) that the API accepts.
+        _exerciseConsumer.GetBySlugAsync("barbell-squat", Arg.Any<string>()).Returns(Detail("barbell-squat"));
+        var page = RenderNewCourse();
+
+        page.Find("#course-title-en").Change("Strength 101");
+        page.Find("#course-cover-exercise").Change(" Barbell-Squat ");
+        ClickSave(page);
+
+        _savedRequest.ShouldNotBeNull();
+        _savedRequest.CoverExerciseSlug.ShouldBe("barbell-squat");
+        page.FindAll("#course-cover-exercise-error").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Save_BlankCoverExerciseSlug_SkipsTheLibraryCheck()
     {
         var page = RenderNewCourse();

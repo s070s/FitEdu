@@ -7,7 +7,6 @@ using FitEdu.Application.Data;
 using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Extensions;
-using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.ApiServices;
@@ -90,9 +89,10 @@ public class AdminCourseService(
 
     public async Task<ServiceResult<AdminCourseDto>> CreateCourseAsync(SaveCourseRequest request, string userId, CancellationToken cancellationToken = default)
     {
-        var coverExerciseSlug = NormalizeOptionalSlug(request.CoverExerciseSlug);
-        if (!await CoverExerciseExistsAsync(coverExerciseSlug, cancellationToken))
-            return ServiceResult<AdminCourseDto>.BadRequest(error: UnknownSlugMessage(coverExerciseSlug!));
+        var coverExerciseSlug = SlugHelper.NormalizeTypedSlug(request.CoverExerciseSlug);
+        var fitnessFieldError = await FindFitnessFieldErrorAsync(coverExerciseSlug, request.Equipment, cancellationToken);
+        if (fitnessFieldError is not null)
+            return ServiceResult<AdminCourseDto>.BadRequest(error: fitnessFieldError);
 
         var categoryId = await AdminCategoryService.ResolveCategoryAsync(db, request.CategoryId, request.NewCategoryName, cancellationToken);
 
@@ -128,9 +128,10 @@ public class AdminCourseService(
         if (course is null)
             return ServiceResult<AdminCourseDto>.NotFound(error: ErrorMessagesRes.CourseNotFound);
 
-        var coverExerciseSlug = NormalizeOptionalSlug(request.CoverExerciseSlug);
-        if (!await CoverExerciseExistsAsync(coverExerciseSlug, cancellationToken))
-            return ServiceResult<AdminCourseDto>.BadRequest(error: UnknownSlugMessage(coverExerciseSlug!));
+        var coverExerciseSlug = SlugHelper.NormalizeTypedSlug(request.CoverExerciseSlug);
+        var fitnessFieldError = await FindFitnessFieldErrorAsync(coverExerciseSlug, request.Equipment, cancellationToken);
+        if (fitnessFieldError is not null)
+            return ServiceResult<AdminCourseDto>.BadRequest(error: fitnessFieldError);
 
         var categoryId = await AdminCategoryService.ResolveCategoryAsync(db, request.CategoryId, request.NewCategoryName, cancellationToken);
 
@@ -396,13 +397,37 @@ public class AdminCourseService(
         }
     }
 
-    /// <summary>True when no cover is set, or when the cover slug names a library exercise.</summary>
+    /// <summary>The first problem with the cover slug or the equipment codes, or null when both are fine.</summary>
+    private async Task<string?> FindFitnessFieldErrorAsync(string? coverExerciseSlug, string? equipment, CancellationToken cancellationToken)
+    {
+        if (!await CoverExerciseExistsAsync(coverExerciseSlug, cancellationToken))
+            return UnknownSlugMessage(coverExerciseSlug!);
+
+        var unknownCode = FindUnknownEquipmentCode(NormalizeEquipment(equipment));
+        return unknownCode is null ? null : $"{ErrorMessagesRes.Course_UnknownEquipmentCode}: '{unknownCode}'";
+    }
+
+    /// <summary>
+    /// True when no cover is set, or when the slug names a published library exercise. Published,
+    /// because the course editor checks the slug through the public library, which finds only those.
+    /// </summary>
     private async Task<bool> CoverExerciseExistsAsync(string? slug, CancellationToken cancellationToken)
     {
         if (slug is null)
             return true;
 
-        return await db.Exercises.AnyAsync(e => e.Slug == slug, cancellationToken);
+        return await db.Exercises.AnyAsync(e => e.Slug == slug && e.IsPublished, cancellationToken);
+    }
+
+    /// <summary>The first code that is not in <see cref="Course.EquipmentCodes"/>, or null when all are known.</summary>
+    private static string? FindUnknownEquipmentCode(string? normalizedEquipment)
+    {
+        if (normalizedEquipment is null)
+            return null;
+
+        return normalizedEquipment
+            .Split(Course.EquipmentSeparator)
+            .FirstOrDefault(code => !Course.EquipmentCodes.Contains(code));
     }
 
     private static void ApplyFitnessFields(Course course, SaveCourseRequest request, string? coverExerciseSlug)
@@ -433,14 +458,11 @@ public class AdminCourseService(
         return joined.Length == 0 ? null : joined;
     }
 
-    // Library slugs are lowercase kebab-case; trimming and lowering forgives copy-paste slips.
-    private static string NormalizeSlug(string slug) => slug.Trim().ToLowerInvariant();
-
-    private static string? NormalizeOptionalSlug(string? slug) =>
-        string.IsNullOrWhiteSpace(slug) ? null : NormalizeSlug(slug);
+    // A blank row slug stays "" so it is reported as an unknown slug.
+    private static string NormalizeSlug(string slug) => SlugHelper.NormalizeTypedSlug(slug) ?? string.Empty;
 
     private static string? BlankToNull(string? text) =>
         string.IsNullOrWhiteSpace(text) ? null : text.Trim();
 
-    private static string UnknownSlugMessage(string slug) => $"{AdminRes.UnknownExerciseSlug}: '{slug}'";
+    private static string UnknownSlugMessage(string slug) => $"{ErrorMessagesRes.Exercise_UnknownSlug}: '{slug}'";
 }

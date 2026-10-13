@@ -288,4 +288,10 @@
   <data name="Exercise_NotFound" xml:space="preserve">
     <value>Η άσκηση δεν βρέθηκε.</value>
   </data>
+  <data name="Exercise_UnknownSlug" xml:space="preserve">
+    <value>Άγνωστο slug άσκησης</value>
+  </data>
+  <data name="Course_UnknownEquipmentCode" xml:space="preserve">
+    <value>Άγνωστος κωδικός εξοπλισμού</value>
+  </data>
 </root>

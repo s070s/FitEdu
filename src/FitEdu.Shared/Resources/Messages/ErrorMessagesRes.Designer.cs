@@ -572,5 +572,23 @@ namespace FitEdu.Shared.Resources.Messages {
                 return ResourceManager.GetString("Exercise_NotFound", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown exercise slug.
+        /// </summary>
+        public static string Exercise_UnknownSlug {
+            get {
+                return ResourceManager.GetString("Exercise_UnknownSlug", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown equipment code.
+        /// </summary>
+        public static string Course_UnknownEquipmentCode {
+            get {
+                return ResourceManager.GetString("Course_UnknownEquipmentCode", resourceCulture);
+            }
+        }
     }
 }

@@ -374,8 +374,8 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 |--------|-------|-------------|------|
 | `GET` | `api/admin/courses` | List all courses | Admin |
 | `GET` | `api/admin/courses/{id}` | Course detail with modules and enrollments | Admin |
-| `POST` | `api/admin/courses` | Create course (incl. level, goal, equipment codes, weeks, sessions per week, cover exercise slug; an unknown slug returns 400) | Admin |
-| `PUT` | `api/admin/courses/{id}` | Update course (same fields and slug check) | Admin |
+| `POST` | `api/admin/courses` | Create course (incl. level, goal, equipment codes, weeks, sessions per week, cover exercise slug; a slug that is not a published library exercise, or an equipment code outside `Course.EquipmentCodes`, returns 400) | Admin |
+| `PUT` | `api/admin/courses/{id}` | Update course (same fields and checks) | Admin |
 | `DELETE` | `api/admin/courses/{id}` | Delete course | Admin |
 | `POST` | `api/admin/courses/{id}/publish` | Publish | Admin |
 | `POST` | `api/admin/courses/{id}/unpublish` | Unpublish | Admin |

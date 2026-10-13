@@ -47,12 +47,6 @@ public partial class SeedContentIntegrityTests
         ["Performance"] = "Απόδοση"
     };
 
-    // The codes the course equipment filter matches (see Course.Equipment).
-    private static readonly HashSet<string> EquipmentCodes = new(StringComparer.Ordinal)
-    {
-        "none", "dumbbells", "barbell", "kettlebell", "bands", "mat", "bike", "chair", "cables", "machine"
-    };
-
     // The blog tag vocabulary (tags stay English keywords in both languages).
     private static readonly HashSet<string> BlogTags = new(StringComparer.Ordinal)
     {
@@ -117,7 +111,7 @@ public partial class SeedContentIntegrityTests
             // No trimming: the catalogue filter matches ",code," exactly, so " bands" would never match.
             var codes = (course.Equipment ?? string.Empty).Split(Course.EquipmentSeparator);
             problems.AddRange(codes
-                .Where(code => !EquipmentCodes.Contains(code))
+                .Where(code => !Course.EquipmentCodes.Contains(code))
                 .Select(code => $"{fileName}: unknown equipment code '{code}'"));
         }
 
@@ -341,7 +335,7 @@ public partial class SeedContentIntegrityTests
     {
         var expectedKeys = Enum.GetNames<CourseLevel>().Select(name => $"Level_{name}")
             .Concat(Enum.GetNames<FitnessGoal>().Select(name => $"Goal_{name}"))
-            .Concat(EquipmentCodes.Select(code => $"Equipment_{code}"));
+            .Concat(Course.EquipmentCodes.Select(code => $"Equipment_{code}"));
 
         var missingKeys = expectedKeys
             .Where(key => CourseRes.ResourceManager.GetString(key, CultureInfo.InvariantCulture) is null)
