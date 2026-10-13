@@ -18,10 +18,11 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
         Guid courseId, CancellationToken cancellationToken = default)
     {
         // Author name computed inline (not via a helper method) so EF can translate the whole
-        // projection to SQL instead of falling back to client evaluation.
+        // projection to SQL instead of falling back to client evaluation. Published courses only:
+        // the read is open to guests, and a hidden programme must not show its reviews.
         return await db.CourseReviews
             .AsNoTracking()
-            .Where(r => r.CourseId == courseId && r.Status == ReviewStatus.Approved)
+            .Where(r => r.CourseId == courseId && r.Status == ReviewStatus.Approved && r.Course!.IsPublished)
             .OrderByDescending(r => r.CreatedAt)
             .Select(r => new CourseReviewDto(
                 r.Id,
@@ -45,7 +46,8 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
 
         var rows = await db.CourseReviews
             .AsNoTracking()
-            .Where(r => r.CourseId != null && ids.Contains(r.CourseId.Value) && r.Status == ReviewStatus.Approved)
+            .Where(r => r.CourseId != null && ids.Contains(r.CourseId.Value) && r.Status == ReviewStatus.Approved
+                && r.Course!.IsPublished)
             .GroupBy(r => r.CourseId!.Value)
             .Select(g => new { CourseId = g.Key, Average = g.Average(r => r.Rating), Count = g.Count() })
             .ToListAsync(cancellationToken);

@@ -113,6 +113,23 @@ public class CourseReviewServiceTests
     }
 
     [Fact]
+    public async Task UnpublishedCourse_ShowsNoReviewsAndNoRating()
+    {
+        // The reviews read is open to guests, so a hidden programme must not leak its reviews.
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = NewCourse("Hidden");
+        course.IsPublished = false;
+        db.Courses.Add(course);
+        db.Users.Add(AppUser(UserId, "Author"));
+        db.CourseReviews.Add(new CourseReview { CourseId = course.Id, UserId = UserId, Rating = 5, Body = "great", Status = ReviewStatus.Approved });
+        await db.SaveChangesAsync();
+        var service = NewService(db);
+
+        (await service.GetApprovedForCourseAsync(course.Id)).ShouldBeEmpty();
+        (await service.GetRatingSummaryAsync(course.Id)).ShouldBeNull();
+    }
+
+    [Fact]
     public async Task GetRatingSummaryAsync_AveragesOnlyApproved_RoundedToOneDecimal()
     {
         await using var db = DbContextFactory.CreateInMemory();
