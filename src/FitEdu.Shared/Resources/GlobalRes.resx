@@ -228,6 +228,12 @@
   <data name="PaginationPageOfFormat" xml:space="preserve">
     <value>Page {0} of {1}</value>
   </data>
+  <data name="PaginationPreviousPage" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="PaginationNextPage" xml:space="preserve">
+    <value>Next page</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>

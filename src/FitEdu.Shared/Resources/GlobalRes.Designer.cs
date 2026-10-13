@@ -392,6 +392,24 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("PaginationPageOfFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Previous page.
+        /// </summary>
+        public static string PaginationPreviousPage {
+            get {
+                return ResourceManager.GetString("PaginationPreviousPage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next page.
+        /// </summary>
+        public static string PaginationNextPage {
+            get {
+                return ResourceManager.GetString("PaginationNextPage", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Prev.

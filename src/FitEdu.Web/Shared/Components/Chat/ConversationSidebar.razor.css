@@ -134,4 +134,20 @@
         border-bottom: 1px solid var(--border-subtle);
         overflow: hidden;
     }
+
+    /* Phones: header actions and pagination controls reach the 44 px touch minimum. */
+    .sidebar-header-actions .btn,
+    .sidebar-pagination .btn {
+        min-height: var(--tap-min);
+        min-width: var(--tap-min);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+    }
+
+    .sidebar-pagination .page-size-select {
+        min-height: var(--tap-min);
+        min-width: var(--tap-min);
+    }
 }

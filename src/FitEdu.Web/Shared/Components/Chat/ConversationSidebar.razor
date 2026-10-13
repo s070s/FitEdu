@@ -72,11 +72,13 @@
                 </select>
                 <button class="btn btn-sm btn-outline-secondary"
                         @onclick="OnPreviousPage"
-                        disabled="@(!Conversations.HasPreviousPage)">‹</button>
+                        disabled="@(!Conversations.HasPreviousPage)"
+                        title="@GlobalRes.PaginationPreviousPage" aria-label="@GlobalRes.PaginationPreviousPage">‹</button>
                 <span class="small">@Conversations.Page/@Conversations.TotalPages</span>
                 <button class="btn btn-sm btn-outline-secondary"
                         @onclick="OnNextPage"
-                        disabled="@(!Conversations.HasNextPage)">›</button>
+                        disabled="@(!Conversations.HasNextPage)"
+                        title="@GlobalRes.PaginationNextPage" aria-label="@GlobalRes.PaginationNextPage">›</button>
             </div>
         </div>
     }

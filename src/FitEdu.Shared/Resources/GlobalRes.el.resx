@@ -228,6 +228,12 @@
   <data name="PaginationPageOfFormat" xml:space="preserve">
     <value>Σελίδα {0} από {1}</value>
   </data>
+  <data name="PaginationPreviousPage" xml:space="preserve">
+    <value>Προηγούμενη σελίδα</value>
+  </data>
+  <data name="PaginationNextPage" xml:space="preserve">
+    <value>Επόμενη σελίδα</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Κλείσιμο</value>
   </data>
