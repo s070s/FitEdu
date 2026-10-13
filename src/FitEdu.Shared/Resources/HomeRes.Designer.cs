@@ -569,5 +569,50 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("TodayPlanProgressFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Strength.
+        /// </summary>
+        public static string BlogTag_Strength {
+            get {
+                return ResourceManager.GetString("BlogTag_Strength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nutrition.
+        /// </summary>
+        public static string BlogTag_Nutrition {
+            get {
+                return ResourceManager.GetString("BlogTag_Nutrition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Recovery.
+        /// </summary>
+        public static string BlogTag_Recovery {
+            get {
+                return ResourceManager.GetString("BlogTag_Recovery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mobility.
+        /// </summary>
+        public static string BlogTag_Mobility {
+            get {
+                return ResourceManager.GetString("BlogTag_Mobility", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Beginners.
+        /// </summary>
+        public static string BlogTag_Beginners {
+            get {
+                return ResourceManager.GetString("BlogTag_Beginners", resourceCulture);
+            }
+        }
     }
 }

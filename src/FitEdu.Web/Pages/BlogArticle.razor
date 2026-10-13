@@ -46,7 +46,7 @@ else
                     <ul class="chip-row blog-article-tags">
                         @foreach (var tag in _article.Tags)
                         {
-                            <li class="chip chip--lime">@tag</li>
+                            <li class="chip chip--lime">@BlogTagLabels.Label(tag)</li>
                         }
                     </ul>
                 }

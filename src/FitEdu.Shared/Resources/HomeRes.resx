@@ -303,4 +303,19 @@
   <data name="TodayPlanProgressFormat" xml:space="preserve">
     <value>{0} of {1} workouts done</value>
   </data>
+  <data name="BlogTag_Strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="BlogTag_Nutrition" xml:space="preserve">
+    <value>Nutrition</value>
+  </data>
+  <data name="BlogTag_Recovery" xml:space="preserve">
+    <value>Recovery</value>
+  </data>
+  <data name="BlogTag_Mobility" xml:space="preserve">
+    <value>Mobility</value>
+  </data>
+  <data name="BlogTag_Beginners" xml:space="preserve">
+    <value>Beginners</value>
+  </data>
 </root>

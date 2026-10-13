@@ -22,7 +22,7 @@
             <ul class="chip-row blog-card__tags">
                 @foreach (var tag in Article.Tags.Take(MaxTags))
                 {
-                    <li class="chip chip--lime">@tag</li>
+                    <li class="chip chip--lime">@BlogTagLabels.Label(tag)</li>
                 }
             </ul>
         }

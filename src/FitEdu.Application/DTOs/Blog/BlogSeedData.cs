@@ -2,7 +2,7 @@ namespace FitEdu.Application.DTOs;
 
 /// <summary>
 /// Static seed content for blog articles: four fitness articles, each in English (En) and Greek (El).
-/// Covers are site-root paths under wwwroot/images/blog; tags stay English keywords in both languages.
+/// Covers are site-root paths under wwwroot/images/blog; tags are English keywords that BlogTagLabels shows in the page language.
 /// </summary>
 public static class BlogSeedData
 {
