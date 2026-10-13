@@ -335,6 +335,31 @@ th.sort-active {
     color: var(--bg-primary);
 }
 
+/* Bootstrap's grey and red outline text is too faint on the dark cards, so use the app's tokens. */
+.btn-outline-secondary {
+    color: var(--text-light-normal);
+    border-color: var(--border-subtle);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:active {
+    background-color: var(--bg-neutral-subtle);
+    border-color: var(--text-light-normal);
+    color: var(--text-strong-normal);
+}
+
+.btn-outline-danger {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:active {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--bg-primary);
+}
+
 /* Alerts */
 .alert-danger {
     background-color: var(--bg-error-subtle);
