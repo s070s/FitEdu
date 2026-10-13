@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Web.Consumers;
@@ -14,7 +15,8 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// The course page: hero chips, the outline (lesson kind, minutes and exercise count), the
-/// "What you'll train" list and the action card for each enrolment state.
+/// "What you'll train" list and the action card for each enrolment state. The tests run as a
+/// signed-in member unless they say otherwise; a guest gets sign-up and log-in links instead.
 /// </summary>
 public class CourseDetailPageTests : BunitContext
 {
@@ -22,9 +24,12 @@ public class CourseDetailPageTests : BunitContext
 
     private readonly ICourseConsumer _courseService = Substitute.For<ICourseConsumer>();
     private readonly ISubscriptionConsumer _subscriptionService = Substitute.For<ISubscriptionConsumer>();
+    private readonly BunitAuthorizationContext _authorization;
 
     public CourseDetailPageTests()
     {
+        _authorization = AddAuthorization();
+        _authorization.SetAuthorized("alice.johnson@fitedu.local");
         Services.AddSingleton(_courseService);
         Services.AddSingleton(_subscriptionService);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
@@ -254,6 +259,43 @@ public class CourseDetailPageTests : BunitContext
         var notice = page.Find(".enroll-error-notice");
         notice.TextContent.ShouldContain("Your plan allows one course.");
         notice.QuerySelector("a")!.GetAttribute("href").ShouldBe("/pricing");
+    }
+
+    [Fact]
+    public void Guest_GetsSignUpAndLogInInPlaceOfJoin()
+    {
+        UseCulture("en");
+        _authorization.SetNotAuthorized();
+        UseCourse(Course(tier: SubscriptionTier.Pro));
+        var review = new CourseReviewDto(Guid.NewGuid(), "Maria", 5, "Great plan", DateTimeOffset.UtcNow);
+        _courseService.GetReviewsAsync(CourseId)
+            .Returns(new CourseReviewsResponseDto([review], new CourseRatingSummaryDto(5, 1), null));
+
+        var page = RenderPage();
+
+        var signUp = page.Find("a.course-cta__signup");
+        signUp.TextContent.Trim().ShouldBe("Sign up free to start");
+        signUp.GetAttribute("href").ShouldBe("/register");
+        page.Find("a.course-cta__login").GetAttribute("href").ShouldBe($"/login?returnUrl=%2Fcourses%2F{CourseId}");
+        page.FindAll(".course-cta__enrol").ShouldBeEmpty();
+        page.FindAll(".enroll-upgrade-notice").ShouldBeEmpty();
+        page.FindAll("a.lesson-item[href]").ShouldBeEmpty();
+        page.FindAll(".review-form, .review-open").ShouldBeEmpty();
+        page.Find(".review-list .review-body").TextContent.ShouldBe("Great plan");
+        _subscriptionService.DidNotReceive().GetStatusAsync();
+    }
+
+    [Fact]
+    public void Guest_Greek_SignUpTextIsGreek()
+    {
+        UseCulture("el");
+        _authorization.SetNotAuthorized();
+        UseCourse(Course());
+
+        var page = RenderPage();
+
+        page.Find("a.course-cta__signup").TextContent.Trim().ShouldBe("Κάνε δωρεάν εγγραφή για να ξεκινήσεις");
+        page.Find("a.course-cta__login").TextContent.Trim().ShouldBe("Σύνδεση");
     }
 
     // ---- Load states --------------------------------------------------------------------------

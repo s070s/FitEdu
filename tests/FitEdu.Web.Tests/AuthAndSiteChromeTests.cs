@@ -8,6 +8,7 @@ using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Pages;
 using FitEdu.Web.Shared.Components.Data;
 using FitEdu.Web.Shared.Components.Layout;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +57,39 @@ public class AuthAndSiteChromeTests : BunitContext
         page.FindAll("#password").Count.ShouldBe(1);
         page.FindAll("button[type=submit]").Count.ShouldBe(1);
         page.Find(".auth-card__footer a").GetAttribute("href").ShouldBe("/register");
+    }
+
+    [Theory]
+    [InlineData("/courses/42", "%2Fcourses%2F42")]
+    [InlineData(null, "%2F")]
+    [InlineData("https://evil.example/", "%2F")]
+    [InlineData("//evil.example/", "%2F")]
+    public void Login_Success_ReturnsOnlyToALocalPath(string? returnUrl, string expectedReturnUrl)
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto { Success = true, Token = "ticket" });
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        navigation.NavigateTo(returnUrl is null ? "/login" : "/login?returnUrl=" + Uri.EscapeDataString(returnUrl));
+        var page = Render<Login>();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        navigation.Uri.ShouldEndWith("/auth/complete?ticket=ticket&returnUrl=" + expectedReturnUrl);
+    }
+
+    [Theory]
+    [InlineData("/courses/42", "/courses/42")]
+    [InlineData("/", "/")]
+    [InlineData(null, "/")]
+    [InlineData("", "/")]
+    [InlineData("courses", "/")]
+    [InlineData("//evil.example", "/")]
+    [InlineData(@"/\evil.example", "/")]
+    [InlineData("https://evil.example", "/")]
+    public void Login_LocalReturnPath_KeepsOnlyLocalPaths(string? returnUrl, string expected)
+    {
+        Login.LocalReturnPath(returnUrl).ShouldBe(expected);
     }
 
     [Fact]

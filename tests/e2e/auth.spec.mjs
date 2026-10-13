@@ -9,9 +9,9 @@ test( 'login completes and lands authenticated', async ( { page } ) => {
 
     // Off /login and actually authenticated: the authenticated layout renders
     // the avatar dropdown and the main nav; an anonymous circuit would bounce
-    // back to /login when hitting an [Authorize] page.
+    // back to /login when hitting an [Authorize] page (/courses is public, /profile is not).
     expect( page.url() ).not.toContain( '/login' );
-    await page.goto( '/courses' );
+    await page.goto( '/profile' );
     await expect( page ).not.toHaveURL( /login/ );
     await expect( page.locator( 'main' ) ).toBeVisible();
 } );

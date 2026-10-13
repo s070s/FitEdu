@@ -1,5 +1,4 @@
 @page "/courses/{CourseId:guid}"
-@attribute [Authorize]
 @using FitEdu.Web.Extensions
 @* Course page: cover hero with the programme chips, "What you'll train", the module outline
    (one <details> per module, lessons with their kind, minutes and exercise count) and the reviews.
@@ -355,6 +354,11 @@ else
                         @ActionLabel <span class="bi bi-arrow-right" aria-hidden="true"></span>
                     </a>
                 }
+            }
+            else if (_isGuest)
+            {
+                <a class="btn-cta course-cta__action course-cta__signup" href="/register">@CourseRes.GuestStartCta</a>
+                <a class="btn-cta btn-cta--ghost course-cta__action course-cta__login" href="@LoginHref">@NavMenuRes.Login</a>
             }
             else if (NeedsUpgrade)
             {

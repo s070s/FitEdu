@@ -122,6 +122,9 @@
 	<data name="EnrollInThisCourse" xml:space="preserve">
 		<value>Join the programme</value>
 	</data>
+	<data name="GuestStartCta" xml:space="preserve">
+		<value>Sign up free to start</value>
+	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>min</value>
 	</data>

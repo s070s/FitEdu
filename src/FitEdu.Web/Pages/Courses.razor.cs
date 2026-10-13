@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
@@ -13,7 +14,8 @@ namespace FitEdu.Web.Pages;
 /// <summary>
 /// The course catalogue. Category and search live on the page; goal, level and equipment live in
 /// the address (?goal=FatLoss&amp;level=Beginner&amp;equipment=none), so other pages can link
-/// straight to a filtered list.
+/// straight to a filtered list. Guests can browse it too: they have no plan, so they see no plan
+/// banner and the paid programmes show as locked, linking to the plans.
 /// </summary>
 public partial class Courses : IDisposable
 {
@@ -34,6 +36,8 @@ public partial class Courses : IDisposable
     [Inject] private ICategoryConsumer CategoryConsumer { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private ILogger<Courses> _logger { get; set; } = default!;
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     [SupplyParameterFromQuery(Name = GoalQueryName)]
     public string? GoalQuery { get; set; }
@@ -161,6 +165,10 @@ public partial class Courses : IDisposable
     {
         try
         {
+            // A guest has no subscription to ask about.
+            if (!await AuthenticationStateTask.IsSignedInAsync())
+                return;
+
             _userStatus = await SubscriptionService.GetStatusAsync();
             if (_userStatus is null)
                 return;

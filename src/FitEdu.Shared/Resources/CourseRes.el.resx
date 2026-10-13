@@ -122,6 +122,9 @@
 	<data name="EnrollInThisCourse" xml:space="preserve">
 		<value>Γράψου στο πρόγραμμα</value>
 	</data>
+	<data name="GuestStartCta" xml:space="preserve">
+		<value>Κάνε δωρεάν εγγραφή για να ξεκινήσεις</value>
+	</data>
 	<data name="MinutesShort" xml:space="preserve">
 		<value>λεπ.</value>
 	</data>

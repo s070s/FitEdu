@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Web.Consumers;
@@ -15,7 +16,8 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// The course catalogue: skeleton grid while loading, cards in the grid, the plan limit banner,
-/// and the goal, level and equipment chips that live in the address (?goal=…).
+/// and the goal, level and equipment chips that live in the address (?goal=…). The tests run as a
+/// signed-in member unless they say otherwise; guests see the catalogue without a plan.
 /// </summary>
 public class CoursesPageTests : BunitContext
 {
@@ -24,10 +26,13 @@ public class CoursesPageTests : BunitContext
     private readonly ICourseConsumer _courseConsumer = Substitute.For<ICourseConsumer>();
     private readonly ISubscriptionConsumer _subscriptionConsumer = Substitute.For<ISubscriptionConsumer>();
     private readonly ICategoryConsumer _categoryConsumer = Substitute.For<ICategoryConsumer>();
+    private readonly BunitAuthorizationContext _authorization;
 
     public CoursesPageTests()
     {
         UseCulture("en");
+        _authorization = AddAuthorization();
+        _authorization.SetAuthorized("alice.johnson@fitedu.local");
         Services.AddSingleton(_courseConsumer);
         Services.AddSingleton(_subscriptionConsumer);
         Services.AddSingleton(_categoryConsumer);
@@ -99,6 +104,21 @@ public class CoursesPageTests : BunitContext
         var page = Render<Courses>();
 
         page.FindAll(".plan-limit-banner").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Guest_SeesTheCatalogueWithoutAPlanBanner()
+    {
+        _authorization.SetNotAuthorized();
+        var paidCourse = Course("Pro course") with { RequiredTier = SubscriptionTier.Pro };
+        ReturnCourses([Course("Free course"), paidCourse]);
+
+        var page = Render<Courses>();
+
+        page.FindAll(".courses-grid .course-card").Count.ShouldBe(2);
+        page.FindAll(".plan-limit-banner").ShouldBeEmpty();
+        page.FindAll("a.course-card-link").Select(link => link.GetAttribute("href")).ShouldContain("/pricing");
+        _subscriptionConsumer.DidNotReceive().GetStatusAsync();
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
@@ -9,11 +10,17 @@ using System.Globalization;
 
 namespace FitEdu.Web.Pages;
 
+/// <summary>
+/// One programme's page. Guests can open it: they see the outline and the approved reviews, and
+/// the action card offers sign-up and log-in (which brings them back here) in place of Join.
+/// </summary>
 public partial class CourseDetail
 {
     // "What you'll train" lists the first module summaries, enough to scan at a glance.
     private const int MaxOutcomes = 4;
     private const string LessonPathPrefix = "/lessons/";
+    private const string CoursePathPrefix = "/courses/";
+    private const string LoginPathWithReturnUrl = "/login?returnUrl=";
 
     [Parameter]
     public Guid CourseId
@@ -25,8 +32,11 @@ public partial class CourseDetail
     [Inject] private ISubscriptionConsumer SubscriptionService { get; set; } = default!;
     [Inject] private ILogger<CourseDetail> _logger { get; set; } = default!;
 
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
     private CourseDetailDto? _course;
     private SubscriptionTier _userTier = SubscriptionTier.Free;
+    private bool _isGuest;
     private bool _loading = true;
     private bool _enrolling;
     private string? _error;
@@ -62,6 +72,9 @@ public partial class CourseDetail
 
     private bool NeedsUpgrade => _course is { IsEnrolled: false } && _userTier < _course.RequiredTier;
 
+    /// <summary>The log-in page, set to come back to this programme afterwards.</summary>
+    private string LoginHref => LoginPathWithReturnUrl + Uri.EscapeDataString(CoursePathPrefix + CourseId);
+
     private int ProgressPercentRounded => _course is null ? 0 : (int)Math.Round(_course.ProgressPercent);
 
     /// <summary>Where the main button leads an enrolled member: the next lesson, or the first once all are done.</summary>
@@ -85,7 +98,10 @@ public partial class CourseDetail
 
     private async Task LoadAllAsync()
     {
-        var tierTask = SubscriptionService.GetStatusAsync();
+        _isGuest = !await AuthenticationStateTask.IsSignedInAsync();
+
+        // A guest has no subscription to ask about.
+        var tierTask = _isGuest ? Task.FromResult<UserSubscriptionStatusDto?>(null) : SubscriptionService.GetStatusAsync();
         await Task.WhenAll(LoadCourse(), LoadReviewsAsync(), tierTask);
 
         var status = await tierTask;

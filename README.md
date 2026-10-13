@@ -213,7 +213,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 ### Courses — `api/courses`
 
-The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member.
+The catalogue reads are public so guests can browse programmes: a guest gets no enrolment or progress, and the detail shows lesson titles, kinds, minutes and exercise counts but never lesson content. Joining, lessons, completion and writing a review need a signed-in member. The pages `/courses` and `/courses/{id}` are open to guests too: a guest sees no plan banner, paid programmes link to `/pricing`, and a programme page offers **Sign up free to start** (`/register`) and **Log in** (`/login?returnUrl=/courses/{id}`, which brings them back) in place of Join.
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
@@ -746,6 +746,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | XSS prevention | All rich-text inputs sanitised with Ganss.Xss (`IHtmlSanitizer`) |
 | Rate limiting | `"auth"` policy (global) on register / login / confirm-email / forgot-password / reset-password; `"assistant"` and `"sensitive"` policies (per-user) on the AI chat endpoint and on state-changing account actions (password change, avatar upload, checkout, assessment submission, account delete/export); `"public"` policy (per caller IP, 120 requests a minute) on the anonymous reads (exercises, landing, the course list/detail/reviews, categories, paths, blog, testimonials, search). The app's own loopback calls are exempt from `"public"`, because every guest's Blazor page reaches the API through them; behind a reverse proxy set `ForwardedHeaders:KnownProxies` so each visitor counts as their own address |
 | Anonymous reads | Open without signing in: `GET api/exercises/*`, `api/landing`, `api/courses`, `api/courses/{id}`, `api/courses/{id}/reviews`, `api/categories`, `api/paths/*`, `api/blog/*`, `api/testimonials`, `api/search`, `api/subscriptions/plans` and `api/certificates/verify/{id}`. A guest gets no enrolment, progress or own review, and never lesson content. The two that every guest page asks for, `api/landing` (one entry per language) and `api/exercises/facets`, are served from a 60-second in-memory cache, so a burst of visitors costs one set of queries a minute |
+| Login return address | `/login?returnUrl=` only follows a path on this site (starts with `/`, not `//` or `/\`); anything else goes to the home page, so the link cannot redirect to another site |
 | HSTS | Enabled in Production; skipped in Development |
 | Security headers | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (`camera`/`microphone`/`display-capture` allowed same-origin for video calls; `geolocation` denied) |
 | File uploads | Content-type allowlist enforced per upload type (image / PDF / video); extension allowlist on media serve |

@@ -133,6 +133,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Sign up free to start.
+        /// </summary>
+        public static string GuestStartCta {
+            get {
+                return ResourceManager.GetString("GuestStartCta", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to min.
         /// </summary>
         public static string MinutesShort {
