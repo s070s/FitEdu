@@ -121,8 +121,9 @@ public static class DatabaseSeedingExtensions
             {
                 UserName = adminEmail,
                 Email = adminEmail,
-                FirstName = "System",
-                LastName = "Administrator",
+                // Members see this name as the host of every live class the admin runs.
+                FirstName = "FitEdu",
+                LastName = "Coach",
                 EmailConfirmed = true,
                 IsEnabled = true,
                 GdprConsentGiven = true,

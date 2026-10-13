@@ -284,7 +284,7 @@ public sealed class RealSeedJsonDatabase : IAsyncLifetime
     /// <summary>The live-class host; SQLite enforces the session's foreign key to the user.</summary>
     private async Task AddAdminUserAsync()
     {
-        Db.Users.Add(new ApplicationUser { Id = AdminUserId, UserName = "admin@fitedu.local", FirstName = "System", LastName = "Administrator" });
+        Db.Users.Add(new ApplicationUser { Id = AdminUserId, UserName = "admin@fitedu.local", FirstName = "FitEdu", LastName = "Coach" });
         await Db.SaveChangesAsync();
     }
 }

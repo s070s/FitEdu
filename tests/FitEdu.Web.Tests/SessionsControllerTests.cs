@@ -46,6 +46,18 @@ public class SessionsControllerTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task SeededAdmin_HostsLiveClassesUnderACoachName()
+    {
+        // Students see the host's first and last name on every live class the seeded admin runs.
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var admin = await db.Users.SingleAsync(u => u.Email == "admin@fitedu.local");
+
+        $"{admin.FirstName} {admin.LastName}".ShouldBe("FitEdu Coach");
+    }
+
+    [Fact]
     public async Task GetUpcoming_Anonymous_Returns401()
     {
         var client = _factory.CreateClient();
