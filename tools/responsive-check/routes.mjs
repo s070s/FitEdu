@@ -20,8 +20,9 @@ export const PARAMETER_SOURCES = [
     { name: 'exerciseSlug', role: 'guest', apiPath: '/api/exercises', pick: page => page.items?.[0]?.slug },
     { name: 'pathId', role: 'guest', apiPath: '/api/paths', pick: paths => paths[0]?.id },
     { name: 'blogSlug', role: 'guest', apiPath: '/api/blog/summaries', pick: articles => articles[0]?.slug },
-    // An enrolled course, so its lessons open; prefer a workout lesson (one with exercises).
-    { name: 'courseId', role: 'student', apiPath: '/api/courses?pageSize=50', pick: page => (page.items.find(course => course.isEnrolled) ?? page.items[0])?.id },
+    // An enrolled course only, so its lessons open (check-pages enrols the student first when
+    // needed); prefer a workout lesson (one with exercises).
+    { name: 'courseId', role: 'student', apiPath: '/api/courses?pageSize=50', pick: page => page.items.find(course => course.isEnrolled)?.id },
     { name: 'lessonId', role: 'student', apiPath: '/api/courses/{courseId}', pick: course => (allLessons(course).find(lesson => lesson.exerciseCount > 0) ?? allLessons(course)[0])?.id },
     { name: 'verificationId', role: 'student', apiPath: '/api/certificates/my', pick: certificates => certificates[0]?.verificationId, fallback: UNKNOWN_CERTIFICATE_ID },
     { name: 'adminCourseId', role: 'admin', apiPath: '/api/admin/courses', pick: page => page.items?.[0]?.id },

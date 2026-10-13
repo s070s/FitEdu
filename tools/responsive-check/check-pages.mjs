@@ -24,6 +24,8 @@ const MINIMUM_TAP_SIZE = 44;
 const NAVIGATION_TIMEOUT_MS = 45_000;
 const LOGIN_ATTEMPTS = 3;
 const SCREENSHOT_QUALITY = 70;
+// SubscriptionTier.Free; the API may send enums as numbers or names.
+const FREE_TIERS = new Set([0, 'Free']);
 // Optional regular expression: only page URLs that match it are visited (for quick re-runs).
 const PAGE_FILTER = process.env.FITEDU_CHECK_PAGES ? new RegExp(process.env.FITEDU_CHECK_PAGES) : null;
 
@@ -82,6 +84,39 @@ async function fetchJson(browser, storageState, apiPath) {
         return response.ok() ? await response.json() : null;
     } finally {
         await context.close();
+    }
+}
+
+/** Posts to one API path with the role's cookies; returns the JSON body, or null when the call fails. */
+async function postJson(browser, storageState, apiPath) {
+    const context = await browser.newContext({ storageState });
+    try {
+        const response = await context.request.post(BASE_URL + apiPath, { timeout: NAVIGATION_TIMEOUT_MS });
+        return response.ok() ? await response.json() : null;
+    } finally {
+        await context.close();
+    }
+}
+
+/**
+ * The lesson page only opens for an enrolled student, and the seed enrols nobody. Without an
+ * enrolment every lesson visit would check the "not enrolled" error page, so the student is
+ * enrolled in a free programme first (a lasting change to the running database).
+ */
+async function ensureStudentEnrollment(browser, storageState) {
+    const courses = (await fetchJson(browser, storageState, '/api/courses?pageSize=50'))?.items ?? [];
+    if (courses.some(course => course.isEnrolled)) {
+        return;
+    }
+
+    const freeCourse = courses.find(course => FREE_TIERS.has(course.requiredTier) && course.totalLessons > 0);
+    if (!freeCourse) {
+        throw new Error('the student is enrolled nowhere and no free programme exists, so the lesson page cannot be checked');
+    }
+
+    const enrollment = await postJson(browser, storageState, `/api/courses/${freeCourse.id}/enroll`);
+    if (!enrollment?.success) {
+        throw new Error(`enrolling the student in programme ${freeCourse.id} failed, so the lesson page cannot be checked`);
     }
 }
 
@@ -166,6 +201,9 @@ function findDefects(measurement, combination, url, problems) {
     }
     if (measurement.errorPanelVisible) {
         defects.push({ type: 'blazor-error-panel', detail: 'the "An error has occurred" bar is showing' });
+    }
+    for (const message of measurement.errorMessages) {
+        defects.push({ type: 'error-message', detail: message });
     }
     for (const error of problems.consoleErrors) {
         defects.push({ type: 'console-error', detail: error });
@@ -304,6 +342,9 @@ async function main() {
     const browser = await launchBrowser();
     try {
         const { sessions, skippedRoles } = await signInRoles(browser);
+        if (sessions.student) {
+            await ensureStudentEnrollment(browser, sessions.student);
+        }
         const parameters = await resolveParameters(browser, sessions);
         const { urlsByRole, skippedPages } = buildPageLists(sessions, parameters);
         const roleSweeps = ROLES

@@ -47,6 +47,8 @@ function measurePage({ isMobile, isGreek, minimumTapSize }) {
     const SKIPPED_TEXT_PARENTS = 'script, style, code, pre, noscript, textarea, select, option, [translate="no"], .site-brand';
     const TAP_TARGET_SELECTOR = '.bottom-nav__link, .site-links a, .site-header button, .btn-primary, .btn-cta, main button[type=submit]';
     const MAXIMUM_TEXT_FINDINGS = 12;
+    // Error text a page shows instead of its content ("not enrolled", "failed to load").
+    const ERROR_MESSAGE_SELECTOR = '.text-danger, .alert-danger';
 
     function describe(element) {
         const classes = [...element.classList].slice(0, 3).join('.');
@@ -108,6 +110,16 @@ function measurePage({ isMobile, isGreek, minimumTapSize }) {
             });
     }
 
+    // Required-field asterisks are .text-danger too; they are aria-hidden and a single character.
+    function findErrorMessages() {
+        return [...document.querySelectorAll(ERROR_MESSAGE_SELECTOR)]
+            .filter(element => element.checkVisibility() && !element.closest('[aria-hidden="true"]'))
+            .map(element => element.innerText.trim())
+            .filter(text => text.length > 1)
+            .slice(0, MAXIMUM_TEXT_FINDINGS)
+            .map(text => text.slice(0, 120));
+    }
+
     function visibleTextNodes() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         const texts = [];
@@ -152,6 +164,7 @@ function measurePage({ isMobile, isGreek, minimumTapSize }) {
         rawKeys: [...new Set(rawKeys)].slice(0, MAXIMUM_TEXT_FINDINGS),
         englishTexts: [...new Set(englishTexts)],
         errorPanelVisible: Boolean(errorPanel && errorPanel.checkVisibility()),
+        errorMessages: findErrorMessages(),
     };
 }
 

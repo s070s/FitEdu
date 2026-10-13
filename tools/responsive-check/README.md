@@ -8,16 +8,21 @@ and an **admin** (where that role may open it), at **375×812** (phone, touch) a
   elements that stick out;
 - every visible image loaded, after scrolling to the bottom so lazy images load too;
 - no console errors, failed requests or HTTP errors, and no Blazor error bar;
+- no visible error message (`.text-danger`, `.alert-danger`), such as a "not enrolled" or
+  "failed to load" state shown instead of the page;
 - the phone tab bar (`.bottom-nav`) shows below 768 px and is hidden from 768 px up;
 - navigation links and primary buttons are at least 44×44 px on the phone;
 - no raw resource keys (such as `HeroTitleLine1`) on screen;
-- on Greek pages, English-looking text is listed for a person to review (content such as blog tags
-  is English by choice, so these are not counted as defects).
+- on Greek pages, English-looking text is listed for a person to review (it is not counted as a
+  defect, since names such as exercise names may be English by choice).
 
 The page list is in `routes.mjs`. The script also reads every `@page` route in
 `src/FitEdu.Web/Pages` and fails when a route is in no role's list, so a new page cannot be missed.
 Route ids (a course, a workout lesson, an exercise, a path, an assessment, a blog article, a
-certificate) are read from the app's JSON API with each role's sign-in cookie.
+certificate) are read from the app's JSON API with each role's sign-in cookie. The lesson page only
+opens for an enrolled student, so when the student is enrolled nowhere the script first enrols
+them in a free programme (a lasting change to the running database); it stops with an error when
+that is not possible, rather than checking the "not enrolled" page.
 
 | File | What it does |
 |---|---|
