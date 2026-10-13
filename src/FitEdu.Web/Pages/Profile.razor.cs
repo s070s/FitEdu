@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Globalization;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Web.Services;
@@ -221,7 +222,7 @@ public partial class Profile
         }
         catch (Exception ex)
         {
-            RejectAvatar(string.Format(ProfileRes.ErrorUploadingAvatarFormat, ex.Message));
+            RejectAvatar(ResourceFormat.Fill(ProfileRes.ErrorUploadingAvatarFormat, ex.Message));
         }
         finally
         {
