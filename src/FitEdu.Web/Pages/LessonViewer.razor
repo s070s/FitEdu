@@ -22,7 +22,7 @@ else
     <div class="lesson-container">
         <div class="lesson-nav-top">
             <button class="btn-link" @onclick="() => GoToCourse(_lesson.CourseId)">
-                ← @_lesson.CourseTitle
+                <span class="bi bi-arrow-left" aria-hidden="true"></span> @_lesson.CourseTitle
             </button>
             <span class="breadcrumb-separator">/</span>
             <span class="module-name">@_lesson.ModuleTitle</span>
@@ -32,7 +32,7 @@ else
 
         @if (_lesson.DurationMinutes.HasValue)
         {
-            <p class="duration"><span aria-hidden="true">⏱</span> @_lesson.DurationMinutes @LessonRes.Minutes</p>
+            <p class="duration"><span class="bi bi-stopwatch" aria-hidden="true"></span> @_lesson.DurationMinutes @LessonRes.Minutes</p>
         }
 
         <div class="lesson-content">

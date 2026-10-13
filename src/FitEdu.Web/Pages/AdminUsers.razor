@@ -69,11 +69,11 @@
                                 <PresenceIndicator UserId="@user.Id" LastSeenAt="@user.LastSeenAt" ShowLabel="true" />
                             </td>
                             <td data-label="@AdminRes.ColEnabled">
-                                <span aria-hidden="true">@(user.IsEnabled ? "✓" : "✗")</span>
+                                <span class="bi @(user.IsEnabled ? "bi-check-lg text-success" : "bi-x-lg text-light-muted")" aria-hidden="true"></span>
                                 <span class="visually-hidden">@(user.IsEnabled ? AdminRes.Yes : AdminRes.No)</span>
                             </td>
                             <td data-label="@AdminRes.ColEmailConfirmed">
-                                <span aria-hidden="true">@(user.EmailConfirmed ? "✓" : "✗")</span>
+                                <span class="bi @(user.EmailConfirmed ? "bi-check-lg text-success" : "bi-x-lg text-light-muted")" aria-hidden="true"></span>
                                 <span class="visually-hidden">@(user.EmailConfirmed ? AdminRes.Yes : AdminRes.No)</span>
                             </td>
                             <td data-label="@AdminRes.ColTier">@user.SubscriptionTier</td>

@@ -257,7 +257,7 @@ else
                                                             </td>
                                                             <td data-label="@AdminRes.ColActions">
                                                                 <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowEditLesson(lesson)">@AdminRes.Edit</button>
-                                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)">✕</button>
+                                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteLesson(lesson.Id, module.Id)" title="@AdminRes.Delete" aria-label="@AdminRes.Delete"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
                                                             </td>
                                                         </tr>
                                                     }

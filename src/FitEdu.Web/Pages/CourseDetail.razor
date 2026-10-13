@@ -103,15 +103,15 @@ else
                                         <span class="lesson-icon" aria-hidden="true">
                                             @if (lesson.IsCompleted)
                                             {
-                                                <text>✓</text>
+                                                <span class="bi bi-check-circle-fill"></span>
                                             }
                                             else if (lesson.ContentType == 2)
                                             {
-                                                <text>▶</text>
+                                                <span class="bi bi-play-circle"></span>
                                             }
                                             else
                                             {
-                                                <text>📄</text>
+                                                <span class="bi bi-file-earmark-text"></span>
                                             }
                                         </span>
                                         <span class="lesson-title">@lesson.Title</span>

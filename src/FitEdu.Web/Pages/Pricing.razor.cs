@@ -24,6 +24,9 @@ public partial class Pricing
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
+    /// <summary>A tick for an included feature, a cross for one the plan lacks.</summary>
+    private static string FeatureIcon(bool included) => included ? "bi-check-lg" : "bi-x-lg";
+
     protected override async Task OnInitializedAsync()
     {
         try
