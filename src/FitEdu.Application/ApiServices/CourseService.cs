@@ -222,7 +222,7 @@ public class CourseService(
         {
             return ServiceResult<EnrollmentResultDto>.Forbidden(new EnrollmentResultDto(
                 false,
-                string.Format(ErrorMessagesRes.CourseRequiresTierFormat, TierLabels.Name(course.RequiredTier)),
+                ResourceFormat.Fill(ErrorMessagesRes.CourseRequiresTierFormat, TierLabels.Name(course.RequiredTier)),
                 null));
         }
 
@@ -237,7 +237,7 @@ public class CourseService(
             {
                 return ServiceResult<EnrollmentResultDto>.Forbidden(new EnrollmentResultDto(
                     false,
-                    string.Format(ErrorMessagesRes.CourseEnrollmentLimitReachedFormat, TierLabels.Name(userStatus.Tier), maxCourses),
+                    ResourceFormat.Fill(ErrorMessagesRes.CourseEnrollmentLimitReachedFormat, TierLabels.Name(userStatus.Tier), maxCourses),
                     null));
             }
         }

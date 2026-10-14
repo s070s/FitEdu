@@ -457,6 +457,39 @@ public class CourseServiceTests
     }
 
     [Fact]
+    public async Task Enroll_TierBelowRequired_NamesTheRequiredPlan()
+    {
+        using var cultureScope = new CultureScope("en");
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("Pro", 0, tier: SubscriptionTier.Pro);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, Status(SubscriptionTier.Free));
+
+        var result = await svc.EnrollAsync(UserId, course.Id);
+
+        result.Value!.Message.ShouldBe("This programme requires a Pro subscription or higher. Please upgrade your plan.");
+    }
+
+    [Fact]
+    public async Task Enroll_AtMaxCoursesCap_Greek_NamesThePlanAndTheLimit()
+    {
+        using var cultureScope = new CultureScope("el");
+        await using var db = DbContextFactory.CreateInMemory();
+        var existing = CourseWithLessons("Existing", 0);
+        var target = CourseWithLessons("Target", 0);
+        db.Courses.AddRange(existing, target);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = existing.Id });
+        await db.SaveChangesAsync();
+        var (svc, _, _) = NewService(db, Status(SubscriptionTier.Free, maxCourses: 1));
+
+        var result = await svc.EnrollAsync(UserId, target.Id);
+
+        result.Value!.Message.ShouldBe(
+            "Έφτασες το όριο ενεργών προγραμμάτων του πλάνου Δωρεάν (1). Αναβάθμισε για να γραφτείς σε περισσότερα.");
+    }
+
+    [Fact]
     public async Task Enroll_UnlimitedPlan_BypassesCap()
     {
         await using var db = DbContextFactory.CreateInMemory();
