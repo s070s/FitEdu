@@ -116,20 +116,19 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
     }
 
-    [Theory]
-    [InlineData("el-GR", "el")]
-    [InlineData("en-GB", "en")]
-    public async Task CultureSet_SignedInMember_SavesTheChosenLanguage(string culture, string expectedLanguage)
+    [Fact]
+    public async Task CultureSet_SignedInMember_KeepsTheStoredLanguage()
     {
+        // The switch is a plain GET link any site could send a member to, so it changes only the cookie.
         var (signedInClient, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
-        await SetStoredLanguageAsync(userId, expectedLanguage == UserLanguage.Greek ? UserLanguage.English : UserLanguage.Greek);
+        await SetStoredLanguageAsync(userId, UserLanguage.English);
         var client = NoRedirectClient();
         client.DefaultRequestHeaders.Authorization = signedInClient.DefaultRequestHeaders.Authorization;
 
-        var response = await client.GetAsync($"/culture/set?culture={culture}&returnUrl=%2F");
+        var response = await client.GetAsync("/culture/set?culture=el-GR&returnUrl=%2F");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
-        (await StoredLanguageAsync(userId)).ShouldBe(expectedLanguage);
+        (await StoredLanguageAsync(userId)).ShouldBe(UserLanguage.English);
     }
 
     [Fact]

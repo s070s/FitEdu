@@ -11,12 +11,6 @@ public interface IProfileService
     Task<ProfileDto?> GetProfileAsync(string userId);
     Task<ServiceResult<ProfileDto>> UpdateProfileAsync(string userId, UpdateProfileRequest request);
 
-    /// <summary>
-    /// Stores the member's language ("en" or "el") when they switch the site language. False when the
-    /// code is not supported, the user is missing or the save failed.
-    /// </summary>
-    Task<bool> SetPreferredLanguageAsync(string userId, string language);
-
     /// <summary>Deletes any existing avatar, saves the new file, and updates the user record.</summary>
     Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string fileName);
     Task<(Stream Stream, string ContentType)?> GetAvatarAsync(string userId);

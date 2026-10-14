@@ -50,18 +50,6 @@ public class ProfileService(
         return ServiceResult<ProfileDto>.Ok(ToDto(user));
     }
 
-    public async Task<bool> SetPreferredLanguageAsync(string userId, string language)
-    {
-        if (!UserLanguage.IsSupported(language))
-            return false;
-
-        var user = await userManager.FindByIdAsync(userId);
-        if (user is null)
-            return false;
-
-        return await PreferredLanguageSaver.SaveAsync(userManager, user, language, logger);
-    }
-
     public async Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string fileName)
     {
         var user = await userManager.FindByIdAsync(userId);
