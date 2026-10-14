@@ -193,6 +193,21 @@ public class NavigationComponentTests : BunitContext
     }
 
     [Fact]
+    public void NavMenu_Guest_HeaderAndMenuLinkToThePublicProgrammes()
+    {
+        // The course catalogue and course pages are public, so guests can browse them before joining.
+        var navMenu = Render<NavMenu>();
+
+        var headerHrefs = navMenu.FindAll(".site-links a").Select(link => link.GetAttribute("href")).ToList();
+        headerHrefs.ShouldContain("courses");
+
+        navMenu.Find(".site-menu-toggle").Click();
+
+        var menuHrefs = navMenu.FindAll(".site-menu a").Select(link => link.GetAttribute("href")).ToList();
+        menuHrefs.ShouldContain("courses");
+    }
+
+    [Fact]
     public void NavMenu_Guest_MenuButtonIsForCompactScreensOnly()
     {
         // Every guest link fits inline on wide screens, so the button hides there; signed-in
