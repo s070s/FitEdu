@@ -287,7 +287,7 @@ public partial class Profile
         }
         catch (Exception ex)
         {
-            ShowError(string.Format(ProfileRes.ErrorFormat, ex.Message));
+            ShowError(ResourceFormat.Fill(ProfileRes.ErrorFormat, ex.Message));
         }
         finally
         {
@@ -331,7 +331,7 @@ public partial class Profile
         }
         catch (Exception ex)
         {
-            ShowError(string.Format(ProfileRes.ErrorFormat, ex.Message));
+            ShowError(ResourceFormat.Fill(ProfileRes.ErrorFormat, ex.Message));
         }
         finally
         {

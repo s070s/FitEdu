@@ -56,5 +56,13 @@ public sealed class RelativeTimeFormatterTests : IDisposable
         result.ShouldBe($"last seen {SiteClock.ToSiteTime(lastSeen).ToString("d", CultureInfo.CurrentCulture)}");
     }
 
+    [Fact]
+    public void NotificationAge_UnderOneHour_ShowsMinutes()
+    {
+        var result = RelativeTimeFormatter.NotificationAge(DateTimeOffset.UtcNow.AddMinutes(-5));
+
+        result.ShouldBe("5m");
+    }
+
     public void Dispose() => _cultureScope.Dispose();
 }

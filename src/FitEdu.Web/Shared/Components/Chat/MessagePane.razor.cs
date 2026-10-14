@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
@@ -50,7 +51,7 @@ public partial class MessagePane : IDisposable
     {
         CallEventKind.Started => CallRes.CallStarted,
         CallEventKind.Missed => CallRes.MissedCall,
-        CallEventKind.Ended => string.Format(CallRes.CallEndedWithDuration, FormatDuration(msg.CallDurationSeconds)),
+        CallEventKind.Ended => ResourceFormat.Fill(CallRes.CallEndedWithDuration, FormatDuration(msg.CallDurationSeconds)),
         _ => string.Empty
     };
 
