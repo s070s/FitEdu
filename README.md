@@ -96,7 +96,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | CI | GitHub Actions (`.github/workflows/tests.yml`) |
 | Logging | Custom daily file logger |
-| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek by the UI language of the request that sends the email |
+| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek: the request language when the member asks for the email, the member's stored language when an admin triggers it |
 | Security | HSTS · `X-Content-Type-Options` · `X-Frame-Options` · `Referrer-Policy` · `Permissions-Policy` |
 | AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:1.7b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
 
@@ -596,7 +596,7 @@ The email transport is selected at startup from configuration:
 - **No SMTP host, Development** → `StubEmailService` logs all emails to file instead of sending them — find links in `Logs/log-YYYY-MM-DD.txt` (search `STUB EMAIL`).
 - **No SMTP host, Production** → the application **throws at startup**, so emails are never silently swallowed.
 
-The confirmation and password-reset emails come in English or Greek (`EmailTemplates`), chosen at send time by the UI language of the request. The pages' loopback API calls send the member's language as `Accept-Language`, so a member on the Greek site gets the Greek email.
+The confirmation and password-reset emails come in English or Greek (`EmailTemplates`). Each member's language is stored on the account (`ApplicationUser.PreferredLanguage`, `en` or `el`, default `en`): it is set at sign-up from the page language, saved again whenever a signed-in member switches language (`/culture/set`; not while an admin impersonates them) or asks for a password reset, and can be changed on the Profile page (which then switches the site to it). Emails the member asks for themselves use the request language (the pages' loopback API calls send it as `Accept-Language`); emails someone else triggers, such as an admin's forced password reset, use the member's stored language, so a Greek member gets the Greek email even when the admin reads the site in English.
 
 Dev shortcuts for bypassing email confirmation:
 
@@ -769,7 +769,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Sitemap | Slugs XML-escaped via `SecurityElement.Escape()` |
 | Account enumeration | Login, forgot-password, reset-password all return generic messages; duplicate-email registration mapped to generic error |
 | Sensitive data at rest | Special-category assessment answers (`AnswersJson`/`SummaryJson`) encrypted at rest via ASP.NET Core Data Protection (transparent EF value converter); the Data Protection key ring is persisted to the database |
-| GDPR posture | Bilingual Privacy Policy (`/privacy`) and Terms (`/terms`) linked from the registration consent and the landing footer; registration requires explicit consent with captured timestamp; self-service account erasure and "download my data" export from the Profile page; expired refresh tokens purged on a background sweep |
+| GDPR posture | Bilingual Privacy Policy (`/privacy`) and Terms (`/terms`) linked from the registration consent and the landing footer; registration requires explicit consent with captured timestamp; self-service account erasure and "download my data" export from the Profile page (the export includes the stored preferred language, which the Privacy Policy lists among the account data); expired refresh tokens purged on a background sweep |
 
 ---
 

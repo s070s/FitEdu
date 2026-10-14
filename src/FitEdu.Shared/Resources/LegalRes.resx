@@ -77,7 +77,7 @@
     <value>What data we collect</value>
   </data>
   <data name="PrivacyDataBody" xml:space="preserve">
-    <value>When you create an account we store your name, email address, date of birth, training level and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your programme reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
+    <value>When you create an account we store your name, email address, date of birth, training level, the language you read FitEdu in (English or Greek, used for the site and our emails to you) and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your programme reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
   </data>
   <data name="PrivacyPurposeTitle" xml:space="preserve">
     <value>Why we process your data</value>
