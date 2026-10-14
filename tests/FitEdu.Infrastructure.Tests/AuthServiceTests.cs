@@ -30,6 +30,7 @@ public class AuthServiceTests
     private static Harness Build()
     {
         var um = IdentityMocks.MockUserManager();
+        um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
         var sm = IdentityMocks.MockSignInManager(um);
         var subs = Substitute.For<ISubscriptionService>();
         var accessor = Substitute.For<IHttpContextAccessor>();
@@ -154,6 +155,41 @@ public class AuthServiceTests
         var payload = h.Dp.CreateProtector(AuthService.ProtectorPurpose).ToTimeLimitedDataProtector().Unprotect(result.Token!);
         var ticket = System.Text.Json.JsonSerializer.Deserialize<AuthCompletionTicket>(payload);
         ticket!.RememberMe.ShouldBe(rememberMe);
+    }
+
+    [Fact]
+    public async Task Login_OnTheGreekSite_SavesGreekAsTheStoredLanguage()
+    {
+        var h = Build();
+        var user = User(); // stored language: English (the default)
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Um.GetSecurityStampAsync(user).Returns("stamp-1");
+        h.Sm.CheckPasswordSignInAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<bool>())
+            .Returns(SignInResult.Success);
+        using var cultureScope = new CultureScope("el-GR");
+
+        (await h.Svc.LoginAsync(Login())).Success.ShouldBeTrue();
+
+        user.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        await h.Um.Received(1).UpdateAsync(user);
+    }
+
+    [Fact]
+    public async Task Login_BadPassword_KeepsTheStoredLanguage()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<bool>())
+            .Returns(SignInResult.Failed);
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.LoginAsync(Login());
+
+        user.PreferredLanguage.ShouldBe(UserLanguage.English);
+        await h.Um.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
     }
 
     // ---- RegisterAsync -------------------------------------------------------

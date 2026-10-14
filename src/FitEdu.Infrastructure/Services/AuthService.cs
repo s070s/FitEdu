@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.Data;
@@ -135,6 +136,9 @@ public class AuthService : IAuthService
                 return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked };
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
         }
+
+        // The language the member signs in from is kept for the emails an admin may send them later.
+        await PreferredLanguageSaver.SaveRequestLanguageAsync(_userManager, user, _logger);
 
         var stamp = await _userManager.GetSecurityStampAsync(user);
         var token = CreateSignInToken(userId: user.Id, adminBackupId: null, deleteAdminBackup: false, securityStamp: stamp, rememberMe: request.RememberMe);

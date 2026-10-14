@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using FitEdu.Domain.Identity;
 
@@ -5,8 +6,9 @@ namespace FitEdu.Application.Common;
 
 /// <summary>
 /// Stores a member's <see cref="ApplicationUser.PreferredLanguage"/>. Shared by the language switch
-/// (ProfileService) and the self-service password reset (AuthApiService), which both save the
-/// language the member is reading the site in.
+/// (ProfileService) and both sign-in paths (AuthService for the site, AuthApiService for the API),
+/// which save the language the member is reading the site in. Only requests the member is proven to
+/// make save it: the anonymous forgot-password request does not, since anyone may send it.
 /// </summary>
 public static partial class PreferredLanguageSaver
 {
@@ -28,6 +30,17 @@ public static partial class PreferredLanguageSaver
         var errors = string.Join(", ", result.Errors.Select(error => error.Description));
         LogSaveFailed(logger, user.Id, errors);
         return false;
+    }
+
+    /// <summary>
+    /// Saves the language of the current request (its UI culture), as at sign-in. Same result as
+    /// <see cref="SaveAsync"/>.
+    /// </summary>
+    public static Task<bool> SaveRequestLanguageAsync(
+        UserManager<ApplicationUser> userManager, ApplicationUser user, ILogger logger)
+    {
+        var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
+        return SaveAsync(userManager, user, requestLanguage, logger);
     }
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not save the preferred language of user {UserId}: {Errors}")]
