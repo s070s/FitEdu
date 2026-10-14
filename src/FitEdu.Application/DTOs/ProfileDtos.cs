@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FitEdu.Domain.Enums;
+using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.DTOs;
@@ -15,12 +16,13 @@ public record ProfileDto(
     string? AvatarPath,
     DateOnly? DateOfBirth,
     UserStatus Status,
-    FitnessGoal? Goal = null
+    FitnessGoal? Goal = null,
+    string PreferredLanguage = UserLanguage.English
 );
 
 /// <summary>
 /// Request to update user profile. Status is the training level; a null Goal clears the
-/// user's training goal.
+/// user's training goal. PreferredLanguage is "en" or "el"; null keeps the stored language.
 /// </summary>
 public record UpdateProfileRequest(
     [Required, MaxLength(100)] string FirstName,
@@ -28,7 +30,8 @@ public record UpdateProfileRequest(
     [MaxLength(100)] string? DisplayName,
     DateOnly? DateOfBirth,
     UserStatus Status,
-    [EnumDataType(typeof(FitnessGoal))] FitnessGoal? Goal = null
+    [EnumDataType(typeof(FitnessGoal))] FitnessGoal? Goal = null,
+    [RegularExpression(UserLanguage.ValidationPattern)] string? PreferredLanguage = null
 );
 
 /// <summary>
@@ -67,7 +70,8 @@ public record ProfileExportDto(
     bool GdprConsentGiven,
     DateTime? GdprConsentDate,
     bool ParentalConsentGiven,
-    string? Goal = null
+    string? Goal = null,
+    string PreferredLanguage = UserLanguage.English
 );
 
 public record EnrollmentExportDto(

@@ -14,9 +14,13 @@ public partial class CultureSelector
             twoLetterCode,
             StringComparison.OrdinalIgnoreCase);
 
-    private void SetCulture(string culture)
-    {
-        var returnUrl = Uri.EscapeDataString(Navigation.Uri);
-        Navigation.NavigateTo($"/culture/set?culture={culture}&returnUrl={returnUrl}", forceLoad: true);
-    }
+    /// <summary>
+    /// The culture-switch address that sets the language cookie (and the signed-in member's stored
+    /// language) and then returns to <paramref name="returnUri"/>. Open it with forceLoad: true.
+    /// </summary>
+    public static string SwitchUrl(string culture, string returnUri) =>
+        $"/culture/set?culture={culture}&returnUrl={Uri.EscapeDataString(returnUri)}";
+
+    private void SetCulture(string culture) =>
+        Navigation.NavigateTo(SwitchUrl(culture, Navigation.Uri), forceLoad: true);
 }

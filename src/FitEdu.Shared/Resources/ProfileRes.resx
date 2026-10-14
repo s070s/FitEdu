@@ -189,4 +189,16 @@
 	<data name="GoalNotSet" xml:space="preserve">
 		<value>Not chosen yet</value>
 	</data>
+	<data name="LabelPreferredLanguage" xml:space="preserve">
+		<value>Language</value>
+	</data>
+	<data name="LanguageEnglish" xml:space="preserve">
+		<value>English</value>
+	</data>
+	<data name="LanguageGreek" xml:space="preserve">
+		<value>Greek</value>
+	</data>
+	<data name="PreferredLanguageHelp" xml:space="preserve">
+		<value>The site and the emails we send you use this language.</value>
+	</data>
 </root>

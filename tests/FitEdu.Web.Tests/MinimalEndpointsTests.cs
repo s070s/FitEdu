@@ -1,9 +1,11 @@
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
+using FitEdu.Domain.Identity;
 using Shouldly;
 using Xunit;
 
@@ -111,6 +113,39 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         var response = await client.GetAsync("/culture/set?culture=el-GR&returnUrl=%2F");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+    }
+
+    [Theory]
+    [InlineData("el-GR", "el")]
+    [InlineData("en-GB", "en")]
+    public async Task CultureSet_SignedInMember_SavesTheChosenLanguage(string culture, string expectedLanguage)
+    {
+        var (signedInClient, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await SetStoredLanguageAsync(userId, expectedLanguage == UserLanguage.Greek ? UserLanguage.English : UserLanguage.Greek);
+        var client = NoRedirectClient();
+        client.DefaultRequestHeaders.Authorization = signedInClient.DefaultRequestHeaders.Authorization;
+
+        var response = await client.GetAsync($"/culture/set?culture={culture}&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        (await StoredLanguageAsync(userId)).ShouldBe(expectedLanguage);
+    }
+
+    private async Task SetStoredLanguageAsync(string userId, string language)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var user = await userManager.FindByIdAsync(userId);
+        user!.PreferredLanguage = language;
+        await userManager.UpdateAsync(user);
+    }
+
+    private async Task<string?> StoredLanguageAsync(string userId)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var user = await userManager.FindByIdAsync(userId);
+        return user?.PreferredLanguage;
     }
 
     [Fact]

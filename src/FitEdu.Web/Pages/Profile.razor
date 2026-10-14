@@ -1,6 +1,7 @@
 @page "/profile"
 @attribute [Authorize]
 @using FitEdu.Web.Extensions
+@using FitEdu.Domain.Identity
 
 <AppPageTitle Text="@ProfileRes.PageTitle" />
 
@@ -123,6 +124,15 @@
                                     }
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="profile-language">@ProfileRes.LabelPreferredLanguage</label>
+                            <select id="profile-language" class="form-select" aria-describedby="profile-language-help" @bind="preferredLanguage">
+                                <option value="@UserLanguage.English">@ProfileRes.LanguageEnglish</option>
+                                <option value="@UserLanguage.Greek">@ProfileRes.LanguageGreek</option>
+                            </select>
+                            <div class="form-text" id="profile-language-help">@ProfileRes.PreferredLanguageHelp</div>
                         </div>
 
                         <dl class="profile-facts">

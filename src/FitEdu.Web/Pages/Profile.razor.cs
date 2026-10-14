@@ -5,11 +5,13 @@ using System.Globalization;
 using FitEdu.Application.Common;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
+using FitEdu.Web.Layout;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Web.Services;
 using FitEdu.Web.Shared.Components.Forms;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources;
 
 namespace FitEdu.Web.Pages;
@@ -31,6 +33,7 @@ public partial class Profile
     private string displayName = string.Empty;
     private UserStatus profileStatus;
     private FitnessGoal? profileGoal;
+    private string preferredLanguage = UserLanguage.English;
     private string currentPassword = string.Empty;
     private string newPassword = string.Empty;
     private string confirmPassword = string.Empty;
@@ -60,8 +63,7 @@ public partial class Profile
     // The catalogue call Home makes too; one page of this size covers every published course.
     private const int CoursePageSize = 100;
 
-    private static string CurrentLang =>
-        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
+    private static string CurrentLang => UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
 
     /// <summary>Only a real training level earns a header chip; "Prefer not to say" would read oddly as a badge.</summary>
     private bool HasLevelChip => profile?.Status is UserStatus.Beginner or UserStatus.Intermediate or UserStatus.Advanced;
@@ -106,6 +108,7 @@ public partial class Profile
             displayName = profile.DisplayName ?? string.Empty;
             profileStatus = profile.Status;
             profileGoal = profile.Goal;
+            preferredLanguage = profile.PreferredLanguage;
             await LoadAvatarAsync();
         }
         catch (Exception)
@@ -268,7 +271,8 @@ public partial class Profile
                 string.IsNullOrWhiteSpace(displayName) ? null : displayName,
                 profile.DateOfBirth,
                 profileStatus,
-                profileGoal
+                profileGoal,
+                preferredLanguage
             );
 
             var updated = await ProfileConsumer.UpdateProfileAsync(updateRequest);
@@ -278,7 +282,9 @@ public partial class Profile
                 profile = updated;
                 profileStatus = updated.Status;
                 profileGoal = updated.Goal;
+                preferredLanguage = updated.PreferredLanguage;
                 ShowSuccess(ProfileRes.ProfileUpdatedSuccess);
+                SwitchSiteLanguageIfChanged(updated.PreferredLanguage);
             }
             else
             {
@@ -293,6 +299,19 @@ public partial class Profile
         {
             isSaving = false;
         }
+    }
+
+    /// <summary>
+    /// A newly chosen language also becomes the site language: the culture switch reloads this page
+    /// in it (and saves the same language again, which changes nothing).
+    /// </summary>
+    private void SwitchSiteLanguageIfChanged(string savedLanguage)
+    {
+        if (savedLanguage == CurrentLang)
+            return;
+
+        var culture = UserLanguage.ToCultureName(savedLanguage);
+        Navigation.NavigateTo(CultureSelector.SwitchUrl(culture, Navigation.Uri), forceLoad: true);
     }
 
     private async Task ChangePassword()

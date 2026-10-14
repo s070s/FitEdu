@@ -330,7 +330,8 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
             ["displayName"] = "Maria P.",
             ["dateOfBirth"] = "1998-04-12",
             ["status"] = 1,
-            ["goal"] = 1
+            ["goal"] = 1,
+            ["preferredLanguage"] = "el"
         },
         [typeof(ChangePasswordRequest)] = () => new JsonObject
         {

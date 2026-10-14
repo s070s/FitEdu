@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources;
 using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
@@ -173,6 +175,51 @@ public class ProfilePageTests : BunitContext
         page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
 
         _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request => request.Goal == null));
+    }
+
+    [Fact]
+    public void LanguageSelect_ShowsTheStoredLanguage()
+    {
+        _profileConsumer.GetProfileAsync().Returns(AliceProfile with { PreferredLanguage = UserLanguage.Greek });
+
+        var page = Render<Profile>();
+
+        page.WaitForAssertion(() => page.Find("#profile-language").GetAttribute("value").ShouldBe(UserLanguage.Greek));
+        page.FindAll("#profile-language option").Select(option => option.GetAttribute("value"))
+            .ShouldBe([UserLanguage.English, UserLanguage.Greek]);
+    }
+
+    [Fact]
+    public void SaveProfile_NewLanguage_SavesItAndSwitchesTheSiteToIt()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>())
+            .Returns(AliceProfile with { PreferredLanguage = UserLanguage.Greek });
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-language"));
+
+        page.Find("#profile-language").Change(UserLanguage.Greek);
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request =>
+            request.PreferredLanguage == UserLanguage.Greek));
+        navigation.Uri.ShouldContain("culture/set?culture=el-GR");
+    }
+
+    [Fact]
+    public void SaveProfile_SameLanguage_StaysOnThePage()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns(AliceProfile);
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-language"));
+        var uriBefore = navigation.Uri;
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request =>
+            request.PreferredLanguage == UserLanguage.English));
+        navigation.Uri.ShouldBe(uriBefore);
     }
 
     [Fact]

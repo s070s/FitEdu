@@ -509,5 +509,41 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("GoalNotSet", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language
+        /// </summary>
+        public static string LabelPreferredLanguage {
+            get {
+                return ResourceManager.GetString("LabelPreferredLanguage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to English
+        /// </summary>
+        public static string LanguageEnglish {
+            get {
+                return ResourceManager.GetString("LanguageEnglish", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Greek
+        /// </summary>
+        public static string LanguageGreek {
+            get {
+                return ResourceManager.GetString("LanguageGreek", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The site and the emails we send you use this language.
+        /// </summary>
+        public static string PreferredLanguageHelp {
+            get {
+                return ResourceManager.GetString("PreferredLanguageHelp", resourceCulture);
+            }
+        }
     }
 }
