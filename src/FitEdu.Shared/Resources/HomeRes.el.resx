@@ -321,4 +321,10 @@
   <data name="StatsAssessments" xml:space="preserve">
     <value>Αυτοαξιολογήσεις</value>
   </data>
+  <data name="BlogFailedToLoadTitle" xml:space="preserve">
+    <value>Δεν μπορέσαμε να φορτώσουμε το άρθρο</value>
+  </data>
+  <data name="BlogFailedToLoadBody" xml:space="preserve">
+    <value>Κάτι πήγε στραβά από τη μεριά μας. Δοκίμασε ξανά σε λίγο.</value>
+  </data>
 </root>

@@ -26,6 +26,7 @@ public partial class BlogArticle : IDisposable
     private BlogArticleDto? _article;
     private bool _loading = true;
     private bool _notFound;
+    private bool _loadFailed;
 
     private int _readingMinutes;
 
@@ -35,6 +36,8 @@ public partial class BlogArticle : IDisposable
 
     private string AuthorInitial =>
         string.IsNullOrWhiteSpace(_article?.AuthorName) ? string.Empty : _article.AuthorName.Trim()[..1].ToUpperInvariant();
+
+    private string PersistKey => $"blog-article-{Slug}";
 
     private string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
@@ -49,30 +52,40 @@ public partial class BlogArticle : IDisposable
     {
         _loading = true;
         _notFound = false;
+        _loadFailed = false;
         _article = null;
 
         // Restore from prerender state if available (avoids duplicate API call on circuit connect)
-        var key = $"blog-article-{Slug}";
-        var requestFailed = false;
-        if (ApplicationState.TryTakeFromJson<BlogArticleDto>(key, out var cached))
+        if (ApplicationState.TryTakeFromJson<BlogArticleDto>(PersistKey, out var cached))
         {
-            _article = cached;
-        }
-        else
-        {
-            var lookup = await BlogConsumer.GetBySlugAsync(Slug, lang: CurrentLang);
-            _article = lookup.Item;
-            requestFailed = lookup.RequestFailed;
+            ShowArticle(cached, requestFailed: false);
+            return;
         }
 
-        if (_article is null)
+        await LoadAsync();
+    }
+
+    /// <summary>Asks the API for the article; Try again calls it after a failed request.</summary>
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        var lookup = await BlogConsumer.GetBySlugAsync(Slug, lang: CurrentLang);
+        ShowArticle(lookup.Item, lookup.RequestFailed);
+    }
+
+    private void ShowArticle(BlogArticleDto? article, bool requestFailed)
+    {
+        _article = article;
+        _loadFailed = article is null && requestFailed;
+        _notFound = article is null && !requestFailed;
+
+        if (article is null)
         {
-            // A failed request still shows the "not found" view, but answers 503 instead of 404.
-            _notFound = true;
+            // A failed request offers Try again and answers 503, so crawlers keep the address.
             PrerenderStatus.SetMissing(HttpContext, requestFailed);
         }
         else
-            _readingMinutes = EstimateReadingMinutes(_article.Content);
+            _readingMinutes = EstimateReadingMinutes(article.Content);
 
         _loading = false;
     }
@@ -88,7 +101,10 @@ public partial class BlogArticle : IDisposable
 
     private Task PersistArticle()
     {
-        ApplicationState.PersistAsJson($"blog-article-{Slug}", _article);
+        // A failure is not handed on, so the interactive render asks the API again.
+        if (!_loadFailed)
+            ApplicationState.PersistAsJson(PersistKey, _article);
+
         return Task.CompletedTask;
     }
 
