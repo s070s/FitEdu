@@ -13,5 +13,5 @@ public class BlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvider 
 
     public Task<ApiLookup<BlogArticleDto>> GetBySlugAsync(
         string slug, string lang = "en", CancellationToken ct = default)
-        => GetLookupAsync<BlogArticleDto>($"api/blog/{slug}?lang={lang}", ct);
+        => GetLookupAsync<BlogArticleDto>($"api/blog/{Uri.EscapeDataString(slug)}?lang={lang}", ct);
 }

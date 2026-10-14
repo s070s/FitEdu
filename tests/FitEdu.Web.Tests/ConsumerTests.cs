@@ -204,6 +204,19 @@ public class ConsumerTests
     }
 
     [Fact]
+    public async Task BlogConsumer_GetBySlug_EscapesTheSlug()
+    {
+        var (client, handler) = TestHttp.Json(HttpStatusCode.NotFound);
+        var consumer = new BlogConsumer(client, TokenProvider());
+
+        // A raw '?' would end the path and smuggle its own query string into the API call.
+        await consumer.GetBySlugAsync("a?lang=el");
+
+        handler.LastRequest!.RequestUri!.AbsolutePath.ShouldBe("/api/blog/a%3Flang%3Del");
+        handler.LastRequest.RequestUri.Query.ShouldBe("?lang=en");
+    }
+
+    [Fact]
     public async Task BlogConsumer_GetBySlug_ServerError_ReportsAFailedRequest()
     {
         var (client, _) = TestHttp.Json(HttpStatusCode.ServiceUnavailable);
