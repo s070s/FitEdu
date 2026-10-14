@@ -93,7 +93,7 @@ public class AuthApiServiceTests
         var h = Build();
         h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
         h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
-        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
 
         var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
@@ -112,7 +112,61 @@ public class AuthApiServiceTests
         var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
 
         result.IsSuccess.ShouldBeTrue();
-        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Register_OnTheGreekSite_StoresGreekAndSendsTheGreekConfirmation()
+    {
+        var h = Build();
+        ApplicationUser? createdUser = null;
+        h.Um.CreateAsync(Arg.Do<ApplicationUser>(u => createdUser = u), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+
+        createdUser!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        await h.Email.Received(1).SendEmailConfirmationAsync(
+            Arg.Any<string>(), Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+    }
+
+    // ---- ForgotPasswordAsync: the member asks, so the request language is used and saved ----
+
+    [Fact]
+    public async Task ForgotPassword_OnTheGreekSite_SendsTheGreekResetAndSavesGreek()
+    {
+        var h = Build();
+        var member = User(); // stored language: English (the default)
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        h.Um.UpdateAsync(member).Returns(IdentityResult.Success);
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+
+        await h.Email.Received(1).SendPasswordResetAsync(
+            member.Email!, Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+        member.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        await h.Um.Received(1).UpdateAsync(member);
+    }
+
+    [Fact]
+    public async Task ForgotPassword_InTheStoredLanguage_DoesNotRewriteTheUser()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        using var cultureScope = new CultureScope("en-GB");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+
+        await h.Email.Received(1).SendPasswordResetAsync(
+            member.Email!, Arg.Any<string>(), UserLanguage.English, Arg.Any<CancellationToken>());
+        await h.Um.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
     }
 
     [Fact]

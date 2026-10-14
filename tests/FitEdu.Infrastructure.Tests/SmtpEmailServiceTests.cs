@@ -1,3 +1,4 @@
+using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Infrastructure.Configuration;
 using FitEdu.TestSupport;
@@ -17,15 +18,18 @@ public sealed class SmtpEmailServiceTests : IDisposable
         Smtp = new SmtpOptions { FromAddress = "no-reply@fitedu.test", FromName = "FitEdu" }
     };
 
-    // The email language follows the UI culture of the sending request; English unless a test says otherwise.
-    // Dispose puts the runner's cultures back.
+    private const string English = UserLanguage.English;
+    private const string Greek = UserLanguage.Greek;
+
+    // The email language is the one the caller passes, never the UI culture: the sender runs in English
+    // here, so a Greek email proves the culture is ignored. Dispose puts the runner's cultures back.
     private readonly CultureScope _cultureScope = new("en-GB");
 
     [Fact]
     public void BuildMessage_EmailConfirmation_IsTheFitnessWelcomeWithTheLink()
     {
         var message = SmtpEmailService.BuildMessage(
-            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink));
+            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink, English));
 
         message.From.Mailboxes.ShouldHaveSingleItem().Address.ShouldBe("no-reply@fitedu.test");
         message.To.Mailboxes.ShouldHaveSingleItem().Address.ShouldBe("user@example.com");
@@ -40,7 +44,7 @@ public sealed class SmtpEmailServiceTests : IDisposable
     public void BuildMessage_PasswordReset_KeepsTheMemberTrainingWithTheLink()
     {
         var message = SmtpEmailService.BuildMessage(
-            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink));
+            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink, English));
 
         message.Subject.ShouldBe("Reset your FitEdu password");
         var html = message.HtmlBody.ShouldNotBeNull();
@@ -52,10 +56,8 @@ public sealed class SmtpEmailServiceTests : IDisposable
     [Fact]
     public void BuildMessage_EmailConfirmation_InGreek_IsTheGreekWelcomeWithTheLink()
     {
-        using var cultureScope = new CultureScope("el-GR");
-
         var message = SmtpEmailService.BuildMessage(
-            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink));
+            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink, Greek));
 
         message.Subject.ShouldBe("Καλώς ήρθες στο FitEdu — ώρα για κίνηση");
         var html = message.HtmlBody.ShouldNotBeNull();
@@ -70,10 +72,8 @@ public sealed class SmtpEmailServiceTests : IDisposable
     [Fact]
     public void BuildMessage_PasswordReset_InGreek_IsTheGreekResetWithTheLink()
     {
-        using var cultureScope = new CultureScope("el-GR");
-
         var message = SmtpEmailService.BuildMessage(
-            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink));
+            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink, Greek));
 
         message.Subject.ShouldBe("Επαναφορά του κωδικού σου στο FitEdu");
         var html = message.HtmlBody.ShouldNotBeNull();
@@ -85,10 +85,25 @@ public sealed class SmtpEmailServiceTests : IDisposable
     [Fact]
     public void EmailTemplates_HtmlEncodeALinkThatCarriesMarkup()
     {
-        var content = EmailTemplates.EmailConfirmation("https://fitedu.test/?x=\"><script>");
+        var content = EmailTemplates.EmailConfirmation("https://fitedu.test/?x=\"><script>", English);
 
         content.HtmlBody.ShouldNotContain("<script>");
         content.HtmlBody.ShouldContain("&quot;&gt;&lt;script&gt;", Case.Sensitive);
+    }
+
+    [Fact]
+    public void EmailTemplates_GreekLanguageWinsOverAnEnglishSender()
+    {
+        // The admin who forces a reset reads the site in English; the Greek member still gets Greek.
+        EmailTemplates.PasswordReset(ResetLink, Greek).Subject.ShouldBe("Επαναφορά του κωδικού σου στο FitEdu");
+    }
+
+    [Fact]
+    public void EmailTemplates_UnknownLanguage_FallsBackToEnglish()
+    {
+        using var cultureScope = new CultureScope("el-GR");
+
+        EmailTemplates.PasswordReset(ResetLink, "fr").Subject.ShouldBe("Reset your FitEdu password");
     }
 
     public void Dispose() => _cultureScope.Dispose();

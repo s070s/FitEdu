@@ -7,7 +7,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// Logs emails instead of sending them — no message is ever delivered. It is registered only in
 /// Development when no SMTP host is configured (otherwise <see cref="SmtpEmailService"/> sends
 /// real mail); outside Development a missing SMTP host fails fast at startup. The logged subject
-/// comes from <see cref="EmailTemplates"/> in the sending request's UI language (English or Greek).
+/// comes from <see cref="EmailTemplates"/> in the language the caller passes (English or Greek).
 ///
 /// LOG-2: the logged confirmation/reset links embed live Identity tokens and the recipient's
 /// email — i.e. usable credentials sitting in plaintext in <c>Logs/</c> until they expire or are
@@ -24,26 +24,26 @@ public class StubEmailService : IEmailService
         _logger = logger;
     }
 
-    public Task SendEmailConfirmationAsync(string email, string confirmationLink, CancellationToken cancellationToken = default)
+    public Task SendEmailConfirmationAsync(string email, string confirmationLink, string language, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             "STUB EMAIL - Email Confirmation:\n" +
             "To: {Email}\n" +
             "Subject: {Subject}\n" +
             "Link: {ConfirmationLink}",
-            email, EmailTemplates.EmailConfirmation(confirmationLink).Subject, confirmationLink);
+            email, EmailTemplates.EmailConfirmation(confirmationLink, language).Subject, confirmationLink);
 
         return Task.CompletedTask;
     }
 
-    public Task SendPasswordResetAsync(string email, string resetLink, CancellationToken cancellationToken = default)
+    public Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             "STUB EMAIL - Password Reset:\n" +
             "To: {Email}\n" +
             "Subject: {Subject}\n" +
             "Link: {ResetLink}",
-            email, EmailTemplates.PasswordReset(resetLink).Subject, resetLink);
+            email, EmailTemplates.PasswordReset(resetLink, language).Subject, resetLink);
 
         return Task.CompletedTask;
     }

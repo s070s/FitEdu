@@ -8,6 +8,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -73,7 +74,7 @@ public class AuthApiService(
         logger.LogInformation("User {UserId} registered. Confirmation email queued.", user.Id);
         try
         {
-            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!);
+            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!, user.PreferredLanguage);
         }
         catch (Exception ex)
         {
@@ -286,8 +287,13 @@ public class AuthApiService(
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         var resetUrl = buildResetUrl(user.Email!, token);
 
+        // The member asked from the page they are reading, so the email uses that page's language,
+        // and the language is saved for the emails an admin may send them later.
+        var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
+        await PreferredLanguageSaver.SaveAsync(userManager, user, requestLanguage, logger);
+
         logger.LogInformation("Password reset requested for user {UserId}. Reset email queued.", user.Id);
-        await emailService.SendPasswordResetAsync(user.Email!, resetUrl);
+        await emailService.SendPasswordResetAsync(user.Email!, resetUrl, requestLanguage);
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
     }
