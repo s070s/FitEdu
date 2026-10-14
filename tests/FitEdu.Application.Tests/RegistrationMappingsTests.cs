@@ -1,6 +1,7 @@
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Mappings;
 using FitEdu.Domain.Enums;
+using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
 
@@ -70,5 +71,15 @@ public class RegistrationMappingsTests
         request.Goal = (FitnessGoal)999;
 
         request.ToNewUser().Goal.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData("el-GR", "el")]
+    [InlineData("en-GB", "en")]
+    public void ToNewUser_StoresTheLanguageTheMemberSignedUpIn(string uiCulture, string expectedLanguage)
+    {
+        using var cultureScope = new CultureScope(uiCulture);
+
+        Request().ToNewUser().PreferredLanguage.ShouldBe(expectedLanguage);
     }
 }

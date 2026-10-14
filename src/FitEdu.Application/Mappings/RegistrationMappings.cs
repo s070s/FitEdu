@@ -1,3 +1,4 @@
+using System.Globalization;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
@@ -7,7 +8,7 @@ namespace FitEdu.Application.Mappings;
 /// <summary>
 /// Builds the new user from a register request. Shared by the Blazor register page
 /// (Infrastructure AuthService) and POST api/auth/register (AuthApiService), so both paths
-/// apply the same training level and goal rules.
+/// apply the same training level, goal and language rules.
 /// </summary>
 public static class RegistrationMappings
 {
@@ -28,7 +29,9 @@ public static class RegistrationMappings
             Status = TrainingLevelOrBeginner(request.Status),
             Goal = DefinedGoalOrNull(request.Goal),
             GdprConsentGiven = request.GdprConsent,
-            GdprConsentDate = request.GdprConsent ? DateTime.UtcNow : null
+            GdprConsentDate = request.GdprConsent ? DateTime.UtcNow : null,
+            // The page or API request runs in the language the member is signing up in.
+            PreferredLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture)
         };
     }
 

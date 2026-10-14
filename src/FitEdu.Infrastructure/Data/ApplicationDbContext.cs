@@ -172,6 +172,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             entity.Property(u => u.DisplayName).HasMaxLength(100);
             entity.Property(u => u.AvatarPath).HasMaxLength(500);
 
+            // "en" or "el"; existing rows read as English, the site's default language.
+            entity.Property(u => u.PreferredLanguage)
+                  .HasMaxLength(UserLanguage.MaxLength)
+                  .HasDefaultValue(UserLanguage.English);
+
             // Indexes for server-side sorting performance
             entity.HasIndex(u => u.Email).HasDatabaseName("IX_AspNetUsers_Email");
             entity.HasIndex(u => u.FirstName).HasDatabaseName("IX_AspNetUsers_FirstName");
