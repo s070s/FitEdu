@@ -88,6 +88,20 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task Head_IsInteractive_SoTheTabTitleFollowsInAppNavigation()
+    {
+        var client = _factory.CreateClient();
+
+        var body = await client.GetStringAsync("/pricing");
+        var headStart = body.IndexOf("<head>", StringComparison.Ordinal);
+        var headEnd = body.IndexOf("</head>", StringComparison.Ordinal);
+        var head = body[headStart..headEnd];
+
+        // A static HeadOutlet renders no component marker, and its title never changes after the first page.
+        head.ShouldContain("<!--Blazor:{\"type\":\"server\"");
+    }
+
+    [Fact]
     public async Task UnknownApiRoute_StaysJsonProblemDetails()
     {
         var client = _factory.CreateClient();
