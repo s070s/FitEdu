@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -129,6 +130,31 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
         (await StoredLanguageAsync(userId)).ShouldBe(expectedLanguage);
+    }
+
+    [Fact]
+    public async Task CultureSet_AdminImpersonatingAMember_KeepsTheMembersStoredLanguage()
+    {
+        var (_, memberId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        await SetStoredLanguageAsync(memberId, UserLanguage.Greek);
+        var client = NoRedirectClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await ImpersonationTokenAsync(memberId));
+
+        var response = await client.GetAsync("/culture/set?culture=en-GB&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        (await StoredLanguageAsync(memberId)).ShouldBe(UserLanguage.Greek);
+    }
+
+    /// <summary>A token for the member that carries the impersonatedBy claim of an admin acting as them.</summary>
+    private async Task<string> ImpersonationTokenAsync(string memberId)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var member = await userManager.FindByIdAsync(memberId);
+        var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
+        var (token, _) = await tokenService.GenerateImpersonationTokenAsync(member!, adminId: "admin-1");
+        return token;
     }
 
     private async Task SetStoredLanguageAsync(string userId, string language)
