@@ -16,6 +16,19 @@
         </div>
     </div>
 }
+else if (_loadFailed)
+{
+    <AppPageTitle Text="@HomeRes.BlogFailedToLoadTitle" />
+    <div class="page blog-article-page">
+        <h1 class="visually-hidden">@HomeRes.BlogFailedToLoadTitle</h1>
+        <EmptyState Icon="bi-wifi-off" Title="@HomeRes.BlogFailedToLoadTitle" Text="@HomeRes.BlogFailedToLoadBody">
+            <button type="button" class="btn-cta empty-state__action" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+            <a class="btn-cta btn-cta--ghost" href="/blog">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span> @HomeRes.BlogBackToArticles
+            </a>
+        </EmptyState>
+    </div>
+}
 else if (_notFound || _article is null)
 {
     <AppPageTitle Text="@HomeRes.BlogNotFoundTitle" />

@@ -321,4 +321,10 @@
   <data name="StatsAssessments" xml:space="preserve">
     <value>Self-checks</value>
   </data>
+  <data name="BlogFailedToLoadTitle" xml:space="preserve">
+    <value>We couldn't load this article</value>
+  </data>
+  <data name="BlogFailedToLoadBody" xml:space="preserve">
+    <value>Something went wrong on our side. Try again in a moment.</value>
+  </data>
 </root>

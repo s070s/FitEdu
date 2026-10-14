@@ -204,6 +204,18 @@ public class ProfilePageTests : BunitContext
         alert.ClassList.ShouldNotContain("alert-info");
     }
 
+    [Fact]
+    public void SaveProfile_Exception_ShowsTheErrorText()
+    {
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).ThrowsAsync(new HttpRequestException("down"));
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-goal"));
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        page.Find(".alert[role=alert]").TextContent.ShouldContain("Error: down");
+    }
+
     protected override void Dispose(bool disposing)
     {
         _cultureScope.Dispose();

@@ -117,6 +117,23 @@ public class AssessmentServiceTests
         result.StatusCode.ShouldBe(400);
     }
 
+    [Fact]
+    public async Task Submit_TierBelowRequired_NamesTheRequiredPlan()
+    {
+        using var cultureScope = new CultureScope("en");
+        await using var db = DbContextFactory.CreateInMemory();
+        var assessment = Published();
+        assessment.RequiredTier = SubscriptionTier.Pro;
+        db.AssessmentDefinitions.Add(assessment);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db, SubscriptionTier.Free).SubmitAssessmentAsync(
+            UserId, assessment.Id, new SubmitAssessmentRequest("""{"q1":"answer"}""", null));
+
+        result.StatusCode.ShouldBe(403);
+        result.ErrorMessage.ShouldBe("This assessment requires a Pro subscription or higher.");
+    }
+
     [Theory]
     [InlineData("""{"q1":"[]"}""", 400)]                                   // a multi-select with nothing ticked
     [InlineData("""{"q1":"[\"Chest pain, pressure or discomfort\"]"}""", 200)] // a JSON-array multi-select answer

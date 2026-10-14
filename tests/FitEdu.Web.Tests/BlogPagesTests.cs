@@ -1,4 +1,5 @@
 using Bunit;
+using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,12 +22,13 @@ public class BlogPagesTests : BunitContext
     private const string Slug = "progressive-overload-explained";
 
     private readonly IBlogConsumer _blogConsumer = Substitute.For<IBlogConsumer>();
+    private readonly BunitPersistentComponentState _persistentState;
 
     public BlogPagesTests()
     {
         Services.AddSingleton(_blogConsumer);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-        AddBunitPersistentComponentState();
+        _persistentState = AddBunitPersistentComponentState();
     }
 
     [Fact]
@@ -91,6 +93,38 @@ public class BlogPagesTests : BunitContext
 
         page.Find(".empty-state__title").TextContent.ShouldBe(HomeRes.BlogNotFoundTitle);
         page.Find(".empty-state__action").GetAttribute("href").ShouldBe("/blog");
+    }
+
+    [Fact]
+    public void BlogArticle_RequestFailed_ShowsTheLoadFailureAndTryAgainLoadsTheArticle()
+    {
+        _blogConsumer.GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(ApiLookup.Failure<BlogArticleDto>(), ApiLookup.Found(Article()));
+
+        var page = RenderArticle();
+
+        page.Find(".empty-state__title").TextContent.ShouldBe(HomeRes.BlogFailedToLoadTitle);
+        page.Find(".empty-state__text").TextContent.ShouldBe(HomeRes.BlogFailedToLoadBody);
+        page.Find(".empty-state a").GetAttribute("href").ShouldBe("/blog");
+
+        page.Find(".empty-state button").TextContent.ShouldBe(GlobalRes.TryAgain);
+        page.Find(".empty-state button").Click();
+
+        page.WaitForAssertion(() => page.Find(".blog-article-title").TextContent.ShouldBe("Progressive overload explained"));
+        _blogConsumer.Received(2).GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void BlogArticle_RequestFailed_IsNotHandedToTheInteractiveRender()
+    {
+        // A stored failure would show "not found" without calling the API once the circuit starts.
+        _blogConsumer.GetBySlugAsync(Slug, Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(ApiLookup.Failure<BlogArticleDto>());
+        RenderArticle();
+
+        _persistentState.TriggerOnPersisting();
+
+        _persistentState.TryTake<object>("blog-article-" + Slug, out _).ShouldBeFalse();
     }
 
     [Theory]

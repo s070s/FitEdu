@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace FitEdu.Web.Extensions;
+namespace FitEdu.Application.Common;
 
 /// <summary>
 /// Fills a resource format string ("Step {0}") in the current culture.

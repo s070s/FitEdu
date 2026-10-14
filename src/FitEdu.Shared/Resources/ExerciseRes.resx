@@ -304,4 +304,10 @@
   <data name="LibraryEyebrow" xml:space="preserve">
     <value>Public-domain library</value>
   </data>
+  <data name="FailedToLoadTitle" xml:space="preserve">
+    <value>We couldn't load this exercise</value>
+  </data>
+  <data name="FailedToLoadText" xml:space="preserve">
+    <value>Something went wrong on our side. Try again in a moment.</value>
+  </data>
 </root>

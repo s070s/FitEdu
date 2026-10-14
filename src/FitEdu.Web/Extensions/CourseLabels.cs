@@ -1,3 +1,4 @@
+using FitEdu.Application.Common;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;

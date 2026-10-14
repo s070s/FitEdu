@@ -16,6 +16,8 @@ public static class NavItems
     public static readonly IReadOnlyList<NavItem> Guest =
     [
         new("", AppIcons.Home, () => NavMenuRes.Home, InHeader: true, InBottomNav: true),
+        // The catalogue is public; it stays off the tab bar so guests keep four tabs.
+        new("courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, ShortLabel: () => NavMenuRes.CoursesShort),
         new("exercises", AppIcons.Exercise, () => NavMenuRes.Exercises, InHeader: true, InBottomNav: true),
         new("blog", AppIcons.BlogArticle, () => NavMenuRes.Blog, InHeader: true),
         new("pricing", AppIcons.Pricing, () => NavMenuRes.Pricing, InHeader: true, InBottomNav: true),

@@ -19,7 +19,7 @@ body {
     font-family: var(--font-display);
 }
 
-/* Photo slot: render-brand-images.mjs fills the <img> with a duotone made by browser.mjs. */
+/* Photo slot: render-brand-images.mjs fills the <img> with a duotone made by images.mjs. */
 .photo {
     position: relative;
     overflow: hidden;

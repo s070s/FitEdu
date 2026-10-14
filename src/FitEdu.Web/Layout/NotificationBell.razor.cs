@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
@@ -26,7 +27,7 @@ public partial class NotificationBell : IAsyncDisposable
     private HubConnection? _hub;
 
     private string BellAriaLabel => _unreadCount > 0
-        ? string.Format(NotificationRes.UnreadBadgeAriaLabel, _unreadCount)
+        ? ResourceFormat.Fill(NotificationRes.UnreadBadgeAriaLabel, _unreadCount)
         : NotificationRes.OpenNotifications;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

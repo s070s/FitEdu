@@ -1,8 +1,8 @@
 using System.Globalization;
+using FitEdu.TestSupport;
 using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
-using FitEdu.TestSupport;
 
 namespace FitEdu.Web.Tests;
 

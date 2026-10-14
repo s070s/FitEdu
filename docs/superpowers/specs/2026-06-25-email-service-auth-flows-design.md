@@ -98,6 +98,10 @@ Task<AuthResponseDto> ConfirmEmailAsync(string userId, string token);
 - `@page "/confirm-email"`. `[SupplyParameterFromQuery] UserId`, `[SupplyParameterFromQuery] Token`.
 - `OnInitializedAsync` → `IAuthService.ConfirmEmailAsync(UserId, Token)`. Show success (+ login link) or
   failure (+ hint to request a new link / resend on login). Guard missing params.
+- Keep the sign-up `returnUrl` (today the emailed link opens `GET api/auth/confirm-email`, which cannot
+  carry it): add it to `RegisterRequestDto`, have `BuildConfirmUrl` append it, read it on this page
+  (`[SupplyParameterFromQuery] ReturnUrl`) and build the "Go to login" link with
+  `Login.LinkWithReturnUrl`, so a guest who signed up from a programme page lands back on it.
 
 ### 8. Resend endpoint + Login button
 

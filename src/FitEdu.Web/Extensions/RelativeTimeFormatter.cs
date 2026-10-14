@@ -1,3 +1,4 @@
+using System.Globalization;
 using FitEdu.Application.Common;
 using FitEdu.Shared.Resources;
 
@@ -16,10 +17,10 @@ public static class RelativeTimeFormatter
         return delta switch
         {
             { TotalMinutes: < 1 } => GlobalRes.LastSeenJustNow,
-            { TotalHours: < 1 } => string.Format(GlobalRes.LastSeenMinutesFormat, (int)delta.TotalMinutes),
-            { TotalDays: < 1 } => string.Format(GlobalRes.LastSeenHoursFormat, (int)delta.TotalHours),
-            { TotalDays: <= 7 } => string.Format(GlobalRes.LastSeenDaysFormat, (int)delta.TotalDays),
-            _ => string.Format(GlobalRes.LastSeenDateFormat, SiteClock.ToSiteTime(lastSeenUtc).ToString("d"))
+            { TotalHours: < 1 } => ResourceFormat.Fill(GlobalRes.LastSeenMinutesFormat, (int)delta.TotalMinutes),
+            { TotalDays: < 1 } => ResourceFormat.Fill(GlobalRes.LastSeenHoursFormat, (int)delta.TotalHours),
+            { TotalDays: <= 7 } => ResourceFormat.Fill(GlobalRes.LastSeenDaysFormat, (int)delta.TotalDays),
+            _ => ResourceFormat.Fill(GlobalRes.LastSeenDateFormat, SiteClock.ToSiteTime(lastSeenUtc).ToString("d", CultureInfo.CurrentCulture))
         };
     }
 
@@ -31,9 +32,9 @@ public static class RelativeTimeFormatter
     {
         var age = DateTimeOffset.UtcNow - createdAt;
         if (age < TimeSpan.FromMinutes(1)) return NotificationRes.TimeJustNow;
-        if (age < TimeSpan.FromHours(1)) return string.Format(NotificationRes.TimeMinutesFormat, (int)age.TotalMinutes);
-        if (age < TimeSpan.FromDays(1)) return string.Format(NotificationRes.TimeHoursFormat, (int)age.TotalHours);
-        if (age < TimeSpan.FromDays(7)) return string.Format(NotificationRes.TimeDaysFormat, (int)age.TotalDays);
-        return SiteClock.ToSiteTime(createdAt).ToString("M");
+        if (age < TimeSpan.FromHours(1)) return ResourceFormat.Fill(NotificationRes.TimeMinutesFormat, (int)age.TotalMinutes);
+        if (age < TimeSpan.FromDays(1)) return ResourceFormat.Fill(NotificationRes.TimeHoursFormat, (int)age.TotalHours);
+        if (age < TimeSpan.FromDays(7)) return ResourceFormat.Fill(NotificationRes.TimeDaysFormat, (int)age.TotalDays);
+        return SiteClock.ToSiteTime(createdAt).ToString("M", CultureInfo.CurrentCulture);
     }
 }
