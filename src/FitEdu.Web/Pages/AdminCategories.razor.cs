@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;

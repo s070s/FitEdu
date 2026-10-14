@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
+using FitEdu.Application.Common;
 using FitEdu.Shared.Resources.Messages;
-using FitEdu.Web.Extensions;
 
 namespace FitEdu.Web.Services;
 
