@@ -20,9 +20,9 @@ public class NotificationMessageFormatterTests
     {
         using var cultureScope = new CultureScope("el");
 
-        var text = NotificationMessageFormatter.Format(Notification("CertificateIssued", "Strength Foundations", "Θεμέλια Δύναμης"));
+        var text = NotificationMessageFormatter.Format(Notification("CertificateIssued", "Strength Foundations", "Θεμέλια δύναμης"));
 
-        text.ShouldBe("Το πιστοποιητικό σου για το \"Θεμέλια Δύναμης\" είναι έτοιμο");
+        text.ShouldBe("Το πιστοποιητικό σου για το \"Θεμέλια δύναμης\" είναι έτοιμο");
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class NotificationMessageFormatterTests
     {
         using var cultureScope = new CultureScope("en");
 
-        var text = NotificationMessageFormatter.Format(Notification("ReviewApproved", "Strength Foundations", "Θεμέλια Δύναμης"));
+        var text = NotificationMessageFormatter.Format(Notification("ReviewApproved", "Strength Foundations", "Θεμέλια δύναμης"));
 
         text.ShouldBe("Your review for \"Strength Foundations\" was approved");
     }

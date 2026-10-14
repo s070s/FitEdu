@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
+using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using Shouldly;
 using Xunit;
@@ -80,6 +81,57 @@ public class ProfileIntegrationTests : IClassFixture<CustomWebAppFactory>
             new UpdateProfileRequest("Bad", "Goal", null, null, UserStatus.Beginner, (FitnessGoal)42));
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task UpdateProfile_SavesThePreferredLanguageAndANullLanguageKeepsIt()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var before = await client.GetFromJsonAsync<ProfileDto>("/api/profile");
+        var saved = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Lang", "Setter", null, null, UserStatus.Beginner, PreferredLanguage: UserLanguage.Greek)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+        var reloaded = await client.GetFromJsonAsync<ProfileDto>("/api/profile");
+        var keptByNull = await (await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Lang", "Setter", null, null, UserStatus.Beginner)))
+            .Content.ReadFromJsonAsync<ProfileDto>();
+
+        before!.PreferredLanguage.ShouldBe(UserLanguage.English);
+        saved!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        reloaded!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        keptByNull!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+    }
+
+    [Theory]
+    [InlineData("fr")]
+    [InlineData("EL")]
+    [InlineData("el-GR")]
+    public async Task UpdateProfile_UnsupportedLanguage_Returns400(string language)
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Student");
+
+        var response = await client.PutAsJsonAsync("/api/profile",
+            new UpdateProfileRequest("Bad", "Language", null, null, UserStatus.Beginner, PreferredLanguage: language));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task ExportMyData_IncludesThePreferredLanguage()
+    {
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var user = await db.Users.SingleAsync(u => u.Id == userId);
+            user.PreferredLanguage = UserLanguage.Greek;
+            await db.SaveChangesAsync();
+        }
+
+        var export = await client.GetFromJsonAsync<MyDataExportDto>("/api/profile/export");
+
+        export!.Profile.PreferredLanguage.ShouldBe(UserLanguage.Greek);
     }
 
     [Fact]

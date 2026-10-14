@@ -1,7 +1,7 @@
 [
   {
     "title": "Live Mobility Flow",
-    "titleEl": "Ζωντανή Ροή Κινητικότητας",
+    "titleEl": "Ζωντανή ροή κινητικότητας",
     "courseTitle": "Mobility & Flexibility",
     "weekdayOffset": 1,
     "hourUtc": 18,
@@ -10,7 +10,7 @@
   },
   {
     "title": "Kettlebell Technique Clinic",
-    "titleEl": "Εργαστήριο Τεχνικής Kettlebell",
+    "titleEl": "Εργαστήριο τεχνικής kettlebell",
     "courseTitle": "Kettlebell Fundamentals",
     "weekdayOffset": 2,
     "hourUtc": 18,
@@ -19,7 +19,7 @@
   },
   {
     "title": "Beginner Strength Q&A",
-    "titleEl": "Δύναμη για Αρχάριους: Ερωτήσεις & Απαντήσεις",
+    "titleEl": "Δύναμη για αρχάριους: Ερωτήσεις & απαντήσεις",
     "courseTitle": "Strength Foundations",
     "weekdayOffset": 3,
     "hourUtc": 17,
@@ -37,7 +37,7 @@
   },
   {
     "title": "Desk Reset Break",
-    "titleEl": "Διάλειμμα Επαναφοράς για το Γραφείο",
+    "titleEl": "Διάλειμμα επαναφοράς για το γραφείο",
     "courseTitle": "Desk Posture Reset",
     "weekdayOffset": 5,
     "hourUtc": 17,
@@ -46,7 +46,7 @@
   },
   {
     "title": "Recovery & Breathing",
-    "titleEl": "Αποκατάσταση & Αναπνοή",
+    "titleEl": "Αποκατάσταση & αναπνοή",
     "courseTitle": "Recovery & Sleep",
     "weekdayOffset": 6,
     "hourUtc": 18,

@@ -79,7 +79,7 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
     public async Task GetMyEnrollments_ReturnsOwnCoursesLocalized()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var mine = NewCourse("Bodyweight Basics", "Βασικές Ασκήσεις με Βάρος Σώματος");
+        var mine = NewCourse("Bodyweight Basics", "Βασικές ασκήσεις με βάρος σώματος");
         var other = NewCourse("Other Course");
         db.Courses.AddRange(mine, other);
         db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = UserId, CourseId = mine.Id });
@@ -90,7 +90,7 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
         var el = await NewTools(db).GetMyEnrollmentsAsync(UserId, isEl: true);
 
         en.ShouldHaveSingleItem().Course.ShouldBe("Bodyweight Basics");
-        el.ShouldHaveSingleItem().Course.ShouldBe("Βασικές Ασκήσεις με Βάρος Σώματος");
+        el.ShouldHaveSingleItem().Course.ShouldBe("Βασικές ασκήσεις με βάρος σώματος");
     }
 
     [Fact]

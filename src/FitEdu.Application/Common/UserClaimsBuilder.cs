@@ -15,6 +15,9 @@ namespace FitEdu.Application.Common;
 /// </summary>
 public static class UserClaimsBuilder
 {
+    /// <summary>Claim carrying the admin's id while that admin impersonates this user.</summary>
+    public const string ImpersonatedByClaim = "impersonatedBy";
+
     public static List<Claim> Build(
         ApplicationUser user,
         IEnumerable<string> roles,
@@ -36,7 +39,7 @@ public static class UserClaimsBuilder
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         if (!string.IsNullOrEmpty(adminBackupId))
-            claims.Add(new Claim("impersonatedBy", adminBackupId));
+            claims.Add(new Claim(ImpersonatedByClaim, adminBackupId));
 
         return claims;
     }

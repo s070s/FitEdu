@@ -18,11 +18,12 @@ namespace FitEdu.Application.Tests;
 
 public class AuthApiServiceTests
 {
-    private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, ApplicationDbContext Db, ITokenService Tok, IEmailService Email);
+    private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, SignInManager<ApplicationUser> Sm, ApplicationDbContext Db, ITokenService Tok, IEmailService Email);
 
     private static Harness Build()
     {
         var um = IdentityMocks.MockUserManager();
+        um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
         var sm = IdentityMocks.MockSignInManager(um);
         var tok = Substitute.For<ITokenService>();
         tok.GenerateAccessTokenAsync(Arg.Any<ApplicationUser>())
@@ -33,7 +34,7 @@ public class AuthApiServiceTests
         var db = DbContextFactory.CreateInMemory();
 
         var svc = new AuthApiService(um, sm, tok, subs, NullLogger<AuthApiService>.Instance, db, email);
-        return new Harness(svc, um, db, tok, email);
+        return new Harness(svc, um, sm, db, tok, email);
     }
 
     private static ApplicationUser User(string id = "u1", bool enabled = true, string stamp = "stamp-1") =>
@@ -93,7 +94,7 @@ public class AuthApiServiceTests
         var h = Build();
         h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
         h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
-        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
 
         var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
@@ -112,7 +113,81 @@ public class AuthApiServiceTests
         var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
 
         result.IsSuccess.ShouldBeTrue();
-        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Register_OnTheGreekSite_StoresGreekAndSendsTheGreekConfirmation()
+    {
+        var h = Build();
+        ApplicationUser? createdUser = null;
+        h.Um.CreateAsync(Arg.Do<ApplicationUser>(u => createdUser = u), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+
+        createdUser!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        await h.Email.Received(1).SendEmailConfirmationAsync(
+            Arg.Any<string>(), Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+    }
+
+    // ---- LoginAsync: a correct password saves the language the member signs in from ----
+
+    [Fact]
+    public async Task Login_OnTheGreekSite_SavesGreekAsTheStoredLanguage()
+    {
+        var h = Build();
+        var member = User(); // stored language: English (the default)
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+        using var cultureScope = new CultureScope("el-GR");
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.IsSuccess.ShouldBeTrue();
+        member.PreferredLanguage.ShouldBe(UserLanguage.Greek);
+        await h.Um.Received(1).UpdateAsync(member);
+    }
+
+    // ---- ForgotPasswordAsync: the member asks, so the request language is used ----
+    // The request is anonymous, so it never changes the stored language: anyone who knows the
+    // email could otherwise flip it. The next sign-in saves the member's language instead.
+
+    [Fact]
+    public async Task ForgotPassword_OnTheGreekSite_SendsTheGreekResetAndKeepsTheStoredLanguage()
+    {
+        var h = Build();
+        var member = User(); // stored language: English (the default)
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+
+        await h.Email.Received(1).SendPasswordResetAsync(
+            member.Email!, Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+        member.PreferredLanguage.ShouldBe(UserLanguage.English);
+        await h.Um.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
+    }
+
+    [Fact]
+    public async Task ForgotPassword_InTheStoredLanguage_DoesNotRewriteTheUser()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        using var cultureScope = new CultureScope("en-GB");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+
+        await h.Email.Received(1).SendPasswordResetAsync(
+            member.Email!, Arg.Any<string>(), UserLanguage.English, Arg.Any<CancellationToken>());
+        await h.Um.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
     }
 
     [Fact]

@@ -189,4 +189,16 @@
 	<data name="GoalNotSet" xml:space="preserve">
 		<value>Δεν έχει επιλεγεί ακόμα</value>
 	</data>
+	<data name="LabelPreferredLanguage" xml:space="preserve">
+		<value>Γλώσσα</value>
+	</data>
+	<data name="LanguageEnglish" xml:space="preserve">
+		<value>Αγγλικά</value>
+	</data>
+	<data name="LanguageGreek" xml:space="preserve">
+		<value>Ελληνικά</value>
+	</data>
+	<data name="PreferredLanguageHelp" xml:space="preserve">
+		<value>Σε αυτή τη γλώσσα βλέπεις τη σελίδα και σου στέλνουμε τα email μας.</value>
+	</data>
 </root>

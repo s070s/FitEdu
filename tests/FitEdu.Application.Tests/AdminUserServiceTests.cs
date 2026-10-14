@@ -21,7 +21,7 @@ namespace FitEdu.Application.Tests;
 /// </summary>
 public class AdminUserServiceTests
 {
-    private static AdminUserService NewService(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+    private static AdminUserService NewService(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null)
     {
         var roleManager = Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
@@ -35,7 +35,7 @@ public class AdminUserServiceTests
             Substitute.For<ITokenService>(),
             NullLogger<AdminUserService>.Instance,
             db,
-            Substitute.For<IEmailService>(),
+            emailService ?? Substitute.For<IEmailService>(),
             currentUser);
     }
 
@@ -170,6 +170,29 @@ public class AdminUserServiceTests
 
         result.StatusCode.ShouldBe(400);
         (await db.Users.CountAsync()).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ForcePasswordReset_SendsTheEmailInTheMemberLanguageNotTheAdminLanguage()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var greekMember = NewUser("greek-member");
+        greekMember.PreferredLanguage = UserLanguage.Greek;
+        db.Users.Add(greekMember);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        var userManager = UserManagerOver(db);
+        userManager.GeneratePasswordResetTokenAsync(Arg.Any<ApplicationUser>()).Returns("reset-token");
+        var emailService = Substitute.For<IEmailService>();
+        using var adminCulture = new CultureScope("en-GB"); // the admin reads the site in English
+
+        var result = await NewService(db, userManager, emailService)
+            .ForcePasswordResetAsync("greek-member", (email, token) => $"https://x/reset?email={email}&token={token}");
+
+        result.IsSuccess.ShouldBeTrue();
+        await emailService.Received(1).SendPasswordResetAsync(
+            "greek-member@test.local", Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
     }
 
     [Fact]

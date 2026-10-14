@@ -1,5 +1,5 @@
-using System.Globalization;
 using System.Net;
+using FitEdu.Domain.Identity;
 
 namespace FitEdu.Infrastructure.ApiServices;
 
@@ -9,9 +9,10 @@ public sealed record EmailContent(string Subject, string HtmlBody, string TextBo
 /// <summary>
 /// The wording of every transactional email, in English and Greek, shared by
 /// <see cref="SmtpEmailService"/> and the development <see cref="StubEmailService"/> so both use the
-/// same subjects. The language is the UI culture of the request that sends the email: the page's
-/// loopback API call carries the member's language (Accept-Language), so a member who signs up or
-/// asks for a reset on the Greek site gets the Greek email.
+/// same subjects. The caller picks the language: the request language when the member asks for the
+/// email themselves (signing up, forgetting a password on the Greek site), and the member's stored
+/// <see cref="ApplicationUser.PreferredLanguage"/> when an admin triggers it, so a Greek member gets
+/// the Greek email even when the admin reads the site in English.
 /// </summary>
 public static class EmailTemplates
 {
@@ -20,23 +21,20 @@ public static class EmailTemplates
     public const string GreekEmailConfirmationSubject = "Καλώς ήρθες στο FitEdu — ώρα για κίνηση";
     public const string GreekPasswordResetSubject = "Επαναφορά του κωδικού σου στο FitEdu";
 
-    private const string GreekLanguageCode = "el";
-
     private const string HtmlSignOff = "<p>Train well,<br>The FitEdu team</p>";
     private const string TextSignOff = "Train well, the FitEdu team.";
     private const string GreekHtmlSignOff = "<p>Καλή προπόνηση,<br>Η ομάδα του FitEdu</p>";
     private const string GreekTextSignOff = "Καλή προπόνηση, η ομάδα του FitEdu.";
 
-    /// <summary>The welcome email with the confirmation link, in the current UI language.</summary>
-    public static EmailContent EmailConfirmation(string confirmationLink) =>
-        IsGreek() ? GreekEmailConfirmation(confirmationLink) : EnglishEmailConfirmation(confirmationLink);
+    /// <summary>The welcome email with the confirmation link: Greek for "el", English otherwise.</summary>
+    public static EmailContent EmailConfirmation(string confirmationLink, string language) =>
+        IsGreek(language) ? GreekEmailConfirmation(confirmationLink) : EnglishEmailConfirmation(confirmationLink);
 
-    /// <summary>The password-reset email with the reset link, in the current UI language.</summary>
-    public static EmailContent PasswordReset(string resetLink) =>
-        IsGreek() ? GreekPasswordReset(resetLink) : EnglishPasswordReset(resetLink);
+    /// <summary>The password-reset email with the reset link: Greek for "el", English otherwise.</summary>
+    public static EmailContent PasswordReset(string resetLink, string language) =>
+        IsGreek(language) ? GreekPasswordReset(resetLink) : EnglishPasswordReset(resetLink);
 
-    private static bool IsGreek() =>
-        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == GreekLanguageCode;
+    private static bool IsGreek(string language) => language == UserLanguage.Greek;
 
     private static EmailContent EnglishEmailConfirmation(string confirmationLink)
     {

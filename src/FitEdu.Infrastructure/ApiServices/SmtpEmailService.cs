@@ -11,7 +11,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// Sends transactional email over SMTP using MailKit. Provider-agnostic: works against a local
 /// Papercut/Mailhog catcher in development and any relay (SES, SendGrid SMTP, Mailgun, O365) in
 /// production. Configured via <see cref="EmailOptions"/> (section "Email"). The wording comes from
-/// <see cref="EmailTemplates"/>, picked at send time in the request's UI language (English or Greek).
+/// <see cref="EmailTemplates"/>, in the language the caller passes (English or Greek).
 /// </summary>
 public sealed class SmtpEmailService : IEmailService
 {
@@ -24,11 +24,11 @@ public sealed class SmtpEmailService : IEmailService
         _logger = logger;
     }
 
-    public Task SendEmailConfirmationAsync(string email, string confirmationLink, CancellationToken cancellationToken = default) =>
-        SendAsync(email, EmailTemplates.EmailConfirmation(confirmationLink), cancellationToken);
+    public Task SendEmailConfirmationAsync(string email, string confirmationLink, string language, CancellationToken cancellationToken = default) =>
+        SendAsync(email, EmailTemplates.EmailConfirmation(confirmationLink, language), cancellationToken);
 
-    public Task SendPasswordResetAsync(string email, string resetLink, CancellationToken cancellationToken = default) =>
-        SendAsync(email, EmailTemplates.PasswordReset(resetLink), cancellationToken);
+    public Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default) =>
+        SendAsync(email, EmailTemplates.PasswordReset(resetLink, language), cancellationToken);
 
     private async Task SendAsync(string to, EmailContent content, CancellationToken ct)
     {

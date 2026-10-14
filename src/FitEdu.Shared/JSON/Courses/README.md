@@ -47,3 +47,13 @@ above, uses a category other than Strength (Δύναμη), Cardio (Κάρντι�
 (Κορμός), Nutrition (Διατροφή), Recovery (Αποκατάσταση) or Performance (Απόδοση) with exactly that
 `categoryEl`, writes words in `reps`, or points at an exercise with no photos or no Greek name in
 `../Exercises/exercises.el.json` or `../Exercises/el/*.el.json`.
+
+Greek titles use sentence case, as Greek does (`Βασικές ασκήσεις με βάρος σώματος`): only the first
+word starts with a capital, and so does the first word after `: `, `(` or `«`
+(`Προπόνηση Α: Ήπια ροή στο πάτωμα`, `Η πλάγια σανίδα (Side plank)`). English move names inside a
+title are lower case too (`Το σωστό push-up`); acronyms and letter labels (HIIT, RPE, Προπόνηση Α)
+and the names Push Pull Legs (with its Push and Pull days), HIIT Express and Turkish get-up keep
+their capitals. `SeedContentIntegrityTests` checks the course, module and lesson titles, the
+heading that opens each lesson's `contentEl` (it repeats the lesson title), and the Greek titles of
+the assessments and their sections, the learning paths, the live classes, the testimonials and the
+blog articles.

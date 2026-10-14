@@ -8,6 +8,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -73,7 +74,7 @@ public class AuthApiService(
         logger.LogInformation("User {UserId} registered. Confirmation email queued.", user.Id);
         try
         {
-            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!);
+            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!, user.PreferredLanguage);
         }
         catch (Exception ex)
         {
@@ -139,6 +140,9 @@ public class AuthApiService(
             logger.LogWarning("Invalid password for user {UserId}", user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
+
+        // The language the member signs in from is kept for the emails an admin may send them later.
+        await PreferredLanguageSaver.SaveRequestLanguageAsync(userManager, user, logger);
 
         var (token, expiration) = await tokenService.GenerateAccessTokenAsync(user);
         var refreshToken = tokenService.GenerateRefreshToken();
@@ -286,8 +290,12 @@ public class AuthApiService(
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         var resetUrl = buildResetUrl(user.Email!, token);
 
+        // The email uses the language of the page the request came from. It is not saved: this request
+        // is anonymous, so anyone who knows the email could flip it. The next sign-in saves it.
+        var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
+
         logger.LogInformation("Password reset requested for user {UserId}. Reset email queued.", user.Id);
-        await emailService.SendPasswordResetAsync(user.Email!, resetUrl);
+        await emailService.SendPasswordResetAsync(user.Email!, resetUrl, requestLanguage);
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
     }

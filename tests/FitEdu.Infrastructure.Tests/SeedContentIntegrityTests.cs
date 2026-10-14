@@ -367,6 +367,22 @@ public partial class SeedContentIntegrityTests
         problems.ShouldBeEmpty();
     }
 
+    // ---- Greek titles ------------------------------------------------------------------------
+
+    [Fact]
+    public void SeedTitles_GreekUseSentenceCase()
+    {
+        var titles = FindGreekCourseTitles().Concat(FindGreekAssessmentTitles()).Concat(FindOtherGreekTitles()).ToList();
+
+        var titleCaseTitles = titles
+            .Where(title => CapitalisedInnerTitleWordRegex().IsMatch(title.Text))
+            .Select(title => $"{title.Location}: '{title.Text}'")
+            .ToList();
+
+        titles.ShouldNotBeEmpty();
+        titleCaseTitles.ShouldBeEmpty("Greek titles use sentence case (Βασικές ασκήσεις με βάρος σώματος, not Βασικές Ασκήσεις με Βάρος Σώματος)");
+    }
+
     // ---- Vocabulary --------------------------------------------------------------------------
 
     [Fact]
@@ -547,6 +563,67 @@ public partial class SeedContentIntegrityTests
             yield return $"{article.Slug}: career-era word '{match.Value}'";
         foreach (var match in greekTexts.SelectMany(text => GreekPastTenseCommandRegex().Matches(text.Value ?? string.Empty)))
             yield return $"{article.Slug}: past tense '{match.Value}' used as a command";
+    }
+
+    /// <summary>
+    /// The Greek titles of every course, module and lesson, plus the heading that opens each
+    /// lesson's Greek content (it repeats the lesson title).
+    /// </summary>
+    private static List<GreekTitle> FindGreekCourseTitles()
+    {
+        var titles = new List<GreekTitle>();
+
+        foreach (var (fileName, course) in SeedJsonFiles.LoadCourses())
+        {
+            titles.Add(new GreekTitle(fileName, course.TitleEl ?? string.Empty));
+            titles.AddRange(course.Modules.Select(module => new GreekTitle($"{fileName} / {module.Title}", module.TitleEl ?? string.Empty)));
+
+            var lessons = course.Modules.SelectMany(module => module.Lessons).ToList();
+            titles.AddRange(lessons.Select(lesson => new GreekTitle($"{fileName} / {lesson.Title}", lesson.TitleEl ?? string.Empty)));
+            titles.AddRange(lessons
+                .Select(lesson => new GreekTitle($"{fileName} / {lesson.Title} heading", ReadMarkdownTitle(lesson.ContentEl)))
+                .Where(title => title.Text.Length > 0));
+        }
+
+        return titles;
+    }
+
+    /// <summary>The Greek assessment titles: the row, its schema and each schema section.</summary>
+    private static List<GreekTitle> FindGreekAssessmentTitles()
+    {
+        var titles = new List<GreekTitle>();
+
+        foreach (var (fileName, assessment) in SeedJsonFiles.LoadAssessments())
+        {
+            titles.Add(new GreekTitle(fileName, assessment.TitleEl ?? string.Empty));
+
+            using var schema = JsonDocument.Parse(assessment.SchemaJson);
+            titles.Add(new GreekTitle($"{fileName} schema", ReadText(schema.RootElement, "titleEl") ?? string.Empty));
+            titles.AddRange(ReadArray(schema.RootElement, "sections")
+                .Select(section => new GreekTitle($"{fileName} / {ReadText(section, "id")}", ReadText(section, "titleEl") ?? string.Empty)));
+        }
+
+        return titles;
+    }
+
+    /// <summary>The Greek titles of the learning paths, live classes, testimonials and blog articles.</summary>
+    private static List<GreekTitle> FindOtherGreekTitles()
+    {
+        var pathTitles = SeedJsonFiles.LoadPaths().Select(path => new GreekTitle($"path {path.Title}", path.TitleEl ?? string.Empty));
+        var liveClassTitles = SeedJsonFiles.LoadLiveClasses().Select(liveClass => new GreekTitle($"live class {liveClass.Title}", liveClass.TitleEl ?? string.Empty));
+        var testimonialTitles = SeedJsonFiles.LoadTestimonials().Select(testimonial => new GreekTitle($"testimonial {testimonial.FullName}", testimonial.RoleOrTitleEl ?? string.Empty));
+        var blogTitles = BlogSeedData.SeedArticles.Select(article => new GreekTitle($"blog {article.Slug}", article.TitleEl ?? string.Empty));
+
+        return pathTitles.Concat(liveClassTitles).Concat(testimonialTitles).Concat(blogTitles).ToList();
+    }
+
+    /// <summary>The text of a "# " heading on the first line of the content, or "" when it has none.</summary>
+    private static string ReadMarkdownTitle(string? content)
+    {
+        const string headingMarker = "# ";
+        var firstLine = (content ?? string.Empty).Split('\n')[0].TrimEnd('\r');
+
+        return firstLine.StartsWith(headingMarker, StringComparison.Ordinal) ? firstLine[headingMarker.Length..] : string.Empty;
     }
 
     private static bool IsEnumName<TEnum>(string? value) where TEnum : struct, Enum =>
@@ -843,6 +920,16 @@ public partial class SeedContentIntegrityTests
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
 
+    // A capital (Greek or Latin) followed by a lowercase letter, starting a word after a space or
+    // a word part after "-", so a word after the first: "Βασικές Ασκήσεις". A new part of the title
+    // keeps its capital after ": ", "(" or "«" ("Προπόνηση Α: Ήπια ροή", "(Side plank)"); all-caps
+    // acronyms and letter labels (HIIT, RPE, Προπόνηση Α) never match. The allow-list holds the
+    // names that keep their capitals: the Push Pull Legs programme and its Push and Pull days,
+    // the HIIT Express class and the Turkish get-up (but not the push-up or pull-up moves).
+    [GeneratedRegex(@"(?<=(?<!:) |-)(?!(?:Push|Pull|Legs|Express|Turkish)\b(?!-))[A-ZΆΈ-ΏΑ-Ϋ](?=\p{Ll})",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex CapitalisedInnerTitleWordRegex();
+
     // A bracket whose first word starts in lower case: "(με βοηθό)" instead of "(Με βοηθό)".
     [GeneratedRegex(@"\(\p{Ll}", RegexOptions.CultureInvariant)]
     private static partial Regex LowercaseBracketStartRegex();
@@ -861,6 +948,8 @@ public partial class SeedContentIntegrityTests
     private static partial Regex DecimalNumberRegex();
 
     private sealed record ResxValue(string Location, string Text);
+
+    private sealed record GreekTitle(string Location, string Text);
 
     private sealed record ExerciseReference(string Location, string Slug);
 

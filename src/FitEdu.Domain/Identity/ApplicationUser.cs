@@ -48,6 +48,13 @@ public class ApplicationUser : IdentityUser
     public FitnessGoal? Goal { get; set; }
 
     /// <summary>
+    /// The language the member reads FitEdu in: "en" or "el" (<see cref="UserLanguage"/>). Set at
+    /// sign-up, on every language switch and on the Profile page; emails someone else triggers for
+    /// the member (an admin password reset) are written in it.
+    /// </summary>
+    public string PreferredLanguage { get; set; } = UserLanguage.English;
+
+    /// <summary>
     /// When false the user is locked out of the platform.
     /// Admin can toggle via /admin/users.
     /// </summary>

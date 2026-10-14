@@ -26,6 +26,10 @@ public class ProfileService(
 
     public async Task<ServiceResult<ProfileDto>> UpdateProfileAsync(string userId, UpdateProfileRequest request)
     {
+        // The request model validates the code too; this guards callers that skip model validation.
+        if (request.PreferredLanguage is not null && !UserLanguage.IsSupported(request.PreferredLanguage))
+            return ServiceResult<ProfileDto>.BadRequest(error: "Preferred language must be 'en' or 'el'.");
+
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
             return ServiceResult<ProfileDto>.NotFound();
@@ -36,12 +40,26 @@ public class ProfileService(
         user.DateOfBirth = request.DateOfBirth;
         user.Status = request.Status == UserStatus.Unknown ? UserStatus.Beginner : request.Status;
         user.Goal = request.Goal;
+        if (request.PreferredLanguage is not null)
+            user.PreferredLanguage = request.PreferredLanguage;
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return ServiceResult<ProfileDto>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
         return ServiceResult<ProfileDto>.Ok(ToDto(user));
+    }
+
+    public async Task<bool> SetPreferredLanguageAsync(string userId, string language)
+    {
+        if (!UserLanguage.IsSupported(language))
+            return false;
+
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+            return false;
+
+        return await PreferredLanguageSaver.SaveAsync(userManager, user, language, logger);
     }
 
     public async Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string fileName)
@@ -113,7 +131,8 @@ public class ProfileService(
             user.GdprConsentGiven,
             user.GdprConsentDate,
             user.ParentalConsentGiven,
-            user.Goal?.ToString());
+            user.Goal?.ToString(),
+            user.PreferredLanguage);
 
         var enrollments = await db.Enrollments
             .AsNoTracking()
@@ -221,6 +240,7 @@ public class ProfileService(
         user.AvatarPath,
         user.DateOfBirth,
         user.Status,
-        user.Goal
+        user.Goal,
+        user.PreferredLanguage
     );
 }

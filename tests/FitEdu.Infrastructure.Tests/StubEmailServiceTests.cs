@@ -1,3 +1,4 @@
+using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.TestSupport;
 using Shouldly;
@@ -9,7 +10,7 @@ public sealed class StubEmailServiceTests : IDisposable
 {
     private readonly RecordingLogger<StubEmailService> _logger = new();
 
-    // English unless a test says otherwise; Dispose puts the runner's cultures back.
+    // The sender runs in English; the email language is the one passed in. Dispose puts the runner's cultures back.
     private readonly CultureScope _cultureScope = new("en-GB");
 
     private StubEmailService NewService() => new(_logger);
@@ -17,7 +18,7 @@ public sealed class StubEmailServiceTests : IDisposable
     [Fact]
     public async Task SendEmailConfirmation_LogsTheWelcomeSubjectAndTheLink()
     {
-        await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm");
+        await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm", UserLanguage.English);
 
         var entry = _logger.Information.ShouldHaveSingleItem();
         entry.ShouldStartWith("STUB EMAIL", Case.Sensitive); // the README tells developers to search for this
@@ -28,7 +29,7 @@ public sealed class StubEmailServiceTests : IDisposable
     [Fact]
     public async Task SendPasswordReset_LogsTheResetSubjectAndTheLink()
     {
-        await NewService().SendPasswordResetAsync("u@x.com", "https://reset");
+        await NewService().SendPasswordResetAsync("u@x.com", "https://reset", UserLanguage.English);
 
         var entry = _logger.Information.ShouldHaveSingleItem();
         entry.ShouldStartWith("STUB EMAIL", Case.Sensitive);
@@ -39,9 +40,7 @@ public sealed class StubEmailServiceTests : IDisposable
     [Fact]
     public async Task SendEmailConfirmation_InGreek_LogsTheGreekSubject()
     {
-        using var cultureScope = new CultureScope("el-GR");
-
-        await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm");
+        await NewService().SendEmailConfirmationAsync("u@x.com", "https://confirm", UserLanguage.Greek);
 
         _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Καλώς ήρθες στο FitEdu — ώρα για κίνηση", Case.Sensitive);
     }
@@ -49,9 +48,7 @@ public sealed class StubEmailServiceTests : IDisposable
     [Fact]
     public async Task SendPasswordReset_InGreek_LogsTheGreekSubject()
     {
-        using var cultureScope = new CultureScope("el-GR");
-
-        await NewService().SendPasswordResetAsync("u@x.com", "https://reset");
+        await NewService().SendPasswordResetAsync("u@x.com", "https://reset", UserLanguage.Greek);
 
         _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού σου στο FitEdu", Case.Sensitive);
     }
