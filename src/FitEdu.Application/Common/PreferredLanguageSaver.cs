@@ -5,10 +5,10 @@ using FitEdu.Domain.Identity;
 namespace FitEdu.Application.Common;
 
 /// <summary>
-/// Stores a member's <see cref="ApplicationUser.PreferredLanguage"/>. Shared by the language switch
-/// (ProfileService) and both sign-in paths (AuthService for the site, AuthApiService for the API),
-/// which save the language the member is reading the site in. Only requests the member is proven to
-/// make save it: the anonymous forgot-password request does not, since anyone may send it.
+/// Stores a member's <see cref="ApplicationUser.PreferredLanguage"/>. Shared by both sign-in paths
+/// (AuthService for the site, AuthApiService for the API), which save the language the member is reading
+/// the site in. Only requests the member is proven to make save it: neither the anonymous forgot-password
+/// request nor the language-switch link (`/culture/set`, a plain GET any site could send them to) does.
 /// </summary>
 public static partial class PreferredLanguageSaver
 {

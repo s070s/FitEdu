@@ -28,15 +28,13 @@ public static class InfrastructureEndpointsExtensions
     public static WebApplication MapInfrastructureEndpoints(this WebApplication app)
     {
         // --- Culture endpoint ---
-        app.MapGet("/culture/set", async (string culture, string? returnUrl, HttpContext ctx, IProfileService profileService) =>
+        app.MapGet("/culture/set", (string culture, string? returnUrl, HttpContext ctx) =>
         {
             ctx.Response.Cookies.Append(
                 Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
                 Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
                     new Microsoft.AspNetCore.Localization.RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
-
-            await SaveMemberLanguageAsync(ctx.User, culture, profileService);
 
             // NavigationManager.Uri passes an absolute URL; extract the local path so
             // Results.LocalRedirect (which only accepts local paths) doesn't throw.
@@ -54,7 +52,7 @@ public static class InfrastructureEndpointsExtensions
         .WithTags("Infrastructure")
         .WithName("SetCulture")
         .WithSummary("Set the UI culture cookie and redirect back.")
-        .WithDescription("Writes the ASP.NET Core localization cookie (supported cultures: en-GB, el-GR), saves the language as the signed-in member's preferred language (not while an admin impersonates them), and 302-redirects to a local returnUrl. Used by the language switcher; browser-navigation endpoint, not a JSON API.")
+        .WithDescription("Writes the ASP.NET Core localization cookie (supported cultures: en-GB, el-GR) and 302-redirects to a local returnUrl. Used by the language switcher; browser-navigation endpoint, not a JSON API.")
         .Produces(StatusCodes.Status302Found);
 
         // --- Auth completion endpoints ---
@@ -296,22 +294,5 @@ public static class InfrastructureEndpointsExtensions
             .ExcludeFromDescription();
 
         return app;
-    }
-
-    /// <summary>
-    /// Stores the switched language for a signed-in member, so emails an admin triggers for them use it.
-    /// An admin impersonating the member changes only their own view, never the member's stored language.
-    /// </summary>
-    private static async Task SaveMemberLanguageAsync(ClaimsPrincipal user, string culture, IProfileService profileService)
-    {
-        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-            return;
-
-        var isImpersonated = user.FindFirst(UserClaimsBuilder.ImpersonatedByClaim) is not null;
-        if (isImpersonated)
-            return;
-
-        await profileService.SetPreferredLanguageAsync(userId, UserLanguage.FromCultureName(culture));
     }
 }
