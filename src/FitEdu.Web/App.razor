@@ -13,7 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0E1116" />
     <base href="/" />
-    <HeadOutlet />
+    @* Same render mode as Routes: a static outlet keeps the first page's title after in-app navigation. *@
+    <HeadOutlet @rendermode="@(new InteractiveServerRenderMode(prerender: true))" />
 
     <!-- Preconnect hint (Bootstrap Icons and Quill come from jsDelivr) -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
