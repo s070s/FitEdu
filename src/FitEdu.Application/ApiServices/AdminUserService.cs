@@ -283,7 +283,7 @@ public class AdminUserService(
         var resetUrl = buildResetUrl(user.Email, token);
 
         // The admin may read the site in another language; the member gets the email in their own.
-        await emailService.SendPasswordResetAsync(user.Email, resetUrl, user.PreferredLanguage);
+        await emailService.SendPasswordResetAsync(user.Email, resetUrl, user.PreferredLanguage, cancellationToken);
         logger.LogInformation("Admin {AdminId} triggered forced password reset for user {UserId}.", ActingAdmin, userId);
 
         return ServiceResult<bool>.NoContent();
