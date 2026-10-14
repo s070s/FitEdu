@@ -29,6 +29,7 @@ public partial class ExerciseDetail : IDisposable
     private List<ExerciseFact> _facts = [];
     private string? _loadedSlug;
     private bool _loading = true;
+    private bool _loadFailed;
     private PersistingComponentStateSubscription _persistSubscription;
 
     private static string CurrentLang =>
@@ -57,13 +58,23 @@ public partial class ExerciseDetail : IDisposable
             return;
         }
 
+        await LoadAsync();
+    }
+
+    /// <summary>Asks the API for the exercise and its lessons; Try again calls it after a failed request.</summary>
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _loadFailed = false;
+
         var exerciseTask = ExerciseConsumer.GetBySlugAsync(Slug, CurrentLang);
         var lessonsTask = ExerciseConsumer.GetLessonsUsingExerciseAsync(Slug, CurrentLang);
         await Task.WhenAll(exerciseTask, lessonsTask);
 
-        // A failed request still shows the "not found" view, but answers 503 instead of 404.
+        // A failed request offers Try again and answers 503, so crawlers keep the address.
         var lookup = await exerciseTask;
         Show(lookup.Item, await lessonsTask);
+        _loadFailed = lookup.RequestFailed;
         if (lookup.Item is null)
             PrerenderStatus.SetMissing(HttpContext, lookup.RequestFailed);
     }
@@ -96,7 +107,8 @@ public partial class ExerciseDetail : IDisposable
 
     private Task PersistSnapshot()
     {
-        if (!_loading)
+        // A failure is not handed on, so the interactive render asks the API again.
+        if (!_loading && !_loadFailed)
             ApplicationState.PersistAsJson(PersistKey, new DetailSnapshot(_exercise, _lessons.ToList()));
 
         return Task.CompletedTask;

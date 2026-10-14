@@ -12,6 +12,19 @@
         </div>
     </div>
 }
+else if (_loadFailed)
+{
+    <AppPageTitle Text="@ExerciseRes.FailedToLoadTitle" />
+    <div class="page exercise-detail">
+        <h1 class="visually-hidden">@ExerciseRes.FailedToLoadTitle</h1>
+        <EmptyState Icon="bi-wifi-off" Title="@ExerciseRes.FailedToLoadTitle" Text="@ExerciseRes.FailedToLoadText">
+            <button type="button" class="btn-cta empty-state__action" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+            <a class="btn-cta btn-cta--ghost" href="/exercises">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span> @ExerciseRes.BackToLibrary
+            </a>
+        </EmptyState>
+    </div>
+}
 else if (_exercise is null)
 {
     <AppPageTitle Text="@ExerciseRes.NotFoundTitle" />

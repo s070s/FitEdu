@@ -510,6 +510,18 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
+        public static string FailedToLoadTitle {
+            get {
+                return ResourceManager.GetString("FailedToLoadTitle", resourceCulture);
+            }
+        }
+
+        public static string FailedToLoadText {
+            get {
+                return ResourceManager.GetString("FailedToLoadText", resourceCulture);
+            }
+        }
+
         public static string NoInstructions {
             get {
                 return ResourceManager.GetString("NoInstructions", resourceCulture);

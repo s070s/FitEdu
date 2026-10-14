@@ -1,5 +1,6 @@
 using System.Globalization;
 using Bunit;
+using Bunit.TestDoubles;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.TestSupport;
@@ -34,12 +35,13 @@ public class ExercisePagesTests : BunitContext
         Categories: [new("strength", 80), new("stretching", 20)]);
 
     private readonly IExerciseConsumer _exerciseConsumer = Substitute.For<IExerciseConsumer>();
+    private readonly BunitPersistentComponentState _persistentState;
 
     public ExercisePagesTests()
     {
         Services.AddSingleton(_exerciseConsumer);
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-        AddBunitPersistentComponentState();
+        _persistentState = AddBunitPersistentComponentState();
         UseCulture("en");
         NavigateTo("/exercises"); // the library keeps its filters in this address
 
@@ -329,6 +331,39 @@ public class ExercisePagesTests : BunitContext
 
         page.Find(".empty-state__title").TextContent.ShouldBe(ExerciseRes.NotFoundTitle);
         page.Find(".empty-state a").GetAttribute("href").ShouldBe("/exercises");
+    }
+
+    [Fact]
+    public void Detail_RequestFailed_ShowsTheLoadFailureAndTryAgainLoadsTheExercise()
+    {
+        _exerciseConsumer.GetBySlugAsync(Slug, "en")
+            .Returns(ApiLookup.Failure<ExerciseDetailDto>(), ApiLookup.Found(Detail([])));
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+
+        var page = RenderDetail();
+
+        page.Find(".empty-state__title").TextContent.ShouldBe(ExerciseRes.FailedToLoadTitle);
+        page.Find(".empty-state__text").TextContent.ShouldBe(ExerciseRes.FailedToLoadText);
+        page.Find(".empty-state a").GetAttribute("href").ShouldBe("/exercises");
+
+        page.Find(".empty-state button").TextContent.ShouldBe(GlobalRes.TryAgain);
+        page.Find(".empty-state button").Click();
+
+        page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Barbell squat"));
+        _exerciseConsumer.Received(2).GetBySlugAsync(Slug, "en");
+    }
+
+    [Fact]
+    public void Detail_RequestFailed_IsNotHandedToTheInteractiveRender()
+    {
+        // A stored failure would show the error again without calling the API once the circuit starts.
+        _exerciseConsumer.GetBySlugAsync(Slug, "en").Returns(ApiLookup.Failure<ExerciseDetailDto>());
+        _exerciseConsumer.GetLessonsUsingExerciseAsync(Slug, "en").Returns([]);
+        RenderDetail();
+
+        _persistentState.TriggerOnPersisting();
+
+        _persistentState.TryTake<object>("exercise-detail-" + Slug, out _).ShouldBeFalse();
     }
 
     [Theory]
