@@ -10,7 +10,7 @@ public static class BlogSeedData
     [
         new SaveBlogArticleRequest(
             TitleEn: "Progressive Overload, Explained: How to Keep Getting Stronger",
-            TitleEl: "Η Προοδευτική Υπερφόρτωση με Απλά Λόγια: Πώς να Συνεχίζεις να Δυναμώνεις",
+            TitleEl: "Η προοδευτική υπερφόρτωση με απλά λόγια: Πώς να συνεχίζεις να δυναμώνεις",
             Slug: "progressive-overload-explained",
             SummaryEn: "Your body adapts to the work you give it, then stops adapting once that work feels easy. Progressive overload is the simple, structured way to ask for a little more each time, without rushing into injury.",
             SummaryEl: "Το σώμα σου προσαρμόζεται στη δουλειά που του δίνεις και σταματά να προσαρμόζεται όταν αυτή γίνει εύκολη. Η προοδευτική υπερφόρτωση είναι ο απλός, οργανωμένος τρόπος να ζητάς λίγο περισσότερο κάθε φορά, χωρίς να βιάζεσαι και να τραυματιστείς.",
@@ -98,7 +98,7 @@ public static class BlogSeedData
 
         new SaveBlogArticleRequest(
             TitleEn: "How Much Protein Do You Really Need?",
-            TitleEl: "Πόση Πρωτεΐνη Χρειάζεσαι Πραγματικά;",
+            TitleEl: "Πόση πρωτεΐνη χρειάζεσαι πραγματικά;",
             Slug: "how-much-protein-do-you-need",
             SummaryEn: "Protein supports muscle repair and growth, but you do not need endless shakes. Here is a practical, evidence-based daily range for active adults and simple ways to reach it with everyday food.",
             SummaryEl: "Η πρωτεΐνη στηρίζει την αποκατάσταση και την ανάπτυξη των μυών, αλλά δεν χρειάζεσαι ατελείωτα shakes. Δες ένα πρακτικό ημερήσιο εύρος, βασισμένο σε επιστημονικά δεδομένα, για δραστήριους ενήλικες και απλούς τρόπους να το καλύψεις με καθημερινό φαγητό.",
@@ -190,7 +190,7 @@ public static class BlogSeedData
 
         new SaveBlogArticleRequest(
             TitleEn: "Sleep Is Your Best Recovery Tool",
-            TitleEl: "Ο Ύπνος Είναι το Καλύτερο Εργαλείο Αποκατάστασης",
+            TitleEl: "Ο ύπνος είναι το καλύτερο εργαλείο αποκατάστασης",
             Slug: "sleep-is-your-best-recovery-tool",
             SummaryEn: "No supplement or gadget comes close to a good night's sleep. Learn why sleep drives your training results and pick up practical habits to sleep longer and better.",
             SummaryEl: "Κανένα συμπλήρωμα και κανένα gadget δεν πλησιάζει έναν καλό νυχτερινό ύπνο. Μάθε γιατί ο ύπνος καθορίζει τα αποτελέσματα της προπόνησής σου και υιοθέτησε πρακτικές συνήθειες για να κοιμάσαι περισσότερο και καλύτερα.",
@@ -258,7 +258,7 @@ public static class BlogSeedData
 
         new SaveBlogArticleRequest(
             TitleEn: "A Five-Minute Warm-Up Routine You Can Do Anywhere",
-            TitleEl: "Ζέσταμα Πέντε Λεπτών που Μπορείς να Κάνεις Παντού",
+            TitleEl: "Ζέσταμα πέντε λεπτών που μπορείς να κάνεις παντού",
             Slug: "five-minute-warm-up-routine",
             SummaryEn: "Skipping the warm-up is tempting when time is short. This five-minute, no-equipment routine raises your temperature, wakes up your joints and primes the muscles you are about to train.",
             SummaryEl: "Όταν ο χρόνος πιέζει, ο πειρασμός να παραλείψεις το ζέσταμα είναι μεγάλος. Αυτή η ρουτίνα πέντε λεπτών χωρίς εξοπλισμό ανεβάζει τη θερμοκρασία σου, ξυπνά τις αρθρώσεις και προετοιμάζει τους μύες που θα προπονήσεις.",

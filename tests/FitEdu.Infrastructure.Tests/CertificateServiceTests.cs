@@ -375,7 +375,7 @@ public partial class CertificateServiceTests
         EnrollmentId = Guid.NewGuid(),
         RecipientName = "Eleni Papadopoulou",
         CourseTitleEn = "Strength Foundations",
-        CourseTitleEl = "Θεμέλια Δύναμης",
+        CourseTitleEl = "Θεμέλια δύναμης",
         TotalDurationMinutes = 90,
         IssuedAt = new DateTime(2026, 10, 12, 9, 0, 0, DateTimeKind.Utc),
         Status = CertificateStatus.Active
@@ -424,7 +424,7 @@ public partial class CertificateServiceTests
         text.ShouldContain("Πιστοποιητικό ολοκλήρωσης προγράμματος", Case.Sensitive);
         text.ShouldContain("Βεβαιώνεται ότι", Case.Sensitive);
         text.ShouldContain("ολοκλήρωσε το πρόγραμμα", Case.Sensitive);
-        text.ShouldContain("Θεμέλια Δύναμης", Case.Sensitive);
+        text.ShouldContain("Θεμέλια δύναμης", Case.Sensitive);
         text.ShouldContain("Συνολικός χρόνος προπόνησης: 1 ώρ. 30 λεπ.", Case.Sensitive);
         text.ShouldContain("Εκδόθηκε στις 12 Οκτωβρίου 2026", Case.Sensitive);
         // The SVG draws the id's first digit as its own run after Greek text, so check the label and the id apart.

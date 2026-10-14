@@ -356,11 +356,11 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         {
             ["key"] = "training_readiness_v1",
             ["titleEn"] = "Training Readiness",
-            ["titleEl"] = "Ετοιμότητα για Προπόνηση",
+            ["titleEl"] = "Ετοιμότητα για προπόνηση",
             ["descriptionEn"] = "A short check of your energy, recovery and training background before you start.",
             ["descriptionEl"] = "Ένας σύντομος έλεγχος της ενέργειας, της αποκατάστασης και του προπονητικού σου ιστορικού πριν ξεκινήσεις.",
             // Same shape as the seeded assessments in src/FitEdu.Shared/JSON/Assessments.
-            ["schemaJson"] = "{\"id\":\"training_readiness_v1\",\"version\":\"1.0\",\"title\":\"Training Readiness\",\"titleEl\":\"Ετοιμότητα για Προπόνηση\","
+            ["schemaJson"] = "{\"id\":\"training_readiness_v1\",\"version\":\"1.0\",\"title\":\"Training Readiness\",\"titleEl\":\"Ετοιμότητα για προπόνηση\","
                 + "\"sections\":[{\"id\":\"s1\",\"title\":\"Your week\",\"titleEl\":\"Η εβδομάδα σου\",\"questions\":["
                 + "{\"id\":\"q1\",\"type\":\"rating\",\"label\":\"How much energy do you have on most days?\",\"labelEl\":\"Πόση ενέργεια έχεις τις περισσότερες μέρες;\","
                 + "\"min\":1,\"max\":5,\"minLabel\":\"Very little\",\"maxLabel\":\"Plenty\",\"minLabelEl\":\"Πολύ λίγη\",\"maxLabelEl\":\"Πολλή\",\"required\":true},"
@@ -370,7 +370,7 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         [typeof(SaveCourseRequest)] = () => new JsonObject
         {
             ["titleEn"] = "Strength Foundations",
-            ["titleEl"] = "Θεμέλια Δύναμης",
+            ["titleEl"] = "Θεμέλια δύναμης",
             ["descriptionEn"] = "Learn the squat, hip hinge, push and pull with dumbbells and a barbell, three sessions a week.",
             ["descriptionEl"] = "Μάθε το squat, το hip hinge, τις πιέσεις και τις έλξεις με αλτήρες και μπάρα, τρεις προπονήσεις την εβδομάδα.",
             ["requiredTier"] = 0,

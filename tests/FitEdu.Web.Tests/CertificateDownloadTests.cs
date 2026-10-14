@@ -45,7 +45,7 @@ public class CertificateDownloadTests : IClassFixture<CustomWebAppFactory>
         var result = await controller.DownloadCertificate(certificate.Id);
 
         var file = result.ShouldBeOfType<FileStreamResult>();
-        file.FileDownloadName.ShouldBe("Πιστοποιητικό - Μαρία - Θεμέλια Δύναμης.pdf");
+        file.FileDownloadName.ShouldBe("Πιστοποιητικό - Μαρία - Θεμέλια δύναμης.pdf");
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class CertificateDownloadTests : IClassFixture<CustomWebAppFactory>
         Id = Guid.NewGuid(),
         RecipientName = "Μαρία",
         CourseTitleEn = "Strength Basics",
-        CourseTitleEl = "Θεμέλια Δύναμης",
+        CourseTitleEl = "Θεμέλια δύναμης",
         UserId = userId,
         EnrollmentId = Guid.NewGuid()
     };

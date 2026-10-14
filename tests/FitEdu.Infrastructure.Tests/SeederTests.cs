@@ -772,7 +772,7 @@ public sealed class SeederTests : IDisposable
     private const string SamplePathsJson = """
     [
       {
-        "title": "Beginner Start", "titleEl": "Ξεκίνημα για Αρχάριους",
+        "title": "Beginner Start", "titleEl": "Ξεκίνημα για αρχάριους",
         "description": "Start here.", "descriptionEl": "Ξεκίνα από εδώ.",
         "category": "Strength", "categoryEl": "Δύναμη",
         "displayOrder": 2, "isPublished": true,
@@ -801,7 +801,7 @@ public sealed class SeederTests : IDisposable
 
         var path = await db.LearningPaths.Include(p => p.Steps).Include(p => p.Category).SingleAsync();
         path.TitleEn.ShouldBe("Beginner Start");
-        path.TitleEl.ShouldBe("Ξεκίνημα για Αρχάριους");
+        path.TitleEl.ShouldBe("Ξεκίνημα για αρχάριους");
         path.DescriptionEn.ShouldBe("Start here.");
         path.DescriptionEl.ShouldBe("Ξεκίνα από εδώ.");
         path.DisplayOrder.ShouldBe(2);
@@ -902,7 +902,7 @@ public sealed class SeederTests : IDisposable
     private static string LiveClassesJson(int weekdayOffset = 1, string? courseTitle = "Mobility & Flexibility", int maxParticipants = 6) =>
         $$"""
         [
-          { "title": "Live Mobility Flow", "titleEl": "Ζωντανή Ροή Κινητικότητας",
+          { "title": "Live Mobility Flow", "titleEl": "Ζωντανή ροή κινητικότητας",
             "courseTitle": {{(courseTitle is null ? "null" : $"\"{courseTitle}\"")}},
             "weekdayOffset": {{weekdayOffset}}, "hourUtc": 18, "durationMinutes": 45, "maxParticipants": {{maxParticipants}} }
         ]
@@ -972,7 +972,7 @@ public sealed class SeederTests : IDisposable
         var session = await db.ScheduledSessions.SingleAsync();
         session.HostUserId.ShouldBe(HostUserId);
         session.TitleEn.ShouldBe("Live Mobility Flow");
-        session.TitleEl.ShouldBe("Ζωντανή Ροή Κινητικότητας");
+        session.TitleEl.ShouldBe("Ζωντανή ροή κινητικότητας");
         session.CourseId.ShouldBe(courseIds[0]);
         session.DurationMinutes.ShouldBe(45);
         session.MaxParticipants.ShouldBe(6);
