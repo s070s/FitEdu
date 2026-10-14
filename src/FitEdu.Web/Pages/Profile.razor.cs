@@ -279,12 +279,13 @@ public partial class Profile
 
             if (updated is not null)
             {
+                var languageBeforeSave = profile.PreferredLanguage;
                 profile = updated;
                 profileStatus = updated.Status;
                 profileGoal = updated.Goal;
                 preferredLanguage = updated.PreferredLanguage;
                 ShowSuccess(ProfileRes.ProfileUpdatedSuccess);
-                SwitchSiteLanguageIfChanged(updated.PreferredLanguage);
+                SwitchSiteLanguageIfChanged(languageBeforeSave, updated.PreferredLanguage);
             }
             else
             {
@@ -303,11 +304,13 @@ public partial class Profile
 
     /// <summary>
     /// A newly chosen language also becomes the site language: the culture switch reloads this page
-    /// in it (and saves the same language again, which changes nothing).
+    /// in it (and saves the same language again, which changes nothing). It compares with the stored
+    /// language, not the site language: the two can differ (a switch while signed out, a Greek browser),
+    /// and saving other fields must never switch the site.
     /// </summary>
-    private void SwitchSiteLanguageIfChanged(string savedLanguage)
+    private void SwitchSiteLanguageIfChanged(string languageBeforeSave, string savedLanguage)
     {
-        if (savedLanguage == CurrentLang)
+        if (savedLanguage == languageBeforeSave)
             return;
 
         var culture = UserLanguage.ToCultureName(savedLanguage);

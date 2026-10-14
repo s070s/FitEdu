@@ -223,6 +223,25 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void SaveProfile_GreekSiteWithStoredEnglish_UntouchedLanguage_StaysOnThePage()
+    {
+        // The site reads in Greek (cookie or Accept-Language) while the account still stores English.
+        CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
+        _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>())
+            .Returns(AliceProfile with { DisplayName = "Ali" });
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-language"));
+        var uriBefore = navigation.Uri;
+
+        page.FindAll("button").First(button => button.TextContent.Contains(ProfileRes.BtnSaveProfile)).Click();
+
+        _profileConsumer.Received(1).UpdateProfileAsync(Arg.Is<UpdateProfileRequest>(request =>
+            request.PreferredLanguage == UserLanguage.English));
+        navigation.Uri.ShouldBe(uriBefore);
+    }
+
+    [Fact]
     public void SaveProfile_Success_ShowsASuccessMessage()
     {
         _profileConsumer.UpdateProfileAsync(Arg.Any<UpdateProfileRequest>()).Returns(AliceProfile);
