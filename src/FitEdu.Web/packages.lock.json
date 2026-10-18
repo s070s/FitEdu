@@ -4,9 +4,9 @@
     "net10.0": {
       "Microsoft.AspNetCore.App.Internal.Assets": {
         "type": "Direct",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "Y2cXnMnqht5fvja2H8kkr5WA2fYItIPwXiBVo83+/9oySuKZCrz4T+yyZRFtLpxxDScvtYDt7e+J0eNElJ+AiA=="
+        "requested": "[10.0.12, )",
+        "resolved": "10.0.12",
+        "contentHash": "+sIBo9AMBZH46qHWHQdfzcGMt+RuBaPYrUMOAM9VjA7MQ9QtIez3lq1C3E05+Yroa94KKt3DSWaxmCI4H28a9Q=="
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Direct",
@@ -485,11 +485,11 @@
       "fitedu.application": {
         "type": "Project",
         "dependencies": {
-          "FitEdu.Domain": "[0.9.0, )",
-          "FitEdu.Shared": "[0.9.0, )",
           "HtmlSanitizer": "[9.2.1039, )",
           "Microsoft.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.Extensions.AI.Abstractions": "[10.9.0, )",
+          "FitEdu.Domain": "[0.9.0, )",
+          "FitEdu.Shared": "[0.9.0, )",
           "System.Numerics.Tensors": "[10.0.9, )"
         }
       },
@@ -499,15 +499,15 @@
       "fitedu.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "FitEdu.Application": "[0.9.0, )",
-          "FitEdu.Domain": "[0.9.0, )",
-          "FitEdu.Shared": "[0.9.0, )",
           "MailKit": "[4.17.0, )",
           "Microsoft.AspNetCore.DataProtection.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore.Design": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.11, )",
           "QuestPDF": "[2026.8.0, )",
+          "FitEdu.Application": "[0.9.0, )",
+          "FitEdu.Domain": "[0.9.0, )",
+          "FitEdu.Shared": "[0.9.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.19.2, )"
         }
       },
