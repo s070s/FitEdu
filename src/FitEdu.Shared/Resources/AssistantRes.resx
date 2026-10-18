@@ -49,19 +49,19 @@
 		<value>Something went wrong. Please try again.</value>
 	</data>
 	<data name="Offline" xml:space="preserve">
-		<value>The assistant is currently unavailable.</value>
+		<value>The coach is unavailable right now.</value>
 	</data>
 	<data name="WarmingUp" xml:space="preserve">
-		<value>The assistant is still starting up — its model is being prepared. Please try again in a moment.</value>
+		<value>The coach is still starting up — its model is being prepared. Please try again in a moment.</value>
 	</data>
 	<data name="Downloading" xml:space="preserve">
-		<value>The assistant is downloading its model ({0})…</value>
+		<value>The coach is downloading its model ({0})…</value>
 	</data>
 	<data name="Unreachable" xml:space="preserve">
-		<value>Assistant unavailable — is Ollama installed and running?</value>
+		<value>The coach is unavailable right now. Please try again later.</value>
 	</data>
 	<data name="OpenAssistant" xml:space="preserve">
-		<value>Open assistant</value>
+		<value>Open FitEdu Coach</value>
 	</data>
 	<data name="Placeholder" xml:space="preserve">
 		<value>Ask a question…</value>
@@ -70,7 +70,7 @@
 		<value>Send</value>
 	</data>
 	<data name="Sources" xml:space="preserve">
-		<value>Based on:</value>
+		<value>Sources:</value>
 	</data>
 	<data name="SuggestedQuestion1" xml:space="preserve">
 		<value>Which programme should I start with as a beginner?</value>

@@ -72,6 +72,14 @@ namespace FitEdu.Shared.Resources {
             get { return ResourceManager.GetString("RatingSummaryFormat", resourceCulture); }
         }
 
+        public static string ReviewCountOne {
+            get { return ResourceManager.GetString("ReviewCountOne", resourceCulture); }
+        }
+
+        public static string ReviewsCountFormat {
+            get { return ResourceManager.GetString("ReviewsCountFormat", resourceCulture); }
+        }
+
         public static string WriteReview {
             get { return ResourceManager.GetString("WriteReview", resourceCulture); }
         }

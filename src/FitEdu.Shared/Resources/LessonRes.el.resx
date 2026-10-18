@@ -102,7 +102,7 @@
 		<value>Μάθημα</value>
 	</data>
 	<data name="LoadingLesson" xml:space="preserve">
-		<value>Φόρτωση μαθήματος...</value>
+		<value>Φόρτωση μαθήματος…</value>
 	</data>
 	<data name="LessonUnavailableTitle" xml:space="preserve">
 		<value>Το μάθημα δεν είναι διαθέσιμο</value>
@@ -117,10 +117,10 @@
 		<value>Δεν ήταν δυνατή η φόρτωση του μαθήματος. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="Minutes" xml:space="preserve">
-		<value>λεπτά</value>
+		<value>λεπ.</value>
 	</data>
 	<data name="Saving" xml:space="preserve">
-		<value>Αποθήκευση...</value>
+		<value>Αποθήκευση…</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
 		<value>Το ολοκλήρωσα</value>
@@ -162,19 +162,19 @@
 		<value>Επαναλήψεις</value>
 	</data>
 	<data name="Rest" xml:space="preserve">
-		<value>Διάλειμμα</value>
+		<value>Ξεκούραση</value>
 	</data>
 	<data name="RestSecondsFormat" xml:space="preserve">
-		<value>{0} δευτ. διάλειμμα</value>
+		<value>Ξεκούραση {0} δευτ.</value>
 	</data>
 	<data name="ShowInstructions" xml:space="preserve">
 		<value>Πώς γίνεται</value>
 	</data>
 	<data name="StartPosition" xml:space="preserve">
-		<value>Αρχή</value>
+		<value>Αρχική θέση</value>
 	</data>
 	<data name="EndPosition" xml:space="preserve">
-		<value>Τέλος</value>
+		<value>Τελική θέση</value>
 	</data>
 	<data name="WorkoutProgressFormat" xml:space="preserve">
 		<value>Προπόνηση {0} από {1}</value>
@@ -203,11 +203,14 @@
 	<data name="TotalSetsFormat" xml:space="preserve">
 		<value>{0} σετ συνολικά</value>
 	</data>
+	<data name="TotalSetsOne" xml:space="preserve">
+		<value>1 σετ συνολικά</value>
+	</data>
 	<data name="CompleteHint" xml:space="preserve">
-		<value>Τελείωσες το μάθημα; Σημείωσέ το ως ολοκληρωμένο για να αποθηκευτεί η πρόοδός σου.</value>
+		<value>Τελείωσες το μάθημα; Πάτα «Το ολοκλήρωσα» για να αποθηκευτεί η πρόοδός σου.</value>
 	</data>
 	<data name="BreadcrumbLabel" xml:space="preserve">
-		<value>Διαδρομή πλοήγησης</value>
+		<value>Πλοήγηση</value>
 	</data>
 	<data name="LessonNavigationLabel" xml:space="preserve">
 		<value>Πλοήγηση στα μαθήματα</value>
@@ -219,13 +222,13 @@
 		<value>Δες το πιστοποιητικό</value>
 	</data>
 	<data name="CertificateWithPro" xml:space="preserve">
-		<value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση για να παίρνεις ένα σε κάθε πρόγραμμα που ολοκληρώνεις.</value>
+		<value>Τα πιστοποιητικά περιλαμβάνονται στο Pro. Αναβάθμισε για να παίρνεις ένα για κάθε πρόγραμμα που ολοκληρώνεις.</value>
 	</data>
 	<data name="UpgradeToPro" xml:space="preserve">
-		<value>Αναβάθμιση σε Pro</value>
+		<value>Αναβάθμισε σε Pro</value>
 	</data>
 	<data name="CompletedShort" xml:space="preserve">
-		<value>Έγινε</value>
+		<value>Ολοκληρώθηκε</value>
 	</data>
 	<data name="Time" xml:space="preserve">
 		<value>Χρόνος</value>

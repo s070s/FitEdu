@@ -101,7 +101,7 @@ public class CoursesPageTests : BunitContext
         var page = Render<Courses>();
 
         page.FindAll(".plan-limit-full").Count.ShouldBe(1);
-        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("1 of 1 programmes used");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("Active programmes: 1 of 1");
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class CoursesPageTests : BunitContext
         var page = Render<Courses>();
 
         page.Find(".plan-limit-banner").TextContent.ShouldContain("Programme limit on the Plus plan: 10");
-        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("3 of 10 programmes used");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("Active programmes: 3 of 10");
         page.FindAll(".plan-limit-full").ShouldBeEmpty();
         page.Find(".plan-limit-banner__action").ClassList.ShouldContain("btn-cta--ghost");
     }
@@ -335,9 +335,9 @@ public class CoursesPageTests : BunitContext
 
         var page = Render<Courses>();
 
-        page.Find(".plan-limit-banner__text").TextContent.ShouldContain("Όριο προγραμμάτων στο πλάνο «Plus»: 10");
-        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("2 από 10 προγράμματα σε χρήση");
-        page.Find(".plan-limit-banner__action").TextContent.Trim().ShouldBe("Αναβάθμιση πλάνου");
+        page.Find(".plan-limit-banner__text").TextContent.ShouldContain("Όριο ενεργών προγραμμάτων στο πλάνο «Plus»: 10");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("Ενεργά προγράμματα: 2 από 10");
+        page.Find(".plan-limit-banner__action").TextContent.Trim().ShouldBe("Αναβάθμισε το πλάνο σου");
     }
 
     // ---- Helpers ------------------------------------------------------------------------------

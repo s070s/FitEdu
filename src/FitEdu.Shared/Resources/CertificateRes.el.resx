@@ -124,7 +124,7 @@
     <value>Τα πιστοποιητικά μου</value>
   </data>
   <data name="Subtitle" xml:space="preserve">
-    <value>Κάθε πρόγραμμα που ολοκληρώνεις σου δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
+    <value>Κάθε πρόγραμμα που ολοκληρώνεις σού δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
   </data>
   <data name="CardEyebrow" xml:space="preserve">
     <value>Ολοκληρωμένο πρόγραμμα</value>
@@ -154,13 +154,13 @@
     <value>Επαλήθευση</value>
   </data>
   <data name="FailedToLoad" xml:space="preserve">
-    <value>Αποτυχία φόρτωσης πιστοποιητικών.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση των πιστοποιητικών σου. Δοκίμασε ξανά.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
-    <value>Το PDF πιστοποιητικού δεν είναι διαθέσιμο.</value>
+    <value>Το PDF του πιστοποιητικού δεν είναι διαθέσιμο αυτή τη στιγμή.</value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Η λήψη απέτυχε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η λήψη του PDF. Δοκίμασε ξανά.</value>
   </data>
   <data name="VerificationTitle" xml:space="preserve">
     <value>Επαλήθευση πιστοποιητικού</value>
@@ -169,13 +169,13 @@
     <value>Έλεγχος πιστοποιητικού…</value>
   </data>
   <data name="VerificationUnreachable" xml:space="preserve">
-    <value>Δεν μπορούμε να συνδεθούμε με την υπηρεσία επαλήθευσης. Δοκίμασε ξανά αργότερα.</value>
+    <value>Δεν ήταν δυνατή η σύνδεση με την υπηρεσία επαλήθευσης. Δοκίμασε ξανά αργότερα.</value>
   </data>
   <data name="VerificationValid" xml:space="preserve">
     <value>Έγκυρο πιστοποιητικό</value>
   </data>
   <data name="VerificationInvalid" xml:space="preserve">
-    <value>Άκυρο πιστοποιητικό</value>
+    <value>Άκυρο ή ανακλημένο πιστοποιητικό</value>
   </data>
   <data name="VerificationNotFoundLead" xml:space="preserve">
     <value>Δεν βρήκαμε πιστοποιητικό με αυτό το αναγνωριστικό επαλήθευσης. Έλεγξε τον σύνδεσμο ή ζήτα από τον κάτοχο να σου τον στείλει ξανά.</value>
@@ -184,7 +184,7 @@
     <value>Αυτό το πιστοποιητικό έχει ανακληθεί και δεν ισχύει πια.</value>
   </data>
   <data name="FieldRecipient" xml:space="preserve">
-    <value>Παραλήπτης</value>
+    <value>Κάτοχος</value>
   </data>
   <data name="FieldCourse" xml:space="preserve">
     <value>Πρόγραμμα</value>
@@ -196,7 +196,7 @@
     <value>Κωδικός επαλήθευσης</value>
   </data>
   <data name="SubtitleNoAccess" xml:space="preserve">
-    <value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση και κάθε πρόγραμμα που ολοκληρώνεις σού χαρίζει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
+    <value>Τα πιστοποιητικά έρχονται με το Pro. Κάνε αναβάθμιση και κάθε πρόγραμμα που ολοκληρώνεις σού δίνει ένα πιστοποιητικό που μπορεί να επαληθεύσει οποιοσδήποτε.</value>
   </data>
   <data name="UpgradeDescription" xml:space="preserve">
     <value>Ολοκλήρωσε ένα πρόγραμμα με το Pro και πάρε πιστοποιητικό με σύνδεσμο επαλήθευσης που μπορείς να μοιραστείς.</value>

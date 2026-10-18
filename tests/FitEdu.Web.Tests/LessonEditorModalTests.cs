@@ -280,8 +280,8 @@ public class LessonEditorModalTests : BunitContext
         ClickSave(modal);
 
         var error = modal.Find(".alert-danger").TextContent;
-        error.ShouldContain("Το ανέβασμα του PDF απέτυχε.");
-        error.ShouldContain("Το ανέβασμα του βίντεο απέτυχε.");
+        error.ShouldContain("Δεν ήταν δυνατό το ανέβασμα του PDF.");
+        error.ShouldContain("Δεν ήταν δυνατό το ανέβασμα του βίντεο.");
     }
 
     [Fact]
@@ -294,7 +294,7 @@ public class LessonEditorModalTests : BunitContext
         var placeholders = JSInterop.Invocations["quillInterop.init"]
             .Select(invocation => invocation.Arguments[2] as string)
             .ToList();
-        placeholders.ShouldBe(["Write the content here...", "Γράψε το περιεχόμενο εδώ..."]);
+        placeholders.ShouldBe(["Write the content here…", "Γράψε το περιεχόμενο εδώ…"]);
     }
 
     protected override void Dispose(bool disposing)

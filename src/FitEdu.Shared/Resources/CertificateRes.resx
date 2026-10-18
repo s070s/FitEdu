@@ -99,10 +99,10 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>My Certificates</value>
+		<value>My certificates</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
-		<value>My Certificates</value>
+		<value>My certificates</value>
 	</data>
 	<data name="Subtitle" xml:space="preserve">
 		<value>Every programme you finish earns a certificate that anyone can verify.</value>
@@ -136,28 +136,28 @@
 		<value>Verify</value>
 	</data>
 	<data name="FailedToLoad" xml:space="preserve">
-		<value>Failed to load certificates.</value>
+		<value>Couldn't load your certificates. Please try again.</value>
 	</data>
 	<data name="NotAvailable" xml:space="preserve">
-		<value>Certificate PDF is not available.</value>
+		<value>The certificate PDF isn't available right now.</value>
 	</data>
 	<data name="DownloadFailed" xml:space="preserve">
-		<value>Download failed. Please try again.</value>
+		<value>Couldn't download the PDF. Please try again.</value>
 	</data>
 	<data name="VerificationTitle" xml:space="preserve">
-		<value>Certificate Verification</value>
+		<value>Certificate verification</value>
 	</data>
 	<data name="VerificationChecking" xml:space="preserve">
 		<value>Checking certificate…</value>
 	</data>
 	<data name="VerificationUnreachable" xml:space="preserve">
-		<value>Unable to reach the verification service. Please try again later.</value>
+		<value>Couldn't reach the verification service. Please try again later.</value>
 	</data>
 	<data name="VerificationValid" xml:space="preserve">
-		<value>Valid Certificate</value>
+		<value>Valid certificate</value>
 	</data>
 	<data name="VerificationInvalid" xml:space="preserve">
-		<value>Invalid or Revoked Certificate</value>
+		<value>Invalid or revoked certificate</value>
 	</data>
 	<data name="VerificationNotFoundLead" xml:space="preserve">
 		<value>We could not find a certificate with this verification ID. Check the link, or ask the holder to share it again.</value>
@@ -196,10 +196,10 @@
 		<value>Total training time: {0}</value>
 	</data>
 	<data name="PdfHoursMinutesFormat" xml:space="preserve">
-		<value>{0}h {1}m</value>
+		<value>{0} h {1} min</value>
 	</data>
 	<data name="PdfMinutesFormat" xml:space="preserve">
-		<value>{0}m</value>
+		<value>{0} min</value>
 	</data>
 	<data name="PdfIssuedOnFormat" xml:space="preserve">
 		<value>Issued on {0}</value>

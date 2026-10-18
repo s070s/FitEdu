@@ -1,6 +1,6 @@
 # FitEdu
 
-A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-check assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
+A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
 
 ## Screenshots
 
@@ -49,7 +49,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 > **Database is created and migrated automatically on first run.** If you drop the database (e.g. from SSMS), just restart the app — it will recreate and reseed it.
 
-> **Reseeding after a seed file changes:** each seeder fills its table only when that table is empty, so an edited JSON file does not reach a database that was already seeded. To reseed everything, stop the app, drop the `FitEduDb` database and start the app again (LocalDB: `sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"`). The startup log then reports what each seeder wrote; a fresh Development database gets 873 exercises, 19 courses, 19 assessments, 4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) plus the bulk students added in the background (`SeedData:BulkStudentCount`, default 10). Dropping the database also deletes users, enrollments and chat history, so do it only on a development machine.
+> **Reseeding after a seed file changes:** each seeder fills its table only when that table is empty, so an edited JSON file does not reach a database that was already seeded. To reseed everything, stop the app, drop the `FitEduDb` database and start the app again (LocalDB: `sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"`). The startup log then reports what each seeder wrote; a fresh Development database gets 873 exercises, 19 courses, 19 assessments, 4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) plus the bulk students added in the background (`SeedData:BulkStudentCount`, default 10). Dropping the database also deletes users, enrolments and chat history, so do it only on a development machine.
 
 > **Database connection string — do you need to change it on a new PC?** The default targets SQL Server **LocalDB** (`Server=(localdb)\MSSQLLocalDB`), whose instance name is the same on every machine, so **cloning onto a new PC needs no change** — just have LocalDB installed (it ships with Visual Studio and SQL Server Express). Only set `ConnectionStrings__DefaultConnection` in `.env` if you point the app at a **different** SQL Server — a named instance, SQL Express, a remote server, or SQL authentication — because that server name is specific to the machine it runs on. Since `.env` is gitignored it never travels with a clone: on a new PC you recreate it from `.env.template` (LocalDB default) and adjust the connection string only if you are *not* using LocalDB. The app reads `.env` first and falls back to the dev default in `appsettings.Development.json`.
 
@@ -61,16 +61,16 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 > |---|---|
 > | `Exercises/` | 873 public-domain exercises with photos ([source, licence and Greek format](src/FitEdu.Shared/JSON/Exercises/README.md)). `exercises.el.json` gives the Greek name and steps of all 873. |
 > | `Courses/` | 19 fitness courses: 51 modules, 131 lessons and 382 exercise prescriptions linked by slug ([file format](src/FitEdu.Shared/JSON/Courses/README.md)). Seven categories (Strength, Cardio, Mobility, Core, Nutrition, Recovery, Performance), Beginner to Advanced, 9 Free, 5 Plus and 5 Pro. |
-> | `Assessments/` | 19 self-check questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
+> | `Assessments/` | 19 self-assessment questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
 > | `Students/` | The 10 demo students (`first.last@fitedu.local`). |
-> | `Paths/` | 4 published learning paths of 4 courses each (Beginner Start, Fat Loss, Build Muscle, Move Better). Each step names its course by English title, so an unknown title stops the seed ([file format](src/FitEdu.Shared/JSON/Paths/README.md)). |
+> | `Paths/` | 4 published learning paths of 4 courses each (Beginner Start, Fat Loss, Muscle Building, Better Movement). Each step names its course by English title, so an unknown title stops the seed ([file format](src/FitEdu.Shared/JSON/Paths/README.md)). |
 > | `Showcase/` | 6 Home-page testimonials and 6 live classes hosted by the admin account, dated on the next six weekdays after the seed date (UTC) and capped at 6 people like the video call ([file format](src/FitEdu.Shared/JSON/Showcase/README.md)). |
 >
 > The blog articles are seeded from code: `src/FitEdu.Application/DTOs/Blog/BlogSeedData.cs` holds 4 fitness articles in English and Greek (progressive overload, protein, sleep, a five-minute warm-up) by "FitEdu", with covers under `wwwroot/images/blog/` and English keyword tags (Strength, Nutrition, Recovery, Mobility, Beginners) that the cards and article pages show in the page language (`BlogTagLabels`, `HomeRes.BlogTag_*`).
 >
 > The three subscription plans are seeded from code in every environment, once, when the table is empty: `SubscriptionPlanSeeder` writes Free (starter courses and the exercise library, 1 active course), Plus (every Free and Plus course plus assessments, 10 active courses) and Pro (everything, plus certificates and priority support), each with an English and a Greek description. Live classes are open to every signed-in member, so no plan sells them. A database seeded before this change keeps its old plan descriptions until the plans table is emptied.
 >
-> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos — every library exercise has both photos and its slugs match docs/assets/exercise-slugs.txt — language-neutral `reps`, Greek imperatives, Greek titles in sentence case) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). It also keeps vocabulary left over from the previous, non-fitness product out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`, the email wording in `EmailTemplates.cs`, the Swagger request examples in `OpenApiExtensions.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
+> `SeedContentIntegrityTests` checks every seed file (counts, Greek text, exercise slugs and photos — every library exercise has both photos and its slugs match docs/assets/exercise-slugs.txt — language-neutral `reps`, Greek imperatives, Greek titles in sentence case) and the resx files (EN, EL and Designer keys match; no untranslated Greek copies; a `CourseRes` label for every level, goal and equipment code). Copy-style checks enforce [docs/LANGUAGE-GLOSSARY.md](docs/LANGUAGE-GLOSSARY.md), the EN/EL wording rulebook: no gender slashes in Greek, «» quotes in Greek resx, "…" instead of "...", Greek list letters (Α, Β), British "enrolment", sentence case for short English labels, and unique Greek exercise names with lowercase brackets. It also keeps vocabulary left over from the previous, non-fitness product out of the seed JSON, every resx file and the C# seed data (`BlogSeedData.cs`, the `Infrastructure/Seeding` seeders such as `SubscriptionPlanSeeder.cs`, and `DatabaseSeedingExtensions.cs`) and out of the member-facing text written in C# (the assistant prompt in `AssistantService.cs`, the certificate text in `CertificateService.cs`, the email wording in `EmailTemplates.cs`, the Swagger request examples in `OpenApiExtensions.cs`). `RealSeedJsonSeedingTests` runs the real seeders on these folders and checks every seeded text against its SQL Server column length, so a broken file fails `dotnet test` instead of a fresh database.
 
 > **Never commit `.env`** — it is already in `.gitignore`. Use `.env.template` to document which keys are needed.
 
@@ -92,7 +92,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Video calls | Self-hosted WebRTC (P2P mesh, up to 6 participants) with SignalR signaling |
 | API docs | OpenAPI (`Microsoft.AspNetCore.OpenApi`) + Swagger UI — `/swagger` (Development only) |
 | PDF | QuestPDF 2026.8.0 (certificates: one landscape page in the brand palette with the dumbbell mark) |
-| Localization | English + Greek (`.resx`); the Greek culture uses a 24-hour clock (`21:00`), and the loopback API calls carry the page language as `Accept-Language` |
+| Localization | English + Greek (`.resx`); the Greek culture uses a 24-hour clock (`21:00`), and the loopback API calls and the chat/call hub connections carry the page language as `Accept-Language`, so server and hub errors come back in that language |
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | CI | GitHub Actions (`.github/workflows/tests.yml`) |
 | Logging | Custom daily file logger |
@@ -112,7 +112,7 @@ FitEdu.sln
 │   ├── FitEdu.Infrastructure/  EF Core DbContext, migrations, service implementations
 │   ├── FitEdu.Web/             Blazor SSR + API controllers — the only deployable project
 │   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
-├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog
+├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog, EN/EL language glossary
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
 ├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
 ├── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
@@ -291,11 +291,11 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 
 ### Landing — `api/landing`
 
-Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-checks take the fourth place).
+Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-assessments take the fourth place).
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-check (assessment) counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
+| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-assessment counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
 
 ### Scheduled Sessions — `api/sessions`
 
@@ -611,9 +611,9 @@ Dev shortcuts for bypassing email confirmation:
 
 ## Exercise Library (public domain)
 
-The app ships 873 exercises from [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), which is released under the Unlicense (a public-domain dedication). Its names, steps and photos may be reused word for word; we credit the project on the exercise pages anyway.
+The app ships 873 exercises from [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), which is released under the Unlicense (a public-domain dedication). Its names, steps and photos may be reused and edited freely; we credit the project on the exercise pages anyway.
 
-- **Data:** each exercise has a slug, name, category, level, force, mechanic, equipment, primary and secondary muscles and numbered steps, in English and Greek. The English text is the upstream `exercises.json`, trimmed as described in [its README](src/FitEdu.Shared/JSON/Exercises/README.md); `exercises.el.json` adds the Greek name and steps. The full slug list is [docs/assets/exercise-slugs.txt](docs/assets/exercise-slugs.txt).
+- **Data:** each exercise has a slug, name, category, level, force, mechanic, equipment, primary and secondary muscles and numbered steps, in English and Greek. The English text is the upstream `exercises.json`, trimmed, with the instructions edited (typos fixed, British spelling, metric units), as described in [its README](src/FitEdu.Shared/JSON/Exercises/README.md); `exercises.el.json` adds the Greek name and steps. The full slug list is [docs/assets/exercise-slugs.txt](docs/assets/exercise-slugs.txt).
 - **Photos:** a start and an end photo per exercise, converted to 480 px WebP by [`tools/assets/`](tools/assets/README.md) and served from `/images/exercises/{slug}/0.webp` and `1.webp`. The UI loops between the two to show the movement; when the visitor asks for reduced motion it shows both photos side by side instead.
 - **Pages:** `/exercises` is the public library (search, muscle, level, type and equipment filters, pages); `/exercises/{slug}` shows the photos, muscles, steps and the workouts that use the exercise.
 - **In workouts:** a lesson lists its exercises in order with sets, reps, rest and a coaching note (EN/EL). Course JSON names them by slug, and admins pick them in the lesson editor; an unknown slug stops the course seed, is refused by the admin API (400, which also refuses an unpublished exercise, since members never see one) and fails `SeedContentIntegrityTests`.
@@ -693,7 +693,7 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 A grounded, bilingual (EN/EL) AI helper available to every authenticated user, regardless of subscription tier. It answers site questions from a background index of published courses (with every lesson in them, as students see them), assessments, and blog articles, and — as a **tool-calling agent** — can look up the signed-in user's own enrollments, lesson progress, assessment results and subscription, plus search and recommend courses and search the exercise library. Everything runs **locally** via [Ollama](https://ollama.com) — no cloud API, no per-token cost, no data leaves the machine.
 
-**Setup:** the assistant needs [Ollama](https://ollama.com) running locally; everything after that is automatic (the app pulls the models itself). If the widget shows *"Assistant unavailable — is Ollama installed and running?"*, work through these three steps.
+**Setup:** the assistant needs [Ollama](https://ollama.com) running locally; everything after that is automatic (the app pulls the models itself). If the widget shows *"The coach is unavailable right now. Please try again later."* (the app can't reach Ollama), work through these three steps.
 
 1. **Install Ollama** — download from <https://ollama.com/download>, or on Windows:
    ```powershell
@@ -701,7 +701,7 @@ A grounded, bilingual (EN/EL) AI helper available to every authenticated user, r
    ```
    The installer starts Ollama and keeps it running in the background (look for its icon in the system tray).
 
-2. **Confirm it's actually running** — this is exactly what the "*is Ollama installed and running?*" message checks. Open <http://localhost:11434> in a browser (it should say *"Ollama is running"*), or run `ollama list` in a terminal. If nothing responds, start it: launch **Ollama** from the Start menu, or run `ollama serve`.
+2. **Confirm it's actually running** — this is exactly what the "*coach is unavailable*" message checks. Open <http://localhost:11434> in a browser (it should say *"Ollama is running"*), or run `ollama list` in a terminal. If nothing responds, start it: launch **Ollama** from the Start menu, or run `ollama serve`.
 
 3. **Run the app:**
    ```powershell
@@ -746,7 +746,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Video call has no camera/mic | Grant the browser camera/microphone permission for the site, and use HTTPS (WebRTC requires a secure context). When testing with two browsers on one PC, only one can hold the physical webcam — the other joins audio-only (expected). |
 | `401` after login | Match `Jwt:Key/Issuer/Audience`. Disabled accounts return `X-User-Disabled: true`. |
 | HTTPS not trusted | `dotnet dev-certs https --trust` |
-| Assistant shows "is Ollama installed and running?" | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
+| Assistant shows "The coach is unavailable right now. Please try again later." | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
 | Assistant stuck "downloading its model" | Normal on first run (~2.6 GB total). Progress shows in the widget and in `Logs/`. On a metered/blocked network set `Assistant__AutoPullModels=false` and pull manually: `ollama pull qwen3:1.7b && ollama pull bge-m3`. |
 | Assistant's first answer is slow | Expected — Ollama cold-loads the model into memory on first request after startup/idle. Subsequent answers are faster. |
 

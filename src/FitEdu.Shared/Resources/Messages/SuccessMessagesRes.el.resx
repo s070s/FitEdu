@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationSuccess" xml:space="preserve">
-    <value>Το email επαληθεύτηκε.</value>
+    <value>Το email επιβεβαιώθηκε.</value>
   </data>
   <data name="RegistrationSuccess" xml:space="preserve">
     <value>Ο λογαριασμός σου είναι έτοιμος. Δες το email σου για να τον επιβεβαιώσεις.</value>
@@ -130,24 +130,24 @@
     <value>Η εγγραφή ολοκληρώθηκε. Δες το email σου για να επιβεβαιώσεις τον λογαριασμό σου.</value>
   </data>
   <data name="EmailConfirmedSuccessfully" xml:space="preserve">
-    <value>Το email επιβεβαιώθηκε επιτυχώς.</value>
+    <value>Το email σου επιβεβαιώθηκε.</value>
   </data>
   <data name="PasswordResetLinkSent" xml:space="preserve">
-    <value>Εάν το email υπάρχει, έχει σταλεί σύνδεσμος επαναφοράς.</value>
+    <value>Αν υπάρχει λογαριασμός με αυτό το email, σου στείλαμε σύνδεσμο επαναφοράς.</value>
   </data>
   <data name="PasswordResetSuccessful" xml:space="preserve">
-    <value>Ο κωδικός πρόσβασης επαναφέρθηκε επιτυχώς.</value>
+    <value>Ο κωδικός πρόσβασής σου άλλαξε.</value>
   </data>
   <data name="EnrolledSuccessfully" xml:space="preserve">
-    <value>Γράφτηκες στο πρόγραμμα</value>
+    <value>Γράφτηκες στο πρόγραμμα.</value>
   </data>
   <data name="AlreadyEnrolled" xml:space="preserve">
-    <value>Ήδη εγγεγραμμένος</value>
+    <value>Έχεις ήδη γραφτεί σε αυτό το πρόγραμμα.</value>
   </data>
   <data name="LessonCompletedMsg" xml:space="preserve">
-    <value>Το μάθημα ολοκληρώθηκε</value>
+    <value>Το μάθημα ολοκληρώθηκε.</value>
   </data>
   <data name="AlreadyCompleted" xml:space="preserve">
-    <value>Ήδη ολοκληρωμένο</value>
+    <value>Έχει ήδη ολοκληρωθεί.</value>
   </data>
 </root>

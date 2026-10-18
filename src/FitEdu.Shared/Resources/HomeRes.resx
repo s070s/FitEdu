@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>FitEdu | Fitness Programmes &amp; Exercise Library</value>
+    <value>FitEdu | Fitness programmes &amp; exercise library</value>
   </data>
   <data name="WelcomeUser" xml:space="preserve">
     <value>Welcome, {0}!</value>
@@ -130,7 +130,7 @@
     <value>Move better every week.</value>
   </data>
   <data name="HeroSubtitle" xml:space="preserve">
-    <value>Structured fitness programmes, a public-domain exercise library with start-and-finish photos, and self-checks that keep you training safely — in English and Greek.</value>
+    <value>Structured fitness programmes, a public-domain exercise library with start-and-finish photos, and self-assessments that keep you training safely — in English and Greek.</value>
   </data>
   <data name="HeroCtaButton" xml:space="preserve">
     <value>Start free</value>
@@ -151,7 +151,7 @@
     <value>Create a free account, pick a goal and follow a programme built around your level.</value>
   </data>
   <data name="CtaButton" xml:space="preserve">
-    <value>Create free account</value>
+    <value>Create a free account</value>
   </data>
   <data name="FooterBrand" xml:space="preserve">
     <value>FitEdu</value>
@@ -169,7 +169,7 @@
     <value>Latest</value>
   </data>
   <data name="BlogTitleHighlight" xml:space="preserve">
-    <value>Articles</value>
+    <value>articles</value>
   </data>
   <data name="BlogReadMore" xml:space="preserve">
     <value>Read more</value>
@@ -204,8 +204,11 @@
   <data name="BlogReadingTimeFormat" xml:space="preserve">
     <value>{0} min read</value>
   </data>
+  <data name="BlogReadingTimeOne" xml:space="preserve">
+    <value>1 min read</value>
+  </data>
   <data name="BackToHome" xml:space="preserve">
-    <value>Back to Home</value>
+    <value>Back to home</value>
   </data>
   <data name="HeroCtaSecondary" xml:space="preserve">
     <value>Browse exercises</value>
@@ -250,7 +253,7 @@
     <value>Track and progress</value>
   </data>
   <data name="HowStep3Text" xml:space="preserve">
-    <value>Mark workouts done, keep your streak and earn a certificate at the end.</value>
+    <value>Mark workouts as done, keep your streak going and earn a certificate at the end.</value>
   </data>
   <data name="FeaturedTitle" xml:space="preserve">
     <value>Popular</value>
@@ -259,7 +262,7 @@
     <value>programmes</value>
   </data>
   <data name="TodayPlanTitle" xml:space="preserve">
-    <value>Today's plan</value>
+    <value>Today's workout</value>
   </data>
   <data name="TodayPlanContinue" xml:space="preserve">
     <value>Continue workout</value>
@@ -319,12 +322,12 @@
     <value>Beginners</value>
   </data>
   <data name="StatsAssessments" xml:space="preserve">
-    <value>Self-checks</value>
+    <value>Self-assessments</value>
   </data>
   <data name="BlogFailedToLoadTitle" xml:space="preserve">
     <value>We couldn't load this article</value>
   </data>
   <data name="BlogFailedToLoadBody" xml:space="preserve">
-    <value>Something went wrong on our side. Try again in a moment.</value>
+    <value>Something went wrong on our side. Please try again in a moment.</value>
   </data>
 </root>

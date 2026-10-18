@@ -468,7 +468,7 @@ public class CourseServiceTests
 
         var result = await svc.EnrollAsync(UserId, course.Id);
 
-        result.Value!.Message.ShouldBe("This programme requires a Pro subscription or higher. Please upgrade your plan.");
+        result.Value!.Message.ShouldBe("This programme needs the Pro plan or higher. Please upgrade your plan.");
     }
 
     [Fact]

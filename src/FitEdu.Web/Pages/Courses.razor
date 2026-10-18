@@ -106,7 +106,7 @@
                 <div class="pagination-toolbar courses-toolbar">
                     <div class="courses-toolbar__summary">
                         <p class="courses-toolbar__count" role="status">
-                            @ResourceFormat.Fill(CourseRes.TotalCoursesFormat, _pagedResult.TotalCount)
+                            @ResourceFormat.Count(_pagedResult.TotalCount, CourseRes.CourseCountOne, CourseRes.TotalCoursesFormat)
                         </p>
                         @if (HasActiveFilter)
                         {

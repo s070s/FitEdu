@@ -131,7 +131,7 @@ public class AssessmentServiceTests
             UserId, assessment.Id, new SubmitAssessmentRequest("""{"q1":"answer"}""", null));
 
         result.StatusCode.ShouldBe(403);
-        result.ErrorMessage.ShouldBe("This assessment requires a Pro subscription or higher.");
+        result.ErrorMessage.ShouldBe("This self-assessment needs the Pro plan or higher.");
     }
 
     [Theory]

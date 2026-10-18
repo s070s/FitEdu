@@ -20,7 +20,7 @@ public static class NavItems
         new("courses", AppIcons.Course, () => NavMenuRes.Courses, InHeader: true, ShortLabel: () => NavMenuRes.CoursesShort),
         new("exercises", AppIcons.Exercise, () => NavMenuRes.Exercises, InHeader: true, InBottomNav: true),
         new("blog", AppIcons.BlogArticle, () => NavMenuRes.Blog, InHeader: true),
-        new("pricing", AppIcons.Pricing, () => NavMenuRes.Pricing, InHeader: true, InBottomNav: true),
+        new("pricing", AppIcons.Pricing, () => NavMenuRes.Pricing, InHeader: true, InBottomNav: true, ShortLabel: () => NavMenuRes.PricingShort),
         new("login", AppIcons.Login, () => NavMenuRes.Login, InHeader: true, InBottomNav: true),
         new("register", AppIcons.Register, () => NavMenuRes.Register, InHeader: true, Highlight: true),
     ];

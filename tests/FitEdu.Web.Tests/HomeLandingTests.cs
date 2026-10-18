@@ -101,7 +101,7 @@ public class HomeLandingTests : BunitContext
     }
 
     [Fact]
-    public void StatsStrip_ShowsTheSelfChecksInPlaceOfASmallMemberCount()
+    public void StatsStrip_ShowsTheSelfAssessmentsInPlaceOfASmallMemberCount()
     {
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
 
@@ -110,23 +110,23 @@ public class HomeLandingTests : BunitContext
         var labels = page.FindAll(".stats-strip .stat-tile__label").Select(label => label.TextContent).ToList();
         labels.Count.ShouldBe(4);
         labels.ShouldNotContain(HomeRes.StatsMembers);
-        labels[3].ShouldBe("Self-checks");
+        labels[3].ShouldBe("Self-assessments");
         page.FindAll(".stats-strip .stat-tile__value")[3].TextContent.ShouldBe("19");
     }
 
     [Fact]
-    public void StatsStrip_InGreek_NamesTheSelfChecks()
+    public void StatsStrip_InGreek_NamesTheSelfAssessments()
     {
         UseCulture("el");
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11));
 
         var page = Render<Home>();
 
-        page.FindAll(".stats-strip .stat-tile__label")[3].TextContent.ShouldBe("Αυτοαξιολογήσεις");
+        page.FindAll(".stats-strip .stat-tile__label")[3].TextContent.ShouldBe("Αξιολογήσεις");
     }
 
     [Fact]
-    public void StatsStrip_WithoutSelfChecksOrManyMembers_ShowsThreeTiles()
+    public void StatsStrip_WithoutSelfAssessmentsOrManyMembers_ShowsThreeTiles()
     {
         _landingConsumer.GetOverviewAsync(Arg.Any<string>()).Returns(Overview(memberCount: 11, assessmentCount: 0));
 

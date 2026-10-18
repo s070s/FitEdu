@@ -99,61 +99,61 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Analytics Dashboard</value>
+		<value>Analytics dashboard</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
-		<value>Loading...</value>
+		<value>Loading…</value>
 	</data>
 	<data name="TotalUsers" xml:space="preserve">
-		<value>Total Users</value>
+		<value>Total users</value>
 	</data>
 	<data name="ActiveUsers" xml:space="preserve">
-		<value>Active Users</value>
+		<value>Active users</value>
 	</data>
 	<data name="TotalEnrollments" xml:space="preserve">
-		<value>Total Enrollments</value>
+		<value>Total enrolments</value>
 	</data>
 	<data name="CompletedCourses" xml:space="preserve">
-		<value>Completed Programmes</value>
+		<value>Completed programmes</value>
 	</data>
 	<data name="CourseEnrollmentStats" xml:space="preserve">
-		<value>Programme Enrollment Stats</value>
+		<value>Enrolments by programme</value>
 	</data>
 	<data name="ColCourse" xml:space="preserve">
 		<value>Programme</value>
 	</data>
 	<data name="ColEnrollments" xml:space="preserve">
-		<value>Enrollments</value>
+		<value>Enrolments</value>
 	</data>
 	<data name="ColCompletions" xml:space="preserve">
 		<value>Completions</value>
 	</data>
 	<data name="NoCourseData" xml:space="preserve">
-		<value>No programme data available</value>
+		<value>No programme data yet.</value>
 	</data>
 	<data name="AssessmentStats" xml:space="preserve">
-		<value>Assessment Stats</value>
+		<value>Self-assessment stats</value>
 	</data>
 	<data name="ColAssessment" xml:space="preserve">
-		<value>Assessment</value>
+		<value>Self-assessment</value>
 	</data>
 	<data name="ColSubmissions" xml:space="preserve">
 		<value>Submissions</value>
 	</data>
 	<data name="NoAssessmentData" xml:space="preserve">
-		<value>No assessment data available</value>
+		<value>No self-assessment data yet.</value>
 	</data>
 	<data name="CreateAssessment" xml:space="preserve">
-		<value>Create Assessment</value>
+		<value>Create self-assessment</value>
 	</data>
 	<data name="EditAssessment" xml:space="preserve">
-		<value>Edit Assessment</value>
+		<value>Edit self-assessment</value>
 	</data>
 	<data name="BackToAssessments" xml:space="preserve">
-		<value>Back to Assessments</value>
+		<value>Back to self-assessments</value>
 	</data>
 	<data name="AssessmentDetails" xml:space="preserve">
-		<value>Assessment Details</value>
+		<value>Self-assessment details</value>
 	</data>
 	<data name="FieldKey" xml:space="preserve">
 		<value>Key</value>
@@ -171,13 +171,13 @@
 		<value>Questions</value>
 	</data>
 	<data name="AddQuestion" xml:space="preserve">
-		<value>+ Add Question</value>
+		<value>+ Add question</value>
 	</data>
 	<data name="AddSection" xml:space="preserve">
-		<value>+ Add Section</value>
+		<value>+ Add section</value>
 	</data>
 	<data name="NoQuestions" xml:space="preserve">
-		<value>No questions yet. Click "Add Question" to start building your assessment.</value>
+		<value>No questions yet. Click "Add question" to start building your self-assessment.</value>
 	</data>
 	<data name="QuestionNumber" xml:space="preserve">
 		<value>Question {0}</value>
@@ -198,10 +198,10 @@
 		<value>Rating (scale)</value>
 	</data>
 	<data name="TypeChoice" xml:space="preserve">
-		<value>Choice (select one)</value>
+		<value>Single choice (pick one)</value>
 	</data>
 	<data name="TypeMultiSelect" xml:space="preserve">
-		<value>Multiple choice (select any)</value>
+		<value>Multiple choice (pick any)</value>
 	</data>
 	<data name="FieldRequired" xml:space="preserve">
 		<value>Required</value>
@@ -213,10 +213,10 @@
 		<value>No</value>
 	</data>
 	<data name="QuestionLabel" xml:space="preserve">
-		<value>Label / Question Text</value>
+		<value>Label / question text</value>
 	</data>
 	<data name="QuestionLabelPlaceholder" xml:space="preserve">
-		<value>Enter the question text...</value>
+		<value>Enter the question text…</value>
 	</data>
 	<data name="FieldMin" xml:space="preserve">
 		<value>Min</value>
@@ -237,13 +237,13 @@
 		<value>one per line</value>
 	</data>
 	<data name="SchemaPreview" xml:space="preserve">
-		<value>Schema Preview</value>
+		<value>Schema preview</value>
 	</data>
 	<data name="Saving" xml:space="preserve">
-		<value>Saving...</value>
+		<value>Saving…</value>
 	</data>
 	<data name="SaveAssessment" xml:space="preserve">
-		<value>Save Assessment</value>
+		<value>Save self-assessment</value>
 	</data>
 	<data name="Cancel" xml:space="preserve">
 		<value>Cancel</value>
@@ -255,16 +255,16 @@
 		<value>Move down</value>
 	</data>
 	<data name="ResetSortToReorder" xml:space="preserve">
-		<value>Reset sorting to display order to reorder</value>
+		<value>To reorder, sort by display order first.</value>
 	</data>
 	<data name="Remove" xml:space="preserve">
 		<value>Remove</value>
 	</data>
 	<data name="AssessmentManagement" xml:space="preserve">
-		<value>Assessment Management</value>
+		<value>Self-assessment management</value>
 	</data>
 	<data name="CreateNewAssessment" xml:space="preserve">
-		<value>Create New Assessment</value>
+		<value>Create new self-assessment</value>
 	</data>
 	<data name="ColStatus" xml:space="preserve">
 		<value>Status</value>
@@ -297,13 +297,13 @@
 		<value>Delete</value>
 	</data>
 	<data name="AssessmentSubmissions" xml:space="preserve">
-		<value>Assessment Submissions</value>
+		<value>Self-assessment submissions</value>
 	</data>
 	<data name="SubmissionsWithTitle" xml:space="preserve">
 		<value>Submissions — {0}</value>
 	</data>
 	<data name="NoSubmissions" xml:space="preserve">
-		<value>No submissions yet for this assessment.</value>
+		<value>No submissions yet for this self-assessment.</value>
 	</data>
 	<data name="ColUser" xml:space="preserve">
 		<value>User</value>
@@ -312,43 +312,43 @@
 		<value>Email</value>
 	</data>
 	<data name="ColSubmittedAt" xml:space="preserve">
-		<value>Submitted At</value>
+		<value>Submitted</value>
 	</data>
 	<data name="HideAnswers" xml:space="preserve">
-		<value>Hide Answers</value>
+		<value>Hide answers</value>
 	</data>
 	<data name="ViewAnswers" xml:space="preserve">
-		<value>View Answers</value>
+		<value>View answers</value>
 	</data>
 	<data name="Summary" xml:space="preserve">
 		<value>Summary</value>
 	</data>
 	<data name="CreateCourse" xml:space="preserve">
-		<value>Create Programme</value>
+		<value>Create programme</value>
 	</data>
 	<data name="EditCourse" xml:space="preserve">
-		<value>Edit Programme</value>
+		<value>Edit programme</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
-		<value>Back to Programmes</value>
+		<value>Back to programmes</value>
 	</data>
 	<data name="CourseDetails" xml:space="preserve">
-		<value>Programme Details</value>
+		<value>Programme details</value>
 	</data>
 	<data name="SaveCourse" xml:space="preserve">
-		<value>Save Programme</value>
+		<value>Save programme</value>
 	</data>
 	<data name="SaveCourseFirstHint" xml:space="preserve">
-		<value>Save the programme first, then you can add &lt;strong&gt;Modules&lt;/strong&gt;, &lt;strong&gt;Lessons&lt;/strong&gt; (with the WYSIWYG editor, videos, PDFs), preview the programme structure, and publish it.</value>
+		<value>Save the programme first. Then you can add &lt;strong&gt;modules&lt;/strong&gt; and &lt;strong&gt;lessons&lt;/strong&gt; (with the text editor, videos and PDFs), preview the programme structure and publish it.</value>
 	</data>
 	<data name="ModulesAndLessons" xml:space="preserve">
-		<value>Modules &amp; Lessons</value>
+		<value>Modules &amp; lessons</value>
 	</data>
 	<data name="AddModule" xml:space="preserve">
-		<value>+ Add Module</value>
+		<value>+ Add module</value>
 	</data>
 	<data name="LoadingModules" xml:space="preserve">
-		<value>Loading modules...</value>
+		<value>Loading modules…</value>
 	</data>
 	<data name="NoModules" xml:space="preserve">
 		<value>No modules yet. Add one to get started.</value>
@@ -357,19 +357,19 @@
 		<value>Order: {0}</value>
 	</data>
 	<data name="EditModule" xml:space="preserve">
-		<value>Edit Module</value>
+		<value>Edit module</value>
 	</data>
 	<data name="AddLesson" xml:space="preserve">
-		<value>+ Add Lesson</value>
+		<value>+ Add lesson</value>
 	</data>
 	<data name="LoadingLessons" xml:space="preserve">
-		<value>Loading lessons...</value>
+		<value>Loading lessons…</value>
 	</data>
 	<data name="NoLessons" xml:space="preserve">
 		<value>No lessons in this module.</value>
 	</data>
 	<data name="ColMins" xml:space="preserve">
-		<value>Mins</value>
+		<value>Min</value>
 	</data>
 	<data name="LessonTypeVideo" xml:space="preserve">
 		<value>Video</value>
@@ -381,22 +381,22 @@
 		<value>Text</value>
 	</data>
 	<data name="CourseStructurePreview" xml:space="preserve">
-		<value>Programme Structure Preview</value>
+		<value>Programme structure preview</value>
 	</data>
 	<data name="PublishCourse" xml:space="preserve">
-		<value>Publish Programme</value>
+		<value>Publish programme</value>
 	</data>
 	<data name="UnpublishCourse" xml:space="preserve">
-		<value>Unpublish Programme</value>
+		<value>Unpublish programme</value>
 	</data>
 	<data name="SortOrder" xml:space="preserve">
-		<value>Sort Order</value>
+		<value>Sort order</value>
 	</data>
 	<data name="Save" xml:space="preserve">
 		<value>Save</value>
 	</data>
 	<data name="EditLesson" xml:space="preserve">
-		<value>Edit Lesson</value>
+		<value>Edit lesson</value>
 	</data>
 	<data name="DurationMinutes" xml:space="preserve">
 		<value>Duration (minutes)</value>
@@ -414,40 +414,40 @@
 		<value>Upload PDF</value>
 	</data>
 	<data name="UploadVideo" xml:space="preserve">
-		<value>Upload Video File</value>
+		<value>Upload video file</value>
 	</data>
 	<data name="Current" xml:space="preserve">
 		<value>Current:</value>
 	</data>
 	<data name="SaveLesson" xml:space="preserve">
-		<value>Save Lesson</value>
+		<value>Save lesson</value>
 	</data>
 	<data name="CourseManagement" xml:space="preserve">
-		<value>Programme Management</value>
+		<value>Programme management</value>
 	</data>
 	<data name="CreateNewCourse" xml:space="preserve">
-		<value>Create New Programme</value>
+		<value>Create new programme</value>
 	</data>
 	<data name="NoCourses" xml:space="preserve">
 		<value>No programmes found.</value>
 	</data>
 	<data name="ManageLessons" xml:space="preserve">
-		<value>Manage Lessons</value>
+		<value>Manage lessons</value>
 	</data>
 	<data name="BackToCourse" xml:space="preserve">
-		<value>Back to Programme</value>
+		<value>Back to programme</value>
 	</data>
 	<data name="MinutesFormat" xml:space="preserve">
 		<value> · {0} min</value>
 	</data>
 	<data name="UserManagement" xml:space="preserve">
-		<value>User Management</value>
+		<value>User management</value>
 	</data>
 	<data name="SearchByEmailOrName" xml:space="preserve">
-		<value>Search by name or email (e.g. john@gmail.com)...</value>
+		<value>Search by name or email (e.g. name@example.com)…</value>
 	</data>
 	<data name="LoadingUsers" xml:space="preserve">
-		<value>Loading users...</value>
+		<value>Loading users…</value>
 	</data>
 	<data name="NoUsersFound" xml:space="preserve">
 		<value>No users found.</value>
@@ -459,34 +459,34 @@
 		<value>Enabled</value>
 	</data>
 	<data name="ColTier" xml:space="preserve">
-		<value>Tier</value>
+		<value>Plan</value>
 	</data>
 	<data name="ColRoles" xml:space="preserve">
 		<value>Roles</value>
 	</data>
 	<data name="LoginAs" xml:space="preserve">
-		<value>Login As</value>
+		<value>Log in as</value>
 	</data>
 	<data name="ResetPassword" xml:space="preserve">
-		<value>Reset Password</value>
+		<value>Reset password</value>
 	</data>
 	<data name="ResetPasswordFor" xml:space="preserve">
 		<value>Reset password for {0}</value>
 	</data>
 	<data name="NewPassword" xml:space="preserve">
-		<value>New Password</value>
+		<value>New password</value>
 	</data>
 	<data name="ConfirmPasswordLabel" xml:space="preserve">
-		<value>Confirm Password</value>
+		<value>Confirm password</value>
 	</data>
 	<data name="SetPassword" xml:space="preserve">
-		<value>Set Password</value>
+		<value>Set password</value>
 	</data>
 	<data name="PasswordUpdated" xml:space="preserve">
-		<value>Password updated successfully</value>
+		<value>Password updated.</value>
 	</data>
 	<data name="PasswordMismatch" xml:space="preserve">
-		<value>Passwords do not match</value>
+		<value>Passwords don't match.</value>
 	</data>
 	<data name="DisableUser" xml:space="preserve">
 		<value>Disable</value>
@@ -495,7 +495,7 @@
 		<value>Enable</value>
 	</data>
 	<data name="ConfirmDelete" xml:space="preserve">
-		<value>Confirm Delete</value>
+		<value>Confirm deletion</value>
 	</data>
 	<data name="AccessDenied" xml:space="preserve">
 		<value>Access denied. Admin role required.</value>
@@ -507,25 +507,25 @@
 		<value>logged in as</value>
 	</data>
 	<data name="ImpersonationExit" xml:space="preserve">
-		<value>Exit Impersonation</value>
+		<value>Stop impersonating</value>
 	</data>
 	<data name="ImpersonationFailed" xml:space="preserve">
-		<value>Impersonation failed.</value>
+		<value>Couldn't log in as this user. Please try again.</value>
 	</data>
 	<data name="TestimonialsPageTitle" xml:space="preserve">
-		<value>Testimonials</value>
+		<value>Member stories</value>
 	</data>
 	<data name="NewTestimonial" xml:space="preserve">
-		<value>New Testimonial</value>
+		<value>New member story</value>
 	</data>
 	<data name="NoTestimonialsFound" xml:space="preserve">
-		<value>No testimonials found. Add one to display on the landing page.</value>
+		<value>No member stories found. Add one to show it on the home page.</value>
 	</data>
 	<data name="ColOrder" xml:space="preserve">
 		<value>Order</value>
 	</data>
 	<data name="ColRoleCompany" xml:space="preserve">
-		<value>Role / Context</value>
+		<value>Role / setting</value>
 	</data>
 	<data name="StatusActive" xml:space="preserve">
 		<value>Active</value>
@@ -540,22 +540,22 @@
 		<value>Activate</value>
 	</data>
 	<data name="ItemLabelTestimonials" xml:space="preserve">
-		<value>testimonials</value>
+		<value>member stories</value>
 	</data>
 	<data name="BlogArticlesPageTitle" xml:space="preserve">
-		<value>Blog Articles</value>
+		<value>Blog articles</value>
 	</data>
 	<data name="SearchByTitleSlugAuthor" xml:space="preserve">
-		<value>Search by title, slug or author...</value>
+		<value>Search by title, slug or author…</value>
 	</data>
 	<data name="SearchCourses" xml:space="preserve">
-		<value>Search by title...</value>
+		<value>Search by title…</value>
 	</data>
 	<data name="SearchAssessments" xml:space="preserve">
-		<value>Search by title or key...</value>
+		<value>Search by title or key…</value>
 	</data>
 	<data name="NewArticle" xml:space="preserve">
-		<value>New Article</value>
+		<value>New article</value>
 	</data>
 	<data name="NoBlogArticlesFound" xml:space="preserve">
 		<value>No blog articles found.</value>
@@ -564,7 +564,7 @@
 		<value>Slug</value>
 	</data>
 	<data name="ColPublishedAt" xml:space="preserve">
-		<value>Published At</value>
+		<value>Published</value>
 	</data>
 	<data name="ItemLabelArticles" xml:space="preserve">
 		<value>articles</value>
@@ -573,25 +573,25 @@
 		<value>Confirm</value>
 	</data>
 	<data name="ConfirmDeleteCourse" xml:space="preserve">
-		<value>Are you sure you want to delete this programme and all its modules/lessons?</value>
+		<value>Are you sure you want to delete this programme and all its modules and lessons?</value>
 	</data>
 	<data name="ConfirmDeleteAssessment" xml:space="preserve">
-		<value>Are you sure you want to delete this assessment?</value>
+		<value>Are you sure you want to delete this self-assessment?</value>
 	</data>
 	<data name="ConfirmDeleteLesson" xml:space="preserve">
 		<value>Delete this lesson?</value>
 	</data>
 	<data name="ConfirmDeleteUser" xml:space="preserve">
-		<value>Are you sure you want to delete this user? This permanently removes their enrollments, submissions, certificates, and chat/call history.</value>
+		<value>Are you sure you want to delete this user? This permanently removes their enrolments, submissions, certificates, and chat and call history.</value>
 	</data>
 	<data name="ConfirmDeleteArticle" xml:space="preserve">
 		<value>Are you sure you want to delete this article?</value>
 	</data>
 	<data name="ConfirmDeleteTestimonial" xml:space="preserve">
-		<value>Are you sure you want to delete this testimonial?</value>
+		<value>Are you sure you want to delete this member story?</value>
 	</data>
 	<data name="EditArticle" xml:space="preserve">
-		<value>Edit Article</value>
+		<value>Edit article</value>
 	</data>
 	<data name="BlogLangEnglish" xml:space="preserve">
 		<value>English (required)</value>
@@ -603,10 +603,10 @@
 		<value>Summary</value>
 	</data>
 	<data name="FieldAuthorName" xml:space="preserve">
-		<value>Author Name</value>
+		<value>Author name</value>
 	</data>
 	<data name="FieldCoverImage" xml:space="preserve">
-		<value>Cover Image</value>
+		<value>Cover image</value>
 	</data>
 	<data name="FieldTags" xml:space="preserve">
 		<value>Tags</value>
@@ -615,58 +615,58 @@
 		<value>Shared fields</value>
 	</data>
 	<data name="SlugHint" xml:space="preserve">
-		<value>Auto-generated from EN title. Must be unique.</value>
+		<value>Generated from the English title. Must be unique.</value>
 	</data>
 	<data name="TagsHint" xml:space="preserve">
 		<value>Comma-separated</value>
 	</data>
 	<data name="CoverUploadHint" xml:space="preserve">
-		<value>Image will be uploaded after saving the article.</value>
+		<value>The image will be uploaded after you save the article.</value>
 	</data>
 	<data name="EditTestimonial" xml:space="preserve">
-		<value>Edit Testimonial</value>
+		<value>Edit member story</value>
 	</data>
 	<data name="FieldFullName" xml:space="preserve">
-		<value>Full Name</value>
+		<value>Full name</value>
 	</data>
 	<data name="FieldRoleTitle" xml:space="preserve">
-		<value>Role / Title</value>
+		<value>Role / title</value>
 	</data>
 	<data name="FieldRoleTitleEl" xml:space="preserve">
-		<value>Role / Title (Greek)</value>
+		<value>Role / title (Greek)</value>
 	</data>
 	<data name="FieldCompanyContext" xml:space="preserve">
-		<value>Gym / Context</value>
+		<value>Where they train</value>
 	</data>
 	<data name="FieldQuote" xml:space="preserve">
-		<value>Quote</value>
+		<value>Story text</value>
 	</data>
 	<data name="FieldQuoteEl" xml:space="preserve">
-		<value>Quote (Greek)</value>
+		<value>Story text (Greek)</value>
 	</data>
 	<data name="FieldDisplayOrder" xml:space="preserve">
-		<value>Display Order</value>
+		<value>Display order</value>
 	</data>
 	<data name="FieldActiveLandingLabel" xml:space="preserve">
-		<value>Active (visible on landing page)</value>
+		<value>Active (shown on the home page)</value>
 	</data>
 	<data name="FieldAvatarPhoto" xml:space="preserve">
-		<value>Avatar / Photo</value>
+		<value>Profile photo</value>
 	</data>
 	<data name="DisplayOrderHint" xml:space="preserve">
 		<value>Lower number = shown first.</value>
 	</data>
 	<data name="AvatarHint" xml:space="preserve">
-		<value>JPEG, PNG, GIF or WebP · Max 5 MB</value>
+		<value>JPEG, PNG, GIF or WebP · max 5 MB</value>
 	</data>
 	<data name="AvatarSaveFirstHint" xml:space="preserve">
-		<value>Save the testimonial first, then upload an avatar from the edit form.</value>
+		<value>Save the member story first, then upload a photo from the edit form.</value>
 	</data>
 	<data name="RequiredTier" xml:space="preserve">
-		<value>Required Subscription Tier</value>
+		<value>Required plan</value>
 	</data>
 	<data name="RequiredTierHint" xml:space="preserve">
-		<value>Users must be on this plan or higher to enroll in this programme.</value>
+		<value>Members need this plan or higher to join this programme.</value>
 	</data>
 	<data name="ColCreated" xml:space="preserve">
 		<value>Created</value>
@@ -678,10 +678,10 @@
 		<value>Author</value>
 	</data>
 	<data name="ColEmailConfirmed" xml:space="preserve">
-		<value>Email Confirmed</value>
+		<value>Email confirmed</value>
 	</data>
 	<data name="ColModulesLessons" xml:space="preserve">
-		<value>Modules / Lessons</value>
+		<value>Modules / lessons</value>
 	</data>
 	<data name="ColCompletionRate" xml:space="preserve">
 		<value>Completion %</value>
@@ -693,7 +693,7 @@
     <value>programmes</value>
   </data>
   <data name="ItemLabelAssessments" xml:space="preserve">
-    <value>assessments</value>
+    <value>self-assessments</value>
   </data>
   <data name="ItemLabelSubmissions" xml:space="preserve">
     <value>submissions</value>
@@ -705,16 +705,16 @@
     <value>reviews</value>
   </data>
   <data name="ItemLabelPaths" xml:space="preserve">
-    <value>paths</value>
+    <value>training paths</value>
   </data>
   <data name="ItemLabelSessions" xml:space="preserve">
     <value>live classes</value>
   </data>
   <data name="CourseSaved" xml:space="preserve">
-    <value>Programme saved successfully.</value>
+    <value>Programme saved.</value>
   </data>
   <data name="CourseSaveFailed" xml:space="preserve">
-    <value>Error saving programme.</value>
+    <value>Couldn't save the programme. Please try again.</value>
   </data>
   <data name="CoursePublished" xml:space="preserve">
     <value>Programme published.</value>
@@ -732,10 +732,10 @@
     <value>Programme deleted.</value>
   </data>
   <data name="CourseDeleteFailed" xml:space="preserve">
-    <value>Error deleting programme.</value>
+    <value>Couldn't delete the programme. Please try again.</value>
   </data>
   <data name="PublishStatusUpdateFailed" xml:space="preserve">
-    <value>Failed to update publish status.</value>
+    <value>Couldn't update the publishing status. Please try again.</value>
   </data>
   <data name="ModuleSaved" xml:space="preserve">
     <value>Module saved.</value>
@@ -744,7 +744,7 @@
     <value>Module deleted.</value>
   </data>
   <data name="ModuleDeleteFailed" xml:space="preserve">
-    <value>Error deleting module.</value>
+    <value>Couldn't delete the module. Please try again.</value>
   </data>
   <data name="DeleteModuleConfirm" xml:space="preserve">
     <value>Delete this module and all its lessons?</value>
@@ -756,7 +756,7 @@
     <value>Lesson deleted.</value>
   </data>
   <data name="LessonDeleteFailed" xml:space="preserve">
-    <value>Error deleting lesson.</value>
+    <value>Couldn't delete the lesson. Please try again.</value>
   </data>
   <data name="DeleteLessonConfirm" xml:space="preserve">
     <value>Delete this lesson?</value>
@@ -765,91 +765,91 @@
     <value>Lesson title is required.</value>
   </data>
   <data name="LessonCreateFailed" xml:space="preserve">
-    <value>Error creating lesson.</value>
+    <value>Couldn't create the lesson. Please try again.</value>
   </data>
   <data name="LessonUpdateFailed" xml:space="preserve">
-    <value>Error updating lesson.</value>
+    <value>Couldn't update the lesson. Please try again.</value>
   </data>
   <data name="AssessmentPublished" xml:space="preserve">
-    <value>Assessment published.</value>
+    <value>Self-assessment published.</value>
   </data>
   <data name="AssessmentUnpublished" xml:space="preserve">
-    <value>Assessment unpublished.</value>
+    <value>Self-assessment unpublished.</value>
   </data>
   <data name="AssessmentDeleted" xml:space="preserve">
-    <value>Assessment deleted.</value>
+    <value>Self-assessment deleted.</value>
   </data>
   <data name="AssessmentSaveFailed" xml:space="preserve">
-    <value>Error saving assessment.</value>
+    <value>Couldn't save the self-assessment. Please try again.</value>
   </data>
   <data name="ArticleDeleted" xml:space="preserve">
     <value>Article deleted.</value>
   </data>
   <data name="ArticleDeleteFailed" xml:space="preserve">
-    <value>Error deleting article.</value>
+    <value>Couldn't delete the article. Please try again.</value>
   </data>
   <data name="CoverImageUploadFailed" xml:space="preserve">
-    <value>Cover image upload failed.</value>
+    <value>Couldn't upload the cover image. Please try again.</value>
   </data>
   <data name="SlugInUse" xml:space="preserve">
-    <value>Slug already in use. Please choose a different slug.</value>
+    <value>This slug is already in use. Please choose a different one.</value>
   </data>
   <data name="TestimonialDeleted" xml:space="preserve">
-    <value>Testimonial deleted.</value>
+    <value>Member story deleted.</value>
   </data>
   <data name="TestimonialDeleteFailed" xml:space="preserve">
-    <value>Error deleting testimonial.</value>
+    <value>Couldn't delete the member story. Please try again.</value>
   </data>
   <data name="TestimonialStatusUpdateFailed" xml:space="preserve">
-    <value>Failed to update testimonial status.</value>
+    <value>Couldn't update the member story's status. Please try again.</value>
   </data>
   <data name="TestimonialActivated" xml:space="preserve">
-    <value>Testimonial activated.</value>
+    <value>Member story activated.</value>
   </data>
   <data name="TestimonialDeactivated" xml:space="preserve">
-    <value>Testimonial deactivated.</value>
+    <value>Member story deactivated.</value>
   </data>
   <data name="TestimonialSaveFailed" xml:space="preserve">
-    <value>Failed to save testimonial. Please try again.</value>
+    <value>Couldn't save the member story. Please try again.</value>
   </data>
   <data name="AvatarUploadFailed" xml:space="preserve">
-    <value>Avatar upload failed. Check file type and size (max 5 MB).</value>
+    <value>Couldn't upload the photo. Check the file type and size (max 5 MB).</value>
   </data>
   <data name="AvatarRemoveFailed" xml:space="preserve">
-    <value>Failed to remove avatar.</value>
+    <value>Couldn't remove the photo. Please try again.</value>
   </data>
   <data name="FullNameRequired" xml:space="preserve">
-    <value>Full Name is required.</value>
+    <value>Full name is required.</value>
   </data>
   <data name="QuoteRequired" xml:space="preserve">
-    <value>Quote is required.</value>
+    <value>Story text is required.</value>
   </data>
   <data name="UserStatusToggled" xml:space="preserve">
-    <value>User enable/disable toggled.</value>
+    <value>User status updated.</value>
   </data>
   <data name="UserToggleFailed" xml:space="preserve">
-    <value>Error toggling user.</value>
+    <value>Couldn't update the user's status. Please try again.</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
     <value>User deleted.</value>
   </data>
   <data name="UserDeleteFailed" xml:space="preserve">
-    <value>Error deleting user.</value>
+    <value>Couldn't delete the user. Please try again.</value>
   </data>
   <data name="PasswordMinLength" xml:space="preserve">
     <value>Password must be at least 8 characters.</value>
   </data>
   <data name="PasswordUpdateFailed" xml:space="preserve">
-    <value>Failed to update password. Check password requirements.</value>
+    <value>Couldn't update the password. Check the password rules.</value>
   </data>
   <data name="TitleEnglishRequired" xml:space="preserve">
     <value>Title (English) is required.</value>
   </data>
   <data name="PathSaveFailed" xml:space="preserve">
-    <value>Failed to save the training path.</value>
+    <value>Couldn't save the training path. Please try again.</value>
   </data>
   <data name="ModuleSaveFailed" xml:space="preserve">
-    <value>Error saving module.</value>
+    <value>Couldn't save the module. Please try again.</value>
   </data>
   <data name="Level" xml:space="preserve">
     <value>Level</value>
@@ -867,7 +867,7 @@
     <value>Estimated weeks</value>
   </data>
   <data name="SessionsPerWeek" xml:space="preserve">
-    <value>Sessions per week</value>
+    <value>Workouts per week</value>
   </data>
   <data name="CoverExercise" xml:space="preserve">
     <value>Cover exercise (slug)</value>
@@ -945,7 +945,7 @@
     <value>What the member says about training with FitEdu (max 1000 characters)</value>
   </data>
   <data name="AvatarPreviewAlt" xml:space="preserve">
-    <value>Avatar preview</value>
+    <value>Photo preview</value>
   </data>
   <data name="QuestionNoLabel" xml:space="preserve">
     <value>(no label)</value>
@@ -965,12 +965,12 @@ Option 3</value>
     <value>Member</value>
   </data>
   <data name="PdfUploadFailed" xml:space="preserve">
-    <value>PDF upload failed.</value>
+    <value>Couldn't upload the PDF. Please try again.</value>
   </data>
   <data name="VideoUploadFailed" xml:space="preserve">
-    <value>Video upload failed.</value>
+    <value>Couldn't upload the video. Please try again.</value>
   </data>
   <data name="EditorPlaceholder" xml:space="preserve">
-    <value>Write the content here...</value>
+    <value>Write the content here…</value>
   </data>
 </root>

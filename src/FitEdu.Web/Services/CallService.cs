@@ -77,6 +77,7 @@ public partial class CallService : ICallService
                 options.AccessTokenProvider = () => circuitUser is not null
                     ? _authService.GetTokenAsync(circuitUser)
                     : _authService.GetTokenAsync();
+                HubConnectionLanguage.SendCurrentUiLanguage(options);
             })
             .WithAutomaticReconnect()
             .Build();

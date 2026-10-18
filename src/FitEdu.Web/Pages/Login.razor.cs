@@ -148,7 +148,7 @@ public partial class Login
         }
         catch (Exception ex)
         {
-            errorMessage = $"{ErrorMessagesRes.EmailConfirmationError}: {ex.Message}";
+            errorMessage = $"{ErrorMessagesRes.Error}: {ex.Message}";
         }
     }
 }

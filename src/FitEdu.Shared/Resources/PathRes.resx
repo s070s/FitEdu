@@ -92,7 +92,7 @@
     <value>Open programme</value>
   </data>
   <data name="SignInToTrackProgress" xml:space="preserve">
-    <value>Sign in to track your progress through this path.</value>
+    <value>Log in to track your progress through this path.</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading paths…</value>
@@ -107,7 +107,7 @@
     <value>New path</value>
   </data>
   <data name="EditPath" xml:space="preserve">
-    <value>Edit Path</value>
+    <value>Edit path</value>
   </data>
   <data name="NoPathsFound" xml:space="preserve">
     <value>No training paths found.</value>
@@ -149,7 +149,7 @@
     <value>Delete</value>
   </data>
   <data name="ConfirmDelete" xml:space="preserve">
-    <value>Confirm delete?</value>
+    <value>Delete this path?</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -203,7 +203,7 @@
     <value>Remove</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Failed to save the training path. Please try again.</value>
+    <value>Couldn't save the training path. Please try again.</value>
   </data>
   <data name="PathsEyebrow" xml:space="preserve">
     <value>Step by step</value>

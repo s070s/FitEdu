@@ -716,5 +716,95 @@ namespace FitEdu.Shared.Resources.Messages {
                 return ResourceManager.GetString("IdentityInvalidEmailFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Write a message first..
+        /// </summary>
+        public static string Chat_MessageRequired {
+            get {
+                return ResourceManager.GetString("Chat_MessageRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your message is too long (max {0:N0} characters)..
+        /// </summary>
+        public static string Chat_MessageTooLongFormat {
+            get {
+                return ResourceManager.GetString("Chat_MessageTooLongFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This member isn't available right now..
+        /// </summary>
+        public static string Call_MemberUnavailable {
+            get {
+                return ResourceManager.GetString("Call_MemberUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The call is full..
+        /// </summary>
+        public static string Call_Full {
+            get {
+                return ResourceManager.GetString("Call_Full", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You're no longer part of this call..
+        /// </summary>
+        public static string Call_NotInCall {
+            get {
+                return ResourceManager.GetString("Call_NotInCall", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your plan doesn't include certificates. Upgrade to Pro..
+        /// </summary>
+        public static string Certificate_PlanRequired {
+            get {
+                return ResourceManager.GetString("Certificate_PlanRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Payments aren't available yet. Please check back later..
+        /// </summary>
+        public static string PaymentNotAvailable {
+            get {
+                return ResourceManager.GetString("PaymentNotAvailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The lesson file wasn't found..
+        /// </summary>
+        public static string LessonFileNotFound {
+            get {
+                return ResourceManager.GetString("LessonFileNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the lesson file. Please try again..
+        /// </summary>
+        public static string LessonFileLoadFailed {
+            get {
+                return ResourceManager.GetString("LessonFileLoadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only PDF files are allowed..
+        /// </summary>
+        public static string OnlyPdfFilesAllowed {
+            get {
+                return ResourceManager.GetString("OnlyPdfFilesAllowed", resourceCulture);
+            }
+        }
     }
 }

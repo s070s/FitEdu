@@ -65,13 +65,19 @@
     <value>Δεν υπάρχουν κριτικές ακόμη.</value>
   </data>
   <data name="RatingSummaryFormat" xml:space="preserve">
-    <value>{0} από 5 ({1} κριτικές)</value>
+    <value>{0} από 5 ({1})</value>
+  </data>
+  <data name="ReviewCountOne" xml:space="preserve">
+    <value>1 κριτική</value>
+  </data>
+  <data name="ReviewsCountFormat" xml:space="preserve">
+    <value>{0} κριτικές</value>
   </data>
   <data name="WriteReview" xml:space="preserve">
     <value>Γράψε μια κριτική</value>
   </data>
   <data name="EditReview" xml:space="preserve">
-    <value>Επεξεργασία κριτικής</value>
+    <value>Άλλαξε την κριτική σου</value>
   </data>
   <data name="RatingLabel" xml:space="preserve">
     <value>Βαθμολογία</value>
@@ -101,7 +107,7 @@
     <value>Η κριτική σου δεν εγκρίθηκε. Μπορείς να την αλλάξεις και να τη στείλεις ξανά.</value>
   </data>
   <data name="SubmitError" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η αποστολή της κριτικής σου. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η υποβολή της κριτικής σου. Δοκίμασε ξανά.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
     <value>Κριτικές προγραμμάτων</value>
@@ -110,7 +116,7 @@
     <value>Πρόγραμμα</value>
   </data>
   <data name="ColAuthor" xml:space="preserve">
-    <value>Συγγραφέας</value>
+    <value>Μέλος</value>
   </data>
   <data name="ColRating" xml:space="preserve">
     <value>Βαθμολογία</value>
@@ -143,7 +149,7 @@
     <value>Απορρίφθηκε</value>
   </data>
   <data name="FilterAll" xml:space="preserve">
-    <value>Όλα</value>
+    <value>Όλες</value>
   </data>
   <data name="NoReviewsToModerate" xml:space="preserve">
     <value>Δεν υπάρχουν κριτικές προς εμφάνιση.</value>

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Label_ConfirmEmail" xml:space="preserve">
-    <value>Επαλήθευση email</value>
+    <value>Επιβεβαίωση email</value>
   </data>
   <data name="Label_CreateAccount" xml:space="preserve">
     <value>Δημιουργία λογαριασμού</value>
@@ -148,10 +148,10 @@
     <value>Σύνδεση</value>
   </data>
   <data name="Label_Minimum8Chars" xml:space="preserve">
-    <value>8 χαρακτήρες τουλάχιστον</value>
+    <value>Τουλάχιστον 8 χαρακτήρες</value>
   </data>
   <data name="Label_Password" xml:space="preserve">
-    <value>Κωδικός</value>
+    <value>Κωδικός πρόσβασης</value>
   </data>
   <data name="Label_Register" xml:space="preserve">
     <value>Εγγραφή</value>
@@ -163,19 +163,19 @@
     <value>Ξέχασα τον κωδικό μου</value>
   </data>
   <data name="ForgotPasswordInstructions" xml:space="preserve">
-    <value>Γράψε το email σου και θα σου στείλουμε σύνδεσμο για να ορίσεις νέο κωδικό.</value>
+    <value>Γράψε το email σου και θα σου στείλουμε σύνδεσμο για να ορίσεις νέο κωδικό πρόσβασης.</value>
   </data>
   <data name="Label_DevMode" xml:space="preserve">
     <value>Λειτουργία Dev:</value>
   </data>
   <data name="Label_NewPassword" xml:space="preserve">
-    <value>Νέος κωδικός</value>
+    <value>Νέος κωδικός πρόσβασης</value>
   </data>
   <data name="Label_DevResetPassword" xml:space="preserve">
-    <value>Dev: Επαναφορά κωδικού</value>
+    <value>Dev: Επαναφορά κωδικού πρόσβασης</value>
   </data>
   <data name="Label_Sending" xml:space="preserve">
-    <value>Αποστολή...</value>
+    <value>Αποστολή…</value>
   </data>
   <data name="Label_SendResetLink" xml:space="preserve">
     <value>Αποστολή συνδέσμου</value>
@@ -184,19 +184,19 @@
     <value>Δεν έχεις λογαριασμό;</value>
   </data>
   <data name="Label_ConfirmPassword" xml:space="preserve">
-    <value>Επιβεβαίωση κωδικού</value>
+    <value>Επιβεβαίωση κωδικού πρόσβασης</value>
   </data>
   <data name="Label_GdprConsent" xml:space="preserve">
     <value>Συγκατατίθεμαι στην επεξεργασία των προσωπικών μου δεδομένων (απαιτείται).</value>
   </data>
   <data name="ConsentPolicyIntro" xml:space="preserve">
-    <value>Με την εγγραφή σου, συμφωνείς με την</value>
+    <value>Με την εγγραφή σου, συμφωνείς με</value>
   </data>
   <data name="ConsentPolicyAnd" xml:space="preserve">
-    <value>και τους</value>
+    <value>και</value>
   </data>
   <data name="Label_Registering" xml:space="preserve">
-    <value>Εγγραφή...</value>
+    <value>Εγγραφή…</value>
   </data>
   <data name="Label_AlreadyHaveAccount" xml:space="preserve">
     <value>Έχεις ήδη λογαριασμό;</value>
@@ -205,7 +205,7 @@
     <value>Μετάβαση στο περιεχόμενο</value>
   </data>
   <data name="ShowHidePassword" xml:space="preserve">
-    <value>Εμφάνιση ή απόκρυψη κωδικού</value>
+    <value>Εμφάνιση ή απόκρυψη κωδικού πρόσβασης</value>
   </data>
   <data name="PaginationRows" xml:space="preserve">
     <value>Σειρές:</value>
@@ -286,7 +286,7 @@
     <value>Σίγουρα θέλεις να συνεχίσεις;</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Άκυρο</value>
+    <value>Ακύρωση</value>
   </data>
   <data name="UnsavedChangesTitle" xml:space="preserve">
     <value>Μη αποθηκευμένες αλλαγές</value>
@@ -310,7 +310,7 @@
     <value>Φόρτωση</value>
   </data>
   <data name="LoadingEllipsis" xml:space="preserve">
-    <value>Φόρτωση...</value>
+    <value>Φόρτωση…</value>
   </data>
   <data name="NoItemsFound" xml:space="preserve">
     <value>Δεν βρέθηκαν στοιχεία.</value>
@@ -322,13 +322,13 @@
     <value>Πρόχειρο</value>
   </data>
   <data name="StatusBeginner" xml:space="preserve">
-    <value>Αρχάριος/α</value>
+    <value>Αρχάριο επίπεδο</value>
   </data>
   <data name="StatusIntermediate" xml:space="preserve">
     <value>Μεσαίο επίπεδο</value>
   </data>
   <data name="StatusAdvanced" xml:space="preserve">
-    <value>Προχωρημένος/η</value>
+    <value>Προχωρημένο επίπεδο</value>
   </data>
   <data name="StatusOther" xml:space="preserve">
     <value>Προτιμώ να μην απαντήσω</value>
@@ -340,7 +340,7 @@
     <value>Μενού πλοήγησης</value>
   </data>
   <data name="UnhandledError" xml:space="preserve">
-    <value>Παρουσιάστηκε μη αναμενόμενο σφάλμα.</value>
+    <value>Κάτι πήγε στραβά.</value>
   </data>
   <data name="Reload" xml:space="preserve">
     <value>Επαναφόρτωση</value>
@@ -352,7 +352,7 @@
       <value>Κύριος στόχος (προαιρετικός)</value>
     </data>
     <data name="GoalNotSureYet" xml:space="preserve">
-      <value>Δεν ξέρω ακόμα</value>
+      <value>Δεν ξέρω ακόμη</value>
     </data>
     <data name="GoalHint" xml:space="preserve">
       <value>Μας βοηθά να σου προτείνουμε προγράμματα. Μπορείς να τον αλλάξεις όποτε θέλεις από το προφίλ σου.</value>
@@ -364,21 +364,36 @@
       <value>Η προπόνησή σου</value>
     </data>
     <data name="AuthLoginSubtitle" xml:space="preserve">
-      <value>Καλώς ήρθες ξανά. Συνέχισε το πρόγραμμά σου από εκεί που σταμάτησες.</value>
+      <value>Καλώς ήρθες ξανά. Συνέχισε την προπόνησή σου από εκεί που σταμάτησες.</value>
     </data>
     <data name="AuthRegisterSubtitle" xml:space="preserve">
       <value>Η εγγραφή είναι δωρεάν. Η πρώτη σου προπόνηση απέχει λίγα λεπτά.</value>
     </data>
     <data name="DevResetPasswordHint" xml:space="preserve">
-      <value>Άλλαξε τον κωδικό απευθείας</value>
+      <value>Άλλαξε τον κωδικό πρόσβασης απευθείας</value>
     </data>
   <data name="Label_GoToLogin" xml:space="preserve">
     <value>Πήγαινε στη σύνδεση</value>
   </data>
   <data name="ChooseFile" xml:space="preserve">
-    <value>Επίλεξε αρχείο</value>
+    <value>Διάλεξε αρχείο</value>
   </data>
   <data name="NoFileChosen" xml:space="preserve">
-    <value>Δεν επιλέχτηκε αρχείο</value>
+    <value>Δεν επιλέχθηκε αρχείο</value>
+  </data>
+  <data name="ConsentPrivacyLink" xml:space="preserve">
+    <value>την Πολιτική απορρήτου</value>
+  </data>
+  <data name="ConsentTermsLink" xml:space="preserve">
+    <value>τους Όρους χρήσης</value>
+  </data>
+  <data name="LastSeenMinuteOne" xml:space="preserve">
+    <value>τελευταία σύνδεση πριν από 1 λεπτό</value>
+  </data>
+  <data name="LastSeenHourOne" xml:space="preserve">
+    <value>τελευταία σύνδεση πριν από 1 ώρα</value>
+  </data>
+  <data name="LastSeenDayOne" xml:space="preserve">
+    <value>τελευταία σύνδεση πριν από 1 ημέρα</value>
   </data>
 </root>

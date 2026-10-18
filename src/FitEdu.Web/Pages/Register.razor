@@ -122,9 +122,10 @@
                     </label>
                     <div class="form-text">
                         @GlobalRes.ConsentPolicyIntro
-                        <a href="/privacy" target="_blank" rel="noopener">@LegalRes.PrivacyTitle</a>
+                        @* The link texts carry their own article so the Greek sentence takes the accusative case. *@
+                        <a href="/privacy" target="_blank" rel="noopener">@GlobalRes.ConsentPrivacyLink</a>
                         @GlobalRes.ConsentPolicyAnd
-                        <a href="/terms" target="_blank" rel="noopener">@LegalRes.TermsTitle</a>.
+                        <a href="/terms" target="_blank" rel="noopener">@GlobalRes.ConsentTermsLink</a>.
                     </div>
                     <ValidationMessage For="@(() => registerRequest.GdprConsent)" />
                 </div>

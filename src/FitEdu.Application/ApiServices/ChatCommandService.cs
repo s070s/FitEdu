@@ -5,6 +5,7 @@ using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.ApiServices;
 
@@ -16,17 +17,17 @@ namespace FitEdu.Application.ApiServices;
 /// </summary>
 public class ChatCommandService(IApplicationDbContext db) : IChatCommandService
 {
-    private const int MaxMessageLength = 4_000;
+    public const int MaxMessageLength = 4_000;
 
     public async Task<ServiceResult<ChatMessageSendResult>> SendMessageAsync(
         string senderId, string senderName, string senderRole, Guid conversationId, string content, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(content))
-            return ServiceResult<ChatMessageSendResult>.BadRequest(error: "Message content is required.");
+            return ServiceResult<ChatMessageSendResult>.BadRequest(error: ErrorMessagesRes.Chat_MessageRequired);
 
         if (content.Length > MaxMessageLength)
             return ServiceResult<ChatMessageSendResult>.BadRequest(
-                error: $"Message exceeds the {MaxMessageLength:N0} character limit.");
+                error: ResourceFormat.Fill(ErrorMessagesRes.Chat_MessageTooLongFormat, MaxMessageLength));
 
         var conversation = await db.ChatConversations
             .FirstOrDefaultAsync(c => c.Id == conversationId, ct);

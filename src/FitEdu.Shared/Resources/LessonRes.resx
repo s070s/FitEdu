@@ -102,7 +102,7 @@
 		<value>Lesson</value>
 	</data>
 	<data name="LoadingLesson" xml:space="preserve">
-		<value>Loading lesson...</value>
+		<value>Loading lesson…</value>
 	</data>
 	<data name="LessonUnavailableTitle" xml:space="preserve">
 		<value>Lesson not available</value>
@@ -111,16 +111,16 @@
 		<value>Lesson not found.</value>
 	</data>
 	<data name="LessonNotFoundOrNotEnrolled" xml:space="preserve">
-		<value>Lesson not found or you are not enrolled in this programme.</value>
+		<value>Lesson not found, or you haven't joined this programme.</value>
 	</data>
 	<data name="FailedToLoadLesson" xml:space="preserve">
-		<value>Failed to load lesson. Please try again.</value>
+		<value>Couldn't load the lesson. Please try again.</value>
 	</data>
 	<data name="Minutes" xml:space="preserve">
-		<value>minutes</value>
+		<value>min</value>
 	</data>
 	<data name="Saving" xml:space="preserve">
-		<value>Saving...</value>
+		<value>Saving…</value>
 	</data>
 	<data name="MarkAsComplete" xml:space="preserve">
 		<value>Mark as complete</value>
@@ -150,7 +150,7 @@
 		<value>This lesson's media is currently unavailable.</value>
 	</data>
 	<data name="CertificatePending" xml:space="preserve">
-		<value>Your certificate is being prepared — check My Certificates in a few minutes.</value>
+		<value>Your certificate is being prepared — check Certificates in a few minutes.</value>
 	</data>
 	<data name="Exercises" xml:space="preserve">
 		<value>Exercises</value>
@@ -171,10 +171,10 @@
 		<value>How to do it</value>
 	</data>
 	<data name="StartPosition" xml:space="preserve">
-		<value>Start</value>
+		<value>Start position</value>
 	</data>
 	<data name="EndPosition" xml:space="preserve">
-		<value>Finish</value>
+		<value>Finish position</value>
 	</data>
 	<data name="WorkoutProgressFormat" xml:space="preserve">
 		<value>Workout {0} of {1}</value>
@@ -203,8 +203,11 @@
 	<data name="TotalSetsFormat" xml:space="preserve">
 		<value>{0} sets in total</value>
 	</data>
+	<data name="TotalSetsOne" xml:space="preserve">
+		<value>1 set in total</value>
+	</data>
 	<data name="CompleteHint" xml:space="preserve">
-		<value>Done with this lesson? Mark it complete to save your progress.</value>
+		<value>Done with this lesson? Select "Mark as complete" to save your progress.</value>
 	</data>
 	<data name="BreadcrumbLabel" xml:space="preserve">
 		<value>Breadcrumb</value>
@@ -213,7 +216,7 @@
 		<value>Lesson navigation</value>
 	</data>
 	<data name="CertificateReady" xml:space="preserve">
-		<value>Your certificate is ready. You will find it in My Certificates.</value>
+		<value>Your certificate is ready. You'll find it in Certificates.</value>
 	</data>
 	<data name="ViewCertificate" xml:space="preserve">
 		<value>View certificate</value>

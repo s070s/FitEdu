@@ -126,6 +126,9 @@
   <data name="UnreadBadgeAriaLabel" xml:space="preserve">
     <value>{0} unread notifications</value>
   </data>
+  <data name="UnreadBadgeAriaLabelOne" xml:space="preserve">
+    <value>1 unread notification</value>
+  </data>
   <data name="Empty" xml:space="preserve">
     <value>No notifications yet.</value>
   </data>
@@ -133,10 +136,10 @@
     <value>Loading…</value>
   </data>
   <data name="MarkAllRead" xml:space="preserve">
-    <value>Mark all read</value>
+    <value>Mark all as read</value>
   </data>
   <data name="MarkRead" xml:space="preserve">
-    <value>Mark read</value>
+    <value>Mark as read</value>
   </data>
   <data name="ViewAll" xml:space="preserve">
     <value>View all</value>
@@ -145,7 +148,7 @@
     <value>Notifications</value>
   </data>
   <data name="Subtitle" xml:space="preserve">
-    <value>Messages, certificates and class reminders in one place.</value>
+    <value>Messages, certificates and live class reminders in one place.</value>
   </data>
   <data name="SortLabel" xml:space="preserve">
     <value>Sort</value>
@@ -172,7 +175,7 @@
     <value>Actions</value>
   </data>
   <data name="TimeJustNow" xml:space="preserve">
-    <value>now</value>
+    <value>just now</value>
   </data>
   <data name="TimeMinutesFormat" xml:space="preserve">
     <value>{0}m</value>

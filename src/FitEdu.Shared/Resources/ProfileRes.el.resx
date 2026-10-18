@@ -46,13 +46,13 @@
 		<value>Το προφίλ μου</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
-		<value>Φόρτωση...</value>
+		<value>Φόρτωση…</value>
 	</data>
 	<data name="BasicInformation" xml:space="preserve">
 		<value>Βασικές πληροφορίες</value>
 	</data>
 	<data name="LabelAvatar" xml:space="preserve">
-		<value>Εικόνα προφίλ</value>
+		<value>Φωτογραφία προφίλ</value>
 	</data>
 	<data name="LabelDisplayName" xml:space="preserve">
 		<value>Εμφανιζόμενο όνομα</value>
@@ -73,52 +73,52 @@
 		<value>Αποθήκευση προφίλ</value>
 	</data>
 	<data name="ChangePassword" xml:space="preserve">
-		<value>Αλλαγή κωδικού</value>
+		<value>Αλλαγή κωδικού πρόσβασης</value>
 	</data>
 	<data name="LabelCurrentPassword" xml:space="preserve">
-		<value>Τρέχων κωδικός</value>
+		<value>Τρέχων κωδικός πρόσβασης</value>
 	</data>
 	<data name="LabelNewPassword" xml:space="preserve">
-		<value>Νέος κωδικός</value>
+		<value>Νέος κωδικός πρόσβασης</value>
 	</data>
 	<data name="LabelConfirmNewPassword" xml:space="preserve">
-		<value>Επιβεβαίωση νέου κωδικού</value>
+		<value>Επιβεβαίωση νέου κωδικού πρόσβασης</value>
 	</data>
 	<data name="BtnLogout" xml:space="preserve">
 		<value>Αποσύνδεση</value>
 	</data>
 	<data name="RedirectingToLogin" xml:space="preserve">
-		<value>Ανακατεύθυνση στη σύνδεση...</value>
+		<value>Μεταφορά στη σελίδα σύνδεσης…</value>
 	</data>
 	<data name="FileTooLarge" xml:space="preserve">
-		<value>Το αρχείο είναι πολύ μεγάλο (μέγ. 5MB)</value>
+		<value>Το αρχείο είναι πολύ μεγάλο (έως 5 MB).</value>
 	</data>
 	<data name="AvatarUploadedSuccess" xml:space="preserve">
-		<value>Η εικόνα ανέβηκε επιτυχώς</value>
+		<value>Η φωτογραφία προφίλ ανέβηκε.</value>
 	</data>
 	<data name="ErrorUploadingAvatar" xml:space="preserve">
-		<value>Σφάλμα κατά τη μεταφόρτωση εικόνας</value>
+		<value>Δεν ήταν δυνατό το ανέβασμα της φωτογραφίας προφίλ. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="ErrorUploadingAvatarFormat" xml:space="preserve">
-		<value>Σφάλμα κατά τη μεταφόρτωση εικόνας: {0}</value>
+		<value>Δεν ήταν δυνατό το ανέβασμα της φωτογραφίας προφίλ: {0}</value>
 	</data>
 	<data name="ProfileUpdatedSuccess" xml:space="preserve">
-		<value>Το προφίλ ενημερώθηκε επιτυχώς</value>
+		<value>Το προφίλ σου ενημερώθηκε.</value>
 	</data>
 	<data name="ErrorUpdatingProfile" xml:space="preserve">
-		<value>Σφάλμα κατά την ενημέρωση προφίλ</value>
+		<value>Δεν ήταν δυνατή η ενημέρωση του προφίλ σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="FillAllPasswordFields" xml:space="preserve">
-		<value>Συμπλήρωσε όλα τα πεδία κωδικού</value>
+		<value>Συμπλήρωσε όλα τα πεδία κωδικού.</value>
 	</data>
 	<data name="PasswordsDoNotMatch" xml:space="preserve">
-		<value>Οι νέοι κωδικοί δεν ταιριάζουν</value>
+		<value>Οι νέοι κωδικοί δεν ταιριάζουν.</value>
 	</data>
 	<data name="PasswordChangedSuccess" xml:space="preserve">
-		<value>Ο κωδικός άλλαξε επιτυχώς</value>
+		<value>Ο κωδικός σου άλλαξε.</value>
 	</data>
 	<data name="ErrorChangingPassword" xml:space="preserve">
-		<value>Σφάλμα αλλαγής κωδικού - έλεγξε τον τρέχοντα κωδικό σου</value>
+		<value>Δεν ήταν δυνατή η αλλαγή του κωδικού. Έλεγξε τον τρέχοντα κωδικό σου και δοκίμασε ξανά.</value>
 	</data>
 	<data name="ErrorFormat" xml:space="preserve">
 		<value>Σφάλμα: {0}</value>
@@ -127,16 +127,16 @@
 		<value>Δεν ήταν δυνατή η φόρτωση του προφίλ σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="InvalidImageType" xml:space="preserve">
-		<value>Επίλεξε αρχείο εικόνας (JPEG, PNG, GIF ή WebP).</value>
+		<value>Διάλεξε αρχείο εικόνας (JPEG, PNG, GIF ή WebP).</value>
 	</data>
 	<data name="UploadingAvatar" xml:space="preserve">
-		<value>Μεταφόρτωση…</value>
+		<value>Ανέβασμα…</value>
 	</data>
 	<data name="DangerZone" xml:space="preserve">
-		<value>Επικίνδυνη ζώνη</value>
+		<value>Διαγραφή λογαριασμού</value>
 	</data>
 	<data name="DeleteAccount" xml:space="preserve">
-		<value>Διαγραφή λογαριασμού</value>
+		<value>Διαγραφή του λογαριασμού μου</value>
 	</data>
 	<data name="DeleteAccountDescription" xml:space="preserve">
 		<value>Οριστική διαγραφή του λογαριασμού σου και όλων των σχετικών δεδομένων (εγγραφές, απαντήσεις αξιολογήσεων, πιστοποιητικά, ιστορικό συνομιλιών και κλήσεων, στοιχεία χρέωσης). Αυτή η ενέργεια δεν αναιρείται.</value>
@@ -154,10 +154,10 @@
 		<value>Τα δεδομένα σου</value>
 	</data>
 	<data name="DownloadMyDataDescription" xml:space="preserve">
-		<value>Κατέβασε ένα αντίγραφο των προσωπικών σου δεδομένων: προφίλ, εγγραφές, απαντήσεις αξιολογήσεων, πιστοποιητικά, ιστορικό χρέωσης και τα μηνύματά σου στο chat.</value>
+		<value>Κατέβασε ένα αντίγραφο των προσωπικών σου δεδομένων: προφίλ, εγγραφές σε προγράμματα, απαντήσεις αξιολογήσεων, πιστοποιητικά, ιστορικό χρέωσης και τα μηνύματά σου στις συνομιλίες.</value>
 	</data>
 	<data name="DownloadMyData" xml:space="preserve">
-		<value>Λήψη των δεδομένων μου</value>
+		<value>Κατέβασε τα δεδομένα σου</value>
 	</data>
 	<data name="Goal" xml:space="preserve">
 		<value>Στόχος προπόνησης</value>
@@ -170,9 +170,6 @@
 	</data>
 	<data name="CurrentStreak" xml:space="preserve">
 		<value>Τρέχον σερί</value>
-	</data>
-	<data name="StreakDaysFormat" xml:space="preserve">
-		<value>{0} ημέρες</value>
 	</data>
 	<data name="StatsHeading" xml:space="preserve">
 		<value>Η προπόνησή σου με μια ματιά</value>
@@ -187,7 +184,7 @@
 		<value>Αξιολογήσεις που ολοκλήρωσες</value>
 	</data>
 	<data name="GoalNotSet" xml:space="preserve">
-		<value>Δεν έχει επιλεγεί ακόμα</value>
+		<value>Δεν έχει επιλεγεί ακόμη</value>
 	</data>
 	<data name="LabelPreferredLanguage" xml:space="preserve">
 		<value>Γλώσσα</value>

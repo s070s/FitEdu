@@ -17,7 +17,7 @@ using Xunit;
 namespace FitEdu.Web.Tests;
 
 /// <summary>
-/// bUnit tests for the signed-in home page: the student's "Today's plan" (the next lesson of the
+/// bUnit tests for the signed-in home page: the student's "Today's workout" (the next lesson of the
 /// current programme), the training stats, the enrolled and recommended courses, and the explore
 /// tiles for students and admins.
 /// </summary>

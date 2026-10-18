@@ -99,49 +99,49 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Loading" xml:space="preserve">
-		<value>Loading...</value>
+		<value>Loading…</value>
 	</data>
 	<data name="SubmittedTitle" xml:space="preserve">
-		<value>Assessment Submitted Successfully!</value>
+		<value>Self-assessment complete!</value>
 	</data>
 	<data name="SubmittedMessage" xml:space="preserve">
-		<value>Thank you for completing the assessment.</value>
+		<value>Thanks for completing the self-assessment.</value>
 	</data>
 	<data name="ViewSubmissions" xml:space="preserve">
-		<value>View My Submissions</value>
+		<value>View my submissions</value>
 	</data>
 	<data name="SelectPlaceholder" xml:space="preserve">
-		<value>-- Select --</value>
+		<value>— Select —</value>
 	</data>
 	<data name="SubmitAssessment" xml:space="preserve">
-		<value>Submit Assessment</value>
+		<value>Submit self-assessment</value>
 	</data>
 	<data name="HistoryTitle" xml:space="preserve">
-		<value>My Assessment Submissions</value>
+		<value>My self-assessments</value>
 	</data>
 	<data name="NoSubmissionsMessage" xml:space="preserve">
-		<value>You haven't submitted any assessments yet.</value>
+		<value>You haven't completed any self-assessments yet.</value>
 	</data>
 	<data name="TakeAssessment" xml:space="preserve">
-		<value>Take an Assessment</value>
+		<value>Take a self-assessment</value>
 	</data>
 	<data name="LatestSubmission" xml:space="preserve">
-		<value>Latest Submission</value>
+		<value>Latest submission</value>
 	</data>
 	<data name="SubmittedLabel" xml:space="preserve">
 		<value>Submitted:</value>
 	</data>
 	<data name="ViewDetails" xml:space="preserve">
-		<value>View Details</value>
+		<value>View details</value>
 	</data>
 	<data name="SubmissionsItemLabel" xml:space="preserve">
 		<value>submissions</value>
 	</data>
 	<data name="AllSubmissions" xml:space="preserve">
-		<value>All Submissions</value>
+		<value>All submissions</value>
 	</data>
 	<data name="AssessmentHeader" xml:space="preserve">
-		<value>Assessment</value>
+		<value>Self-assessment</value>
 	</data>
 	<data name="CategoryHeader" xml:space="preserve">
 		<value>Category</value>
@@ -156,7 +156,7 @@
 		<value>View</value>
 	</data>
 	<data name="YourAnswers" xml:space="preserve">
-		<value>Your Answers:</value>
+		<value>Your answers:</value>
 	</data>
 	<data name="SummaryLabel" xml:space="preserve">
 		<value>Summary:</value>
@@ -165,19 +165,22 @@
 		<value>Close</value>
 	</data>
 	<data name="AssessmentsPageTitle" xml:space="preserve">
-		<value>Assessments</value>
+		<value>Self-assessments</value>
 	</data>
 	<data name="AvailableAssessments" xml:space="preserve">
-		<value>Available Assessments</value>
+		<value>Available self-assessments</value>
 	</data>
 	<data name="LoadingAssessments" xml:space="preserve">
-		<value>Loading assessments...</value>
+		<value>Loading self-assessments…</value>
 	</data>
 	<data name="NoAssessmentsAvailable" xml:space="preserve">
-		<value>No assessments available at this time.</value>
+		<value>No self-assessments available right now.</value>
 	</data>
 	<data name="TotalAssessmentsFormat" xml:space="preserve">
-		<value>{0} assessments</value>
+		<value>{0} self-assessments</value>
+	</data>
+	<data name="AssessmentCountOne" xml:space="preserve">
+		<value>1 self-assessment</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Per page:</value>
@@ -189,10 +192,10 @@
 		<value>Next</value>
 	</data>
 	<data name="FailedToLoad" xml:space="preserve">
-		<value>Failed to load assessments. Please try again.</value>
+		<value>Couldn't load the self-assessments. Please try again.</value>
 	</data>
 	<data name="UpgradeDescription" xml:space="preserve">
-		<value>Assessments are available on the Plus plan and above. Upgrade to unlock all assessments.</value>
+		<value>Self-assessments are available on the Plus plan and above. Upgrade to unlock all of them.</value>
 	</data>
 	<data name="Start" xml:space="preserve">
 		<value>Start</value>
@@ -201,19 +204,19 @@
 		<value>Back</value>
 	</data>
 	<data name="FailedToLoadAssessment" xml:space="preserve">
-		<value>Failed to load this assessment. Please try again.</value>
+		<value>Couldn't load this self-assessment. Please try again.</value>
 	</data>
 	<data name="AssessmentNotFound" xml:space="preserve">
-		<value>This assessment could not be found.</value>
+		<value>This self-assessment couldn't be found.</value>
 	</data>
 	<data name="SubmitFailed" xml:space="preserve">
-		<value>Failed to submit your assessment. Please try again.</value>
+		<value>Couldn't submit your self-assessment. Please try again.</value>
 	</data>
 	<data name="RequiredQuestionMissing" xml:space="preserve">
 		<value>Please answer all required questions before submitting.</value>
 	</data>
 	<data name="AssessmentsEyebrow" xml:space="preserve">
-		<value>Self-checks</value>
+		<value>Self-assessments</value>
 	</data>
 	<data name="AssessmentsIntro" xml:space="preserve">
 		<value>Short check-ins on your training, recovery and habits. Your answers help you choose where to start.</value>
@@ -258,12 +261,12 @@
 		<value>All assessments</value>
 	</data>
 	<data name="HistoryIntro" xml:space="preserve">
-		<value>Every self-check you have sent. Open one to see your answers again.</value>
+		<value>Every self-assessment you've completed. Open one to see your answers again.</value>
 	</data>
 	<data name="QuestionRequired" xml:space="preserve">
 		<value>Please answer this question.</value>
 	</data>
 	<data name="PaginationAriaLabel" xml:space="preserve">
-		<value>Assessment pages</value>
+		<value>Self-assessment pages</value>
 	</data>
 </root>

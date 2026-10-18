@@ -288,6 +288,12 @@ namespace FitEdu.Shared.Resources {
             }
         }
 
+        public static string BlogReadingTimeOne {
+            get {
+                return ResourceManager.GetString("BlogReadingTimeOne", resourceCulture);
+            }
+        }
+
         public static string BackToHome {
             get {
                 return ResourceManager.GetString("BackToHome", resourceCulture);

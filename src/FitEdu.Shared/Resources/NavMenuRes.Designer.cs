@@ -187,6 +187,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Plans.
+        /// </summary>
+        public static string PricingShort {
+            get {
+                return ResourceManager.GetString("PricingShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Billing.
         /// </summary>
         public static string Billing {

@@ -83,7 +83,7 @@ public class CertificatesController : ControllerBase
         var subStatus = await _subscriptionService.GetUserStatusAsync(userId);
         if (subStatus.Features?.CertificateAccess != true)
             return Problem(
-                detail: "Your current plan does not include certificate access. Upgrade to Pro.",
+                detail: ErrorMessagesRes.Certificate_PlanRequired,
                 statusCode: StatusCodes.Status403Forbidden);
 
         try

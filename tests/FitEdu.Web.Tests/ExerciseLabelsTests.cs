@@ -49,7 +49,7 @@ public class ExerciseLabelsTests
 
     [Theory]
     [InlineData("en", "Lower back")]
-    [InlineData("el", "Κάτω πλάτη")]
+    [InlineData("el", "Μέση (οσφυϊκή μοίρα)")]
     public void Muscle_MultiWordValue_ReturnsTheLabelOfTheCurrentLanguage(string culture, string expected)
     {
         using var cultureScope = new CultureScope(culture);

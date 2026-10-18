@@ -77,7 +77,7 @@ public class AdminCategoriesPageTests : BunitContext
 
         var message = OpenDeleteConfirm(Render<AdminCategories>());
 
-        message.ShouldContain("'Strength'");
+        message.ShouldContain("\"Strength\"");
     }
 
     protected override void Dispose(bool disposing)

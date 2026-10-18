@@ -216,7 +216,7 @@ public class PathPagesTests : BunitContext
         page.Find(".step-kicker").TextContent.ShouldBe("Βήμα 1");
         page.Find(".path-hero__count").TextContent.ShouldContain("2 προγράμματα");
         page.Find(".badge-next").TextContent.ShouldBe("Επόμενο");
-        page.Find(".journey-title").TextContent.ShouldBe("Τα προγράμματα της διαδρομής");
+        page.Find(".journey-title").TextContent.ShouldBe("Τα προγράμματα της κατεύθυνσης");
     }
 
     [Fact]

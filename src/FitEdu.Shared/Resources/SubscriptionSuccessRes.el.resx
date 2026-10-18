@@ -43,7 +43,7 @@
 		<value>Ενημέρωση συνδρομής</value>
 	</data>
 	<data name="LoadingSubscription" xml:space="preserve">
-		<value>Φόρτωση της συνδρομής σου...</value>
+		<value>Φόρτωση της συνδρομής σου…</value>
 	</data>
 	<data name="PlanHeadingFormat" xml:space="preserve">
 		<value>Είσαι πλέον στο πλάνο {0}!</value>
@@ -67,7 +67,7 @@
 		<value>Δες τα πλάνα</value>
 	</data>
 	<data name="UnableToLoad" xml:space="preserve">
-		<value>Δεν ήταν δυνατή η φόρτωση των στοιχείων της συνδρομής σου.</value>
+		<value>Δεν ήταν δυνατή η φόρτωση των στοιχείων της συνδρομής σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="BtnBackToPricing" xml:space="preserve">
 		<value>Πίσω στα πλάνα</value>

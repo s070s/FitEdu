@@ -28,6 +28,12 @@ public partial class SeedContentIntegrityTests
     private const string EnglishResxPattern = "*.resx";
     private const string GreekResxSuffix = ".el.resx";
     private const string AllFilesPattern = "*";
+    private const string SeedJsonPattern = "*.json";
+
+    // Label length for the sentence-case check, and the shortest word that counts as a word.
+    private const int MinLabelWords = 2;
+    private const int MaxLabelWords = 6;
+    private const int MinCountedWordLength = 4;
 
     private static readonly string ExerciseImagesFolder = Path.Combine(RepoPaths.WebRoot, "images", "exercises");
 
@@ -65,6 +71,20 @@ public partial class SeedContentIntegrityTests
     private static readonly HashSet<string> GreekPersonNameKeys = new(StringComparer.Ordinal)
     {
         "AdminRes.TestimonialNamePlaceholder"
+    };
+
+    // Brand, plan, document and language names that keep their capitals inside an English label.
+    private static readonly string[] EnglishProperNames =
+    [
+        "FitEdu Coaching Team", "FitEdu Coach", "FitEdu", "Plus", "Pro", "Free", "Privacy Policy", "Terms of Service",
+        "Stripe", "YouTube", "Google", "PDF", "AI", "Free Exercise DB", "Greek", "English", "Ελληνικά"
+    ];
+
+    // English values that are not UI labels (keys as "ResourceName.Key"): the certificate's document
+    // title, a placeholder showing a person's name, and a date with its month name.
+    private static readonly HashSet<string> EnglishTitleCaseLabelKeys = new(StringComparer.Ordinal)
+    {
+        "CertificateRes.PdfHeading", "AdminRes.TestimonialNamePlaceholder", "LegalRes.LastUpdated"
     };
 
     private static readonly string SourceRoot = Path.Combine(RepoPaths.RepoRoot, "src");
@@ -302,11 +322,36 @@ public partial class SeedContentIntegrityTests
     {
         var problems = SeedJsonFiles.LoadGreekOverlay()
             .Where(row => row.NameEl is not null)
-            .Where(row => CapitalisedInnerWordRegex().IsMatch(row.NameEl!) || LowercaseBracketStartRegex().IsMatch(row.NameEl!))
+            .Where(row => CapitalisedInnerWordRegex().IsMatch(row.NameEl!))
             .Select(row => $"{row.Slug}: '{row.NameEl}'")
             .ToList();
 
-        problems.ShouldBeEmpty("Greek names capitalise only the first word of the name and of its brackets");
+        problems.ShouldBeEmpty("Greek names capitalise only their first word");
+    }
+
+    [Fact]
+    public void GreekOverlay_ExerciseNamesStartBracketsLowercase()
+    {
+        var problems = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => row.NameEl is not null)
+            .Where(row => CapitalisedBracketWordRegex().IsMatch(row.NameEl!))
+            .Select(row => $"{row.Slug}: '{row.NameEl}'")
+            .ToList();
+
+        problems.ShouldBeEmpty("a bracket in a Greek name holds a lowercase search term, e.g. (heel touchers), or an acronym such as (SMR)");
+    }
+
+    [Fact]
+    public void GreekOverlay_ExerciseNamesAreUnique()
+    {
+        var duplicateNames = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => !string.IsNullOrWhiteSpace(row.NameEl))
+            .GroupBy(row => row.NameEl!, StringComparer.Ordinal)
+            .Where(group => group.Count() > 1)
+            .Select(group => $"'{group.Key}': {string.Join(", ", group.Select(row => row.Slug))}")
+            .ToList();
+
+        duplicateNames.ShouldBeEmpty("each Greek name must tell its exercise apart (grip, stance, equipment)");
     }
 
     // ---- Assessments -------------------------------------------------------------------------
@@ -395,6 +440,83 @@ public partial class SeedContentIntegrityTests
     public void SeedFiles_GreekInstructionsUseImperativeNotPastTense()
     {
         FindTextMatches(GreekPastTenseCommandRegex()).ShouldBeEmpty("use the imperative (e.g. Επίλεξε, not Επέλεξε)");
+    }
+
+    // ---- Copy style --------------------------------------------------------------------------
+
+    [Fact]
+    public void Text_NoGenderSlashesInGreek()
+    {
+        var slashes = FindTextMatchesInFiles(GreekGenderSlashRegex(), TextScanRoots.SelectMany(FindFilesToScan))
+            .Concat(LoadAllGreekResxValues()
+                .Where(value => GreekGenderSlashRegex().IsMatch(value.Text))
+                .Select(value => $"{value.Location}: {value.Text}"))
+            .ToList();
+
+        slashes.ShouldBeEmpty("Greek is gender-neutral: rephrase instead of Αρχάριος/α (see docs/LANGUAGE-GLOSSARY.md)");
+    }
+
+    [Fact]
+    public void GreekResx_UsesGuillemetsNotStraightDoubleQuotes()
+    {
+        var greekValues = LoadAllGreekResxValues();
+
+        var straightQuoted = greekValues
+            .Where(value => HtmlTagRegex().Replace(value.Text, string.Empty).Contains('"'))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .ToList();
+
+        greekValues.ShouldNotBeEmpty();
+        straightQuoted.ShouldBeEmpty("Greek quotes text with «…», not \"…\"");
+    }
+
+    [Fact]
+    public void Text_UsesTheEllipsisCharacterNotThreeDots()
+    {
+        var resxValues = LoadAllEnglishResxValues().Concat(LoadAllGreekResxValues())
+            .Where(value => value.Text.Contains("..."))
+            .Select(value => $"{value.Location}: {value.Text}");
+
+        var threeDots = resxValues.Concat(FindTextMatchesInFiles(ThreeDotsRegex(), FindSeedJsonFiles())).ToList();
+
+        threeDots.ShouldBeEmpty("write the ellipsis as … (U+2026), never ...");
+    }
+
+    [Fact]
+    public void Text_GreekListLabelsUseGreekCapitalLetters()
+    {
+        var greekResxLabels = LoadAllGreekResxValues()
+            .Where(value => LatinListLetterRegex().IsMatch(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}");
+
+        var latinLetters = greekResxLabels.Concat(FindTextMatchesInFiles(LatinListLetterRegex(), FindSeedJsonFiles())).ToList();
+
+        latinLetters.ShouldBeEmpty("Greek labels use Α, Β, Γ (Greek capitals), not the Latin A, B, C");
+    }
+
+    [Fact]
+    public void Text_EnglishUsesBritishEnrolmentSpelling()
+    {
+        var americanSpellings = LoadAllEnglishResxValues()
+            .Where(value => AmericanEnrollRegex().IsMatch(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .Concat(FindTextMatchesInFiles(AmericanEnrollRegex(), FindSeedJsonFiles()))
+            .Concat(FindCSharpStringLiterals(AmericanEnrollRegex()))
+            .ToList();
+
+        americanSpellings.ShouldBeEmpty("British spelling: enrolment, not enrollment (key and class names are not text)");
+    }
+
+    [Fact]
+    public void EnglishResx_ShortLabelsUseSentenceCase()
+    {
+        var titleCaseLabels = LoadAllEnglishResxValues()
+            .Where(value => !EnglishTitleCaseLabelKeys.Contains(value.Location))
+            .Where(value => IsTitleCaseLabel(value.Text))
+            .Select(value => $"{value.Location}: {value.Text}")
+            .ToList();
+
+        titleCaseLabels.ShouldBeEmpty("English UI labels use sentence case (Create account, not Create Account)");
     }
 
     // ---- Resources ---------------------------------------------------------------------------
@@ -676,11 +798,35 @@ public partial class SeedContentIntegrityTests
 
     private static IEnumerable<string> FindGreekRowProblems(string slug, ExerciseSeedDto exercise, ExerciseGreekSeedDto greekRow)
     {
-        if (greekRow.NameEl is null || !GreekLetterRegex().IsMatch(greekRow.NameEl))
-            yield return $"{slug}: nameEl '{greekRow.NameEl}' has no Greek letters";
+        // Common gym moves keep their English name in Greek too ("Chin-up", "Box jump"), so a name needs text, not Greek letters.
+        if (string.IsNullOrWhiteSpace(greekRow.NameEl))
+            yield return $"{slug}: no nameEl";
 
         if (greekRow.InstructionsEl.Count != exercise.Instructions.Count)
             yield return $"{slug}: {greekRow.InstructionsEl.Count} Greek steps for {exercise.Instructions.Count} English ones";
+    }
+
+    /// <summary>
+    /// True for a short label (2-6 words, no sentence punctuation) whose long words all start with a
+    /// capital, once brand and document names are taken out: "Create Account", not "Create account".
+    /// </summary>
+    private static bool IsTitleCaseLabel(string text)
+    {
+        var label = text.Trim();
+        if (label.Length == 0 || label.Contains('<') || SentenceEndRegex().IsMatch(label))
+            return false;
+
+        foreach (var properName in EnglishProperNames)
+            label = Regex.Replace(label, $@"\b{Regex.Escape(properName)}\b", " ", RegexOptions.CultureInvariant);
+
+        // Placeholders such as {0} are not words; only plain letter words of four or more letters count.
+        var words = label.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var longWords = words
+            .Where(word => word.Length >= MinCountedWordLength && word.All(char.IsLetter))
+            .ToList();
+
+        var isLabelLength = words.Length is >= MinLabelWords and <= MaxLabelWords;
+        return isLabelLength && longWords.Count >= 2 && longWords.All(word => char.IsUpper(word[0]));
     }
 
     private static bool HasTextWithoutGreek(string? english, string? greek) =>
@@ -805,11 +951,14 @@ public partial class SeedContentIntegrityTests
             : [];
 
     /// <summary>Every match of the pattern in the scanned files, as "file: 'match'" (once per file).</summary>
-    private static List<string> FindTextMatches(Regex pattern)
+    private static List<string> FindTextMatches(Regex pattern) =>
+        FindTextMatchesInFiles(pattern, TextScanRoots.SelectMany(FindFilesToScan));
+
+    private static List<string> FindTextMatchesInFiles(Regex pattern, IEnumerable<string> filePaths)
     {
         var matches = new List<string>();
 
-        foreach (var filePath in TextScanRoots.SelectMany(FindFilesToScan))
+        foreach (var filePath in filePaths)
         {
             var text = File.ReadAllText(filePath);
             matches.AddRange(pattern.Matches(text)
@@ -819,6 +968,36 @@ public partial class SeedContentIntegrityTests
 
         return matches;
     }
+
+    private static string[] FindSeedJsonFiles() =>
+        Directory.GetFiles(RepoPaths.SeedJsonRoot, SeedJsonPattern, SearchOption.AllDirectories);
+
+    /// <summary>Every value of every English .resx (Messages/ included), located as "ResourceName.Key".</summary>
+    private static List<ResxValue> LoadAllEnglishResxValues()
+    {
+        var englishValues = new List<ResxValue>();
+
+        var englishResxPaths = Directory.GetFiles(RepoPaths.ResourcesRoot, EnglishResxPattern, SearchOption.AllDirectories)
+            .Where(filePath => !filePath.EndsWith(GreekResxSuffix, StringComparison.OrdinalIgnoreCase));
+        foreach (var englishResxPath in englishResxPaths)
+        {
+            var resourceName = Path.GetFileNameWithoutExtension(englishResxPath);
+            englishValues.AddRange(LoadResxValues(englishResxPath)
+                .Select(pair => new ResxValue($"{resourceName}.{pair.Key}", pair.Value)));
+        }
+
+        return englishValues;
+    }
+
+    /// <summary>The string literals of the C# files in the text scan roots (member-facing seed and email text).</summary>
+    private static List<string> FindCSharpStringLiterals(Regex pattern) =>
+        TextScanRoots.SelectMany(FindFilesToScan)
+            .Where(filePath => filePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+            .SelectMany(filePath => CSharpStringLiteralRegex().Matches(File.ReadAllText(filePath))
+                .SelectMany(literal => pattern.Matches(literal.Value))
+                .Select(match => $"{Path.GetRelativePath(RepoPaths.RepoRoot, filePath)}: '{match.Value}'")
+                .Distinct())
+            .ToList();
 
     private static IEnumerable<string> FindFilesToScan(TextScanRoot root) =>
         Directory.GetFiles(root.Folder, root.SearchPattern, SearchOption.AllDirectories);
@@ -915,10 +1094,15 @@ public partial class SeedContentIntegrityTests
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and
-    // the letter or acronym names of equipment and moves (EZ bar, SMR, T-bar, V-up) keep theirs.
-    [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
+    // the letter or acronym names of equipment and moves (EZ bar, E-Z bar, SMR, T-bar, V-up) keep theirs.
+    [GeneratedRegex(@"(?<=[ /-])(?<!\bE-)(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|E-Z|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
+
+    // A capitalised word (a capital, then a lowercase letter) right after "(" in a name; an all-caps
+    // acronym such as (SMR) does not match.
+    [GeneratedRegex(@"\([A-ZΆΈ-ΏΑ-Ϋ](?=\p{Ll})", RegexOptions.CultureInvariant)]
+    private static partial Regex CapitalisedBracketWordRegex();
 
     // A capital (Greek or Latin) followed by a lowercase letter, starting a word after a space or
     // a word part after "-", so a word after the first: "Βασικές Ασκήσεις". A new part of the title
@@ -930,12 +1114,32 @@ public partial class SeedContentIntegrityTests
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerTitleWordRegex();
 
-    // A bracket whose first word starts in lower case: "(με βοηθό)" instead of "(Με βοηθό)".
-    [GeneratedRegex(@"\(\p{Ll}", RegexOptions.CultureInvariant)]
-    private static partial Regex LowercaseBracketStartRegex();
+    // A Greek letter, "/", then a feminine or plural ending: Αρχάριος/α, έτοιμος/η, Ο/Η, πρώτος/-η.
+    [GeneratedRegex(@"[α-ωάέήίόύώϊϋΐΰΑ-Ω]/-?(?:α|η|ες|ος|ης|ο|Η)\b", RegexOptions.CultureInvariant)]
+    private static partial Regex GreekGenderSlashRegex();
 
-    [GeneratedRegex(@"\p{IsGreekandCoptic}", RegexOptions.CultureInvariant)]
-    private static partial Regex GreekLetterRegex();
+    // An HTML tag, so the quotes around its attributes are not text quotes.
+    [GeneratedRegex(@"<[^>]*>", RegexOptions.CultureInvariant)]
+    private static partial Regex HtmlTagRegex();
+
+    [GeneratedRegex(@"\.\.\.", RegexOptions.CultureInvariant)]
+    private static partial Regex ThreeDotsRegex();
+
+    // A Latin A, B or C (not the Greek look-alikes) labelling a Greek workout, day, session or routine.
+    [GeneratedRegex(@"(?:Προπόνηση|Μέρα|ώθησης|έλξης|ποδιών|Ρουτίνα) [ABC]\b", RegexOptions.CultureInvariant)]
+    private static partial Regex LatinListLetterRegex();
+
+    // "enroll", "enrolled", "enrollment(s)" at the start of a word, in any case.
+    [GeneratedRegex(@"\benroll", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex AmericanEnrollRegex();
+
+    // A label ends its sentence with punctuation (or introduces a list with a colon).
+    [GeneratedRegex(@"[.!?:;,]$", RegexOptions.CultureInvariant)]
+    private static partial Regex SentenceEndRegex();
+
+    // A "..." string literal on one line, with escaped characters (verbatim and raw strings are not read).
+    [GeneratedRegex(@"""(?:[^""\\\r\n]|\\.)*""", RegexOptions.CultureInvariant)]
+    private static partial Regex CSharpStringLiteralRegex();
 
     // The brand, the Plus and Pro plan names and the terms the Greek UI keeps in English.
     [GeneratedRegex(@"\b(?:FitEdu|Plus|Pro|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]

@@ -65,7 +65,7 @@
     <value>Βιβλιοθήκη ασκήσεων</value>
   </data>
   <data name="Subtitle" xml:space="preserve">
-    <value>Φωτογραφίες κοινού κτήματος για κάθε άσκηση — φιλτράρισμα ανά μυ, εξοπλισμό και επίπεδο.</value>
+    <value>Ελεύθερες φωτογραφίες για κάθε άσκηση — φίλτραρε ανά μυ, εξοπλισμό και επίπεδο.</value>
   </data>
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Αναζήτηση ασκήσεων…</value>
@@ -89,7 +89,7 @@
     <value>Κύριοι μύες</value>
   </data>
   <data name="SecondaryMuscles" xml:space="preserve">
-    <value>Δευτερεύοντες μύες</value>
+    <value>Συνεργοί μύες</value>
   </data>
   <data name="Instructions" xml:space="preserve">
     <value>Οδηγίες</value>
@@ -140,7 +140,7 @@
     <value>Διατάσεις</value>
   </data>
   <data name="Category_cardio" xml:space="preserve">
-    <value>Αερόβια</value>
+    <value>Κάρντιο</value>
   </data>
   <data name="Category_plyometrics" xml:space="preserve">
     <value>Πλειομετρικές</value>
@@ -182,13 +182,13 @@
     <value>Οπίσθιοι μηριαίοι</value>
   </data>
   <data name="Muscle_lats" xml:space="preserve">
-    <value>Πλατιαίοι</value>
+    <value>Πλατείς ραχιαίοι</value>
   </data>
   <data name="Muscle_lower_back" xml:space="preserve">
-    <value>Κάτω πλάτη</value>
+    <value>Μέση (οσφυϊκή μοίρα)</value>
   </data>
   <data name="Muscle_middle_back" xml:space="preserve">
-    <value>Μέση πλάτη</value>
+    <value>Μεσαία πλάτη</value>
   </data>
   <data name="Muscle_neck" xml:space="preserve">
     <value>Αυχένας</value>
@@ -236,13 +236,13 @@
     <value>Μπάρα E-Z</value>
   </data>
   <data name="Equipment_foam_roll" xml:space="preserve">
-    <value>Αφρώδης κύλινδρος</value>
+    <value>Foam roller</value>
   </data>
   <data name="Equipment_other" xml:space="preserve">
     <value>Άλλο</value>
   </data>
   <data name="PauseAnimation" xml:space="preserve">
-    <value>Παύση κίνησης</value>
+    <value>Παύση κινούμενης εικόνας</value>
   </data>
   <data name="StartPositionAltFormat" xml:space="preserve">
     <value>{0} — αρχική θέση</value>
@@ -290,7 +290,7 @@
     <value>Κίνηση</value>
   </data>
   <data name="Mechanic" xml:space="preserve">
-    <value>Αρθρώσεις</value>
+    <value>Εμπλοκή αρθρώσεων</value>
   </data>
   <data name="AtAGlance" xml:space="preserve">
     <value>Με μια ματιά</value>
@@ -299,7 +299,7 @@
     <value>Πώς γίνεται η άσκηση {0}: ποιους μύες δουλεύει, τι εξοπλισμό χρειάζεσαι και οδηγίες βήμα προς βήμα.</value>
   </data>
   <data name="LoadFailed" xml:space="preserve">
-    <value>Δεν μπορέσαμε να φορτώσουμε τη βιβλιοθήκη ασκήσεων αυτή τη στιγμή.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση της βιβλιοθήκης ασκήσεων</value>
   </data>
   <data name="LibraryEyebrow" xml:space="preserve">
     <value>Βιβλιοθήκη ελεύθερης χρήσης</value>

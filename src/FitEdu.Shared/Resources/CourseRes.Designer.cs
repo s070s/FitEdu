@@ -403,6 +403,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 1 programme.
+        /// </summary>
+        public static string CourseCountOne {
+            get {
+                return ResourceManager.GetString("CourseCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Per page:.
         /// </summary>
         public static string PerPage {

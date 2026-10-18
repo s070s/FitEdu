@@ -50,7 +50,7 @@ above, uses a category other than Strength (Δύναμη), Cardio (Κάρντι�
 
 Greek titles use sentence case, as Greek does (`Βασικές ασκήσεις με βάρος σώματος`): only the first
 word starts with a capital, and so does the first word after `: `, `(` or `«`
-(`Προπόνηση Α: Ήπια ροή στο πάτωμα`, `Η πλάγια σανίδα (Side plank)`). English move names inside a
+(`Προπόνηση Α: Ήπια ροή στο πάτωμα`, `Το side plank`). English move names inside a
 title are lower case too (`Το σωστό push-up`); acronyms and letter labels (HIIT, RPE, Προπόνηση Α)
 and the names Push Pull Legs (with its Push and Pull days), HIIT Express and Turkish get-up keep
 their capitals. `SeedContentIntegrityTests` checks the course, module and lesson titles, the
