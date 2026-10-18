@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 using System.Threading.Channels;
 
@@ -58,7 +59,7 @@ public sealed class FileLoggerProvider : ILoggerProvider
                 var dropped = Interlocked.Exchange(ref _droppedSinceLastReport, 0);
                 if (dropped > 0)
                 {
-                    var ts = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    var ts = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
                     await writer!.WriteLineAsync(
                         $"[{ts}] [WARN] [FileLogger] {dropped} log entr{(dropped == 1 ? "y" : "ies")} dropped (write buffer full).");
                 }

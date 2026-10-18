@@ -12,13 +12,13 @@ namespace FitEdu.Infrastructure.Seeding;
 /// Idempotent: skips if plans already exist.
 /// Live classes are open to every signed-in member, so no plan description sells them.
 /// </summary>
-public static class SubscriptionPlanSeeder
+public static partial class SubscriptionPlanSeeder
 {
     public static async Task SeedAsync(ApplicationDbContext db, ILogger logger)
     {
         if (await db.SubscriptionPlans.AnyAsync())
         {
-            logger.LogInformation("Subscription plans already seeded. Skipping.");
+            LogAlreadySeeded(logger);
             return;
         }
 
@@ -86,6 +86,13 @@ public static class SubscriptionPlanSeeder
         db.SubscriptionPlans.AddRange(plans);
         await db.SaveChangesAsync();
 
-        logger.LogInformation("Seeded {Count} subscription plans (Free, Plus, Pro).", plans.Count);
+        LogSeeded(logger, plans.Count);
     }
-}
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Subscription plans already seeded. Skipping.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} subscription plans (Free, Plus, Pro).")]
+    private static partial void LogSeeded(ILogger logger, int count);}

@@ -26,8 +26,9 @@ public abstract class ApiClientBase
 {
     private const int MaxGetAttempts = 3;
 
-    protected readonly HttpClient Http;
     private readonly ApiTokenProvider _tokenProvider;
+
+    protected HttpClient Http { get; }
 
     protected ApiClientBase(HttpClient http, ApiTokenProvider tokenProvider)
     {

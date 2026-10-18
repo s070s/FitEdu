@@ -41,7 +41,7 @@ public class AdminBlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
     {
         const long maxSize = 5 * 1024 * 1024;
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxSize);
+        using var stream = file.OpenReadStream(maxSize, ct);
         var streamContent = new StreamContent(stream);
         if (!string.IsNullOrEmpty(file.ContentType))
             streamContent.Headers.ContentType =
@@ -52,5 +52,5 @@ public class AdminBlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
         return result?.CoverImageUrl;
     }
 
-    private record CoverUploadResult(string CoverImageUrl);
+    private sealed record CoverUploadResult(string CoverImageUrl);
 }

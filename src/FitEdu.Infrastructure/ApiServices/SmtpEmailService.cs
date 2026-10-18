@@ -13,7 +13,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// production. Configured via <see cref="EmailOptions"/> (section "Email"). The wording comes from
 /// <see cref="EmailTemplates"/>, in the language the caller passes (English or Greek).
 /// </summary>
-public sealed class SmtpEmailService : IEmailService
+public sealed partial class SmtpEmailService : IEmailService
 {
     private readonly EmailOptions _options;
     private readonly ILogger<SmtpEmailService> _logger;
@@ -49,7 +49,7 @@ public sealed class SmtpEmailService : IEmailService
                 await client.DisconnectAsync(true, ct);
         }
 
-        _logger.LogInformation("Email '{Subject}' sent to {To}.", content.Subject, to);
+        LogEmailSent(_logger, content.Subject, to);
     }
 
     /// <summary>Builds the MIME message. Extracted so message construction is unit-testable
@@ -63,4 +63,8 @@ public sealed class SmtpEmailService : IEmailService
         message.Body = new BodyBuilder { HtmlBody = content.HtmlBody, TextBody = content.TextBody }.ToMessageBody();
         return message;
     }
-}
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Email '{Subject}' sent to {To}.")]
+    private static partial void LogEmailSent(ILogger logger, string subject, string to);}

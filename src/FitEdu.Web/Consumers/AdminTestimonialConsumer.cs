@@ -37,7 +37,7 @@ public class AdminTestimonialConsumer(HttpClient http, FitEdu.Web.Services.ApiTo
     {
         const long maxSize = 5 * 1024 * 1024;
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxSize);
+        using var stream = file.OpenReadStream(maxSize, ct);
         var streamContent = new StreamContent(stream);
         if (!string.IsNullOrEmpty(file.ContentType))
             streamContent.Headers.ContentType =
@@ -54,5 +54,5 @@ public class AdminTestimonialConsumer(HttpClient http, FitEdu.Web.Services.ApiTo
     public Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
         => DeleteAsync($"api/admin/testimonials/{id}", ct);
 
-    private record AvatarUploadResult(string AvatarPath);
+    private sealed record AvatarUploadResult(string AvatarPath);
 }

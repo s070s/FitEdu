@@ -12,7 +12,7 @@ namespace FitEdu.Web.Extensions;
 /// <item><see cref="ToActionResult{T}"/> — the service puts the failure detail in
 /// <see cref="ServiceResult{T}.ErrorMessage"/> and <c>Value</c> is meaningful only on success
 /// (the majority of services). Failures render as a single RFC 7807 ProblemDetails envelope
-/// (API-1) via <see cref="ControllerBase.Problem"/>, so every ServiceResult error shares the
+/// (API-1) via <see cref="ControllerBase.Problem(string?, string?, int?, string?, string?)"/>, so every ServiceResult error shares the
 /// shape — and the configured <c>traceId</c> extension — of bare status results and unhandled
 /// exceptions.</item>
 /// <item><see cref="ToEmbeddedActionResult{T}"/> — the service embeds the outcome in
