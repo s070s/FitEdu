@@ -1,7 +1,7 @@
 [
   {
     "title": "Live Mobility Flow",
-    "titleEl": "Ζωντανή ροή κινητικότητας",
+    "titleEl": "Live ροή κινητικότητας",
     "courseTitle": "Mobility & Flexibility",
     "weekdayOffset": 1,
     "hourUtc": 18,
@@ -19,7 +19,7 @@
   },
   {
     "title": "Beginner Strength Q&A",
-    "titleEl": "Δύναμη για αρχάριους: Ερωτήσεις & απαντήσεις",
+    "titleEl": "Πρώτα βήματα στη δύναμη: Ερωτήσεις & απαντήσεις",
     "courseTitle": "Strength Foundations",
     "weekdayOffset": 3,
     "hourUtc": 17,
@@ -37,7 +37,7 @@
   },
   {
     "title": "Desk Reset Break",
-    "titleEl": "Διάλειμμα επαναφοράς για το γραφείο",
+    "titleEl": "Διάλειμμα κίνησης στο γραφείο",
     "courseTitle": "Desk Posture Reset",
     "weekdayOffset": 5,
     "hourUtc": 17,
