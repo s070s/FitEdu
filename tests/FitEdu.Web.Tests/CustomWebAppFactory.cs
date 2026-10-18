@@ -199,4 +199,4 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>
 }
 
 [CollectionDefinition("web")]
-public sealed class WebCollection : ICollectionFixture<CustomWebAppFactory>;
+public sealed class WebCollectionDefinition : ICollectionFixture<CustomWebAppFactory>;

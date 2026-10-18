@@ -15,12 +15,14 @@ namespace FitEdu.Application.Tests;
 
 public class AssistantIndexingServiceTests
 {
+    private static readonly float[] StubEmbeddingValues = [1f, 2f, 3f];
+
     private static (AssistantIndexingService svc, IEmbeddingGenerator<string, Embedding<float>> embedGen) NewService(ApplicationDbContext db)
     {
         var embedGen = Substitute.For<IEmbeddingGenerator<string, Embedding<float>>>();
         embedGen.GenerateAsync(Arg.Any<IEnumerable<string>>(), Arg.Any<EmbeddingGenerationOptions?>(), Arg.Any<CancellationToken>())
             .Returns(callInfo => new GeneratedEmbeddings<Embedding<float>>(
-                ((IEnumerable<string>)callInfo[0]).Select(_ => new Embedding<float>(new float[] { 1f, 2f, 3f }))));
+                ((IEnumerable<string>)callInfo[0]).Select(_ => new Embedding<float>(StubEmbeddingValues))));
 
         return (new AssistantIndexingService(db, embedGen, NullLogger<AssistantIndexingService>.Instance), embedGen);
     }

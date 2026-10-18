@@ -44,7 +44,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         var response = await client.GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(loginResult.Token!)}&returnUrl=%2F");
 
         response.Headers.TryGetValues("Set-Cookie", out var setCookieValues).ShouldBeTrue();
-        var authCookie = setCookieValues!.FirstOrDefault(v => v.StartsWith(".FitEdu.Auth="));
+        var authCookie = setCookieValues!.FirstOrDefault(v => v.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
         authCookie.ShouldNotBeNull();
 
         // rememberMe=false must yield a session cookie (no expires/max-age) so it's discarded

@@ -13,7 +13,7 @@ namespace FitEdu.Application.ApiServices;
 using SourceKey = (AssistantSourceType SourceType, Guid SourceId, string Language);
 
 /// <inheritdoc cref="IAssistantIndexingService"/>
-public class AssistantIndexingService(
+public partial class AssistantIndexingService(
     IApplicationDbContext db,
     IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
     ILogger<AssistantIndexingService> logger) : IAssistantIndexingService
@@ -93,9 +93,7 @@ public class AssistantIndexingService(
         await db.SaveChangesAsync(cancellationToken);
 
         var summary = new AssistantIndexSummary(added, updated, removed, unchanged);
-        logger.LogInformation(
-            "Assistant index pass complete: {Added} added, {Updated} updated, {Removed} removed, {Unchanged} unchanged.",
-            summary.Added, summary.Updated, summary.Removed, summary.Unchanged);
+        LogIndexPassComplete(logger, summary.Added, summary.Updated, summary.Removed, summary.Unchanged);
         return summary;
     }
 
@@ -252,4 +250,8 @@ public class AssistantIndexingService(
 
     private static string Sha256Hex(string text) =>
         Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(text)));
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Assistant index pass complete: {Added} added, {Updated} updated, {Removed} removed, {Unchanged} unchanged.")]
+    private static partial void LogIndexPassComplete(ILogger logger, int added, int updated, int removed, int unchanged);
 }

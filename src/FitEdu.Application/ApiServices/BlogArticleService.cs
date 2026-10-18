@@ -15,7 +15,7 @@ namespace FitEdu.Application.ApiServices;
 /// Public read methods accept a lang param ("en" | "el") and resolve bilingual fields.
 /// Admin methods return both En and El variants for editing.
 /// </summary>
-public class BlogArticleService : IBlogArticleService
+public partial class BlogArticleService : IBlogArticleService
 {
     private readonly IApplicationDbContext _db;
     private readonly ILogger<BlogArticleService> _logger;
@@ -134,7 +134,7 @@ public class BlogArticleService : IBlogArticleService
 
         if (slugTaken)
         {
-            _logger.LogWarning("Blog article create failed: slug '{Slug}' already in use.", request.Slug);
+            LogCreateSlugInUse(_logger, request.Slug);
             return null;
         }
 
@@ -161,7 +161,7 @@ public class BlogArticleService : IBlogArticleService
         _db.BlogArticles.Add(article);
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Blog article created: {Id} '{Title}'.", article.Id, article.TitleEn);
+        LogArticleCreated(_logger, article.Id, article.TitleEn);
         return ToAdminDto(article);
     }
 
@@ -179,7 +179,7 @@ public class BlogArticleService : IBlogArticleService
 
         if (slugTaken)
         {
-            _logger.LogWarning("Blog article update failed: slug '{Slug}' already in use.", request.Slug);
+            LogUpdateSlugInUse(_logger, request.Slug);
             return null;
         }
 
@@ -209,7 +209,7 @@ public class BlogArticleService : IBlogArticleService
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Blog article updated: {Id} '{Title}'.", article.Id, article.TitleEn);
+        LogArticleUpdated(_logger, article.Id, article.TitleEn);
         return ToAdminDto(article);
     }
 
@@ -255,7 +255,7 @@ public class BlogArticleService : IBlogArticleService
         _db.BlogArticles.Remove(article);
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Blog article deleted: {Id}.", id);
+        LogArticleDeleted(_logger, id);
         return true;
     }
 
@@ -295,4 +295,20 @@ public class BlogArticleService : IBlogArticleService
              a.IsPublished,
              a.CreatedAt,
              a.UpdatedAt);
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Blog article create failed: slug '{Slug}' already in use.")]
+    private static partial void LogCreateSlugInUse(ILogger logger, string slug);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Blog article created: {Id} '{Title}'.")]
+    private static partial void LogArticleCreated(ILogger logger, Guid id, string title);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Blog article update failed: slug '{Slug}' already in use.")]
+    private static partial void LogUpdateSlugInUse(ILogger logger, string slug);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Blog article updated: {Id} '{Title}'.")]
+    private static partial void LogArticleUpdated(ILogger logger, Guid id, string title);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Blog article deleted: {Id}.")]
+    private static partial void LogArticleDeleted(ILogger logger, Guid id);
 }

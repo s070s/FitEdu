@@ -13,7 +13,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Handles course discovery, enrollment, and lesson consumption for students.
 /// </summary>
-public class CourseService(
+public partial class CourseService(
     IApplicationDbContext db,
     ISubscriptionService subscriptionService,
     ICertificateService certificateService,
@@ -276,7 +276,7 @@ public class CourseService(
             throw;
         }
 
-        logger.LogInformation("User {UserId} enrolled in course {CourseId}", userId, courseId);
+        LogUserEnrolled(logger, userId, courseId);
 
         return ServiceResult<EnrollmentResultDto>.Ok(new EnrollmentResultDto(true, SuccessMessagesRes.EnrolledSuccessfully, enrollment.Id));
     }
@@ -406,7 +406,7 @@ public class CourseService(
         {
             enrollment.Status = EnrollmentStatus.Completed;
             enrollment.CompletedAt = DateTime.UtcNow;
-            logger.LogInformation("User {UserId} completed course {CourseId}", userId, courseId);
+            LogCourseCompleted(logger, userId, courseId);
         }
 
         await db.SaveChangesAsync(cancellationToken);
@@ -427,9 +427,7 @@ public class CourseService(
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex,
-                        "Certificate issuance failed for user {UserId} on course {CourseId}.",
-                        userId, courseId);
+                    LogCertificateIssuanceFailed(logger, ex, userId, courseId);
                     certificatePending = true;
                 }
             }
@@ -478,4 +476,14 @@ public class CourseService(
             return ContentType.Pdf;
         return ContentType.Text;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} enrolled in course {CourseId}")]
+    private static partial void LogUserEnrolled(ILogger logger, string userId, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} completed course {CourseId}")]
+    private static partial void LogCourseCompleted(ILogger logger, string userId, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Certificate issuance failed for user {UserId} on course {CourseId}.")]
+    private static partial void LogCertificateIssuanceFailed(ILogger logger, Exception exception, string userId, Guid courseId);
 }

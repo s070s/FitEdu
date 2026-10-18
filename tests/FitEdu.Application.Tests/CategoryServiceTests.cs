@@ -135,6 +135,6 @@ public class CategoryServiceTests
 
         var result = await NewService(db).GetCategoriesAsync("courses", "en");
 
-        result.Select(c => c.Name).ShouldBe(new[] { "Alpha", "Zeta" });
+        result.Select(c => c.Name).ShouldBe(["Alpha", "Zeta"]);
     }
 }

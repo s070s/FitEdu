@@ -86,7 +86,7 @@ public class SubscriptionServiceTests
 
         var plans = await NewService(db).GetPlansAsync();
 
-        plans.Select(p => p.Name).ShouldBe(new[] { "Free", "PlusCheap", "PlusDear" });
+        plans.Select(p => p.Name).ShouldBe(["Free", "PlusCheap", "PlusDear"]);
     }
 
     [Fact]
@@ -525,7 +525,7 @@ public class SubscriptionServiceTests
 
         var overview = await NewService(db).GetBillingOverviewAsync(UserId);
 
-        overview.Transactions.Items.Select(t => t.Description).ShouldBe(new[] { "2022", "2021", "2020" });
+        overview.Transactions.Items.Select(t => t.Description).ShouldBe(["2022", "2021", "2020"]);
         overview.CurrentSubscription.ShouldNotBeNull();
     }
 

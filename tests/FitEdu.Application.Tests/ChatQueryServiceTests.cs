@@ -106,7 +106,7 @@ public class ChatQueryServiceTests
         var result = await svc.GetMessagesAsync(A, conv.Id, 1, 10);
 
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.Items.Select(m => m.Content).ShouldBe(new[] { "first", "second" });
+        result.Value!.Items.Select(m => m.Content).ShouldBe(["first", "second"]);
     }
 
     [Fact]

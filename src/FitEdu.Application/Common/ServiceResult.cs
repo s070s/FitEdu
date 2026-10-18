@@ -1,9 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace FitEdu.Application.Common;
 
 /// <summary>
 /// Thin wrapper that carries a value together with the HTTP status the controller should return.
 /// Lets service methods signal not-found, forbidden, etc. without throwing exceptions.
 /// </summary>
+// CA1000: the Ok/NotFound/... factories are the established way to build a result across the whole solution.
+[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Factory methods on the result type are used throughout the solution.")]
 public record ServiceResult<T>(T? Value, int StatusCode = 200, string? ErrorMessage = null)
 {
     public bool IsSuccess => StatusCode is >= 200 and < 300;

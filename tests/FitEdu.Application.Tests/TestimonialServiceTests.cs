@@ -30,7 +30,7 @@ public class TestimonialServiceTests
 
         var active = await NewService(db).GetActiveAsync();
 
-        active.Select(t => t.FullName).ShouldBe(new[] { "A", "B" });
+        active.Select(t => t.FullName).ShouldBe(["A", "B"]);
     }
 
     private static Testimonial BilingualItem(string? roleOrTitleEl, string? quoteTextEl) =>

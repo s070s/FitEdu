@@ -13,7 +13,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Admin-only user and role management.
 /// </summary>
-public class AdminUserService(
+public partial class AdminUserService(
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     ITokenService tokenService,
@@ -128,7 +128,7 @@ public class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        logger.LogInformation("Admin {AdminId} assigned role {Role} to user {UserId}", ActingAdmin, roleName, userId);
+        LogRoleAssigned(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' assigned.");
     }
 
@@ -145,7 +145,7 @@ public class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        logger.LogInformation("Admin {AdminId} removed role {Role} from user {UserId}", ActingAdmin, roleName, userId);
+        LogRoleRemoved(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' removed.");
     }
 
@@ -163,7 +163,7 @@ public class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        logger.LogInformation("Admin {AdminId} created role {Role}", ActingAdmin, roleName);
+        LogRoleCreated(logger, ActingAdmin, roleName);
         return ServiceResult<string>.Ok($"Role '{roleName}' created.");
     }
 
@@ -228,11 +228,11 @@ public class AdminUserService(
         }
         catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Admin {AdminId} deleting user {UserId} failed on a database constraint", ActingAdmin, userId);
+            LogDeleteUserConstraintFailed(logger, ex, ActingAdmin, userId);
             return ServiceResult<string>.Conflict(error: "User could not be deleted because other data still references the account.");
         }
 
-        logger.LogInformation("Admin {AdminId} deleted user {UserId} and associated chat/call history", ActingAdmin, userId);
+        LogUserDeleted(logger, ActingAdmin, userId);
         return ServiceResult<string>.Ok("User deleted.");
     }
 
@@ -284,7 +284,7 @@ public class AdminUserService(
 
         // The admin may read the site in another language; the member gets the email in their own.
         await emailService.SendPasswordResetAsync(user.Email, resetUrl, user.PreferredLanguage, cancellationToken);
-        logger.LogInformation("Admin {AdminId} triggered forced password reset for user {UserId}.", ActingAdmin, userId);
+        LogForcedPasswordResetTriggered(logger, ActingAdmin, userId);
 
         return ServiceResult<bool>.NoContent();
     }
@@ -299,7 +299,7 @@ public class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        logger.LogInformation("Admin {AdminId} disabled user {UserId}", ActingAdmin, userId);
+        LogUserDisabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
     }
 
@@ -313,7 +313,7 @@ public class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        logger.LogInformation("Admin {AdminId} enabled user {UserId}", ActingAdmin, userId);
+        LogUserEnabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
     }
 
@@ -329,7 +329,7 @@ public class AdminUserService(
 
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
-        logger.LogInformation("Admin {AdminId} started impersonating user {UserId}", adminId, userId);
+        LogImpersonationStarted(logger, adminId, userId);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
         {
@@ -365,7 +365,38 @@ public class AdminUserService(
             refreshToken.RevokedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Admin {AdminId} set new password for user {UserId}", ActingAdmin, userId);
+        LogPasswordSetByAdmin(logger, ActingAdmin, userId);
         return ServiceResult<bool>.Ok(true);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} assigned role {Role} to user {UserId}")]
+    private static partial void LogRoleAssigned(ILogger logger, string adminId, string role, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} removed role {Role} from user {UserId}")]
+    private static partial void LogRoleRemoved(ILogger logger, string adminId, string role, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} created role {Role}")]
+    private static partial void LogRoleCreated(ILogger logger, string adminId, string role);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Admin {AdminId} deleting user {UserId} failed on a database constraint")]
+    private static partial void LogDeleteUserConstraintFailed(ILogger logger, Exception exception, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} deleted user {UserId} and associated chat/call history")]
+    private static partial void LogUserDeleted(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} triggered forced password reset for user {UserId}.")]
+    private static partial void LogForcedPasswordResetTriggered(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} disabled user {UserId}")]
+    private static partial void LogUserDisabled(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} enabled user {UserId}")]
+    private static partial void LogUserEnabled(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} started impersonating user {UserId}")]
+    private static partial void LogImpersonationStarted(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} set new password for user {UserId}")]
+    private static partial void LogPasswordSetByAdmin(ILogger logger, string adminId, string userId);
 }

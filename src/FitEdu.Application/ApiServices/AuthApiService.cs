@@ -17,7 +17,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// JSON API authentication backing <c>AuthController</c>.
 /// </summary>
-public class AuthApiService(
+public partial class AuthApiService(
     UserManager<ApplicationUser> userManager,
     SignInManager<ApplicationUser> signInManager,
     ITokenService tokenService,
@@ -34,13 +34,13 @@ public class AuthApiService(
         if (user.Age.HasValue && user.Age < 18)
         {
             // TODO: Implement parental consent flow. For now, allow registration but log.
-            logger.LogInformation("Under-18 user registered: {UserId}. Parental consent not yet implemented.", user.Id);
+            LogUnderEighteenRegistered(logger, user.Id);
         }
 
         var result = await userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
-            logger.LogWarning("Registration failed for {Email}: {Errors}", request.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+            LogRegistrationFailed(logger, request.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
 
             // Map duplicate-account errors to a generic message to prevent account enumeration.
             // Password-policy errors (too short, no digits, etc.) are safe to surface verbatim.
@@ -71,14 +71,14 @@ public class AuthApiService(
         // failure here must not turn into a 500 after the account exists (the user would be
         // stuck: can't re-register with a duplicate email, and never got the confirmation link).
         // Log and swallow instead; registration still reports success.
-        logger.LogInformation("User {UserId} registered. Confirmation email queued.", user.Id);
+        LogUserRegistered(logger, user.Id);
         try
         {
             await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!, user.PreferredLanguage);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to send confirmation email for user {UserId} after registration.", user.Id);
+            LogConfirmationEmailFailed(logger, ex, user.Id);
         }
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
@@ -100,11 +100,11 @@ public class AuthApiService(
         var result = await userManager.ConfirmEmailAsync(user, token);
         if (!result.Succeeded)
         {
-            logger.LogWarning("Email confirmation failed for {UserId}: {Errors}", userId, string.Join(", ", result.Errors.Select(e => e.Description)));
+            LogEmailConfirmationFailed(logger, userId, string.Join(", ", result.Errors.Select(e => e.Description)));
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description) });
         }
 
-        logger.LogInformation("Email confirmed for user {UserId}", user.Id);
+        LogEmailConfirmed(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = SuccessMessagesRes.EmailConfirmedSuccessfully });
     }
 
@@ -113,19 +113,19 @@ public class AuthApiService(
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            logger.LogWarning("Login attempt for non-existent user: {Email}", request.Email);
+            LogLoginUnknownUser(logger, request.Email);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
-            logger.LogWarning("Login blocked for unconfirmed email: user {UserId}", user.Id);
+            LogLoginUnconfirmedEmail(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
         if (!user.IsEnabled)
         {
-            logger.LogWarning("Login blocked for disabled user: {UserId}", user.Id);
+            LogLoginDisabledUser(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport });
         }
 
@@ -134,10 +134,10 @@ public class AuthApiService(
         {
             if (result.IsLockedOut)
             {
-                logger.LogWarning("User {UserId} is locked out.", user.Id);
+                LogUserLockedOut(logger, user.Id);
                 return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked });
             }
-            logger.LogWarning("Invalid password for user {UserId}", user.Id);
+            LogInvalidPassword(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
@@ -164,7 +164,7 @@ public class AuthApiService(
         context.RefreshTokens.Add(refreshTokenEntity);
         await context.SaveChangesAsync();
 
-        logger.LogInformation("User {UserId} logged in.", user.Id);
+        LogUserLoggedIn(logger, user.Id);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
         {
@@ -185,7 +185,7 @@ public class AuthApiService(
 
         if (stored is null || stored.ExpiresAt <= DateTimeOffset.UtcNow)
         {
-            logger.LogWarning("Refresh attempt with invalid or expired token.");
+            LogRefreshInvalidToken(logger);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
         }
 
@@ -196,7 +196,7 @@ public class AuthApiService(
         if (stored.RevokedAt is not null)
         {
             await RevokeTokenChainAsync(stored);
-            logger.LogWarning("Refresh token reuse detected for user {UserId} — revoked the token chain.", stored.UserId);
+            LogRefreshTokenReuse(logger, stored.UserId);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
         }
 
@@ -206,7 +206,7 @@ public class AuthApiService(
         {
             stored.RevokedAt = DateTimeOffset.UtcNow;
             await context.SaveChangesAsync();
-            logger.LogWarning("Refresh attempt for disabled user {UserId}.", user.Id);
+            LogRefreshDisabledUser(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountIsDisabled });
         }
 
@@ -217,7 +217,7 @@ public class AuthApiService(
         {
             stored.RevokedAt = DateTimeOffset.UtcNow;
             await context.SaveChangesAsync();
-            logger.LogWarning("Refresh attempt with stale security stamp for user {UserId} (password changed since issuance).", user.Id);
+            LogRefreshStaleSecurityStamp(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
         }
 
@@ -240,7 +240,7 @@ public class AuthApiService(
 
         var (accessToken, expiration) = await tokenService.GenerateAccessTokenAsync(user);
 
-        logger.LogInformation("Refresh token rotated for user {UserId}.", user.Id);
+        LogRefreshTokenRotated(logger, user.Id);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
         {
@@ -294,7 +294,7 @@ public class AuthApiService(
         // is anonymous, so anyone who knows the email could flip it. The next sign-in saves it.
         var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
 
-        logger.LogInformation("Password reset requested for user {UserId}. Reset email queued.", user.Id);
+        LogPasswordResetRequested(logger, user.Id);
         await emailService.SendPasswordResetAsync(user.Email!, resetUrl, requestLanguage);
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
@@ -312,7 +312,7 @@ public class AuthApiService(
         var result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
         if (!result.Succeeded)
         {
-            logger.LogWarning("Password reset failed for user {UserId}: {Errors}", user.Id, string.Join(", ", result.Errors.Select(e => e.Description)));
+            LogPasswordResetFailed(logger, user.Id, string.Join(", ", result.Errors.Select(e => e.Description)));
             // Return generic message — specific errors would confirm account existence or reveal policy hints.
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
         }
@@ -329,7 +329,7 @@ public class AuthApiService(
             token.RevokedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync();
 
-        logger.LogInformation("Password reset for user {UserId}", user.Id);
+        LogPasswordReset(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetSuccessful });
     }
 
@@ -362,11 +362,11 @@ public class AuthApiService(
         if (!updateResult.Succeeded)
         {
             var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
-            logger.LogWarning("DevConfirmEmail: UpdateAsync failed for user {UserId}: {Errors}", user.Id, errors);
+            LogDevConfirmEmailFailed(logger, user.Id, errors);
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = $"Confirm failed: {errors}" });
         }
 
-        logger.LogInformation("Email confirmed for user {UserId} (dev mode)", user.Id);
+        LogDevEmailConfirmed(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = "Email confirmed (dev mode)" });
     }
 
@@ -389,14 +389,83 @@ public class AuthApiService(
             token.RevokedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync();
 
-        logger.LogInformation("Password reset for user {UserId} (dev mode)", user.Id);
+        LogDevPasswordReset(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = "Password reset (dev mode)" });
     }
 
     private static string HashToken(string token)
     {
-        using var sha256 = SHA256.Create();
-        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
         return Convert.ToBase64String(hash);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Under-18 user registered: {UserId}. Parental consent not yet implemented.")]
+    private static partial void LogUnderEighteenRegistered(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed for {Email}: {Errors}")]
+    private static partial void LogRegistrationFailed(ILogger logger, string email, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} registered. Confirmation email queued.")]
+    private static partial void LogUserRegistered(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to send confirmation email for user {UserId} after registration.")]
+    private static partial void LogConfirmationEmailFailed(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Email confirmation failed for {UserId}: {Errors}")]
+    private static partial void LogEmailConfirmationFailed(ILogger logger, string userId, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Email confirmed for user {UserId}")]
+    private static partial void LogEmailConfirmed(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for non-existent user: {Email}")]
+    private static partial void LogLoginUnknownUser(ILogger logger, string email);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for unconfirmed email: user {UserId}")]
+    private static partial void LogLoginUnconfirmedEmail(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for disabled user: {UserId}")]
+    private static partial void LogLoginDisabledUser(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "User {UserId} is locked out.")]
+    private static partial void LogUserLockedOut(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Invalid password for user {UserId}")]
+    private static partial void LogInvalidPassword(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} logged in.")]
+    private static partial void LogUserLoggedIn(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh attempt with invalid or expired token.")]
+    private static partial void LogRefreshInvalidToken(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh token reuse detected for user {UserId} — revoked the token chain.")]
+    private static partial void LogRefreshTokenReuse(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh attempt for disabled user {UserId}.")]
+    private static partial void LogRefreshDisabledUser(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh attempt with stale security stamp for user {UserId} (password changed since issuance).")]
+    private static partial void LogRefreshStaleSecurityStamp(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Refresh token rotated for user {UserId}.")]
+    private static partial void LogRefreshTokenRotated(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset requested for user {UserId}. Reset email queued.")]
+    private static partial void LogPasswordResetRequested(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Password reset failed for user {UserId}: {Errors}")]
+    private static partial void LogPasswordResetFailed(ILogger logger, string userId, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for user {UserId}")]
+    private static partial void LogPasswordReset(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "DevConfirmEmail: UpdateAsync failed for user {UserId}: {Errors}")]
+    private static partial void LogDevConfirmEmailFailed(ILogger logger, string userId, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Email confirmed for user {UserId} (dev mode)")]
+    private static partial void LogDevEmailConfirmed(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for user {UserId} (dev mode)")]
+    private static partial void LogDevPasswordReset(ILogger logger, string userId);
 }

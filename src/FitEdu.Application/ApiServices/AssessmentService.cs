@@ -15,7 +15,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Student-facing assessment discovery and submission.
 /// </summary>
-public class AssessmentService(
+public partial class AssessmentService(
     IApplicationDbContext db,
     ISubscriptionService subscriptionService,
     IMemoryCache cache,
@@ -209,7 +209,7 @@ public class AssessmentService(
         {
             // DQ-4: include the assessment id — this is the only signal an operator gets that a
             // specific assessment's schema is corrupt (students still see the raw original JSON).
-            logger.LogError(ex, "Failed to resolve schema JSON by language for assessment {AssessmentId}; returning original.", assessmentId);
+            LogSchemaLanguageResolveFailed(logger, ex, assessmentId);
             return schemaJson;
         }
     }
@@ -401,4 +401,8 @@ public class AssessmentService(
 
         return true;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to resolve schema JSON by language for assessment {AssessmentId}; returning original.")]
+    private static partial void LogSchemaLanguageResolveFailed(ILogger logger, Exception exception, Guid assessmentId);
 }
