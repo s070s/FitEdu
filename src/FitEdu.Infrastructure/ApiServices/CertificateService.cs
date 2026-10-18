@@ -340,7 +340,7 @@ public class CertificateService : ICertificateService
         });
     }
 
-    /// <summary>"1h 30m", or "45m" under an hour, in the culture's units; null when no lesson has a duration.</summary>
+    /// <summary>"1 h 30 min", or "45 min" under an hour, in the culture's units; null when no lesson has a duration.</summary>
     private static string? FormatDuration(int? totalMinutes, CultureInfo culture)
     {
         if (totalMinutes is not > 0)
