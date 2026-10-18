@@ -78,6 +78,18 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 - Library names: English move first, Greek detail after: «Deadlift με αλτήρες», «Bench press σε κεκλιμένο πάγκο», «Curl με μπάρα E-Z». At the start of a name the move is capitalised.
 - Stretches, mobility drills, self-massage (SMR) and moves with no common gym name stay Greek: «Διάταση οπίσθιων μηριαίων σε καθιστή θέση», «Foam roller για τους πλατείς ραχιαίους (SMR)».
 - No English brackets after an English name. Greek-only names may add a lowercase English bracket only when it is a term people search for.
+- Library name patterns:
+  - grip: «Bench press με μπάρα και μεσαία λαβή», «… με κλειστή λαβή», «… με ουδέτερη λαβή»;
+  - alternating: «Hammer curl εναλλάξ», «Row εναλλάξ με kettlebell»;
+  - cable: «Crunch στην τροχαλία», «Triceps extension με ένα χέρι στην τροχαλία»;
+  - body position: «Calf raise σε καθιστή θέση με μπάρα», «Triceps extension ξαπλωτά στην τροχαλία», «Rear lateral raise με αλτήρες μπρούμυτα σε πάγκο»;
+  - incline and decline: «… σε κεκλιμένο πάγκο», «… σε πάγκο αρνητικής κλίσης»;
+  - hang: «Clean από κρέμασμα με kettlebell»;
+  - equipment: «Leg curl σε μπάλα γυμναστικής», «Deadlift με αλυσίδες»;
+  - self-massage: «Foam roller για τις γάμπες (SMR)», «Αυτομάλαξη πέλματος με ρολό (SMR)»;
+  - nicknames in Greek quotes: Push-up «ρολόι»;
+  - descriptive moves stay Greek: «Ανύψωση γλουτών από plank»;
+  - fixed names: windmill → «Windmill», the machine fly → «Butterfly σε μηχάνημα».
 - RPE: «το RPE (κλίμακα αντιληπτής προσπάθειας)» on first mention; EN "RPE (rating of perceived exertion)".
 
 ## Anatomy (Greek)
