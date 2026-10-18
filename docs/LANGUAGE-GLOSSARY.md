@@ -72,7 +72,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 ## Exercise names
 
 - Common gym moves keep their English name in Greek text and in the library's Greek names. They are lowercase mid-sentence and never take an English plural -s (τα squat, τα push-up, τα swing). Examples:
-  - το deadlift, το squat, το lunge, το row, το curl, το swing, το bench press, το plank, το push-up, το pull-up, το chin-up, το dip, το crunch, το sit-up, το burpee, το hip thrust, το hip hinge, το clean, το snatch, το get-up, το RPE.
+  - το deadlift, το squat, το lunge, το row, το curl, το swing, το bench press, το plank, το push-up, το pull-up, το chin-up, το dip, το crunch, το sit-up, το burpee, το hip thrust, το hip hinge, το glute bridge, το overhead press, το floor press, το romanian deadlift, το dead bug, το bird dog, το mountain climber, το jumping jack, το clean, το snatch, το get-up, το RPE.
   - Rule of thumb: neuter article (το / τα), uninflected.
 - Library names: English move first, Greek detail after: «Deadlift με αλτήρες», «Bench press σε κεκλιμένο πάγκο», «Curl με μπάρα E-Z». At the start of a name the move is capitalised.
 - Stretches, mobility drills, self-massage (SMR) and moves with no common gym name stay Greek: «Διάταση οπίσθιων μηριαίων σε καθιστή θέση», «Foam roller για τους πλατείς ραχιαίους (SMR)».
