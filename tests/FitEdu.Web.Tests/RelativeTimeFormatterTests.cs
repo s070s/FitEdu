@@ -26,7 +26,7 @@ public sealed class RelativeTimeFormatterTests : IDisposable
     {
         var result = RelativeTimeFormatter.LastSeen(DateTime.UtcNow.AddMinutes(-30));
 
-        result.ShouldBe("last seen 30 min ago");
+        result.ShouldBe("last seen 30 minutes ago");
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public sealed class RelativeTimeFormatterTests : IDisposable
     {
         var result = RelativeTimeFormatter.LastSeen(DateTime.UtcNow.AddHours(-5));
 
-        result.ShouldBe("last seen 5 h ago");
+        result.ShouldBe("last seen 5 hours ago");
     }
 
     [Fact]
@@ -42,7 +42,15 @@ public sealed class RelativeTimeFormatterTests : IDisposable
     {
         var result = RelativeTimeFormatter.LastSeen(DateTime.UtcNow.AddDays(-3));
 
-        result.ShouldBe("last seen 3 d ago");
+        result.ShouldBe("last seen 3 days ago");
+    }
+
+    [Fact]
+    public void LastSeen_OneDay_UsesSingular()
+    {
+        var result = RelativeTimeFormatter.LastSeen(DateTime.UtcNow.AddDays(-1).AddMinutes(-5));
+
+        result.ShouldBe("last seen 1 day ago");
     }
 
     [Fact]

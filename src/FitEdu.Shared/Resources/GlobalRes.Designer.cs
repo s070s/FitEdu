@@ -850,5 +850,50 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("NoFileChosen", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy Policy.
+        /// </summary>
+        public static string ConsentPrivacyLink {
+            get {
+                return ResourceManager.GetString("ConsentPrivacyLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Terms of Service.
+        /// </summary>
+        public static string ConsentTermsLink {
+            get {
+                return ResourceManager.GetString("ConsentTermsLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to last seen 1 minute ago.
+        /// </summary>
+        public static string LastSeenMinuteOne {
+            get {
+                return ResourceManager.GetString("LastSeenMinuteOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to last seen 1 hour ago.
+        /// </summary>
+        public static string LastSeenHourOne {
+            get {
+                return ResourceManager.GetString("LastSeenHourOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to last seen 1 day ago.
+        /// </summary>
+        public static string LastSeenDayOne {
+            get {
+                return ResourceManager.GetString("LastSeenDayOne", resourceCulture);
+            }
+        }
     }
 }
