@@ -693,7 +693,7 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 A grounded, bilingual (EN/EL) AI helper available to every authenticated user, regardless of subscription tier. It answers site questions from a background index of published courses (with every lesson in them, as students see them), assessments, and blog articles, and — as a **tool-calling agent** — can look up the signed-in user's own enrollments, lesson progress, assessment results and subscription, plus search and recommend courses and search the exercise library. Everything runs **locally** via [Ollama](https://ollama.com) — no cloud API, no per-token cost, no data leaves the machine.
 
-**Setup:** the assistant needs [Ollama](https://ollama.com) running locally; everything after that is automatic (the app pulls the models itself). If the widget shows *"Assistant unavailable — is Ollama installed and running?"*, work through these three steps.
+**Setup:** the assistant needs [Ollama](https://ollama.com) running locally; everything after that is automatic (the app pulls the models itself). If the widget shows *"The coach is unavailable right now. Please try again later."* (the app can't reach Ollama), work through these three steps.
 
 1. **Install Ollama** — download from <https://ollama.com/download>, or on Windows:
    ```powershell
@@ -701,7 +701,7 @@ A grounded, bilingual (EN/EL) AI helper available to every authenticated user, r
    ```
    The installer starts Ollama and keeps it running in the background (look for its icon in the system tray).
 
-2. **Confirm it's actually running** — this is exactly what the "*is Ollama installed and running?*" message checks. Open <http://localhost:11434> in a browser (it should say *"Ollama is running"*), or run `ollama list` in a terminal. If nothing responds, start it: launch **Ollama** from the Start menu, or run `ollama serve`.
+2. **Confirm it's actually running** — this is exactly what the "*coach is unavailable*" message checks. Open <http://localhost:11434> in a browser (it should say *"Ollama is running"*), or run `ollama list` in a terminal. If nothing responds, start it: launch **Ollama** from the Start menu, or run `ollama serve`.
 
 3. **Run the app:**
    ```powershell
@@ -746,7 +746,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Video call has no camera/mic | Grant the browser camera/microphone permission for the site, and use HTTPS (WebRTC requires a secure context). When testing with two browsers on one PC, only one can hold the physical webcam — the other joins audio-only (expected). |
 | `401` after login | Match `Jwt:Key/Issuer/Audience`. Disabled accounts return `X-User-Disabled: true`. |
 | HTTPS not trusted | `dotnet dev-certs https --trust` |
-| Assistant shows "is Ollama installed and running?" | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
+| Assistant shows "The coach is unavailable right now. Please try again later." | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
 | Assistant stuck "downloading its model" | Normal on first run (~2.6 GB total). Progress shows in the widget and in `Logs/`. On a metered/blocked network set `Assistant__AutoPullModels=false` and pull manually: `ollama pull qwen3:1.7b && ollama pull bge-m3`. |
 | Assistant's first answer is slow | Expected — Ollama cold-loads the model into memory on first request after startup/idle. Subsequent answers are faster. |
 
