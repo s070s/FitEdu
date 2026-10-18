@@ -30,9 +30,6 @@ public partial class SeedContentIntegrityTests
     private const string AllFilesPattern = "*";
     private const string SeedJsonPattern = "*.json";
 
-    // Not scanned for gender slashes yet; add it once the exercise library language pass lands.
-    private const string GenderSlashExcludedFileName = "exercises.el.json";
-
     // Label length for the sentence-case check, and the shortest word that counts as a word.
     private const int MinLabelWords = 2;
     private const int MaxLabelWords = 6;
@@ -332,6 +329,31 @@ public partial class SeedContentIntegrityTests
         problems.ShouldBeEmpty("Greek names capitalise only their first word");
     }
 
+    [Fact]
+    public void GreekOverlay_ExerciseNamesStartBracketsLowercase()
+    {
+        var problems = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => row.NameEl is not null)
+            .Where(row => CapitalisedBracketWordRegex().IsMatch(row.NameEl!))
+            .Select(row => $"{row.Slug}: '{row.NameEl}'")
+            .ToList();
+
+        problems.ShouldBeEmpty("a bracket in a Greek name holds a lowercase search term, e.g. (heel touchers), or an acronym such as (SMR)");
+    }
+
+    [Fact]
+    public void GreekOverlay_ExerciseNamesAreUnique()
+    {
+        var duplicateNames = SeedJsonFiles.LoadGreekOverlay()
+            .Where(row => !string.IsNullOrWhiteSpace(row.NameEl))
+            .GroupBy(row => row.NameEl!, StringComparer.Ordinal)
+            .Where(group => group.Count() > 1)
+            .Select(group => $"'{group.Key}': {string.Join(", ", group.Select(row => row.Slug))}")
+            .ToList();
+
+        duplicateNames.ShouldBeEmpty("each Greek name must tell its exercise apart (grip, stance, equipment)");
+    }
+
     // ---- Assessments -------------------------------------------------------------------------
 
     [Fact]
@@ -425,10 +447,7 @@ public partial class SeedContentIntegrityTests
     [Fact]
     public void Text_NoGenderSlashesInGreek()
     {
-        var textFiles = TextScanRoots.SelectMany(FindFilesToScan)
-            .Where(filePath => Path.GetFileName(filePath) != GenderSlashExcludedFileName);
-
-        var slashes = FindTextMatchesInFiles(GreekGenderSlashRegex(), textFiles)
+        var slashes = FindTextMatchesInFiles(GreekGenderSlashRegex(), TextScanRoots.SelectMany(FindFilesToScan))
             .Concat(LoadAllGreekResxValues()
                 .Where(value => GreekGenderSlashRegex().IsMatch(value.Text))
                 .Select(value => $"{value.Location}: {value.Text}"))
@@ -1079,6 +1098,11 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"(?<=[ /-])(?<!\bE-)(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|E-Z|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
+
+    // A capitalised word (a capital, then a lowercase letter) right after "(" in a name; an all-caps
+    // acronym such as (SMR) does not match.
+    [GeneratedRegex(@"\([A-ZΆΈ-ΏΑ-Ϋ](?=\p{Ll})", RegexOptions.CultureInvariant)]
+    private static partial Regex CapitalisedBracketWordRegex();
 
     // A capital (Greek or Latin) followed by a lowercase letter, starting a word after a space or
     // a word part after "-", so a word after the first: "Βασικές Ασκήσεις". A new part of the title
