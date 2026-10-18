@@ -1,6 +1,7 @@
-@* A single chat bubble. Plain text only — the assistant is instructed not to use markdown. *@
+@* A single chat bubble in plain text. The coach is told not to use markdown, but the small local
+   model still adds bold marks and headings now and then, so its answers lose those marks here. *@
 <div class="assistant-message @(Role == "user" ? "assistant-message-user" : "assistant-message-bot")">
-    @Content
+    @(Role == "user" ? Content : RemoveMarkdownMarks(Content))
 </div>
 
 @code {
