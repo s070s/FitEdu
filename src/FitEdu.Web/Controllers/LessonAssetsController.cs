@@ -30,7 +30,7 @@ namespace FitEdu.Web.Controllers;
 [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "application/pdf", "video/mp4", "video/webm", "video/ogg")]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
-public class LessonAssetsController : ControllerBase
+public partial class LessonAssetsController : ControllerBase
 {
     private readonly IApplicationDbContext _db;
     private readonly IFileStorage _fileStorage;
@@ -114,7 +114,7 @@ public class LessonAssetsController : ControllerBase
         // Check if file exists
         if (!_fileStorage.FileExists(filePath))
         {
-            _logger.LogWarning("File not found in storage: {FilePath}", filePath);
+            LogFileNotFound(_logger, filePath);
             return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
@@ -126,7 +126,7 @@ public class LessonAssetsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error streaming file: {FilePath}", filePath);
+            LogStreamingFailed(_logger, ex, filePath);
             return Problem(detail: ErrorMessagesRes.LessonFileLoadFailed, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
@@ -149,8 +149,18 @@ public class LessonAssetsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Lesson asset token invalid or expired for lesson {LessonId}.", lessonId);
+            LogAssetTokenInvalid(_logger, ex, lessonId);
             return false;
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "File not found in storage: {FilePath}")]
+    private static partial void LogFileNotFound(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error streaming file: {FilePath}")]
+    private static partial void LogStreamingFailed(ILogger logger, Exception exception, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Lesson asset token invalid or expired for lesson {LessonId}.")]
+    private static partial void LogAssetTokenInvalid(ILogger logger, Exception exception, Guid lessonId);
 }

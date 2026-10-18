@@ -23,7 +23,7 @@ namespace FitEdu.Web.Controllers;
 [Tags("Subscriptions")]
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
-public class SubscriptionController : ControllerBase
+public partial class SubscriptionController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
     private readonly ILogger<SubscriptionController> _logger;
@@ -89,9 +89,7 @@ public class SubscriptionController : ControllerBase
                 detail: ErrorMessagesRes.PaymentNotAvailable,
                 statusCode: StatusCodes.Status503ServiceUnavailable);
 
-        _logger.LogInformation(
-            "Checkout session {SessionId} created for user {UserId}",
-            session.SessionId, UserId);
+        LogCheckoutSessionCreated(_logger, session.SessionId, UserId);
 
         return Ok(session);
     }
@@ -116,7 +114,7 @@ public class SubscriptionController : ControllerBase
         var webhookSecret = _paymentOptions.WebhookSecret;
         if (string.IsNullOrWhiteSpace(webhookSecret))
         {
-            _logger.LogWarning("Stripe webhook received but Payment:WebhookSecret is not configured — rejecting.");
+            LogWebhookSecretMissing(_logger);
             return Problem(
                 detail: "Webhook signing secret is not configured.",
                 statusCode: StatusCodes.Status503ServiceUnavailable);
@@ -125,13 +123,13 @@ public class SubscriptionController : ControllerBase
         var signatureHeader = Request.Headers["Stripe-Signature"].ToString();
         if (string.IsNullOrEmpty(signatureHeader))
         {
-            _logger.LogWarning("Stripe webhook received without Stripe-Signature header.");
+            LogWebhookSignatureHeaderMissing(_logger);
             return Problem(detail: "Missing Stripe-Signature header.", statusCode: StatusCodes.Status400BadRequest);
         }
 
         if (!VerifyStripeSignature(rawBody, signatureHeader, webhookSecret, out var timestamp))
         {
-            _logger.LogWarning("Stripe webhook signature verification failed.");
+            LogWebhookSignatureInvalid(_logger);
             return Problem(detail: "Invalid webhook signature.", statusCode: StatusCodes.Status400BadRequest);
         }
 
@@ -139,7 +137,7 @@ public class SubscriptionController : ControllerBase
         var eventAge = DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(timestamp);
         if (eventAge.TotalMinutes > 5)
         {
-            _logger.LogWarning("Stripe webhook event is too old ({Age:F0} min) — possible replay attack.", eventAge.TotalMinutes);
+            LogWebhookEventTooOld(_logger, eventAge.TotalMinutes);
             return Problem(detail: "Webhook event timestamp is too old.", statusCode: StatusCodes.Status400BadRequest);
         }
 
@@ -149,7 +147,7 @@ public class SubscriptionController : ControllerBase
         //   checkout.session.completed        → AssignPlanAsync
         //   customer.subscription.updated     → update tier
         //   customer.subscription.deleted     → revert to Free
-        _logger.LogInformation("Stripe webhook verified. Event processing not yet implemented.");
+        LogWebhookVerified(_logger);
         return Ok(new StripeWebhookAckDto(true));
     }
 
@@ -200,7 +198,7 @@ public class SubscriptionController : ControllerBase
             return BadRequest(result);
         }
 
-        _logger.LogInformation("User {UserId} cancelled their subscription.", UserId);
+        LogSubscriptionCancelled(_logger, UserId);
         return Ok(result);
     }
 
@@ -218,4 +216,26 @@ public class SubscriptionController : ControllerBase
         var overview = await _subscriptionService.GetBillingOverviewAsync(UserId, page, pageSize, sortBy, sortDir, cancellationToken);
         return Ok(overview);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Checkout session {SessionId} created for user {UserId}")]
+    private static partial void LogCheckoutSessionCreated(ILogger logger, string sessionId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Stripe webhook received but Payment:WebhookSecret is not configured — rejecting.")]
+    private static partial void LogWebhookSecretMissing(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Stripe webhook received without Stripe-Signature header.")]
+    private static partial void LogWebhookSignatureHeaderMissing(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Stripe webhook signature verification failed.")]
+    private static partial void LogWebhookSignatureInvalid(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Stripe webhook event is too old ({Age:F0} min) — possible replay attack.")]
+    private static partial void LogWebhookEventTooOld(ILogger logger, double age);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Stripe webhook verified. Event processing not yet implemented.")]
+    private static partial void LogWebhookVerified(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} cancelled their subscription.")]
+    private static partial void LogSubscriptionCancelled(ILogger logger, string userId);
 }
