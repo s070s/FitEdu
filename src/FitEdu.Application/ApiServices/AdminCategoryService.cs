@@ -123,10 +123,10 @@ public partial class AdminCategoryService(IApplicationDbContext db, ILogger<Admi
         {
             var trimmed = newCategoryName.Trim();
             var lower = trimmed.ToLowerInvariant();
-            // Compared in SQL: EF cannot translate string.Equals(..., StringComparison), so CA1862 is suppressed here.
-#pragma warning disable CA1862
-            var existing = await db.Categories.FirstOrDefaultAsync(c => c.NameEn.ToLowerInvariant() == lower, cancellationToken);
-#pragma warning restore CA1862
+            // Compared in SQL: EF translates ToLower() to LOWER() but not ToLowerInvariant() or string.Equals(..., StringComparison).
+#pragma warning disable CA1304, CA1311, CA1862
+            var existing = await db.Categories.FirstOrDefaultAsync(c => c.NameEn.ToLower() == lower, cancellationToken);
+#pragma warning restore CA1304, CA1311, CA1862
             if (existing is not null)
                 return existing.Id;
 
@@ -147,12 +147,12 @@ public partial class AdminCategoryService(IApplicationDbContext db, ILogger<Admi
     private Task<bool> NameExistsAsync(string name, Guid? excludeId, CancellationToken cancellationToken)
     {
         var lower = name.ToLowerInvariant();
-        // Compared in SQL: EF cannot translate string.Equals(..., StringComparison), so CA1862 is suppressed here.
-#pragma warning disable CA1862
+        // Compared in SQL: EF translates ToLower() to LOWER() but not ToLowerInvariant() or string.Equals(..., StringComparison).
+#pragma warning disable CA1304, CA1311, CA1862
         return excludeId is { } id
-            ? db.Categories.AnyAsync(c => c.Id != id && c.NameEn.ToLowerInvariant() == lower, cancellationToken)
-            : db.Categories.AnyAsync(c => c.NameEn.ToLowerInvariant() == lower, cancellationToken);
-#pragma warning restore CA1862
+            ? db.Categories.AnyAsync(c => c.Id != id && c.NameEn.ToLower() == lower, cancellationToken)
+            : db.Categories.AnyAsync(c => c.NameEn.ToLower() == lower, cancellationToken);
+#pragma warning restore CA1304, CA1311, CA1862
     }
 
     private static string? NormalizeOptional(string? value) =>
