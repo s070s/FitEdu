@@ -48,7 +48,7 @@ public partial class Billing
         catch (Exception ex)
         {
             _error = ErrorMessagesRes.FailedToLoadBilling;
-            _logger.LogError(ex, "Failed to load billing overview.");
+            LogBillingLoadFailed(_logger, ex);
         }
         finally
         {
@@ -117,7 +117,7 @@ public partial class Billing
         {
             _cancelSuccess = false;
             _cancelMessage = ErrorMessagesRes.FailedToCancel;
-            _logger.LogError(ex, "Failed to cancel subscription.");
+            LogCancelSubscriptionFailed(_logger, ex);
         }
         finally
         {
@@ -174,4 +174,11 @@ public partial class Billing
             _ => type
         };
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load billing overview.")]
+    private static partial void LogBillingLoadFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to cancel subscription.")]
+    private static partial void LogCancelSubscriptionFailed(ILogger logger, Exception exception);
 }

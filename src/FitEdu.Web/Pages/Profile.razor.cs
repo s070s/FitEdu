@@ -37,8 +37,8 @@ public partial class Profile
     private string currentPassword = string.Empty;
     private string newPassword = string.Empty;
     private string confirmPassword = string.Empty;
-    private bool isSaving = false;
-    private bool isChangingPassword = false;
+    private bool isSaving;
+    private bool isChangingPassword;
     // Bootstrap alert types for the page message: green for a saved change, red for a problem.
     private const string SuccessAlert = "success";
     private const string ErrorAlert = "danger";

@@ -10,7 +10,7 @@ namespace FitEdu.Web.Services;
 /// (see CallService) rather than having the WebRTC mesh die abruptly. Runs during host StopAsync,
 /// while the SignalR connections are still open, before the process exits.
 /// </summary>
-public sealed class GracefulShutdownNotifier : IHostedService
+public sealed partial class GracefulShutdownNotifier : IHostedService
 {
     private readonly IHubContext<ChatHub> _chatHub;
     private readonly IHubContext<CallHub> _callHub;
@@ -38,7 +38,11 @@ public sealed class GracefulShutdownNotifier : IHostedService
         catch (Exception ex)
         {
             // Best-effort courtesy notice — never let it hold up or fault the shutdown path.
-            _logger.LogWarning(ex, "Failed to broadcast ServerShuttingDown to clients on shutdown.");
+            LogBroadcastShutdownFailed(_logger, ex);
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to broadcast ServerShuttingDown to clients on shutdown.")]
+    private static partial void LogBroadcastShutdownFailed(ILogger logger, Exception exception);
 }

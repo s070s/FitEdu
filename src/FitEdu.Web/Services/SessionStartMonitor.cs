@@ -13,7 +13,7 @@ namespace FitEdu.Web.Services;
 ///
 /// Uses a plain Task.Delay loop, matching <see cref="CallRingMonitor"/>'s convention.
 /// </summary>
-public sealed class SessionStartMonitor : BackgroundService
+public sealed partial class SessionStartMonitor : BackgroundService
 {
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan ReminderWindow = TimeSpan.FromMinutes(15);
@@ -37,7 +37,7 @@ public sealed class SessionStartMonitor : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "SessionStartMonitor: Error during poll iteration.");
+                LogPollFailed(_logger, ex);
             }
 
             try
@@ -96,7 +96,7 @@ public sealed class SessionStartMonitor : BackgroundService
                 {
                     // Best-effort per-recipient — one failed dispatch must not block the others
                     // or leave ReminderSentAt unset (which would just retry-storm every poll).
-                    _logger.LogWarning(ex, "SessionStartMonitor: Failed to dispatch reminder for session {SessionId} to user {UserId}.", session.Id, userId);
+                    LogReminderDispatchFailed(_logger, ex, session.Id, userId);
                 }
             }
 
@@ -137,4 +137,11 @@ public sealed class SessionStartMonitor : BackgroundService
 
         await db.SaveChangesAsync(cancellationToken);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "SessionStartMonitor: Error during poll iteration.")]
+    private static partial void LogPollFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "SessionStartMonitor: Failed to dispatch reminder for session {SessionId} to user {UserId}.")]
+    private static partial void LogReminderDispatchFailed(ILogger logger, Exception exception, Guid sessionId, string userId);
 }

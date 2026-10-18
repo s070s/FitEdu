@@ -54,7 +54,7 @@ public partial class AdminCategories
         {
             pagedResult = await CategoryConsumer.GetCategoriesAsync(currentPage, pageSize, _sortBy, _sortDir);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -129,7 +129,7 @@ public partial class AdminCategories
                 _formError = CategoryRes.ErrorSavingCategory;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _formError = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
@@ -172,7 +172,7 @@ public partial class AdminCategories
             if (success)
                 await LoadCategories();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

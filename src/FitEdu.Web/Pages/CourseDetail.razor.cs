@@ -128,7 +128,7 @@ public partial class CourseDetail
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load reviews for course {CourseId}.", CourseId);
+            LogReviewsLoadFailed(_logger, ex, CourseId);
         }
     }
 
@@ -165,7 +165,7 @@ public partial class CourseDetail
         catch (Exception ex)
         {
             _reviewError = ReviewRes.SubmitError;
-            _logger.LogError(ex, "Failed to submit review for course {CourseId}.", CourseId);
+            LogReviewSubmitFailed(_logger, ex, CourseId);
         }
         finally
         {
@@ -195,7 +195,7 @@ public partial class CourseDetail
         catch (Exception ex)
         {
             _error = ErrorMessagesRes.FailedToLoadCourse;
-            _logger.LogError(ex, "Failed to load course {CourseId}.", CourseId);
+            LogCourseLoadFailed(_logger, ex, CourseId);
         }
         finally
         {
@@ -251,7 +251,7 @@ public partial class CourseDetail
         catch (Exception ex)
         {
             _enrollError = ErrorMessagesRes.FailedToEnroll;
-            _logger.LogError(ex, "Failed to enroll in course {CourseId}.", CourseId);
+            LogEnrollFailed(_logger, ex, CourseId);
         }
         finally
         {
@@ -301,4 +301,17 @@ public partial class CourseDetail
     /// <summary>Lesson rows link to the lesson once the member is enrolled; before that they are plain text.</summary>
     private string? LessonHref(LessonSummaryDto lesson) =>
         _course?.IsEnrolled == true ? LessonPathPrefix + lesson.Id : null;
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load reviews for course {CourseId}.")]
+    private static partial void LogReviewsLoadFailed(ILogger logger, Exception exception, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to submit review for course {CourseId}.")]
+    private static partial void LogReviewSubmitFailed(ILogger logger, Exception exception, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load course {CourseId}.")]
+    private static partial void LogCourseLoadFailed(ILogger logger, Exception exception, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to enroll in course {CourseId}.")]
+    private static partial void LogEnrollFailed(ILogger logger, Exception exception, Guid courseId);
 }

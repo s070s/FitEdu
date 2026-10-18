@@ -127,6 +127,7 @@ public partial class SiteSearchBox : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         _debounceCts?.Cancel();
         _debounceCts?.Dispose();
     }

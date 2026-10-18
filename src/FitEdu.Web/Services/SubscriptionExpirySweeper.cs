@@ -17,7 +17,7 @@ namespace FitEdu.Web.Services;
 /// period is measured in months, so a coarse poll interval is appropriate — unlike the
 /// sub-minute monitors elsewhere in this file, being off by a few minutes here is immaterial.
 /// </summary>
-public sealed class SubscriptionExpirySweeper : BackgroundService
+public sealed partial class SubscriptionExpirySweeper : BackgroundService
 {
     private static readonly TimeSpan PollInterval = TimeSpan.FromMinutes(15);
 
@@ -40,7 +40,7 @@ public sealed class SubscriptionExpirySweeper : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "SubscriptionExpirySweeper: Error during sweep.");
+                LogSweepFailed(_logger, ex);
             }
 
             try
@@ -75,9 +75,7 @@ public sealed class SubscriptionExpirySweeper : BackgroundService
 
         if (freePlan is null)
         {
-            _logger.LogWarning(
-                "SubscriptionExpirySweeper: Free plan not found — cannot revert {Count} expired subscription(s) this pass.",
-                expired.Count);
+            LogFreePlanMissing(_logger, expired.Count);
             return;
         }
 
@@ -127,11 +125,23 @@ public sealed class SubscriptionExpirySweeper : BackgroundService
             {
                 // Best-effort per-recipient — one failed notification must not block the others
                 // or re-run the whole sweep next cycle (the DB state is already correct).
-                _logger.LogWarning(ex, "SubscriptionExpirySweeper: Failed to notify user {UserId} of expiry.", sub.UserId);
+                LogExpiryNotifyFailed(_logger, ex, sub.UserId);
             }
         }
 
-        _logger.LogInformation(
-            "SubscriptionExpirySweeper: Reverted {Count} expired subscription(s) to Free.", expired.Count);
+        LogRevertedToFree(_logger, expired.Count);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "SubscriptionExpirySweeper: Error during sweep.")]
+    private static partial void LogSweepFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "SubscriptionExpirySweeper: Free plan not found — cannot revert {Count} expired subscription(s) this pass.")]
+    private static partial void LogFreePlanMissing(ILogger logger, int count);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "SubscriptionExpirySweeper: Failed to notify user {UserId} of expiry.")]
+    private static partial void LogExpiryNotifyFailed(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "SubscriptionExpirySweeper: Reverted {Count} expired subscription(s) to Free.")]
+    private static partial void LogRevertedToFree(ILogger logger, int count);
 }

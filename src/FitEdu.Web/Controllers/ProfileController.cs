@@ -21,6 +21,8 @@ namespace FitEdu.Web.Controllers;
 [ProducesResponseType(StatusCodes.Status404NotFound)]
 public class ProfileController(IProfileService profileService, IAdminUserService adminUserService) : ControllerBase
 {
+    private static readonly System.Text.Json.JsonSerializerOptions ExportJsonOptions = new() { WriteIndented = true };
+
     private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)
         ?? throw new UnauthorizedAccessException("User ID not found");
 
@@ -125,10 +127,7 @@ public class ProfileController(IProfileService profileService, IAdminUserService
         if (export is null)
             return NotFound();
 
-        var json = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(export, new System.Text.Json.JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
+        var json = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(export, ExportJsonOptions);
         return File(json, "application/json", $"fitedu-my-data-{DateTime.UtcNow:yyyy-MM-dd}.json");
     }
 

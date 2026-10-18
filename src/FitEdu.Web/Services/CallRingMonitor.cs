@@ -17,7 +17,7 @@ namespace FitEdu.Web.Services;
 /// Uses a plain Task.Delay loop (rather than PeriodicTimer) to match this repo's existing
 /// BackgroundService convention (see BulkStudentSeedingService).
 /// </summary>
-public sealed class CallRingMonitor : BackgroundService
+public sealed partial class CallRingMonitor : BackgroundService
 {
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);
     private const int DisconnectGraceSeconds = 15;
@@ -57,7 +57,7 @@ public sealed class CallRingMonitor : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "CallRingMonitor: Error during poll iteration.");
+                LogPollFailed(_logger, ex);
             }
 
             try
@@ -150,6 +150,13 @@ public sealed class CallRingMonitor : BackgroundService
         }
 
         await db.SaveChangesAsync(stoppingToken);
-        _logger.LogInformation("CallRingMonitor: Swept {Count} dangling call session(s) from a previous process.", dangling.Count);
+        LogDanglingSessionsSwept(_logger, dangling.Count);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "CallRingMonitor: Error during poll iteration.")]
+    private static partial void LogPollFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "CallRingMonitor: Swept {Count} dangling call session(s) from a previous process.")]
+    private static partial void LogDanglingSessionsSwept(ILogger logger, int count);
 }

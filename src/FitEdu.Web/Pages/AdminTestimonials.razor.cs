@@ -94,7 +94,7 @@ public partial class AdminTestimonials
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -108,7 +108,7 @@ public partial class AdminTestimonials
             await TestimonialConsumer.MoveUpAsync(id);
             await LoadTestimonials();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -122,7 +122,7 @@ public partial class AdminTestimonials
             await TestimonialConsumer.MoveDownAsync(id);
             await LoadTestimonials();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -155,7 +155,7 @@ public partial class AdminTestimonials
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

@@ -13,7 +13,7 @@ namespace FitEdu.Web.Services;
 /// an Ollama restart (or late install) is detected and recovered from without an app restart.
 /// Never throws out of <see cref="ExecuteAsync"/>.
 /// </summary>
-public sealed class OllamaBootstrapService(
+public sealed partial class OllamaBootstrapService(
     IOptions<AssistantOptions> assistantOptions,
     AssistantRuntimeState state,
     ILogger<OllamaBootstrapService> logger) : BackgroundService
@@ -36,8 +36,7 @@ public sealed class OllamaBootstrapService(
                 if (await EnsureReadyAsync(stoppingToken))
                 {
                     if (state.Status != AssistantAvailability.Ready)
-                        logger.LogInformation("OllamaBootstrap: assistant is Ready (chat={Chat}, embeddings={Embed}).",
-                            _options.ChatModel, _options.EmbeddingModel);
+                        LogAssistantReady(logger, _options.ChatModel, _options.EmbeddingModel);
                     state.Set(AssistantAvailability.Ready);
                     delay = MaxDelay; // supervision cadence once healthy
                 }
@@ -53,8 +52,7 @@ public sealed class OllamaBootstrapService(
             catch (Exception ex)
             {
                 if (state.Status != AssistantAvailability.OllamaUnreachable)
-                    logger.LogWarning("OllamaBootstrap: Ollama unreachable at {BaseUrl} ({Reason}) — retrying.",
-                        _options.BaseUrl, ex.Message);
+                    LogOllamaUnreachable(logger, _options.BaseUrl, ex.Message);
                 state.Set(AssistantAvailability.OllamaUnreachable);
                 delay = Grow(delay);
             }
@@ -88,7 +86,7 @@ public sealed class OllamaBootstrapService(
 
         foreach (var model in missing)
         {
-            logger.LogInformation("OllamaBootstrap: pulling {Model}…", model);
+            LogPullingModel(logger, model);
             state.Set(AssistantAvailability.DownloadingModels, $"{model} — 0%");
 
             var lastLoggedPercent = -10d;
@@ -101,12 +99,12 @@ public sealed class OllamaBootstrapService(
                 state.Set(AssistantAvailability.DownloadingModels, $"{model} — {percent:0}%");
                 if (percent - lastLoggedPercent >= 10)
                 {
-                    logger.LogInformation("OllamaBootstrap: {Model} — {Percent:0}% ({Status})", model, percent, progress.Status);
+                    LogPullProgress(logger, model, percent, progress.Status);
                     lastLoggedPercent = percent;
                 }
             }
 
-            logger.LogInformation("OllamaBootstrap: pulled {Model}.", model);
+            LogPulledModel(logger, model);
         }
 
         // Verify the pulls actually landed before reporting Ready.
@@ -128,4 +126,20 @@ public sealed class OllamaBootstrapService(
 
     private static TimeSpan Grow(TimeSpan delay) =>
         delay >= MaxDelay ? MaxDelay : TimeSpan.FromSeconds(Math.Min(delay.TotalSeconds * 2, MaxDelay.TotalSeconds));
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: assistant is Ready (chat={Chat}, embeddings={Embed}).")]
+    private static partial void LogAssistantReady(ILogger logger, string chat, string embed);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "OllamaBootstrap: Ollama unreachable at {BaseUrl} ({Reason}) — retrying.")]
+    private static partial void LogOllamaUnreachable(ILogger logger, string baseUrl, string reason);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: pulling {Model}…")]
+    private static partial void LogPullingModel(ILogger logger, string model);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: {Model} — {Percent:0}% ({Status})")]
+    private static partial void LogPullProgress(ILogger logger, string model, double percent, string? status);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: pulled {Model}.")]
+    private static partial void LogPulledModel(ILogger logger, string model);
 }

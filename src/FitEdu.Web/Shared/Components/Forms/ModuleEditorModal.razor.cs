@@ -71,7 +71,7 @@ public partial class ModuleEditorModal
             else
                 _errorMessage = AdminRes.ModuleSaveFailed;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }

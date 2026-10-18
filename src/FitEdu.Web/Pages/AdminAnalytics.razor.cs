@@ -27,7 +27,7 @@ public partial class AdminAnalytics
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading analytics.");
+            LogAnalyticsLoadFailed(_logger, ex);
             _error = ErrorMessagesRes.FailedToLoadAnalytics;
         }
         finally
@@ -50,4 +50,8 @@ public partial class AdminAnalytics
         var percent = 100.0 * courseStat.CompletionCount / courseStat.EnrollmentCount;
         return (int)Math.Round(percent, MidpointRounding.AwayFromZero);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error loading analytics.")]
+    private static partial void LogAnalyticsLoadFailed(ILogger logger, Exception exception);
 }

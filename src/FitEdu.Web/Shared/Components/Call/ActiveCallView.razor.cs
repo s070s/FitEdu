@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using FitEdu.Application.DTOs;
 using FitEdu.Web.Interfaces;
 
+#pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
 namespace FitEdu.Web.Shared.Components.Call;
 
 public partial class ActiveCallView : IDisposable
@@ -50,6 +51,7 @@ public partial class ActiveCallView : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         CallService.StateChanged -= HandleStateChanged;
     }
 }

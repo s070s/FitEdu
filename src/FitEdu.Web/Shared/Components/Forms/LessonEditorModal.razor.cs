@@ -7,6 +7,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Application.DTOs;
 
+#pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
 namespace FitEdu.Web.Shared.Components.Forms;
 
 public partial class LessonEditorModal
@@ -228,7 +229,7 @@ public partial class LessonEditorModal
 
             await OnSaved.InvokeAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }

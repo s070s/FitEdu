@@ -103,7 +103,7 @@ public partial class CallService : ICallService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to start SignalR hub connection to {HubUrl}.", _hubUrl);
+            LogHubStartFailed(_logger, ex, _hubUrl);
             await _hub.DisposeAsync();
             _hub = null;
             NotifyStateChanged();
@@ -436,6 +436,7 @@ public partial class CallService : ICallService
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         if (_hub is not null)
         {
             await _hub.StopAsync();
@@ -446,4 +447,8 @@ public partial class CallService : ICallService
         _dotNetRef?.Dispose();
         _dotNetRef = null;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to start SignalR hub connection to {HubUrl}.")]
+    private static partial void LogHubStartFailed(ILogger logger, Exception exception, string hubUrl);
 }
