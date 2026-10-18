@@ -7,7 +7,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// Local file system implementation of IFileStorage.
 /// Stores files under the configured uploads directory (default ./App_Data/Uploads/{folder}/{fileName}).
 /// </summary>
-public class LocalFileStorage : IFileStorage
+public partial class LocalFileStorage : IFileStorage
 {
     private readonly string _basePath;
     private readonly ILogger<LocalFileStorage> _logger;
@@ -92,7 +92,7 @@ public class LocalFileStorage : IFileStorage
 
         // Return relative path
         var relativePath = $"{folder}/{uniqueFileName}";
-        _logger.LogInformation("File saved: {FilePath}", relativePath);
+        LogFileSaved(_logger, relativePath);
 
         return relativePath;
     }
@@ -136,7 +136,7 @@ public class LocalFileStorage : IFileStorage
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);
-            _logger.LogInformation("File deleted: {FilePath}", filePath);
+            LogFileDeleted(_logger, filePath);
         }
 
         return Task.CompletedTask;
@@ -155,7 +155,7 @@ public class LocalFileStorage : IFileStorage
         return File.Exists(fullPath);
     }
 
-    private void ValidateFileSize(Stream fileStream, string folder, long? explicitMaxBytes)
+    private static void ValidateFileSize(Stream fileStream, string folder, long? explicitMaxBytes)
     {
         // Network streams (e.g. from IFormFile) may not be seekable;
         // skip stream-level validation — callers should pre-check IFormFile.Length.
@@ -187,7 +187,7 @@ public class LocalFileStorage : IFileStorage
         }
     }
 
-    private string GetContentType(string extension)
+    private static string GetContentType(string extension)
     {
         return extension.ToLowerInvariant() switch
         {
@@ -202,4 +202,11 @@ public class LocalFileStorage : IFileStorage
             _ => "application/octet-stream"
         };
     }
-}
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "File saved: {FilePath}")]
+    private static partial void LogFileSaved(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "File deleted: {FilePath}")]
+    private static partial void LogFileDeleted(ILogger logger, string filePath);}
