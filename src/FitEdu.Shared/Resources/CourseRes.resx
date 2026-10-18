@@ -102,7 +102,7 @@
 		<value>Programme</value>
 	</data>
 	<data name="LoadingCourse" xml:space="preserve">
-		<value>Loading programme...</value>
+		<value>Loading programme…</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
 		<value>Back to programmes</value>
@@ -195,7 +195,7 @@
 		<value>Find your next programme</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
-		<value>Loading programmes...</value>
+		<value>Loading programmes…</value>
 	</data>
 	<data name="NoCoursesAvailable" xml:space="preserve">
 		<value>No programmes available at the moment.</value>
@@ -204,13 +204,16 @@
 		<value>{0} lessons</value>
 	</data>
 	<data name="Enrolled" xml:space="preserve">
-		<value>Enrolled</value>
+		<value>Joined</value>
 	</data>
 	<data name="UpgradeToFormat" xml:space="preserve">
 		<value>Upgrade to {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
 		<value>{0} programmes</value>
+	</data>
+	<data name="CourseCountOne" xml:space="preserve">
+		<value>1 programme</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Per page:</value>
@@ -225,13 +228,13 @@
 		<value>Included in the {0} plan and above.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
-		<value>Upgrade plan</value>
+		<value>Upgrade your plan</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>Programme limit on the {0} plan: {1}</value>
+		<value>Active-programme limit on the {0} plan: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
-		<value>You have used all your programme slots.</value>
+		<value>You've reached your active-programme limit.</value>
 	</data>
 	<data name="Level" xml:space="preserve">
 		<value>Level</value>
@@ -336,6 +339,6 @@
 		<value>Try another goal, level or piece of equipment, or clear the filters.</value>
 	</data>
 	<data name="PlanCourseUsageFormat" xml:space="preserve">
-		<value>{0} of {1} programmes used</value>
+		<value>{0} of {1} active programmes</value>
 	</data>
 </root>

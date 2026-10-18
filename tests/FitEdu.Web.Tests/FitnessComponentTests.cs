@@ -118,9 +118,9 @@ public class FitnessComponentTests : BunitContext
 
         media.Find(".exercise-media__frame--start").GetAttribute("alt").ShouldBe("Βαθύ κάθισμα — αρχική θέση");
         media.Find(".exercise-media__frame--end").GetAttribute("alt").ShouldBe("Βαθύ κάθισμα — τελική θέση");
-        media.Find(".exercise-media__phase--start").TextContent.ShouldBe("Αρχή");
-        media.Find(".exercise-media__phase--end").TextContent.ShouldBe("Τέλος");
-        media.Find(".exercise-media__toggle").GetAttribute("aria-label").ShouldBe("Παύση κίνησης");
+        media.Find(".exercise-media__phase--start").TextContent.ShouldBe("Αρχική θέση");
+        media.Find(".exercise-media__phase--end").TextContent.ShouldBe("Τελική θέση");
+        media.Find(".exercise-media__toggle").GetAttribute("aria-label").ShouldBe("Παύση κινούμενης εικόνας");
     }
 
     [Fact]
@@ -208,7 +208,7 @@ public class FitnessComponentTests : BunitContext
 
         card.FindAll(".muscle-chips li").Select(chip => chip.TextContent).ShouldBe(["Τετρακέφαλοι", "Γλουτοί", "Οπίσθιοι μηριαίοι"]);
         card.Find(".exercise-card__equipment").TextContent.ShouldContain("Βάρος σώματος");
-        card.FindAll(".exercise-card__dose dt").Select(label => label.TextContent).ShouldBe(["Σετ", "Επαναλήψεις", "Διάλειμμα"]);
+        card.FindAll(".exercise-card__dose dt").Select(label => label.TextContent).ShouldBe(["Σετ", "Επαναλήψεις", "Ξεκούραση"]);
         card.FindAll(".exercise-card__dose dd")[2].TextContent.ShouldBe("60 δευτ.");
         card.Find(".exercise-card__steps summary").TextContent.ShouldContain("Πώς γίνεται");
         card.FindAll(".exercise-card__position").ShouldBeEmpty();
@@ -309,7 +309,7 @@ public class FitnessComponentTests : BunitContext
         var chips = Render<MuscleChips>(parameters => parameters
             .Add(component => component.Muscles, ["lower back", "quadriceps"]));
 
-        chips.FindAll("li").Select(chip => chip.TextContent).ShouldBe(["Κάτω πλάτη", "Τετρακέφαλοι"]);
+        chips.FindAll("li").Select(chip => chip.TextContent).ShouldBe(["Μέση (οσφυϊκή μοίρα)", "Τετρακέφαλοι"]);
         chips.Find("ul").GetAttribute("aria-label").ShouldBe("Κύριοι μύες");
         chips.FindAll("li.muscle-chips__chip--secondary").ShouldBeEmpty();
     }

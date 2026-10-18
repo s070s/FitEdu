@@ -79,7 +79,7 @@
 		<value>Διακοπή κοινής χρήσης</value>
 	</data>
 	<data name="AddParticipant" xml:space="preserve">
-		<value>Προσθήκη συμμετέχοντα</value>
+		<value>Προσθήκη ατόμου</value>
 	</data>
 	<data name="StartGroupCall" xml:space="preserve">
 		<value>Νέα ομαδική κλήση</value>
@@ -118,7 +118,7 @@
 		<value>Η κλήση απορρίφθηκε.</value>
 	</data>
 	<data name="CallUnavailable" xml:space="preserve">
-		<value>Αυτός ο συμμετέχων δεν είναι διαθέσιμος.</value>
+		<value>Το άτομο αυτό δεν είναι διαθέσιμο.</value>
 	</data>
 	<data name="MediaPermissionDenied" xml:space="preserve">
 		<value>Δεν δόθηκε πρόσβαση σε κάμερα και μικρόφωνο. Έλεγξε τα δικαιώματα του προγράμματος περιήγησης και δοκίμασε ξανά.</value>
@@ -130,6 +130,6 @@
 		<value>Αυτή η κλήση έχει φτάσει το όριο των {0} συμμετεχόντων.</value>
 	</data>
 	<data name="SelectedCountFormat" xml:space="preserve">
-		<value>{0} από {1} επιλεγμένα</value>
+		<value>Επιλέχθηκαν {0} από {1}</value>
 	</data>
 </root>

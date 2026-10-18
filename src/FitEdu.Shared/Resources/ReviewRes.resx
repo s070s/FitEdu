@@ -65,7 +65,13 @@
     <value>No reviews yet.</value>
   </data>
   <data name="RatingSummaryFormat" xml:space="preserve">
-    <value>{0} out of 5 ({1} reviews)</value>
+    <value>{0} out of 5 ({1})</value>
+  </data>
+  <data name="ReviewCountOne" xml:space="preserve">
+    <value>1 review</value>
+  </data>
+  <data name="ReviewsCountFormat" xml:space="preserve">
+    <value>{0} reviews</value>
   </data>
   <data name="WriteReview" xml:space="preserve">
     <value>Write a review</value>
@@ -101,16 +107,16 @@
     <value>Your review was not approved. You can edit and resubmit it.</value>
   </data>
   <data name="SubmitError" xml:space="preserve">
-    <value>Failed to submit your review. Please try again.</value>
+    <value>Couldn't submit your review. Please try again.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Programme Reviews</value>
+    <value>Programme reviews</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
     <value>Programme</value>
   </data>
   <data name="ColAuthor" xml:space="preserve">
-    <value>Author</value>
+    <value>Member</value>
   </data>
   <data name="ColRating" xml:space="preserve">
     <value>Rating</value>

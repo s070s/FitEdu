@@ -71,7 +71,7 @@ public class CardComponentTests : BunitContext
 
         var card = RenderCourseCard(Course() with { IsEnrolled = true });
 
-        card.Find(".enrolled-badge").TextContent.ShouldContain("Έχεις εγγραφεί");
+        card.Find(".enrolled-badge").TextContent.ShouldContain("Έχεις γραφτεί");
     }
 
     [Fact]
@@ -240,7 +240,7 @@ public class CardComponentTests : BunitContext
         // Courses ("προγράμματα"), not the lessons ("μαθήματα") a course card counts.
         card.Find(".path-card__steps").TextContent.ShouldContain("4 προγράμματα");
         card.Find(".path-card__progress").TextContent.ShouldBe("2 από 4 ολοκληρώθηκαν");
-        card.Find(".path-card__more").TextContent.ShouldContain("Προβολή διαδρομής");
+        card.Find(".path-card__more").TextContent.ShouldContain("Δες την κατεύθυνση");
         card.Find(".chip").TextContent.ShouldContain("Κινητικότητα");
     }
 

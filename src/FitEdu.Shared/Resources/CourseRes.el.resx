@@ -102,7 +102,7 @@
 		<value>Πρόγραμμα</value>
 	</data>
 	<data name="LoadingCourse" xml:space="preserve">
-		<value>Φόρτωση προγράμματος...</value>
+		<value>Φόρτωση προγράμματος…</value>
 	</data>
 	<data name="BackToCourses" xml:space="preserve">
 		<value>Πίσω στα προγράμματα</value>
@@ -195,7 +195,7 @@
 		<value>Βρες το επόμενο πρόγραμμά σου</value>
 	</data>
 	<data name="LoadingCourses" xml:space="preserve">
-		<value>Φόρτωση προγραμμάτων...</value>
+		<value>Φόρτωση προγραμμάτων…</value>
 	</data>
 	<data name="NoCoursesAvailable" xml:space="preserve">
 		<value>Δεν υπάρχουν διαθέσιμα προγράμματα αυτή τη στιγμή.</value>
@@ -204,13 +204,16 @@
 		<value>{0} μαθήματα</value>
 	</data>
 	<data name="Enrolled" xml:space="preserve">
-		<value>Έχεις εγγραφεί</value>
+		<value>Έχεις γραφτεί</value>
 	</data>
 	<data name="UpgradeToFormat" xml:space="preserve">
-		<value>Αναβάθμιση σε {0}</value>
+		<value>Αναβάθμισε σε {0}</value>
 	</data>
 	<data name="TotalCoursesFormat" xml:space="preserve">
 		<value>{0} προγράμματα</value>
+	</data>
+	<data name="CourseCountOne" xml:space="preserve">
+		<value>1 πρόγραμμα</value>
 	</data>
 	<data name="PerPage" xml:space="preserve">
 		<value>Ανά σελίδα:</value>
@@ -222,16 +225,16 @@
 		<value>Επόμ.</value>
 	</data>
 	<data name="RequiresPlanFormat" xml:space="preserve">
-		<value>Περιλαμβάνεται στο πλάνο {0} και πάνω.</value>
+		<value>Διαθέσιμο από το πλάνο {0} και πάνω.</value>
 	</data>
 	<data name="UpgradePlan" xml:space="preserve">
-		<value>Αναβάθμιση πλάνου</value>
+		<value>Αναβάθμισε το πλάνο σου</value>
 	</data>
 	<data name="PlanCourseLimitFormat" xml:space="preserve">
-		<value>Όριο προγραμμάτων στο πλάνο «{0}»: {1}</value>
+		<value>Όριο ενεργών προγραμμάτων στο πλάνο «{0}»: {1}</value>
 	</data>
 	<data name="CourseSlotsFullNotice" xml:space="preserve">
-		<value>Έχεις φτάσει το όριο του πλάνου σου.</value>
+		<value>Έφτασες το όριο ενεργών προγραμμάτων του πλάνου σου.</value>
 	</data>
 	<data name="Level" xml:space="preserve">
 		<value>Επίπεδο</value>
@@ -336,6 +339,6 @@
 		<value>Δοκίμασε άλλον στόχο, επίπεδο ή εξοπλισμό, ή καθάρισε τα φίλτρα.</value>
 	</data>
 	<data name="PlanCourseUsageFormat" xml:space="preserve">
-		<value>{0} από {1} προγράμματα σε χρήση</value>
+		<value>Ενεργά προγράμματα: {0} από {1}</value>
 	</data>
 </root>

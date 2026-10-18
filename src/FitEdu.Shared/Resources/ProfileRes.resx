@@ -43,19 +43,19 @@
 		<value>Profile</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
-		<value>My Profile</value>
+		<value>My profile</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
-		<value>Loading...</value>
+		<value>Loading…</value>
 	</data>
 	<data name="BasicInformation" xml:space="preserve">
-		<value>Basic Information</value>
+		<value>Basic information</value>
 	</data>
 	<data name="LabelAvatar" xml:space="preserve">
-		<value>Avatar</value>
+		<value>Profile photo</value>
 	</data>
 	<data name="LabelDisplayName" xml:space="preserve">
-		<value>Display Name</value>
+		<value>Display name</value>
 	</data>
 	<data name="LabelEmail" xml:space="preserve">
 		<value>Email:</value>
@@ -64,61 +64,61 @@
 		<value>Name:</value>
 	</data>
 	<data name="LabelDateOfBirth" xml:space="preserve">
-		<value>Date of Birth:</value>
+		<value>Date of birth:</value>
 	</data>
 	<data name="NotSpecified" xml:space="preserve">
 		<value>Not specified</value>
 	</data>
 	<data name="BtnSaveProfile" xml:space="preserve">
-		<value>Save Profile</value>
+		<value>Save profile</value>
 	</data>
 	<data name="ChangePassword" xml:space="preserve">
-		<value>Change Password</value>
+		<value>Change password</value>
 	</data>
 	<data name="LabelCurrentPassword" xml:space="preserve">
-		<value>Current Password</value>
+		<value>Current password</value>
 	</data>
 	<data name="LabelNewPassword" xml:space="preserve">
-		<value>New Password</value>
+		<value>New password</value>
 	</data>
 	<data name="LabelConfirmNewPassword" xml:space="preserve">
-		<value>Confirm New Password</value>
+		<value>Confirm new password</value>
 	</data>
 	<data name="BtnLogout" xml:space="preserve">
-		<value>Logout</value>
+		<value>Log out</value>
 	</data>
 	<data name="RedirectingToLogin" xml:space="preserve">
-		<value>Redirecting to login...</value>
+		<value>Taking you to the log-in page…</value>
 	</data>
 	<data name="FileTooLarge" xml:space="preserve">
-		<value>File too large (max 5MB)</value>
+		<value>The file is too large (max 5 MB).</value>
 	</data>
 	<data name="AvatarUploadedSuccess" xml:space="preserve">
-		<value>Avatar uploaded successfully</value>
+		<value>Profile photo uploaded.</value>
 	</data>
 	<data name="ErrorUploadingAvatar" xml:space="preserve">
-		<value>Error uploading avatar</value>
+		<value>Couldn't upload your profile photo. Please try again.</value>
 	</data>
 	<data name="ErrorUploadingAvatarFormat" xml:space="preserve">
-		<value>Error uploading avatar: {0}</value>
+		<value>Couldn't upload your profile photo: {0}</value>
 	</data>
 	<data name="ProfileUpdatedSuccess" xml:space="preserve">
-		<value>Profile updated successfully</value>
+		<value>Profile updated.</value>
 	</data>
 	<data name="ErrorUpdatingProfile" xml:space="preserve">
-		<value>Error updating profile</value>
+		<value>Couldn't update your profile. Please try again.</value>
 	</data>
 	<data name="FillAllPasswordFields" xml:space="preserve">
-		<value>Please fill all password fields</value>
+		<value>Please fill in all password fields.</value>
 	</data>
 	<data name="PasswordsDoNotMatch" xml:space="preserve">
-		<value>New passwords don't match</value>
+		<value>The new passwords don't match.</value>
 	</data>
 	<data name="PasswordChangedSuccess" xml:space="preserve">
-		<value>Password changed successfully</value>
+		<value>Password changed.</value>
 	</data>
 	<data name="ErrorChangingPassword" xml:space="preserve">
-		<value>Error changing password - check current password</value>
+		<value>Couldn't change your password. Check your current password and try again.</value>
 	</data>
 	<data name="ErrorFormat" xml:space="preserve">
 		<value>Error: {0}</value>
@@ -127,7 +127,7 @@
 		<value>Couldn't load your profile. Please try again.</value>
 	</data>
 	<data name="InvalidImageType" xml:space="preserve">
-		<value>Please choose an image file (JPEG, PNG, GIF, or WebP).</value>
+		<value>Please choose an image file (JPEG, PNG, GIF or WebP).</value>
 	</data>
 	<data name="UploadingAvatar" xml:space="preserve">
 		<value>Uploading…</value>
@@ -139,13 +139,13 @@
 		<value>Delete my account</value>
 	</data>
 	<data name="DeleteAccountDescription" xml:space="preserve">
-		<value>Permanently delete your account and all associated data (enrollments, submissions, certificates, chat and call history, billing records). This cannot be undone.</value>
+		<value>Permanently delete your account and all associated data (programme enrolments, self-assessment answers, certificates, chat and call history, billing records). This can't be undone.</value>
 	</data>
 	<data name="DeleteAccountConfirmTitle" xml:space="preserve">
 		<value>Delete your account?</value>
 	</data>
 	<data name="DeleteAccountConfirmBody" xml:space="preserve">
-		<value>This permanently deletes your account and all associated data. This cannot be undone.</value>
+		<value>This permanently deletes your account and all associated data. It can't be undone.</value>
 	</data>
 	<data name="ErrorDeletingAccount" xml:space="preserve">
 		<value>Couldn't delete your account. Please try again or contact support.</value>
@@ -154,7 +154,7 @@
 		<value>Your data</value>
 	</data>
 	<data name="DownloadMyDataDescription" xml:space="preserve">
-		<value>Download a copy of your personal data: profile, enrollments, assessment submissions, certificates, billing history, and your chat messages.</value>
+		<value>Download a copy of your personal data: profile, programme enrolments, self-assessment answers, certificates, billing history and your chat messages.</value>
 	</data>
 	<data name="DownloadMyData" xml:space="preserve">
 		<value>Download my data</value>
@@ -173,6 +173,9 @@
 	</data>
 	<data name="StreakDaysFormat" xml:space="preserve">
 		<value>{0} days</value>
+	</data>
+	<data name="StreakDayOne" xml:space="preserve">
+		<value>1 day</value>
 	</data>
 	<data name="StatsHeading" xml:space="preserve">
 		<value>Your training at a glance</value>

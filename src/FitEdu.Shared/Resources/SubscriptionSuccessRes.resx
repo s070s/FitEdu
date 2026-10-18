@@ -40,10 +40,10 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Subscription Updated</value>
+		<value>Subscription updated</value>
 	</data>
 	<data name="LoadingSubscription" xml:space="preserve">
-		<value>Loading your subscription...</value>
+		<value>Loading your subscription…</value>
 	</data>
 	<data name="PlanHeadingFormat" xml:space="preserve">
 		<value>You're on the {0} plan!</value>
@@ -61,16 +61,16 @@
 		<value>Renews:</value>
 	</data>
 	<data name="BtnBrowseCourses" xml:space="preserve">
-		<value>Browse Programmes</value>
+		<value>Browse programmes</value>
 	</data>
 	<data name="BtnViewPlans" xml:space="preserve">
-		<value>View Plans</value>
+		<value>View plans</value>
 	</data>
 	<data name="UnableToLoad" xml:space="preserve">
-		<value>Unable to load subscription details.</value>
+		<value>Couldn't load your subscription details. Please try again.</value>
 	</data>
 	<data name="BtnBackToPricing" xml:space="preserve">
-		<value>Back to Pricing</value>
+		<value>Back to plans</value>
 	</data>
 	<data name="Eyebrow" xml:space="preserve">
 		<value>Subscription confirmed</value>

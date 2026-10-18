@@ -55,7 +55,7 @@
 		<value>Αξιολογήσεις</value>
 	</data>
 	<data name="ColCreated" xml:space="preserve">
-		<value>Δημιουργήθηκε</value>
+		<value>Δημιουργία</value>
 	</data>
 	<data name="ColActions" xml:space="preserve">
 		<value>Ενέργειες</value>
@@ -67,13 +67,13 @@
 		<value>Μετονομασία</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Διαγραφή «{0}»; Θα μείνουν χωρίς κατηγορία. Προγράμματα: {1} · Αξιολογήσεις: {2}</value>
+		<value>Να διαγραφεί η κατηγορία «{0}»; Τα προγράμματα και οι αξιολογήσεις της θα μείνουν χωρίς κατηγορία (προγράμματα: {1} · αξιολογήσεις: {2}).</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
-		<value>Δεν υπάρχουν ακόμα κατηγορίες.</value>
+		<value>Δεν υπάρχουν ακόμη κατηγορίες.</value>
 	</data>
 	<data name="LoadingCategories" xml:space="preserve">
-		<value>Φόρτωση κατηγοριών...</value>
+		<value>Φόρτωση κατηγοριών…</value>
 	</data>
 	<data name="NameEnLabel" xml:space="preserve">
 		<value>Όνομα (Αγγλικά)</value>
@@ -85,7 +85,7 @@
 		<value>Όλες</value>
 	</data>
 	<data name="SearchPlaceholder" xml:space="preserve">
-		<value>Αναζήτηση...</value>
+		<value>Αναζήτηση…</value>
 	</data>
 	<data name="NoMatchingResults" xml:space="preserve">
 		<value>Κανένα αποτέλεσμα δεν ταιριάζει με τα φίλτρα σου.</value>
@@ -103,16 +103,16 @@
 		<value>Κατηγορία</value>
 	</data>
 	<data name="CategorySaved" xml:space="preserve">
-		<value>Η κατηγορία αποθηκεύτηκε</value>
+		<value>Η κατηγορία αποθηκεύτηκε.</value>
 	</data>
 	<data name="CategoryDeleted" xml:space="preserve">
-		<value>Η κατηγορία διαγράφηκε</value>
+		<value>Η κατηγορία διαγράφηκε.</value>
 	</data>
 	<data name="ErrorSavingCategory" xml:space="preserve">
-		<value>Σφάλμα κατά την αποθήκευση της κατηγορίας</value>
+		<value>Δεν ήταν δυνατή η αποθήκευση της κατηγορίας. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="ErrorDeletingCategory" xml:space="preserve">
-		<value>Σφάλμα κατά τη διαγραφή της κατηγορίας</value>
+		<value>Δεν ήταν δυνατή η διαγραφή της κατηγορίας. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="Filters" xml:space="preserve">
 		<value>Φίλτρα</value>
