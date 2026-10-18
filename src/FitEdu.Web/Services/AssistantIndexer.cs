@@ -9,7 +9,7 @@ namespace FitEdu.Web.Services;
 /// immediately when <see cref="AssistantIndexSignal"/> fires (admin "reindex now"). A failed pass
 /// (e.g. Ollama unreachable) is logged and retried on the next tick — it never crashes the host.
 /// </summary>
-public sealed class AssistantIndexer(
+public sealed partial class AssistantIndexer(
     IServiceProvider services,
     AssistantIndexSignal signal,
     AssistantIndexVersion version,
@@ -37,10 +37,14 @@ public sealed class AssistantIndexer(
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "AssistantIndexer: index pass failed (Ollama unreachable?) — will retry.");
+                LogIndexPassFailed(logger, ex);
             }
 
             await signal.WaitAsync(Interval, stoppingToken);
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "AssistantIndexer: index pass failed (Ollama unreachable?) — will retry.")]
+    private static partial void LogIndexPassFailed(ILogger logger, Exception exception);
 }

@@ -96,7 +96,7 @@ public partial class CallService
         if (state == "failed")
         {
             // webrtc-interop.js guards this to a single attempt per peer.
-            _ = _js.InvokeVoidAsync("webrtcInterop.restartIce", peerKey);
+            _ = _js.InvokeVoidAsync("webrtcInterop.restartIce", peerKey).AsTask();
         }
     }
 
@@ -114,11 +114,15 @@ public partial class CallService
     [JSInvokable]
     public void OnMediaError(string context, string? peerKey, string message)
     {
-        _logger.LogWarning("CallService: JS interop error in {Context} (peer={PeerKey}): {Message}", context, peerKey, message);
+        LogJsInteropError(_logger, context, peerKey, message);
 
         // Browser getUserMedia failures are virtually always a permissions problem from the
         // user's perspective, regardless of the exact DOMException subtype — surface a clean,
         // localizable key instead of the raw (English-only) browser error text.
         ErrorOccurred?.Invoke(context == "startLocalMedia" ? "MediaPermissionDenied" : message);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "CallService: JS interop error in {Context} (peer={PeerKey}): {Message}")]
+    private static partial void LogJsInteropError(ILogger logger, string context, string? peerKey, string message);
 }

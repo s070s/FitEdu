@@ -10,7 +10,7 @@ namespace FitEdu.Web.Services;
 /// IEmailService is a dev stub with only confirmation/reset methods) and is the OTel path owned by
 /// report 38 (OBS); this is the cheapest step that changes "invisible until someone opens the file".
 /// </summary>
-public sealed class LogErrorDigestService : BackgroundService
+public sealed partial class LogErrorDigestService : BackgroundService
 {
     private const string ErrorMarker = "] [ERROR] ";
     private readonly string _logDirectory;
@@ -59,15 +59,20 @@ public sealed class LogErrorDigestService : BackgroundService
 
             if (errorCount > 0)
             {
-                _logger.LogWarning(
-                    "Log digest: {ErrorCount} error(s) were recorded on {Date:yyyy-MM-dd}. Review {File}.",
-                    errorCount, date, file);
+                LogDigestErrorsRecorded(_logger, errorCount, date, file);
             }
         }
         catch (Exception ex)
         {
             // Never let the digest itself become a source of instability.
-            _logger.LogWarning(ex, "Log digest: failed to scan the previous day's log file.");
+            LogDigestScanFailed(_logger, ex);
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Log digest: {ErrorCount} error(s) were recorded on {Date:yyyy-MM-dd}. Review {File}.")]
+    private static partial void LogDigestErrorsRecorded(ILogger logger, int errorCount, DateTime date, string file);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Log digest: failed to scan the previous day's log file.")]
+    private static partial void LogDigestScanFailed(ILogger logger, Exception exception);
 }

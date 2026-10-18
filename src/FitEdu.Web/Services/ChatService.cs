@@ -16,7 +16,7 @@ namespace FitEdu.Web.Services;
 /// because HttpContext (and therefore <c>SsrApiHandler</c>) is null inside the interactive circuit,
 /// where these calls would otherwise go out unauthenticated and 401.
 /// </summary>
-public class ChatService : IChatService
+public partial class ChatService : IChatService
 {
     private readonly HttpClient _http;
     private readonly string _hubUrl;
@@ -86,7 +86,7 @@ public class ChatService : IChatService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to start SignalR hub connection to {HubUrl}.", _hubUrl);
+            LogHubStartFailed(_logger, ex, _hubUrl);
             await _hub.DisposeAsync();
             _hub = null;
             ConnectionStateChanged?.Invoke();
@@ -133,7 +133,7 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to fetch conversations (page={Page}).", page);
+            LogFetchConversationsFailed(_logger, ex, page);
         }
         return new PagedResult<ChatConversationDto>([], 0, page, pageSize);
     }
@@ -153,7 +153,7 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to fetch messages for conversation {ConversationId} (page={Page}).", conversationId, page);
+            LogFetchMessagesFailed(_logger, ex, conversationId, page);
         }
         return new PagedResult<ChatMessageDto>([], 0, page, pageSize);
     }
@@ -172,7 +172,7 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to start conversation with user {TargetUserId}.", targetUserId);
+            LogStartConversationFailed(_logger, ex, targetUserId);
         }
         return null;
     }
@@ -194,7 +194,7 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to fetch available chat users (search={Search}).", search);
+            LogFetchAvailableUsersFailed(_logger, ex, search);
         }
         return [];
     }
@@ -228,7 +228,7 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to fetch unread message count.");
+            LogFetchUnreadCountFailed(_logger, ex);
         }
         return 0;
     }
@@ -243,13 +243,36 @@ public class ChatService : IChatService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to delete conversation {ConversationId}.", conversationId);
+            LogDeleteConversationFailed(_logger, ex, conversationId);
         }
         return false;
     }
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         await StopAsync();
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to start SignalR hub connection to {HubUrl}.")]
+    private static partial void LogHubStartFailed(ILogger logger, Exception exception, string hubUrl);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to fetch conversations (page={Page}).")]
+    private static partial void LogFetchConversationsFailed(ILogger logger, Exception exception, int page);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to fetch messages for conversation {ConversationId} (page={Page}).")]
+    private static partial void LogFetchMessagesFailed(ILogger logger, Exception exception, Guid conversationId, int page);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to start conversation with user {TargetUserId}.")]
+    private static partial void LogStartConversationFailed(ILogger logger, Exception exception, string targetUserId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to fetch available chat users (search={Search}).")]
+    private static partial void LogFetchAvailableUsersFailed(ILogger logger, Exception exception, string? search);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to fetch unread message count.")]
+    private static partial void LogFetchUnreadCountFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to delete conversation {ConversationId}.")]
+    private static partial void LogDeleteConversationFailed(ILogger logger, Exception exception, Guid conversationId);
 }
