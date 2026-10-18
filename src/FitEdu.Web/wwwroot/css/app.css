@@ -526,3 +526,9 @@ main.content:has(> .page) {
         transform: none;
     }
 }
+
+/* Blazor's built-in reconnect popup draws a white box inside a shadow root that page CSS cannot
+   reach; its text inherits this host's colour, which was the light theme text: white on white. */
+#components-reconnect-modal {
+    color: var(--bg-primary);
+}
