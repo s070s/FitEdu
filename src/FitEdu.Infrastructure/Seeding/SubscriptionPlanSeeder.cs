@@ -28,8 +28,8 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Free",
-                Description = "Start free with bodyweight, mobility and other starter courses, the full exercise library and 1 active course at a time.",
-                DescriptionEl = "Ξεκίνα δωρεάν με προγράμματα βάρους σώματος, κινητικότητας και άλλα προγράμματα για αρχάριους, την πλήρη βιβλιοθήκη ασκήσεων και 1 ενεργό πρόγραμμα τη φορά.",
+                Description = "Start free with bodyweight, mobility and other starter programmes, the full exercise library and 1 active programme at a time.",
+                DescriptionEl = "Ξεκίνα δωρεάν με προγράμματα βάρους σώματος, κινητικότητας και άλλα προγράμματα για αρχάριους, την πλήρη βιβλιοθήκη ασκήσεων και 1 ενεργό πρόγραμμα ταυτόχρονα.",
                 Price = 0m,
                 BillingPeriod = BillingPeriod.Lifetime,
                 Tier = SubscriptionTier.Free,
@@ -47,8 +47,8 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Plus",
-                Description = "Every Free and Plus course, all fitness self-assessments and up to 10 active courses at a time.",
-                DescriptionEl = "Όλα τα προγράμματα Free και Plus, όλες οι αξιολογήσεις αυτοελέγχου φυσικής κατάστασης και έως 10 ενεργά προγράμματα τη φορά.",
+                Description = "Every Free and Plus programme, all self-assessments and up to 10 active programmes at a time.",
+                DescriptionEl = "Όλα τα προγράμματα των πλάνων Δωρεάν και Plus, όλες οι αξιολογήσεις και έως 10 ενεργά προγράμματα ταυτόχρονα.",
                 Price = 9.99m,
                 BillingPeriod = BillingPeriod.Monthly,
                 Tier = SubscriptionTier.Plus,
@@ -66,7 +66,7 @@ public static class SubscriptionPlanSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "Pro",
-                Description = "Everything in Plus, plus the advanced Pro programmes, unlimited active courses, completion certificates and priority support.",
+                Description = "Everything in Plus, plus the advanced Pro programmes, unlimited active programmes, completion certificates and priority support.",
                 DescriptionEl = "Όλα όσα περιλαμβάνει το Plus, μαζί με τα προχωρημένα προγράμματα Pro, απεριόριστα ενεργά προγράμματα, πιστοποιητικά ολοκλήρωσης και υποστήριξη με προτεραιότητα.",
                 Price = 19.99m,
                 BillingPeriod = BillingPeriod.Monthly,
