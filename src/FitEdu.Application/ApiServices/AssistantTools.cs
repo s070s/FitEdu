@@ -66,11 +66,11 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             AIFunctionFactory.Create(
                 (CancellationToken ct) => GetMyEnrollmentsAsync(userId, isEl, ct),
                 "get_my_enrollments",
-                "Lists the courses the current user is enrolled in, with enrollment dates."),
+                "Lists the programmes (courses) the current user has joined, with the dates they joined."),
             AIFunctionFactory.Create(
                 (CancellationToken ct) => GetMyProgressAsync(userId, isEl, ct),
                 "get_my_progress",
-                "Shows the current user's progress per enrolled course: completed vs total lessons."),
+                "Shows the current user's progress in each programme (course) they joined: completed vs total lessons."),
             AIFunctionFactory.Create(
                 (CancellationToken ct) => GetMyAssessmentResultsAsync(userId, isEl, ct),
                 "get_my_assessment_results",
@@ -85,7 +85,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
                 (string query, int? maxResults = null, CancellationToken ct = default) =>
                     SearchCoursesAsync(query, maxResults, isEl, ct),
                 "search_courses",
-                "Searches published courses by a keyword in title or description. maxResults is optional (default 5, max 5)."),
+                "Searches the published programmes (courses; πρόγραμμα in Greek) by a keyword in title or description. maxResults is optional (default 5, max 5)."),
             AIFunctionFactory.Create(
                 (string query = "", string? muscle = null, string? equipment = null, int? maxResults = null,
                     CancellationToken ct = default) =>
@@ -95,7 +95,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             AIFunctionFactory.Create(
                 (CancellationToken ct) => RecommendCoursesAsync(userId, isEl, ct),
                 "recommend_courses",
-                "Recommends published courses the current user has not enrolled in yet, preferring the categories of their existing courses."),
+                "Recommends published programmes (courses; πρόγραμμα in Greek) the current user has not joined yet, preferring the categories of the ones they have. Use it when the member asks which programme to start or do next."),
         ];
     }
 
