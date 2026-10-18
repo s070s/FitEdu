@@ -9,7 +9,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 | Spelling | British (programme, practise, centre, colour, enrolment, cancelled, pedalling) | Monotonic, with all accents and diaereses |
 | Address | "you", friendly and direct | Informal singular (εσύ/σου) everywhere; never σας / -ετε |
 | Gender | n/a | Gender-neutral wording. No slashes (Αρχάριος/α). Rephrase around a noun or a verb: «Αρχάριο επίπεδο», «Έχεις ήδη γραφτεί», «σε όρθια θέση», «Νέο μήνυμα από {0}» |
-| Capitalisation | Sentence case for buttons, labels, headings, nav, column headers and course, module and lesson titles. Exceptions: brand names, plan names (Plus, Pro), document names (Privacy Policy, Terms of Service) | Sentence case. After a colon the next word is capitalised |
+| Capitalisation | Sentence case for UI text: buttons, labels, headings, nav, column headers, page titles. Content titles (programme, module, lesson, training path, self-assessment, blog article, live class) keep Title Case. Exceptions everywhere: brand names, plan names (Plus, Pro), document names (Privacy Policy, Terms of Service) | Sentence case. After a colon the next word is capitalised |
 | Member buttons / calls to action | Imperative ("Join", "Start workout", "View programmes") | Imperative (Δες, Ξεκίνα, Διάλεξε, Γράψου) |
 | Form and admin actions | Imperative ("Save", "Delete") | Nouns (Αποθήκευση, Διαγραφή, Ακύρωση, Επεξεργασία) |
 
