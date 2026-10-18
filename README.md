@@ -114,6 +114,7 @@ FitEdu.sln
 │   └── FitEdu.Shared/          Localization resources (.resx EN/EL + Designer classes), JSON seed data
 ├── docs/                                Runbook, deployment notes, asset manifest and licences, open audit backlog, EN/EL language glossary
 ├── tests/                               Unit, integration, e2e (Playwright), and shared test-support projects
+├── tools/azure-demo/                    PowerShell script that puts a free public demo on Azure (see its README)
 ├── tools/assets/                        Node scripts that convert and render the shipped images (see its README)
 ├── tools/responsive-check/              Node sweep that checks every page at phone and desktop size (see its README)
 └── tools/shared/                        Headless Chrome launcher both tool folders use (needs PLAYWRIGHT_CORE)

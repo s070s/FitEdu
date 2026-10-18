@@ -59,3 +59,8 @@ Development. Set both `SeedData:Enabled=true` and `SeedData:AllowOutsideDevelopm
 `SeedData:StudentPassword`, the password of the sample members); the published app reads the JSON
 from its `SeedJson/` folder. Never set the second key on a real deployment. Without Ollama, set
 `Assistant:Enabled=false`: the coach button then disappears.
+
+[`tools/azure-demo/`](../tools/azure-demo/README.md) sets all of this up on Azure's free offers
+(App Service F1 on Linux and the Azure SQL Database free offer, which pauses instead of billing)
+and lists the demo's limits. On Linux the key ring is stored in the database without DPAPI; only
+the web app's managed identity can sign in to that database.
