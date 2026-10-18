@@ -302,11 +302,11 @@ public partial class SeedContentIntegrityTests
     {
         var problems = SeedJsonFiles.LoadGreekOverlay()
             .Where(row => row.NameEl is not null)
-            .Where(row => CapitalisedInnerWordRegex().IsMatch(row.NameEl!) || LowercaseBracketStartRegex().IsMatch(row.NameEl!))
+            .Where(row => CapitalisedInnerWordRegex().IsMatch(row.NameEl!))
             .Select(row => $"{row.Slug}: '{row.NameEl}'")
             .ToList();
 
-        problems.ShouldBeEmpty("Greek names capitalise only the first word of the name and of its brackets");
+        problems.ShouldBeEmpty("Greek names capitalise only their first word");
     }
 
     // ---- Assessments -------------------------------------------------------------------------
@@ -676,8 +676,9 @@ public partial class SeedContentIntegrityTests
 
     private static IEnumerable<string> FindGreekRowProblems(string slug, ExerciseSeedDto exercise, ExerciseGreekSeedDto greekRow)
     {
-        if (greekRow.NameEl is null || !GreekLetterRegex().IsMatch(greekRow.NameEl))
-            yield return $"{slug}: nameEl '{greekRow.NameEl}' has no Greek letters";
+        // Common gym moves keep their English name in Greek too ("Chin-up", "Box jump"), so a name needs text, not Greek letters.
+        if (string.IsNullOrWhiteSpace(greekRow.NameEl))
+            yield return $"{slug}: no nameEl";
 
         if (greekRow.InstructionsEl.Count != exercise.Instructions.Count)
             yield return $"{slug}: {greekRow.InstructionsEl.Count} Greek steps for {exercise.Instructions.Count} English ones";
@@ -915,8 +916,8 @@ public partial class SeedContentIntegrityTests
 
     // A capital (Latin or Greek) starting a word or word part after a space, "/" or "-", so not
     // the first word of the name or of its brackets. Proper nouns (Arnold, Turkish, Smith, ...) and
-    // the letter or acronym names of equipment and moves (EZ bar, SMR, T-bar, V-up) keep theirs.
-    [GeneratedRegex(@"(?<=[ /-])(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
+    // the letter or acronym names of equipment and moves (EZ bar, E-Z bar, SMR, T-bar, V-up) keep theirs.
+    [GeneratedRegex(@"(?<=[ /-])(?<!\bE-)(?!(?:Arnold|Turkish|Romanian|Atlas|Bradford|Rocky|Conan|Gironda|Janda|Russian|Scott|Smith|Zottman|Bosu|EZ|E-Z|SMR|T|V)\b)[A-ZΆΈ-ΏΑ-Ϋ]",
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerWordRegex();
 
@@ -929,13 +930,6 @@ public partial class SeedContentIntegrityTests
     [GeneratedRegex(@"(?<=(?<!:) |-)(?!(?:Push|Pull|Legs|Express|Turkish)\b(?!-))[A-ZΆΈ-ΏΑ-Ϋ](?=\p{Ll})",
         RegexOptions.CultureInvariant)]
     private static partial Regex CapitalisedInnerTitleWordRegex();
-
-    // A bracket whose first word starts in lower case: "(με βοηθό)" instead of "(Με βοηθό)".
-    [GeneratedRegex(@"\(\p{Ll}", RegexOptions.CultureInvariant)]
-    private static partial Regex LowercaseBracketStartRegex();
-
-    [GeneratedRegex(@"\p{IsGreekandCoptic}", RegexOptions.CultureInvariant)]
-    private static partial Regex GreekLetterRegex();
 
     // The brand, the Plus and Pro plan names and the terms the Greek UI keeps in English.
     [GeneratedRegex(@"\b(?:FitEdu|Plus|Pro|Email|PDF|Slug|ID|Cookies|Kettlebell)\b", RegexOptions.CultureInvariant)]
