@@ -1,7 +1,8 @@
 # Exercise library seed data
 
-`exercises.json` is a trimmed copy of the **Free Exercise DB**. Do not hand-edit it: regenerate it
-with the commands below so it always matches the upstream data.
+`exercises.json` is a trimmed and edited copy of the **Free Exercise DB**. Only the `instructions`
+text was edited (see [Edits to the instructions](#edits-to-the-instructions)); every other field
+matches the upstream data.
 
 ## Source and licence
 
@@ -12,8 +13,8 @@ with the commands below so it always matches the upstream data.
 | Licence | The Unlicense (public domain dedication) — <https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md>. No attribution is required; we credit the project anyway. |
 | Downloaded and licence checked | 2026-10-12 |
 
-The exercise text (names, instructions) is public domain and may be reused word for word. The
-matching photos (`exercises/<id>/0.jpg`, `1.jpg` in the same download) are not stored here; the app
+The exercise text (names, instructions) is public domain and may be reused and edited freely; the
+licence is unchanged by our edits. The matching photos (`exercises/<id>/0.jpg`, `1.jpg` in the same download) are not stored here; the app
 expects them as `src/FitEdu.Web/wwwroot/images/exercises/<slug>/0.webp` and `1.webp`.
 
 ## How it was trimmed
@@ -23,7 +24,9 @@ The download has 876 exercises. Three have no photos and are left out everywhere
 `Kettlebell_Overhead_Triceps_Extension`), leaving **873**. Every other field is kept unchanged,
 including the original `id` (the seeder turns it into the slug) and the `images` array.
 
-Run from Git Bash in the repository root, with `<download>` pointing at the extracted
+Re-running the commands below rebuilds the upstream copy and discards the instruction edits
+described in the next section, so only do it to start over from upstream, and redo those edits
+afterwards. From Git Bash in the repository root, with `<download>` pointing at the extracted
 `free-exercise-db-main` folder:
 
 ```bash
@@ -36,6 +39,20 @@ jq -r '.[].id | ascii_downcase | gsub("[^a-z0-9]+"; "-") | ltrimstr("-") | rtrim
 
 The second command rebuilds `docs/assets/exercise-slugs.txt` (one slug per line, sorted), the list
 course authors pick slugs from.
+
+## Edits to the instructions
+
+The English `instructions` are an edited copy of the upstream text (edited 2026-10-18):
+
+- Typos and grammar fixed (for example "asborbing" is now "absorbing"; "Lay on the bench" is now
+  "Lie on the bench"), and stray spaces and punctuation tidied.
+- British spelling (centre, tyre, programme, stabilise, pedalling).
+- Metric units: inches, feet, yards, pounds and miles per hour were converted to centimetres,
+  metres, kilograms and km/h, rounded to gym-friendly values (6 inches is 15 cm, 25 lb is 10 kg).
+
+Only strings inside `instructions` changed. The `id` (and so the slug), `name`, `images` and every
+other field match upstream, and every exercise keeps its number of steps, so the Greek step counts
+in `exercises.el.json` still match.
 
 ## Slugs
 
