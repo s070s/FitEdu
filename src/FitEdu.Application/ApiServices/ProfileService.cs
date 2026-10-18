@@ -11,7 +11,7 @@ using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.ApiServices;
 
-public class ProfileService(
+public partial class ProfileService(
     UserManager<ApplicationUser> userManager,
     IFileStorage fileStorage,
     IApplicationDbContext db,
@@ -69,8 +69,7 @@ public class ProfileService(
         var updateResult = await userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {
-            logger.LogError("Failed to persist avatar path for user {UserId}: {Errors}",
-                userId, string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+            LogAvatarPathPersistFailed(logger, userId, string.Join(", ", updateResult.Errors.Select(e => e.Description)));
             return new ServiceResult<AvatarUploadResultDto>(null, StatusCodes.Status500InternalServerError, ErrorMessagesRes.FailedToSaveAvatar);
         }
 
@@ -231,4 +230,8 @@ public class ProfileService(
         user.Goal,
         user.PreferredLanguage
     );
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to persist avatar path for user {UserId}: {Errors}")]
+    private static partial void LogAvatarPathPersistFailed(ILogger logger, string userId, string errors);
 }

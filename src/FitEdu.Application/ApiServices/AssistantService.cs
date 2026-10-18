@@ -14,7 +14,7 @@ using FitEdu.Shared.Resources;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="IAssistantService"/>
-public class AssistantService(
+public partial class AssistantService(
     IApplicationDbContext db,
     IChatClient chatClient,
     IAssistantRetrievalService retrieval,
@@ -64,7 +64,7 @@ public class AssistantService(
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "AssistantService: retrieval failed — answering ungrounded.");
+            LogRetrievalFailed(logger, ex);
         }
 
         // Tools are built per request with the authenticated user captured server-side —
@@ -93,7 +93,7 @@ public class AssistantService(
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "AssistantService: chat streaming failed.");
+                    LogChatStreamingFailed(logger, ex);
                     errored = true;
                     break;
                 }
@@ -148,7 +148,7 @@ public class AssistantService(
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "AssistantService: status ping failed.");
+                LogStatusPingFailed(logger, ex);
                 runtimeState.Set(AssistantAvailability.OllamaUnreachable);
                 return new AssistantStatusDto(false, null, nameof(AssistantAvailability.OllamaUnreachable));
             }
@@ -231,4 +231,14 @@ public class AssistantService(
 
         return messages;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "AssistantService: retrieval failed — answering ungrounded.")]
+    private static partial void LogRetrievalFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "AssistantService: chat streaming failed.")]
+    private static partial void LogChatStreamingFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "AssistantService: status ping failed.")]
+    private static partial void LogStatusPingFailed(ILogger logger, Exception exception);
 }

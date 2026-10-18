@@ -11,7 +11,7 @@ using FitEdu.Domain.Extensions;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="IScheduledSessionService"/>
-public class ScheduledSessionService(IApplicationDbContext db, ILogger<ScheduledSessionService> logger) : IScheduledSessionService
+public partial class ScheduledSessionService(IApplicationDbContext db, ILogger<ScheduledSessionService> logger) : IScheduledSessionService
 {
     public async Task<IReadOnlyList<ScheduledSessionListItemDto>> GetUpcomingAsync(
         string? userId, string lang, CancellationToken cancellationToken = default)
@@ -169,7 +169,7 @@ public class ScheduledSessionService(IApplicationDbContext db, ILogger<Scheduled
         db.ScheduledSessions.Add(session);
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Scheduled session created: {Id} '{Title}' at {StartsAt}.", session.Id, session.TitleEn, session.StartsAtUtc);
+        LogSessionCreated(logger, session.Id, session.TitleEn, session.StartsAtUtc);
         return await GetAdminByIdAsync(session.Id, cancellationToken);
     }
 
@@ -200,7 +200,7 @@ public class ScheduledSessionService(IApplicationDbContext db, ILogger<Scheduled
         session.Status = ScheduledSessionStatus.Cancelled;
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Scheduled session cancelled: {Id}.", id);
+        LogSessionCancelled(logger, id);
         return true;
     }
 
@@ -212,4 +212,11 @@ public class ScheduledSessionService(IApplicationDbContext db, ILogger<Scheduled
             .Select(SessionMappings.AdminProjection)
             .SingleAsync(cancellationToken);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Scheduled session created: {Id} '{Title}' at {StartsAt}.")]
+    private static partial void LogSessionCreated(ILogger logger, Guid id, string title, DateTimeOffset startsAt);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Scheduled session cancelled: {Id}.")]
+    private static partial void LogSessionCancelled(ILogger logger, Guid id);
 }

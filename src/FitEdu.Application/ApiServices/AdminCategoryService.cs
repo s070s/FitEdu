@@ -13,7 +13,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Admin CRUD operations for categories.
 /// </summary>
-public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategoryService> logger) : IAdminCategoryService
+public partial class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategoryService> logger) : IAdminCategoryService
 {
     public async Task<PagedResult<AdminCategoryDto>> GetCategoriesAsync(
         int page, int pageSize, string sortBy, string sortDir, CancellationToken cancellationToken = default)
@@ -104,9 +104,7 @@ public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategor
 
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation(
-            "Deleted category {CategoryId}, uncategorized {CourseCount} course(s) and {AssessmentCount} assessment(s)",
-            id, courses.Count, assessments.Count);
+        LogCategoryDeleted(logger, id, courses.Count, assessments.Count);
 
         return true;
     }
@@ -153,4 +151,8 @@ public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategor
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Deleted category {CategoryId}, uncategorized {CourseCount} course(s) and {AssessmentCount} assessment(s)")]
+    private static partial void LogCategoryDeleted(ILogger logger, Guid categoryId, int courseCount, int assessmentCount);
 }

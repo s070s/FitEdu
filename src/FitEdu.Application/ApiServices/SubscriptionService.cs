@@ -17,7 +17,7 @@ namespace FitEdu.Application.ApiServices;
 /// Subscription management service with stub Stripe integration.
 /// All Stripe operations are mocked for test/development mode.
 /// </summary>
-public class SubscriptionService : ISubscriptionService
+public partial class SubscriptionService : ISubscriptionService
 {
     private readonly IApplicationDbContext _db;
     private readonly ILogger<SubscriptionService> _logger;
@@ -161,9 +161,7 @@ public class SubscriptionService : ISubscriptionService
         // immediately without any charge. Replace with real Stripe Checkout + webhook for production.
         if (!_mockPaymentEnabled)
         {
-            _logger.LogWarning(
-                "Checkout attempted for user {UserId}, plan {PlanName} — payment not yet available in production.",
-                userId, plan.Name);
+            LogCheckoutNotAvailable(_logger, userId, plan.Name);
 
             return new CheckoutSessionDto(
                 mockSessionId,
@@ -190,9 +188,7 @@ public class SubscriptionService : ISubscriptionService
                         ? BillingTransactionType.Renewal
                         : BillingTransactionType.PlanSwitch;
 
-        _logger.LogInformation(
-            "Mock checkout session created: {SessionId} for user {UserId}, plan {PlanName}",
-            mockSessionId, userId, plan.Name);
+        LogMockCheckoutCreated(_logger, mockSessionId, userId, plan.Name);
 
         await AssignPlanAsync(userId, planId, cancellationToken);
 
@@ -271,9 +267,7 @@ public class SubscriptionService : ISubscriptionService
         // Cache eviction is also the caller's responsibility (after SaveChangesAsync) so a
         // concurrent GetUserStatusAsync cannot re-cache stale data in the window before the commit.
 
-        _logger.LogInformation(
-            "Staged plan assignment {PlanName} (Tier: {Tier}) for user {UserId}",
-            plan.Name, plan.Tier, userId);
+        LogPlanAssignmentStaged(_logger, plan.Name, plan.Tier, userId);
     }
 
     public async Task AssignFreePlanAsync(
@@ -284,7 +278,7 @@ public class SubscriptionService : ISubscriptionService
 
         if (freePlan is null)
         {
-            _logger.LogWarning("Free plan not found in database. Skipping assignment for user {UserId}.", userId);
+            LogFreePlanMissing(_logger, userId);
             return;
         }
 
@@ -367,9 +361,7 @@ public class SubscriptionService : ISubscriptionService
 
             _cache.Remove(StatusCacheKey(userId));
 
-            _logger.LogInformation(
-                "User {UserId} cancelled lifetime plan {PreviousPlan} and downgraded to Free immediately.",
-                userId, previousPlanName);
+            LogLifetimePlanCancelled(_logger, userId, previousPlanName);
 
             return new CancelSubscriptionResultDto(true, $"Your {previousPlanName} plan has been cancelled. You are now on the Free plan.");
         }
@@ -379,9 +371,7 @@ public class SubscriptionService : ISubscriptionService
 
         _cache.Remove(StatusCacheKey(userId));
 
-        _logger.LogInformation(
-            "User {UserId} cancelled {PreviousPlan}; access remains until {ExpiresAt}.",
-            userId, previousPlanName, activeSub.ExpiresAt);
+        LogPlanCancelled(_logger, userId, previousPlanName, activeSub.ExpiresAt);
 
         return new CancelSubscriptionResultDto(
             true,
@@ -442,7 +432,7 @@ public class SubscriptionService : ISubscriptionService
             // DQ-4: include which plan is corrupt — every subscriber on it silently drops to
             // null Features (GetUserStatusAsync callers then treat that as no-features/Free-like)
             // until the row is repaired, so an operator needs to know which plan to fix.
-            _logger.LogError(ex, "Failed to deserialize plan features JSON for plan {PlanId} ({PlanName}).", planId, planName);
+            LogPlanFeaturesDeserializeFailed(_logger, ex, planId, planName);
             return null;
         }
     }
@@ -454,4 +444,26 @@ public class SubscriptionService : ISubscriptionService
         CertificateAccess = false,
         PrioritySupport = false
     };
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Checkout attempted for user {UserId}, plan {PlanName} — payment not yet available in production.")]
+    private static partial void LogCheckoutNotAvailable(ILogger logger, string userId, string planName);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Mock checkout session created: {SessionId} for user {UserId}, plan {PlanName}")]
+    private static partial void LogMockCheckoutCreated(ILogger logger, string sessionId, string userId, string planName);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Staged plan assignment {PlanName} (Tier: {Tier}) for user {UserId}")]
+    private static partial void LogPlanAssignmentStaged(ILogger logger, string planName, SubscriptionTier tier, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Free plan not found in database. Skipping assignment for user {UserId}.")]
+    private static partial void LogFreePlanMissing(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} cancelled lifetime plan {PreviousPlan} and downgraded to Free immediately.")]
+    private static partial void LogLifetimePlanCancelled(ILogger logger, string userId, string previousPlan);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} cancelled {PreviousPlan}; access remains until {ExpiresAt}.")]
+    private static partial void LogPlanCancelled(ILogger logger, string userId, string previousPlan, DateTime? expiresAt);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to deserialize plan features JSON for plan {PlanId} ({PlanName}).")]
+    private static partial void LogPlanFeaturesDeserializeFailed(ILogger logger, Exception exception, Guid? planId, string planName);
 }

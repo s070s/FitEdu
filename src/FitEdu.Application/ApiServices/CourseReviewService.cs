@@ -11,7 +11,7 @@ using FitEdu.Domain.Extensions;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="ICourseReviewService"/>
-public class CourseReviewService(IApplicationDbContext db, INotificationDispatcher notifications, ILogger<CourseReviewService> logger)
+public partial class CourseReviewService(IApplicationDbContext db, INotificationDispatcher notifications, ILogger<CourseReviewService> logger)
     : ICourseReviewService
 {
     public async Task<IReadOnlyList<CourseReviewDto>> GetApprovedForCourseAsync(
@@ -144,7 +144,7 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
         catch (Exception ex)
         {
             // Notification delivery is best-effort — the moderation action itself already succeeded.
-            logger.LogWarning(ex, "Failed to dispatch review-approved notification for review {ReviewId}.", id);
+            LogReviewApprovedNotificationFailed(logger, ex, id);
         }
 
         return ServiceResult<string>.Ok("Review approved.");
@@ -162,4 +162,8 @@ public class CourseReviewService(IApplicationDbContext db, INotificationDispatch
 
         return ServiceResult<string>.Ok("Review rejected.");
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to dispatch review-approved notification for review {ReviewId}.")]
+    private static partial void LogReviewApprovedNotificationFailed(ILogger logger, Exception exception, Guid reviewId);
 }

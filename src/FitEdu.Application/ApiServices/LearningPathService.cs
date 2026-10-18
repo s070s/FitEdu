@@ -10,7 +10,7 @@ using FitEdu.Domain.Extensions;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="ILearningPathService"/>
-public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathService> logger) : ILearningPathService
+public partial class LearningPathService(IApplicationDbContext db, ILogger<LearningPathService> logger) : ILearningPathService
 {
     public async Task<IReadOnlyList<LearningPathListItemDto>> GetPublishedAsync(
         string? userId, string lang, CancellationToken cancellationToken = default)
@@ -194,7 +194,7 @@ public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathS
         db.LearningPaths.Add(path);
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Learning path created: {Id} '{Title}'.", path.Id, path.TitleEn);
+        LogPathCreated(logger, path.Id, path.TitleEn);
         return await GetAdminByIdAsync(path.Id, cancellationToken) ?? ToAdminDetailDto(path, []);
     }
 
@@ -259,7 +259,7 @@ public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathS
         path.DeletedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Learning path deleted: {Id}.", id);
+        LogPathDeleted(logger, id);
         return true;
     }
 
@@ -384,4 +384,11 @@ public class LearningPathService(IApplicationDbContext db, ILogger<LearningPathS
     private static AdminLearningPathDetailDto ToAdminDetailDto(LearningPath path, IReadOnlyList<AdminLearningPathStepDto> steps) => new(
         path.Id, path.TitleEn, path.TitleEl, path.DescriptionEn, path.DescriptionEl,
         path.CategoryId, path.Category?.NameEn, path.DisplayOrder, path.IsPublished, steps);
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Learning path created: {Id} '{Title}'.")]
+    private static partial void LogPathCreated(ILogger logger, Guid id, string title);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Learning path deleted: {Id}.")]
+    private static partial void LogPathDeleted(ILogger logger, Guid id);
 }
