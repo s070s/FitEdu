@@ -101,7 +101,7 @@ public class CoursesPageTests : BunitContext
         var page = Render<Courses>();
 
         page.FindAll(".plan-limit-full").Count.ShouldBe(1);
-        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("1 of 1 active programmes");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("Active programmes: 1 of 1");
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class CoursesPageTests : BunitContext
         var page = Render<Courses>();
 
         page.Find(".plan-limit-banner").TextContent.ShouldContain("Programme limit on the Plus plan: 10");
-        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("3 of 10 active programmes");
+        page.Find(".plan-limit-banner__usage").TextContent.Trim().ShouldBe("Active programmes: 3 of 10");
         page.FindAll(".plan-limit-full").ShouldBeEmpty();
         page.Find(".plan-limit-banner__action").ClassList.ShouldContain("btn-cta--ghost");
     }

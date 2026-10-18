@@ -339,6 +339,6 @@
 		<value>Try another goal, level or piece of equipment, or clear the filters.</value>
 	</data>
 	<data name="PlanCourseUsageFormat" xml:space="preserve">
-		<value>{0} of {1} active programmes</value>
+		<value>Active programmes: {0} of {1}</value>
 	</data>
 </root>
