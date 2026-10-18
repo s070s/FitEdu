@@ -82,7 +82,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
   - grip: «Bench press με μπάρα και μεσαία λαβή», «… με κλειστή λαβή», «… με ουδέτερη λαβή»;
   - alternating: «Hammer curl εναλλάξ», «Row εναλλάξ με kettlebell»;
   - cable: «Crunch στην τροχαλία», «Triceps extension με ένα χέρι στην τροχαλία»;
-  - body position: «Calf raise σε καθιστή θέση με μπάρα», «Triceps extension ξαπλωτά στην τροχαλία», «Rear lateral raise με αλτήρες μπρούμυτα σε πάγκο»;
+  - body position (σε όρθια θέση, σε καθιστή θέση, σε γονατιστή θέση, ξαπλωτά, ανάσκελα, μπρούμυτα): «Calf raise σε καθιστή θέση με μπάρα», «Triceps extension ξαπλωτά στην τροχαλία», «Rear lateral raise με αλτήρες μπρούμυτα σε πάγκο»;
   - incline and decline: «… σε κεκλιμένο πάγκο», «… σε πάγκο αρνητικής κλίσης»;
   - hang: «Clean από κρέμασμα με kettlebell»;
   - equipment: «Leg curl σε μπάλα γυμναστικής», «Deadlift με αλυσίδες»;
