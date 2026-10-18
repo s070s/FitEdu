@@ -40,13 +40,13 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Billing &amp; Transactions</value>
+		<value>Billing &amp; transactions</value>
 	</data>
 	<data name="PageHeading" xml:space="preserve">
-		<value>Billing &amp; Transactions</value>
+		<value>Billing &amp; transactions</value>
 	</data>
 	<data name="LoadingBilling" xml:space="preserve">
-		<value>Loading billing information...</value>
+		<value>Loading billing information…</value>
 	</data>
 	<data name="CurrentPlan" xml:space="preserve">
 		<value>Current plan</value>

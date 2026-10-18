@@ -62,10 +62,10 @@
     <value>Last updated: October 2026</value>
   </data>
   <data name="EducationalNoticeTitle" xml:space="preserve">
-    <value>Educational project</value>
+    <value>Student project</value>
   </data>
   <data name="EducationalNotice" xml:space="preserve">
-    <value>FitEdu is a university certificate project that demonstrates a fitness-education platform. Its programmes, exercise library and self-assessments are general education, not medical advice. The policies below describe how the platform actually handles data, but FitEdu is not a commercial service and these pages are not legal advice.</value>
+    <value>FitEdu is a student project for a university certificate programme. It demonstrates a fitness-education platform, and its programmes, exercise library and self-assessments are general education, not medical advice. The policies below describe how the platform actually handles data, but FitEdu is not a commercial service and these pages are not legal advice.</value>
   </data>
   <data name="PrivacyTitle" xml:space="preserve">
     <value>Privacy Policy</value>

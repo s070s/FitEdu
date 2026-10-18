@@ -46,7 +46,7 @@
 		<value>Χρεώσεις &amp; συναλλαγές</value>
 	</data>
 	<data name="LoadingBilling" xml:space="preserve">
-		<value>Φόρτωση πληροφοριών χρέωσης...</value>
+		<value>Φόρτωση πληροφοριών χρέωσης…</value>
 	</data>
 	<data name="CurrentPlan" xml:space="preserve">
 		<value>Τρέχον πλάνο</value>

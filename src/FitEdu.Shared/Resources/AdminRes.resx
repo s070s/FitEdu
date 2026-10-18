@@ -99,13 +99,13 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Analytics Dashboard</value>
+		<value>Analytics dashboard</value>
 	</data>
 	<data name="Loading" xml:space="preserve">
-		<value>Loading...</value>
+		<value>Loading…</value>
 	</data>
 	<data name="TotalUsers" xml:space="preserve">
-		<value>Total Users</value>
+		<value>Total users</value>
 	</data>
 	<data name="ActiveUsers" xml:space="preserve">
 		<value>Active users</value>
@@ -681,7 +681,7 @@
 		<value>Email confirmed</value>
 	</data>
 	<data name="ColModulesLessons" xml:space="preserve">
-		<value>Modules / Lessons</value>
+		<value>Modules / lessons</value>
 	</data>
 	<data name="ColCompletionRate" xml:space="preserve">
 		<value>Completion %</value>
