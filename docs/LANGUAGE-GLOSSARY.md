@@ -89,7 +89,11 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
   - self-massage: «Foam roller για τις γάμπες (SMR)», «Αυτομάλαξη πέλματος με ρολό (SMR)»;
   - nicknames in Greek quotes: Push-up «ρολόι»;
   - descriptive moves stay Greek: «Ανύψωση γλουτών από plank»;
-  - fixed names: windmill → «Windmill», the machine fly → «Butterfly σε μηχάνημα».
+  - fixed names: windmill → «Windmill», the machine fly → «Butterfly σε μηχάνημα»;
+  - word order: move, εναλλάξ, body position, equipment with its grip or one arm, cable or Smith, then the bench or support (σε κεκλιμένο πάγκο, μπρούμυτα σε πάγκο): «Shoulder press εναλλάξ σε όρθια θέση με αλτήρες», «Wrist curl σε καθιστή θέση με αλτήρα, ένα χέρι και πρηνή λαβή», «Row σε καθιστή θέση με ένα χέρι στην τροχαλία», «Bench press με μπάρα και φαρδιά λαβή σε πάγκο αρνητικής κλίσης»;
+  - barbell Olympic lifts (clean, snatch, jerk and their variants) need no «με μπάρα»: «Power clean», «Snatch από βάσεις»;
+  - a training partner is «με σύντροφο» (steps: «ο σύντροφός σου»); βοηθός only for a spotter;
+  - every Greek name is unique: two exercises that would share one add the detail the English name or steps give (grip, stance, equipment).
 - RPE: «το RPE (κλίμακα αντιληπτής προσπάθειας)» on first mention; EN "RPE (rating of perceived exertion)".
 
 ## Anatomy (Greek)
