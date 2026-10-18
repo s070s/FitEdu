@@ -17,7 +17,7 @@ public sealed class AssistantOptions
     [Url]
     public string BaseUrl { get; set; } = "http://localhost:11434";
 
-    public string ChatModel { get; set; } = "qwen3:1.7b";
+    public string ChatModel { get; set; } = "qwen3:8b";
 
     public string EmbeddingModel { get; set; } = "bge-m3";
 
@@ -32,7 +32,7 @@ public sealed class AssistantOptions
     public int MaxContextChunks { get; set; } = 6;
 
     [Range(1, 100000)]
-    public int MaxOutputTokens { get; set; } = 500;
+    public int MaxOutputTokens { get; set; } = 800;
 
     [Range(0.0, 2.0)]
     public float Temperature { get; set; } = 0.3f;

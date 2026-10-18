@@ -98,7 +98,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Logging | Custom daily file logger |
 | Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek: the request language when the member asks for the email, the member's stored language when an admin triggers it |
 | Security | HSTS · `X-Content-Type-Options` · `X-Frame-Options` · `Referrer-Policy` · `Permissions-Policy` |
-| AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:1.7b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
+| AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:8b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
 
 ---
 
@@ -707,9 +707,9 @@ A grounded, bilingual (EN/EL) AI helper available to every authenticated user, r
    ```powershell
    dotnet run --project src/FitEdu.Web
    ```
-   On first start the app **auto-pulls the two models it needs** — `qwen3:1.7b` (chat, ≈ 1.4 GB) and `bge-m3` (embeddings, ≈ 1.2 GB); ~2.6 GB total, one-time. The assistant widget shows live download progress. The app then loads the chat model into memory (the first load after an install or reboot can take about a minute) and goes live once it is loaded.
+   On first start the app **auto-pulls the two models it needs** — `qwen3:8b` (chat, ≈ 5.2 GB) and `bge-m3` (embeddings, ≈ 1.2 GB); ~6.4 GB total, one-time. The assistant widget shows live download progress. The app then loads the chat model into memory (the first load after an install or reboot can take about a minute) and goes live once it is loaded.
 
-You can install or start Ollama **after** the app is already running — it keeps probing and recovers on its own, no restart needed. To pull the models yourself instead (e.g. on a metered connection): `ollama pull qwen3:1.7b && ollama pull bge-m3`. If Ollama runs on a different machine or port, point the app at it with `Assistant__BaseUrl` (see the table below).
+You can install or start Ollama **after** the app is already running — it keeps probing and recovers on its own, no restart needed. To pull the models yourself instead (e.g. on a metered connection): `ollama pull qwen3:8b && ollama pull bge-m3`. If Ollama runs on a different machine or port, point the app at it with `Assistant__BaseUrl` (see the table below).
 
 **How it works:** the assistant introduces itself as *FitEdu Coach*: it helps with courses, exercises and weekly planning, and sends anything medical to a doctor or physiotherapist. A background service chunks and embeds published content into an `AssistantContentChunks` table (incrementally — only re-embedding what changed); a lesson's text also lists its exercises and their primary muscles, so a question about a muscle finds the workouts that train it. Each question embeds the query, retrieves the top matching chunks by cosine similarity, and injects them plus the user's tier and enrolled course titles into a scoped system prompt (RAG grounding). For questions about the user's *own* data, the model calls server-side tools (`get_my_enrollments`, `get_my_progress`, `get_my_assessment_results`, `get_subscription_status`, `search_courses`, `search_exercises` (exercise library by name, primary muscle and equipment), `recommend_courses`); the authenticated identity is captured server-side — no tool accepts a user id, so prompt injection can never read another user's data, and raw assessment answers never reach the model. Replies stream to a floating chat widget over Server-Sent Events. The widget appears bottom-right on every page for signed-in users; when Ollama is unreachable or a model is downloading, it shows a live state instead, and the rest of the app is unaffected.
 
@@ -717,11 +717,11 @@ You can install or start Ollama **after** the app is already running — it keep
 |-----|-------|---------|-------|
 | `Assistant__Enabled` | `.env` / `appsettings.json` | `true` | Master switch. When `false`, the API and widget gracefully report the assistant as unavailable. Test hosts pin it off. |
 | `Assistant__BaseUrl` | `appsettings.json` | `http://localhost:11434` | Ollama's default local address. |
-| `Assistant__ChatModel` | `appsettings.json` | `qwen3:1.7b` | ~1.4 GB. Multilingual (incl. Greek) with native tool calling. Alternatives: `qwen3:4b` on stronger hardware. |
+| `Assistant__ChatModel` | `appsettings.json` | `qwen3:8b` | ~5.2 GB. Multilingual (incl. Greek) with native tool calling; needs a GPU with 8 GB of memory to answer quickly (slow on CPU only). On weaker hardware use `qwen3:4b` or `qwen3:1.7b` (fast, but its Greek is poor). |
 | `Assistant__EmbeddingModel` | `appsettings.json` | `bge-m3` | ~1.2 GB. Multilingual (EN/EL) retrieval embeddings. |
 | `Assistant__AutoPullModels` | `appsettings.json` | `true` | Auto-download missing models at startup. Set `false` in restricted environments and pull manually. |
 | `Assistant__MaxContextChunks` | `appsettings.json` | `6` | Retrieved chunks injected per question. |
-| `Assistant__MaxOutputTokens` | `appsettings.json` | `500` | Caps answer length. |
+| `Assistant__MaxOutputTokens` | `appsettings.json` | `800` | Caps answer length. |
 | `Assistant__Temperature` | `appsettings.json` | `0.3` | Lower = more deterministic/grounded answers. |
 | `Assistant__RequestsPerMinute` | `appsettings.json` | `10` | Per-user rate limit on `POST api/assistant/chat`. |
 | `Assistant__MaxToolRounds` | `appsettings.json` | `3` | Caps tool-invocation rounds per request (loop guardrail). |
@@ -747,7 +747,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | `401` after login | Match `Jwt:Key/Issuer/Audience`. Disabled accounts return `X-User-Disabled: true`. |
 | HTTPS not trusted | `dotnet dev-certs https --trust` |
 | Assistant shows "The coach is unavailable right now. Please try again later." | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
-| Assistant stuck "downloading its model" | Normal on first run (~2.6 GB total). Progress shows in the widget and in `Logs/`. On a metered/blocked network set `Assistant__AutoPullModels=false` and pull manually: `ollama pull qwen3:1.7b && ollama pull bge-m3`. |
+| Assistant stuck "downloading its model" | Normal on first run (~6.4 GB total). Progress shows in the widget and in `Logs/`. On a metered/blocked network set `Assistant__AutoPullModels=false` and pull manually: `ollama pull qwen3:8b && ollama pull bge-m3`. |
 | Assistant's first answer is slow | Expected — Ollama cold-loads the model into memory on first request after startup/idle. Subsequent answers are faster. |
 
 ---

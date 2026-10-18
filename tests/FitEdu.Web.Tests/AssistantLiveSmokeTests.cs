@@ -21,7 +21,7 @@ namespace FitEdu.Web.Tests;
 public class AssistantLiveSmokeTests(ITestOutputHelper output)
 {
     private const string OllamaBaseUrl = "http://localhost:11434";
-    private const string ChatModel = "qwen3:1.7b";
+    private const string ChatModel = "qwen3:8b";
 
     private static bool LiveEnabled =>
         Environment.GetEnvironmentVariable("FITEDU_OLLAMA_LIVE") == "1";
