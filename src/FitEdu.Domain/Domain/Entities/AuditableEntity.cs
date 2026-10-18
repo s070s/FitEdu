@@ -13,11 +13,11 @@ public abstract class AuditableEntity
 
     public string? UpdatedByUserId { get; set; }
 
-    public bool IsPublished { get; set; } = false;
+    public bool IsPublished { get; set; }
 
     public DateTimeOffset? PublishedAt { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 
     public DateTimeOffset? DeletedAt { get; set; }
 

@@ -395,8 +395,7 @@ public partial class AuthApiService(
 
     private static string HashToken(string token)
     {
-        using var sha256 = SHA256.Create();
-        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
         return Convert.ToBase64String(hash);
     }
 

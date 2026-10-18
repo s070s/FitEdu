@@ -25,6 +25,8 @@ public partial class SubscriptionService : ISubscriptionService
     private readonly INotificationDispatcher _notifications;
     private readonly bool _mockPaymentEnabled;
 
+    private static readonly JsonSerializerOptions PlanFeaturesJsonOptions = new() { PropertyNameCaseInsensitive = true };
+
     private static string StatusCacheKey(string userId) => $"sub_status:{userId}";
 
     public SubscriptionService(
@@ -422,10 +424,7 @@ public partial class SubscriptionService : ISubscriptionService
             return null;
         try
         {
-            return JsonSerializer.Deserialize<PlanFeaturesDto>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return JsonSerializer.Deserialize<PlanFeaturesDto>(json, PlanFeaturesJsonOptions);
         }
         catch (Exception ex)
         {
@@ -465,5 +464,5 @@ public partial class SubscriptionService : ISubscriptionService
     private static partial void LogPlanCancelled(ILogger logger, string userId, string previousPlan, DateTime? expiresAt);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Failed to deserialize plan features JSON for plan {PlanId} ({PlanName}).")]
-    private static partial void LogPlanFeaturesDeserializeFailed(ILogger logger, Exception exception, Guid? planId, string planName);
+    private static partial void LogPlanFeaturesDeserializeFailed(ILogger logger, Exception exception, Guid? planId, string? planName);
 }

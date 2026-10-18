@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -173,7 +174,7 @@ public partial class AssistantService(
     private static string BuildSystemPrompt(
         string language,
         SubscriptionTier tier,
-        IReadOnlyList<string> enrolledTitles,
+        List<string> enrolledTitles,
         IReadOnlyList<AssistantRetrievedChunk> context,
         bool hasTools)
     {
@@ -183,7 +184,7 @@ public partial class AssistantService(
 
         prompt.AppendLine("You are FitEdu Coach, a helpful guide embedded in FitEdu, an online fitness platform with training programmes and an exercise library.");
         prompt.AppendLine("Help members find programmes, understand exercises (muscles, equipment, technique cues), plan their week and stay consistent.");
-        prompt.AppendLine($"Respond in {languageName}. Be concise. Do not use markdown formatting.");
+        prompt.AppendLine(CultureInfo.InvariantCulture, $"Respond in {languageName}. Be concise. Do not use markdown formatting.");
         if (isGreek)
         {
             prompt.AppendLine(GreekInformalAddressRule);
@@ -201,7 +202,7 @@ public partial class AssistantService(
         prompt.AppendLine("If the user describes a crisis or serious distress, such as disordered eating or harmful thoughts about their body, gently encourage them to seek professional help.");
         prompt.AppendLine("Never prescribe diets or supplements beyond general, evidence-based guidance.");
         prompt.AppendLine("When recommending platform content, refer to programmes, exercises or self-assessments by their exact title.");
-        prompt.AppendLine($"The member's plan is {tier}.");
+        prompt.AppendLine(CultureInfo.InvariantCulture, $"The member's plan is {tier}.");
 
         if (enrolledTitles.Count > 0)
             prompt.AppendLine("The member has already joined: " + string.Join(", ", enrolledTitles) + ".");
@@ -210,7 +211,7 @@ public partial class AssistantService(
         {
             prompt.AppendLine("CONTEXT:");
             foreach (var chunk in context)
-                prompt.AppendLine($"- ({chunk.SourceTitle}) {chunk.Text}");
+                prompt.AppendLine(CultureInfo.InvariantCulture, $"- ({chunk.SourceTitle}) {chunk.Text}");
         }
         else
         {
