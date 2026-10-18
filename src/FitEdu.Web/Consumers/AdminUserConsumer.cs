@@ -59,5 +59,5 @@ public class AdminUserConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
     public async Task<List<string>> GetRolesAsync()
         => await GetAsync<List<string>>("api/admin/roles") ?? [];
 
-    private record ForcePasswordResetResponse(string UserId, string ResetToken);
+    private sealed record ForcePasswordResetResponse(string UserId, string ResetToken);
 }

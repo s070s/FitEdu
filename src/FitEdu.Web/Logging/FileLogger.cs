@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Channels;
 
 namespace FitEdu.Web.Logging;
@@ -30,7 +31,7 @@ public sealed class FileLogger : ILogger
         if (!IsEnabled(logLevel))
             return;
 
-        var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         var level = logLevel.ToString().ToUpperInvariant();
         var message = formatter(state, exception);
         var entry = $"[{timestamp}] [{level}] [{_categoryName}] {message}";

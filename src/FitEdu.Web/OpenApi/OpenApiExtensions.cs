@@ -297,7 +297,7 @@ internal sealed class ParameterAndResponseDocsTransformer : IOpenApiOperationTra
 /// </summary>
 internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransformer
 {
-    private static readonly IReadOnlyDictionary<Type, Func<JsonNode>> Examples = new Dictionary<Type, Func<JsonNode>>
+    private static readonly Dictionary<Type, Func<JsonNode>> Examples = new Dictionary<Type, Func<JsonNode>>
     {
         [typeof(RefreshTokenRequestDto)] = () => new JsonObject
         {
@@ -446,11 +446,15 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         OpenApiSchemaTransformerContext context,
         CancellationToken cancellationToken)
     {
+        // Pragma: Example is obsolete in favour of Examples, but switching would change the emitted
+        // OpenAPI document (example -> examples array), so the current output is kept.
+#pragma warning disable CS0618
         if (schema.Example is null &&
              Examples.TryGetValue(context.JsonTypeInfo.Type, out var factory))
         {
             schema.Example = factory();
         }
+#pragma warning restore CS0618
 
         return Task.CompletedTask;
     }
