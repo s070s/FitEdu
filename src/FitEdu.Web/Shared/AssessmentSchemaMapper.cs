@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Unicode;
 
+#pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
 namespace FitEdu.Web.Shared;
 
 /// <summary>

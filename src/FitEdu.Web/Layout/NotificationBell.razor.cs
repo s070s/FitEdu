@@ -58,7 +58,7 @@ public partial class NotificationBell : IAsyncDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load initial notification state.");
+            LogInitialStateLoadFailed(_logger, ex);
         }
         finally
         {
@@ -96,7 +96,7 @@ public partial class NotificationBell : IAsyncDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to start notification hub connection.");
+            LogHubStartFailed(_logger, ex);
         }
     }
 
@@ -141,9 +141,17 @@ public partial class NotificationBell : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         if (_hub is not null)
         {
             await _hub.DisposeAsync();
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load initial notification state.")]
+    private static partial void LogInitialStateLoadFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to start notification hub connection.")]
+    private static partial void LogHubStartFailed(ILogger logger, Exception exception);
 }

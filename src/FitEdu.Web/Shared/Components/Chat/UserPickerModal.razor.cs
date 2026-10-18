@@ -67,6 +67,7 @@ public partial class UserPickerModal : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }

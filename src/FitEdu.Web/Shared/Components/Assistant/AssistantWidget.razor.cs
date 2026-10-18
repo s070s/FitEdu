@@ -8,6 +8,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 
+#pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
 namespace FitEdu.Web.Shared.Components.Assistant;
 
 public partial class AssistantWidget : IDisposable

@@ -88,6 +88,7 @@ public partial class CallUserPickerModal : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }
