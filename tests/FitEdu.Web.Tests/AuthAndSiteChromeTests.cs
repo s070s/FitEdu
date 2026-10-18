@@ -251,7 +251,7 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("form").Submit();
 
         var feedback = page.Find("form .register-errors").TextContent;
-        feedback.ShouldContain("Η διεύθυνση email είναι ήδη εγγεγραμμένη");
+        feedback.ShouldContain("Αυτό το email είναι ήδη καταχωρισμένο. Χρησιμοποίησε άλλο email ή συνδέσου.");
         feedback.ShouldNotContain(emailTaken);
     }
 

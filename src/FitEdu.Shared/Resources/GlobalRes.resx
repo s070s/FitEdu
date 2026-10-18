@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Label_ConfirmEmail" xml:space="preserve">
-    <value>Confirm Email</value>
+    <value>Confirm email</value>
   </data>
   <data name="Label_CreateAccount" xml:space="preserve">
-    <value>Create Account</value>
+    <value>Create account</value>
   </data>
   <data name="Label_Info_DateOfBirth" xml:space="preserve">
-    <value>Date of Birth</value>
+    <value>Date of birth</value>
   </data>
   <data name="Label_Info_Email" xml:space="preserve">
     <value>Email</value>
   </data>
   <data name="Label_Info_FirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>First name</value>
   </data>
   <data name="Label_ForgotPassword" xml:space="preserve">
-    <value>Forgot Password?</value>
+    <value>Forgot password?</value>
   </data>
   <data name="Label_Info_LastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Last name</value>
   </data>
   <data name="Label_Info_Status" xml:space="preserve">
     <value>Training level</value>
   </data>
   <data name="Label_LoggingIn" xml:space="preserve">
-    <value>Logging In...</value>
+    <value>Logging in…</value>
   </data>
   <data name="Label_Login" xml:space="preserve">
-    <value>Login</value>
+    <value>Log in</value>
   </data>
   <data name="Label_Minimum8Chars" xml:space="preserve">
     <value>Minimum 8 characters</value>
@@ -154,49 +154,49 @@
     <value>Password</value>
   </data>
   <data name="Label_Register" xml:space="preserve">
-    <value>Register</value>
+    <value>Sign up</value>
   </data>
   <data name="Label_RememberMe" xml:space="preserve">
-    <value>Remember Me</value>
+    <value>Remember me</value>
   </data>
   <data name="ForgotPasswordTitle" xml:space="preserve">
-    <value>Forgot Password</value>
+    <value>Forgot password</value>
   </data>
   <data name="ForgotPasswordInstructions" xml:space="preserve">
     <value>Enter your email address and we'll send you a password reset link.</value>
   </data>
   <data name="Label_DevMode" xml:space="preserve">
-    <value>Dev Mode:</value>
+    <value>Dev mode:</value>
   </data>
   <data name="Label_NewPassword" xml:space="preserve">
     <value>New password</value>
   </data>
   <data name="Label_DevResetPassword" xml:space="preserve">
-    <value>Dev: Reset Password</value>
+    <value>Dev: Reset password</value>
   </data>
   <data name="Label_Sending" xml:space="preserve">
-    <value>Sending...</value>
+    <value>Sending…</value>
   </data>
   <data name="Label_SendResetLink" xml:space="preserve">
-    <value>Send Reset Link</value>
+    <value>Send reset link</value>
   </data>
   <data name="Label_NoAccount" xml:space="preserve">
     <value>Don't have an account?</value>
   </data>
   <data name="Label_ConfirmPassword" xml:space="preserve">
-    <value>Confirm Password</value>
+    <value>Confirm password</value>
   </data>
   <data name="Label_GdprConsent" xml:space="preserve">
     <value>I consent to the processing of my personal data (required).</value>
   </data>
   <data name="ConsentPolicyIntro" xml:space="preserve">
-    <value>By registering, you agree to our</value>
+    <value>By signing up, you agree to our</value>
   </data>
   <data name="ConsentPolicyAnd" xml:space="preserve">
     <value>and our</value>
   </data>
   <data name="Label_Registering" xml:space="preserve">
-    <value>Registering...</value>
+    <value>Signing up…</value>
   </data>
   <data name="Label_AlreadyHaveAccount" xml:space="preserve">
     <value>Already have an account?</value>
@@ -238,7 +238,7 @@
     <value>Close</value>
   </data>
   <data name="NotAuthorizedMessage" xml:space="preserve">
-    <value>You are not authorized to view this page.</value>
+    <value>You don't have permission to view this page.</value>
   </data>
   <data name="NotAuthorizedRoleMessage" xml:space="preserve">
     <value>You don't have access to this area.</value>
@@ -259,13 +259,13 @@
     <value>last seen just now</value>
   </data>
   <data name="LastSeenMinutesFormat" xml:space="preserve">
-    <value>last seen {0} min ago</value>
+    <value>last seen {0} minutes ago</value>
   </data>
   <data name="LastSeenHoursFormat" xml:space="preserve">
-    <value>last seen {0} h ago</value>
+    <value>last seen {0} hours ago</value>
   </data>
   <data name="LastSeenDaysFormat" xml:space="preserve">
-    <value>last seen {0} d ago</value>
+    <value>last seen {0} days ago</value>
   </data>
   <data name="LastSeenDateFormat" xml:space="preserve">
     <value>last seen {0}</value>
@@ -289,16 +289,16 @@
     <value>Cancel</value>
   </data>
   <data name="UnsavedChangesTitle" xml:space="preserve">
-    <value>Unsaved Changes</value>
+    <value>Unsaved changes</value>
   </data>
   <data name="UnsavedChangesMessage" xml:space="preserve">
     <value>You have unsaved changes. Are you sure you want to leave this page?</value>
   </data>
   <data name="DiscardChanges" xml:space="preserve">
-    <value>Discard Changes</value>
+    <value>Discard changes</value>
   </data>
   <data name="KeepEditing" xml:space="preserve">
-    <value>Keep Editing</value>
+    <value>Keep editing</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>Previous</value>
@@ -310,7 +310,7 @@
     <value>Loading</value>
   </data>
   <data name="LoadingEllipsis" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Loading…</value>
   </data>
   <data name="NoItemsFound" xml:space="preserve">
     <value>No items found.</value>
@@ -340,7 +340,7 @@
     <value>Navigation menu</value>
   </data>
   <data name="UnhandledError" xml:space="preserve">
-    <value>An unhandled error has occurred.</value>
+    <value>Something went wrong.</value>
   </data>
   <data name="Reload" xml:space="preserve">
     <value>Reload</value>
@@ -364,7 +364,7 @@
       <value>Your training</value>
     </data>
     <data name="AuthLoginSubtitle" xml:space="preserve">
-      <value>Welcome back. Pick up your plan where you left off.</value>
+      <value>Welcome back. Pick up your training where you left off.</value>
     </data>
     <data name="AuthRegisterSubtitle" xml:space="preserve">
       <value>Joining is free. Your first workout is a few minutes away.</value>
@@ -380,5 +380,20 @@
   </data>
   <data name="NoFileChosen" xml:space="preserve">
     <value>No file chosen</value>
+  </data>
+  <data name="ConsentPrivacyLink" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="ConsentTermsLink" xml:space="preserve">
+    <value>Terms of Service</value>
+  </data>
+  <data name="LastSeenMinuteOne" xml:space="preserve">
+    <value>last seen 1 minute ago</value>
+  </data>
+  <data name="LastSeenHourOne" xml:space="preserve">
+    <value>last seen 1 hour ago</value>
+  </data>
+  <data name="LastSeenDayOne" xml:space="preserve">
+    <value>last seen 1 day ago</value>
   </data>
 </root>

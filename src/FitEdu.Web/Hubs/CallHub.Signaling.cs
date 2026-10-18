@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Hubs;
 
@@ -27,7 +28,7 @@ public partial class CallHub
             _logger.LogWarning(
                 "Call: Rejected {Method} relay for call {CallId} — caller or target not a member.",
                 method, callId);
-            await Clients.Caller.SendAsync("CallError", "You are not an active member of this call.");
+            await Clients.Caller.SendAsync("CallError", ErrorMessagesRes.Call_NotInCall);
             return;
         }
 

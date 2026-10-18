@@ -50,7 +50,7 @@ public sealed class StubEmailServiceTests : IDisposable
     {
         await NewService().SendPasswordResetAsync("u@x.com", "https://reset", UserLanguage.Greek);
 
-        _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού σου στο FitEdu", Case.Sensitive);
+        _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού πρόσβασής σου στο FitEdu", Case.Sensitive);
     }
 
     public void Dispose() => _cultureScope.Dispose();

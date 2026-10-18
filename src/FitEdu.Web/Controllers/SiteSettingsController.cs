@@ -6,6 +6,7 @@ using FitEdu.Application.Data;
 using FitEdu.Domain.Entities;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Controllers;
 
@@ -71,7 +72,7 @@ public class SiteSettingsController : ControllerBase
     {
         if (file == null || file.Length == 0)
         {
-            return Problem(detail: "No file provided", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var setting = await _db.SiteSettings

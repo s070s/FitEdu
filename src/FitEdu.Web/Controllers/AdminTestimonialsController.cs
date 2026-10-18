@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Controllers;
 
@@ -107,7 +108,7 @@ public class AdminTestimonialsController : ControllerBase
         Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file is null || file.Length == 0)
-            return Problem(detail: "No file provided.", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
 
         if (file.Length > 5 * 1024 * 1024)
             return Problem(detail: "File exceeds the 5 MB limit.", statusCode: StatusCodes.Status400BadRequest);

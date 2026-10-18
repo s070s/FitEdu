@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationSuccess" xml:space="preserve">
-    <value>Email confirmed</value>
+    <value>Email confirmed.</value>
   </data>
   <data name="RegistrationSuccess" xml:space="preserve">
     <value>Your account is ready. Please check your email to confirm it.</value>
   </data>
   <data name="RegistrationSuccessfulNoEmail" xml:space="preserve">
-    <value>Registration successful. Please confirm your email.</value>
+    <value>You're signed up. Please confirm your email to log in.</value>
   </data>
   <data name="RegistrationSuccessfulCheckEmail" xml:space="preserve">
-    <value>Registration successful. Please check your email to confirm your account.</value>
+    <value>You're signed up. Please check your email to confirm your account.</value>
   </data>
   <data name="EmailConfirmedSuccessfully" xml:space="preserve">
-    <value>Email confirmed successfully.</value>
+    <value>Your email is confirmed.</value>
   </data>
   <data name="PasswordResetLinkSent" xml:space="preserve">
-    <value>If the email exists, a reset link has been sent.</value>
+    <value>If an account uses that email, we've sent a reset link.</value>
   </data>
   <data name="PasswordResetSuccessful" xml:space="preserve">
-    <value>Password reset successfully.</value>
+    <value>Your password has been changed.</value>
   </data>
   <data name="EnrolledSuccessfully" xml:space="preserve">
-    <value>Enrolled successfully</value>
+    <value>You've joined the programme.</value>
   </data>
   <data name="AlreadyEnrolled" xml:space="preserve">
-    <value>Already enrolled</value>
+    <value>You've already joined this programme.</value>
   </data>
   <data name="LessonCompletedMsg" xml:space="preserve">
-    <value>Lesson completed</value>
+    <value>Lesson completed.</value>
   </data>
   <data name="AlreadyCompleted" xml:space="preserve">
-    <value>Already completed</value>
+    <value>Already completed.</value>
   </data>
 </root>

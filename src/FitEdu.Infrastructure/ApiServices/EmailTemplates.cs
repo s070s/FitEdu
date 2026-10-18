@@ -19,7 +19,7 @@ public static class EmailTemplates
     public const string EmailConfirmationSubject = "Welcome to FitEdu — let's get moving";
     public const string PasswordResetSubject = "Reset your FitEdu password";
     public const string GreekEmailConfirmationSubject = "Καλώς ήρθες στο FitEdu — ώρα για κίνηση";
-    public const string GreekPasswordResetSubject = "Επαναφορά του κωδικού σου στο FitEdu";
+    public const string GreekPasswordResetSubject = "Επαναφορά του κωδικού πρόσβασής σου στο FitEdu";
 
     private const string HtmlSignOff = "<p>Train well,<br>The FitEdu team</p>";
     private const string TextSignOff = "Train well, the FitEdu team.";
@@ -39,13 +39,13 @@ public static class EmailTemplates
     private static EmailContent EnglishEmailConfirmation(string confirmationLink)
     {
         var safeLink = WebUtility.HtmlEncode(confirmationLink);
-        var html = "<p>Welcome to FitEdu! Your fitness courses, workouts and exercise library are ready.</p>" +
-                   "<p>Confirm your email address to start your first session:</p>" +
+        var html = "<p>Welcome to FitEdu! Your training programmes, workouts and exercise library are ready.</p>" +
+                   "<p>Confirm your email address to start your first workout:</p>" +
                    $"<p><a href=\"{safeLink}\">Confirm my email</a></p>" +
                    $"<p>If the link does not work, copy this URL into your browser:<br>{safeLink}</p>" +
                    HtmlSignOff;
-        var text = "Welcome to FitEdu! Your fitness courses, workouts and exercise library are ready. " +
-                   $"Confirm your email to start your first session: {confirmationLink}\n\n{TextSignOff}";
+        var text = "Welcome to FitEdu! Your training programmes, workouts and exercise library are ready. " +
+                   $"Confirm your email to start your first workout: {confirmationLink}\n\n{TextSignOff}";
         return new EmailContent(EmailConfirmationSubject, html, text);
     }
 
@@ -78,12 +78,12 @@ public static class EmailTemplates
     private static EmailContent GreekPasswordReset(string resetLink)
     {
         var safeLink = WebUtility.HtmlEncode(resetLink);
-        var html = "<p>Λάβαμε ένα αίτημα για επαναφορά του κωδικού του λογαριασμού σου στο FitEdu.</p>" +
-                   $"<p><a href=\"{safeLink}\">Επαναφορά κωδικού</a></p>" +
+        var html = "<p>Λάβαμε ένα αίτημα για επαναφορά του κωδικού πρόσβασης του λογαριασμού σου στο FitEdu.</p>" +
+                   $"<p><a href=\"{safeLink}\">Επαναφορά κωδικού πρόσβασης</a></p>" +
                    "<p>Αν δεν το ζήτησες εσύ, αγνόησε αυτό το email και συνέχισε την προπόνηση κανονικά. " +
                    $"Αν ο σύνδεσμος δεν ανοίγει, αντέγραψε αυτή τη διεύθυνση στο πρόγραμμα περιήγησής σου:<br>{safeLink}</p>" +
                    GreekHtmlSignOff;
-        var text = $"Επαναφορά του κωδικού σου στο FitEdu: {resetLink}\n\n" +
+        var text = $"Επαναφορά του κωδικού πρόσβασής σου στο FitEdu: {resetLink}\n\n" +
                    $"Αν δεν το ζήτησες εσύ, αγνόησε αυτό το email. {GreekTextSignOff}";
         return new EmailContent(GreekPasswordResetSubject, html, text);
     }

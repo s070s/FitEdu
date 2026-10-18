@@ -75,7 +75,7 @@ public sealed class SmtpEmailServiceTests : IDisposable
         var message = SmtpEmailService.BuildMessage(
             Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink, Greek));
 
-        message.Subject.ShouldBe("Επαναφορά του κωδικού σου στο FitEdu");
+        message.Subject.ShouldBe("Επαναφορά του κωδικού πρόσβασής σου στο FitEdu");
         var html = message.HtmlBody.ShouldNotBeNull();
         html.ShouldContain("https://fitedu.test/reset-password?email=u%40x.com&amp;token=xyz", Case.Sensitive);
         html.ShouldContain("Αν δεν το ζήτησες εσύ");
@@ -95,7 +95,7 @@ public sealed class SmtpEmailServiceTests : IDisposable
     public void EmailTemplates_GreekLanguageWinsOverAnEnglishSender()
     {
         // The admin who forces a reset reads the site in English; the Greek member still gets Greek.
-        EmailTemplates.PasswordReset(ResetLink, Greek).Subject.ShouldBe("Επαναφορά του κωδικού σου στο FitEdu");
+        EmailTemplates.PasswordReset(ResetLink, Greek).Subject.ShouldBe("Επαναφορά του κωδικού πρόσβασής σου στο FitEdu");
     }
 
     [Fact]

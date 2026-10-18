@@ -39,9 +39,9 @@ public class UserStatusLabelsTests
     }
 
     [Theory]
-    [InlineData(UserStatus.Beginner, "Αρχάριος/α")]
+    [InlineData(UserStatus.Beginner, "Αρχάριο επίπεδο")]
     [InlineData(UserStatus.Intermediate, "Μεσαίο επίπεδο")]
-    [InlineData(UserStatus.Advanced, "Προχωρημένος/η")]
+    [InlineData(UserStatus.Advanced, "Προχωρημένο επίπεδο")]
     [InlineData(UserStatus.Other, "Προτιμώ να μην απαντήσω")]
     [InlineData(UserStatus.Unknown, "Δεν ορίστηκε")]
     public void Label_Greek_ReturnsTrainingLevelName(UserStatus status, string expected)

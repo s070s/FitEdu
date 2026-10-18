@@ -17,9 +17,9 @@ public static class RelativeTimeFormatter
         return delta switch
         {
             { TotalMinutes: < 1 } => GlobalRes.LastSeenJustNow,
-            { TotalHours: < 1 } => ResourceFormat.Fill(GlobalRes.LastSeenMinutesFormat, (int)delta.TotalMinutes),
-            { TotalDays: < 1 } => ResourceFormat.Fill(GlobalRes.LastSeenHoursFormat, (int)delta.TotalHours),
-            { TotalDays: <= 7 } => ResourceFormat.Fill(GlobalRes.LastSeenDaysFormat, (int)delta.TotalDays),
+            { TotalHours: < 1 } => ResourceFormat.Count((int)delta.TotalMinutes, GlobalRes.LastSeenMinuteOne, GlobalRes.LastSeenMinutesFormat),
+            { TotalDays: < 1 } => ResourceFormat.Count((int)delta.TotalHours, GlobalRes.LastSeenHourOne, GlobalRes.LastSeenHoursFormat),
+            { TotalDays: <= 7 } => ResourceFormat.Count((int)delta.TotalDays, GlobalRes.LastSeenDayOne, GlobalRes.LastSeenDaysFormat),
             _ => ResourceFormat.Fill(GlobalRes.LastSeenDateFormat, SiteClock.ToSiteTime(lastSeenUtc).ToString("d", CultureInfo.CurrentCulture))
         };
     }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -85,7 +86,7 @@ public class SubscriptionController : ControllerBase
         // and returns 503. In Development MockEnabled=true assigns the plan instantly, no charge.
         if (session.Status == "pending_payment")
             return Problem(
-                detail: "Payment processing is not yet available. Please check back later.",
+                detail: ErrorMessagesRes.PaymentNotAvailable,
                 statusCode: StatusCodes.Status503ServiceUnavailable);
 
         _logger.LogInformation(

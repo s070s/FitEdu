@@ -406,7 +406,7 @@ public partial class CertificateServiceTests
         text.ShouldContain("Eleni Papadopoulou", Case.Sensitive);
         text.ShouldContain("has completed the programme", Case.Sensitive);
         text.ShouldContain("Strength Foundations", Case.Sensitive);
-        text.ShouldContain("Total training time: 1h 30m", Case.Sensitive);
+        text.ShouldContain("Total training time: 1 h 30 min", Case.Sensitive);
         text.ShouldContain("Issued on 12 October 2026", Case.Sensitive);
         text.ShouldContain("Verification ID: 8d0f6a52-3c1e-4b7a-9f2d-5e6c7b8a9d01", Case.Sensitive);
         text.ShouldNotContain("Certificate of Completion");

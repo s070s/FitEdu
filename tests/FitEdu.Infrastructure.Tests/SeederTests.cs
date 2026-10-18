@@ -66,7 +66,7 @@ public sealed class SeederTests : IDisposable
         var plans = await db.SubscriptionPlans.ToDictionaryAsync(plan => plan.Tier);
         plans.Values.ShouldAllBe(plan => !string.IsNullOrWhiteSpace(plan.Description) && !string.IsNullOrWhiteSpace(plan.DescriptionEl));
         plans[SubscriptionTier.Free].Description!.ShouldContain("exercise library");
-        plans[SubscriptionTier.Plus].Description!.ShouldContain("Every Free and Plus course");
+        plans[SubscriptionTier.Plus].Description!.ShouldContain("Every Free and Plus programme");
         plans[SubscriptionTier.Pro].Description!.ShouldContain("certificates");
         // Every signed-in member can join a live class, so no plan may sell them as a Pro extra.
         plans.Values.ShouldAllBe(plan => !plan.Description!.Contains("live", StringComparison.OrdinalIgnoreCase));

@@ -24,7 +24,7 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
         using var cultureScope = new CultureScope("en-GB");
 
         _describer.PasswordTooShort(8).Description.ShouldBe("Your password needs at least 8 characters.");
-        _describer.PasswordRequiresDigit().Description.ShouldBe("Your password needs at least one digit (0-9).");
+        _describer.PasswordRequiresDigit().Description.ShouldBe("Your password needs at least one number (0-9).");
         _describer.PasswordRequiresLower().Description.ShouldBe("Your password needs at least one lowercase letter (a-z).");
         _describer.PasswordRequiresUpper().Description.ShouldBe("Your password needs at least one uppercase letter (A-Z).");
         _describer.PasswordRequiresNonAlphanumeric().Description.ShouldBe("Your password needs at least one symbol, such as ! or #.");
@@ -39,12 +39,12 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
         using var cultureScope = new CultureScope("el-GR");
 
         _describer.PasswordTooShort(8).Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον 8 χαρακτήρες.");
-        _describer.PasswordRequiresDigit().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον ένα ψηφίο (0-9).");
+        _describer.PasswordRequiresDigit().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον έναν αριθμό (0-9).");
         _describer.PasswordRequiresLower().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον ένα πεζό γράμμα (a-z).");
         _describer.PasswordRequiresUpper().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον ένα κεφαλαίο γράμμα (A-Z).");
         _describer.PasswordRequiresNonAlphanumeric().Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον ένα σύμβολο, όπως ! ή #.");
         _describer.PasswordRequiresUniqueChars(3).Description.ShouldBe("Ο κωδικός σου χρειάζεται τουλάχιστον 3 διαφορετικούς χαρακτήρες.");
-        _describer.DuplicateEmail("maria@fitedu.local").Description.ShouldBe("Το email maria@fitedu.local είναι ήδη εγγεγραμμένο.");
+        _describer.DuplicateEmail("maria@fitedu.local").Description.ShouldBe("Το email maria@fitedu.local είναι ήδη καταχωρισμένο.");
         _describer.InvalidEmail("maria").Description.ShouldBe("Το email maria δεν είναι έγκυρο.");
     }
 
