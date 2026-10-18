@@ -207,11 +207,11 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
 
         var hits = await tools.SearchExercisesAsync(query: "", muscle: "chest", equipment: "body only", maxResults: 2, language: "el");
 
-        // The first two by English name are Clock Push-Up and Incline Push-Up; only the second has a Greek name.
+        // The first two by English name are Clock Push-Up and Incline Push-Up; both have Greek names.
         hits.Count.ShouldBe(2);
         hits.ShouldAllBe(hit => hit.PrimaryMuscles.Contains("chest") && hit.Equipment == "body only");
         hits.Select(hit => hit.Page).ShouldBe(["/exercises/clock-push-up", "/exercises/incline-push-up"]);
-        hits[1].Name.ShouldBe("Κάμψεις σε κλίση (Incline push-ups)");
+        hits.Select(hit => hit.Name).ShouldBe(["Push-up «ρολόι»", "Push-up με τα χέρια ψηλά"]);
     }
 
     [Fact]

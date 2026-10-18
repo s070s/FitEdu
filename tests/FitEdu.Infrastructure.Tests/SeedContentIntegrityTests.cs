@@ -969,7 +969,7 @@ public partial class SeedContentIntegrityTests
         return matches;
     }
 
-    private static IEnumerable<string> FindSeedJsonFiles() =>
+    private static string[] FindSeedJsonFiles() =>
         Directory.GetFiles(RepoPaths.SeedJsonRoot, SeedJsonPattern, SearchOption.AllDirectories);
 
     /// <summary>Every value of every English .resx (Messages/ included), located as "ResourceName.Key".</summary>
