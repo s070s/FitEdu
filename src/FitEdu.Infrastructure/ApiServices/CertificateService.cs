@@ -95,7 +95,7 @@ public class CertificateService : ICertificateService
                   && e.Status == EnrollmentStatus.Completed,
                 cancellationToken)
             ?? throw new InvalidOperationException(
-                $"No completed enrollment found for user {userId} on course {courseId}.");
+                $"No completed enrolment found for user {userId} on course {courseId}.");
 
         var course = enrollment.Course;
         var user = enrollment.User;
