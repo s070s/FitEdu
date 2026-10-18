@@ -20,6 +20,10 @@
                 {
                     <div class="assistant-offline">@AssistantRes.Offline</div>
                 }
+                else if (_status is { State: "Starting" })
+                {
+                    <div class="assistant-offline">@AssistantRes.WarmingUp</div>
+                }
                 else if (_status is { State: "OllamaUnreachable" })
                 {
                     <div class="assistant-offline">@AssistantRes.Unreachable</div>

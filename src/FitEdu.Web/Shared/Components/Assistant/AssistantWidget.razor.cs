@@ -52,7 +52,7 @@ public partial class AssistantWidget : IDisposable
         _status = await Consumer.GetStatusAsync();
         StateHasChanged();
 
-        // While the assistant bootstraps (Ollama probing / model download), keep polling so the
+        // While the assistant bootstraps (starting, Ollama probing, model download), keep polling so the
         // widget flips to interactive the moment the state hits Ready — no refresh needed.
         _statusPollCts = new CancellationTokenSource();
         _ = PollStatusWhileBootstrappingAsync(_statusPollCts.Token);
@@ -63,7 +63,7 @@ public partial class AssistantWidget : IDisposable
         try
         {
             while (!cancellationToken.IsCancellationRequested
-                   && _status is { State: "DownloadingModels" or "OllamaUnreachable" })
+                   && _status is { State: "Starting" or "DownloadingModels" or "OllamaUnreachable" })
             {
                 await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
                 _status = await Consumer.GetStatusAsync();

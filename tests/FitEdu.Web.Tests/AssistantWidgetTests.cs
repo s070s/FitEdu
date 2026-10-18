@@ -41,6 +41,22 @@ public class AssistantWidgetTests : BunitContext
     }
 
     [Fact]
+    public void CoachStillStarting_ShowsWarmingUp_ThenTheChatOnceReady()
+    {
+        // Live check 2026-10-18: while the app loaded the model, the status read "Disabled", which
+        // the widget treats as final, so it said "unavailable" until the page was reloaded.
+        _consumer.GetStatusAsync().Returns(
+            new AssistantStatusDto(false, null, "Starting"),
+            new AssistantStatusDto(true, "qwen3:1.7b", "Ready"));
+        var widget = Render<AssistantWidget>();
+
+        widget.Find(".assistant-launcher").Click();
+
+        widget.WaitForAssertion(() => widget.Find(".assistant-offline").TextContent.Trim().ShouldBe(AssistantRes.WarmingUp));
+        widget.WaitForElement(".assistant-suggestions button", TimeSpan.FromSeconds(10)); // the widget re-checks every 5 s
+    }
+
+    [Fact]
     public void AskingASuggestedQuestion_ShowsTheQuestionAndTheAnswer()
     {
         var widget = Render<AssistantWidget>();

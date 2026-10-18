@@ -9,6 +9,10 @@ public enum AssistantAvailability
     /// <summary>Assistant:Enabled is false — terminal until a config change + restart.</summary>
     Disabled,
 
+    /// <summary>Assistant:Enabled is true and the first check has not finished yet: probing Ollama
+    /// and loading the chat model, which can take a minute after an install or reboot.</summary>
+    Starting,
+
     /// <summary>Ollama did not answer at BaseUrl (not installed, not running, or a required
     /// model is missing while AutoPullModels is off). Re-probed continuously.</summary>
     OllamaUnreachable,

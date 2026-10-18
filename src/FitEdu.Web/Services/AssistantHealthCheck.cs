@@ -16,6 +16,8 @@ public sealed class AssistantHealthCheck(AssistantRuntimeState state) : IHealthC
         {
             AssistantAvailability.Ready => HealthCheckResult.Healthy("Assistant ready."),
             AssistantAvailability.Disabled => HealthCheckResult.Healthy("Assistant disabled by configuration."),
+            AssistantAvailability.Starting => HealthCheckResult.Degraded(
+                "Assistant starting: checking Ollama and loading the chat model."),
             AssistantAvailability.DownloadingModels => HealthCheckResult.Degraded(
                 $"Assistant downloading required models: {state.Progress}."),
             AssistantAvailability.OllamaUnreachable => HealthCheckResult.Degraded(

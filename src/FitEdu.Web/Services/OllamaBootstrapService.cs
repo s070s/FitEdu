@@ -9,7 +9,7 @@ namespace FitEdu.Web.Services;
 /// Supervises the Ollama sidecar so a fresh machine needs zero manual model management:
 /// probes <c>Assistant:BaseUrl</c>, auto-pulls any missing chat/embedding model (unless
 /// <c>Assistant:AutoPullModels</c> is off), and drives <see cref="AssistantRuntimeState"/>
-/// through OllamaUnreachable → DownloadingModels → Ready. Keeps supervising after Ready so
+/// through Starting → OllamaUnreachable / DownloadingModels → Ready. Keeps supervising after Ready so
 /// an Ollama restart (or late install) is detected and recovered from without an app restart.
 /// Never throws out of <see cref="ExecuteAsync"/>.
 /// </summary>
@@ -29,6 +29,10 @@ public sealed partial class OllamaBootstrapService(
     {
         if (!_options.Enabled)
             return; // state stays Disabled
+
+        // Runs before the server takes requests, so no status check ever reads the final-looking
+        // "Disabled" while the first probe and the model load are still under way.
+        state.Set(AssistantAvailability.Starting);
 
         var delay = MinDelay;
         while (!stoppingToken.IsCancellationRequested)

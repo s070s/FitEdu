@@ -19,6 +19,6 @@ public record AssistantSourceDto(string Title, string Url);
 public record AssistantStreamEvent(string Kind, string? Text = null, List<AssistantSourceDto>? Sources = null);
 
 /// <summary>Widget-facing availability. State mirrors <c>AssistantAvailability</c>
-/// ("Disabled" | "OllamaUnreachable" | "DownloadingModels" | "Ready"); Progress carries a
+/// ("Disabled" | "Starting" | "OllamaUnreachable" | "DownloadingModels" | "Ready"); Progress carries a
 /// human-readable download line (e.g. "qwen3:1.7b — 43%") while models are pulling.</summary>
 public record AssistantStatusDto(bool Available, string? Model, string State = "Disabled", string? Progress = null);

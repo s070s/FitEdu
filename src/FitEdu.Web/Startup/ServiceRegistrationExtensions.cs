@@ -161,7 +161,7 @@ public static class ServiceRegistrationExtensions
             .ValidateOnStart();
         var assistantOptions = config.GetSection(AssistantOptions.SectionName).Get<AssistantOptions>() ?? new AssistantOptions();
         builder.Services.AddSingleton<AssistantIndexSignal>();
-        // Runtime availability (Disabled/OllamaUnreachable/DownloadingModels/Ready) is always
+        // Runtime availability (Disabled/Starting/OllamaUnreachable/DownloadingModels/Ready) is always
         // registered: OllamaBootstrapService writes it, status/chat/indexer read it. This is what
         // lets "enabled but Ollama missing" recover at runtime instead of needing a restart.
         builder.Services.AddSingleton<AssistantRuntimeState>();
