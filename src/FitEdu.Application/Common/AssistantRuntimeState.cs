@@ -29,8 +29,13 @@ public enum AssistantAvailability
 public sealed class AssistantRuntimeState
 {
     private readonly object _gate = new();
-    private AssistantAvailability _status = AssistantAvailability.Disabled;
+    private AssistantAvailability _status;
     private string? _progress;
+
+    public AssistantRuntimeState(AssistantAvailability initialStatus = AssistantAvailability.Disabled)
+    {
+        _status = initialStatus;
+    }
 
     public AssistantAvailability Status
     {

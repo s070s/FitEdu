@@ -4,11 +4,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <button type="button" class="assistant-launcher" @onclick="ToggleOpen" aria-label="@AssistantRes.OpenAssistant">
-            <span class="bi bi-chat-heart" aria-hidden="true"></span>
-        </button>
+        @* A coach switched off in configuration (e.g. a host without Ollama) shows no button at all. *@
+        @if (!IsSwitchedOff)
+        {
+            <button type="button" class="assistant-launcher" @onclick="ToggleOpen" aria-label="@AssistantRes.OpenAssistant">
+                <span class="bi bi-chat-heart" aria-hidden="true"></span>
+            </button>
+        }
 
-        @if (_open)
+        @if (_open && !IsSwitchedOff)
         {
             <div class="assistant-panel" role="dialog" aria-label="@AssistantRes.Title">
                 <div class="assistant-header">
@@ -22,11 +26,7 @@
                     </div>
                 </div>
 
-                @if (_status is { State: "Disabled" })
-                {
-                    <div class="assistant-offline">@AssistantRes.Offline</div>
-                }
-                else if (_status is { State: "Starting" })
+                @if (_status is { State: "Starting" })
                 {
                     <div class="assistant-offline">@AssistantRes.WarmingUp</div>
                 }

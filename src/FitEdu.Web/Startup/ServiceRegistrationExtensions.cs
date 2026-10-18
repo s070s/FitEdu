@@ -164,7 +164,10 @@ public static class ServiceRegistrationExtensions
         // Runtime availability (Disabled/Starting/OllamaUnreachable/DownloadingModels/Ready) is always
         // registered: OllamaBootstrapService writes it, status/chat/indexer read it. This is what
         // lets "enabled but Ollama missing" recover at runtime instead of needing a restart.
-        builder.Services.AddSingleton<AssistantRuntimeState>();
+        // An enabled coach starts as "Starting", never "Disabled": the widget treats Disabled as final
+        // and hides itself, so a status read before the bootstrap service runs must not say Disabled.
+        builder.Services.AddSingleton(_ => new AssistantRuntimeState(
+            assistantOptions.Enabled ? AssistantAvailability.Starting : AssistantAvailability.Disabled));
         if (assistantOptions.Enabled)
         {
             // UseFunctionInvocation wraps the Ollama client so ChatOptions.Tools are executed

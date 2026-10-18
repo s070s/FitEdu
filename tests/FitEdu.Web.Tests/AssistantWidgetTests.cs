@@ -88,12 +88,14 @@ public class AssistantWidgetTests : BunitContext
         var widget = Render<AssistantWidget>();
         widget.Find(".assistant-launcher").Click();
         widget.WaitForElement(".assistant-suggestions button").Click();
-        widget.WaitForElement(".assistant-message-bot");
 
-        widget.Find(".assistant-new-chat").Click();
+        widget.WaitForElement(".assistant-new-chat").Click(); // shown once the answer has finished
 
-        widget.FindAll(".assistant-message-user").ShouldBeEmpty();
-        widget.FindAll(".assistant-suggestions button").ShouldNotBeEmpty();
+        widget.WaitForAssertion(() =>
+        {
+            widget.FindAll(".assistant-message-user").ShouldBeEmpty();
+            widget.FindAll(".assistant-suggestions button").ShouldNotBeEmpty();
+        });
     }
 
     [Fact]
@@ -115,6 +117,18 @@ public class AssistantWidgetTests : BunitContext
 
         widget.WaitForAssertion(() =>
             sent[^1].Messages.Select(m => m.Content).ShouldBe(["Question 2", "ok.", "Question 3", "ok.", "Question 4"]));
+    }
+
+    [Fact]
+    public void CoachSwitchedOff_ShowsNoButton()
+    {
+        // A host without Ollama (the Azure demo) runs with Assistant:Enabled=false; a button that
+        // only opens "unavailable" is noise.
+        _consumer.GetStatusAsync().Returns(new AssistantStatusDto(false, null, "Disabled"));
+
+        var widget = Render<AssistantWidget>();
+
+        widget.WaitForAssertion(() => widget.FindAll(".assistant-launcher").ShouldBeEmpty());
     }
 
     [Fact]

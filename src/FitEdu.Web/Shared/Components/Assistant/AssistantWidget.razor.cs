@@ -79,6 +79,9 @@ public partial class AssistantWidget : IDisposable
         }
     }
 
+    // "Disabled" is final (Assistant:Enabled=false); every other state can still become Ready.
+    private bool IsSwitchedOff => _status is { State: "Disabled" };
+
     private void ToggleOpen() => _open = !_open;
 
     private void StartNewChat()
