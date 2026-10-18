@@ -68,7 +68,7 @@
     <value>Δεν βρέθηκαν αποτελέσματα.</value>
   </data>
   <data name="SeeAllResults" xml:space="preserve">
-    <value>Προβολή όλων των αποτελεσμάτων</value>
+    <value>Δες όλα τα αποτελέσματα</value>
   </data>
   <data name="FallbackNotice" xml:space="preserve">
     <value>Εμφανίζονται αποτελέσματα με βάση τον τίτλο — η έξυπνη αναζήτηση δεν είναι διαθέσιμη προσωρινά.</value>
@@ -77,7 +77,7 @@
     <value>Αναζήτηση</value>
   </data>
   <data name="ResultsForFormat" xml:space="preserve">
-    <value>Αποτελέσματα για "{0}"</value>
+    <value>Αποτελέσματα για «{0}»</value>
   </data>
   <data name="TypeCourse" xml:space="preserve">
     <value>Πρόγραμμα</value>
