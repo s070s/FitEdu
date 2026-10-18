@@ -29,13 +29,18 @@ public sealed class AssistantOptions
 
     /// <summary>Maximum retrieved context chunks injected into the system prompt per question.</summary>
     [Range(1, 1000)]
-    public int MaxContextChunks { get; set; } = 6;
+    public int MaxContextChunks { get; set; } = 3;
 
     [Range(1, 100000)]
     public int MaxOutputTokens { get; set; } = 800;
 
     [Range(0.0, 2.0)]
-    public float Temperature { get; set; } = 0.3f;
+    public float Temperature { get; set; } = 0.1f;
+
+    /// <summary>Discourages repeating words already used. At a low temperature qwen3 otherwise
+    /// loops on one sentence; its makers suggest 0–2 for this.</summary>
+    [Range(0.0, 2.0)]
+    public float PresencePenalty { get; set; } = 1.5f;
 
     /// <summary>Per-user chat requests allowed per minute (rate-limit policy "assistant").</summary>
     [Range(1, 100000)]

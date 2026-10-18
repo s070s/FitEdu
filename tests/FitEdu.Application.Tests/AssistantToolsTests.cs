@@ -311,6 +311,26 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
         forMe.ShouldHaveSingleItem().Title.ShouldBe("Lower Body Power"); // same category, not enrolled
         forNewUser.Select(c => c.Title).ShouldBe(["Lower Body Power", "Nutrition Basics", "Strength Foundations"]);
     }
+
+    [Fact]
+    public async Task RecommendCourses_EasiestFirst_WithTheSiteLevelLabels()
+    {
+        // Live check 2026-10-18: asked which programme a beginner should start with, the coach got
+        // programmes without a level and went searching the exercise library instead.
+        await using var db = DbContextFactory.CreateInMemory();
+        var advanced = NewCourse("Athletic Power");
+        advanced.Level = CourseLevel.Advanced;
+        var beginner = NewCourse("Walking Start");
+        beginner.Level = CourseLevel.Beginner;
+        db.Courses.AddRange(advanced, beginner);
+        await db.SaveChangesAsync();
+
+        var inGreek = await NewTools(db).RecommendCoursesAsync(UserId, isEl: true);
+        var inEnglish = await NewTools(db).RecommendCoursesAsync(UserId, isEl: false);
+
+        inGreek.Select(c => (c.Title, c.Level)).ShouldBe([("Walking Start", "Αρχάριο"), ("Athletic Power", "Προχωρημένο")]);
+        inEnglish[0].Level.ShouldBe("Beginner");
+    }
 }
 
 /// <summary>

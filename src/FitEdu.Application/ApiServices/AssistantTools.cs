@@ -7,6 +7,7 @@ using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 
 namespace FitEdu.Application.ApiServices;
 
@@ -95,7 +96,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             AIFunctionFactory.Create(
                 (CancellationToken ct) => RecommendCoursesAsync(userId, isEl, ct),
                 "recommend_courses",
-                "Recommends published programmes (courses; πρόγραμμα in Greek) the current user has not joined yet, preferring the categories of the ones they have. Use it when the member asks which programme to start or do next."),
+                "Recommends published programmes (courses; πρόγραμμα in Greek) the current user has not joined yet, preferring the categories of the ones they have, easiest level first. Use it when the member asks which programme to start or do next."),
         ];
     }
 
@@ -177,6 +178,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             .Take(take)
             .Select(c => new CourseHit(
                 isEl ? (c.TitleEl ?? c.TitleEn) : c.TitleEn,
+                LevelLabel(c.Level, isEl),
                 Truncate(isEl ? (c.DescriptionEl ?? c.DescriptionEn) : c.DescriptionEn),
                 c.RequiredTier.ToString()))
             .ToListAsync(cancellationToken);
@@ -241,10 +243,11 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
 
         var inMyCategories = await candidates
             .Where(c => c.CategoryId != null && enrolledCategoryIds.Contains(c.CategoryId))
-            .OrderBy(c => c.TitleEn)
+            .OrderBy(c => c.Level).ThenBy(c => c.TitleEn)
             .Take(MaxSearchResults)
             .Select(c => new CourseHit(
                 isEl ? (c.TitleEl ?? c.TitleEn) : c.TitleEn,
+                LevelLabel(c.Level, isEl),
                 Truncate(isEl ? (c.DescriptionEl ?? c.DescriptionEn) : c.DescriptionEn),
                 c.RequiredTier.ToString()))
             .ToListAsync(cancellationToken);
@@ -254,14 +257,19 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
 
         // New user (or exhausted categories): any published course they don't have yet.
         return await candidates
-            .OrderBy(c => c.TitleEn)
+            .OrderBy(c => c.Level).ThenBy(c => c.TitleEn)
             .Take(MaxSearchResults)
             .Select(c => new CourseHit(
                 isEl ? (c.TitleEl ?? c.TitleEn) : c.TitleEn,
+                LevelLabel(c.Level, isEl),
                 Truncate(isEl ? (c.DescriptionEl ?? c.DescriptionEn) : c.DescriptionEn),
                 c.RequiredTier.ToString()))
             .ToListAsync(cancellationToken);
     }
+
+    /// <summary>The site's own level words, so the model does not translate the level itself.</summary>
+    private static string LevelLabel(CourseLevel level, bool isEl) =>
+        CourseRes.ResourceManager.GetString($"Level_{level}", isEl ? Greek : CultureInfo.InvariantCulture) ?? level.ToString();
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -273,6 +281,6 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
     public sealed record ProgressInfo(string Course, int CompletedLessons, int TotalLessons);
     public sealed record AssessmentResultInfo(string Assessment, string SubmittedOn);
     public sealed record SubscriptionInfo(string Plan, string Tier, string? ExpiresOn);
-    public sealed record CourseHit(string Title, string? Description, string RequiredTier);
+    public sealed record CourseHit(string Title, string Level, string? Description, string RequiredTier);
     public sealed record ExerciseHit(string Name, string Level, string? Equipment, string PrimaryMuscles, string Page);
 }

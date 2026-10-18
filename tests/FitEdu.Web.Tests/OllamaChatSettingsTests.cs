@@ -35,7 +35,7 @@ public class OllamaChatSettingsTests
         using var handler = new RecordingOllamaHandler(doneReason);
         using var httpClient = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:11434") };
         using var ollama = new OllamaApiClient(httpClient, "qwen3:8b");
-        var options = new ChatOptions { MaxOutputTokens = 800 };
+        var options = new ChatOptions { MaxOutputTokens = 800, PresencePenalty = 1.5f };
 
         OllamaChatSettings.Apply(options);
         var response = await ((IChatClient)ollama).GetResponseAsync("Ποια προγράμματα έχετε;", options);
@@ -56,6 +56,15 @@ public class OllamaChatSettingsTests
         var (_, requestBody) = await AskAsync();
 
         requestBody.ShouldNotBeNull().ShouldContain($"\"keep_alive\":\"{OllamaChatSettings.KeepModelLoadedFor}\"");
+    }
+
+    [Fact]
+    public async Task CoachRequests_CarryThePresencePenalty()
+    {
+        // Live check 2026-10-18: without it qwen3 repeated one sentence at a low temperature.
+        var (_, requestBody) = await AskAsync();
+
+        requestBody.ShouldNotBeNull().ShouldContain("\"presence_penalty\":1.5");
     }
 
     [Fact]

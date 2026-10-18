@@ -140,7 +140,8 @@ public class AssistantServiceTests
         var systemMessage = captured![0];
         systemMessage.Role.ShouldBe(ChatRole.System);
         systemMessage.Text.ShouldContain("Greek");
-        systemMessage.Text.ShouldContain("address the member informally (εσύ)");
+        systemMessage.Text.ShouldContain("address the member informally in the second person singular (εσύ)");
+        systemMessage.Text.ShouldContain("κύριοι μύες (primary muscles)"); // live check 2026-10-18: the coach wrote «Κύρια μύες»
         systemMessage.Text.ShouldContain("Keep answers short: at most 5 short points");
         systemMessage.Text.ShouldContain("never invent them"); // live check 2026-10-18: invented "Cardio Blast"
         systemMessage.Text.ShouldContain("Pro");
@@ -148,6 +149,35 @@ public class AssistantServiceTests
         systemMessage.Text.ShouldContain("Strength Foundations teaches the squat, hinge, push and pull.");
         captured[1].Role.ShouldBe(ChatRole.User);
         captured[1].Text.ShouldBe("What should I take next?");
+    }
+
+    [Fact]
+    public async Task StreamChatAsync_ShortensLongContextAndSendsThePresencePenalty()
+    {
+        // Live check 2026-10-18: six full lesson extracts made qwen3:8b loop on tool calls, and at a
+        // low temperature it repeated one sentence until the length limit.
+        await using var db = DbContextFactory.CreateInMemory();
+        var (svc, chatClient, retrieval, _) = NewService(db);
+        retrieval.SearchAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IReadOnlyList<AssistantRetrievedChunk>>(
+                [new AssistantRetrievedChunk(new string('x', 1000), "Long lesson", "courses/abc")]));
+
+        List<ChatMessage>? captured = null;
+        ChatOptions? options = null;
+        chatClient.GetStreamingResponseAsync(Arg.Any<IEnumerable<ChatMessage>>(), Arg.Any<ChatOptions>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                captured = callInfo.Arg<IEnumerable<ChatMessage>>().ToList();
+                options = callInfo.Arg<ChatOptions>();
+                return Updates("ok");
+            });
+
+        await Collect(svc.StreamChatAsync(UserId, OneUserMessage("hi"), "en"));
+
+        var systemPrompt = captured.ShouldNotBeNull()[0].Text;
+        systemPrompt.ShouldContain("- (Long lesson) " + new string('x', 400) + "…");
+        systemPrompt.ShouldNotContain(new string('x', 401));
+        options.ShouldNotBeNull().PresencePenalty.ShouldBe(new AssistantOptions().PresencePenalty);
     }
 
     [Fact]

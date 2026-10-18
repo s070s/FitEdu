@@ -720,9 +720,10 @@ You can install or start Ollama **after** the app is already running — it keep
 | `Assistant__ChatModel` | `appsettings.json` | `qwen3:8b` | ~5.2 GB. Multilingual (incl. Greek) with native tool calling; needs a GPU with 8 GB of memory to answer quickly (slow on CPU only). On weaker hardware use `qwen3:4b` or `qwen3:1.7b` (fast, but its Greek is poor). |
 | `Assistant__EmbeddingModel` | `appsettings.json` | `bge-m3` | ~1.2 GB. Multilingual (EN/EL) retrieval embeddings. |
 | `Assistant__AutoPullModels` | `appsettings.json` | `true` | Auto-download missing models at startup. Set `false` in restricted environments and pull manually. |
-| `Assistant__MaxContextChunks` | `appsettings.json` | `6` | Retrieved chunks injected per question. |
+| `Assistant__MaxContextChunks` | `appsettings.json` | `3` | Retrieved chunks injected per question (each shortened to 400 characters). More made the chat model lose track of the question. |
 | `Assistant__MaxOutputTokens` | `appsettings.json` | `800` | Caps answer length. |
-| `Assistant__Temperature` | `appsettings.json` | `0.3` | Lower = more deterministic/grounded answers. |
+| `Assistant__Temperature` | `appsettings.json` | `0.1` | Lower = more deterministic/grounded answers. Kept just above 0: qwen3 can repeat itself at 0. |
+| `Assistant__PresencePenalty` | `appsettings.json` | `1.5` | Discourages repeated words; stops qwen3 looping on one sentence at a low temperature. Range 0–2. |
 | `Assistant__RequestsPerMinute` | `appsettings.json` | `10` | Per-user rate limit on `POST api/assistant/chat`. |
 | `Assistant__MaxToolRounds` | `appsettings.json` | `3` | Caps tool-invocation rounds per request (loop guardrail). |
 

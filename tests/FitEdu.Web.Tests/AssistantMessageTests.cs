@@ -30,6 +30,12 @@ public class AssistantMessageTests : BunitContext
             .ShouldBe("Chest\nTry the push-up and the bench press.");
 
     [Fact]
+    public void CoachAnswer_LinksAndDividers_ShowAsPlainText() =>
+        // Live check 2026-10-18: answers showed [Squat](/exercises/bodyweight-squat) and --- lines.
+        RenderedText("assistant", "1. [Squat](/exercises/bodyweight-squat)\n---\n2. Lunge")
+            .ShouldBe("1. Squat\n\n2. Lunge");
+
+    [Fact]
     public void CoachAnswer_ListsAndSingleAsterisks_AreKept() =>
         RenderedText("assistant", "- 3 sets\n- RPE 7\nA*B")
             .ShouldBe("- 3 sets\n- RPE 7\nA*B");
