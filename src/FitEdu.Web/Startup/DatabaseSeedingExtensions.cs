@@ -37,17 +37,13 @@ public static class DatabaseSeedingExtensions
             }
             catch (Exception ex) when (attempt < maxAttempts)
             {
-                logger.LogWarning(ex,
-                    "Startup migrate/seed failed on attempt {Attempt}/{MaxAttempts} — retrying in {Delay}.",
-                    attempt, maxAttempts, delay);
+                StartupLog.MigrateSeedRetrying(logger, ex, attempt, maxAttempts, delay);
                 await Task.Delay(delay);
                 delay += delay; // exponential backoff
             }
             catch (Exception ex)
             {
-                logger.LogCritical(ex,
-                    "Startup migrate/seed failed after {MaxAttempts} attempts — the application cannot start.",
-                    maxAttempts);
+                StartupLog.MigrateSeedFailed(logger, ex, maxAttempts);
                 throw;
             }
         }
@@ -135,14 +131,14 @@ public static class DatabaseSeedingExtensions
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, "Admin");
-                startupLogger.LogInformation("Seeded admin user '{Email}'.", adminEmail);
+                StartupLog.AdminSeeded(startupLogger, adminEmail);
             }
             else
             {
                 // REL-4: fail-fast, consistent with the AdminUser:Password-missing throw above —
                 // starting with no admin account and no signal is worse than not starting at all.
                 var errors = string.Join("; ", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
-                startupLogger.LogCritical("Failed to seed admin user '{Email}': {Errors}", adminEmail, errors);
+                StartupLog.AdminSeedFailed(startupLogger, adminEmail, errors);
                 throw new InvalidOperationException($"Failed to seed admin user '{adminEmail}': {errors}");
             }
         }

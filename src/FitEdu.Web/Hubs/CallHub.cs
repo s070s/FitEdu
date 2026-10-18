@@ -55,7 +55,7 @@ public partial class CallHub : Hub
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null || !user.IsEnabled)
             {
-                _logger.LogWarning("Call: Rejected connection for disabled/unknown user {UserId}.", userId);
+                LogConnectionRejected(_logger, userId);
                 Context.Abort();
                 return;
             }
@@ -67,7 +67,7 @@ public partial class CallHub : Hub
                 await PersistLastSeenAsync(user);
                 await Clients.All.SendAsync("PresenceChanged", userId, true, user.LastSeenAt);
             }
-            _logger.LogInformation("Call: User {UserId} connected.", userId);
+            LogUserConnected(_logger, userId);
         }
 
         await base.OnConnectedAsync();
@@ -119,7 +119,7 @@ public partial class CallHub : Hub
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to persist LastSeenAt for user {UserId}.", user.Id);
+            LogLastSeenPersistFailed(_logger, ex, user.Id);
         }
     }
 
@@ -161,7 +161,7 @@ public partial class CallHub : Hub
         var created = _registry.TryCreateCall(session.Id, userId, Context.ConnectionId, conversationId, onlineCallees, isGroup);
         if (!created)
         {
-            _logger.LogError("Call: TryCreateCall failed for new session {CallId} (id collision).", session.Id);
+            LogCreateCallCollision(_logger, session.Id);
             return new StartCallResultDto(null, StartCallStatus.AllUnavailable, unavailableIds);
         }
 
@@ -454,4 +454,20 @@ public partial class CallHub : Hub
         }
         return result;
     }
-}
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Call: Rejected {Method} relay for call {CallId} — caller or target not a member.")]
+    private static partial void LogRelayRejected(ILogger logger, string method, Guid callId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Call: Rejected connection for disabled/unknown user {UserId}.")]
+    private static partial void LogConnectionRejected(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Call: User {UserId} connected.")]
+    private static partial void LogUserConnected(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to persist LastSeenAt for user {UserId}.")]
+    private static partial void LogLastSeenPersistFailed(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Call: TryCreateCall failed for new session {CallId} (id collision).")]
+    private static partial void LogCreateCallCollision(ILogger logger, Guid callId);}

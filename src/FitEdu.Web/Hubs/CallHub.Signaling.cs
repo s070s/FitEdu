@@ -25,9 +25,7 @@ public partial class CallHub
         if (!_registry.IsMemberConnection(callId, Context.ConnectionId) ||
             !_registry.IsMemberConnection(callId, targetConnectionId))
         {
-            _logger.LogWarning(
-                "Call: Rejected {Method} relay for call {CallId} — caller or target not a member.",
-                method, callId);
+            LogRelayRejected(_logger, method, callId);
             await Clients.Caller.SendAsync("CallError", ErrorMessagesRes.Call_NotInCall);
             return;
         }
