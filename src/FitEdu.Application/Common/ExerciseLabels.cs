@@ -1,7 +1,8 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using FitEdu.Shared.Resources;
 
-namespace FitEdu.Web.Extensions;
+namespace FitEdu.Application.Common;
 
 /// <summary>
 /// Localized labels for the exercise library's metadata. The database keeps the Free Exercise DB
@@ -20,17 +21,17 @@ public static partial class ExerciseLabels
 
     private const char KeySeparator = '_';
 
-    public static string Muscle(string? value) => Label(MusclePrefix, value);
+    public static string Muscle(string? value) => LabelIn(MusclePrefix, value, ExerciseRes.Culture);
 
-    public static string Equipment(string? value) => Label(EquipmentPrefix, value);
+    public static string Equipment(string? value) => LabelIn(EquipmentPrefix, value, ExerciseRes.Culture);
 
-    public static string Force(string? value) => Label(ForcePrefix, value);
+    public static string Force(string? value) => LabelIn(ForcePrefix, value, ExerciseRes.Culture);
 
-    public static string Mechanic(string? value) => Label(MechanicPrefix, value);
+    public static string Mechanic(string? value) => LabelIn(MechanicPrefix, value, ExerciseRes.Culture);
 
-    public static string Level(string? value) => Label(LevelPrefix, value);
+    public static string Level(string? value) => LabelIn(LevelPrefix, value, ExerciseRes.Culture);
 
-    public static string Category(string? value) => Label(CategoryPrefix, value);
+    public static string Category(string? value) => LabelIn(CategoryPrefix, value, ExerciseRes.Culture);
 
     /// <summary>
     /// True when a prescribed "reps" value is a time ("20 s", "30–45 s", "1 min + 1 min") rather than
@@ -48,13 +49,17 @@ public static partial class ExerciseLabels
         return prefix + keyPart;
     }
 
-    private static string Label(string prefix, string? value)
+    /// <summary>
+    /// The label in a given language. A null culture follows the current UI culture, like the
+    /// generated ExerciseRes properties (ExerciseRes.Culture is normally null); code that does not
+    /// run in the member's UI culture (the coach's tools) passes the culture it needs.
+    /// </summary>
+    public static string LabelIn(string prefix, string? value, CultureInfo? culture)
     {
         if (string.IsNullOrWhiteSpace(value))
             return string.Empty;
 
-        // ResourceManager follows the current UI culture, like the generated ExerciseRes properties.
-        var label = ExerciseRes.ResourceManager.GetString(ResourceKey(prefix, value), ExerciseRes.Culture);
+        var label = ExerciseRes.ResourceManager.GetString(ResourceKey(prefix, value), culture);
         return label ?? value;
     }
 

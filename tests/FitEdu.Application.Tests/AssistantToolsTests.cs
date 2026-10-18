@@ -209,9 +209,24 @@ public class AssistantToolsTests : IClassFixture<RealExerciseLibraryDatabase>
 
         // The first two by English name are Clock Push-Up and Incline Push-Up; both have Greek names.
         hits.Count.ShouldBe(2);
-        hits.ShouldAllBe(hit => hit.PrimaryMuscles.Contains("chest") && hit.Equipment == "body only");
+        hits.ShouldAllBe(hit => hit.PrimaryMuscles.Contains("Στήθος") && hit.Equipment == "Βάρος σώματος");
         hits.Select(hit => hit.Page).ShouldBe(["/exercises/clock-push-up", "/exercises/incline-push-up"]);
         hits.Select(hit => hit.Name).ShouldBe(["Push-up «ρολόι»", "Push-up με τα χέρια ψηλά"]);
+    }
+
+    [Fact]
+    public async Task SearchExercises_RealLibraryInGreek_UsesTheSiteGreekLabels()
+    {
+        // Live check 2026-10-18: given the English key "quadriceps", the model wrote «Καρποί»
+        // (wrists); the site's own labels keep the coach's Greek terms right.
+        var tools = NewTools(_library.Db);
+
+        var hits = await tools.SearchExercisesAsync("squat", "quadriceps", "barbell", maxResults: 1, language: "el");
+
+        var hit = hits.ShouldHaveSingleItem();
+        hit.PrimaryMuscles.ShouldContain("Τετρακέφαλοι");
+        hit.Equipment.ShouldBe("Μπάρα");
+        hit.Level.ShouldBeOneOf("Αρχάριο", "Μεσαίο", "Προχωρημένο");
     }
 
     [Fact]

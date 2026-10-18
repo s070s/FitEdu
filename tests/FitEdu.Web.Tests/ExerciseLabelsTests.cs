@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Text.Json;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.TestSupport;
-using FitEdu.Web.Extensions;
 using Shouldly;
 using Xunit;
 

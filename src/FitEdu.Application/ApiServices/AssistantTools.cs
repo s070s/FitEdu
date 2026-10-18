@@ -24,6 +24,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
     private const int MaxDescriptionLength = 200;
     private const string ExercisePagePrefix = "/exercises/";
     private const string FilterValueSeparator = ", ";
+    private static readonly CultureInfo Greek = CultureInfo.GetCultureInfo("el");
 
     /// <summary>
     /// The library's fixed primary-muscle values (English, lower case). The filter matches whole
@@ -202,14 +203,26 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
         // The library service already reads AsNoTracking and published-only; page 1 is the cap.
         var page = await exerciseService.GetPublishedExercisesAsync(1, take, language, filter, cancellationToken);
 
-        return page.Items
-            .Select(exercise => new ExerciseHit(
-                exercise.Name,
-                exercise.Level,
-                exercise.Equipment,
-                string.Join(Exercise.MuscleSeparator, exercise.PrimaryMuscles),
-                ExercisePagePrefix + exercise.Slug))
-            .ToList();
+        var isEl = Localized.IsEl(language);
+        return page.Items.Select(exercise => ToExerciseHit(exercise, isEl)).ToList();
+    }
+
+    /// <summary>
+    /// In a Greek conversation the hit carries the site's Greek labels: left to translate the English
+    /// keys itself, the model wrote «Καρποί» (wrists) for "quadriceps". English keeps the library values.
+    /// </summary>
+    private static ExerciseHit ToExerciseHit(ExerciseListItemDto exercise, bool isEl)
+    {
+        if (!isEl)
+        {
+            return new ExerciseHit(exercise.Name, exercise.Level, exercise.Equipment,
+                string.Join(Exercise.MuscleSeparator, exercise.PrimaryMuscles), ExercisePagePrefix + exercise.Slug);
+        }
+
+        var muscles = exercise.PrimaryMuscles.Select(muscle => ExerciseLabels.LabelIn(ExerciseLabels.MusclePrefix, muscle, Greek));
+        var equipment = exercise.Equipment is null ? null : ExerciseLabels.LabelIn(ExerciseLabels.EquipmentPrefix, exercise.Equipment, Greek);
+        return new ExerciseHit(exercise.Name, ExerciseLabels.LabelIn(ExerciseLabels.LevelPrefix, exercise.Level, Greek), equipment,
+            string.Join(Exercise.MuscleSeparator, muscles), ExercisePagePrefix + exercise.Slug);
     }
 
     public async Task<List<CourseHit>> RecommendCoursesAsync(string userId, bool isEl, CancellationToken cancellationToken = default)
