@@ -21,7 +21,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 - Messages and toasts end with a full stop. Titles, labels and buttons do not.
 - Error style: EN "Couldn't … Please try again." / EL «Δεν ήταν δυνατή η … Δοκίμασε ξανά.» Never "Failed to…", «Αποτυχία…», «Σφάλμα κατά…».
 - Counts: any "{0} noun" string has a singular key and a plural key, used via `ResourceFormat.Count`. Never "1 reviews" or «1 ημέρες».
-- Units: a space before the unit ("5 MB", "15 cm", "5 km"). Greek abbreviations: λεπ., δευτ., χλμ (no dot).
+- Units: a space before the unit ("5 MB", "15 cm", "5 km"). Greek abbreviations: λεπ., δευτ., εκ., μ., and χλμ (no dot); write κιλά in full.
 - Use ακόμη, not ακόμα. Use «σιγά σιγά» (no hyphen). Apostrophe: straight ' («Κάν' το»).
 
 ## Product terms
