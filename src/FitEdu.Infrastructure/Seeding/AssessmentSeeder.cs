@@ -9,7 +9,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// <summary>
 /// Seeds assessment definitions from JSON files located in the Shared project's JSON folder.
 /// </summary>
-public static class AssessmentSeeder
+public static partial class AssessmentSeeder
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -28,7 +28,7 @@ public static class AssessmentSeeder
     {
         if (await db.AssessmentDefinitions.AnyAsync(cancellationToken))
         {
-            logger.LogInformation("Assessment definitions already exist; skipping seed.");
+            LogAlreadySeeded(logger);
             return;
         }
 
@@ -36,7 +36,7 @@ public static class AssessmentSeeder
 
         if (!Directory.Exists(resolvedPath))
         {
-            logger.LogWarning("JSON seed folder not found: {Path}", resolvedPath);
+            LogFolderNotFound(logger, resolvedPath);
             return;
         }
 
@@ -44,7 +44,7 @@ public static class AssessmentSeeder
 
         if (jsonFiles.Length == 0)
         {
-            logger.LogWarning("No JSON seed files found in: {Path}", jsonFolderPath);
+            LogNoFilesFound(logger, jsonFolderPath);
             return;
         }
 
@@ -58,12 +58,12 @@ public static class AssessmentSeeder
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to seed assessment from file: {FilePath}", filePath);
+                LogSeedFileFailed(logger, ex, filePath);
             }
         }
 
         await db.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Seeded {Count} assessment(s) from JSON files.", jsonFiles.Length);
+        LogSeeded(logger, jsonFiles.Length);
     }
 
     private static async Task SeedAssessmentFromFileAsync(
@@ -78,7 +78,7 @@ public static class AssessmentSeeder
 
         if (dto is null)
         {
-            logger.LogWarning("Failed to deserialize assessment from: {FilePath}", filePath);
+            LogDeserializeFailed(logger, filePath);
             return;
         }
 
@@ -86,8 +86,8 @@ public static class AssessmentSeeder
         def.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category, dto.CategoryEl);
         db.AssessmentDefinitions.Add(def);
 
-        logger.LogInformation("Loaded assessment '{Title}' (Key: {Key}) from {FileName}",
-            def.TitleEn, def.Key, Path.GetFileName(filePath));
+        var fileName = Path.GetFileName(filePath);
+        LogAssessmentLoaded(logger, def.TitleEn, def.Key, fileName);
     }
 
     private static AssessmentDefinition MapToAssessmentDefinition(AssessmentSeedDto dto)
@@ -109,4 +109,27 @@ public static class AssessmentSeeder
             PublishedAt = dto.IsPublished ? (dto.PublishedAt ?? now) : null
         };
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Assessment definitions already exist; skipping seed.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "JSON seed folder not found: {Path}")]
+    private static partial void LogFolderNotFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "No JSON seed files found in: {Path}")]
+    private static partial void LogNoFilesFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to seed assessment from file: {FilePath}")]
+    private static partial void LogSeedFileFailed(ILogger logger, Exception exception, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} assessment(s) from JSON files.")]
+    private static partial void LogSeeded(ILogger logger, int count);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to deserialize assessment from: {FilePath}")]
+    private static partial void LogDeserializeFailed(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Loaded assessment '{Title}' (Key: {Key}) from {FileName}")]
+    private static partial void LogAssessmentLoaded(ILogger logger, string title, string key, string fileName);
 }

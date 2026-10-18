@@ -17,7 +17,7 @@ public partial class Blog : IDisposable
 
     private PersistingComponentStateSubscription _persistSub;
 
-    private string CurrentLang =>
+    private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
     public override async Task SetParametersAsync(ParameterView parameters)
@@ -59,5 +59,9 @@ public partial class Blog : IDisposable
         return Task.CompletedTask;
     }
 
-    public void Dispose() => _persistSub.Dispose();
+    public void Dispose()
+    {
+        _persistSub.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

@@ -120,7 +120,7 @@ public partial class AdminBlog : IAsyncDisposable
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -153,7 +153,7 @@ public partial class AdminBlog : IAsyncDisposable
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -162,6 +162,7 @@ public partial class AdminBlog : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }

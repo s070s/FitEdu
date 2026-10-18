@@ -10,13 +10,13 @@ namespace FitEdu.Infrastructure.Seeding;
 /// Seeds example blog articles from BlogSeedData.
 /// Idempotent: skips if any articles already exist.
 /// </summary>
-public static class BlogArticleSeeder
+public static partial class BlogArticleSeeder
 {
     public static async Task SeedAsync(ApplicationDbContext db, ILogger logger)
     {
         if (await db.BlogArticles.AnyAsync())
         {
-            logger.LogInformation("Blog articles already exist. Skipping.");
+            LogAlreadySeeded(logger);
             return;
         }
 
@@ -45,6 +45,14 @@ public static class BlogArticleSeeder
         await db.BlogArticles.AddRangeAsync(articles);
         await db.SaveChangesAsync();
 
-        logger.LogInformation("Seeded {Count} blog articles.", articles.Count);
+        LogSeeded(logger, articles.Count);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Blog articles already exist. Skipping.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} blog articles.")]
+    private static partial void LogSeeded(ILogger logger, int count);
 }

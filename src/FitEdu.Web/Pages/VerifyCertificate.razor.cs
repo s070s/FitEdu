@@ -35,11 +35,15 @@ public partial class VerifyCertificate
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to verify certificate {VerificationId}.", VerificationId);
+            LogVerifyFailed(_logger, ex, VerificationId);
         }
         finally
         {
             _loading = false;
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to verify certificate {VerificationId}.")]
+    private static partial void LogVerifyFailed(ILogger logger, Exception exception, Guid verificationId);
 }

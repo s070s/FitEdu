@@ -77,7 +77,7 @@ public class TestimonialSearchExtensionsTests
 
         var names = await db.Testimonials.ApplySort(null, null).Select(t => t.FullName).ToListAsync();
 
-        names.ShouldBe(new[] { "Early", "Later" });
+        names.ShouldBe(["Early", "Later"]);
     }
 
     [Theory]

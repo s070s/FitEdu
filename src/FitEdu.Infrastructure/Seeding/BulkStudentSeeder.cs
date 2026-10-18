@@ -8,7 +8,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// Generates a large cohort of realistic Greek-named student accounts for development and load-testing.
 /// Idempotent: skips emails that already exist.
 /// </summary>
-public static class BulkStudentSeeder
+public static partial class BulkStudentSeeder
 {
     private static readonly string[] MaleFirstNames =
     [
@@ -62,7 +62,7 @@ public static class BulkStudentSeeder
         var allFirstNames = MaleFirstNames.Concat(FemaleFirstNames).ToArray();
         var rng = new Random(42); // deterministic seed for reproducibility
 
-        logger.LogInformation("BulkStudentSeeder: generating up to {Count} students...", count);
+        LogGenerating(logger, count);
 
         for (var i = 1; i <= count; i++)
         {
@@ -104,19 +104,14 @@ public static class BulkStudentSeeder
             }
             else
             {
-                logger.LogWarning(
-                    "BulkStudentSeeder: failed to create '{Email}': {Errors}",
-                    email,
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                LogCreateFailed(logger, email, string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
             if (seededCount % 1000 == 0 && seededCount > 0)
-                logger.LogInformation("BulkStudentSeeder: {Count}/{Total} students created...", seededCount, count);
+                LogProgress(logger, seededCount, count);
         }
 
-        logger.LogInformation(
-            "BulkStudentSeeder: done — {Seeded} created, {Skipped} skipped (already existed).",
-            seededCount, skippedCount);
+        LogDone(logger, seededCount, skippedCount);
     }
 
     /// <summary>
@@ -149,4 +144,18 @@ public static class BulkStudentSeeder
         }
         return sb.ToString();
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "BulkStudentSeeder: generating up to {Count} students...")]
+    private static partial void LogGenerating(ILogger logger, int count);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "BulkStudentSeeder: failed to create '{Email}': {Errors}")]
+    private static partial void LogCreateFailed(ILogger logger, string email, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "BulkStudentSeeder: {Count}/{Total} students created...")]
+    private static partial void LogProgress(ILogger logger, int count, int total);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "BulkStudentSeeder: done — {Seeded} created, {Skipped} skipped (already existed).")]
+    private static partial void LogDone(ILogger logger, int seeded, int skipped);
 }

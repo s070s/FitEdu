@@ -7,6 +7,7 @@ using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Interfaces;
 
+#pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
 namespace FitEdu.Web.Shared.Components.Chat;
 
 public partial class MessagePane : IDisposable
@@ -63,6 +64,7 @@ public partial class MessagePane : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         CallService.StateChanged -= HandleCallStateChanged;
     }
 

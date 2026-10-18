@@ -70,7 +70,7 @@ public partial class CertificateServiceTests
     public async Task GetOrCreate_New_BuildsAndPersistsRowWithoutRenderingPdf()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var (course, userId) = await SeedCompletedAsync(db, durations: new[] { 30, 30 });
+        var (course, userId) = await SeedCompletedAsync(db, durations: [30, 30]);
 
         var storage = Substitute.For<IFileStorage>();
 
@@ -114,7 +114,7 @@ public partial class CertificateServiceTests
     public async Task EnsurePdf_FirstCall_RendersAndStoresPdf()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var (course, userId) = await SeedCompletedAsync(db, durations: new[] { 30, 30 });
+        var (course, userId) = await SeedCompletedAsync(db, durations: [30, 30]);
 
         byte[]? pdf = null;
         var storage = Substitute.For<IFileStorage>();

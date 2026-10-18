@@ -43,7 +43,7 @@ public static partial class AssistantChunker
         for (var start = 0; start < text.Length; start += step)
         {
             var length = Math.Min(size, text.Length - start);
-            chunks.Add(header + text.Substring(start, length));
+            chunks.Add(string.Concat(header, text.AsSpan(start, length)));
 
             if (start + length >= text.Length)
                 break;

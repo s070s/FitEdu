@@ -13,7 +13,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Admin CRUD operations for categories.
 /// </summary>
-public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategoryService> logger) : IAdminCategoryService
+public partial class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategoryService> logger) : IAdminCategoryService
 {
     public async Task<PagedResult<AdminCategoryDto>> GetCategoriesAsync(
         int page, int pageSize, string sortBy, string sortDir, CancellationToken cancellationToken = default)
@@ -104,9 +104,7 @@ public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategor
 
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation(
-            "Deleted category {CategoryId}, uncategorized {CourseCount} course(s) and {AssessmentCount} assessment(s)",
-            id, courses.Count, assessments.Count);
+        LogCategoryDeleted(logger, id, courses.Count, assessments.Count);
 
         return true;
     }
@@ -124,8 +122,11 @@ public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategor
         if (!string.IsNullOrWhiteSpace(newCategoryName))
         {
             var trimmed = newCategoryName.Trim();
-            var lower = trimmed.ToLower();
+            var lower = trimmed.ToLowerInvariant();
+            // Compared in SQL: EF translates ToLower() to LOWER() but not ToLowerInvariant() or string.Equals(..., StringComparison).
+#pragma warning disable CA1304, CA1311, CA1862
             var existing = await db.Categories.FirstOrDefaultAsync(c => c.NameEn.ToLower() == lower, cancellationToken);
+#pragma warning restore CA1304, CA1311, CA1862
             if (existing is not null)
                 return existing.Id;
 
@@ -145,12 +146,19 @@ public class AdminCategoryService(IApplicationDbContext db, ILogger<AdminCategor
 
     private Task<bool> NameExistsAsync(string name, Guid? excludeId, CancellationToken cancellationToken)
     {
-        var lower = name.ToLower();
+        var lower = name.ToLowerInvariant();
+        // Compared in SQL: EF translates ToLower() to LOWER() but not ToLowerInvariant() or string.Equals(..., StringComparison).
+#pragma warning disable CA1304, CA1311, CA1862
         return excludeId is { } id
             ? db.Categories.AnyAsync(c => c.Id != id && c.NameEn.ToLower() == lower, cancellationToken)
             : db.Categories.AnyAsync(c => c.NameEn.ToLower() == lower, cancellationToken);
+#pragma warning restore CA1304, CA1311, CA1862
     }
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Deleted category {CategoryId}, uncategorized {CourseCount} course(s) and {AssessmentCount} assessment(s)")]
+    private static partial void LogCategoryDeleted(ILogger logger, Guid categoryId, int courseCount, int assessmentCount);
 }

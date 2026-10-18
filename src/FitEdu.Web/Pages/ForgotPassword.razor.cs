@@ -44,7 +44,7 @@ public partial class ForgotPassword
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Forgot-password request failed.");
+            LogForgotPasswordFailed(Logger, ex);
             errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
         finally
@@ -81,9 +81,15 @@ public partial class ForgotPassword
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Dev password reset failed.");
+            LogDevPasswordResetFailed(Logger, ex);
             errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
     }
 
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Forgot-password request failed.")]
+    private static partial void LogForgotPasswordFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Dev password reset failed.")]
+    private static partial void LogDevPasswordResetFailed(ILogger logger, Exception exception);
 }

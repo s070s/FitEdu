@@ -24,7 +24,7 @@ namespace FitEdu.Web.Controllers;
 [Tags("Certificates")]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
-public class CertificatesController : ControllerBase
+public partial class CertificatesController : ControllerBase
 {
     private readonly IApplicationDbContext _db;
     private readonly ICertificateService _certificateService;
@@ -93,8 +93,7 @@ public class CertificatesController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Certificate issuance failed for user {UserId} on course {CourseId}.",
-                userId, courseId);
+            LogCertificateIssuanceFailed(_logger, ex, userId, courseId);
             return Problem(detail: ex.Message, statusCode: StatusCodes.Status400BadRequest);
         }
     }
@@ -162,4 +161,8 @@ public class CertificatesController : ControllerBase
 
         return Ok(certificate.ToVerificationDto(isEl));
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Certificate issuance failed for user {UserId} on course {CourseId}.")]
+    private static partial void LogCertificateIssuanceFailed(ILogger logger, Exception exception, string userId, Guid courseId);
 }

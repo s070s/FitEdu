@@ -127,7 +127,7 @@ public class AdminModulesController : ControllerBase
             return NotFound();
 
         // Remove lesson completions for all lessons in this module before deleting.
-        if (module.Lessons.Any())
+        if (module.Lessons.Count > 0)
         {
             var lessonIds = module.Lessons.Select(l => l.Id).ToList();
             var completions = await _db.LessonCompletions

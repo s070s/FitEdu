@@ -84,7 +84,7 @@ public static class InfrastructureEndpointsExtensions
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Auth completion: token invalid or expired.");
+                StartupLog.AuthTokenInvalid(logger, ex);
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
@@ -95,12 +95,12 @@ public static class InfrastructureEndpointsExtensions
             }
             catch (JsonException ex)
             {
-                logger.LogWarning(ex, "Auth completion: token had unexpected format.");
+                StartupLog.AuthTokenBadFormat(logger, ex);
                 return Results.LocalRedirect("/login?error=session_expired");
             }
             if (decoded is null)
             {
-                logger.LogWarning("Auth completion: token had unexpected format.");
+                StartupLog.AuthTokenEmpty(logger);
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
@@ -114,14 +114,14 @@ public static class InfrastructureEndpointsExtensions
             var user = await userManager.FindByIdAsync(userId);
             if (user is null)
             {
-                logger.LogWarning("Auth completion: user {UserId} not found.", userId);
+                StartupLog.AuthUserNotFound(logger, userId);
                 return Results.LocalRedirect("/login");
             }
 
             // Reject if the user changed their password/security stamp since the token was issued.
             if (user.SecurityStamp != tokenStamp)
             {
-                logger.LogWarning("Auth completion: security stamp mismatch for user {UserId} — token invalidated.", userId);
+                StartupLog.AuthStampMismatch(logger, userId);
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
@@ -133,7 +133,7 @@ public static class InfrastructureEndpointsExtensions
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Auth completion: GetUserTierAsync failed for {UserId} — defaulting to Free.", userId);
+                StartupLog.AuthTierLookupFailed(logger, ex, userId);
                 tier = SubscriptionTier.Free;
             }
 
@@ -175,9 +175,9 @@ public static class InfrastructureEndpointsExtensions
                 principal,
                 authProperties);
 
-            logger.LogInformation("User {UserId} signed in via /auth/complete.", userId);
+            StartupLog.AuthSignedIn(logger, userId);
             if (!string.IsNullOrEmpty(adminBackupId))
-                logger.LogWarning("Admin {AdminId} is impersonating user {UserId}.", adminBackupId, userId);
+                StartupLog.AuthImpersonating(logger, adminBackupId, userId);
 
             var redirect = "/";
             if (!string.IsNullOrEmpty(returnUrl))

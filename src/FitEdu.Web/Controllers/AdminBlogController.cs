@@ -133,7 +133,7 @@ public class AdminBlogController : ControllerBase
         if (!string.IsNullOrEmpty(article.CoverImageUrl) &&
              !article.CoverImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
-            await _fileStorage.DeleteFileAsync(article.CoverImageUrl);
+            await _fileStorage.DeleteFileAsync(article.CoverImageUrl, cancellationToken);
         }
 
         using var stream = file.OpenReadStream();

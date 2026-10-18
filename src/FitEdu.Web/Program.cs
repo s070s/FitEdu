@@ -59,7 +59,7 @@ else
             // reaches the file sink, not only the framework's console provider.
             var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
             var exLogger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            exLogger.LogError(error, "Unhandled exception. TraceId: {TraceId}", context.TraceIdentifier);
+            StartupLog.UnhandledException(exLogger, error, context.TraceIdentifier);
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             var problemDetailsService = context.RequestServices.GetRequiredService<IProblemDetailsService>();
@@ -145,7 +145,7 @@ app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("FitEdu.Web started. Logs: {LogsPath}", logsDirectory);
+StartupLog.Started(logger, logsDirectory);
 
 app.Run();
 

@@ -79,7 +79,7 @@ public class CourseServiceTests
         var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en");
 
         result.TotalCount.ShouldBe(2);
-        result.Items.Select(i => i.Title).ShouldBe(new[] { "Alpha", "Beta" });
+        result.Items.Select(i => i.Title).ShouldBe(["Alpha", "Beta"]);
     }
 
     [Fact]
@@ -182,7 +182,7 @@ public class CourseServiceTests
         var result = await svc.GetPublishedCoursesAsync(UserId, 1, 10, "en", search: "financial");
 
         result.TotalCount.ShouldBe(2);
-        result.Items.Select(i => i.Title).ShouldBe(new[] { "Financial Planning", "Other" }, ignoreOrder: true);
+        result.Items.Select(i => i.Title).ShouldBe(["Financial Planning", "Other"], ignoreOrder: true);
     }
 
     [Fact]

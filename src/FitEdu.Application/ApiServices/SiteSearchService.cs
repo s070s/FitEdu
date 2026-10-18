@@ -8,7 +8,7 @@ using FitEdu.Domain.Enums;
 namespace FitEdu.Application.ApiServices;
 
 /// <inheritdoc cref="ISiteSearchService"/>
-public class SiteSearchService(
+public partial class SiteSearchService(
     IApplicationDbContext db,
     IAssistantRetrievalService retrieval,
     AssistantRuntimeState assistantState,
@@ -34,7 +34,7 @@ public class SiteSearchService(
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "SiteSearchService: semantic search failed — falling back to title search.");
+                LogSemanticSearchFailed(logger, ex);
             }
         }
 
@@ -137,4 +137,8 @@ public class SiteSearchService(
 
     private static string Truncate(string text) =>
         text.Length <= MaxSnippetLength ? text : text[..MaxSnippetLength] + "…";
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "SiteSearchService: semantic search failed — falling back to title search.")]
+    private static partial void LogSemanticSearchFailed(ILogger logger, Exception exception);
 }

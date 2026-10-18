@@ -1,9 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace FitEdu.Domain.Entities;
 
 /// <summary>
 /// Groups Lessons within a Course. Ordered via SortOrder.
 /// Belongs to exactly one Course.
 /// </summary>
+[SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Module is the established domain name of a course section; renaming would change the public API and database mapping.")]
 public class Module : AuditableEntity
 {
     public Guid Id { get; set; }

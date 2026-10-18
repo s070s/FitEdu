@@ -140,7 +140,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             builder.Entity<AssessmentSubmission>(entity =>
             {
                 entity.Property(s => s.AnswersJson).HasConversion(_sensitiveDataConverter);
-                entity.Property(s => s.SummaryJson).HasConversion(_sensitiveDataConverter);
+                // SummaryJson is nullable; EF never passes null through a converter, so the same
+                // converter instance is safe for it (the cast only changes the nullability annotation).
+                entity.Property(s => s.SummaryJson).HasConversion((ValueConverter<string?, string?>)(object)_sensitiveDataConverter);
             });
         }
 

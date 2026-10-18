@@ -11,7 +11,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Implements ITestimonialService using ApplicationDbContext.
 /// </summary>
-public class TestimonialService : ITestimonialService
+public partial class TestimonialService : ITestimonialService
 {
     private readonly IApplicationDbContext _db;
     private readonly ILogger<TestimonialService> _logger;
@@ -97,7 +97,7 @@ public class TestimonialService : ITestimonialService
         _db.Testimonials.Add(testimonial);
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Testimonial created: {Id} '{FullName}'.", testimonial.Id, testimonial.FullName);
+        LogTestimonialCreated(_logger, testimonial.Id, testimonial.FullName);
         return ToAdminDto(testimonial);
     }
 
@@ -122,7 +122,7 @@ public class TestimonialService : ITestimonialService
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Testimonial updated: {Id} '{FullName}'.", testimonial.Id, testimonial.FullName);
+        LogTestimonialUpdated(_logger, testimonial.Id, testimonial.FullName);
         return ToAdminDto(testimonial);
     }
 
@@ -234,7 +234,7 @@ public class TestimonialService : ITestimonialService
         _db.Testimonials.Remove(testimonial);
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Testimonial deleted: {Id}.", id);
+        LogTestimonialDeleted(_logger, id);
         return true;
     }
 
@@ -261,4 +261,14 @@ public class TestimonialService : ITestimonialService
             RoleOrTitle = Localized.Pick(isEl, t.RoleOrTitle, t.RoleOrTitleEl),
             QuoteText = Localized.Pick(isEl, t.QuoteText, t.QuoteTextEl)
         };
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Testimonial created: {Id} '{FullName}'.")]
+    private static partial void LogTestimonialCreated(ILogger logger, Guid id, string fullName);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Testimonial updated: {Id} '{FullName}'.")]
+    private static partial void LogTestimonialUpdated(ILogger logger, Guid id, string fullName);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Testimonial deleted: {Id}.")]
+    private static partial void LogTestimonialDeleted(ILogger logger, Guid id);
 }

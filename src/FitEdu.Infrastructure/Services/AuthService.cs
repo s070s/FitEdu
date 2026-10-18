@@ -33,7 +33,7 @@ namespace FitEdu.Infrastructure.Services;
 /// request (response not yet started), decodes the token, performs the DB lookup to
 /// rebuild the principal, calls SignInAsync, and redirects the browser.
 /// </summary>
-public class AuthService : IAuthService
+public partial class AuthService : IAuthService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -116,7 +116,7 @@ public class AuthService : IAuthService
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
         {
-            _logger.LogWarning("Login attempt for non-existent user: {Email}", request.Email);
+            LogLoginUnknownUser(_logger, request.Email);
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
         }
 
@@ -125,7 +125,7 @@ public class AuthService : IAuthService
 
         if (!user.IsEnabled)
         {
-            _logger.LogWarning("Login blocked for disabled user: {Email}", request.Email);
+            LogLoginDisabledUser(_logger, request.Email);
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport };
         }
 
@@ -142,7 +142,7 @@ public class AuthService : IAuthService
 
         var stamp = await _userManager.GetSecurityStampAsync(user);
         var token = CreateSignInToken(userId: user.Id, adminBackupId: null, deleteAdminBackup: false, securityStamp: stamp, rememberMe: request.RememberMe);
-        _logger.LogInformation("User {Email} validated — sign-in token issued.", user.Email);
+        LogSignInTokenIssued(_logger, user.Email);
         return new AuthResponseDto { Success = true, Token = token };
     }
 
@@ -163,8 +163,7 @@ public class AuthService : IAuthService
         var createResult = await _userManager.CreateAsync(user, request.Password);
         if (!createResult.Succeeded)
         {
-            _logger.LogWarning("Registration failed for {Email}: {Errors}",
-                request.Email, string.Join(", ", createResult.Errors.Select(e => e.Description)));
+            LogRegistrationFailed(_logger, request.Email, string.Join(", ", createResult.Errors.Select(e => e.Description)));
             return new AuthResponseDto
             {
                 Success = false,
@@ -182,7 +181,7 @@ public class AuthService : IAuthService
         // For production: inject IEmailService, send the confirmation link here, and consolidate
         // with the API path (AuthController.Register already emails) so there is a single flow.
         _ = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        _logger.LogInformation("User {Email} registered.", request.Email);
+        LogUserRegistered(_logger, request.Email);
 
         return new AuthResponseDto
         {
@@ -214,7 +213,7 @@ public class AuthService : IAuthService
         var stamp = await _userManager.GetSecurityStampAsync(target);
         // Impersonation isn't checkbox-driven — preserve the admin's existing persistent session behavior.
         var token = CreateSignInToken(userId: target.Id, adminBackupId: adminId, deleteAdminBackup: false, securityStamp: stamp, rememberMe: true);
-        _logger.LogInformation("Admin {AdminId} issued impersonation token for user {UserId}.", adminId, userId);
+        LogImpersonationTokenIssued(_logger, adminId, userId);
         return new AuthResponseDto { Success = true, Token = token };
     }
 
@@ -235,20 +234,20 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "ExitImpersonation: admin backup cookie failed integrity check — signing out.");
+            LogBackupCookieIntegrityFailed(_logger, ex);
             return "/auth/signout?returnUrl=%2F";
         }
 
         var admin = await _userManager.FindByIdAsync(adminIdCookieValue);
         if (admin is null)
         {
-            _logger.LogWarning("ExitImpersonation: admin backup cookie held an invalid user ID — signing out.");
+            LogBackupCookieInvalidUserId(_logger);
             return "/auth/signout?returnUrl=%2F";
         }
 
         var stamp = await _userManager.GetSecurityStampAsync(admin);
         var token = CreateSignInToken(userId: admin.Id, adminBackupId: null, deleteAdminBackup: true, securityStamp: stamp, rememberMe: true);
-        _logger.LogInformation("Admin {AdminId} exiting impersonation — token issued.", admin.Id);
+        LogExitImpersonationTokenIssued(_logger, admin.Id);
         return $"/auth/complete?ticket={Uri.EscapeDataString(token)}&returnUrl=%2Fadmin%2Fusers";
     }
 
@@ -314,7 +313,7 @@ public class AuthService : IAuthService
         // on the ForgotPassword page (/api/auth/dev/reset-password). For production: send the
         // reset email here and add a /reset-password page.
         _ = await _userManager.GeneratePasswordResetTokenAsync(user);
-        _logger.LogInformation("Password reset requested for {Email}.", request.Email);
+        LogPasswordResetRequested(_logger, request.Email);
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
     }
@@ -342,7 +341,7 @@ public class AuthService : IAuthService
             token.RevokedAt = DateTimeOffset.UtcNow;
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("Password reset for {Email}", request.Email);
+        LogPasswordReset(_logger, request.Email);
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetSuccessful };
     }
 
@@ -373,4 +372,39 @@ public class AuthService : IAuthService
         var payload = JsonSerializer.Serialize(ticket);
         return _protector.Protect(payload, lifetime: TimeSpan.FromMinutes(5));
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for non-existent user: {Email}")]
+    private static partial void LogLoginUnknownUser(ILogger logger, string? email);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for disabled user: {Email}")]
+    private static partial void LogLoginDisabledUser(ILogger logger, string? email);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {Email} validated — sign-in token issued.")]
+    private static partial void LogSignInTokenIssued(ILogger logger, string? email);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed for {Email}: {Errors}")]
+    private static partial void LogRegistrationFailed(ILogger logger, string? email, string errors);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {Email} registered.")]
+    private static partial void LogUserRegistered(ILogger logger, string? email);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} issued impersonation token for user {UserId}.")]
+    private static partial void LogImpersonationTokenIssued(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "ExitImpersonation: admin backup cookie failed integrity check — signing out.")]
+    private static partial void LogBackupCookieIntegrityFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "ExitImpersonation: admin backup cookie held an invalid user ID — signing out.")]
+    private static partial void LogBackupCookieInvalidUserId(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} exiting impersonation — token issued.")]
+    private static partial void LogExitImpersonationTokenIssued(ILogger logger, string adminId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset requested for {Email}.")]
+    private static partial void LogPasswordResetRequested(ILogger logger, string? email);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for {Email}")]
+    private static partial void LogPasswordReset(ILogger logger, string? email);
 }

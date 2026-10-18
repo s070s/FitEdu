@@ -115,6 +115,7 @@ public class PresenceService : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         _callService.PresenceChanged -= HandlePresenceChanged;
         _callService.StateChanged -= HandleStateChanged;
     }

@@ -36,7 +36,7 @@ public partial class AvatarDropdown : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error refreshing avatar after upload.");
+            LogAvatarUploadRefreshFailed(_logger, ex);
         }
     }
 
@@ -63,7 +63,7 @@ public partial class AvatarDropdown : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error refreshing avatar state.");
+            LogAvatarStateRefreshFailed(_logger, ex);
         }
     }
 
@@ -118,7 +118,15 @@ public partial class AvatarDropdown : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
         AvatarNotifier.AvatarChanged -= HandleAvatarChanged;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error refreshing avatar after upload.")]
+    private static partial void LogAvatarUploadRefreshFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error refreshing avatar state.")]
+    private static partial void LogAvatarStateRefreshFailed(ILogger logger, Exception exception);
 }

@@ -40,7 +40,8 @@ jobs:
         run: dotnet restore FitEdu.sln --locked-mode
 
       - name: Build
-        run: dotnet build FitEdu.sln -c Release --no-restore
+        # BUILD-6: the build is warning-free (2026-10-18), so any new compiler or analyzer warning fails CI.
+        run: dotnet build FitEdu.sln -c Release --no-restore -warnaserror
 
       # GOV-2: .editorconfig style rules are advisory in local builds but a hard gate here.
       # A file that drifts from the configured style (e.g. a block-scoped namespace where the

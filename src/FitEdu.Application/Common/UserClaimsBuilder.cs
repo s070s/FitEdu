@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
@@ -30,9 +31,9 @@ public static class UserClaimsBuilder
             new(ClaimTypes.Email, user.Email!),
             new("firstName", user.FirstName),
             new("lastName", user.LastName),
-            new("status", ((int)user.Status).ToString()),
+            new("status", ((int)user.Status).ToString(CultureInfo.InvariantCulture)),
             new("isEnabled", user.IsEnabled.ToString().ToLowerInvariant()),
-            new("subscriptionTier", ((int)tier).ToString()),
+            new("subscriptionTier", ((int)tier).ToString(CultureInfo.InvariantCulture)),
             new("securityStamp", user.SecurityStamp ?? string.Empty)
         };
 

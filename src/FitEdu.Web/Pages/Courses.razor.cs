@@ -227,7 +227,7 @@ public partial class Courses : IDisposable
         catch (Exception ex)
         {
             _categories = [];
-            _logger.LogError(ex, "Failed to load course categories.");
+            LogCategoriesLoadFailed(_logger, ex);
         }
     }
 
@@ -250,7 +250,7 @@ public partial class Courses : IDisposable
         {
             if (requestNumber == _latestRequestNumber)
                 _error = ErrorMessagesRes.FailedToLoadCourses;
-            _logger.LogError(ex, "Failed to load courses.");
+            LogCoursesLoadFailed(_logger, ex);
         }
         finally
         {
@@ -358,5 +358,16 @@ public partial class Courses : IDisposable
         _searchCts = null;
     }
 
-    public void Dispose() => CancelPendingSearch();
+    public void Dispose()
+    {
+        CancelPendingSearch();
+        GC.SuppressFinalize(this);
+    }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load course categories.")]
+    private static partial void LogCategoriesLoadFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load courses.")]
+    private static partial void LogCoursesLoadFailed(ILogger logger, Exception exception);
 }

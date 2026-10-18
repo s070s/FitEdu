@@ -42,6 +42,32 @@ public class AdminCategoryServiceTests
     }
 
     [Fact]
+    public async Task CreateCategory_DuplicateNameCaseInsensitive_OnRelationalDatabase_ReturnsConflict()
+    {
+        // The InMemory provider runs any C#, so only a relational provider proves the name check translates to SQL.
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Categories.Add(new Category { Id = Guid.NewGuid(), NameEn = "Strength" });
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).CreateCategoryAsync(new SaveCategoryRequest("STRENGTH", null));
+
+        result.StatusCode.ShouldBe(409);
+    }
+
+    [Fact]
+    public async Task ResolveCategory_ExistingNameAnyCase_OnRelationalDatabase_ReturnsItsId()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var strength = new Category { Id = Guid.NewGuid(), NameEn = "Strength" };
+        db.Categories.Add(strength);
+        await db.SaveChangesAsync();
+
+        var resolvedId = await AdminCategoryService.ResolveCategoryAsync(db, null, "  strength ");
+
+        resolvedId.ShouldBe(strength.Id);
+    }
+
+    [Fact]
     public async Task UpdateCategory_RenamesFields()
     {
         await using var db = DbContextFactory.CreateInMemory();

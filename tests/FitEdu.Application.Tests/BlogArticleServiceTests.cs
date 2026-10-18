@@ -52,7 +52,7 @@ public class BlogArticleServiceTests
 
         var summaries = await NewService(db).GetPublishedSummariesAsync(2);
 
-        summaries.Select(s => s.Title).ShouldBe(new[] { "B", "C" });
+        summaries.Select(s => s.Title).ShouldBe(["B", "C"]);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class BlogArticleServiceTests
 
         var result = await NewService(db).GetAllForAdminAsync(1, 10, "alpha", "createdat", "desc");
 
-        result.Items.Select(i => i.Slug).ShouldBe(new[] { "alpha-post" });
+        result.Items.Select(i => i.Slug).ShouldBe(["alpha-post"]);
     }
 
     // ---- create --------------------------------------------------------------
@@ -141,9 +141,9 @@ public class BlogArticleServiceTests
     {
         await using var db = DbContextFactory.CreateInMemory();
 
-        var dto = await NewService(db).CreateAsync(Request(tags: new[] { "x", "y" }));
+        var dto = await NewService(db).CreateAsync(Request(tags: ["x", "y"]));
 
-        dto!.Tags.ShouldBe(new[] { "x", "y" });
+        dto!.Tags.ShouldBe(["x", "y"]);
     }
 
     [Fact]

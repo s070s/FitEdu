@@ -15,7 +15,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// <summary>
 /// Issues, revokes, and regenerates PDF certificates for completed course enrollments.
 /// </summary>
-public class CertificateService : ICertificateService
+public partial class CertificateService : ICertificateService
 {
     private readonly IApplicationDbContext _db;
     private readonly IFileStorage _storage;
@@ -146,9 +146,7 @@ public class CertificateService : ICertificateService
             throw; // Unexpected: unique violation but no row found — re-throw the original exception.
         }
 
-        _logger.LogInformation(
-            "Certificate {CertificateId} issued for user {UserId} on course {CourseId}.",
-            certificate.Id, userId, courseId);
+        LogCertificateIssued(_logger, certificate.Id, userId, courseId);
 
         await _notifications.DispatchAsync(
             userId,
@@ -183,9 +181,8 @@ public class CertificateService : ICertificateService
             certificate.PdfPath = newPath;
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Certificate {CertificateId} PDF rendered on first download in {Language}.",
-            certificate.Id, LanguageCode(culture));
+        var languageCode = LanguageCode(culture);
+        LogPdfRendered(_logger, certificate.Id, languageCode);
 
         return certificate;
     }
@@ -204,7 +201,7 @@ public class CertificateService : ICertificateService
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Certificate {CertificateId} revoked.", certificateId);
+        LogCertificateRevoked(_logger, certificateId);
     }
 
     public async Task RegenerateAsync(Guid certificateId, CancellationToken cancellationToken = default)
@@ -220,7 +217,7 @@ public class CertificateService : ICertificateService
         certificate.PdfPathEl = null;
         await _db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Certificate {CertificateId} PDFs cleared for regeneration.", certificateId);
+        LogPdfsCleared(_logger, certificateId);
     }
 
     private async Task DeleteStoredFileAsync(string? path, CancellationToken cancellationToken)
@@ -360,4 +357,18 @@ public class CertificateService : ICertificateService
 
     private static string Format(string key, CultureInfo culture, params object[] values) =>
         string.Format(culture, Label(key, culture), values);
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Certificate {CertificateId} issued for user {UserId} on course {CourseId}.")]
+    private static partial void LogCertificateIssued(ILogger logger, Guid certificateId, string userId, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Certificate {CertificateId} PDF rendered on first download in {Language}.")]
+    private static partial void LogPdfRendered(ILogger logger, Guid certificateId, string language);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Certificate {CertificateId} revoked.")]
+    private static partial void LogCertificateRevoked(ILogger logger, Guid certificateId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Certificate {CertificateId} PDFs cleared for regeneration.")]
+    private static partial void LogPdfsCleared(ILogger logger, Guid certificateId);
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using FitEdu.Application.ApiInterfaces;
@@ -106,7 +107,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             .Take(MaxListItems)
             .Select(e => new EnrollmentInfo(
                 isEl ? (e.Course.TitleEl ?? e.Course.TitleEn) : e.Course.TitleEn,
-                e.EnrolledAt.ToString("yyyy-MM-dd")))
+                e.EnrolledAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)))
             .ToListAsync(cancellationToken);
     }
 
@@ -135,7 +136,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
             .Take(MaxSearchResults)
             .Select(s => new AssessmentResultInfo(
                 isEl ? (s.AssessmentDefinition.TitleEl ?? s.AssessmentDefinition.TitleEn) : s.AssessmentDefinition.TitleEn,
-                s.SubmittedAt.ToString("yyyy-MM-dd")))
+                s.SubmittedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)))
             .ToListAsync(cancellationToken);
     }
 
@@ -154,7 +155,7 @@ public class AssistantTools(IApplicationDbContext db, IExerciseService exerciseS
 
         return active is null
             ? new SubscriptionInfo("Free", nameof(SubscriptionTier.Free), null)
-            : new SubscriptionInfo(active.Name, active.Tier.ToString(), active.ExpiresAt?.ToString("yyyy-MM-dd"));
+            : new SubscriptionInfo(active.Name, active.Tier.ToString(), active.ExpiresAt?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
     }
 
     public async Task<List<CourseHit>> SearchCoursesAsync(string query, int? maxResults, bool isEl, CancellationToken cancellationToken = default)

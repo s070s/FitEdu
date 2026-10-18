@@ -14,7 +14,7 @@ namespace FitEdu.Application.ApiServices;
 /// <summary>
 /// Admin CRUD operations for courses, plus lesson create/update (which carry the lesson's exercises).
 /// </summary>
-public class AdminCourseService(
+public partial class AdminCourseService(
     IApplicationDbContext db,
     ILogger<AdminCourseService> logger,
     IHtmlSanitizer sanitizer) : IAdminCourseService
@@ -193,9 +193,7 @@ public class AdminCourseService(
 
         await db.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation(
-            "Admin {UserId} soft-deleted course {CourseId} with {Enrollments} enrollment(s), {Modules} module(s), {Lessons} lesson(s)",
-            userId, id, course.Enrollments.Count, moduleCount, lessonCount);
+        LogCourseSoftDeleted(logger, userId, id, course.Enrollments.Count, moduleCount, lessonCount);
 
         return true;
     }
@@ -454,4 +452,8 @@ public class AdminCourseService(
         var reason = isUnpublished ? ErrorMessagesRes.Exercise_NotPublished : ErrorMessagesRes.Exercise_UnknownSlug;
         return $"{reason}: '{slug}'";
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {UserId} soft-deleted course {CourseId} with {Enrollments} enrollment(s), {Modules} module(s), {Lessons} lesson(s)")]
+    private static partial void LogCourseSoftDeleted(ILogger logger, string userId, Guid courseId, int enrollments, int modules, int lessons);
 }

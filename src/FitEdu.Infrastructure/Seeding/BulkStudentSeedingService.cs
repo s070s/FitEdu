@@ -8,7 +8,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// block application startup. The seeder only runs in Development when
 /// SeedData:Enabled is true.
 /// </summary>
-public sealed class BulkStudentSeedingService : BackgroundService
+public sealed partial class BulkStudentSeedingService : BackgroundService
 {
     private readonly IServiceProvider _services;
     private readonly IConfiguration _config;
@@ -45,7 +45,7 @@ public sealed class BulkStudentSeedingService : BackgroundService
             var studentPassword = _config["SeedData:StudentPassword"];
             if (string.IsNullOrWhiteSpace(studentPassword))
             {
-                _logger.LogError("BulkStudentSeeder: SeedData:StudentPassword is not set. Skipping bulk seed.");
+                LogPasswordNotSet(_logger);
                 return;
             }
 
@@ -59,7 +59,15 @@ public sealed class BulkStudentSeedingService : BackgroundService
         {
             // AVAIL-6 / REL-6: a bug in this Development-only seeding path must not stop the whole
             // generic host (which also owns Kestrel). Log and let the app keep serving.
-            _logger.LogError(ex, "BulkStudentSeeder: bulk student seeding failed.");
+            LogSeedingFailed(_logger, ex);
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "BulkStudentSeeder: SeedData:StudentPassword is not set. Skipping bulk seed.")]
+    private static partial void LogPasswordNotSet(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "BulkStudentSeeder: bulk student seeding failed.")]
+    private static partial void LogSeedingFailed(ILogger logger, Exception exception);
 }

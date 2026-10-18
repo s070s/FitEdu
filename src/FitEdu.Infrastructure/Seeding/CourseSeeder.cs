@@ -10,7 +10,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// <summary>
 /// Seeds courses from JSON files located in the Shared project's JSON folder.
 /// </summary>
-public static class CourseSeeder
+public static partial class CourseSeeder
 {
     private const string EmptyLibraryHint = " The exercise library is empty: check SeedData:JsonPaths:Exercises.";
 
@@ -31,7 +31,7 @@ public static class CourseSeeder
     {
         if (await db.Courses.AnyAsync(cancellationToken))
         {
-            logger.LogInformation("Courses already exist; skipping seed.");
+            LogAlreadySeeded(logger);
             return;
         }
 
@@ -40,7 +40,7 @@ public static class CourseSeeder
 
         if (!Directory.Exists(resolvedPath))
         {
-            logger.LogWarning("JSON seed folder not found: {Path}", resolvedPath);
+            LogFolderNotFound(logger, resolvedPath);
             return;
         }
 
@@ -48,7 +48,7 @@ public static class CourseSeeder
 
         if (jsonFiles.Length == 0)
         {
-            logger.LogWarning("No JSON seed files found in: {Path}", jsonFolderPath);
+            LogNoFilesFound(logger, jsonFolderPath);
             return;
         }
 
@@ -65,12 +65,12 @@ public static class CourseSeeder
             // silently dropping the course. Other failures, such as malformed JSON, skip the file.
             catch (Exception ex) when (ex is not SeedContentException)
             {
-                logger.LogError(ex, "Failed to seed course from file: {FilePath}", filePath);
+                LogSeedFileFailed(logger, ex, filePath);
             }
         }
 
         await db.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Seeded {Count} course(s) from JSON files.", jsonFiles.Length);
+        LogSeeded(logger, jsonFiles.Length);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public static class CourseSeeder
 
         if (dto is null)
         {
-            logger.LogWarning("Failed to deserialize course from: {FilePath}", filePath);
+            LogDeserializeFailed(logger, filePath);
             return;
         }
 
@@ -107,8 +107,8 @@ public static class CourseSeeder
         course.CategoryId = CategorySeedHelper.ResolveCategoryId(db, categoryCache, dto.Category, dto.CategoryEl);
         db.Courses.Add(course);
 
-        logger.LogInformation("Loaded course '{Title}' from {FileName}",
-            course.TitleEn, Path.GetFileName(filePath));
+        var fileName = Path.GetFileName(filePath);
+        LogCourseLoaded(logger, course.TitleEn, fileName);
     }
 
     private static Course MapToCourse(CourseSeedDto dto, Dictionary<string, Guid> exerciseIdsBySlug)
@@ -232,4 +232,27 @@ public static class CourseSeeder
             NotesEl = dto.NotesEl
         };
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Courses already exist; skipping seed.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "JSON seed folder not found: {Path}")]
+    private static partial void LogFolderNotFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "No JSON seed files found in: {Path}")]
+    private static partial void LogNoFilesFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to seed course from file: {FilePath}")]
+    private static partial void LogSeedFileFailed(ILogger logger, Exception exception, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} course(s) from JSON files.")]
+    private static partial void LogSeeded(ILogger logger, int count);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to deserialize course from: {FilePath}")]
+    private static partial void LogDeserializeFailed(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Loaded course '{Title}' from {FileName}")]
+    private static partial void LogCourseLoaded(ILogger logger, string title, string fileName);
 }

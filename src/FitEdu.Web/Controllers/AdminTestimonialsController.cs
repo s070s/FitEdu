@@ -16,7 +16,7 @@ namespace FitEdu.Web.Controllers;
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
-public class AdminTestimonialsController : ControllerBase
+public partial class AdminTestimonialsController : ControllerBase
 {
     private readonly ITestimonialService _testimonials;
     private readonly IFileStorage _fileStorage;
@@ -123,14 +123,14 @@ public class AdminTestimonialsController : ControllerBase
 
         // Delete old avatar if it was an uploaded file
         if (!string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath);
+            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
 
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "testimonials/avatars", cancellationToken: cancellationToken);
 
         await _testimonials.SetAvatarPathAsync(id, path, cancellationToken);
 
-        _logger.LogInformation("Avatar uploaded for testimonial {Id}: {Path}", id, path);
+        LogAvatarUploaded(_logger, id, path);
         return Ok(new AvatarUploadResultDto(path));
     }
 
@@ -144,7 +144,7 @@ public class AdminTestimonialsController : ControllerBase
             return NotFound();
 
         if (!string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath);
+            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
 
         var success = await _testimonials.RemoveAvatarAsync(id, cancellationToken);
         return success ? NoContent() : NotFound();
@@ -158,9 +158,13 @@ public class AdminTestimonialsController : ControllerBase
         // Delete associated avatar file if present
         var existing = await _testimonials.GetByIdAsync(id, cancellationToken);
         if (existing is not null && !string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath);
+            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
 
         var success = await _testimonials.DeleteAsync(id, cancellationToken);
         return success ? NoContent() : NotFound();
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Information, Message = "Avatar uploaded for testimonial {Id}: {Path}")]
+    private static partial void LogAvatarUploaded(ILogger logger, Guid id, string path);
 }

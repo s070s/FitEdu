@@ -21,7 +21,7 @@ public partial class SubscriptionSuccess
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load subscription status on success page.");
+            LogStatusLoadFailed(_logger, ex);
         }
         finally
         {
@@ -31,4 +31,8 @@ public partial class SubscriptionSuccess
 
     private void GoToCourses() => Navigation.NavigateTo("/courses");
     private void GoToPricing() => Navigation.NavigateTo("/pricing");
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load subscription status on success page.")]
+    private static partial void LogStatusLoadFailed(ILogger logger, Exception exception);
 }

@@ -14,7 +14,7 @@ namespace FitEdu.Web.Services;
 ///
 /// Uses a plain Task.Delay loop, matching <see cref="SubscriptionExpirySweeper"/>'s convention.
 /// </summary>
-public sealed class RefreshTokenPurgeService : BackgroundService
+public sealed partial class RefreshTokenPurgeService : BackgroundService
 {
     private static readonly TimeSpan PollInterval = TimeSpan.FromHours(6);
 
@@ -37,7 +37,7 @@ public sealed class RefreshTokenPurgeService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "RefreshTokenPurgeService: Error during purge.");
+                LogPurgeFailed(_logger, ex);
             }
 
             try
@@ -69,6 +69,13 @@ public sealed class RefreshTokenPurgeService : BackgroundService
         db.RefreshTokens.RemoveRange(expired);
         await db.SaveChangesAsync(stoppingToken);
 
-        _logger.LogInformation("RefreshTokenPurgeService: Purged {Count} expired refresh token(s).", expired.Count);
+        LogTokensPurged(_logger, expired.Count);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "RefreshTokenPurgeService: Error during purge.")]
+    private static partial void LogPurgeFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "RefreshTokenPurgeService: Purged {Count} expired refresh token(s).")]
+    private static partial void LogTokensPurged(ILogger logger, int count);
 }

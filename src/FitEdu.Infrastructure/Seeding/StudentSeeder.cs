@@ -8,7 +8,7 @@ namespace FitEdu.Infrastructure.Seeding;
 /// <summary>
 /// Seeds student users from JSON files for development and testing purposes.
 /// </summary>
-public static class StudentSeeder
+public static partial class StudentSeeder
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -29,7 +29,7 @@ public static class StudentSeeder
 
         if (!Directory.Exists(resolvedPath))
         {
-            logger.LogWarning("Student JSON seed folder not found: {Path}", resolvedPath);
+            LogFolderNotFound(logger, resolvedPath);
             return;
         }
 
@@ -37,14 +37,14 @@ public static class StudentSeeder
 
         if (jsonFiles.Length == 0)
         {
-            logger.LogWarning("No student JSON seed files found in: {Path}", jsonFolderPath);
+            LogNoFilesFound(logger, jsonFolderPath);
             return;
         }
 
         // Skip entirely if students are already seeded — avoids N×4 Identity queries on every startup
         if (await userManager.GetUsersInRoleAsync("Student") is { Count: > 0 })
         {
-            logger.LogDebug("Student users already seeded. Skipping.");
+            LogAlreadySeeded(logger);
             return;
         }
 
@@ -59,7 +59,7 @@ public static class StudentSeeder
 
                 if (students is null || students.Count == 0)
                 {
-                    logger.LogWarning("No students found in: {FilePath}", filePath);
+                    LogNoStudentsInFile(logger, filePath);
                     continue;
                 }
 
@@ -92,22 +92,42 @@ public static class StudentSeeder
                     }
                     else
                     {
-                        logger.LogWarning(
-                            "Failed to seed student '{Email}': {Errors}",
-                            email,
-                            string.Join(", ", result.Errors.Select(e => e.Description)));
+                        LogStudentFailed(logger, email, string.Join(", ", result.Errors.Select(e => e.Description)));
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to seed students from file: {FilePath}", filePath);
+                LogSeedFileFailed(logger, ex, filePath);
             }
         }
 
         if (seededCount > 0)
         {
-            logger.LogInformation("Seeded {Count} student user(s) from JSON files.", seededCount);
+            LogSeeded(logger, seededCount);
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Student JSON seed folder not found: {Path}")]
+    private static partial void LogFolderNotFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "No student JSON seed files found in: {Path}")]
+    private static partial void LogNoFilesFound(ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Student users already seeded. Skipping.")]
+    private static partial void LogAlreadySeeded(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "No students found in: {FilePath}")]
+    private static partial void LogNoStudentsInFile(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to seed student '{Email}': {Errors}")]
+    private static partial void LogStudentFailed(ILogger logger, string email, string errors);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to seed students from file: {FilePath}")]
+    private static partial void LogSeedFileFailed(ILogger logger, Exception exception, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} student user(s) from JSON files.")]
+    private static partial void LogSeeded(ILogger logger, int count);
 }

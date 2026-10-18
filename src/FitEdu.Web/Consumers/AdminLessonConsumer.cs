@@ -50,6 +50,6 @@ public class AdminLessonConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenPr
         return result?.VideoPath;
     }
 
-    private record UploadPdfResponse(string PdfPath);
-    private record UploadVideoResponse(string VideoPath);
+    private sealed record UploadPdfResponse(string PdfPath);
+    private sealed record UploadVideoResponse(string VideoPath);
 }

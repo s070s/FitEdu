@@ -15,7 +15,7 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// EMAIL" to grab the link); never register this service outside Development, and treat dev log
 /// files as sensitive.
 /// </summary>
-public class StubEmailService : IEmailService
+public partial class StubEmailService : IEmailService
 {
     private readonly ILogger<StubEmailService> _logger;
 
@@ -26,25 +26,25 @@ public class StubEmailService : IEmailService
 
     public Task SendEmailConfirmationAsync(string email, string confirmationLink, string language, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation(
-            "STUB EMAIL - Email Confirmation:\n" +
-            "To: {Email}\n" +
-            "Subject: {Subject}\n" +
-            "Link: {ConfirmationLink}",
-            email, EmailTemplates.EmailConfirmation(confirmationLink, language).Subject, confirmationLink);
+        var subject = EmailTemplates.EmailConfirmation(confirmationLink, language).Subject;
+        LogEmailConfirmation(_logger, email, subject, confirmationLink);
 
         return Task.CompletedTask;
     }
 
     public Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation(
-            "STUB EMAIL - Password Reset:\n" +
-            "To: {Email}\n" +
-            "Subject: {Subject}\n" +
-            "Link: {ResetLink}",
-            email, EmailTemplates.PasswordReset(resetLink, language).Subject, resetLink);
+        var subject = EmailTemplates.PasswordReset(resetLink, language).Subject;
+        LogPasswordReset(_logger, email, subject, resetLink);
 
         return Task.CompletedTask;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "STUB EMAIL - Email Confirmation:\nTo: {Email}\nSubject: {Subject}\nLink: {ConfirmationLink}")]
+    private static partial void LogEmailConfirmation(ILogger logger, string email, string subject, string confirmationLink);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "STUB EMAIL - Password Reset:\nTo: {Email}\nSubject: {Subject}\nLink: {ResetLink}")]
+    private static partial void LogPasswordReset(ILogger logger, string email, string subject, string resetLink);
 }

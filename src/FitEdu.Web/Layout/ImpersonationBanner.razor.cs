@@ -32,7 +32,7 @@ public partial class ImpersonationBanner : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error refreshing impersonation state.");
+            LogImpersonationRefreshFailed(_logger, ex);
         }
     }
 
@@ -66,6 +66,11 @@ public partial class ImpersonationBanner : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         AuthState.AuthenticationStateChanged -= OnAuthStateChangedAsync;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error refreshing impersonation state.")]
+    private static partial void LogImpersonationRefreshFailed(ILogger logger, Exception exception);
 }

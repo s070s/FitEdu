@@ -19,7 +19,7 @@ namespace FitEdu.Web.Hubs;
 /// Available to every authenticated, enabled user.
 /// </summary>
 [Authorize]
-public class ChatHub : Hub
+public partial class ChatHub : Hub
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IChatCommandService _chatCommandService;
@@ -49,13 +49,13 @@ public class ChatHub : Hub
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null || !user.IsEnabled)
             {
-                _logger.LogWarning("Chat: Rejected connection for disabled/unknown user {UserId}.", userId);
+                LogConnectionRejected(_logger, userId);
                 Context.Abort();
                 return;
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
-            _logger.LogInformation("Chat: User {UserId} connected.", userId);
+            LogUserConnected(_logger, userId);
         }
 
         await base.OnConnectedAsync();
@@ -139,4 +139,12 @@ public class ChatHub : Hub
 
         await _chatCommandService.MarkAsReadAsync(userId, conversationId);
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Chat: Rejected connection for disabled/unknown user {UserId}.")]
+    private static partial void LogConnectionRejected(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Chat: User {UserId} connected.")]
+    private static partial void LogUserConnected(ILogger logger, string userId);
 }
