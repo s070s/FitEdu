@@ -39,7 +39,7 @@ public partial class BlogArticle : IDisposable
 
     private string PersistKey => $"blog-article-{Slug}";
 
-    private string CurrentLang =>
+    private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
 
     protected override Task OnInitializedAsync()
@@ -108,5 +108,9 @@ public partial class BlogArticle : IDisposable
         return Task.CompletedTask;
     }
 
-    public void Dispose() => _persistSub.Dispose();
+    public void Dispose()
+    {
+        _persistSub.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

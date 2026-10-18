@@ -91,7 +91,7 @@ public partial class Login
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Unexpected error during login.");
+            LogLoginFailed(Logger, ex);
             errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
 
@@ -151,4 +151,8 @@ public partial class Login
             errorMessage = $"{ErrorMessagesRes.Error}: {ex.Message}";
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Unexpected error during login.")]
+    private static partial void LogLoginFailed(ILogger logger, Exception exception);
 }

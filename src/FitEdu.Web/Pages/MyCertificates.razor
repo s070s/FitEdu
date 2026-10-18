@@ -32,7 +32,7 @@
     else
     {
         <ul class="grid-auto certificate-grid">
-            @foreach (var cert in _certificates)
+            @foreach (var cert in _certificates!)
             {
                 // The machine-readable date and the shown date are the same local day.
                 var issuedLocal = SiteClock.ToSiteTime(cert.IssuedAt);

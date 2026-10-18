@@ -50,7 +50,7 @@ public partial class MyCertificates
         catch (Exception ex)
         {
             _error = CertificateRes.FailedToLoad;
-            _logger.LogError(ex, "Failed to load certificates.");
+            LogCertificatesLoadFailed(_logger, ex);
         }
         finally
         {
@@ -80,4 +80,8 @@ public partial class MyCertificates
     // Source-generated log method (LoggerMessage) avoids the CA1848/CA1873 analyzer warnings.
     [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to load the subscription status for certificates.")]
     private static partial void LogStatusLoadFailed(ILogger logger, Exception exception);
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load certificates.")]
+    private static partial void LogCertificatesLoadFailed(ILogger logger, Exception exception);
 }

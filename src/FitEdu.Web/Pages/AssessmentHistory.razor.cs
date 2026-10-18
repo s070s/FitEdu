@@ -51,7 +51,7 @@ public partial class AssessmentHistory
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading assessment submissions.");
+            LogSubmissionsLoadFailed(_logger, ex);
             pagedResult = new PagedResult<AssessmentSubmissionDto>([], 0, currentPage, pageSize);
         }
     }
@@ -172,4 +172,8 @@ public partial class AssessmentHistory
             get; set;
         }
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error loading assessment submissions.")]
+    private static partial void LogSubmissionsLoadFailed(ILogger logger, Exception exception);
 }

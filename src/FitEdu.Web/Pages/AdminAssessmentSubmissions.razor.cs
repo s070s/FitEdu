@@ -49,7 +49,7 @@ public partial class AdminAssessmentSubmissions
                 BuildQuestionLabels(definition.SchemaJson);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
@@ -77,7 +77,7 @@ public partial class AdminAssessmentSubmissions
             _pagedResult = await AssessmentConsumer.GetSubmissionsAsync(AssessmentId, _page, _pageSize, _sortBy, _sortDir)
                 ?? new PagedResult<AssessmentSubmissionListItemDto>([], 0, _page, _pageSize);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
             _pagedResult = new PagedResult<AssessmentSubmissionListItemDto>([], 0, _page, _pageSize);
@@ -142,12 +142,12 @@ public partial class AdminAssessmentSubmissions
         Nav.NavigateTo("/admin/assessments");
     }
 
-    private class SchemaRoot
+    private sealed class SchemaRoot
     {
         public List<SchemaQuestion> Questions { get; set; } = new();
     }
 
-    private class SchemaQuestion
+    private sealed class SchemaQuestion
     {
         public string Id { get; set; } = string.Empty;
         public string? Text

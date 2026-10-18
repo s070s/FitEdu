@@ -71,7 +71,7 @@ public partial class AdminUsers : IAsyncDisposable
             messageType = "danger";
             _loadFailed = true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // UX-6: any other failure (network, 500, etc.) used to be unhandled here and crash
             // the circuit; pagedResult stays null so the skeleton would otherwise spin forever.
@@ -196,7 +196,7 @@ public partial class AdminUsers : IAsyncDisposable
                 _resetPwdError = AdminRes.PasswordUpdateFailed;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _resetPwdError = ErrorMessagesRes.UnexpectedErrorTryAgain;
         }
@@ -228,7 +228,7 @@ public partial class AdminUsers : IAsyncDisposable
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -261,7 +261,7 @@ public partial class AdminUsers : IAsyncDisposable
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -270,6 +270,7 @@ public partial class AdminUsers : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }

@@ -49,7 +49,7 @@ public partial class AdminAssessments : IAsyncDisposable
                 _page, _pageSize, _sortBy, _sortDir,
                 string.IsNullOrEmpty(_searchTerm) ? null : _searchTerm);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -76,6 +76,7 @@ public partial class AdminAssessments : IAsyncDisposable
 
     public ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
         return ValueTask.CompletedTask;
@@ -115,7 +116,7 @@ public partial class AdminAssessments : IAsyncDisposable
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -133,7 +134,7 @@ public partial class AdminAssessments : IAsyncDisposable
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -166,7 +167,7 @@ public partial class AdminAssessments : IAsyncDisposable
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

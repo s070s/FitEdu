@@ -74,7 +74,7 @@ public partial class Pricing
         catch (Exception ex)
         {
             _error = PricingRes.FailedToLoadPlans;
-            _logger.LogError(ex, "Failed to load pricing plans.");
+            LogPlansLoadFailed(_logger, ex);
         }
         finally
         {
@@ -103,7 +103,7 @@ public partial class Pricing
         catch (Exception ex)
         {
             _error = PricingRes.CheckoutFailed;
-            _logger.LogError(ex, "Checkout failed for plan {PlanId}.", planId);
+            LogCheckoutFailed(_logger, ex, planId);
         }
         finally
         {
@@ -133,7 +133,7 @@ public partial class Pricing
         {
             _cancelSuccess = false;
             _cancelMessage = PricingRes.FailedToCancel;
-            _logger.LogError(ex, "Failed to cancel subscription.");
+            LogCancelSubscriptionFailed(_logger, ex);
         }
         finally
         {
@@ -150,4 +150,14 @@ public partial class Pricing
     {
         Navigation.NavigateTo("/register");
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load pricing plans.")]
+    private static partial void LogPlansLoadFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Checkout failed for plan {PlanId}.")]
+    private static partial void LogCheckoutFailed(ILogger logger, Exception exception, Guid planId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to cancel subscription.")]
+    private static partial void LogCancelSubscriptionFailed(ILogger logger, Exception exception);
 }

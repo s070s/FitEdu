@@ -90,6 +90,7 @@ public partial class Register : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         editContext.OnFieldChanged -= HandleFieldChanged;
     }
 

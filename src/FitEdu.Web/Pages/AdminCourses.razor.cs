@@ -49,7 +49,7 @@ public partial class AdminCourses : IAsyncDisposable
                 currentPage, pageSize, _sortBy, _sortDir,
                 string.IsNullOrEmpty(searchTerm) ? null : searchTerm);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -76,6 +76,7 @@ public partial class AdminCourses : IAsyncDisposable
 
     public ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
         return ValueTask.CompletedTask;
@@ -127,7 +128,7 @@ public partial class AdminCourses : IAsyncDisposable
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -145,7 +146,7 @@ public partial class AdminCourses : IAsyncDisposable
                 messageType = "success";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";
@@ -178,7 +179,7 @@ public partial class AdminCourses : IAsyncDisposable
                 messageType = "danger";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
             messageType = "danger";

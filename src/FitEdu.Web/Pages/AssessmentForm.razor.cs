@@ -44,8 +44,8 @@ public partial class AssessmentForm
     /// <summary>Ticked options per multi-select question, in the order they were ticked.</summary>
     private readonly Dictionary<string, List<string>> _multiSelections = new();
 
-    private bool isSubmitting = false;
-    private bool submitted = false;
+    private bool isSubmitting;
+    private bool submitted;
     private bool _loading = true;
     private string? _loadError;
     private string? _submitError;
@@ -87,7 +87,7 @@ public partial class AssessmentForm
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading assessment {AssessmentId}.", AssessmentId);
+            LogAssessmentLoadFailed(_logger, ex, AssessmentId);
             _loadError = AssessmentRes.FailedToLoadAssessment;
         }
         finally
@@ -283,13 +283,13 @@ public partial class AssessmentForm
             }
             else
             {
-                _logger.LogError("Assessment submission {AssessmentId} returned null.", AssessmentId);
+                LogSubmissionReturnedNull(_logger, AssessmentId);
                 _submitError = AssessmentRes.SubmitFailed;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error submitting assessment {AssessmentId}.", AssessmentId);
+            LogSubmissionFailed(_logger, ex, AssessmentId);
             _submitError = AssessmentRes.SubmitFailed;
         }
         finally
@@ -360,4 +360,14 @@ public partial class AssessmentForm
         /// <summary>Uses Label if present, falls back to Text.</summary>
         public string DisplayLabel => Label ?? Text ?? string.Empty;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error loading assessment {AssessmentId}.")]
+    private static partial void LogAssessmentLoadFailed(ILogger logger, Exception exception, Guid assessmentId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Assessment submission {AssessmentId} returned null.")]
+    private static partial void LogSubmissionReturnedNull(ILogger logger, Guid assessmentId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error submitting assessment {AssessmentId}.")]
+    private static partial void LogSubmissionFailed(ILogger logger, Exception exception, Guid assessmentId);
 }

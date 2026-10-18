@@ -15,7 +15,7 @@ public partial class Assessments : IDisposable
     [Inject] private ILogger<Assessments> _logger { get; set; } = default!;
 
     private PagedResult<AssessmentDefinitionDto>? _pagedResult;
-    private bool _assessmentAccess = false;
+    private bool _assessmentAccess;
     private bool _loading = true;
     private string? _error;
 
@@ -73,7 +73,7 @@ public partial class Assessments : IDisposable
         catch (Exception ex)
         {
             _categories = [];
-            _logger.LogError(ex, "Failed to load assessment categories.");
+            LogCategoriesLoadFailed(_logger, ex);
         }
     }
 
@@ -106,7 +106,7 @@ public partial class Assessments : IDisposable
         catch (Exception ex)
         {
             _error = AssessmentRes.FailedToLoad;
-            _logger.LogError(ex, "Failed to load assessments.");
+            LogAssessmentsLoadFailed(_logger, ex);
         }
         finally
         {
@@ -159,7 +159,15 @@ public partial class Assessments : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load assessment categories.")]
+    private static partial void LogCategoriesLoadFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load assessments.")]
+    private static partial void LogAssessmentsLoadFailed(ILogger logger, Exception exception);
 }
