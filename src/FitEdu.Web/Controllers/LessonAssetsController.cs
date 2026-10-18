@@ -8,6 +8,7 @@ using FitEdu.Application.Data;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Infrastructure.Services;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Controllers;
 
@@ -83,7 +84,7 @@ public class LessonAssetsController : ControllerBase
 
         if (lesson == null)
         {
-            return Problem(detail: "Lesson not found", statusCode: StatusCodes.Status404NotFound);
+            return Problem(detail: ErrorMessagesRes.LessonNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
         // Check if user is enrolled in the course
@@ -94,7 +95,7 @@ public class LessonAssetsController : ControllerBase
         {
             // NOTE: Forbid(string) treats its argument as an auth scheme name (not a message),
             // which throws and yields a 500. Use an explicit 403 like the other controllers.
-            return Problem(detail: "You must be enrolled in this course to access lesson assets", statusCode: StatusCodes.Status403Forbidden);
+            return Problem(detail: ErrorMessagesRes.MustBeEnrolledToViewLessons, statusCode: StatusCodes.Status403Forbidden);
         }
 
         // Get file path based on type
@@ -107,14 +108,14 @@ public class LessonAssetsController : ControllerBase
 
         if (string.IsNullOrEmpty(filePath))
         {
-            return Problem(detail: $"No {type} asset found for this lesson", statusCode: StatusCodes.Status404NotFound);
+            return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
         // Check if file exists
         if (!_fileStorage.FileExists(filePath))
         {
             _logger.LogWarning("File not found in storage: {FilePath}", filePath);
-            return Problem(detail: "Asset file not found", statusCode: StatusCodes.Status404NotFound);
+            return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
         // Stream file
@@ -126,7 +127,7 @@ public class LessonAssetsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error streaming file: {FilePath}", filePath);
-            return Problem(detail: "Error retrieving asset", statusCode: StatusCodes.Status500InternalServerError);
+            return Problem(detail: ErrorMessagesRes.LessonFileLoadFailed, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 

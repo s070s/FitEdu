@@ -6,6 +6,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Extensions;
 using System.Security.Claims;
 
@@ -145,10 +146,10 @@ public class AdminLessonsController : ControllerBase
 
         // Validate that a file was provided.
         if (file == null || file.Length == 0)
-            return Problem(detail: "No file provided", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
 
         if (!string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase))
-            return Problem(detail: "Only PDF files are allowed.", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.OnlyPdfFilesAllowed, statusCode: StatusCodes.Status400BadRequest);
 
         // Delete previous PDF if it exists to avoid orphaned files.
         if (!string.IsNullOrEmpty(lesson.PdfPath))
@@ -183,7 +184,7 @@ public class AdminLessonsController : ControllerBase
 
         // Validate file input.
         if (file == null || file.Length == 0)
-            return Problem(detail: "No file provided", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
 
         var allowedVideoTypes = new[] { "video/mp4", "video/webm", "video/ogg" };
         if (!allowedVideoTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))

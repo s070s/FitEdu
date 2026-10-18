@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.SignalR;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.ApiServices;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Web.Services;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Hubs;
 
@@ -90,7 +93,7 @@ public class ChatHub : Hub
             if (result.StatusCode == 400)
             {
                 // Hard cap: 4 000 chars max per message. Prevents storage abuse and abnormally large payloads.
-                await Clients.Caller.SendAsync("ChatError", result.ErrorMessage ?? "Message exceeds the 4,000 character limit.");
+                await Clients.Caller.SendAsync("ChatError", result.ErrorMessage ?? ResourceFormat.Fill(ErrorMessagesRes.Chat_MessageTooLongFormat, ChatCommandService.MaxMessageLength));
             }
             // NotFound/Forbidden (unknown conversation or caller isn't a participant): silent no-op.
             return;

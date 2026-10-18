@@ -336,4 +336,34 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>Το email {0} δεν είναι έγκυρο.</value>
   </data>
+  <data name="Chat_MessageRequired" xml:space="preserve">
+    <value>Γράψε πρώτα ένα μήνυμα.</value>
+  </data>
+  <data name="Chat_MessageTooLongFormat" xml:space="preserve">
+    <value>Το μήνυμά σου είναι πολύ μεγάλο (έως {0:N0} χαρακτήρες).</value>
+  </data>
+  <data name="Call_MemberUnavailable" xml:space="preserve">
+    <value>Αυτό το μέλος δεν είναι διαθέσιμο αυτή τη στιγμή.</value>
+  </data>
+  <data name="Call_Full" xml:space="preserve">
+    <value>Η κλήση έχει συμπληρωθεί.</value>
+  </data>
+  <data name="Call_NotInCall" xml:space="preserve">
+    <value>Δεν συμμετέχεις πια σε αυτή την κλήση.</value>
+  </data>
+  <data name="Certificate_PlanRequired" xml:space="preserve">
+    <value>Το πλάνο σου δεν περιλαμβάνει πιστοποιητικά. Αναβάθμισε σε Pro.</value>
+  </data>
+  <data name="PaymentNotAvailable" xml:space="preserve">
+    <value>Οι πληρωμές δεν είναι ακόμη διαθέσιμες. Δοκίμασε ξανά αργότερα.</value>
+  </data>
+  <data name="LessonFileNotFound" xml:space="preserve">
+    <value>Το αρχείο του μαθήματος δεν βρέθηκε.</value>
+  </data>
+  <data name="LessonFileLoadFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του αρχείου του μαθήματος. Δοκίμασε ξανά.</value>
+  </data>
+  <data name="OnlyPdfFilesAllowed" xml:space="preserve">
+    <value>Επιτρέπονται μόνο αρχεία PDF.</value>
+  </data>
 </root>

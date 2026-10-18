@@ -336,4 +336,34 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>The email {0} is not valid.</value>
   </data>
+  <data name="Chat_MessageRequired" xml:space="preserve">
+    <value>Write a message first.</value>
+  </data>
+  <data name="Chat_MessageTooLongFormat" xml:space="preserve">
+    <value>Your message is too long (max {0:N0} characters).</value>
+  </data>
+  <data name="Call_MemberUnavailable" xml:space="preserve">
+    <value>This member isn't available right now.</value>
+  </data>
+  <data name="Call_Full" xml:space="preserve">
+    <value>The call is full.</value>
+  </data>
+  <data name="Call_NotInCall" xml:space="preserve">
+    <value>You're no longer part of this call.</value>
+  </data>
+  <data name="Certificate_PlanRequired" xml:space="preserve">
+    <value>Your plan doesn't include certificates. Upgrade to Pro.</value>
+  </data>
+  <data name="PaymentNotAvailable" xml:space="preserve">
+    <value>Payments aren't available yet. Please check back later.</value>
+  </data>
+  <data name="LessonFileNotFound" xml:space="preserve">
+    <value>The lesson file wasn't found.</value>
+  </data>
+  <data name="LessonFileLoadFailed" xml:space="preserve">
+    <value>Couldn't load the lesson file. Please try again.</value>
+  </data>
+  <data name="OnlyPdfFilesAllowed" xml:space="preserve">
+    <value>Only PDF files are allowed.</value>
+  </data>
 </root>

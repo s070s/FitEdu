@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Controllers;
 
@@ -122,7 +123,7 @@ public class AdminBlogController : ControllerBase
         Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file is null || file.Length == 0)
-            return Problem(detail: "No file provided.", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
 
         var article = await _context.BlogArticles.FindAsync(new object[] { id }, cancellationToken);
         if (article is null)

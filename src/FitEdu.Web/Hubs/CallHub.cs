@@ -7,6 +7,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Web.Services;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Web.Hubs;
 
@@ -294,13 +295,13 @@ public partial class CallHub : Hub
 
         if (_registry.IsUserBusy(userId) || !_registry.IsUserOnline(userId))
         {
-            await Clients.Caller.SendAsync("CallError", "That user is unavailable.");
+            await Clients.Caller.SendAsync("CallError", ErrorMessagesRes.Call_MemberUnavailable);
             return;
         }
 
         if (!_registry.TryAddInvite(callId, userId, _options.MaxParticipants))
         {
-            await Clients.Caller.SendAsync("CallError", "The call is full.");
+            await Clients.Caller.SendAsync("CallError", ErrorMessagesRes.Call_Full);
             return;
         }
 
