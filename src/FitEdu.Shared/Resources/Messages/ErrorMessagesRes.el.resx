@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationError" xml:space="preserve">
-    <value>Σφάλμα κατά την επαλήθευση του email.</value>
+    <value>Δεν ήταν δυνατή η επιβεβαίωση του email. Δοκίμασε ξανά.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Σφάλμα</value>
   </data>
   <data name="EmailTakenError" xml:space="preserve">
-    <value>Η διεύθυνση email είναι ήδη εγγεγραμμένη</value>
+    <value>Αυτό το email είναι ήδη καταχωρισμένο. Χρησιμοποίησε άλλο email ή συνδέσου.</value>
   </data>
   <data name="LoginError" xml:space="preserve">
-    <value>Σφάλμα κατά τη σύνδεση.</value>
+    <value>Δεν ήταν δυνατή η σύνδεση. Δοκίμασε ξανά.</value>
   </data>
   <data name="AccountDisabled" xml:space="preserve">
     <value>Ο λογαριασμός απενεργοποιήθηκε</value>
@@ -142,10 +142,10 @@
     <value>Επιστροφή στη σύνδεση</value>
   </data>
   <data name="EmailNotConfirmedHint" xml:space="preserve">
-    <value>Η διεύθυνση email σου δεν έχει επιβεβαιωθεί ακόμα. Δες τα εισερχόμενά σου για τον σύνδεσμο επιβεβαίωσης.</value>
+    <value>Η διεύθυνση email σου δεν έχει επιβεβαιωθεί ακόμη. Δες τα εισερχόμενά σου για τον σύνδεσμο επιβεβαίωσης.</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
-    <value>Μη έγκυρα διαπιστευτήρια.</value>
+    <value>Λάθος email ή κωδικός πρόσβασης.</value>
   </data>
   <data name="EmailNotConfirmedError" xml:space="preserve">
     <value>Το email δεν έχει επιβεβαιωθεί.</value>
@@ -160,106 +160,106 @@
     <value>Ο χρήστης δεν βρέθηκε.</value>
   </data>
   <data name="InvalidOrExpiredRefreshToken" xml:space="preserve">
-    <value>Μη έγκυρο ή ληγμένο token ανανέωσης.</value>
+    <value>Η σύνδεσή σου έληξε. Συνδέσου ξανά.</value>
   </data>
   <data name="AccountIsDisabled" xml:space="preserve">
-    <value>Ο λογαριασμός είναι απενεργοποιημένος.</value>
+    <value>Ο λογαριασμός σου είναι απενεργοποιημένος.</value>
   </data>
   <data name="InvalidRequest" xml:space="preserve">
     <value>Μη έγκυρο αίτημα.</value>
   </data>
   <data name="RegistrationFailedGeneric" xml:space="preserve">
-    <value>Η εγγραφή απέτυχε. Έλεγξε τα στοιχεία σου και δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η εγγραφή. Έλεγξε τα στοιχεία σου και δοκίμασε ξανά.</value>
   </data>
   <data name="InvalidConfirmationLink" xml:space="preserve">
     <value>Μη έγκυρος σύνδεσμος επιβεβαίωσης.</value>
   </data>
   <data name="AssessmentAccessRequiresPlus" xml:space="preserve">
-    <value>Η πρόσβαση σε αξιολογήσεις απαιτεί συνδρομή Plus ή ανώτερη.</value>
+    <value>Οι αξιολογήσεις χρειάζονται το πλάνο Plus ή ανώτερο.</value>
   </data>
   <data name="AssessmentAnswersInvalid" xml:space="preserve">
     <value>Οι απαντήσεις σου δεν αντιστοιχούν στις ερωτήσεις αυτής της αξιολόγησης.</value>
   </data>
   <data name="AssessmentNotFoundOrUnpublished" xml:space="preserve">
-    <value>Η αξιολόγηση δεν βρέθηκε ή δεν έχει δημοσιευτεί</value>
+    <value>Η αξιολόγηση δεν βρέθηκε ή δεν έχει δημοσιευτεί.</value>
   </data>
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
-    <value>Αυτή η αξιολόγηση απαιτεί συνδρομή {0} ή ανώτερη.</value>
+    <value>Αυτή η αξιολόγηση χρειάζεται το πλάνο {0} ή ανώτερο.</value>
   </data>
   <data name="AdminCannotEnroll" xml:space="preserve">
     <value>Οι διαχειριστές δεν μπορούν να γραφτούν σε προγράμματα.</value>
   </data>
   <data name="CourseNotFound" xml:space="preserve">
-    <value>Το πρόγραμμα δεν βρέθηκε</value>
+    <value>Το πρόγραμμα δεν βρέθηκε.</value>
   </data>
   <data name="CourseRequiresTierFormat" xml:space="preserve">
-    <value>Αυτό το πρόγραμμα απαιτεί συνδρομή {0} ή ανώτερη. Αναβάθμισε το πλάνο σου.</value>
+    <value>Αυτό το πρόγραμμα χρειάζεται το πλάνο {0} ή ανώτερο. Αναβάθμισε το πλάνο σου.</value>
   </data>
   <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
     <value>Έφτασες το όριο ενεργών προγραμμάτων του πλάνου {0} ({1}). Αναβάθμισε για να γραφτείς σε περισσότερα.</value>
   </data>
   <data name="LessonNotFound" xml:space="preserve">
-    <value>Το μάθημα δεν βρέθηκε</value>
+    <value>Το μάθημα δεν βρέθηκε.</value>
   </data>
   <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
-    <value>Γράψου σε αυτό το πρόγραμμα για να δεις τα μαθήματά του</value>
+    <value>Γράψου σε αυτό το πρόγραμμα για να δεις τα μαθήματά του.</value>
   </data>
   <data name="NotEnrolledInCourse" xml:space="preserve">
-    <value>Δεν έχεις γραφτεί σε αυτό το πρόγραμμα</value>
+    <value>Δεν έχεις γραφτεί σε αυτό το πρόγραμμα.</value>
   </data>
   <data name="NoFileProvided" xml:space="preserve">
-    <value>Δεν παρέχεται αρχείο</value>
+    <value>Δεν επιλέχθηκε αρχείο.</value>
   </data>
   <data name="FileTooLarge5Mb" xml:space="preserve">
-    <value>Το αρχείο είναι πολύ μεγάλο (μέγιστο 5 MB)</value>
+    <value>Το αρχείο είναι πολύ μεγάλο (έως 5 MB).</value>
   </data>
   <data name="OnlyImageFilesAllowed" xml:space="preserve">
     <value>Επιτρέπονται μόνο αρχεία εικόνας (jpeg, png, gif, webp).</value>
   </data>
   <data name="FailedToSaveAvatar" xml:space="preserve">
-    <value>Αποτυχία αποθήκευσης του avatar.</value>
+    <value>Δεν ήταν δυνατή η αποθήκευση της φωτογραφίας προφίλ. Δοκίμασε ξανά.</value>
   </data>
   <data name="CategoryNameExists" xml:space="preserve">
     <value>Υπάρχει ήδη κατηγορία με αυτό το όνομα.</value>
   </data>
   <data name="CategoryNotFound" xml:space="preserve">
-    <value>Η κατηγορία δεν βρέθηκε</value>
+    <value>Η κατηγορία δεν βρέθηκε.</value>
   </data>
   <data name="UnexpectedErrorTryAgain" xml:space="preserve">
-    <value>Παρουσιάστηκε μη αναμενόμενο σφάλμα. Δοκίμασε ξανά.</value>
+    <value>Κάτι πήγε στραβά. Δοκίμασε ξανά.</value>
   </data>
   <data name="UnableToConnect" xml:space="preserve">
     <value>Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Δοκίμασε ξανά.</value>
   </data>
   <data name="EnterEmailAndPassword" xml:space="preserve">
-    <value>Γράψε το email σου και τον νέο κωδικό.</value>
+    <value>Γράψε το email σου και τον νέο κωδικό πρόσβασης.</value>
   </data>
   <data name="PasswordResetFailed" xml:space="preserve">
-    <value>Σφάλμα κατά την επαναφορά του κωδικού πρόσβασης.</value>
+    <value>Δεν ήταν δυνατή η επαναφορά του κωδικού πρόσβασης. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadBilling" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση των στοιχείων χρέωσης. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση των στοιχείων χρέωσης. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToCancel" xml:space="preserve">
-    <value>Η ακύρωση απέτυχε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η ακύρωση. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadCourses" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση των προγραμμάτων. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση των προγραμμάτων. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadAnalytics" xml:space="preserve">
-    <value>Η φόρτωση των στατιστικών απέτυχε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση των στατιστικών. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToLoadCourse" xml:space="preserve">
-    <value>Απέτυχε η φόρτωση του προγράμματος. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η φόρτωση του προγράμματος. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToEnroll" xml:space="preserve">
-    <value>Η εγγραφή απέτυχε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η εγγραφή στο πρόγραμμα. Δοκίμασε ξανά.</value>
   </data>
   <data name="FailedToSendResetLink" xml:space="preserve">
-    <value>Σφάλμα κατά την αποστολή του συνδέσμου επαναφοράς.</value>
+    <value>Δεν ήταν δυνατή η αποστολή του συνδέσμου επαναφοράς. Δοκίμασε ξανά.</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>Άρνηση πρόσβασης.</value>
+    <value>Δεν έχεις πρόσβαση.</value>
   </data>
   <data name="Auth_EmailRequired" xml:space="preserve">
     <value>Το email είναι υποχρεωτικό.</value>
@@ -301,7 +301,7 @@
     <value>Άγνωστος κωδικός εξοπλισμού</value>
   </data>
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
-    <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά και δοκίμασε πάλι.</value>
+    <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά τη σελίδα και δοκίμασε πάλι.</value>
   </data>
   <data name="Certificate_NotFound" xml:space="preserve">
     <value>Το πιστοποιητικό δεν βρέθηκε.</value>
@@ -316,7 +316,7 @@
     <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} χαρακτήρες.</value>
   </data>
   <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
-    <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα ψηφίο (0-9).</value>
+    <value>Ο κωδικός σου χρειάζεται τουλάχιστον έναν αριθμό (0-9).</value>
   </data>
   <data name="IdentityPasswordRequiresLower" xml:space="preserve">
     <value>Ο κωδικός σου χρειάζεται τουλάχιστον ένα πεζό γράμμα (a-z).</value>
@@ -331,7 +331,7 @@
     <value>Ο κωδικός σου χρειάζεται τουλάχιστον {0} διαφορετικούς χαρακτήρες.</value>
   </data>
   <data name="IdentityDuplicateEmailFormat" xml:space="preserve">
-    <value>Το email {0} είναι ήδη εγγεγραμμένο.</value>
+    <value>Το email {0} είναι ήδη καταχωρισμένο.</value>
   </data>
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>Το email {0} δεν είναι έγκυρο.</value>

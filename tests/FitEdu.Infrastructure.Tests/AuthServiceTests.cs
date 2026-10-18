@@ -64,7 +64,7 @@ public class AuthServiceTests
         var result = await h.Svc.LoginAsync(Login());
 
         result.Success.ShouldBeFalse();
-        result.Message.ShouldBe("Invalid credentials.");
+        result.Message.ShouldBe("Incorrect email or password.");
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class AuthServiceTests
         h.Sm.CheckPasswordSignInAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<bool>())
             .Returns(SignInResult.Failed);
 
-        (await h.Svc.LoginAsync(Login())).Message.ShouldBe("Invalid credentials.");
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe("Incorrect email or password.");
     }
 
     [Fact]
@@ -213,7 +213,7 @@ public class AuthServiceTests
         });
 
         result.Success.ShouldBeTrue();
-        result.Message!.ShouldContain("Registration successful");
+        result.Message!.ShouldContain("You're signed up");
         await h.Subs.Received().AssignFreePlanAsync(Arg.Any<string>());
     }
 
@@ -318,7 +318,7 @@ public class AuthServiceTests
         var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u@x.com" });
 
         result.Success.ShouldBeTrue();
-        result.Message!.ShouldContain("If the email exists");
+        result.Message!.ShouldContain("If an account uses that email");
     }
 
     [Fact]

@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailConfirmationError" xml:space="preserve">
-    <value>Error Confirming Email</value>
+    <value>Couldn't confirm the email. Please try again.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
   <data name="EmailTakenError" xml:space="preserve">
-    <value>This email address is already registered. Please use a different email or try logging in.</value>
+    <value>This email is already registered. Please use a different email or log in.</value>
   </data>
   <data name="LoginError" xml:space="preserve">
-    <value>Login Error</value>
+    <value>Couldn't log you in. Please try again.</value>
   </data>
   <data name="AccountDisabled" xml:space="preserve">
     <value>Account disabled</value>
@@ -139,13 +139,13 @@
     <value>If you believe this is a mistake, please contact support for assistance.</value>
   </data>
   <data name="BackToLogin" xml:space="preserve">
-    <value>Back to Login</value>
+    <value>Back to login</value>
   </data>
   <data name="EmailNotConfirmedHint" xml:space="preserve">
     <value>Your email address isn't confirmed yet. Please check your inbox for the confirmation link.</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
-    <value>Invalid credentials.</value>
+    <value>Incorrect email or password.</value>
   </data>
   <data name="EmailNotConfirmedError" xml:space="preserve">
     <value>Email not confirmed.</value>
@@ -160,106 +160,106 @@
     <value>User not found.</value>
   </data>
   <data name="InvalidOrExpiredRefreshToken" xml:space="preserve">
-    <value>Invalid or expired refresh token.</value>
+    <value>Your session has expired. Please log in again.</value>
   </data>
   <data name="AccountIsDisabled" xml:space="preserve">
-    <value>Account is disabled.</value>
+    <value>Your account is disabled.</value>
   </data>
   <data name="InvalidRequest" xml:space="preserve">
     <value>Invalid request.</value>
   </data>
   <data name="RegistrationFailedGeneric" xml:space="preserve">
-    <value>Registration failed. Please check your details and try again.</value>
+    <value>Couldn't create your account. Please check your details and try again.</value>
   </data>
   <data name="InvalidConfirmationLink" xml:space="preserve">
     <value>Invalid confirmation link.</value>
   </data>
   <data name="AssessmentAccessRequiresPlus" xml:space="preserve">
-    <value>Assessment access requires a Plus subscription or higher.</value>
+    <value>Self-assessments need the Plus plan or higher.</value>
   </data>
   <data name="AssessmentAnswersInvalid" xml:space="preserve">
     <value>Your answers don't match this assessment's questions.</value>
   </data>
   <data name="AssessmentNotFoundOrUnpublished" xml:space="preserve">
-    <value>Assessment not found or not published</value>
+    <value>Self-assessment not found or not published.</value>
   </data>
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
-    <value>This assessment requires a {0} subscription or higher.</value>
+    <value>This self-assessment needs the {0} plan or higher.</value>
   </data>
   <data name="AdminCannotEnroll" xml:space="preserve">
     <value>Administrators cannot join programmes.</value>
   </data>
   <data name="CourseNotFound" xml:space="preserve">
-    <value>Programme not found</value>
+    <value>Programme not found.</value>
   </data>
   <data name="CourseRequiresTierFormat" xml:space="preserve">
-    <value>This programme requires a {0} subscription or higher. Please upgrade your plan.</value>
+    <value>This programme needs the {0} plan or higher. Please upgrade your plan.</value>
   </data>
   <data name="CourseEnrollmentLimitReachedFormat" xml:space="preserve">
     <value>You have reached the active programme limit of your {0} plan ({1}). Upgrade to join more.</value>
   </data>
   <data name="LessonNotFound" xml:space="preserve">
-    <value>Lesson not found</value>
+    <value>Lesson not found.</value>
   </data>
   <data name="MustBeEnrolledToViewLessons" xml:space="preserve">
-    <value>You must be enrolled in this programme to view lessons</value>
+    <value>Join this programme to view its lessons.</value>
   </data>
   <data name="NotEnrolledInCourse" xml:space="preserve">
-    <value>Not enrolled in this programme</value>
+    <value>You haven't joined this programme.</value>
   </data>
   <data name="NoFileProvided" xml:space="preserve">
-    <value>No file provided</value>
+    <value>No file selected.</value>
   </data>
   <data name="FileTooLarge5Mb" xml:space="preserve">
-    <value>File too large (max 5 MB)</value>
+    <value>The file is too large (max 5 MB).</value>
   </data>
   <data name="OnlyImageFilesAllowed" xml:space="preserve">
     <value>Only image files are allowed (jpeg, png, gif, webp).</value>
   </data>
   <data name="FailedToSaveAvatar" xml:space="preserve">
-    <value>Failed to save avatar.</value>
+    <value>Couldn't save the profile photo. Please try again.</value>
   </data>
   <data name="CategoryNameExists" xml:space="preserve">
     <value>A category with this name already exists.</value>
   </data>
   <data name="CategoryNotFound" xml:space="preserve">
-    <value>Category not found</value>
+    <value>Category not found.</value>
   </data>
   <data name="UnexpectedErrorTryAgain" xml:space="preserve">
-    <value>An unexpected error occurred. Please try again.</value>
+    <value>Something went wrong. Please try again.</value>
   </data>
   <data name="UnableToConnect" xml:space="preserve">
-    <value>Unable to connect to the server. Please try again.</value>
+    <value>Couldn't connect to the server. Please try again.</value>
   </data>
   <data name="EnterEmailAndPassword" xml:space="preserve">
-    <value>Please enter email and new password.</value>
+    <value>Please enter your email and a new password.</value>
   </data>
   <data name="PasswordResetFailed" xml:space="preserve">
-    <value>Error resetting password.</value>
+    <value>Couldn't reset the password. Please try again.</value>
   </data>
   <data name="FailedToLoadBilling" xml:space="preserve">
-    <value>Failed to load billing information. Please try again.</value>
+    <value>Couldn't load your billing details. Please try again.</value>
   </data>
   <data name="FailedToCancel" xml:space="preserve">
-    <value>Failed to cancel. Please try again.</value>
+    <value>Couldn't cancel. Please try again.</value>
   </data>
   <data name="FailedToLoadCourses" xml:space="preserve">
-    <value>Failed to load programmes. Please try again.</value>
+    <value>Couldn't load the programmes. Please try again.</value>
   </data>
   <data name="FailedToLoadAnalytics" xml:space="preserve">
-    <value>Failed to load analytics. Please try again.</value>
+    <value>Couldn't load the statistics. Please try again.</value>
   </data>
   <data name="FailedToLoadCourse" xml:space="preserve">
-    <value>Failed to load programme. Please try again.</value>
+    <value>Couldn't load the programme. Please try again.</value>
   </data>
   <data name="FailedToEnroll" xml:space="preserve">
-    <value>Failed to enroll. Please try again.</value>
+    <value>Couldn't join the programme. Please try again.</value>
   </data>
   <data name="FailedToSendResetLink" xml:space="preserve">
-    <value>Error sending reset link.</value>
+    <value>Couldn't send the reset link. Please try again.</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>Access denied.</value>
+    <value>You don't have access.</value>
   </data>
   <data name="Auth_EmailRequired" xml:space="preserve">
     <value>Email is required.</value>
@@ -271,7 +271,7 @@
     <value>Password is required.</value>
   </data>
   <data name="Auth_PasswordComplexity" xml:space="preserve">
-    <value>Password must be at least 8 characters and include an uppercase letter and a digit.</value>
+    <value>Password must be at least 8 characters and include an uppercase letter and a number.</value>
   </data>
   <data name="Auth_ConfirmPasswordRequired" xml:space="preserve">
     <value>Please confirm your password.</value>
@@ -316,7 +316,7 @@
     <value>Your password needs at least {0} characters.</value>
   </data>
   <data name="IdentityPasswordRequiresDigit" xml:space="preserve">
-    <value>Your password needs at least one digit (0-9).</value>
+    <value>Your password needs at least one number (0-9).</value>
   </data>
   <data name="IdentityPasswordRequiresLower" xml:space="preserve">
     <value>Your password needs at least one lowercase letter (a-z).</value>
