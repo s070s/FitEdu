@@ -87,6 +87,28 @@ public class AssistantServiceTests
     }
 
     [Fact]
+    public async Task StreamChatAsync_AnswerCutOffByTheLengthLimit_SaysSoBeforeSources()
+    {
+        // Live check 2026-10-18: long Greek answers stopped mid-word at MaxOutputTokens; the
+        // "truncated" event lets the widget end the answer at its last full sentence.
+        static async IAsyncEnumerable<ChatResponseUpdate> CutOff()
+        {
+            await Task.Yield();
+            yield return new ChatResponseUpdate(ChatRole.Assistant, "Ξεκίνα με το Strength Foundations. Είναι ιδανικ");
+            yield return new ChatResponseUpdate { FinishReason = ChatFinishReason.Length };
+        }
+
+        await using var db = DbContextFactory.CreateInMemory();
+        var (svc, chatClient, _, _) = NewService(db);
+        chatClient.GetStreamingResponseAsync(Arg.Any<IEnumerable<ChatMessage>>(), Arg.Any<ChatOptions>(), Arg.Any<CancellationToken>())
+            .Returns(CutOff());
+
+        var events = await Collect(svc.StreamChatAsync(UserId, OneUserMessage("Από πού να ξεκινήσω;"), "el"));
+
+        events.Select(e => e.Kind).ShouldBe(["token", "truncated", "sources", "done"]);
+    }
+
+    [Fact]
     public async Task StreamChatAsync_SystemPromptIncludesLanguageTierEnrollmentsAndContext()
     {
         await using var db = DbContextFactory.CreateInMemory();
@@ -119,6 +141,8 @@ public class AssistantServiceTests
         systemMessage.Role.ShouldBe(ChatRole.System);
         systemMessage.Text.ShouldContain("Greek");
         systemMessage.Text.ShouldContain("address the member informally (εσύ)");
+        systemMessage.Text.ShouldContain("Keep answers short: at most 5 short points");
+        systemMessage.Text.ShouldContain("never invent them"); // live check 2026-10-18: invented "Cardio Blast"
         systemMessage.Text.ShouldContain("Pro");
         systemMessage.Text.ShouldContain("Couch to 5K Running");
         systemMessage.Text.ShouldContain("Strength Foundations teaches the squat, hinge, push and pull.");

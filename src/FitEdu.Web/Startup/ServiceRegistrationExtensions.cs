@@ -170,12 +170,12 @@ public static class ServiceRegistrationExtensions
             // UseFunctionInvocation wraps the Ollama client so ChatOptions.Tools are executed
             // in an agent loop, capped at MaxToolRounds iterations per request (guardrail
             // against pathological tool loops on a small model). ConfigureOptions sits inside it, so
-            // every request in the loop goes to Ollama with thinking off (see OllamaChatSettings).
+            // every request in the loop gets the coach settings (thinking off, model kept loaded; see OllamaChatSettings).
             builder.Services.AddChatClient(_ =>
                     new OllamaApiClient(new Uri(assistantOptions.BaseUrl), assistantOptions.ChatModel))
                 .UseFunctionInvocation(configure: client =>
                     client.MaximumIterationsPerRequest = assistantOptions.MaxToolRounds)
-                .ConfigureOptions(OllamaChatSettings.TurnOffThinking);
+                .ConfigureOptions(OllamaChatSettings.Apply);
             builder.Services.AddEmbeddingGenerator(_ =>
                 new OllamaApiClient(new Uri(assistantOptions.BaseUrl), assistantOptions.EmbeddingModel));
 

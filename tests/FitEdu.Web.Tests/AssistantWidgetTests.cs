@@ -56,6 +56,67 @@ public class AssistantWidgetTests : BunitContext
         widget.WaitForElement(".assistant-suggestions button", TimeSpan.FromSeconds(10)); // the widget re-checks every 5 s
     }
 
+    private static async IAsyncEnumerable<AssistantStreamEvent> CutOffAnswer(string text)
+    {
+        await Task.Yield();
+        yield return new AssistantStreamEvent("token", text);
+        yield return new AssistantStreamEvent("truncated");
+        yield return new AssistantStreamEvent("done");
+    }
+
+    // Live check 2026-10-18: long answers stopped mid-word («Είναι ιδανικ») at the length limit.
+    [Theory]
+    [InlineData("Ξεκίνα με το Strength Foundations. Είναι ιδανικ", "Ξεκίνα με το Strength Foundations.")]
+    [InlineData("Ποιο είναι το επίπεδό σου; Αν είσαι αρχάρι", "Ποιο είναι το επίπεδό σου;")]
+    [InlineData("Try these:\n1. Push-up\n2. Bench pr", "Try these:\n1. Push-up")]
+    [InlineData("Start with three easy sess", "Start with three easy sess…")]
+    public void AnswerCutOffByTheLengthLimit_EndsAtTheLastFullSentence(string streamed, string shown)
+    {
+        _consumer.StreamChatAsync(Arg.Any<AssistantChatRequest>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => CutOffAnswer(streamed));
+        var widget = Render<AssistantWidget>();
+
+        widget.Find(".assistant-launcher").Click();
+        widget.WaitForElement(".assistant-suggestions button").Click();
+
+        widget.WaitForAssertion(() => widget.Find(".assistant-message-bot").TextContent.Trim().ShouldBe(shown));
+    }
+
+    [Fact]
+    public void NewChat_ClearsTheConversation()
+    {
+        var widget = Render<AssistantWidget>();
+        widget.Find(".assistant-launcher").Click();
+        widget.WaitForElement(".assistant-suggestions button").Click();
+        widget.WaitForElement(".assistant-message-bot");
+
+        widget.Find(".assistant-new-chat").Click();
+
+        widget.FindAll(".assistant-message-user").ShouldBeEmpty();
+        widget.FindAll(".assistant-suggestions button").ShouldNotBeEmpty();
+    }
+
+    [Fact]
+    public void LongChat_SendsOnlyTheQuestionAndTheTwoExchangesBeforeIt()
+    {
+        // Live check 2026-10-18: earlier exercise talk pulled a programme question into an exercise answer.
+        var sent = new List<AssistantChatRequest>();
+        _consumer.StreamChatAsync(Arg.Do<AssistantChatRequest>(sent.Add), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Answer("ok."));
+        var widget = Render<AssistantWidget>();
+        widget.Find(".assistant-launcher").Click();
+
+        for (var question = 1; question <= 4; question++)
+        {
+            JSInterop.Setup<string>("inputInterop.read", _ => true).SetResult($"Question {question}");
+            widget.WaitForElement(".assistant-send:not([disabled])").Click();
+            widget.WaitForAssertion(() => sent.Count.ShouldBe(question));
+        }
+
+        widget.WaitForAssertion(() =>
+            sent[^1].Messages.Select(m => m.Content).ShouldBe(["Question 2", "ok.", "Question 3", "ok.", "Question 4"]));
+    }
+
     [Fact]
     public void AskingASuggestedQuestion_ShowsTheQuestionAndTheAnswer()
     {

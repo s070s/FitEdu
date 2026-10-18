@@ -70,6 +70,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to New chat.
+        /// </summary>
+        public static string NewChat {
+            get {
+                return ResourceManager.GetString("NewChat", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to AI-generated — not medical or professional advice..
         /// </summary>
         public static string Disclaimer {

@@ -84,6 +84,7 @@ public partial class AssistantService(
         // Manual enumeration (rather than `await foreach`) so a mid-stream failure can be caught
         // and turned into an "error" event — `yield return` is not allowed inside a catch block.
         var errored = false;
+        var truncated = false;
         var enumerator = chatClient.GetStreamingResponseAsync(messages, chatOptions, cancellationToken).GetAsyncEnumerator(cancellationToken);
         try
         {
@@ -110,6 +111,9 @@ public partial class AssistantService(
 
                 if (!string.IsNullOrEmpty(update.Text))
                     yield return new AssistantStreamEvent("token", update.Text);
+
+                if (update.FinishReason == ChatFinishReason.Length)
+                    truncated = true;
             }
         }
         finally
@@ -122,6 +126,10 @@ public partial class AssistantService(
             yield return new AssistantStreamEvent("error", AssistantRes.Offline);
             yield break;
         }
+
+        // The answer hit MaxOutputTokens: the widget cuts it back to its last full sentence.
+        if (truncated)
+            yield return new AssistantStreamEvent("truncated");
 
         var sources = context
             .Select(c => new AssistantSourceDto(c.SourceTitle, c.SourceUrl))
@@ -188,7 +196,7 @@ public partial class AssistantService(
 
         prompt.AppendLine("You are FitEdu Coach, a helpful guide embedded in FitEdu, an online fitness platform with training programmes and an exercise library.");
         prompt.AppendLine("Help members find programmes, understand exercises (muscles, equipment, technique cues), plan their week and stay consistent.");
-        prompt.AppendLine(CultureInfo.InvariantCulture, $"Respond in {languageName}. Be concise. Do not use markdown formatting.");
+        prompt.AppendLine(CultureInfo.InvariantCulture, $"Respond in {languageName}. Keep answers short: at most 5 short points or about 120 words. Do not use markdown formatting.");
         if (isGreek)
         {
             prompt.AppendLine(GreekInformalAddressRule);
@@ -205,7 +213,7 @@ public partial class AssistantService(
         prompt.AppendLine("You are not a medical professional: never diagnose conditions. For pain, injury, pregnancy, heart or other conditions, tell the member to consult a doctor or physiotherapist before training.");
         prompt.AppendLine("If the user describes a crisis or serious distress, such as disordered eating or harmful thoughts about their body, gently encourage them to seek professional help.");
         prompt.AppendLine("Never prescribe diets or supplements beyond general, evidence-based guidance.");
-        prompt.AppendLine("When recommending platform content, refer to programmes, exercises or self-assessments by their exact title.");
+        prompt.AppendLine("When recommending platform content, refer to programmes, exercises or self-assessments by their exact title. Only name programmes and exercises that appear in CONTEXT or tool results; never invent them.");
         prompt.AppendLine(CultureInfo.InvariantCulture, $"The member's plan is {tier}.");
 
         if (enrolledTitles.Count > 0)

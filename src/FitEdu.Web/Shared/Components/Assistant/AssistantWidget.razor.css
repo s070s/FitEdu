@@ -55,8 +55,9 @@ body:has(.modal.show) .assistant-panel {
     color: var(--text-strong-normal);
 }
 
-/* 44 px target (WCAG 2.5.8) around the small close glyph. */
-.assistant-close {
+/* 44 px target (WCAG 2.5.8) around the small header glyphs. */
+.assistant-close,
+.assistant-new-chat {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +72,8 @@ body:has(.modal.show) .assistant-panel {
     font-size: 1rem;
 }
 
-.assistant-close:hover {
+.assistant-close:hover,
+.assistant-new-chat:hover {
     color: var(--text-strong-normal);
     background-color: rgba(var(--border-subtle-rgb), 0.1);
 }

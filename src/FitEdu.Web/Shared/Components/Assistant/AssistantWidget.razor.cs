@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,7 +14,9 @@ namespace FitEdu.Web.Shared.Components.Assistant;
 
 public partial class AssistantWidget : IDisposable
 {
-    private const int MaxHistoryMessages = 20;
+    // The current question plus the two exchanges before it. Live check 2026-10-18: with a long
+    // history, earlier exercise talk pulled a programme question into an exercise answer.
+    private const int MaxHistoryMessages = 5;
     private static readonly TimeSpan RenderThrottle = TimeSpan.FromMilliseconds(100);
 
     [Inject] private IAssistantConsumer Consumer { get; set; } = default!;
@@ -78,6 +81,12 @@ public partial class AssistantWidget : IDisposable
 
     private void ToggleOpen() => _open = !_open;
 
+    private void StartNewChat()
+    {
+        _messages.Clear();
+        _sources = [];
+    }
+
     private Task AskSuggested(string question) => SendAsync(question);
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
@@ -127,6 +136,12 @@ public partial class AssistantWidget : IDisposable
                         UpdateLastMessage(content.ToString());
                         ThrottledRender();
                         break;
+                    case "truncated":
+                        // The answer hit the length limit: end it at its last full sentence.
+                        var shortened = CutAtLastSentence(content.ToString());
+                        content.Clear().Append(shortened);
+                        UpdateLastMessage(shortened);
+                        break;
                     case "sources":
                         _sources = streamEvent.Sources ?? [];
                         break;
@@ -148,6 +163,21 @@ public partial class AssistantWidget : IDisposable
         _isStreaming = false;
         StateHasChanged();
     }
+
+    /// <summary>Cuts a cut-off answer back to its last full sentence or line; adds "…" when there is none.</summary>
+    private static string CutAtLastSentence(string text)
+    {
+        var end = SentenceEnd().Match(text);
+        if (!end.Success || end.Index == 0)
+            return text.TrimEnd() + "…";
+
+        return text[..end.Index].TrimEnd();
+    }
+
+    // The last ". ! ? ; …" right after a letter (so a list number like "3." does not count), or
+    // the last line break. ";" is the Greek question mark.
+    [GeneratedRegex(@"(?<=\p{L}[.!?;…])(?=\s|$)|\n", RegexOptions.RightToLeft)]
+    private static partial Regex SentenceEnd();
 
     private void UpdateLastMessage(string text)
     {

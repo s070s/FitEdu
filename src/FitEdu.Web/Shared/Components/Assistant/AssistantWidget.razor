@@ -13,7 +13,13 @@
             <div class="assistant-panel" role="dialog" aria-label="@AssistantRes.Title">
                 <div class="assistant-header">
                     <span class="assistant-title">@AssistantRes.Title</span>
-                    <button type="button" class="assistant-close" @onclick="ToggleOpen" aria-label="@AssistantRes.Close"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
+                    <div>
+                        @if (_messages.Count > 0 && !_isStreaming)
+                        {
+                            <button type="button" class="assistant-new-chat" @onclick="StartNewChat" aria-label="@AssistantRes.NewChat" title="@AssistantRes.NewChat"><span class="bi bi-plus-lg" aria-hidden="true"></span></button>
+                        }
+                        <button type="button" class="assistant-close" @onclick="ToggleOpen" aria-label="@AssistantRes.Close"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
+                    </div>
                 </div>
 
                 @if (_status is { State: "Disabled" })

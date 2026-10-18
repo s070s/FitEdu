@@ -24,7 +24,7 @@ public class AssistantController(IAssistantService assistantService) : Controlle
 
     /// <summary>
     /// Streams a grounded answer to the given conversation as Server-Sent Events. Each event's JSON
-    /// payload is an AssistantStreamEvent whose Kind is "token" | "sources" | "done" | "error".
+    /// payload is an AssistantStreamEvent whose Kind is "tool" | "token" | "truncated" | "sources" | "done" | "error".
     /// </summary>
     [HttpPost("chat")]
     [EnableRateLimiting("assistant")]

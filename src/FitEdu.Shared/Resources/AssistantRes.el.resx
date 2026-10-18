@@ -42,6 +42,9 @@
 	<data name="Close" xml:space="preserve">
 		<value>Κλείσιμο</value>
 	</data>
+	<data name="NewChat" xml:space="preserve">
+		<value>Νέα συζήτηση</value>
+	</data>
 	<data name="Disclaimer" xml:space="preserve">
 		<value>Παράγεται από AI — δεν αποτελεί ιατρική ή επαγγελματική συμβουλή.</value>
 	</data>

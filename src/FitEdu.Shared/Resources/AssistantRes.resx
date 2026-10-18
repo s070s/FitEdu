@@ -42,6 +42,9 @@
 	<data name="Close" xml:space="preserve">
 		<value>Close</value>
 	</data>
+	<data name="NewChat" xml:space="preserve">
+		<value>New chat</value>
+	</data>
 	<data name="Disclaimer" xml:space="preserve">
 		<value>AI-generated — not medical or professional advice.</value>
 	</data>
