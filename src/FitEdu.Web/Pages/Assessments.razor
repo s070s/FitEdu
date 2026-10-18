@@ -60,7 +60,7 @@
         {
             <div class="pagination-toolbar">
                 <span class="pagination-info">
-                    @string.Format(AssessmentRes.TotalAssessmentsFormat, _pagedResult.TotalCount)
+                    @ResourceFormat.Count(_pagedResult.TotalCount, AssessmentRes.AssessmentCountOne, AssessmentRes.TotalAssessmentsFormat)
                 </span>
                 <div class="page-size-selector">
                     <label for="assessmentPageSizeSelect">@AssessmentRes.PerPage</label>

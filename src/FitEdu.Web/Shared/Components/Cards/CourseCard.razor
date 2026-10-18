@@ -48,7 +48,7 @@
             @if (Course.AverageRating is { } rating)
             {
                 <span class="course-card__rating">
-                    <StarRating Value="rating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, rating, Course.ReviewCount)" />
+                    <StarRating Value="rating" AriaLabel="@ReviewLabels.RatingSummary(rating, Course.ReviewCount)" />
                     <span class="course-card__rating-count" aria-hidden="true">(@Course.ReviewCount)</span>
                 </span>
             }

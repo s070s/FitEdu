@@ -374,6 +374,15 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("TotalSetsFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 set in total.
+        /// </summary>
+        public static string TotalSetsOne {
+            get {
+                return ResourceManager.GetString("TotalSetsOne", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Done with this lesson? Mark it complete to save your progress..

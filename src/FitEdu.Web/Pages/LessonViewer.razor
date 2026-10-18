@@ -128,7 +128,7 @@ else
                         @* A single set is not worth a total. *@
                         @if (TotalSets > 1)
                         {
-                            <li class="chip">@string.Format(LessonRes.TotalSetsFormat, TotalSets)</li>
+                            <li class="chip">@ResourceFormat.Count(TotalSets, LessonRes.TotalSetsOne, LessonRes.TotalSetsFormat)</li>
                         }
                     </ul>
                 </div>

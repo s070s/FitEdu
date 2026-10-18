@@ -304,6 +304,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 1 self-assessment.
+        /// </summary>
+        public static string AssessmentCountOne {
+            get {
+                return ResourceManager.GetString("AssessmentCountOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Per page:.
         /// </summary>
         public static string PerPage {

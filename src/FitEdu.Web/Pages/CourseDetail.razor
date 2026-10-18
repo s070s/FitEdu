@@ -105,7 +105,7 @@ else
                 @if (_reviewsData?.Summary is { ReviewCount: > 0 } heroRating)
                 {
                     <li class="course-hero__rating">
-                        <StarRating Value="heroRating.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, heroRating.AverageRating, heroRating.ReviewCount)" />
+                        <StarRating Value="heroRating.AverageRating" AriaLabel="@ReviewLabels.RatingSummary(heroRating.AverageRating, heroRating.ReviewCount)" />
                         <span aria-hidden="true">@heroRating.AverageRating.ToString("0.0") (@heroRating.ReviewCount)</span>
                     </li>
                 }
@@ -242,8 +242,8 @@ else
                     @if (_reviewsData?.Summary is { } summary)
                     {
                         <div class="reviews-summary">
-                            <StarRating Value="summary.AverageRating" AriaLabel="@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)" />
-                            <span>@string.Format(ReviewRes.RatingSummaryFormat, summary.AverageRating, summary.ReviewCount)</span>
+                            <StarRating Value="summary.AverageRating" AriaLabel="@ReviewLabels.RatingSummary(summary.AverageRating, summary.ReviewCount)" />
+                            <span>@ReviewLabels.RatingSummary(summary.AverageRating, summary.ReviewCount)</span>
                         </div>
                     }
                 </div>
