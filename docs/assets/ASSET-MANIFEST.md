@@ -53,7 +53,7 @@ Text the app seeds into the database. It is not an image, so it is not a row in
 
 | Files (under `src/FitEdu.Shared/JSON`) | Source | Licence | Where the licence is stated |
 |---|---|---|---|
-| `Exercises/exercises.json` (873 exercises: names, muscles, equipment, English steps) | Free Exercise DB `dist/exercises.json`, <https://github.com/yuhonas/free-exercise-db>, checked on 2026-10-12 | The Unlicense | <https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md>; details in [`Exercises/README.md`](../../src/FitEdu.Shared/JSON/Exercises/README.md) |
+| `Exercises/exercises.json` (873 exercises: names, muscles, equipment, English steps) | Free Exercise DB `dist/exercises.json`, <https://github.com/yuhonas/free-exercise-db>, checked on 2026-10-12. The instructions are an edited copy (typos fixed, British spelling, metric units; edited 2026-10-18); all other fields match upstream; the licence is unchanged | The Unlicense | <https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md>; details in [`Exercises/README.md`](../../src/FitEdu.Shared/JSON/Exercises/README.md) |
 | `Exercises/exercises.el.json`, `Exercises/el/*.el.json` (Greek names and steps) | Our own translation of the rows above | MIT (own work) | [`LICENSE`](../../LICENSE) |
 | `Courses`, `Assessments`, `Paths`, `Showcase`, `Students` | Our own writing | MIT (own work) | [`LICENSE`](../../LICENSE) |
 
