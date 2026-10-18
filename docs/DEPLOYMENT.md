@@ -16,7 +16,7 @@ restart at a time. See `.env.template` for the full local-dev list.
 | `AdminUser:Password` | Seeds the admin account on first boot. Env var: `AdminUser__Password`. |
 | `ConnectionStrings:DefaultConnection` | SQL Server connection string. |
 | `Email:Smtp:Host` (+ credentials) | Required outside Development — see [Email transport](#email-transport) below. |
-| `SeedData:StudentPassword` | Only required when `SeedData:Enabled=true` (Development sample-data seeding). |
+| `SeedData:StudentPassword` | Only required when sample content is seeded (see [Public demo](#public-demo)). |
 
 ## SelfBaseUrl and the loopback API call
 
@@ -51,3 +51,11 @@ Papercut/Mailhog in Development or a real relay (SES/SendGrid SMTP/etc.) in prod
 Development falls back to `StubEmailService` (logs only) when no SMTP host is configured; any
 other environment **fails fast at startup** so emails are never silently swallowed in
 production. Full SMTP options: `Email:Smtp:{Host,Port,UseStartTls,Username,Password,FromAddress,FromName}`.
+
+## Public demo
+
+A demo deployment needs the sample programmes, exercises and members, which normally seed only in
+Development. Set both `SeedData:Enabled=true` and `SeedData:AllowOutsideDevelopment=true` (plus
+`SeedData:StudentPassword`, the password of the sample members); the published app reads the JSON
+from its `SeedJson/` folder. Never set the second key on a real deployment. Without Ollama, set
+`Assistant:Enabled=false`: the coach button then disappears.

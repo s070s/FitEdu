@@ -7,7 +7,7 @@ namespace FitEdu.Web.Startup;
 /// Collects every missing/invalid required startup config value into a single failure
 /// instead of the app dying on the first one, restarting, then dying on the next
 /// (MAINT-5) — Jwt:Key, AdminUser:Password, Email:Smtp:Host (non-Development), and
-/// SeedData:StudentPassword (Development with SeedData:Enabled=true) each already throw
+/// SeedData:StudentPassword (whenever sample content is seeded) each already throw
 /// their own <see cref="InvalidOperationException"/> deeper in startup; this runs first so a
 /// contributor sees every missing key at once instead of one per restart. Those individual
 /// checks are left in place as defense in depth.
@@ -31,8 +31,7 @@ public static class StartupConfigValidation
         if (!builder.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(config["Email:Smtp:Host"]))
             errors.Add("Email:Smtp:Host is required outside Development. Set it (and SMTP credentials) for production.");
 
-        if (builder.Environment.IsDevelopment()
-            && config.GetValue<bool>("SeedData:Enabled")
+        if (DatabaseSeedingExtensions.SeedsSampleContent(builder.Environment, config)
             && string.IsNullOrWhiteSpace(config["SeedData:StudentPassword"]))
         {
             errors.Add("SeedData:StudentPassword is required when SeedData:Enabled=true. Set it via User Secrets.");

@@ -122,6 +122,27 @@ public class StartupConfigValidationTests
     }
 
     [Fact]
+    public void DemoDeployment_SampleContentOptedIn_MissingStudentPassword_Throws()
+    {
+        var config = ValidProductionConfig();
+        config["SeedData:Enabled"] = "true";
+        config["SeedData:AllowOutsideDevelopment"] = "true";
+        var builder = NewBuilder("Production", config);
+
+        var ex = Should.Throw<InvalidOperationException>(() => builder.ValidateRequiredConfig());
+        ex.Message.ShouldContain("SeedData:StudentPassword");
+    }
+
+    [Fact]
+    public void Production_SeedDataEnabledWithoutTheDemoOptIn_SeedsNothing()
+    {
+        // OPS-1: SeedData:Enabled alone (e.g. copied from a dev config) must not put sample content live.
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["SeedData:Enabled"] = "true" }).Build();
+
+        DatabaseSeedingExtensions.SeedsSampleContent(NewBuilder("Production", []).Environment, config).ShouldBeFalse();
+    }
+
+    [Fact]
     public void MultipleMissingKeys_ReportsAllInOneException()
     {
         var builder = NewBuilder("Production", []);

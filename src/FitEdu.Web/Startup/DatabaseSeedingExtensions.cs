@@ -9,7 +9,7 @@ namespace FitEdu.Web.Startup;
 /// <summary>
 /// Startup migration + seed: pre-warms LocalDB in Development, migrates the relational
 /// database, and seeds roles, subscription plans, and the admin user unconditionally, plus
-/// (Development-only, SeedData:Enabled) demo blog articles and JSON-driven exercise-library/
+/// (SeedData:Enabled in Development; a public demo also needs SeedData:AllowOutsideDevelopment) demo blog articles and JSON-driven exercise-library/
 /// course/assessment/student/learning-path/testimonial/live-class sample data — none of which
 /// belongs in a real deployment.
 /// </summary>
@@ -143,43 +143,59 @@ public static class DatabaseSeedingExtensions
             }
         }
 
-        // Development-only seed data (OPS-1: blog demo content must never touch a real deployment —
-        // roles/plans/admin above are the only seeds safe to run unconditionally)
-        if (app.Environment.IsDevelopment() && config.GetValue<bool>("SeedData:Enabled"))
+        // Sample content (OPS-1: it must never reach a real deployment by accident — roles/plans/admin
+        // above are the only seeds safe to run unconditionally). Development seeds it with SeedData:Enabled;
+        // a public demo has to opt in a second time with SeedData:AllowOutsideDevelopment.
+        if (SeedsSampleContent(app.Environment, config))
         {
             await BlogArticleSeeder.SeedAsync(db, startupLogger);
 
             // Exercises before courses, so course lessons can link exercises by slug.
-            var exerciseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Exercises")
-                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Exercises");
+            var exerciseJsonPath = SeedJsonPath(app, config, "Exercises");
             await ExerciseSeeder.SeedFromJsonAsync(db, exerciseJsonPath, startupLogger);
 
-            var jsonSeedPath = config.GetValue<string>("SeedData:JsonPaths:Courses")
-                               ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Courses");
+            var jsonSeedPath = SeedJsonPath(app, config, "Courses");
             await CourseSeeder.SeedFromJsonAsync(db, jsonSeedPath, startupLogger);
 
-            var assessmentJsonPath = config.GetValue<string>("SeedData:JsonPaths:Assessments")
-                                     ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Assessments");
+            var assessmentJsonPath = SeedJsonPath(app, config, "Assessments");
             await AssessmentSeeder.SeedFromJsonAsync(db, assessmentJsonPath, startupLogger);
 
-            var studentJsonPath = config.GetValue<string>("SeedData:JsonPaths:Students")
-                                  ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Students");
+            var studentJsonPath = SeedJsonPath(app, config, "Students");
             var studentPassword = config["SeedData:StudentPassword"]
                 ?? throw new InvalidOperationException(
                     "SeedData:StudentPassword is required when SeedData:Enabled=true. Set it via User Secrets.");
             await StudentSeeder.SeedFromJsonAsync(userManager, studentJsonPath, studentPassword, startupLogger);
 
             // Path steps name their courses by English title, so paths seed after the courses.
-            var pathJsonPath = config.GetValue<string>("SeedData:JsonPaths:Paths")
-                               ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Paths");
+            var pathJsonPath = SeedJsonPath(app, config, "Paths");
             await LearningPathSeeder.SeedFromJsonAsync(db, pathJsonPath, startupLogger);
 
             // Testimonials and live classes; the admin account seeded above hosts the classes.
-            var showcaseJsonPath = config.GetValue<string>("SeedData:JsonPaths:Showcase")
-                                   ?? Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", "Showcase");
+            var showcaseJsonPath = SeedJsonPath(app, config, "Showcase");
             var liveClassHost = await userManager.FindByEmailAsync(adminEmail)
                 ?? throw new InvalidOperationException($"Admin user '{adminEmail}' not found; it hosts the seeded live classes.");
             await ShowcaseSeeder.SeedFromJsonAsync(db, showcaseJsonPath, liveClassHost.Id, TimeProvider.System, startupLogger);
         }
+    }
+
+    /// <summary>Whether startup seeds the sample content (programmes, exercises, members, …).</summary>
+    public static bool SeedsSampleContent(IHostEnvironment environment, IConfiguration config) =>
+        config.GetValue<bool>("SeedData:Enabled")
+        && (environment.IsDevelopment() || config.GetValue<bool>("SeedData:AllowOutsideDevelopment"));
+
+    /// <summary>
+    /// The folder of one kind of sample JSON: SeedData:JsonPaths:{name} when set, else the published copy
+    /// (SeedJson/, see FitEdu.Web.csproj), else the source tree's FitEdu.Shared/JSON folder.
+    /// </summary>
+    private static string SeedJsonPath(WebApplication app, IConfiguration config, string name)
+    {
+        var configured = config.GetValue<string>($"SeedData:JsonPaths:{name}");
+        if (!string.IsNullOrWhiteSpace(configured))
+            return configured;
+
+        var published = Path.Combine(app.Environment.ContentRootPath, "SeedJson", name);
+        return Directory.Exists(published)
+            ? published
+            : Path.Combine(app.Environment.ContentRootPath, "..", "FitEdu.Shared", "JSON", name);
     }
 }

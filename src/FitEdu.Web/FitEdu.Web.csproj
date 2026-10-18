@@ -47,6 +47,13 @@
     <ProjectReference Include="..\FitEdu.Shared\FitEdu.Shared.csproj" />
   </ItemGroup>
 
+  <!-- Sample content for a demo deployment (SeedData:AllowOutsideDevelopment): published as SeedJson/,
+       which DatabaseSeedingExtensions reads when the source tree's FitEdu.Shared folder is not there. -->
+  <ItemGroup>
+    <None Include="..\FitEdu.Shared\JSON\**\*.json" Link="SeedJson\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="Never" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="App_Data\Uploads\avatars\" />
     <Folder Include="App_Data\Uploads\lessons\pdf\" />

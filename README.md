@@ -55,7 +55,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 **Admin:** `admin@fitedu.local` / *(password you set in `.env`)*
 
-> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths, testimonials, live classes) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). Each folder below is named by a `SeedData:JsonPaths:<Folder>` key in `appsettings.Development.json` (for example `SeedData:JsonPaths:Exercises` = `../FitEdu.Shared/JSON/Exercises`, resolved from `src/FitEdu.Web`); when a key is missing the app falls back to the same folder next to the web project. The exercise library is seeded first, because course lessons name their exercises by slug. The seed catalogue, all in English and Greek:
+> Seed data (blog articles, the public-domain exercise library, courses, assessments, students, learning paths, testimonials, live classes) runs automatically in Development when `SeedData:Enabled = true` in `appsettings.Development.json`. Any other environment seeds it only when `SeedData:AllowOutsideDevelopment = true` is set as well (a public demo, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#public-demo)); a published app reads the JSON from its own `SeedJson/` folder. The bulk student seeder runs in the background after startup. Set `SeedData:BulkStudentCount` in `.env` to control the count (default: 10). Each folder below is named by a `SeedData:JsonPaths:<Folder>` key in `appsettings.Development.json` (for example `SeedData:JsonPaths:Exercises` = `../FitEdu.Shared/JSON/Exercises`, resolved from `src/FitEdu.Web`); when a key is missing the app falls back to the same folder next to the web project. The exercise library is seeded first, because course lessons name their exercises by slug. The seed catalogue, all in English and Greek:
 >
 > | Folder under `src/FitEdu.Shared/JSON/` | What it seeds |
 > |---|---|
@@ -560,7 +560,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 | `Jwt:AccessTokenExpirationMinutes` | `appsettings.json` | Default `15`. |
 | `Jwt:RefreshTokenExpirationDays` | `appsettings.json` | Default `7`. |
 | `AdminUser__Password` | `.env` | Admin seed account password. |
-| `SeedData__StudentPassword` | `.env` | Seed student password. Required when `SeedData:Enabled = true`. |
+| `SeedData__StudentPassword` | `.env` | Seed student password. Required whenever sample content is seeded (`SeedData:Enabled = true`, plus `SeedData:AllowOutsideDevelopment = true` outside Development). |
 | `Payment:MockEnabled` | `appsettings.Development.json` | `true` in dev — skips real Stripe; uses mock checkout. |
 | `Payment__WebhookSecret` | `.env` | Stripe HMAC signing secret. Leave unset in dev. |
 | `AllowedHosts` | `.env` or env var | Default `localhost;127.0.0.1`. **Set to your production domain** (e.g. `fitedu.com;www.fitedu.com`) before deploying. |
