@@ -171,12 +171,6 @@
 	<data name="CurrentStreak" xml:space="preserve">
 		<value>Current streak</value>
 	</data>
-	<data name="StreakDaysFormat" xml:space="preserve">
-		<value>{0} days</value>
-	</data>
-	<data name="StreakDayOne" xml:space="preserve">
-		<value>1 day</value>
-	</data>
 	<data name="StatsHeading" xml:space="preserve">
 		<value>Your training at a glance</value>
 	</data>

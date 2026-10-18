@@ -82,7 +82,7 @@
 		<value>Αναβάθμισε</value>
 	</data>
 	<data name="BtnDowngradeToFree" xml:space="preserve">
-		<value>Πέρνα στο δωρεάν πλάνο</value>
+		<value>Πέρνα στο πλάνο Δωρεάν</value>
 	</data>
 	<data name="BtnIncluded" xml:space="preserve">
 		<value>Περιλαμβάνεται</value>
@@ -148,7 +148,7 @@
 		<value>Η βιβλιοθήκη ασκήσεων και οι live προπονήσεις είναι ανοιχτές σε κάθε μέλος. Άλλαξε ή ακύρωσε το πλάνο σου όποτε θέλεις.</value>
 	</data>
 	<data name="OneCourseAtATime" xml:space="preserve">
-		<value>1 ενεργό πρόγραμμα κάθε φορά</value>
+		<value>1 ενεργό πρόγραμμα ταυτόχρονα</value>
 	</data>
 	<data name="PeriodForever" xml:space="preserve">
 		<value>για πάντα</value>

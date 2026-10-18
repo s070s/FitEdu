@@ -171,12 +171,6 @@
 	<data name="CurrentStreak" xml:space="preserve">
 		<value>Τρέχον σερί</value>
 	</data>
-	<data name="StreakDaysFormat" xml:space="preserve">
-		<value>{0} μέρες</value>
-	</data>
-	<data name="StreakDayOne" xml:space="preserve">
-		<value>1 μέρα</value>
-	</data>
 	<data name="StatsHeading" xml:space="preserve">
 		<value>Η προπόνησή σου με μια ματιά</value>
 	</data>

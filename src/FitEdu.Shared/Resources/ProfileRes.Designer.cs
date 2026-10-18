@@ -457,24 +457,6 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} days.
-        /// </summary>
-        public static string StreakDaysFormat {
-            get {
-                return ResourceManager.GetString("StreakDaysFormat", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to 1 day.
-        /// </summary>
-        public static string StreakDayOne {
-            get {
-                return ResourceManager.GetString("StreakDayOne", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Your training at a glance.
         /// </summary>
         public static string StatsHeading {

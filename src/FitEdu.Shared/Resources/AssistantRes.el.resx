@@ -61,7 +61,7 @@
 		<value>Ο προπονητής AI δεν είναι διαθέσιμος αυτή τη στιγμή. Δοκίμασε ξανά αργότερα.</value>
 	</data>
 	<data name="OpenAssistant" xml:space="preserve">
-		<value>Άνοιγμα του προπονητή AI</value>
+		<value>Άνοιξε τον προπονητή AI</value>
 	</data>
 	<data name="Placeholder" xml:space="preserve">
 		<value>Κάνε μια ερώτηση…</value>
