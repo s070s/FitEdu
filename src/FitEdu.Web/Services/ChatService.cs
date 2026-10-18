@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.SignalR.Client;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
@@ -60,8 +59,7 @@ public class ChatService : IChatService
                 options.AccessTokenProvider = () => circuitUser is not null
                     ? _authService.GetTokenAsync(circuitUser)
                     : _authService.GetTokenAsync();
-                // The hub's error messages follow the member's UI language, like AcceptLanguageHandler does for the API.
-                options.Headers["Accept-Language"] = CultureInfo.CurrentUICulture.Name;
+                HubConnectionLanguage.SendCurrentUiLanguage(options);
             })
             .WithAutomaticReconnect()
             .Build();

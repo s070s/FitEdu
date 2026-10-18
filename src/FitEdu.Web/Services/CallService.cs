@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
@@ -78,8 +77,7 @@ public partial class CallService : ICallService
                 options.AccessTokenProvider = () => circuitUser is not null
                     ? _authService.GetTokenAsync(circuitUser)
                     : _authService.GetTokenAsync();
-                // The hub's error messages follow the member's UI language, like AcceptLanguageHandler does for the API.
-                options.Headers["Accept-Language"] = CultureInfo.CurrentUICulture.Name;
+                HubConnectionLanguage.SendCurrentUiLanguage(options);
             })
             .WithAutomaticReconnect()
             .Build();

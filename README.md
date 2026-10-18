@@ -92,7 +92,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Video calls | Self-hosted WebRTC (P2P mesh, up to 6 participants) with SignalR signaling |
 | API docs | OpenAPI (`Microsoft.AspNetCore.OpenApi`) + Swagger UI — `/swagger` (Development only) |
 | PDF | QuestPDF 2026.8.0 (certificates: one landscape page in the brand palette with the dumbbell mark) |
-| Localization | English + Greek (`.resx`); the Greek culture uses a 24-hour clock (`21:00`), and the loopback API calls carry the page language as `Accept-Language` |
+| Localization | English + Greek (`.resx`); the Greek culture uses a 24-hour clock (`21:00`), and the loopback API calls and the chat/call hub connections carry the page language as `Accept-Language`, so server and hub errors come back in that language |
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | CI | GitHub Actions (`.github/workflows/tests.yml`) |
 | Logging | Custom daily file logger |
