@@ -41,7 +41,7 @@
                         }
                         @foreach (var message in _messages)
                         {
-                            <AssistantMessage Role="message.Role" Content="message.Content" />
+                            <AssistantMessage Role="@message.Role" Content="@message.Content" />
                         }
                         @if (_sources.Count > 0)
                         {
