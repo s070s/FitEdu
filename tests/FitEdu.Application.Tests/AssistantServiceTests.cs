@@ -127,6 +127,31 @@ public class AssistantServiceTests
     }
 
     [Fact]
+    public async Task StreamChatAsync_SystemPromptEndsWithTheAnswerLanguage()
+    {
+        // Live check 2026-10-18: with English CONTEXT and tool results, the small local model
+        // answered a Greek question in English; a closing reminder is what it follows best.
+        await using var db = DbContextFactory.CreateInMemory();
+        var (svc, chatClient, retrieval, _) = NewService(db);
+        retrieval.SearchAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IReadOnlyList<AssistantRetrievedChunk>>(
+                [new AssistantRetrievedChunk("Strength Foundations teaches the squat.", "Strength Foundations", "courses/abc")]));
+
+        List<ChatMessage>? captured = null;
+        chatClient.GetStreamingResponseAsync(Arg.Any<IEnumerable<ChatMessage>>(), Arg.Any<ChatOptions>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                captured = callInfo.Arg<IEnumerable<ChatMessage>>().ToList();
+                return Updates("ok");
+            });
+
+        await Collect(svc.StreamChatAsync(UserId, OneUserMessage("Ποια προγράμματα έχετε;"), "el"));
+
+        var lastLine = captured.ShouldNotBeNull()[0].Text.TrimEnd().Split('\n')[^1];
+        lastLine.ShouldStartWith("Write your whole answer in Greek");
+    }
+
+    [Fact]
     public async Task StreamChatAsync_SystemPromptIsTheFitnessCoachWithMedicalBoundaries()
     {
         await using var db = DbContextFactory.CreateInMemory();

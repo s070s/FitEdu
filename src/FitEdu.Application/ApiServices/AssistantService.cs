@@ -26,6 +26,10 @@ public partial class AssistantService(
     IAssistantTools tools,
     ILogger<AssistantService> logger) : IAssistantService
 {
+    // Ollama unloads an idle model after 5 minutes, so a ping can include reloading it
+    // (a few seconds on a GPU, longer on a CPU-only machine).
+    private static readonly TimeSpan StatusPingTimeout = TimeSpan.FromSeconds(15);
+
     // The Greek UI says εσύ, so the coach must not switch to the polite plural (εσείς).
     private const string GreekInformalAddressRule = "In Greek, address the member informally (εσύ).";
 
@@ -143,7 +147,7 @@ public partial class AssistantService(
             try
             {
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                timeoutCts.CancelAfter(TimeSpan.FromSeconds(5));
+                timeoutCts.CancelAfter(StatusPingTimeout);
                 await chatClient.GetResponseAsync("ping", new ChatOptions { MaxOutputTokens = 1 }, timeoutCts.Token);
                 return new AssistantStatusDto(true, _options.ChatModel, nameof(AssistantAvailability.Ready));
             }
@@ -217,6 +221,11 @@ public partial class AssistantService(
         {
             prompt.AppendLine("No matching CONTEXT was found for this question. Answer from general, evidence-based training knowledge, and mention the platform may not have specific content on this yet if relevant.");
         }
+
+        // Repeated last: the small local model follows the final line best, and CONTEXT or tool
+        // results in the other language otherwise pull its answer into that language.
+        prompt.AppendLine(CultureInfo.InvariantCulture,
+            $"Write your whole answer in {languageName}, even when CONTEXT or tool results are in another language.");
 
         return prompt.ToString();
     }

@@ -13,14 +13,25 @@ namespace FitEdu.Web.Tests;
 /// Live smoke test against a locally running Ollama — guarded by FITEDU_OLLAMA_LIVE=1 so it
 /// self-passes (effectively skips) in CI and on machines without Ollama. Run with:
 ///   FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke
-/// Boots its own factory with the assistant enabled (the shared "web" host keeps it off),
-/// waits for the bootstrap to reach Ready, then asserts one real chat turn streams tokens
-/// and finishes with a done event.
+/// Unloads the chat model first so the app has to load it (the cold-start path), boots its own
+/// factory with the assistant enabled (the shared "web" host keeps it off), waits for the
+/// bootstrap to reach Ready, then asserts that real chat turns in English and Greek stream
+/// tokens and finish with a done event.
 /// </summary>
 public class AssistantLiveSmokeTests(ITestOutputHelper output)
 {
+    private const string OllamaBaseUrl = "http://localhost:11434";
+    private const string ChatModel = "qwen3:1.7b";
+
     private static bool LiveEnabled =>
         Environment.GetEnvironmentVariable("FITEDU_OLLAMA_LIVE") == "1";
+
+    private static readonly (string Language, string Question)[] Questions =
+    [
+        ("en", "What programmes do you offer?"),
+        ("el", "Ποια προγράμματα έχετε;"),
+        ("en", "Find me an exercise for the chest.")
+    ];
 
     private sealed class LiveAssistantFactory : CustomWebAppFactory
     {
@@ -42,6 +53,8 @@ public class AssistantLiveSmokeTests(ITestOutputHelper output)
             return;
         }
 
+        await UnloadChatModelAsync();
+
         await using var factory = new LiveAssistantFactory();
         var client = await factory.CreateAuthenticatedClientAsync("Student");
         client.Timeout = TimeSpan.FromMinutes(5);
@@ -60,8 +73,15 @@ public class AssistantLiveSmokeTests(ITestOutputHelper output)
         status.ShouldNotBeNull();
         status!.State.ShouldBe("Ready", $"assistant never became Ready (last: {status.State} {status.Progress})");
 
-        var response = await client.PostAsJsonAsync("/api/assistant/chat",
-            new AssistantChatRequest([new AssistantMessageDto("user", "What courses do you offer?")]));
+        foreach (var (language, question) in Questions)
+            await AskAsync(client, language, question);
+    }
+
+    /// <summary>Asks one question and asserts the answer streams and completes.</summary>
+    private async Task AskAsync(HttpClient client, string language, string question)
+    {
+        var response = await client.PostAsJsonAsync($"/api/assistant/chat?lang={language}",
+            new AssistantChatRequest([new AssistantMessageDto("user", question)]));
         response.EnsureSuccessStatusCode();
 
         var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -78,9 +98,17 @@ public class AssistantLiveSmokeTests(ITestOutputHelper output)
                 text.Append(item.Data.Text);
         }
 
-        output.WriteLine($"events: {string.Join(",", kinds.Distinct())}; answer: {text.ToString()[..Math.Min(200, text.Length)]}");
+        output.WriteLine($"[{language}] {question} -> events: {string.Join(",", kinds.Distinct())}; answer: {text}");
         kinds.ShouldContain("token");
         kinds.Last().ShouldBe("done");
         text.Length.ShouldBeGreaterThan(0);
+    }
+
+    /// <summary>keep_alive 0 tells Ollama to drop the model from memory now.</summary>
+    private static async Task UnloadChatModelAsync()
+    {
+        using var ollama = new HttpClient { BaseAddress = new Uri(OllamaBaseUrl) };
+        var response = await ollama.PostAsJsonAsync("/api/generate", new { model = ChatModel, keep_alive = 0 });
+        response.EnsureSuccessStatusCode();
     }
 }

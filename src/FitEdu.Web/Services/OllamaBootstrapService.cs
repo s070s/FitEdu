@@ -20,6 +20,8 @@ public sealed partial class OllamaBootstrapService(
 {
     private static readonly TimeSpan MinDelay = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan MaxDelay = TimeSpan.FromSeconds(60);
+    // The first model load after an install or reboot can take over a minute; later loads take seconds.
+    private static readonly TimeSpan WarmUpTimeout = TimeSpan.FromMinutes(5);
 
     private readonly AssistantOptions _options = assistantOptions.Value;
 
@@ -68,15 +70,29 @@ public sealed partial class OllamaBootstrapService(
         }
     }
 
-    /// <summary>Probes Ollama and pulls whatever is missing. True when both models are present.</summary>
+    /// <summary>
+    /// Probes Ollama, pulls whatever is missing and loads the chat model. True when both models
+    /// are present and the chat model is loaded.
+    /// </summary>
     private async Task<bool> EnsureReadyAsync(CancellationToken cancellationToken)
     {
-        var api = new OllamaApiClient(new Uri(_options.BaseUrl));
+        // No HttpClient timeout: pulls and the first model load can outlast the 100 s default;
+        // each call below sets its own limit through the cancellation token instead.
+        using var httpClient = new HttpClient { BaseAddress = new Uri(_options.BaseUrl), Timeout = Timeout.InfiniteTimeSpan };
+        using var api = new OllamaApiClient(httpClient);
 
         var missing = await GetMissingModelsAsync(api, cancellationToken);
-        if (missing.Count == 0)
-            return true;
+        if (missing.Count > 0 && !await PullModelsAsync(api, missing, cancellationToken))
+            return false;
 
+        if (state.Status != AssistantAvailability.Ready)
+            await WarmUpChatModelAsync(api, cancellationToken);
+        return true;
+    }
+
+    /// <summary>Pulls the missing models. True when all of them are present afterwards.</summary>
+    private async Task<bool> PullModelsAsync(OllamaApiClient api, List<string> missing, CancellationToken cancellationToken)
+    {
         if (!_options.AutoPullModels)
         {
             state.Set(AssistantAvailability.OllamaUnreachable,
@@ -111,6 +127,23 @@ public sealed partial class OllamaBootstrapService(
         return (await GetMissingModelsAsync(api, cancellationToken)).Count == 0;
     }
 
+    /// <summary>
+    /// Loads the chat model into memory before the assistant reports Ready. Without this, the
+    /// first chat or status check pays the whole load time, and the status check gives up after
+    /// a few seconds, which also cancels the load, so a slow first load never finished.
+    /// </summary>
+    private async Task WarmUpChatModelAsync(OllamaApiClient api, CancellationToken cancellationToken)
+    {
+        LogWarmingUp(logger, _options.ChatModel);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(WarmUpTimeout);
+
+        // A request without a prompt makes Ollama load the model without generating anything.
+        await foreach (var _ in api.GenerateAsync(new GenerateRequest { Model = _options.ChatModel }, timeout.Token))
+        {
+        }
+    }
+
     private async Task<List<string>> GetMissingModelsAsync(OllamaApiClient api, CancellationToken cancellationToken)
     {
         var local = (await api.ListLocalModelsAsync(cancellationToken)).Select(m => m.Name).ToList();
@@ -142,4 +175,7 @@ public sealed partial class OllamaBootstrapService(
 
     [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: pulled {Model}.")]
     private static partial void LogPulledModel(ILogger logger, string model);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "OllamaBootstrap: loading {Model} into memory…")]
+    private static partial void LogWarmingUp(ILogger logger, string model);
 }

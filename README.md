@@ -707,7 +707,7 @@ A grounded, bilingual (EN/EL) AI helper available to every authenticated user, r
    ```powershell
    dotnet run --project src/FitEdu.Web
    ```
-   On first start the app **auto-pulls the two models it needs** — `qwen3:1.7b` (chat, ≈ 1.4 GB) and `bge-m3` (embeddings, ≈ 1.2 GB); ~2.6 GB total, one-time. The assistant widget shows live download progress and goes live the moment everything is ready.
+   On first start the app **auto-pulls the two models it needs** — `qwen3:1.7b` (chat, ≈ 1.4 GB) and `bge-m3` (embeddings, ≈ 1.2 GB); ~2.6 GB total, one-time. The assistant widget shows live download progress. The app then loads the chat model into memory (the first load after an install or reboot can take about a minute) and goes live once it is loaded.
 
 You can install or start Ollama **after** the app is already running — it keeps probing and recovers on its own, no restart needed. To pull the models yourself instead (e.g. on a metered connection): `ollama pull qwen3:1.7b && ollama pull bge-m3`. If Ollama runs on a different machine or port, point the app at it with `Assistant__BaseUrl` (see the table below).
 
@@ -728,7 +728,7 @@ You can install or start Ollama **after** the app is already running — it keep
 
 **Hardware guidance:** runs CPU-only on any ~2020+ 4-core machine with 8 GB RAM — no GPU required. Expect a few seconds to the first token (streaming masks this); the 1.7B default model is comfortably faster than the previous 4B one.
 
-**Live smoke test** (optional, needs Ollama running): `FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke` boots the app against local Ollama, waits for Ready, and asserts a real streamed answer. Without the variable the test self-passes, so CI never needs Ollama.
+**Live smoke test** (optional, needs Ollama running): `FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke` unloads the chat model, boots the app against local Ollama, waits for Ready (so the cold-start path is covered), and asserts streamed answers to English and Greek questions; it prints the answers for a read-through. Without the variable the test self-passes, so CI never needs Ollama.
 
 ---
 
