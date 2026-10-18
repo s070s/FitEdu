@@ -71,61 +71,61 @@
     <value>Privacy Policy</value>
   </data>
   <data name="PrivacyIntro" xml:space="preserve">
-    <value>FitEdu is an online fitness platform with training programmes and an exercise library. This policy explains what personal data we collect when you create an account, enrol in programmes, complete workouts, answer self-assessments or use chat, video calls, live classes and the AI coach; why we process that data; how long we keep it; and the rights you have over it. FitEdu is a university certificate project built for educational purposes, not a commercial service, so please do not enter detailed medical records or other highly sensitive information.</value>
+    <value>FitEdu is an online fitness platform with training programmes and an exercise library. This policy explains what personal data we collect when you create an account, join programmes, complete workouts, answer self-assessments or use chat, video calls, live classes and the AI coach; why we process that data; how long we keep it; and the rights you have over it. FitEdu is a student project for a university certificate programme, not a commercial service, so please do not enter detailed medical records or other highly sensitive information.</value>
   </data>
   <data name="PrivacyDataTitle" xml:space="preserve">
     <value>What data we collect</value>
   </data>
   <data name="PrivacyDataBody" xml:space="preserve">
-    <value>When you create an account we store your name, email address, date of birth, training level, the language you read FitEdu in (English or Greek, used for the site and our emails to you) and, if you choose them, a training goal and a profile picture. As you train we store the programmes you enrol in, the workouts and lessons you complete, your self-assessment answers and results, your programme reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
+    <value>When you create an account we store your name, email address, date of birth, training level, the language you read FitEdu in (English or Greek, used for the site and our emails to you) and, if you choose them, a training goal and a profile photo. As you train we store the programmes you join, the workouts and lessons you complete, your self-assessment answers and results, your programme reviews, the live classes you sign up for, any certificates you earn, and your subscription and billing history. If you use chat or video calls we store your messages and the call history (who took part and when). We also record when you gave consent and technical audit details such as who created or last changed a record.</value>
   </data>
   <data name="PrivacyPurposeTitle" xml:space="preserve">
     <value>Why we process your data</value>
   </data>
   <data name="PrivacyPurposeBody" xml:space="preserve">
-    <value>We use your data to run your account, deliver the programmes, workouts and self-assessments you sign up for, track your progress and issue certificates, run chat, video calls and live classes, and manage your subscription. The lawful basis is the performance of our agreement with you and, for the health-related assessment answers described below, your explicit consent.</value>
+    <value>We use your data to run your account, deliver the programmes, workouts and self-assessments you sign up for, track your progress and issue certificates, run chat, video calls and live classes, and manage your subscription. The lawful basis is the performance of our agreement with you and, for the health-related self-assessment answers described below, your explicit consent.</value>
   </data>
   <data name="PrivacySpecialTitle" xml:space="preserve">
-    <value>Health-related assessment data</value>
+    <value>Health-related self-assessment data</value>
   </data>
   <data name="PrivacySpecialBody" xml:space="preserve">
-    <value>Some self-assessments ask about injuries, pain, balance, sleep, stress and nutrition. Data-protection law can treat these answers as health data, a special category. We use them only to show you your results, we ask for your consent when you register, and they are deleted together with your account. The AI coach answers your questions without saving them to your account. Self-assessments are not a medical screening: if you have symptoms such as chest pain, dizziness or an injury, see a doctor rather than relying on the platform.</value>
+    <value>Some self-assessments ask about injuries, pain, balance, sleep, stress and nutrition. Data-protection law can treat these answers as health data, a special category. We use them only to show you your results, we ask for your consent when you sign up, and they are deleted together with your account. The AI coach answers your questions without saving them to your account. Self-assessments are not a medical screening: if you have symptoms such as chest pain, dizziness or an injury, see a doctor rather than relying on the platform.</value>
   </data>
   <data name="PrivacyRetentionTitle" xml:space="preserve">
     <value>How long we keep your data</value>
   </data>
   <data name="PrivacyRetentionBody" xml:space="preserve">
-    <value>We keep your data for as long as your account exists. When you delete your account, we remove your personal data together with the records tied to it: enrolments and workout progress, assessment answers, certificates, chat messages, call history and billing records. Because this is an educational project, the database may also be reset from time to time.</value>
+    <value>We keep your data for as long as your account exists. When you delete your account, we remove your personal data together with the records tied to it: the programmes you've joined and your workout progress, self-assessment answers, certificates, chat messages, call history and billing records. Because FitEdu is a student project, the database may also be reset from time to time.</value>
   </data>
   <data name="PrivacyRightsTitle" xml:space="preserve">
     <value>Your rights</value>
   </data>
   <data name="PrivacyRightsBody" xml:space="preserve">
-    <value>You have the right to access the personal data we hold about you, to correct it, to have it deleted and to withdraw your consent at any time. From your profile page you can update most of your details, download a copy of your data and delete your account. As this is a student project rather than a live service, other requests are handled on a best-effort basis.</value>
+    <value>You have the right to access the personal data we hold about you, to correct it, to have it deleted and to withdraw your consent at any time. From your profile page you can update most of your details, download a copy of your data and delete your account. Because FitEdu is a student project rather than a commercial service, other requests are handled on a best-effort basis.</value>
   </data>
   <data name="PrivacyCookiesTitle" xml:space="preserve">
     <value>Cookies</value>
   </data>
   <data name="PrivacyCookiesBody" xml:space="preserve">
-    <value>We use only essential cookies: one to keep you signed in, one to remember an administrator's impersonation session, and one to remember your language choice. We do not use analytics, advertising or third-party tracking cookies.</value>
+    <value>We use only essential cookies: one to keep you logged in, one to keep an administrator logged in as another user, and one to remember your language choice. We do not use analytics, advertising or third-party tracking cookies.</value>
   </data>
   <data name="PrivacyContactTitle" xml:space="preserve">
     <value>Contact and changes</value>
   </data>
   <data name="PrivacyContactBody" xml:space="preserve">
-    <value>We may update this policy as the platform evolves; the date at the top of the page shows when it last changed. As an educational project there is no dedicated data-protection office — questions can be raised through the project's public channels linked in the footer.</value>
+    <value>We may update this policy as the platform evolves; the date at the top of the page shows when it last changed. Because FitEdu is a student project, there is no dedicated data-protection office — you can raise questions through the project's public channels linked in the footer.</value>
   </data>
   <data name="TermsTitle" xml:space="preserve">
     <value>Terms of Service</value>
   </data>
   <data name="TermsIntro" xml:space="preserve">
-    <value>These terms govern your use of FitEdu. By creating an account or using the platform you agree to them. FitEdu is a university certificate project that demonstrates a fitness-education platform; it is provided for educational purposes, and its content is general fitness education, not medical advice.</value>
+    <value>These terms govern your use of FitEdu. By creating an account or using the platform you agree to them. FitEdu is a student project for a university certificate programme. It demonstrates a fitness-education platform, is provided for educational purposes, and its content is general fitness education, not medical advice.</value>
   </data>
   <data name="TermsServiceTitle" xml:space="preserve">
     <value>The service</value>
   </data>
   <data name="TermsServiceBody" xml:space="preserve">
-    <value>FitEdu offers online fitness training programmes, an exercise library, self-assessments, certificates, live classes, an AI coach, and chat and video features. Because it is a student project, features may change, break or be reset without notice, and availability is not guaranteed.</value>
+    <value>FitEdu offers online training programmes, an exercise library, self-assessments, certificates, live classes, an AI coach, and chat and video calls. Because FitEdu is a student project, features may change, break or be reset without notice, and availability is not guaranteed.</value>
   </data>
   <data name="TermsAccountsTitle" xml:space="preserve">
     <value>Your account</value>
@@ -137,13 +137,13 @@
     <value>Acceptable use</value>
   </data>
   <data name="TermsAcceptableBody" xml:space="preserve">
-    <value>You agree not to misuse the platform: no unlawful, harmful or abusive behaviour, no attempts to access other users' data or to disrupt the service, and no uploading of content you have no right to share. We may suspend accounts that break these rules.</value>
+    <value>You agree not to misuse the platform: no unlawful, harmful or abusive behaviour, no attempts to access other members' data or to disrupt the service, and no uploading of content you have no right to share. We may suspend accounts that break these rules.</value>
   </data>
   <data name="TermsContentTitle" xml:space="preserve">
     <value>Content and intellectual property</value>
   </data>
   <data name="TermsContentBody" xml:space="preserve">
-    <value>Programme materials, workout text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Exercise photos and instructions come from the public-domain Free Exercise DB. Content you submit — such as profile details, reviews and assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
+    <value>Programme materials, workout text and branding on the platform belong to their respective owners and are provided for your personal, educational use only. Exercise photos and instructions come from the public-domain Free Exercise DB. Content you submit — such as profile details, reviews and self-assessment answers — remains yours; you grant us permission to process it to provide the service as described in the Privacy Policy.</value>
   </data>
   <data name="TermsAssessmentsTitle" xml:space="preserve">
     <value>Not medical advice</value>
@@ -155,13 +155,13 @@
     <value>Disclaimers and liability</value>
   </data>
   <data name="TermsDisclaimerBody" xml:space="preserve">
-    <value>The platform is provided "as is", without warranties of any kind. As an educational project, we are not liable for any injury, loss or damage arising from its use or from following its programmes, to the extent permitted by law.</value>
+    <value>The platform is provided "as is", without warranties of any kind. Because FitEdu is a student project, we are not liable for any injury, loss or damage arising from its use or from following its programmes, to the extent permitted by law.</value>
   </data>
   <data name="TermsChangesTitle" xml:space="preserve">
     <value>Changes and contact</value>
   </data>
   <data name="TermsChangesBody" xml:space="preserve">
-    <value>We may update these terms as the project develops; the date at the top of the page shows when they last changed. Continued use after a change means you accept the updated terms. Questions can be raised through the project's public channels linked in the footer.</value>
+    <value>We may update these terms as the project develops; the date at the top of the page shows when they last changed. Continued use after a change means you accept the updated terms. You can raise questions through the project's public channels linked in the footer.</value>
   </data>
   <data name="Eyebrow" xml:space="preserve">
     <value>Legal</value>
