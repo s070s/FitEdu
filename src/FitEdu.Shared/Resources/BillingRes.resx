@@ -49,7 +49,7 @@
 		<value>Loading billing information...</value>
 	</data>
 	<data name="CurrentPlan" xml:space="preserve">
-		<value>Current Plan</value>
+		<value>Current plan</value>
 	</data>
 	<data name="ActiveSince" xml:space="preserve">
 		<value>Active since:</value>
@@ -79,16 +79,16 @@
 		<value>Priority support</value>
 	</data>
 	<data name="ChangePlan" xml:space="preserve">
-		<value>Change Plan</value>
+		<value>Change plan</value>
 	</data>
 	<data name="Cancelling" xml:space="preserve">
-		<value>Cancelling...</value>
+		<value>Cancelling…</value>
 	</data>
 	<data name="CancelSubscription" xml:space="preserve">
-		<value>Cancel Subscription</value>
+		<value>Cancel subscription</value>
 	</data>
 	<data name="TransactionHistory" xml:space="preserve">
-		<value>Transaction History</value>
+		<value>Transaction history</value>
 	</data>
 	<data name="NoTransactions" xml:space="preserve">
 		<value>No transactions yet.</value>

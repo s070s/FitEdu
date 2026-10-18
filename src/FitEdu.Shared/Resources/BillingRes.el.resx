@@ -61,7 +61,7 @@
 		<value>Ανανέωση:</value>
 	</data>
 	<data name="NoExpiry" xml:space="preserve">
-		<value>Χωρίς λήξη (ισόβια)</value>
+		<value>Χωρίς λήξη (εφ' όρου ζωής)</value>
 	</data>
 	<data name="UnlimitedCourses" xml:space="preserve">
 		<value>Απεριόριστα ενεργά προγράμματα</value>
@@ -70,7 +70,7 @@
 		<value>Έως {0} ενεργά προγράμματα</value>
 	</data>
 	<data name="FeatureAssessments" xml:space="preserve">
-		<value>Αξιολογήσεις αυτοελέγχου</value>
+		<value>Αξιολογήσεις</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
 		<value>Πιστοποιητικά ολοκλήρωσης</value>
@@ -82,7 +82,7 @@
 		<value>Αλλαγή πλάνου</value>
 	</data>
 	<data name="Cancelling" xml:space="preserve">
-		<value>Ακύρωση...</value>
+		<value>Ακύρωση…</value>
 	</data>
 	<data name="CancelSubscription" xml:space="preserve">
 		<value>Ακύρωση συνδρομής</value>
@@ -91,7 +91,7 @@
 		<value>Ιστορικό συναλλαγών</value>
 	</data>
 	<data name="NoTransactions" xml:space="preserve">
-		<value>Δεν υπάρχουν συναλλαγές ακόμα.</value>
+		<value>Δεν υπάρχουν ακόμη συναλλαγές.</value>
 	</data>
 	<data name="ColDate" xml:space="preserve">
 		<value>Ημερομηνία</value>
@@ -106,7 +106,7 @@
 		<value>Ποσό</value>
 	</data>
 	<data name="ColReference" xml:space="preserve">
-		<value>Αναφορά</value>
+		<value>Κωδικός αναφοράς</value>
 	</data>
 	<data name="ItemLabelTransactions" xml:space="preserve">
 		<value>συναλλαγές</value>
@@ -118,7 +118,7 @@
 		<value>Σίγουρα θέλεις να ακυρώσεις το πλάνο {0};</value>
 	</data>
 	<data name="CancelConfirmAccessUntil" xml:space="preserve">
-		<value>Θα έχεις πρόσβαση έως {0}.</value>
+		<value>Θα διατηρήσεις την πρόσβαση έως {0}.</value>
 	</data>
 	<data name="KeepSubscription" xml:space="preserve">
 		<value>Διατήρηση συνδρομής</value>
