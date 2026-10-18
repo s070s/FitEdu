@@ -254,4 +254,5 @@ public static partial class CourseSeeder
     private static partial void LogDeserializeFailed(ILogger logger, string filePath);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Loaded course '{Title}' from {FileName}")]
-    private static partial void LogCourseLoaded(ILogger logger, string title, string fileName);}
+    private static partial void LogCourseLoaded(ILogger logger, string title, string fileName);
+}

@@ -470,4 +470,5 @@ public partial class CallHub : Hub
     private static partial void LogLastSeenPersistFailed(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Call: TryCreateCall failed for new session {CallId} (id collision).")]
-    private static partial void LogCreateCallCollision(ILogger logger, Guid callId);}
+    private static partial void LogCreateCallCollision(ILogger logger, Guid callId);
+}

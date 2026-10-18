@@ -370,4 +370,5 @@ public partial class CertificateService : ICertificateService
     private static partial void LogCertificateRevoked(ILogger logger, Guid certificateId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Certificate {CertificateId} PDFs cleared for regeneration.")]
-    private static partial void LogPdfsCleared(ILogger logger, Guid certificateId);}
+    private static partial void LogPdfsCleared(ILogger logger, Guid certificateId);
+}

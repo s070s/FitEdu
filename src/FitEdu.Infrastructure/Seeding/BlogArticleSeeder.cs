@@ -54,4 +54,5 @@ public static partial class BlogArticleSeeder
     private static partial void LogAlreadySeeded(ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} blog articles.")]
-    private static partial void LogSeeded(ILogger logger, int count);}
+    private static partial void LogSeeded(ILogger logger, int count);
+}

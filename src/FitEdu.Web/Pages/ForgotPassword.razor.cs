@@ -86,7 +86,6 @@ public partial class ForgotPassword
         }
     }
 
-
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
     [LoggerMessage(Level = LogLevel.Error, Message = "Forgot-password request failed.")]
     private static partial void LogForgotPasswordFailed(ILogger logger, Exception exception);

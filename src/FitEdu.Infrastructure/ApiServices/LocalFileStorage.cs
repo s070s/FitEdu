@@ -209,4 +209,5 @@ public partial class LocalFileStorage : IFileStorage
     private static partial void LogFileSaved(ILogger logger, string filePath);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "File deleted: {FilePath}")]
-    private static partial void LogFileDeleted(ILogger logger, string filePath);}
+    private static partial void LogFileDeleted(ILogger logger, string filePath);
+}

@@ -67,4 +67,5 @@ public sealed partial class SmtpEmailService : IEmailService
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Email '{Subject}' sent to {To}.")]
-    private static partial void LogEmailSent(ILogger logger, string subject, string to);}
+    private static partial void LogEmailSent(ILogger logger, string subject, string to);
+}

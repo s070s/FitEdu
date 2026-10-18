@@ -129,4 +129,5 @@ public static partial class StudentSeeder
     private static partial void LogSeedFileFailed(ILogger logger, Exception exception, string filePath);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} student user(s) from JSON files.")]
-    private static partial void LogSeeded(ILogger logger, int count);}
+    private static partial void LogSeeded(ILogger logger, int count);
+}

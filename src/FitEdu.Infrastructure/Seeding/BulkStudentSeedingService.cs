@@ -69,4 +69,5 @@ public sealed partial class BulkStudentSeedingService : BackgroundService
     private static partial void LogPasswordNotSet(ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "BulkStudentSeeder: bulk student seeding failed.")]
-    private static partial void LogSeedingFailed(ILogger logger, Exception exception);}
+    private static partial void LogSeedingFailed(ILogger logger, Exception exception);
+}

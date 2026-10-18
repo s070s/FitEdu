@@ -95,4 +95,5 @@ public static partial class SubscriptionPlanSeeder
     private static partial void LogAlreadySeeded(ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} subscription plans (Free, Plus, Pro).")]
-    private static partial void LogSeeded(ILogger logger, int count);}
+    private static partial void LogSeeded(ILogger logger, int count);
+}

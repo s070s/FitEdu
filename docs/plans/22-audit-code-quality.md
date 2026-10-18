@@ -24,6 +24,7 @@ NOT examined: compiler-warning output — the solution was deliberately not buil
 | Info | 2 |
 
 Micro-level quality is high and — more unusually — *improving on record*: a root `.editorconfig` (added 2026-07) now pins standard .NET formatting, the once-dominant spaced-paren call style has been swept away to a 4-line residue, namespaces are file-scoped and correct per project, nullable reference types are enabled solution-wide with no suppression sprawl (zero `#pragma warning disable` in hand-written code, exactly one TODO in `src/`), and XML doc comments consistently explain *why* rather than *what* — several (SsrApiHandler, AuthService, CustomWebAppFactory) read like miniature ADRs. All three Medium findings — the bilingual-fallback ternary, Billing's pagination toolbar, and the two unnamed ServiceResult conventions — are fixed. What remains is minor: a residual sliver of duplication in TokenService, DTO file/namespace organization, and small formatting/placement stragglers.
+> **Update (2026-10-18):** the solution now builds with zero warnings and CI fails on any new one. A few narrow, commented `#pragma warning disable` lines now exist in hand-written code: CA1716 in five Shared component files (the `Shared` namespace name), CA1304/CA1311/CA1862 around the two SQL-translated category name queries in `AdminCategoryService`, and CS0618 around `OpenApiSchema.Example` in `OpenApiExtensions`; plus `[SuppressMessage]` for CA1000 on `ServiceResult<T>` and CA1716 on the `Module` entity.
 
 ## 3. Findings
 

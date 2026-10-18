@@ -46,4 +46,5 @@ public partial class StubEmailService : IEmailService
     private static partial void LogEmailConfirmation(ILogger logger, string email, string subject, string confirmationLink);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "STUB EMAIL - Password Reset:\nTo: {Email}\nSubject: {Subject}\nLink: {ResetLink}")]
-    private static partial void LogPasswordReset(ILogger logger, string email, string subject, string resetLink);}
+    private static partial void LogPasswordReset(ILogger logger, string email, string subject, string resetLink);
+}

@@ -131,4 +131,5 @@ public static partial class AssessmentSeeder
     private static partial void LogDeserializeFailed(ILogger logger, string filePath);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Loaded assessment '{Title}' (Key: {Key}) from {FileName}")]
-    private static partial void LogAssessmentLoaded(ILogger logger, string title, string key, string fileName);}
+    private static partial void LogAssessmentLoaded(ILogger logger, string title, string key, string fileName);
+}

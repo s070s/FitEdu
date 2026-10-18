@@ -146,4 +146,5 @@ public partial class ChatHub : Hub
     private static partial void LogConnectionRejected(ILogger logger, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Chat: User {UserId} connected.")]
-    private static partial void LogUserConnected(ILogger logger, string userId);}
+    private static partial void LogUserConnected(ILogger logger, string userId);
+}

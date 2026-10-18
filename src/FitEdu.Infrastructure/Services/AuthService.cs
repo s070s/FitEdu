@@ -406,4 +406,5 @@ public partial class AuthService : IAuthService
     private static partial void LogPasswordResetRequested(ILogger logger, string? email);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for {Email}")]
-    private static partial void LogPasswordReset(ILogger logger, string? email);}
+    private static partial void LogPasswordReset(ILogger logger, string? email);
+}

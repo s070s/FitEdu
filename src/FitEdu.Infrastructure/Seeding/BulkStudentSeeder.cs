@@ -157,4 +157,5 @@ public static partial class BulkStudentSeeder
     private static partial void LogProgress(ILogger logger, int count, int total);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "BulkStudentSeeder: done — {Seeded} created, {Skipped} skipped (already existed).")]
-    private static partial void LogDone(ILogger logger, int seeded, int skipped);}
+    private static partial void LogDone(ILogger logger, int seeded, int skipped);
+}
