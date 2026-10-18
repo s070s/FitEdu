@@ -40,6 +40,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 | Live session | live class | live προπόνηση (plural live προπονήσεις) |
 | Coach of a live class | coach | προπονητής |
 | Subscription tier | plan | πλάνο |
+| Any other plan (weekly plan, recovery plan) | plan | σχέδιο |
 | Tier names | Free, Plus, Pro | Δωρεάν, Plus, Pro |
 | Today's next workout | today's workout | η σημερινή σου προπόνηση |
 | Testimonials | member stories | ιστορίες μελών (admin field: κείμενο ιστορίας) |
