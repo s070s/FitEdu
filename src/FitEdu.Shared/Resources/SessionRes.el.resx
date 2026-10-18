@@ -98,7 +98,7 @@
     <value>{0} λεπ.</value>
   </data>
   <data name="ParticipantsFormat" xml:space="preserve">
-    <value>Εγγραφές: {0}/{1}</value>
+    <value>Συμμετοχές: {0}/{1}</value>
   </data>
   <data name="CallInProgress" xml:space="preserve">
     <value>Η live προπόνηση είναι σε εξέλιξη</value>

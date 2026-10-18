@@ -98,7 +98,7 @@
     <value>{0} min</value>
   </data>
   <data name="ParticipantsFormat" xml:space="preserve">
-    <value>Registered: {0}/{1}</value>
+    <value>Joined: {0}/{1}</value>
   </data>
   <data name="CallInProgress" xml:space="preserve">
     <value>Class in progress</value>
