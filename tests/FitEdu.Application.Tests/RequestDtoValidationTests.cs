@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 using Shouldly;
 using Xunit;
 
@@ -22,6 +24,28 @@ public class RequestDtoValidationTests
         var ctx = new ValidationContext(model);
         return Validator.TryValidateObject(model, ctx, new List<ValidationResult>(), validateAllProperties: true);
     }
+
+    private static readonly CultureInfo Greek = new("el-GR");
+
+    /// <summary>Validation messages as a Greek member sees them.</summary>
+    private static List<string> GreekErrors(object model)
+    {
+        var previousCulture = CultureInfo.CurrentUICulture;
+        CultureInfo.CurrentUICulture = Greek;
+        try
+        {
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(model, new ValidationContext(model), results, validateAllProperties: true);
+            return results.Select(result => result.ErrorMessage ?? string.Empty).ToList();
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = previousCulture;
+        }
+    }
+
+    private static string GreekMessage(string resourceName) =>
+        ErrorMessagesRes.ResourceManager.GetString(resourceName, Greek)!;
 
     private static RegisterRequestDto ValidRegister() => new()
     {
@@ -105,6 +129,32 @@ public class RequestDtoValidationTests
     [Fact]
     public void Login_InvalidEmail_Fails() =>
         IsValid(new LoginRequestDto { Email = "nope", Password = "secret" }).ShouldBeFalse();
+
+    [Fact]
+    public void Login_Empty_ErrorsFollowMemberLanguage()
+    {
+        // The Greek login page showed the framework default "The Password field is required.".
+        var errors = GreekErrors(new LoginRequestDto());
+
+        errors.ShouldBe(
+            [GreekMessage(nameof(ErrorMessagesRes.Auth_EmailRequired)), GreekMessage(nameof(ErrorMessagesRes.Auth_PasswordRequired))],
+            ignoreOrder: true);
+    }
+
+    [Fact]
+    public void Login_InvalidEmail_ErrorFollowsMemberLanguage() =>
+        GreekErrors(new LoginRequestDto { Email = "nope", Password = "secret" })
+            .ShouldBe([GreekMessage(nameof(ErrorMessagesRes.Auth_EmailInvalid))]);
+
+    [Fact]
+    public void ForgotPassword_Empty_ErrorFollowsMemberLanguage() =>
+        GreekErrors(new ForgotPasswordRequestDto())
+            .ShouldBe([GreekMessage(nameof(ErrorMessagesRes.Auth_EmailRequired))]);
+
+    [Fact]
+    public void ForgotPassword_InvalidEmail_ErrorFollowsMemberLanguage() =>
+        GreekErrors(new ForgotPasswordRequestDto { Email = "nope" })
+            .ShouldBe([GreekMessage(nameof(ErrorMessagesRes.Auth_EmailInvalid))]);
 
     [Fact]
     public void ResetPassword_Valid_Passes() =>
