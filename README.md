@@ -1,6 +1,6 @@
 # FitEdu
 
-A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-check assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
+A mobile-first, bilingual (English/Greek) fitness-courses app. Members follow training programmes whose workouts are built from a public-domain library of 873 exercises with start and end photos, track their workouts, streak and progress, and earn a certificate when they finish a course. Around that sit learning paths, self-assessments, course reviews, scheduled live classes, real-time chat, video calls, in-app notifications, subscriptions, a blog, testimonials, site search, and a local AI coach. Every page is laid out for a phone first (with a bottom tab bar below 768 px) and widens to a desktop layout.
 
 ## Screenshots
 
@@ -49,7 +49,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 
 > **Database is created and migrated automatically on first run.** If you drop the database (e.g. from SSMS), just restart the app — it will recreate and reseed it.
 
-> **Reseeding after a seed file changes:** each seeder fills its table only when that table is empty, so an edited JSON file does not reach a database that was already seeded. To reseed everything, stop the app, drop the `FitEduDb` database and start the app again (LocalDB: `sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"`). The startup log then reports what each seeder wrote; a fresh Development database gets 873 exercises, 19 courses, 19 assessments, 4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) plus the bulk students added in the background (`SeedData:BulkStudentCount`, default 10). Dropping the database also deletes users, enrollments and chat history, so do it only on a development machine.
+> **Reseeding after a seed file changes:** each seeder fills its table only when that table is empty, so an edited JSON file does not reach a database that was already seeded. To reseed everything, stop the app, drop the `FitEduDb` database and start the app again (LocalDB: `sqlcmd -S "(localdb)\MSSQLLocalDB" -Q "ALTER DATABASE [FitEduDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [FitEduDb]"`). The startup log then reports what each seeder wrote; a fresh Development database gets 873 exercises, 19 courses, 19 assessments, 4 learning paths, 6 testimonials, 6 live classes, 10 named students (`students.json`) plus the bulk students added in the background (`SeedData:BulkStudentCount`, default 10). Dropping the database also deletes users, enrolments and chat history, so do it only on a development machine.
 
 > **Database connection string — do you need to change it on a new PC?** The default targets SQL Server **LocalDB** (`Server=(localdb)\MSSQLLocalDB`), whose instance name is the same on every machine, so **cloning onto a new PC needs no change** — just have LocalDB installed (it ships with Visual Studio and SQL Server Express). Only set `ConnectionStrings__DefaultConnection` in `.env` if you point the app at a **different** SQL Server — a named instance, SQL Express, a remote server, or SQL authentication — because that server name is specific to the machine it runs on. Since `.env` is gitignored it never travels with a clone: on a new PC you recreate it from `.env.template` (LocalDB default) and adjust the connection string only if you are *not* using LocalDB. The app reads `.env` first and falls back to the dev default in `appsettings.Development.json`.
 
@@ -61,7 +61,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 > |---|---|
 > | `Exercises/` | 873 public-domain exercises with photos ([source, licence and Greek format](src/FitEdu.Shared/JSON/Exercises/README.md)). `exercises.el.json` gives the Greek name and steps of all 873. |
 > | `Courses/` | 19 fitness courses: 51 modules, 131 lessons and 382 exercise prescriptions linked by slug ([file format](src/FitEdu.Shared/JSON/Courses/README.md)). Seven categories (Strength, Cardio, Mobility, Core, Nutrition, Recovery, Performance), Beginner to Advanced, 9 Free, 5 Plus and 5 Pro. |
-> | `Assessments/` | 19 self-check questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
+> | `Assessments/` | 19 self-assessment questionnaires (one file per key, e.g. `training_readiness_v1.json`) grouped as Readiness, Mobility, Nutrition, Recovery, Safety, Cardio, Strength, Mindset and Setup. They share the category list with the courses, so a shared name (e.g. Mobility) has the same Greek name in both. |
 > | `Students/` | The 10 demo students (`first.last@fitedu.local`). |
 > | `Paths/` | 4 published learning paths of 4 courses each (Beginner Start, Fat Loss, Muscle Building, Better Movement). Each step names its course by English title, so an unknown title stops the seed ([file format](src/FitEdu.Shared/JSON/Paths/README.md)). |
 > | `Showcase/` | 6 Home-page testimonials and 6 live classes hosted by the admin account, dated on the next six weekdays after the seed date (UTC) and capped at 6 people like the video call ([file format](src/FitEdu.Shared/JSON/Showcase/README.md)). |
@@ -291,11 +291,11 @@ Curated, ordered sequences of courses (see [Learning Paths](#learning-paths)). P
 
 ### Landing — `api/landing`
 
-Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-checks take the fourth place).
+Numbers and showcase for the guest home page in one call. The page's numbers strip shows four tiles: programmes, exercises, lessons, and the member count once it reaches 100 (before that, the published self-assessments take the fourth place).
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-check (assessment) counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
+| `GET` | `api/landing` | Published course and lesson counts, exercise, member and published self-assessment counts, the six most-enrolled courses, and whether a custom hero photo is set (`?lang=en`; cached for 60 s per language) | No |
 
 ### Scheduled Sessions — `api/sessions`
 
