@@ -118,7 +118,7 @@ public class UserSearchExtensionsTests
             .Select(u => u.Email!)
             .ToListAsync();
 
-        emails.ShouldBe(new[] { "x@x.com", "y@x.com" });
+        emails.ShouldBe(["x@x.com", "y@x.com"]);
     }
 
     // Guards SQL Server translatability without a live database: ToQueryString
@@ -154,7 +154,7 @@ public class UserSearchExtensionsTests
 
         var emails = await Search(db, "al@example");
 
-        emails.ShouldBe(new[] { "alice@example.com" });
+        emails.ShouldBe(["alice@example.com"]);
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class UserSearchExtensionsTests
 
         var emails = await Search(db, "al@");
 
-        emails.ShouldBe(new[] { "alan@test.com", "alice@example.com" });
+        emails.ShouldBe(["alan@test.com", "alice@example.com"]);
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class UserSearchExtensionsTests
 
         var emails = await Search(db, "@example");
 
-        emails.ShouldBe(new[] { "alice@example.com", "bob@example.com" });
+        emails.ShouldBe(["alice@example.com", "bob@example.com"]);
     }
 
     [Fact]
@@ -198,7 +198,7 @@ public class UserSearchExtensionsTests
 
         var emails = await Search(db, term);
 
-        emails.ShouldBe(new[] { "alice@example.com" });
+        emails.ShouldBe(["alice@example.com"]);
     }
 
     // ---- ApplySearch: single token -------------------------------------------
@@ -210,7 +210,7 @@ public class UserSearchExtensionsTests
 
         var emails = await Search(db, "bob");
 
-        emails.ShouldBe(new[] { "bob@example.com" });
+        emails.ShouldBe(["bob@example.com"]);
     }
 
     [Fact]

@@ -104,7 +104,7 @@ public class AdminCourseServiceTests
 
         var page = await NewService(db).GetCoursesAsync(1, 10, "createdat", "desc");
 
-        page.Items.Select(i => i.TitleEn).ShouldBe(new[] { "Newer", "Older" });
+        page.Items.Select(i => i.TitleEn).ShouldBe(["Newer", "Older"]);
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class AdminCourseServiceTests
 
         var page = await NewService(db).GetCoursesAsync(1, 10, "createdat", "desc", search: "alpha");
 
-        page.Items.Select(i => i.TitleEn).ShouldBe(new[] { "Alpha Course" });
+        page.Items.Select(i => i.TitleEn).ShouldBe(["Alpha Course"]);
         page.TotalCount.ShouldBe(1);
     }
 

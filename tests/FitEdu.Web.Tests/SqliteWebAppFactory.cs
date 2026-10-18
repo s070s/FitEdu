@@ -50,4 +50,4 @@ public class SqliteWebAppFactory : CustomWebAppFactory
 }
 
 [CollectionDefinition("web-sqlite")]
-public sealed class SqliteWebCollection : ICollectionFixture<SqliteWebAppFactory>;
+public sealed class SqliteWebCollectionDefinition : ICollectionFixture<SqliteWebAppFactory>;

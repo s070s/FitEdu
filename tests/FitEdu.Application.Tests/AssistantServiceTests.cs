@@ -211,7 +211,8 @@ public class AssistantServiceTests
 
         status.Available.ShouldBeFalse();
         status.State.ShouldBe(expectedState);
-        chatClient.DidNotReceiveWithAnyArgs().GetResponseAsync(default(IEnumerable<ChatMessage>)!, default, default);
+        // NSubstitute verification only: the returned task is the (unused) result of the call under check.
+        _ = chatClient.DidNotReceiveWithAnyArgs().GetResponseAsync(default(IEnumerable<ChatMessage>)!, default, default);
     }
 
     [Fact]
