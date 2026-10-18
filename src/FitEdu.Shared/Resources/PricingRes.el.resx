@@ -40,7 +40,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="PageTitle" xml:space="preserve">
-		<value>Τιμολόγηση</value>
+		<value>Πλάνα και τιμές</value>
 	</data>
 	<data name="Heading" xml:space="preserve">
 		<value>Διάλεξε το πλάνο σου</value>
@@ -52,7 +52,7 @@
 		<value>Το πλάνο σου:</value>
 	</data>
 	<data name="LoadingPlans" xml:space="preserve">
-		<value>Φόρτωση πλάνων...</value>
+		<value>Φόρτωση πλάνων…</value>
 	</data>
 	<data name="MostPopular" xml:space="preserve">
 		<value>Πιο δημοφιλές</value>
@@ -61,10 +61,10 @@
 		<value>Απεριόριστα ενεργά προγράμματα</value>
 	</data>
 	<data name="UpToCoursesFormat" xml:space="preserve">
-		<value>Έως {0} ενεργά προγράμματα τη φορά</value>
+		<value>Έως {0} ενεργά προγράμματα ταυτόχρονα</value>
 	</data>
 	<data name="FeatureAssessmentAccess" xml:space="preserve">
-		<value>Αξιολογήσεις αυτοελέγχου φυσικής κατάστασης</value>
+		<value>Αξιολογήσεις φυσικής κατάστασης</value>
 	</data>
 	<data name="FeatureCertificates" xml:space="preserve">
 		<value>Πιστοποιητικά ολοκλήρωσης</value>
@@ -76,19 +76,19 @@
 		<value>Τρέχον πλάνο</value>
 	</data>
 	<data name="Processing" xml:space="preserve">
-		<value>Επεξεργασία...</value>
+		<value>Επεξεργασία…</value>
 	</data>
 	<data name="BtnUpgrade" xml:space="preserve">
-		<value>Αναβάθμιση</value>
+		<value>Αναβάθμισε</value>
 	</data>
 	<data name="BtnDowngradeToFree" xml:space="preserve">
-		<value>Μετάβαση στο δωρεάν πλάνο</value>
+		<value>Πέρνα στο δωρεάν πλάνο</value>
 	</data>
 	<data name="BtnIncluded" xml:space="preserve">
-		<value>Συμπεριλαμβάνεται</value>
+		<value>Περιλαμβάνεται</value>
 	</data>
 	<data name="BtnSelectPlan" xml:space="preserve">
-		<value>Επίλεξε πλάνο</value>
+		<value>Διάλεξε πλάνο</value>
 	</data>
 	<data name="BtnGetStarted" xml:space="preserve">
 		<value>Ξεκίνα</value>
@@ -97,22 +97,22 @@
 		<value>Δεν ήταν δυνατή η φόρτωση των πλάνων. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="CheckoutFailed" xml:space="preserve">
-		<value>Η αγορά δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
+		<value>Δεν ήταν δυνατή η ολοκλήρωση της αγοράς. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="FailedToCancel" xml:space="preserve">
-		<value>Η ακύρωση δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
+		<value>Δεν ήταν δυνατή η ακύρωση της συνδρομής σου. Δοκίμασε ξανά.</value>
 	</data>
 	<data name="PlanRequired" xml:space="preserve">
 		<value>Απαιτείται πλάνο {0}</value>
 	</data>
 	<data name="UpgradeNow" xml:space="preserve">
-		<value>Αναβάθμιση τώρα</value>
+		<value>Αναβάθμισε τώρα</value>
 	</data>
 	<data name="FeatureExerciseLibrary" xml:space="preserve">
 		<value>Πλήρης βιβλιοθήκη ασκήσεων</value>
 	</data>
 	<data name="FeatureLiveClasses" xml:space="preserve">
-		<value>Ζωντανά μαθήματα</value>
+		<value>Live προπονήσεις</value>
 	</data>
 	<data name="Eyebrow" xml:space="preserve">
 		<value>Συνδρομή</value>
@@ -133,7 +133,7 @@
 		<value>Όλα τα δωρεάν προγράμματα</value>
 	</data>
 	<data name="FeatureCoursesPlus" xml:space="preserve">
-		<value>Όλα τα προγράμματα Free και Plus</value>
+		<value>Όλα τα προγράμματα Δωρεάν και Plus</value>
 	</data>
 	<data name="FeatureCoursesPro" xml:space="preserve">
 		<value>Όλα τα προγράμματα, μαζί με τα προχωρημένα Pro</value>
@@ -145,10 +145,10 @@
 		<value>Δεν περιλαμβάνεται:</value>
 	</data>
 	<data name="Footnote" xml:space="preserve">
-		<value>Η βιβλιοθήκη ασκήσεων και τα ζωντανά μαθήματα είναι ανοιχτά σε κάθε μέλος. Άλλαξε ή ακύρωσε το πλάνο σου όποτε θέλεις.</value>
+		<value>Η βιβλιοθήκη ασκήσεων και οι live προπονήσεις είναι ανοιχτές σε κάθε μέλος. Άλλαξε ή ακύρωσε το πλάνο σου όποτε θέλεις.</value>
 	</data>
 	<data name="OneCourseAtATime" xml:space="preserve">
-		<value>1 ενεργό πρόγραμμα τη φορά</value>
+		<value>1 ενεργό πρόγραμμα κάθε φορά</value>
 	</data>
 	<data name="PeriodForever" xml:space="preserve">
 		<value>για πάντα</value>

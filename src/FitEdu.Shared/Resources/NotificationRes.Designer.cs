@@ -88,6 +88,15 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 1 unread notification.
+        /// </summary>
+        public static string UnreadBadgeAriaLabelOne {
+            get {
+                return ResourceManager.GetString("UnreadBadgeAriaLabelOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No notifications yet..
         /// </summary>
         public static string Empty {

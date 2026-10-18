@@ -22,7 +22,7 @@ public class NotificationMessageFormatterTests
 
         var text = NotificationMessageFormatter.Format(Notification("CertificateIssued", "Strength Foundations", "Θεμέλια δύναμης"));
 
-        text.ShouldBe("Το πιστοποιητικό σου για το \"Θεμέλια δύναμης\" είναι έτοιμο");
+        text.ShouldBe("Το πιστοποιητικό σου για το πρόγραμμα «Θεμέλια δύναμης» είναι έτοιμο");
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class NotificationMessageFormatterTests
 
         var text = NotificationMessageFormatter.Format(Notification(titleKey, "Strength Foundations"));
 
-        text.ShouldContain("\"Strength Foundations\"", Case.Sensitive);
+        text.ShouldContain("«Strength Foundations»", Case.Sensitive);
         text.ShouldNotContain("{");
     }
 
@@ -56,6 +56,6 @@ public class NotificationMessageFormatterTests
 
         var text = NotificationMessageFormatter.Format(Notification("SessionReminder", "Mobility Class", "Μάθημα κινητικότητας"));
 
-        text.ShouldBe("Το \"Μάθημα κινητικότητας\" ξεκινά σε 15 λεπτά");
+        text.ShouldBe("Η live προπόνηση «Μάθημα κινητικότητας» ξεκινά σε 15 λεπτά");
     }
 }

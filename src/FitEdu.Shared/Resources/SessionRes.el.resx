@@ -59,19 +59,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Ζωντανά μαθήματα</value>
+    <value>Live προπονήσεις</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Φόρτωση ζωντανών μαθημάτων…</value>
+    <value>Φόρτωση live προπονήσεων…</value>
   </data>
   <data name="NoUpcomingSessions" xml:space="preserve">
-    <value>Δεν υπάρχουν προσεχή ζωντανά μαθήματα αυτή τη στιγμή.</value>
+    <value>Δεν υπάρχουν προσεχείς live προπονήσεις αυτή τη στιγμή.</value>
   </data>
   <data name="PageSubtitleFormat" xml:space="preserve">
-    <value>Προπονήσου ζωντανά με προπονητή σε μικρές ομάδες έως {0} ατόμων. Κάνε εγγραφή και μπες μόλις ξεκινήσει το μάθημα.</value>
+    <value>Προπονήσου ζωντανά με προπονητή σε μικρές ομάδες έως {0} ατόμων. Γράψου και μπες μόλις ξεκινήσει η προπόνηση.</value>
   </data>
   <data name="NoUpcomingSessionsHint" xml:space="preserve">
-    <value>Έλα ξανά σύντομα για το επόμενο μάθημα.</value>
+    <value>Έλα ξανά σύντομα για την επόμενη live προπόνηση.</value>
   </data>
   <data name="Today" xml:space="preserve">
     <value>Σήμερα</value>
@@ -80,7 +80,7 @@
     <value>Αύριο</value>
   </data>
   <data name="StatusScheduled" xml:space="preserve">
-    <value>Προγραμματισμένο</value>
+    <value>Προγραμματισμένη</value>
   </data>
   <data name="StatusLive" xml:space="preserve">
     <value>Ζωντανά</value>
@@ -92,58 +92,58 @@
     <value>Ακυρώθηκε</value>
   </data>
   <data name="HostedByFormat" xml:space="preserve">
-    <value>Καθοδήγηση: {0}</value>
+    <value>Προπονητής: {0}</value>
   </data>
   <data name="DurationFormat" xml:space="preserve">
-    <value>{0} λεπτά</value>
+    <value>{0} λεπ.</value>
   </data>
   <data name="ParticipantsFormat" xml:space="preserve">
-    <value>{0} / {1} εγγεγραμμένοι</value>
+    <value>Εγγραφές: {0}/{1}</value>
   </data>
   <data name="CallInProgress" xml:space="preserve">
-    <value>Η κλήση βρίσκεται σε εξέλιξη</value>
+    <value>Η live προπόνηση είναι σε εξέλιξη</value>
   </data>
   <data name="StartSession" xml:space="preserve">
-    <value>Έναρξη μαθήματος</value>
+    <value>Έναρξη live προπόνησης</value>
   </data>
   <data name="JoinSession" xml:space="preserve">
-    <value>Συμμετοχή</value>
+    <value>Μπες</value>
   </data>
   <data name="Registered" xml:space="preserve">
-    <value>Έχεις εγγραφεί</value>
+    <value>Έχεις γραφτεί</value>
   </data>
   <data name="Unregister" xml:space="preserve">
     <value>Ακύρωση εγγραφής</value>
   </data>
   <data name="Full" xml:space="preserve">
-    <value>Πλήρης</value>
+    <value>Πλήρες</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>Εγγραφή</value>
+    <value>Γράψου</value>
   </data>
   <data name="RegisterError" xml:space="preserve">
-    <value>Η εγγραφή σε αυτό το μάθημα δεν ολοκληρώθηκε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η εγγραφή σου σε αυτή τη live προπόνηση. Δοκίμασε ξανά.</value>
   </data>
   <data name="JoinError" xml:space="preserve">
-    <value>Η κλήση δεν ξεκίνησε. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η σύνδεση στη live προπόνηση. Δοκίμασε ξανά.</value>
   </data>
   <data name="AdminPageTitle" xml:space="preserve">
-    <value>Ζωντανά μαθήματα</value>
+    <value>Live προπονήσεις</value>
   </data>
   <data name="NewSession" xml:space="preserve">
-    <value>Νέο ζωντανό μάθημα</value>
+    <value>Νέα live προπόνηση</value>
   </data>
   <data name="EditSession" xml:space="preserve">
-    <value>Επεξεργασία ζωντανού μαθήματος</value>
+    <value>Επεξεργασία live προπόνησης</value>
   </data>
   <data name="NoSessionsFound" xml:space="preserve">
-    <value>Δεν βρέθηκαν προγραμματισμένα ζωντανά μαθήματα.</value>
+    <value>Δεν βρέθηκαν προγραμματισμένες live προπονήσεις.</value>
   </data>
   <data name="ColTitle" xml:space="preserve">
     <value>Τίτλος</value>
   </data>
   <data name="ColHost" xml:space="preserve">
-    <value>Οικοδεσπότης</value>
+    <value>Προπονητής</value>
   </data>
   <data name="ColCourse" xml:space="preserve">
     <value>Πρόγραμμα</value>
@@ -164,7 +164,7 @@
     <value>Επεξεργασία</value>
   </data>
   <data name="CancelSession" xml:space="preserve">
-    <value>Ακύρωση μαθήματος</value>
+    <value>Ακύρωση live προπόνησης</value>
   </data>
   <data name="FieldTitleEn" xml:space="preserve">
     <value>Τίτλος (Αγγλικά)</value>
@@ -185,7 +185,7 @@
     <value>Διάρκεια (λεπτά)</value>
   </data>
   <data name="FieldMaxParticipants" xml:space="preserve">
-    <value>Μέγιστοι συμμετέχοντες</value>
+    <value>Μέγιστος αριθμός συμμετεχόντων</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Αποθήκευση</value>
@@ -194,9 +194,9 @@
     <value>Ακύρωση</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>Αποτυχία αποθήκευσης του ζωντανού μαθήματος. Δοκίμασε ξανά.</value>
+    <value>Δεν ήταν δυνατή η αποθήκευση της live προπόνησης. Δοκίμασε ξανά.</value>
   </data>
   <data name="CancelConfirmFormat" xml:space="preserve">
-    <value>Ακύρωση του "{0}"; Τα εγγεγραμμένα μέλη δεν θα το βλέπουν πλέον ως επερχόμενο.</value>
+    <value>Να ακυρωθεί το «{0}»; Τα μέλη που έχουν γραφτεί δεν θα το βλέπουν πια στις προσεχείς live προπονήσεις.</value>
   </data>
 </root>

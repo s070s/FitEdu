@@ -27,7 +27,7 @@ public partial class NotificationBell : IAsyncDisposable
     private HubConnection? _hub;
 
     private string BellAriaLabel => _unreadCount > 0
-        ? ResourceFormat.Fill(NotificationRes.UnreadBadgeAriaLabel, _unreadCount)
+        ? ResourceFormat.Count(_unreadCount, NotificationRes.UnreadBadgeAriaLabelOne, NotificationRes.UnreadBadgeAriaLabel)
         : NotificationRes.OpenNotifications;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

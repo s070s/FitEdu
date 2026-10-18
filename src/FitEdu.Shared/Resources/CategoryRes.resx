@@ -52,7 +52,7 @@
 		<value>Programmes</value>
 	</data>
 	<data name="ColAssessmentCount" xml:space="preserve">
-		<value>Assessments</value>
+		<value>Self-assessments</value>
 	</data>
 	<data name="ColCreated" xml:space="preserve">
 		<value>Created</value>
@@ -61,19 +61,19 @@
 		<value>Actions</value>
 	</data>
 	<data name="AddCategory" xml:space="preserve">
-		<value>Add Category</value>
+		<value>Add category</value>
 	</data>
 	<data name="Rename" xml:space="preserve">
 		<value>Rename</value>
 	</data>
 	<data name="DeleteConfirmFormat" xml:space="preserve">
-		<value>Delete '{0}'? These will be left without a category. Programmes: {1} · Assessments: {2}</value>
+		<value>Delete "{0}"? Its programmes and self-assessments will be left without a category (programmes: {1} · self-assessments: {2}).</value>
 	</data>
 	<data name="NoCategories" xml:space="preserve">
 		<value>No categories yet.</value>
 	</data>
 	<data name="LoadingCategories" xml:space="preserve">
-		<value>Loading categories...</value>
+		<value>Loading categories…</value>
 	</data>
 	<data name="NameEnLabel" xml:space="preserve">
 		<value>Name (English)</value>
@@ -85,7 +85,7 @@
 		<value>All</value>
 	</data>
 	<data name="SearchPlaceholder" xml:space="preserve">
-		<value>Search...</value>
+		<value>Search…</value>
 	</data>
 	<data name="NoMatchingResults" xml:space="preserve">
 		<value>No results match your filters.</value>
@@ -103,16 +103,16 @@
 		<value>Category</value>
 	</data>
 	<data name="CategorySaved" xml:space="preserve">
-		<value>Category saved</value>
+		<value>Category saved.</value>
 	</data>
 	<data name="CategoryDeleted" xml:space="preserve">
-		<value>Category deleted</value>
+		<value>Category deleted.</value>
 	</data>
 	<data name="ErrorSavingCategory" xml:space="preserve">
-		<value>Error saving category</value>
+		<value>Couldn't save the category. Please try again.</value>
 	</data>
 	<data name="ErrorDeletingCategory" xml:space="preserve">
-		<value>Error deleting category</value>
+		<value>Couldn't delete the category. Please try again.</value>
 	</data>
 	<data name="Filters" xml:space="preserve">
 		<value>Filters</value>

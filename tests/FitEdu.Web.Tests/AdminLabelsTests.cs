@@ -12,7 +12,7 @@ namespace FitEdu.Web.Tests;
 public class AdminLabelsTests
 {
     [Theory]
-    [InlineData("Scheduled", "Προγραμματισμένο")]
+    [InlineData("Scheduled", "Προγραμματισμένη")]
     [InlineData("Live", "Ζωντανά")]
     [InlineData("Ended", "Ολοκληρώθηκε")]
     [InlineData("Cancelled", "Ακυρώθηκε")]
