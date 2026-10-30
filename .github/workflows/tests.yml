@@ -6,6 +6,14 @@ on:
   # Adds a "Run workflow" button on the Actions tab, so CI can be re-run without a push.
   workflow_dispatch:
 
+env:
+  # Pinned, not `10.0.x`. src/FitEdu.Web/packages.lock.json carries an SDK-supplied
+  # `Microsoft.AspNetCore.App.Internal.Assets` entry whose version is whatever ASP.NET Core the
+  # SDK bundles, so another SDK breaks the `--locked-mode` restore with NU1004 the moment a new
+  # patch ships (10.0.402 bundles 10.0.13, 10.0.403 bundles 10.0.14). When that lock entry is
+  # next refreshed, bump this pin to the matching SDK.
+  DOTNET_SDK_PIN: 10.0.403
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,13 +32,12 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
-          # Pinned, not `10.0.x`. src/FitEdu.Web/packages.lock.json carries an
-          # SDK-supplied `Microsoft.AspNetCore.App.Internal.Assets` entry whose version is
-          # whatever ASP.NET Core the installed SDK bundles, so a floating SDK breaks the
-          # `--locked-mode` restore below with NU1004 the moment a new patch ships
-          # (10.0.401 bundles 10.0.12; the lock file says 10.0.13). 10.0.402 bundles 10.0.13.
-          # When that lock entry is next refreshed, bump this pin to the matching SDK.
-          dotnet-version: 10.0.402
+          dotnet-version: ${{ env.DOTNET_SDK_PIN }}
+
+      # global.json rolls forward to the newest SDK on the machine, and the runner image can
+      # already hold a newer one than the pin (2026-10-30: NU1004 with 10.0.402 installed).
+      - name: Use exactly the pinned SDK
+        run: dotnet new globaljson --sdk-version "$DOTNET_SDK_PIN" --roll-forward disable --force
 
       # BUILD-1: --locked-mode makes a silent package-version drift (e.g. the Microsoft.OpenApi
       # auto-pin trap) fail the restore loudly instead of quietly rewriting the pin.
@@ -97,13 +104,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
-          # Pinned, not `10.0.x`. src/FitEdu.Web/packages.lock.json carries an
-          # SDK-supplied `Microsoft.AspNetCore.App.Internal.Assets` entry whose version is
-          # whatever ASP.NET Core the installed SDK bundles, so a floating SDK breaks the
-          # `--locked-mode` restore below with NU1004 the moment a new patch ships
-          # (10.0.401 bundles 10.0.12; the lock file says 10.0.13). 10.0.402 bundles 10.0.13.
-          # When that lock entry is next refreshed, bump this pin to the matching SDK.
-          dotnet-version: 10.0.402
+          dotnet-version: ${{ env.DOTNET_SDK_PIN }}
+
+      - name: Use exactly the pinned SDK
+        run: dotnet new globaljson --sdk-version "$DOTNET_SDK_PIN" --roll-forward disable --force
 
       - name: Restore
         run: dotnet restore FitEdu.sln --locked-mode
