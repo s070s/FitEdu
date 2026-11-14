@@ -166,7 +166,7 @@ For live runtime metrics (GC, thread pool, request rate, exceptions) without any
 dotnet counters monitor -n FitEdu.Web
 ```
 
-A full metrics/tracing stack (OpenTelemetry + an OTLP backend) is intentionally *not* wired in — this single-instance project has no metrics backend to ship to, and `dotnet-counters` plus the daily log error-digest cover live diagnostics. Adopting OpenTelemetry is the documented next step if the app is ever run unattended (see `docs/plans/38-audit-observability.md`).
+A full metrics/tracing stack (OpenTelemetry + an OTLP backend) is intentionally *not* wired in — this single-instance project has no metrics backend to ship to, and `dotnet-counters` plus the daily log error-digest cover live diagnostics. Adopting OpenTelemetry is the documented next step if the app is ever run unattended (see the observability audit, kept in the project's handoffs notes: `handoffs/FitEdu/docs/plans/38-audit-observability.md`).
 
 ---
 

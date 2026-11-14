@@ -262,7 +262,7 @@ public static class ServiceRegistrationExtensions
         // (subscription status, assistant status, sitemap) are invalidated explicitly on change
         // within this process — correct for a single instance, but the invalidation would NOT
         // propagate to a second node. Keep TTLs short and move to a shared cache (Redis) before
-        // scaling out; see the accepted-limitations note in docs/plans/35-audit-scalability.md.
+        // scaling out; see the accepted-limitations note in the scalability audit (kept in the project's handoffs notes: handoffs/FitEdu/docs/plans/35-audit-scalability.md).
         // The landing overview ("landing:{lang}") and the exercise facets ("exercise-facets") are
         // not invalidated at all: each simply expires after 60 s, so every node is at most a
         // minute behind an admin's edit.
