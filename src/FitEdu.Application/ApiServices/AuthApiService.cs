@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -24,9 +25,10 @@ public partial class AuthApiService(
     ISubscriptionService subscriptionService,
     ILogger<AuthApiService> logger,
     IApplicationDbContext context,
-    IEmailService emailService) : IAuthApiService
+    IEmailService emailService,
+    IOptions<AppOptions> appOptions) : IAuthApiService
 {
-    public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request, Func<string, string, string?> buildConfirmUrl)
+    public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request)
     {
         var user = request.ToNewUser();
 
@@ -60,12 +62,10 @@ public partial class AuthApiService(
 
         // Generate email confirmation token
         var confirmToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmUrl = buildConfirmUrl(user.Id, confirmToken);
+        var confirmUrl = AuthLinks.ConfirmEmail(appOptions.Value.BaseUrl, user.Id, confirmToken);
 
-        // NOTE: confirmUrl resolves to
-        // the JSON API action below (/api/auth/confirm-email), not a user-facing Blazor page,
-        // and in Development StubEmailService only writes it to the log. For production, add a
-        // /confirm-email page and deliver this link through a real email provider.
+        // NOTE: confirmUrl points at the site's /confirm-email page, which posts the userId and token
+        // to POST /api/auth/confirm-email. In Development StubEmailService only writes it to the log.
         //
         // REL-2: the account/role/Free-plan are already committed above — a transient SMTP
         // failure here must not turn into a 500 after the account exists (the user would be
@@ -74,7 +74,7 @@ public partial class AuthApiService(
         LogUserRegistered(logger, user.Id);
         try
         {
-            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl!, user.PreferredLanguage);
+            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl, user.PreferredLanguage);
         }
         catch (Exception ex)
         {
@@ -278,7 +278,7 @@ public partial class AuthApiService(
         await context.SaveChangesAsync();
     }
 
-    public async Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request, Func<string, string, string> buildResetUrl)
+    public async Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user == null || !await userManager.IsEmailConfirmedAsync(user))
@@ -288,14 +288,24 @@ public partial class AuthApiService(
         }
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var resetUrl = buildResetUrl(user.Email!, token);
+        var resetUrl = AuthLinks.ResetPassword(appOptions.Value.BaseUrl, user.Email!, token);
 
         // The email uses the language of the page the request came from. It is not saved: this request
         // is anonymous, so anyone who knows the email could flip it. The next sign-in saves it.
         var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
 
         LogPasswordResetRequested(logger, user.Id);
-        await emailService.SendPasswordResetAsync(user.Email!, resetUrl, requestLanguage);
+
+        // Like registration (REL-2): a failed send must not turn into a 500 that only a real account
+        // gets, because the answer would tell a visitor which emails have an account.
+        try
+        {
+            await emailService.SendPasswordResetAsync(user.Email!, resetUrl, requestLanguage);
+        }
+        catch (Exception ex)
+        {
+            LogResetEmailFailed(logger, ex, user.Id);
+        }
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
     }
@@ -453,6 +463,9 @@ public partial class AuthApiService(
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Password reset requested for user {UserId}. Reset email queued.")]
     private static partial void LogPasswordResetRequested(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to send the password reset email for user {UserId}.")]
+    private static partial void LogResetEmailFailed(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Password reset failed for user {UserId}: {Errors}")]
     private static partial void LogPasswordResetFailed(ILogger logger, string userId, string errors);

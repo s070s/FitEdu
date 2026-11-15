@@ -1,15 +1,18 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.ApiServices;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
@@ -18,6 +21,8 @@ namespace FitEdu.Application.Tests;
 
 public class AuthApiServiceTests
 {
+    private const string SiteBaseUrl = "https://site.test";
+
     private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, SignInManager<ApplicationUser> Sm, ApplicationDbContext Db, ITokenService Tok, IEmailService Email);
 
     private static Harness Build()
@@ -33,7 +38,8 @@ public class AuthApiServiceTests
         var email = Substitute.For<IEmailService>();
         var db = DbContextFactory.CreateInMemory();
 
-        var svc = new AuthApiService(um, sm, tok, subs, NullLogger<AuthApiService>.Instance, db, email);
+        var svc = new AuthApiService(um, sm, tok, subs, NullLogger<AuthApiService>.Instance, db, email,
+            Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }));
         return new Harness(svc, um, sm, db, tok, email);
     }
 
@@ -97,7 +103,7 @@ public class AuthApiServiceTests
         h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
 
-        var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        var result = await h.Svc.RegisterAsync(RegisterRequest());
 
         result.IsSuccess.ShouldBeTrue();
         result.Value!.Success.ShouldBeTrue();
@@ -110,7 +116,7 @@ public class AuthApiServiceTests
         h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
         h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
 
-        var result = await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        var result = await h.Svc.RegisterAsync(RegisterRequest());
 
         result.IsSuccess.ShouldBeTrue();
         await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
@@ -125,7 +131,7 @@ public class AuthApiServiceTests
         h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
         using var cultureScope = new CultureScope("el-GR");
 
-        await h.Svc.RegisterAsync(RegisterRequest(), (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        await h.Svc.RegisterAsync(RegisterRequest());
 
         createdUser!.PreferredLanguage.ShouldBe(UserLanguage.Greek);
         await h.Email.Received(1).SendEmailConfirmationAsync(
@@ -165,7 +171,7 @@ public class AuthApiServiceTests
         h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
         using var cultureScope = new CultureScope("el-GR");
 
-        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! });
 
         await h.Email.Received(1).SendPasswordResetAsync(
             member.Email!, Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
@@ -183,11 +189,65 @@ public class AuthApiServiceTests
         h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
         using var cultureScope = new CultureScope("en-GB");
 
-        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! }, (email, token) => $"https://x/reset?token={token}");
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! });
 
         await h.Email.Received(1).SendPasswordResetAsync(
             member.Email!, Arg.Any<string>(), UserLanguage.English, Arg.Any<CancellationToken>());
         await h.Um.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
+    }
+
+    // ---- Emailed links: built from the configured site address, every value escaped ----
+
+    [Fact]
+    public async Task Register_ConfirmationLink_StartsWithTheConfiguredSiteAddressAndEscapesTheToken()
+    {
+        var h = Build();
+        ApplicationUser? createdUser = null;
+        h.Um.CreateAsync(Arg.Do<ApplicationUser>(u => createdUser = u), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("a+b/c==");
+
+        await h.Svc.RegisterAsync(RegisterRequest());
+
+        await h.Email.Received(1).SendEmailConfirmationAsync(
+            Arg.Any<string>(),
+            $"{SiteBaseUrl}/confirm-email?userId={createdUser!.Id}&token=a%2Bb%2Fc%3D%3D",
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ForgotPassword_PlusAddress_LinkEscapesEmail()
+    {
+        var h = Build();
+        var member = User();
+        member.Email = "a+b@test.com";
+        h.Um.FindByEmailAsync(member.Email).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email });
+
+        await h.Email.Received(1).SendPasswordResetAsync(
+            member.Email,
+            $"{SiteBaseUrl}/reset-password?email=a%2Bb%40test.com&token=reset-token",
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ForgotPassword_EmailSendThrows_StillReturnsGenericSuccess()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        h.Email.SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
+
+        var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! });
+
+        // The same answer as for an unknown email, so a failed send cannot reveal which emails have an account.
+        result.Success.ShouldBeTrue();
+        result.Message.ShouldBe(SuccessMessagesRes.PasswordResetLinkSent);
     }
 
     [Fact]
@@ -200,7 +260,7 @@ public class AuthApiServiceTests
 
         var request = RegisterRequest();
         request.Status = UserStatus.Intermediate;
-        await h.Svc.RegisterAsync(request, (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        await h.Svc.RegisterAsync(request);
 
         createdUser!.Status.ShouldBe(UserStatus.Intermediate);
     }
@@ -215,7 +275,7 @@ public class AuthApiServiceTests
 
         var request = RegisterRequest();
         request.Status = UserStatus.Unknown;
-        await h.Svc.RegisterAsync(request, (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        await h.Svc.RegisterAsync(request);
 
         createdUser!.Status.ShouldBe(UserStatus.Beginner);
     }
@@ -230,7 +290,7 @@ public class AuthApiServiceTests
 
         var request = RegisterRequest();
         request.Goal = FitnessGoal.Strength;
-        await h.Svc.RegisterAsync(request, (userId, token) => $"https://x/confirm?userId={userId}&token={token}");
+        await h.Svc.RegisterAsync(request);
 
         createdUser!.Goal.ShouldBe(FitnessGoal.Strength);
     }

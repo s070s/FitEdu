@@ -203,7 +203,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
 | `POST` | `api/auth/register` | Register new user (Student role) | No |
-| `GET` | `api/auth/confirm-email` | Confirm email via token link | No |
+| `POST` | `api/auth/confirm-email` | Confirm email with the `userId` and `token` of the emailed link (body: `ConfirmEmailRequestDto`) | No |
 | `POST` | `api/auth/login` | Log in — returns JWT + refresh token | No |
 | `POST` | `api/auth/forgot-password` | Request password-reset email | No |
 | `POST` | `api/auth/reset-password` | Reset password with token | No |
@@ -570,6 +570,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 | `Assistant__Enabled` / `Assistant__BaseUrl` | `.env` or `appsettings.json` | Toggle the local AI assistant (default on) and point it at a non-default Ollama host. |
 | `Site:TimeZone` | `appsettings.json` | The members' time zone as an IANA id (default `Europe/Athens`). The dashboard date, the training-streak day boundary and every date and time the pages show use it (`SiteClock`), never UTC or the server's own zone; admins type class start times in it too. **Startup throws** on an unknown id. |
 | `Sitemap:BaseUrl` | `appsettings.json` | Public site address (default `https://fitedu.com`). `/sitemap.xml` lists the public pages (home, programmes, exercises, paths, blog, pricing, privacy, terms), every published blog article, programme, learning path and exercise under it (a missing exercise, article or programme page answers 404 with its friendly not-found view, so crawlers drop dead addresses; when the API could not be asked it answers 503 instead, so an outage never makes a real page look gone), and `SeoHead` builds each page's canonical, Open Graph and Twitter URLs from it. **Required** — startup throws without it. |
+| `App:BaseUrl` | `appsettings.json` | Public site address the links in account emails start with (`/confirm-email?userId=…&token=…`, `/reset-password?email=…&token=…`, every value URL-escaped). Taken from configuration, never from the request's `Host` header, so a forged header cannot redirect a reset link. Default `https://fitedu.com`, `https://localhost:7090` in Development. Must be an absolute `http`/`https` address — startup throws otherwise. |
 
 `appsettings.Development.json`: `SeedData:Enabled`, `SeedData:BulkStudentCount`, `SeedData:JsonPaths:*`, `Payment:MockEnabled`, dev connection string.
 
@@ -579,6 +580,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 - `AllowedHosts` set to the production domain
 - `SelfBaseUrl` set to the app's real bound address (startup throws otherwise)
 - `Email:Smtp:Host` (+ credentials) configured so `SmtpEmailService` sends real email (startup throws in Production when no SMTP host is set)
+- `App:BaseUrl` set to the public site address, so the confirm and reset links in emails point at the live site
 - `Payment__WebhookSecret` set if Stripe webhooks are used — the webhook endpoint returns **503** without it and never skips signature verification. (`Payment:MockEnabled` is ignored outside Development, so mock checkout can't grant free upgrades in production.)
 - **Behind a reverse proxy** (nginx/Caddy/IIS ARR/cloud LB terminating TLS): the app processes `X-Forwarded-Proto`/`X-Forwarded-For` automatically and trusts a loopback (same-host) proxy. For a proxy on a different host, list its IP(s) in `ForwardedHeaders:KnownProxies` — otherwise HTTPS redirects loop and the Secure auth cookie is refused.
 - **Persistent state outside the deploy folder** so a redeploy isn't destructive: point `Storage:UploadsPath` (uploaded avatars/PDFs/videos) and `Logging:File:Directory` (log files) at durable paths; the database and DataProtection keys already live in SQL Server, not on disk.

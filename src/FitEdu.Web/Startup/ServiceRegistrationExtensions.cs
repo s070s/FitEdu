@@ -75,6 +75,12 @@ public static class ServiceRegistrationExtensions
             .ValidateOnStart();
         // CFG-5: bind the Payment section in one place (MockEnabled / WebhookSecret).
         builder.Services.Configure<PaymentOptions>(config.GetSection(PaymentOptions.SectionName));
+        // The links in account emails start with App:BaseUrl; a bad value fails at startup, not at the first email.
+        builder.Services.AddOptions<AppOptions>()
+            .Bind(config.GetSection(AppOptions.SectionName))
+            .Validate(o => Uri.TryCreate(o.BaseUrl, UriKind.Absolute, out var baseUri) && baseUri.Scheme is "http" or "https",
+                "App:BaseUrl must be an absolute http or https address, for example https://fitedu.com.")
+            .ValidateOnStart();
         if (!string.IsNullOrWhiteSpace(config["Email:Smtp:Host"]))
         {
             builder.Services.AddScoped<IEmailService, SmtpEmailService>();

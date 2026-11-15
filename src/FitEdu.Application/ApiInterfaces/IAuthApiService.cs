@@ -10,16 +10,16 @@ namespace FitEdu.Application.ApiInterfaces;
 /// </summary>
 public interface IAuthApiService
 {
-    /// <param name="request">Registration details.</param>
-    /// <param name="buildConfirmUrl">Builds the email-confirmation URL from (userId, token).</param>
-    Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request, Func<string, string, string?> buildConfirmUrl);
+    /// <summary>
+    /// Registers a Student and emails the confirmation link (built from <c>App:BaseUrl</c>).
+    /// </summary>
+    Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request);
     Task<ServiceResult<AuthResponseDto>> ConfirmEmailAsync(string userId, string token);
     Task<ServiceResult<AuthResponseDto>> LoginAsync(LoginRequestDto request);
     Task<ServiceResult<AuthResponseDto>> RefreshAsync(RefreshTokenRequestDto request);
 
-    /// <param name="request">The email to send a reset link to.</param>
-    /// <param name="buildResetUrl">Builds the password-reset URL from (email, token).</param>
-    Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request, Func<string, string, string> buildResetUrl);
+    /// <param name="request">The email to send a reset link to (built from <c>App:BaseUrl</c>).</param>
+    Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request);
     Task<ServiceResult<AuthResponseDto>> ResetPasswordAsync(ResetPasswordRequestDto request);
     Task<CurrentUserDto?> GetCurrentUserAsync(string userId);
 

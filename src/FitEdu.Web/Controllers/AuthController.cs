@@ -33,19 +33,19 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterRequestDto request)
     {
-        var result = await _authApiService.RegisterAsync(request, (userId, token) =>
-            Url.Action("ConfirmEmail", "Auth", new { userId, token }, Request.Scheme));
+        var result = await _authApiService.RegisterAsync(request);
         return result.ToEmbeddedActionResult();
     }
 
     /// <summary>
-    /// Confirm user email address.
+    /// Confirm user email address. POST, because a confirmation changes the account: the emailed
+    /// link opens the site's /confirm-email page, which posts the userId and token here.
     /// </summary>
-    [HttpGet("confirm-email")]
+    [HttpPost("confirm-email")]
     [EnableRateLimiting("auth")]
-    public async Task<ActionResult<AuthResponseDto>> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+    public async Task<ActionResult<AuthResponseDto>> ConfirmEmail([FromBody] ConfirmEmailRequestDto request)
     {
-        var result = await _authApiService.ConfirmEmailAsync(userId, token);
+        var result = await _authApiService.ConfirmEmailAsync(request.UserId, request.Token);
         return result.ToEmbeddedActionResult();
     }
 
@@ -73,14 +73,14 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Request password reset. Returns token (dev mode). In production, send via email.
+    /// Request a password reset. Always answers with the same generic success; when the email belongs
+    /// to a confirmed account, a reset link is emailed.
     /// </summary>
     [HttpPost("forgot-password")]
     [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResponseDto>> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
     {
-        var dto = await _authApiService.ForgotPasswordAsync(request, (email, token) =>
-            $"{Request.Scheme}://{Request.Host}/reset-password?email={email}&token={Uri.EscapeDataString(token)}");
+        var dto = await _authApiService.ForgotPasswordAsync(request);
         return Ok(dto);
     }
 

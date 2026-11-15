@@ -1,6 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Identity;
 using Shouldly;
 using Xunit;
 
@@ -60,6 +63,54 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
         body!.Errors.ShouldNotBeNull();
         // Account-enumeration safe: duplicate is masked, never says "email already exists".
         string.Join(" ", body.Errors!).ShouldNotContain("already");
+    }
+
+    // ---- Confirm email: POST only, the emailed link opens the site's page which posts here ----
+
+    private async Task<(string UserId, string Token)> CreateUnconfirmedUserWithTokenAsync()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var email = $"confirm-{Guid.NewGuid():N}@test.com";
+        var user = new ApplicationUser { UserName = email, Email = email, FirstName = "Test", LastName = "User" };
+        (await userManager.CreateAsync(user, CustomWebAppFactory.TestPassword)).Succeeded.ShouldBeTrue();
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        return (user.Id, token);
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_Get_Returns405()
+    {
+        var (userId, token) = await CreateUnconfirmedUserWithTokenAsync();
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync($"/api/auth/confirm-email?userId={Uri.EscapeDataString(userId)}&token={Uri.EscapeDataString(token)}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.MethodNotAllowed);
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_PostValidToken_Returns200()
+    {
+        var (userId, token) = await CreateUnconfirmedUserWithTokenAsync();
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/auth/confirm-email", new ConfirmEmailRequestDto { UserId = userId, Token = token });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        body!.Success.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_PostBadToken_Returns400()
+    {
+        var (userId, _) = await CreateUnconfirmedUserWithTokenAsync();
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/auth/confirm-email", new ConfirmEmailRequestDto { UserId = userId, Token = "not-a-token" });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
