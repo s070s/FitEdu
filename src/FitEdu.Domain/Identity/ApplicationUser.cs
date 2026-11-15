@@ -23,18 +23,16 @@ public class ApplicationUser : IdentityUser
     public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
-    /// Computed age (not persisted). Returns null if DateOfBirth is not set.
+    /// The age in whole years on <paramref name="today"/>, or null if DateOfBirth is not set. Callers
+    /// pass today's date in the members' time zone (<c>SiteClock.Today</c>), not the server's UTC date,
+    /// so a birthday turns at the members' midnight.
     /// </summary>
-    public int? Age
+    public int? AgeOn(DateOnly today)
     {
-        get
-        {
-            if (DateOfBirth is null) return null;
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            var age = today.Year - DateOfBirth.Value.Year;
-            if (DateOfBirth.Value > today.AddYears(-age)) age--;
-            return age;
-        }
+        if (DateOfBirth is null) return null;
+        var age = today.Year - DateOfBirth.Value.Year;
+        if (DateOfBirth.Value > today.AddYears(-age)) age--;
+        return age;
     }
 
     /// <summary>

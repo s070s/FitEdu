@@ -26,7 +26,7 @@ public class AuthApiServiceTests
         ISubscriptionService Subs, RecordingLogger<AuthApiService> Log);
 
     // dbName: two harnesses with the same name share one database, like two requests at the same time.
-    private static Harness Build(string? dbName = null)
+    private static Harness Build(string? dbName = null, TimeProvider? timeProvider = null)
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
@@ -44,7 +44,7 @@ public class AuthApiServiceTests
         var log = new RecordingLogger<AuthApiService>();
 
         var svc = new AuthApiService(um, sm, tok, subs, log, db, email,
-            Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }));
+            Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }), timeProvider ?? TimeProvider.System);
         return new Harness(svc, um, sm, db, tok, email, subs, log);
     }
 
@@ -372,6 +372,37 @@ public class AuthApiServiceTests
         result.IsSuccess.ShouldBeTrue();
         await h.Subs.Received(1).AssignFreePlanAsync(Arg.Any<string>());
         await h.Email.Received(1).SendEmailConfirmationAsync("u@x.com", Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    // ---- The under-18 notice follows the members' date, not the server's UTC date (P01-19) ----
+
+    [Fact]
+    public async Task Register_BirthdayAlreadyReachedInTheMembersZone_IsNotLoggedAsUnderEighteen()
+    {
+        // 22:30 UTC on 14 June is already 15 June in Athens: a member born on 15 June 2008 is 18 there, 17 in UTC.
+        var h = Build(timeProvider: new FixedTimeProvider(new DateTimeOffset(2026, 6, 14, 22, 30, 0, TimeSpan.Zero)));
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        var request = RegisterRequest();
+        request.DateOfBirth = new DateTime(2008, 6, 15);
+
+        await h.Svc.RegisterAsync(request);
+
+        h.Log.Information.ShouldNotContain(entry => entry.Contains("Under-18", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task Register_StillSeventeenInTheMembersZone_LogsTheUnderEighteenNotice()
+    {
+        var h = Build(timeProvider: new FixedTimeProvider(new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero)));
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        var request = RegisterRequest();
+        request.DateOfBirth = new DateTime(2008, 6, 15);
+
+        await h.Svc.RegisterAsync(request);
+
+        h.Log.Information.ShouldContain(entry => entry.Contains("Under-18", StringComparison.Ordinal));
     }
 
     // ---- Logs never hold an email address (P01-1) ----

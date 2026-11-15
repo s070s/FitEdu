@@ -149,9 +149,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         // ApplicationUser configuration (Identity-specific)
         builder.Entity<ApplicationUser>(entity =>
         {
-            // Ignore computed property
-            entity.Ignore(u => u.Age);
-
             // Store DateOfBirth as DATE column
             entity.Property(u => u.DateOfBirth)
                   .HasConversion(

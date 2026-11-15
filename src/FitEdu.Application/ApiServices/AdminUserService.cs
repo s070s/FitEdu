@@ -21,7 +21,8 @@ public partial class AdminUserService(
     ILogger<AdminUserService> logger,
     IApplicationDbContext context,
     IEmailService emailService,
-    ICurrentUserAccessor currentUser) : IAdminUserService
+    ICurrentUserAccessor currentUser,
+    TimeProvider timeProvider) : IAdminUserService
 {
     // LOG-4: the acting admin's id for audit attribution ("who did it"), from the request principal.
     private string ActingAdmin => currentUser.UserId ?? "unknown";
@@ -101,7 +102,7 @@ public partial class AdminUserService(
             user.Email,
             user.FirstName,
             user.LastName,
-            user.Age,
+            user.AgeOn(SiteClock.Today(timeProvider)),
             user.Status.ToString(),
             user.EmailConfirmed,
             user.IsEnabled,

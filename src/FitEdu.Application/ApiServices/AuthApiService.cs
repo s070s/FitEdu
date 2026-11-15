@@ -26,7 +26,8 @@ public partial class AuthApiService(
     ILogger<AuthApiService> logger,
     IApplicationDbContext context,
     IEmailService emailService,
-    IOptions<AppOptions> appOptions) : IAuthApiService
+    IOptions<AppOptions> appOptions,
+    TimeProvider timeProvider) : IAuthApiService
 {
     private const string StudentRole = "Student";
 
@@ -66,8 +67,9 @@ public partial class AuthApiService(
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = safeErrors });
         }
 
-        // Parental consent placeholder: if under 18, flag for future handling
-        if (user.Age.HasValue && user.Age < 18)
+        // Parental consent placeholder: if under 18 on the members' date, flag for future handling
+        var age = user.AgeOn(SiteClock.Today(timeProvider));
+        if (age < 18)
         {
             // TODO: Implement parental consent flow. For now, allow registration but log.
             LogUnderEighteenRegistered(logger, user.Id);
@@ -438,7 +440,7 @@ public partial class AuthApiService(
             user.Email,
             user.FirstName,
             user.LastName,
-            user.Age,
+            user.AgeOn(SiteClock.Today(timeProvider)),
             user.Status.ToString(),
             [.. roles]);
     }

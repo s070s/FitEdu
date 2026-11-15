@@ -36,7 +36,8 @@ public class AdminUserServiceTests
             NullLogger<AdminUserService>.Instance,
             db,
             emailService ?? Substitute.For<IEmailService>(),
-            currentUser);
+            currentUser,
+            TimeProvider.System);
     }
 
     /// <summary>

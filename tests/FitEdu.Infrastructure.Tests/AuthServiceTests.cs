@@ -54,7 +54,7 @@ public class AuthServiceTests
         var log = new RecordingLogger<AuthService>();
         // The register, forgot and reset flows live in AuthApiService; the real one runs behind AuthService.
         var authApi = new AuthApiService(um, sm, Substitute.For<ITokenService>(), subs, new RecordingLogger<AuthApiService>(), ctx, email,
-            Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
+            Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System);
 
         var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, config, log);
         return new Harness(svc, um, sm, subs, email, dp, accessor, log);
