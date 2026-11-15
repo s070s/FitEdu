@@ -4,18 +4,24 @@
 
 <AuthCard Title="@GlobalRes.Label_Login" Subtitle="@GlobalRes.AuthLoginSubtitle">
     <ChildContent>
-        @if (unconfirmedEmailPending)
-        {
-            <div class="alert alert-warning">@ErrorMessagesRes.EmailNotConfirmedHint</div>
-        }
+        @* Both regions are always on the page, empty until needed: a screen reader announces text that
+           appears in a region that was already there, not a new alert that is added whole. *@
+        <div role="status">
+            @if (unconfirmedEmailPending)
+            {
+                <div class="alert alert-warning">@ErrorMessagesRes.EmailNotConfirmedHint</div>
+            }
+        </div>
 
-        @if (!string.IsNullOrEmpty(errorMessage) && !unconfirmedEmailPending)
-        {
-            <div class="alert alert-danger">
-                @errorMessage
-                <div class="mt-1"><a href="/forgot-password">@GlobalRes.Label_ForgotPassword</a></div>
-            </div>
-        }
+        <div role="alert">
+            @if (!string.IsNullOrEmpty(errorMessage) && !unconfirmedEmailPending)
+            {
+                <div class="alert alert-danger">
+                    @errorMessage
+                    <div class="mt-1"><a href="/forgot-password">@GlobalRes.Label_ForgotPassword</a></div>
+                </div>
+            }
+        </div>
 
         <EditForm Model="loginRequest" OnValidSubmit="HandleLogin" autocomplete="off">
             <DataAnnotationsValidator />

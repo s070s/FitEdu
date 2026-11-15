@@ -102,6 +102,40 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Login_WrongPassword_ErrorSitsInAnAlertRegion()
+    {
+        // A screen reader announces text that appears in a region that was already on the page.
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto
+        {
+            Success = false,
+            Message = ErrorMessagesRes.InvalidCredentials,
+            Failure = AuthFailure.InvalidCredentials
+        });
+        var page = Render<Login>();
+        page.Find("[role=alert]").TextContent.Trim().ShouldBeEmpty();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public void Login_UnconfirmedAccount_HintSitsInAStatusRegion()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        var page = Render<Login>();
+        page.Find("[role=status]").TextContent.Trim().ShouldBeEmpty();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        page.Find("[role=status] .alert-warning").TextContent.ShouldContain(ErrorMessagesRes.EmailNotConfirmedHint);
+    }
+
+    [Fact]
     public void Login_WithReturnUrl_TheRegisterLinkKeepsIt()
     {
         Services.GetRequiredService<NavigationManager>().NavigateTo("/login?returnUrl=%2Fcourses%2F42");
@@ -339,6 +373,34 @@ public class AuthAndSiteChromeTests : BunitContext
 
         page.Find(".alert-success").TextContent.ShouldContain("sent");
         page.FindAll(".alert-success input[type=password]").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ForgotPassword_SuccessSitsInAStatusRegion()
+    {
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true, Message = "sent" });
+        var page = Render<ForgotPassword>();
+        page.Find("[role=status]").TextContent.Trim().ShouldBeEmpty();
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        page.Find("[role=status] .alert-success").TextContent.ShouldContain("sent");
+    }
+
+    [Fact]
+    public void ForgotPassword_Failure_SitsInAnAlertRegionAndKeepsTheForm()
+    {
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>())
+            .Returns(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.TooManyAttempts, Failure = AuthFailure.TooManyAttempts });
+        var page = Render<ForgotPassword>();
+        page.Find("[role=alert]").TextContent.Trim().ShouldBeEmpty();
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.TooManyAttempts);
+        page.FindAll("form").Count.ShouldBe(1);
     }
 
     [Fact]
