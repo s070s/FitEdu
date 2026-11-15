@@ -67,7 +67,13 @@ public partial class AuthApiService(
                     ? ErrorMessagesRes.RegistrationFailedGeneric
                     : e.Description);
 
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = safeErrors });
+            var emailTaken = revealTakenEmail && result.Errors.Any(e => e.Code is "DuplicateUserName" or "DuplicateEmail");
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Errors = safeErrors,
+                Failure = emailTaken ? AuthFailure.EmailTaken : null
+            });
         }
 
         // Parental consent placeholder: if under 18 on the members' date, flag for future handling
@@ -157,17 +163,17 @@ public partial class AuthApiService(
     public async Task<ServiceResult<AuthResponseDto>> ConfirmEmailAsync(string userId, string token)
     {
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidConfirmationLink });
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidConfirmationLink, Failure = AuthFailure.LinkInvalid });
 
         var user = await userManager.FindByIdAsync(userId);
         if (user == null)
-            return ServiceResult<AuthResponseDto>.NotFound(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.UserNotFound });
+            return ServiceResult<AuthResponseDto>.NotFound(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.UserNotFound, Failure = AuthFailure.LinkInvalid });
 
         var result = await userManager.ConfirmEmailAsync(user, token);
         if (!result.Succeeded)
         {
             LogEmailConfirmationFailed(logger, userId, string.Join(", ", result.Errors.Select(e => e.Code)));
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description) });
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description), Failure = AuthFailure.LinkInvalid });
         }
 
         LogEmailConfirmed(logger, user.Id);
@@ -182,7 +188,7 @@ public partial class AuthApiService(
             // Spend the time of a real password check, so the answer does not reveal that the email has no account.
             UnknownUserPasswordCheck.Run(request.Password);
             LogLoginUnknownUser(logger);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials, Failure = AuthFailure.InvalidCredentials });
         }
 
         // An unconfirmed account answers like a wrong password, and like a confirmed account once it is locked
@@ -193,10 +199,13 @@ public partial class AuthApiService(
         {
             var outcome = await UnconfirmedAccountPasswordCheck.RunAsync(userManager, user, request.Password);
             LogLoginUnconfirmedEmail(logger, user.Id);
-            var message = outcome == UnconfirmedPasswordOutcome.LockedOut
-                ? ErrorMessagesRes.AccountLocked
-                : ErrorMessagesRes.InvalidCredentials;
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = message });
+            var lockedOut = outcome == UnconfirmedPasswordOutcome.LockedOut;
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto
+            {
+                Success = false,
+                Message = lockedOut ? ErrorMessagesRes.AccountLocked : ErrorMessagesRes.InvalidCredentials,
+                Failure = lockedOut ? AuthFailure.AccountLocked : AuthFailure.InvalidCredentials
+            });
         }
 
         // The password comes next: a disabled account is only reported as such to someone who knows its
@@ -207,16 +216,16 @@ public partial class AuthApiService(
             if (result.IsLockedOut)
             {
                 LogUserLockedOut(logger, user.Id);
-                return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked });
+                return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked, Failure = AuthFailure.AccountLocked });
             }
             LogInvalidPassword(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials, Failure = AuthFailure.InvalidCredentials });
         }
 
         if (!user.IsEnabled)
         {
             LogLoginDisabledUser(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport, Failure = AuthFailure.AccountDisabled });
         }
 
         // The language the member signs in from is kept for the emails an admin may send them later.
@@ -264,7 +273,7 @@ public partial class AuthApiService(
             // REL-8: RevokedAt is a concurrency token, so when two requests rotate the same token at once
             // only the first save wins. The loser must not mint a second live token pair from one token.
             LogRefreshRaced(logger);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken, Failure = AuthFailure.InvalidRefreshToken });
         }
     }
 
@@ -279,7 +288,7 @@ public partial class AuthApiService(
         if (stored is null || stored.ExpiresAt <= DateTimeOffset.UtcNow)
         {
             LogRefreshInvalidToken(logger);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken, Failure = AuthFailure.InvalidRefreshToken });
         }
 
         // SEC-1 reuse detection: a token is only ever revoked by rotation (below) or by one of
@@ -290,7 +299,7 @@ public partial class AuthApiService(
         {
             await RevokeTokenChainAsync(stored);
             LogRefreshTokenReuse(logger, stored.UserId);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken, Failure = AuthFailure.InvalidRefreshToken });
         }
 
         var user = stored.User;
@@ -300,7 +309,7 @@ public partial class AuthApiService(
             stored.RevokedAt = DateTimeOffset.UtcNow;
             await context.SaveChangesAsync();
             LogRefreshDisabledUser(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountIsDisabled });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountIsDisabled, Failure = AuthFailure.AccountDisabled });
         }
 
         // SEC-1: a password reset (self-service or admin-forced) rotates SecurityStamp but this
@@ -311,7 +320,7 @@ public partial class AuthApiService(
             stored.RevokedAt = DateTimeOffset.UtcNow;
             await context.SaveChangesAsync();
             LogRefreshStaleSecurityStamp(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken, Failure = AuthFailure.InvalidRefreshToken });
         }
 
         // Rotate: revoke the old token and issue a new pair. The new token lives as long as the old one was
@@ -411,7 +420,7 @@ public partial class AuthApiService(
         if (user == null)
         {
             // Don't reveal if user exists
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest, Failure = AuthFailure.LinkInvalid });
         }
 
         var result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
@@ -426,7 +435,7 @@ public partial class AuthApiService(
                 return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = errors.Select(error => error.Description) });
 
             // Anything else (an invalid or expired token) gets a generic message, which never confirms account existence.
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest, Failure = AuthFailure.LinkInvalid });
         }
 
         // SEC-1: ResetPasswordAsync rotated SecurityStamp, which RefreshAsync's stamp check will

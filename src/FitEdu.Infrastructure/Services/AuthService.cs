@@ -117,7 +117,7 @@ public partial class AuthService : IAuthService
             // Spend the time of a real password check, so the answer does not reveal that the email has no account.
             UnknownUserPasswordCheck.Run(request.Password);
             LogLoginUnknownUser(_logger);
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials, Failure = AuthFailure.InvalidCredentials };
         }
 
         // "Not confirmed" is only told to someone who knows the password, so a guess cannot find unconfirmed
@@ -125,15 +125,11 @@ public partial class AuthService : IAuthService
         if (!await _userManager.IsEmailConfirmedAsync(user))
         {
             var outcome = await UnconfirmedAccountPasswordCheck.RunAsync(_userManager, user, request.Password);
-            return new AuthResponseDto
+            return outcome switch
             {
-                Success = false,
-                Message = outcome switch
-                {
-                    UnconfirmedPasswordOutcome.RightPassword => ErrorMessagesRes.EmailNotConfirmedError,
-                    UnconfirmedPasswordOutcome.LockedOut => ErrorMessagesRes.AccountLocked,
-                    _ => ErrorMessagesRes.InvalidCredentials
-                }
+                UnconfirmedPasswordOutcome.RightPassword => Refusal(ErrorMessagesRes.EmailNotConfirmedError, AuthFailure.EmailNotConfirmed),
+                UnconfirmedPasswordOutcome.LockedOut => Refusal(ErrorMessagesRes.AccountLocked, AuthFailure.AccountLocked),
+                _ => Refusal(ErrorMessagesRes.InvalidCredentials, AuthFailure.InvalidCredentials)
             };
         }
 
@@ -141,15 +137,15 @@ public partial class AuthService : IAuthService
         if (!result.Succeeded)
         {
             if (result.IsLockedOut)
-                return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked };
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
+                return Refusal(ErrorMessagesRes.AccountLocked, AuthFailure.AccountLocked);
+            return Refusal(ErrorMessagesRes.InvalidCredentials, AuthFailure.InvalidCredentials);
         }
 
         // "Disabled" is only told to someone who knows the password; a wrong guess learns nothing about the account.
         if (!user.IsEnabled)
         {
             LogLoginDisabledUser(_logger, user.Id);
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport };
+            return Refusal(ErrorMessagesRes.AccountDisabledContactSupport, AuthFailure.AccountDisabled);
         }
 
         // The language the member signs in from is kept for the emails an admin may send them later.
@@ -262,7 +258,10 @@ public partial class AuthService : IAuthService
         _attemptLimiter.TryAcquire((email ?? string.Empty).Trim().ToUpperInvariant(), _clientAddress.Key);
 
     private static AuthResponseDto TooManyAttempts() =>
-        new() { Success = false, Message = ErrorMessagesRes.TooManyAttempts };
+        Refusal(ErrorMessagesRes.TooManyAttempts, AuthFailure.TooManyAttempts);
+
+    private static AuthResponseDto Refusal(string message, AuthFailure failure) =>
+        new() { Success = false, Message = message, Failure = failure };
 
     // The API service embeds its outcome in Value on success and failure alike.
     private static AuthResponseDto ToDto(ServiceResult<AuthResponseDto> result) =>

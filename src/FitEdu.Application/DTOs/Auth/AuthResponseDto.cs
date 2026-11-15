@@ -42,4 +42,12 @@ public class AuthResponseDto
     {
         get; set;
     }
+
+    /// <summary>The reason a call was refused, when it is one of the known ones; null on success and for other failures.
+    /// Unlike <see cref="Message"/> it does not change with the language.</summary>
+    /// <example>InvalidCredentials</example>
+    public AuthFailure? Failure
+    {
+        get; set;
+    }
 }

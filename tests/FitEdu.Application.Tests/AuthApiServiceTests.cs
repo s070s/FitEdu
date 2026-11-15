@@ -633,6 +633,147 @@ public class AuthApiServiceTests
         result.Value!.Message.ShouldBe(SuccessMessagesRes.EmailConfirmedSuccessfully);
     }
 
+    // ---- Every refusal names its reason in Failure, so a page never compares translated text (P02-18) ----
+
+    [Fact]
+    public async Task Failure_LoginUnknownEmail_IsInvalidCredentials()
+    {
+        var h = Build();
+        h.Um.FindByEmailAsync("u@x.com").Returns((ApplicationUser?)null);
+
+        (await h.Svc.LoginAsync(LoginRequest())).Value!.Failure.ShouldBe(AuthFailure.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Failure_LoginUnconfirmedAccountRightPassword_StaysInvalidCredentialsOnTheApi()
+    {
+        // The API never says "not confirmed", so an answer cannot find unconfirmed accounts.
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(false);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(true);
+
+        (await h.Svc.LoginAsync(LoginRequest())).Value!.Failure.ShouldBe(AuthFailure.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Failure_LoginLockedOut_IsAccountLocked()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.LockedOut);
+
+        (await h.Svc.LoginAsync(LoginRequest())).Value!.Failure.ShouldBe(AuthFailure.AccountLocked);
+    }
+
+    [Fact]
+    public async Task Failure_LoginDisabledAccountRightPassword_IsAccountDisabled()
+    {
+        var h = Build();
+        var member = User(enabled: false);
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+
+        (await h.Svc.LoginAsync(LoginRequest())).Value!.Failure.ShouldBe(AuthFailure.AccountDisabled);
+    }
+
+    [Fact]
+    public async Task Failure_ConfirmEmailMissingUnknownOrRejected_IsLinkInvalid()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByIdAsync("u1").Returns(member);
+        h.Um.FindByIdAsync("ghost").Returns((ApplicationUser?)null);
+        h.Um.ConfirmEmailAsync(member, "bad").Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+
+        (await h.Svc.ConfirmEmailAsync("", "token")).Value!.Failure.ShouldBe(AuthFailure.LinkInvalid);
+        (await h.Svc.ConfirmEmailAsync("ghost", "token")).Value!.Failure.ShouldBe(AuthFailure.LinkInvalid);
+        (await h.Svc.ConfirmEmailAsync("u1", "bad")).Value!.Failure.ShouldBe(AuthFailure.LinkInvalid);
+    }
+
+    [Fact]
+    public async Task Failure_ResetPasswordUnknownEmailOrRejectedToken_IsLinkInvalid()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.FindByEmailAsync("ghost@x.com").Returns((ApplicationUser?)null);
+        h.Um.ResetPasswordAsync(member, "bad-token", "Password1!")
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+
+        var unknown = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = "ghost@x.com", Token = "t", NewPassword = "Password1!", ConfirmPassword = "Password1!" });
+        var rejected = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = member.Email!, Token = "bad-token", NewPassword = "Password1!", ConfirmPassword = "Password1!" });
+
+        unknown.Value!.Failure.ShouldBe(AuthFailure.LinkInvalid);
+        rejected.Value!.Failure.ShouldBe(AuthFailure.LinkInvalid);
+    }
+
+    [Fact]
+    public async Task Failure_ResetPasswordRuleError_NamesNoFailureBecauseTheLinkWasValid()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.ResetPasswordAsync(member, "token", "weak")
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "PasswordTooShort", Description = "Too short." }));
+
+        var result = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = member.Email!, Token = "token", NewPassword = "weak", ConfirmPassword = "weak" });
+
+        result.Value!.Failure.ShouldBeNull();
+        result.Value.Errors.ShouldBe(["Too short."]);
+    }
+
+    [Fact]
+    public async Task Failure_RefreshUnknownToken_IsInvalidRefreshToken()
+    {
+        var h = Build();
+
+        var result = await h.Svc.RefreshAsync(new RefreshTokenRequestDto { RefreshToken = "does-not-exist" });
+
+        result.Value!.Failure.ShouldBe(AuthFailure.InvalidRefreshToken);
+    }
+
+    [Fact]
+    public async Task Failure_RefreshDisabledAccount_IsAccountDisabled()
+    {
+        var h = Build();
+        var user = User(enabled: false);
+        Seed(h.Db, user, "plain-1", user.SecurityStamp);
+        await h.Db.SaveChangesAsync();
+
+        var result = await h.Svc.RefreshAsync(new RefreshTokenRequestDto { RefreshToken = "plain-1" });
+
+        result.Value!.Failure.ShouldBe(AuthFailure.AccountDisabled);
+    }
+
+    [Fact]
+    public async Task Failure_RegisterDuplicateEmail_IsEmailTakenOnTheSignUpPageOnly()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(
+            IdentityResult.Failed(new IdentityError { Code = "DuplicateEmail", Description = "Email 'u@x.com' is already taken." }));
+
+        var page = await h.Svc.RegisterFromSignUpPageAsync(RegisterRequest());
+        var api = await h.Svc.RegisterAsync(RegisterRequest());
+
+        page.Value!.Failure.ShouldBe(AuthFailure.EmailTaken);
+        api.Value!.Failure.ShouldBeNull(); // the API keeps hiding which emails have an account
+    }
+
+    [Fact]
+    public async Task Failure_IsNullWhenTheCallWorked()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+
+        (await h.Svc.RegisterAsync(RegisterRequest())).Value!.Failure.ShouldBeNull();
+    }
+
     // ---- The development-only password reset (the e2e suite's sign-in fixture; the controller exposes it only in Debug builds on a Development host) ----
 
     [Fact]

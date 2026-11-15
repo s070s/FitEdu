@@ -179,6 +179,9 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
             new LoginRequestDto { Email = email, Password = "Wrong-Pass-9!" });
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        // The reason travels as a readable name, so an API client does not compare the translated message.
+        (await response.Content.ReadAsStringAsync()).ShouldContain("\"failure\":\"InvalidCredentials\"", Case.Sensitive);
+        (await response.Content.ReadFromJsonAsync<AuthResponseDto>())!.Failure.ShouldBe(AuthFailure.InvalidCredentials);
     }
 
     [Fact]

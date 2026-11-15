@@ -656,6 +656,93 @@ public class AuthServiceTests
         result.Success.ShouldBeTrue();
     }
 
+    // ---- Every refusal names its reason in Failure, so a page never compares translated text (P02-18) ----
+
+    [Fact]
+    public async Task Failure_LoginUnknownEmailOrWrongPassword_IsInvalidCredentials()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(user, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Failed);
+        h.Um.FindByEmailAsync("nobody@x.com").Returns((ApplicationUser?)null);
+
+        (await h.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.InvalidCredentials);
+        (await h.Svc.LoginAsync(new LoginRequestDto { Email = "nobody@x.com", Password = "Password1" })).Failure
+            .ShouldBe(AuthFailure.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Failure_LoginUnconfirmedAccount_IsEmailNotConfirmedOnlyForTheRightPassword()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(true);
+        h.Um.CheckPasswordAsync(user, "Wrong-Pass-9").Returns(false);
+
+        (await h.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.EmailNotConfirmed);
+        (await h.Svc.LoginAsync(new LoginRequestDto { Email = "u@x.com", Password = "Wrong-Pass-9" })).Failure
+            .ShouldBe(AuthFailure.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Failure_LoginLockedOut_IsAccountLocked_ForConfirmedAndUnconfirmedAccounts()
+    {
+        var unconfirmed = Build();
+        var unconfirmedUser = UnconfirmedUserWithLockout(unconfirmed);
+        unconfirmed.Um.IsLockedOutAsync(unconfirmedUser).Returns(true);
+        var confirmed = Build();
+        var confirmedUser = User();
+        confirmed.Um.FindByEmailAsync("u@x.com").Returns(confirmedUser);
+        confirmed.Um.IsEmailConfirmedAsync(confirmedUser).Returns(true);
+        confirmed.Sm.CheckPasswordSignInAsync(confirmedUser, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.LockedOut);
+
+        (await unconfirmed.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.AccountLocked);
+        (await confirmed.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.AccountLocked);
+    }
+
+    [Fact]
+    public async Task Failure_LoginDisabledAccountRightPassword_IsAccountDisabled()
+    {
+        var h = Build();
+        var user = User(enabled: false);
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(user, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+
+        (await h.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.AccountDisabled);
+    }
+
+    [Fact]
+    public async Task Failure_OverTheAttemptLimit_IsTooManyAttempts_OnLoginRegisterAndForgot()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(false);
+        var h = Build(limiter);
+
+        (await h.Svc.LoginAsync(Login())).Failure.ShouldBe(AuthFailure.TooManyAttempts);
+        (await h.Svc.RegisterAsync(new RegisterRequestDto { Email = "u@x.com" })).Failure.ShouldBe(AuthFailure.TooManyAttempts);
+        (await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u@x.com" })).Failure.ShouldBe(AuthFailure.TooManyAttempts);
+    }
+
+    [Fact]
+    public async Task Failure_ResetPasswordUnknownEmailOrRejectedToken_IsLinkInvalid()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.FindByEmailAsync("nobody@x.com").Returns((ApplicationUser?)null);
+        h.Um.ResetPasswordAsync(user, "bad-token", Arg.Any<string>())
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+
+        var known = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = "u@x.com", Token = "bad-token", NewPassword = "Password1", ConfirmPassword = "Password1" });
+        var unknown = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = "nobody@x.com", Token = "bad-token", NewPassword = "Password1", ConfirmPassword = "Password1" });
+
+        known.Failure.ShouldBe(AuthFailure.LinkInvalid);
+        unknown.Failure.ShouldBe(AuthFailure.LinkInvalid);
+    }
+
     // ---- Misc ----------------------------------------------------------------
 
     [Fact]
