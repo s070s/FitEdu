@@ -145,6 +145,63 @@ public sealed class SmtpEmailServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SendAsync_UsesTheConfiguredTimeout()
+    {
+        var client = Substitute.For<ISmtpClient>();
+
+        await NewService(client).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English);
+
+        client.Timeout.ShouldBe(15_000); // the default: 15 seconds, not MailKit's two minutes
+    }
+
+    [Fact]
+    public async Task SendAsync_TimeoutSecondsOption_SetsTheClientTimeout()
+    {
+        var client = Substitute.For<ISmtpClient>();
+        var options = Options();
+        options.Smtp.TimeoutSeconds = 40;
+
+        await NewService(client, options).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English);
+
+        client.Timeout.ShouldBe(40_000);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-5)]
+    [InlineData(301)]
+    public void Validator_RefusesATimeoutOutsideOneToThreeHundredSeconds(int seconds)
+    {
+        var options = Options();
+        options.Smtp.TimeoutSeconds = seconds;
+
+        var result = new EmailOptionsValidator().Validate(null, options);
+
+        result.Failed.ShouldBeTrue();
+        result.FailureMessage.ShouldContain("TimeoutSeconds", Case.Sensitive);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(65536)]
+    public void Validator_RefusesAPortOutsideTheValidRange(int port)
+    {
+        var options = Options();
+        options.Smtp.Port = port;
+
+        var result = new EmailOptionsValidator().Validate(null, options);
+
+        result.Failed.ShouldBeTrue();
+        result.FailureMessage.ShouldContain("Email:Smtp:Port", Case.Sensitive);
+    }
+
+    [Fact]
+    public void Validator_AcceptsTheDefaults()
+    {
+        new EmailOptionsValidator().Validate(null, Options()).Succeeded.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task SendAsync_WhenTheSendFails_ThrowsTheSendError_NotTheCloseError()
     {
         var client = Substitute.For<ISmtpClient>();

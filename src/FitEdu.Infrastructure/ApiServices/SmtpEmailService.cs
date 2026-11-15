@@ -45,6 +45,7 @@ public sealed partial class SmtpEmailService : IEmailService
         // Disposing the client closes a connection a failed send left open; a close inside a finally
         // block would throw its own error over the send error that explains what went wrong.
         using var client = _createClient();
+        client.Timeout = _options.Smtp.TimeoutSeconds * 1000;
         var socketOptions = _options.Smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
         await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, socketOptions, ct);
         if (!string.IsNullOrEmpty(_options.Smtp.Username))

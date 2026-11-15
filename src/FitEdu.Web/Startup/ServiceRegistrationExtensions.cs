@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
 using OllamaSharp;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.ApiServices;
@@ -69,10 +70,10 @@ public static class ServiceRegistrationExtensions
         // point it at Papercut/Mailhog in Development or a real relay (SES/SendGrid SMTP/etc.) in prod.
         // With no SMTP host configured, Development falls back to StubEmailService (logs only); any other
         // environment fails fast so emails are never silently swallowed in production.
-        // CFG-4: validate at startup so a typo'd SMTP port fails fast, not at the first email send.
+        // CFG-4: validate at startup so a typo'd SMTP port or timeout fails fast, not at the first email send.
+        builder.Services.AddSingleton<IValidateOptions<EmailOptions>, EmailOptionsValidator>();
         builder.Services.AddOptions<EmailOptions>()
             .Bind(config.GetSection(EmailOptions.SectionName))
-            .Validate(o => o.Smtp.Port is > 0 and <= 65535, "Email:Smtp:Port must be between 1 and 65535.")
             .ValidateOnStart();
         // CFG-5: bind the Payment section in one place (MockEnabled / WebhookSecret).
         builder.Services.Configure<PaymentOptions>(config.GetSection(PaymentOptions.SectionName));
