@@ -242,6 +242,21 @@ public partial class AuthApiService(
 
     public async Task<ServiceResult<AuthResponseDto>> RefreshAsync(RefreshTokenRequestDto request)
     {
+        try
+        {
+            return await RefreshCoreAsync(request);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // REL-8: RevokedAt is a concurrency token, so when two requests rotate the same token at once
+            // only the first save wins. The loser must not mint a second live token pair from one token.
+            LogRefreshRaced(logger);
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
+        }
+    }
+
+    private async Task<ServiceResult<AuthResponseDto>> RefreshCoreAsync(RefreshTokenRequestDto request)
+    {
         var tokenHash = HashToken(request.RefreshToken);
 
         var stored = await context.RefreshTokens
@@ -530,6 +545,9 @@ public partial class AuthApiService(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh token reuse detected for user {UserId} — revoked the token chain.")]
     private static partial void LogRefreshTokenReuse(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh token was rotated by another request at the same time; this request is rejected.")]
+    private static partial void LogRefreshRaced(ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Refresh attempt for disabled user {UserId}.")]
     private static partial void LogRefreshDisabledUser(ILogger logger, string userId);

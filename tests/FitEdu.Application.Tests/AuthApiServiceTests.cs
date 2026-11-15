@@ -25,7 +25,8 @@ public class AuthApiServiceTests
     private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, SignInManager<ApplicationUser> Sm, ApplicationDbContext Db, ITokenService Tok, IEmailService Email,
         ISubscriptionService Subs, RecordingLogger<AuthApiService> Log);
 
-    private static Harness Build()
+    // dbName: two harnesses with the same name share one database, like two requests at the same time.
+    private static Harness Build(string? dbName = null)
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
@@ -38,7 +39,7 @@ public class AuthApiServiceTests
         tok.GenerateRefreshToken().Returns(_ => "new-plain-refresh-" + Guid.NewGuid().ToString("N"));
         var subs = Substitute.For<ISubscriptionService>();
         var email = Substitute.For<IEmailService>();
-        var db = DbContextFactory.CreateInMemory();
+        var db = DbContextFactory.CreateInMemory(dbName);
 
         var log = new RecordingLogger<AuthApiService>();
 
@@ -627,6 +628,34 @@ public class AuthApiServiceTests
         var result = await h.Svc.RefreshAsync(new RefreshTokenRequestDto { RefreshToken = "plain-1" });
 
         result.Value!.Success.ShouldBeFalse();
+    }
+
+    // ---- RefreshAsync: two requests rotating the same token (REL-8) ----
+
+    [Fact]
+    public async Task Refresh_SameTokenRotatedByTwoRequestsAtOnce_OnlyOneSucceeds()
+    {
+        var databaseName = Guid.NewGuid().ToString("N");
+        var first = Build(databaseName);
+        var second = Build(databaseName);
+        var user = User();
+        Seed(first.Db, user, "plain-1", user.SecurityStamp);
+        await first.Db.SaveChangesAsync();
+
+        // The second request has already read the token when the first one rotates it.
+        await second.Db.RefreshTokens.Include(rt => rt.User).SingleAsync();
+        var request = new RefreshTokenRequestDto { RefreshToken = "plain-1" };
+
+        var firstResult = await first.Svc.RefreshAsync(request);
+        var secondResult = await second.Svc.RefreshAsync(request);
+
+        firstResult.IsSuccess.ShouldBeTrue();
+        secondResult.IsSuccess.ShouldBeFalse();
+        secondResult.StatusCode.ShouldBe(401);
+        // The loser hands out no token pair. (InMemory keeps the row the losing save added, SQL Server
+        // rolls the whole save back, so the stored rows are not asserted here.)
+        secondResult.Value!.RefreshToken.ShouldBeNull();
+        secondResult.Value.Token.ShouldBeNull();
     }
 
     // ---- RefreshAsync: SEC-1 reuse detection -----------------------------------

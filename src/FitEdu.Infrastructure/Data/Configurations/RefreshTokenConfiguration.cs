@@ -17,6 +17,11 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .IsRequired()
             .HasMaxLength(500);
 
+        // Two requests rotating the same token at once: the second save finds RevokedAt already set and
+        // fails with a concurrency exception instead of issuing a second live token pair (REL-8).
+        builder.Property(t => t.RevokedAt)
+            .IsConcurrencyToken();
+
         builder.HasIndex(t => t.UserId);
         builder.HasIndex(t => t.TokenHash);
 
