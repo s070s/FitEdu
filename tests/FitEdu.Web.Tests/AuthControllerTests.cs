@@ -2,8 +2,11 @@ using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Identity;
+using FitEdu.Shared.Resources.Messages;
 using Shouldly;
 using Xunit;
 
@@ -46,6 +49,31 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
         var response = await client.PostAsJsonAsync("/api/auth/register", Register($"o'brien-{Guid.NewGuid():N}@test.com"));
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Register_CommonPassword_Returns400()
+    {
+        var client = _factory.CreateClient();
+        var request = Register($"common-{Guid.NewGuid():N}@test.com");
+        // Passes the length, capital and digit rules, but is one of the most common passwords.
+        request.Password = "Password123";
+        request.ConfirmPassword = "Password123";
+
+        var response = await client.PostAsJsonAsync("/api/auth/register", request);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var body = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        body!.Errors!.ShouldContain(ErrorMessagesRes.IdentityPasswordTooCommon);
+    }
+
+    [Fact]
+    public void IdentityPasswordOptions_UseTheSharedMinimumLength()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var options = scope.ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value;
+
+        options.Password.RequiredLength.ShouldBe(PasswordRules.MinimumLength);
     }
 
     [Fact]

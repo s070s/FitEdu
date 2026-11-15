@@ -90,8 +90,8 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
         {
             Email = $"greek-{Guid.NewGuid():N}@test.com",
             // Passes the form's rule (8+ characters, a capital and a digit) but not Identity's lowercase rule.
-            Password = "PASSWORD1",
-            ConfirmPassword = "PASSWORD1",
+            Password = "SUMMIT-PEAK-9",
+            ConfirmPassword = "SUMMIT-PEAK-9",
             FirstName = "Maria",
             LastName = "Papa",
             DateOfBirth = new DateTime(2000, 1, 1),

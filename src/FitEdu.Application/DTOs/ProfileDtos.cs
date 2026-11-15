@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitEdu.Application.Common;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
@@ -40,7 +41,7 @@ public record UpdateProfileRequest(
 public record ChangePasswordRequest(
     [Required] string CurrentPassword,
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordRequired))]
-    [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).{8,128}$", ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
+    [RegularExpression(PasswordRules.ComplexityPatternWithMaximum, ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
     string NewPassword
 );
 

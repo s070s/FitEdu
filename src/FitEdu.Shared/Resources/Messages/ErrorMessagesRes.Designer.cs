@@ -718,6 +718,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to That password is too common. Choose one that is harder to guess..
+        /// </summary>
+        public static string IdentityPasswordTooCommon {
+            get {
+                return ResourceManager.GetString("IdentityPasswordTooCommon", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to This link is not valid or has expired. Please request a new one..
         /// </summary>
         public static string IdentityInvalidToken {

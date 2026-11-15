@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
@@ -35,7 +36,7 @@ public static class AuthenticationSetupExtensions
         // --- Identity ---
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
-            options.Password.RequiredLength = 8;
+            options.Password.RequiredLength = PasswordRules.MinimumLength;
             options.Password.RequireDigit = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireNonAlphanumeric = false;
@@ -48,6 +49,8 @@ public static class AuthenticationSetupExtensions
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
+        // Turns away the most common passwords (a list in the code, no outside service).
+        .AddPasswordValidator<CommonPasswordValidator>()
         // Password-rule and email errors in the member's language instead of Identity's English.
         .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 

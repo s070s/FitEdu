@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitEdu.Application.Common;
 using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.DTOs;
@@ -15,7 +16,7 @@ public class ResetPasswordRequestDto
     /// <summary>Min 8 chars, at least one uppercase letter and one digit — matches the Identity
     /// policy configured in AuthenticationSetupExtensions.</summary>
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordRequired))]
-    [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).{8,}$", ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
+    [RegularExpression(PasswordRules.ComplexityPattern, ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
     public string NewPassword { get; set; } = string.Empty;
 
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_ConfirmPasswordRequired))]

@@ -336,6 +336,9 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>The email {0} is not valid.</value>
   </data>
+  <data name="IdentityPasswordTooCommon" xml:space="preserve">
+    <value>That password is too common. Choose one that is harder to guess.</value>
+  </data>
   <data name="IdentityInvalidToken" xml:space="preserve">
     <value>This link is not valid or has expired. Please request a new one.</value>
   </data>

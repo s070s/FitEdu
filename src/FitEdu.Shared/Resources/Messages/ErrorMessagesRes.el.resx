@@ -336,6 +336,9 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>Το email {0} δεν είναι έγκυρο.</value>
   </data>
+  <data name="IdentityPasswordTooCommon" xml:space="preserve">
+    <value>Αυτός ο κωδικός είναι πολύ συνηθισμένος. Διάλεξε έναν πιο δύσκολο.</value>
+  </data>
   <data name="IdentityInvalidToken" xml:space="preserve">
     <value>Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει. Ζήτησε νέο.</value>
   </data>

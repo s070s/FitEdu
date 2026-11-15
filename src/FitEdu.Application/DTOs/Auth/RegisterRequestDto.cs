@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitEdu.Application.Common;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
 
@@ -16,7 +17,7 @@ public class RegisterRequestDto
     /// Identity policy configured in AuthenticationSetupExtensions (RequiredLength/RequireDigit/RequireUppercase).</summary>
     /// <example>P@ssw0rd123</example>
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordRequired))]
-    [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).{8,}$", ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
+    [RegularExpression(PasswordRules.ComplexityPattern, ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>Must match <see cref="Password"/>.</summary>
