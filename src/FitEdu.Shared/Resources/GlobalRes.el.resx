@@ -133,7 +133,7 @@
     <value>Επιβεβαίωση…</value>
   </data>
   <data name="ResetPasswordTitle" xml:space="preserve">
-    <value>Νέος κωδικός πρόσβασης</value>
+    <value>Όρισε νέο κωδικό πρόσβασης</value>
   </data>
   <data name="ResetPasswordInstructions" xml:space="preserve">
     <value>Διάλεξε νέο κωδικό πρόσβασης για τον λογαριασμό σου.</value>

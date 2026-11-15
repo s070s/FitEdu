@@ -281,6 +281,6 @@ public class EmailLinkPagesTests : BunitContext
 
         var page = Render<ResetPassword>();
 
-        page.Find(".auth-card h1").TextContent.ShouldBe("Νέος κωδικός πρόσβασης");
+        page.Find(".auth-card h1").TextContent.ShouldBe("Όρισε νέο κωδικό πρόσβασης");
     }
 }
