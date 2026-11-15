@@ -633,41 +633,7 @@ public class AuthApiServiceTests
         result.Value!.Message.ShouldBe(SuccessMessagesRes.EmailConfirmedSuccessfully);
     }
 
-    // ---- Development-only helpers (the controller exposes them only in Debug builds on a Development host) ----
-
-    [Fact]
-    public async Task DevConfirmEmail_UnknownUser_Returns404()
-    {
-        var h = Build();
-        h.Um.FindByEmailAsync("u@x.com").Returns((ApplicationUser?)null);
-
-        (await h.Svc.DevConfirmEmailAsync("u@x.com")).StatusCode.ShouldBe(404);
-    }
-
-    [Fact]
-    public async Task DevConfirmEmail_KnownUser_MarksTheEmailConfirmed()
-    {
-        var h = Build();
-        var member = User();
-        h.Um.FindByEmailAsync(member.Email!).Returns(member);
-
-        var result = await h.Svc.DevConfirmEmailAsync(member.Email!);
-
-        result.IsSuccess.ShouldBeTrue();
-        member.EmailConfirmed.ShouldBeTrue();
-        await h.Um.Received(1).UpdateAsync(member);
-    }
-
-    [Fact]
-    public async Task DevConfirmEmail_UpdateFails_Returns400()
-    {
-        var h = Build();
-        var member = User();
-        h.Um.FindByEmailAsync(member.Email!).Returns(member);
-        h.Um.UpdateAsync(member).Returns(IdentityResult.Failed(new IdentityError { Code = "Boom", Description = "boom" }));
-
-        (await h.Svc.DevConfirmEmailAsync(member.Email!)).StatusCode.ShouldBe(400);
-    }
+    // ---- The development-only password reset (the e2e suite's sign-in fixture; the controller exposes it only in Debug builds on a Development host) ----
 
     [Fact]
     public async Task DevResetPassword_UnknownUser_Returns404()

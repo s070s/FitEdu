@@ -29,6 +29,5 @@ public interface IAuthApiService
     Task<ServiceResult<AuthResponseDto>> ResetPasswordAsync(ResetPasswordRequestDto request);
     Task<CurrentUserDto?> GetCurrentUserAsync(string userId);
 
-    Task<ServiceResult<AuthResponseDto>> DevConfirmEmailAsync(string email);
     Task<ServiceResult<AuthResponseDto>> DevResetPasswordAsync(DevResetPasswordRequestDto request);
 }

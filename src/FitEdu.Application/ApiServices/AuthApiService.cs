@@ -456,25 +456,6 @@ public partial class AuthApiService(
             [.. roles]);
     }
 
-    public async Task<ServiceResult<AuthResponseDto>> DevConfirmEmailAsync(string email)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-        if (user == null)
-            return ServiceResult<AuthResponseDto>.NotFound(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.UserNotFound });
-
-        user.EmailConfirmed = true;
-        var updateResult = await userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-        {
-            var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
-            LogDevConfirmEmailFailed(logger, user.Id, string.Join(", ", updateResult.Errors.Select(e => e.Code)));
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = $"Confirm failed: {errors}" });
-        }
-
-        LogDevEmailConfirmed(logger, user.Id);
-        return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = "Email confirmed (dev mode)" });
-    }
-
     public async Task<ServiceResult<AuthResponseDto>> DevResetPasswordAsync(DevResetPasswordRequestDto request)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
@@ -577,12 +558,6 @@ public partial class AuthApiService(
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for user {UserId}")]
     private static partial void LogPasswordReset(ILogger logger, string userId);
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "DevConfirmEmail: UpdateAsync failed for user {UserId}: {Errors}")]
-    private static partial void LogDevConfirmEmailFailed(ILogger logger, string userId, string errors);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Email confirmed for user {UserId} (dev mode)")]
-    private static partial void LogDevEmailConfirmed(ILogger logger, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for user {UserId} (dev mode)")]
     private static partial void LogDevPasswordReset(ILogger logger, string userId);

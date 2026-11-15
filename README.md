@@ -209,8 +209,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 | `POST` | `api/auth/reset-password` | Reset password with token | No |
 | `GET` | `api/auth/me` | Current user info from JWT | Yes |
 | `POST` | `api/auth/refresh` | Rotate refresh token — returns new JWT + refresh token pair | No |
-| `POST` | `api/auth/dev/confirm-email` | Dev-only: confirm email without link (**compiled out in Release builds**) | Dev |
-| `POST` | `api/auth/dev/reset-password` | Dev-only: reset password without email (**compiled out in Release builds**) | Dev |
+| `POST` | `api/auth/dev/reset-password` | Dev-only: the e2e suite's sign-in fixture, resets a password without email (**compiled out in Release builds**) | Dev |
 
 ### Profile — `api/profile`
 
@@ -601,14 +600,15 @@ The email transport is selected at startup from configuration:
 
 The confirmation and password-reset emails come in English or Greek (`EmailTemplates`); both say how long the link works (24 hours: `EmailTemplates.LinkLifetimeHours`, which is also the Identity token lifetime) and that the email can be ignored when the member did not ask for it. Each member's language is stored on the account (`ApplicationUser.PreferredLanguage`, `en` or `el`, default `en`): it is set at sign-up from the page language, saved again at every sign-in (the page language the member signs in from, so a switch made while signed out or a Greek browser is picked up), and can be changed on the Profile page (which switches the site to it only when the stored language changes). The anonymous forgot-password request does not save it, since anyone who knows the email could send it. The language switcher (`/culture/set`) changes only the site language cookie, never the stored language: it is a plain GET link that any site could send a member to. Emails the member asks for themselves use the request language (the pages' loopback API calls send it as `Accept-Language`); emails someone else triggers, such as an admin's forced password reset, use the member's stored language, so a Greek member gets the Greek email even when the admin reads the site in English.
 
-Dev shortcuts for bypassing email confirmation:
+In Development, with no SMTP host, open the confirmation or reset link the stub service logs (search `STUB EMAIL` in `Logs/log-<today>.txt`); no page has a self-confirm button.
+
+One dev endpoint is left, for the Playwright e2e suite (`tests/e2e/global-setup.mjs` signs the seeded members in through it):
 
 | Endpoint | Purpose |
 |----------|---------|
-| `POST api/auth/dev/confirm-email` | Confirm email without a link |
-| `POST api/auth/dev/reset-password` | Reset password without an email |
+| `POST api/auth/dev/reset-password` | Reset a password without an email (the e2e sign-in fixture) |
 
-> ⚠️ Both endpoints are wrapped in `#if DEBUG` and are **not compiled into Release builds** — they will 404 in production.
+> ⚠️ It is wrapped in `#if DEBUG` and is **not compiled into Release builds**, and answers 404 outside Development: it will 404 in production.
 
 ---
 
@@ -744,7 +744,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Database missing / dropped | Just restart the app — `MigrateAsync` at startup recreates and reseeds it automatically. |
 | Adding a new migration | `dotnet ef migrations add <Name> --project src/FitEdu.Infrastructure --startup-project src/FitEdu.Web` — then restart; migrations apply on next run. |
 | Seed data missing or out of date | `SeedData:Enabled = true` in `appsettings.Development.json`. Seeders only fill empty tables, so to load changed seed files drop `FitEduDb` and restart (see [docs/runbook.md](docs/runbook.md#reseeding-the-demo-content-development-only)). |
-| Email link not found | Search `STUB EMAIL` in `Logs/log-<today>.txt` or use dev endpoints. |
+| Email link not found | Search `STUB EMAIL` in `Logs/log-<today>.txt`. |
 | Role-based page inaccessible | Check `AspNetUserRoles` table. Admin pages require `Admin` role. |
 | Chat not connecting | JWT via `access_token` query string. Check token expiry (default 15 min) — use `api/auth/refresh` to rotate. |
 | Video call has no camera/mic | Grant the browser camera/microphone permission for the site, and use HTTPS (WebRTC requires a secure context). When testing with two browsers on one PC, only one can hold the physical webcam — the other joins audio-only (expected). |

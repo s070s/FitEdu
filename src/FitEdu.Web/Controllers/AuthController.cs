@@ -114,27 +114,14 @@ public class AuthController : ControllerBase
         return dto is not null ? Ok(dto) : NotFound();
     }
 
-    // NOTE: these dev-only endpoints back
-    // the self-confirm / self-reset buttons on the Register/Login/ForgotPassword pages, which is
-    // why those flows complete in Development despite no email being delivered. They are compiled
-    // out of Release builds (#if DEBUG) and additionally gated by IsDevelopment() at runtime, so
-    // they provide no fallback in production — there the emailed confirmation and reset links are the only way.
+    // NOTE: this dev-only endpoint is the sign-in fixture of the Playwright e2e suite (tests/e2e/global-setup.mjs
+    // sets the test members' password through it); no page uses it. It is compiled out of Release builds
+    // (#if DEBUG) and additionally gated by IsDevelopment() at runtime, so it provides no fallback in
+    // production, where the emailed reset link is the only way. The old dev/confirm-email twin is gone:
+    // in Development, confirm an account through the link the stub email service logs.
 #if DEBUG
     /// <summary>
-    /// Dev-only: Confirm email without token (development mode only).
-    /// </summary>
-    [HttpPost("dev/confirm-email")]
-    public async Task<ActionResult<AuthResponseDto>> DevConfirmEmail([FromBody] string email)
-    {
-        if (!_env.IsDevelopment())
-            return NotFound();
-
-        var result = await _authApiService.DevConfirmEmailAsync(email);
-        return result.ToEmbeddedActionResult();
-    }
-
-    /// <summary>
-    /// Dev-only: Reset password without token (development mode only).
+    /// Dev-only: Reset password without token (development mode only). The e2e suite's sign-in fixture.
     /// </summary>
     [HttpPost("dev/reset-password")]
     public async Task<ActionResult<AuthResponseDto>> DevResetPassword([FromBody] DevResetPasswordRequestDto request)

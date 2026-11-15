@@ -276,6 +276,41 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
+
+    // ---- Development helpers: only the password reset is left (the e2e suite signs in through it) ----
+
+    [Fact]
+    public async Task DevConfirmEmail_IsGoneEvenInDevelopment()
+    {
+        var (userId, _) = await CreateUnconfirmedUserWithTokenAsync();
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var member = await userManager.FindByIdAsync(userId);
+
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/dev/confirm-email", member!.Email);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        (await userManager.IsEmailConfirmedAsync(member)).ShouldBeFalse();
+    }
+
+#if DEBUG
+    // The route exists only in Debug builds (the e2e suite runs against one); a Release build answers 404 like any unknown route.
+    [Fact]
+    public async Task DevResetPassword_InDevelopment_SetsThePasswordForTheE2eFixture()
+    {
+        var email = $"fixture-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+        var client = _factory.CreateClient();
+
+        var reset = await client.PostAsJsonAsync("/api/auth/dev/reset-password",
+            new DevResetPasswordRequestDto { Email = email, NewPassword = "Fixture-Pass-9!" });
+        var login = await client.PostAsJsonAsync("/api/auth/login",
+            new LoginRequestDto { Email = email, Password = "Fixture-Pass-9!" });
+
+        reset.StatusCode.ShouldBe(HttpStatusCode.OK);
+        login.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+#endif
 }
 
 /// <summary>SEC-6: the development-only endpoints are not reachable on a Production host (they exist only in Debug builds, and answer 404 outside Development even there).</summary>
@@ -285,18 +320,15 @@ public class AuthControllerProductionTests : IClassFixture<ProductionWebAppFacto
 
     public AuthControllerProductionTests(ProductionWebAppFactory factory) => _factory = factory;
 
-    [Theory]
-    [InlineData("/api/auth/dev/confirm-email")]
-    [InlineData("/api/auth/dev/reset-password")]
-    public async Task DevEndpoints_OnAProductionHost_Return404(string route)
+    [Fact]
+    public async Task DevResetPassword_OnAProductionHost_Returns404()
     {
         var client = _factory.CreateClient();
         var email = $"dev-{Guid.NewGuid():N}@test.com";
         await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
 
-        var response = route.EndsWith("confirm-email", StringComparison.Ordinal)
-            ? await client.PostAsJsonAsync(route, email)
-            : await client.PostAsJsonAsync(route, new DevResetPasswordRequestDto { Email = email, NewPassword = "Another-Pass-1!" });
+        var response = await client.PostAsJsonAsync("/api/auth/dev/reset-password",
+            new DevResetPasswordRequestDto { Email = email, NewPassword = "Another-Pass-1!" });
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
