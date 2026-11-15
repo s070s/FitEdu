@@ -209,7 +209,7 @@
 
 /* ---- Loading skeleton: the outline of a course card ---------------------------------------- */
 /* The shared shimmer is tuned for the page background; on a card surface it needs to be lighter. */
-.course-skeleton ::deep .skeleton-block {
+.course-skeleton ::deep .skeleton-block::after {
     background-image: linear-gradient(90deg,
         rgba(var(--border-subtle-rgb), 0.08) 25%,
         rgba(var(--text-accent-rgb), 0.12) 50%,
