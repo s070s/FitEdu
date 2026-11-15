@@ -105,6 +105,9 @@ public partial class AuthApiService(
         }
 
         LogUserRegistered(logger, user.Id);
+        // The sign-up email starts the account's cooldown too, so a quick tap on "resend" does not send a second one.
+        // The slot is free for a new account, so the result needs no check.
+        TryClaimEmailSlot(ConfirmationEmailKind, user.Id);
         await SendConfirmationEmailAsync(user, confirmToken, user.PreferredLanguage);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto

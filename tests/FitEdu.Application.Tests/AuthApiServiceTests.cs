@@ -131,6 +131,27 @@ public class AuthApiServiceTests
     }
 
     [Fact]
+    public async Task Register_ThenResendAtOnce_SendsOneEmail()
+    {
+        // The sign-up email starts the account's cooldown, so a quick tap on "resend" cannot send a second one.
+        var h = Build(timeProvider: new AdjustableTimeProvider(CooldownStart));
+        ApplicationUser? created = null;
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(call =>
+        {
+            created = call.Arg<ApplicationUser>();
+            return IdentityResult.Success;
+        });
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        h.Um.FindByEmailAsync("u@x.com").Returns(_ => created);
+        h.Um.IsEmailConfirmedAsync(Arg.Any<ApplicationUser>()).Returns(false);
+
+        await h.Svc.RegisterAsync(RegisterRequest());
+        await h.Svc.ResendConfirmationAsync("u@x.com");
+
+        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task Register_OnTheGreekSite_StoresGreekAndSendsTheGreekConfirmation()
     {
         var h = Build();
