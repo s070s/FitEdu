@@ -32,7 +32,7 @@ public static class SecurityHeadersMiddlewareExtensions
                 "default-src 'self'; " +
                 "script-src 'self' https://cdn.jsdelivr.net; " +
                 "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
-                "font-src 'self' https://cdn.jsdelivr.net data:; " +
+                "font-src 'self' data:; " +
                 "img-src 'self' data: blob:; " +
                 "media-src 'self' blob:; " +
                 "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; " +

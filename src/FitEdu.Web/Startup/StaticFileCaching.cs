@@ -11,7 +11,7 @@ public static class StaticFileCaching
     /// <summary>Seven days, in seconds.</summary>
     public const string ImageCacheControl = "public,max-age=604800";
 
-    private static readonly PathString ImagesPath = new("/images");
+    public static readonly PathString ImagesPath = new("/images");
 
     public static StaticFileOptions CreateOptions() => new() { OnPrepareResponse = ApplyImageCaching };
 

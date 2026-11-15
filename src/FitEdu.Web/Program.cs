@@ -101,7 +101,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseFitEduSecurityHeaders();
 
-app.UseStaticFiles(StaticFileCaching.CreateOptions());
+// MapStaticAssets (below) serves the compressed, fingerprinted CSS/JS/fonts. /images is excluded from its
+// manifest in the csproj, so only that path goes through the static file middleware (which would
+// otherwise answer every wwwroot file first, uncompressed).
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments(StaticFileCaching.ImagesPath),
+    images => images.UseStaticFiles(StaticFileCaching.CreateOptions()));
 app.UseRequestLocalization();
 
 // Disabled-user enforcement is handled by two mechanisms:
@@ -141,8 +146,17 @@ app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");
 app.MapHub<CallHub>("/hubs/call");
 app.MapHub<NotificationHub>("/hubs/notifications");
+app.MapStaticAssets();
+// MapStaticAssets also maps a GET/HEAD-only file fallback ({**path:file}), which turns a POST/PUT/DELETE to an
+// unknown URL into 405 instead of 404. This last-resort route (it loses to every real route and to that
+// fallback's order only by being earlier) restores the 404 and so the /api problem+json contract.
+app.MapMethods("/{**unmatched}", ["POST", "PUT", "PATCH", "DELETE"], () => Results.NotFound())
+   .WithOrder(int.MaxValue - 1)
+   .AllowAnonymous()
+   .ExcludeFromDescription();
 app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode();
+   .AddInteractiveServerRenderMode()
+   .WithStaticAssets();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 StartupLog.Started(logger, logsDirectory);

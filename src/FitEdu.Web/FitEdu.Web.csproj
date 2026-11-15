@@ -9,6 +9,8 @@
     <!-- 1591: missing XML comment on a public member. We document the API surface,
          not every public member, so suppress the noise. -->
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <!-- Images are already compressed and keep their own week-long caching (StaticFileCaching), so they stay out of the MapStaticAssets manifest. -->
+    <StaticWebAssetEndpointExclusionPattern>$(StaticWebAssetEndpointExclusionPattern);images/**</StaticWebAssetEndpointExclusionPattern>
   </PropertyGroup>
 
   <ItemGroup>
