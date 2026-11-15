@@ -26,6 +26,35 @@ public partial class StaticFileCachingTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task ShippedImage_IsServedWithItsImageContentType()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/images/hero-home.webp");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("image/webp");
+        (await response.Content.ReadAsByteArrayAsync()).ShouldNotBeEmpty();
+    }
+
+    [Fact]
+    public async Task UnknownPage_Get_Is404_Not405()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.GetAsync("/no-such-page")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        (await client.GetAsync("/images/no-such-image.webp")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task UnknownApiUrl_Post_Is404()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.PostAsync("/api/no-such-endpoint", content: null)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
     public async Task WebManifest_IsServedAsAManifest()
     {
         var client = _factory.CreateClient();

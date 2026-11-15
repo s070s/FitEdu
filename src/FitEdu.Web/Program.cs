@@ -148,9 +148,11 @@ app.MapHub<CallHub>("/hubs/call");
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapStaticAssets();
 // MapStaticAssets also maps a GET/HEAD-only file fallback ({**path:file}), which turns a POST/PUT/DELETE to an
-// unknown URL into 405 instead of 404. This last-resort route (it loses to every real route and to that
-// fallback's order only by being earlier) restores the 404 and so the /api problem+json contract.
-app.MapMethods("/{**unmatched}", ["POST", "PUT", "PATCH", "DELETE"], () => Results.NotFound())
+// unknown /api URL into 405 instead of 404. This last-resort route restores the 404 (and so the problem+json
+// contract). It is limited to /api and takes every method: a method-restricted catch-all over all paths would
+// itself produce a 405 endpoint for a GET (e.g. /images), and the static file middleware skips requests that
+// already have an endpoint.
+app.Map("/api/{**unmatched}", () => Results.NotFound())
    .WithOrder(int.MaxValue - 1)
    .AllowAnonymous()
    .ExcludeFromDescription();
