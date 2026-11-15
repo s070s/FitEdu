@@ -445,8 +445,8 @@ public class AuthApiServiceTests
 
         h.Um.FindByEmailAsync(PrivateEmail).Returns(member);
 
-        // email not confirmed (right password)
-        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+        // email not confirmed (the real SignInManager answers NotAllowed before it looks at the password)
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.NotAllowed);
         h.Um.IsEmailConfirmedAsync(member).Returns(false);
         await h.Svc.LoginAsync(login);
         h.Um.IsEmailConfirmedAsync(member).Returns(true);
@@ -526,6 +526,43 @@ public class AuthApiServiceTests
         result.IsSuccess.ShouldBeFalse();
         result.Value!.Message.ShouldBe(ErrorMessagesRes.AccountDisabledContactSupport);
         await h.Tok.DidNotReceive().GenerateAccessTokenAsync(Arg.Any<ApplicationUser>());
+    }
+
+    // ---- LoginAsync: an unconfirmed account takes the same password check (R3) ----
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Login_UnconfirmedAccount_ChecksThePasswordAndAlwaysAnswersInvalidCredentials(bool passwordIsRight)
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(false);
+        // With RequireConfirmedEmail the real SignInManager answers NotAllowed before it hashes the password.
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.NotAllowed);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(passwordIsRight);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+        await h.Um.Received(1).CheckPasswordAsync(member, "Password1!");
+        await h.Tok.DidNotReceive().GenerateAccessTokenAsync(Arg.Any<ApplicationUser>());
+    }
+
+    [Fact]
+    public async Task Login_ConfirmedAccount_HashesThePasswordOnce()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Failed);
+
+        await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Wrong-Pass-9!" });
+
+        await h.Um.DidNotReceive().CheckPasswordAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>());
     }
 
     // ---- RefreshAsync: rotation keeps the lifetime the token was issued with (P01-8) ----

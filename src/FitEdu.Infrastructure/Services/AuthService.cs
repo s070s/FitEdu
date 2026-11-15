@@ -117,8 +117,17 @@ public partial class AuthService : IAuthService
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
         }
 
+        // "Not confirmed" is only told to someone who knows the password, so a guess cannot find unconfirmed
+        // accounts. (CheckPasswordSignInAsync refuses an unconfirmed account before it hashes anything.)
         if (!await _userManager.IsEmailConfirmedAsync(user))
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.EmailNotConfirmedError };
+        {
+            var passwordIsRight = await _userManager.CheckPasswordAsync(user, request.Password);
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = passwordIsRight ? ErrorMessagesRes.EmailNotConfirmedError : ErrorMessagesRes.InvalidCredentials
+            };
+        }
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
         if (!result.Succeeded)

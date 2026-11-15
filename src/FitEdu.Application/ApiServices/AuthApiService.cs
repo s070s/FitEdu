@@ -182,8 +182,18 @@ public partial class AuthApiService(
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
-        // The password comes first: an unconfirmed or disabled account is only reported as such to someone
-        // who knows its password, so a wrong guess never learns anything about the account.
+        // An unconfirmed account always answers like a wrong password. With RequireConfirmedEmail the sign-in
+        // check below refuses such an account (NotAllowed) before it hashes the password, so the password is
+        // checked here instead: the answer and the time then match those of a confirmed account.
+        if (!await userManager.IsEmailConfirmedAsync(user))
+        {
+            await userManager.CheckPasswordAsync(user, request.Password);
+            LogLoginUnconfirmedEmail(logger, user.Id);
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
+        }
+
+        // The password comes next: a disabled account is only reported as such to someone who knows its
+        // password, so a wrong guess never learns anything about the account.
         var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
         if (!result.Succeeded)
         {
@@ -193,12 +203,6 @@ public partial class AuthApiService(
                 return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked });
             }
             LogInvalidPassword(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
-        }
-
-        if (!await userManager.IsEmailConfirmedAsync(user))
-        {
-            LogLoginUnconfirmedEmail(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 

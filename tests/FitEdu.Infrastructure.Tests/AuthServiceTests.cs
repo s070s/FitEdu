@@ -79,8 +79,22 @@ public class AuthServiceTests
         var user = User();
         h.Um.FindByEmailAsync("u@x.com").Returns(user);
         h.Um.IsEmailConfirmedAsync(user).Returns(false);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(true);
 
         (await h.Svc.LoginAsync(Login())).Message.ShouldBe("Email not confirmed.");
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedWrongPassword_ReturnsInvalidCredentials()
+    {
+        // "Not confirmed" is only told to someone who knows the password, so a guess cannot find unconfirmed accounts.
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(false);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(false);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
     }
 
     [Fact]
