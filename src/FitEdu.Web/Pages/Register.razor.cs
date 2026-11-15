@@ -17,6 +17,7 @@ public partial class Register : IDisposable
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private ILogger<Register> Logger { get; set; } = default!;
     [Inject] private IdentityErrorDescriber ErrorDescriber { get; set; } = default!;
 
     /// <summary>Where to go after the first log-in, e.g. the programme a guest was looking at.</summary>
@@ -113,8 +114,27 @@ public partial class Register : IDisposable
         registerRequest.LastName = registerRequest.LastName?.Trim() ?? string.Empty;
 
         registeredEmail = registerRequest.Email;
-        var result = await AuthService.RegisterAsync(registerRequest);
+        try
+        {
+            var result = await AuthService.RegisterAsync(registerRequest);
+            ShowResult(result);
+        }
+        catch (Exception ex)
+        {
+            // The form and what the visitor typed stay, so a second try needs no retyping.
+            LogRegisterFailed(Logger, ex);
+            errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
+        }
+        finally
+        {
+            isLoading = false;
+        }
 
+        scrollToFeedback = true;
+    }
+
+    private void ShowResult(AuthResponseDto result)
+    {
         if (result.Success)
         {
             // Always our own translated text, never the server's message.
@@ -150,9 +170,10 @@ public partial class Register : IDisposable
                 }
             }
         }
-
-        scrollToFeedback = true;
-
-        isLoading = false;
     }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+    // The message names no email address.
+    [LoggerMessage(Level = LogLevel.Error, Message = "Unexpected error during sign-up.")]
+    private static partial void LogRegisterFailed(ILogger logger, Exception exception);
 }

@@ -302,6 +302,21 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_ServiceThrows_ShowsTryAgainAndKeepsTheForm()
+    {
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns<AuthResponseDto>(_ => throw new InvalidOperationException("boom"));
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find("form .register-errors .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.Find("#firstName").GetAttribute("value").ShouldBe("Maria");
+        page.Find("button[type=submit]").HasAttribute("disabled").ShouldBeFalse();
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+    }
+
+    [Fact]
     public void Register_EmailTakenInGreek_ShowsTheShortGreekMessage()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
