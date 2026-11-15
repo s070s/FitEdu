@@ -120,6 +120,17 @@
     color: var(--text-accent);
 }
 
+/* The links beside the form fields and in the footer are a 44 px tap target on phones. Only the link's own box
+   grows; the text keeps its size, and the gap stands in for the space between an icon and its text, which a
+   flex box would otherwise drop. */
+.auth-card__footer ::deep a,
+.auth-card ::deep .auth-row a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    min-height: 44px;
+}
+
 /* A labelled group of fields (register: "About you", "Your training"). */
 .auth-card ::deep .auth-group {
     margin: 0 0 var(--space-5);
