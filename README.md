@@ -183,7 +183,7 @@ Interactive API docs are generated from the code (built-in `Microsoft.AspNetCore
 
 **What's covered:**
 - Every API controller, grouped by tag (e.g. *Authentication*, *Courses*, *Admin · Users & Roles*), with summaries, parameter descriptions, response codes (`200 / 201 / 204 / 400 / 401 / 403 / 404 / 409 / 500`), and request-body examples pre-filled for "Try it out".
-- The four browser-navigation endpoints (`/culture/set`, `/auth/complete`, `/auth/signout`, `/sitemap.xml`) under the **Infrastructure** tag.
+- The five browser-navigation endpoints (`/culture/set`, `/auth/complete`, `/auth/exit-impersonation`, `/auth/signout`, `/sitemap.xml`) under the **Infrastructure** tag.
 - The **SignalR chat hub** (`/hubs/chat`) — documented in the document description (invoke methods, server events, query-string JWT auth) with the `ChatMessageDto` / `ChatNotificationDto` payload shapes under **Schemas**. SignalR is not a REST protocol, so it appears as reference rather than callable operations.
 - The **AI Assistant chat endpoint** (`POST /api/assistant/chat`) — a normal HTTP operation but with a `text/event-stream` (Server-Sent Events) response; the document description explains the `AssistantStreamEvent` frame shape (see [AI Assistant](#ai-assistant)).
 - The **SignalR call hub** (`/hubs/call`) is the WebRTC signaling channel for video calls; like the chat hub it is a bidirectional WebSocket protocol, so it is not represented as callable REST operations (see [Video Calls](#video-calls)).
