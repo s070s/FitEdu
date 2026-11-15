@@ -136,7 +136,9 @@ code comments and [DEPLOYMENT.md](DEPLOYMENT.md).
 - **Check:** transport selection (`Startup/ServiceRegistrationExtensions.cs`) — with no
   `Email:Smtp:Host`, Development uses a **stub that only logs** the email (search `STUB EMAIL` in the
   logs for the link); production **fails fast at startup** instead. Verify SMTP egress from the host
-  (many VMs block 587 by default).
+  (many VMs block 587 by default). With a relay configured, emails are sent in the background:
+  a failed send shows in the logs as `Email '<subject>' could not be sent (<error type>)`, never with
+  the address, and a message still queued when the app stops is lost.
 
 ### Errors are invisible
 - **Where to look:** the file logs under `Logging:File:Directory` (default `<ContentRoot>/Logs`,

@@ -58,6 +58,10 @@ holds up a sign-up or reset request. One SMTP command may take `Email:Smtp:Timeo
 true) upgrades the connection. Outside Development, startup refuses a `Username` on a connection
 without TLS. A message still queued when the app stops is lost; the member asks for a new link.
 
+`Email:Smtp:FromAddress` must be on a domain whose DNS passes SPF and DKIM for the relay you use,
+or mail providers file the confirmation and reset emails as spam. If emails do not arrive, see
+[Email not arriving](runbook.md#email-not-arriving) in the runbook.
+
 ## Public demo
 
 A demo deployment needs the sample programmes, exercises and members, which normally seed only in
