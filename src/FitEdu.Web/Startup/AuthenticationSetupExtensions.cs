@@ -172,7 +172,11 @@ public static class AuthenticationSetupExtensions
                 {
                     var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (userId is null)
+                    {
+                        // Signed, but naming nobody: its role claims must not open anything.
+                        context.Fail("The token has no user id.");
                         return;
+                    }
 
                     var userManager = context.HttpContext.RequestServices
                         .GetRequiredService<UserManager<ApplicationUser>>();
