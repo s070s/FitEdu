@@ -31,6 +31,9 @@ public partial class AuthApiService(
 {
     private const string StudentRole = "Student";
 
+    // Identity's password-rule errors (PasswordTooShort, PasswordRequiresDigit, ...) and our PasswordTooCommon.
+    private const string PasswordErrorCodePrefix = "Password";
+
     /// <summary>
     /// Registration for the JSON API. A taken email is answered with the same generic error as any other
     /// failure, so the endpoint cannot be used to find out which emails have an account.
@@ -411,21 +414,21 @@ public partial class AuthApiService(
         if (!result.Succeeded)
         {
             LogPasswordResetFailed(logger, user.Id, string.Join(", ", result.Errors.Select(e => e.Code)));
-            // Return generic message — specific errors would confirm account existence or reveal policy hints.
+
+            // Identity checks the reset token before the new password, so when only password rules failed
+            // the link was valid and the caller may be told what is wrong with the password.
+            var errors = result.Errors.ToList();
+            if (errors.All(error => error.Code?.StartsWith(PasswordErrorCodePrefix, StringComparison.Ordinal) == true))
+                return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = errors.Select(error => error.Description) });
+
+            // Anything else (an invalid or expired token) gets a generic message, which never confirms account existence.
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
         }
 
         // SEC-1: ResetPasswordAsync rotated SecurityStamp, which RefreshAsync's stamp check will
         // now reject on its own — this bulk revoke just makes that outcome immediate/explicit
-        // instead of waiting for the next refresh attempt to discover the mismatch. Tracked
-        // mutation + SaveChanges (not ExecuteUpdateAsync) so this runs on every provider,
-        // including the EF InMemory provider integration tests use.
-        var activeTokens = await context.RefreshTokens
-            .Where(rt => rt.UserId == user.Id && rt.RevokedAt == null)
-            .ToListAsync();
-        foreach (var token in activeTokens)
-            token.RevokedAt = DateTimeOffset.UtcNow;
-        await context.SaveChangesAsync();
+        // instead of waiting for the next refresh attempt to discover the mismatch.
+        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id);
 
         LogPasswordReset(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetSuccessful });
@@ -480,12 +483,7 @@ public partial class AuthApiService(
         if (!result.Succeeded)
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description) });
 
-        var devActiveTokens = await context.RefreshTokens
-            .Where(rt => rt.UserId == user.Id && rt.RevokedAt == null)
-            .ToListAsync();
-        foreach (var token in devActiveTokens)
-            token.RevokedAt = DateTimeOffset.UtcNow;
-        await context.SaveChangesAsync();
+        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id);
 
         LogDevPasswordReset(logger, user.Id);
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true, Message = "Password reset (dev mode)" });

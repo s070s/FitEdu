@@ -358,15 +358,8 @@ public partial class AdminUserService(
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
         // SEC-1: this rotated SecurityStamp — revoke outstanding refresh tokens explicitly
-        // rather than waiting for RefreshAsync's stamp check to reject them one by one. Tracked
-        // mutation + SaveChanges (not ExecuteUpdateAsync) so this runs on every provider,
-        // including the EF InMemory provider integration tests use.
-        var activeTokens = await context.RefreshTokens
-            .Where(rt => rt.UserId == userId && rt.RevokedAt == null)
-            .ToListAsync(cancellationToken);
-        foreach (var refreshToken in activeTokens)
-            refreshToken.RevokedAt = DateTimeOffset.UtcNow;
-        await context.SaveChangesAsync(cancellationToken);
+        // rather than waiting for RefreshAsync's stamp check to reject them one by one.
+        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, userId, cancellationToken);
 
         LogPasswordSetByAdmin(logger, ActingAdmin, userId);
         return ServiceResult<bool>.Ok(true);

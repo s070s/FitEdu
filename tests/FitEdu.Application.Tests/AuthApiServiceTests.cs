@@ -797,6 +797,85 @@ public class AuthApiServiceTests
     }
 
     [Fact]
+    public async Task ResetPassword_ATokenIsRotatedByARefreshWhileRevoking_StillSucceedsAndRevokesTheRest()
+    {
+        // RevokedAt is a concurrency token (REL-8): a refresh that rotates one of the tokens between the
+        // reset's read and its save must not turn the already-changed password into a 500.
+        var databaseName = Guid.NewGuid().ToString("N");
+        var reset = Build(databaseName);
+        var refresh = Build(databaseName);
+        var user = User();
+        reset.Um.FindByEmailAsync(user.Email!).Returns(user);
+        reset.Um.ResetPasswordAsync(user, "reset-token", "NewPassword1!").Returns(IdentityResult.Success);
+        Seed(reset.Db, user, "plain-1", user.SecurityStamp);
+        Seed(reset.Db, user, "plain-2", user.SecurityStamp);
+        await reset.Db.SaveChangesAsync();
+
+        var raced = false;
+        reset.Db.SavingChanges += (_, _) =>
+        {
+            if (raced)
+                return;
+            raced = true;
+            var rotated = refresh.Db.RefreshTokens.OrderBy(rt => rt.TokenHash).First();
+            rotated.RevokedAt = DateTimeOffset.UtcNow;
+            refresh.Db.SaveChanges();
+        };
+
+        var result = await reset.Svc.ResetPasswordAsync(new ResetPasswordRequestDto
+        {
+            Email = user.Email!, Token = "reset-token", NewPassword = "NewPassword1!", ConfirmPassword = "NewPassword1!"
+        });
+
+        raced.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
+        using var check = DbContextFactory.CreateInMemory(databaseName);
+        (await check.RefreshTokens.ToListAsync()).ShouldAllBe(rt => rt.RevokedAt != null);
+    }
+
+    [Theory]
+    [InlineData("PasswordTooShort")]
+    [InlineData("PasswordRequiresDigit")]
+    [InlineData("PasswordRequiresLower")]
+    [InlineData(CommonPasswordValidator.ErrorCode)]
+    public async Task ResetPassword_PasswordRuleError_IsReturnedSoThePageCanShowIt(string errorCode)
+    {
+        // The reset token is checked before the new password, so a password error means the link was valid.
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync(user.Email!).Returns(user);
+        h.Um.ResetPasswordAsync(user, "reset-token", "weak")
+            .Returns(IdentityResult.Failed(new IdentityError { Code = errorCode, Description = "Password rule: " + errorCode }));
+
+        var result = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto
+        {
+            Email = user.Email!, Token = "reset-token", NewPassword = "weak", ConfirmPassword = "weak"
+        });
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Errors.ShouldBe(["Password rule: " + errorCode]);
+    }
+
+    [Fact]
+    public async Task ResetPassword_InvalidTokenAlongsideAPasswordError_StaysGeneric()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync(user.Email!).Returns(user);
+        h.Um.ResetPasswordAsync(user, "bad-token", "weak").Returns(IdentityResult.Failed(
+            new IdentityError { Code = "InvalidToken", Description = "Invalid token." },
+            new IdentityError { Code = "PasswordTooShort", Description = "Too short." }));
+
+        var result = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto
+        {
+            Email = user.Email!, Token = "bad-token", NewPassword = "weak", ConfirmPassword = "weak"
+        });
+
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidRequest);
+        result.Value.Errors.ShouldBeNull();
+    }
+
+    [Fact]
     public async Task ResetPassword_Failure_DoesNotRevokeTokens()
     {
         var h = Build();
