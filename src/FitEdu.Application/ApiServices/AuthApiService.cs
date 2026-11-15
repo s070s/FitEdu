@@ -54,6 +54,10 @@ public partial class AuthApiService(
     {
         var user = request.ToNewUser();
 
+        var ageRefusal = CheckSignUpAge(user.DateOfBirth);
+        if (ageRefusal is not null)
+            return ServiceResult<AuthResponseDto>.BadRequest(ageRefusal);
+
         var result = await userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
@@ -74,14 +78,6 @@ public partial class AuthApiService(
                 Errors = safeErrors,
                 Failure = emailTaken ? AuthFailure.EmailTaken : null
             });
-        }
-
-        // Parental consent placeholder: if under 18 on the members' date, flag for future handling
-        var age = user.AgeOn(SiteClock.Today(timeProvider));
-        if (age < 18)
-        {
-            // TODO: Implement parental consent flow. For now, allow registration but log.
-            LogUnderEighteenRegistered(logger, user.Id);
         }
 
         var confirmToken = await TrySetUpNewAccountAsync(user);
@@ -121,6 +117,33 @@ public partial class AuthApiService(
             Success = true,
             Message = SuccessMessagesRes.RegistrationSuccessfulCheckEmail
         });
+    }
+
+    // A sign-up needs a date of birth and an age of RegisterRequestDto.MinimumSignUpAge, counted on the members'
+    // date. A date in the future is also too young, and comparing dates avoids age arithmetic on a far-future
+    // year. Null when the date is fine, otherwise the refusal to return (no account is created).
+    private AuthResponseDto? CheckSignUpAge(DateOnly? dateOfBirth)
+    {
+        if (dateOfBirth is null)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = ErrorMessagesRes.Auth_DateOfBirthRequired,
+                Failure = AuthFailure.DateOfBirthRequired
+            };
+        }
+
+        var latestAllowedBirthDate = SiteClock.Today(timeProvider).AddYears(-RegisterRequestDto.MinimumSignUpAge);
+        if (dateOfBirth.Value <= latestAllowedBirthDate)
+            return null;
+
+        return new AuthResponseDto
+        {
+            Success = false,
+            Message = ErrorMessagesRes.SignUpMinimumAge,
+            Failure = AuthFailure.UnderMinimumAge
+        };
     }
 
     // Student role, Free plan and the confirmation token of a just-created account. Returns the token,
@@ -490,9 +513,6 @@ public partial class AuthApiService(
     }
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
-    [LoggerMessage(Level = LogLevel.Information, Message = "Under-18 user registered: {UserId}. Parental consent not yet implemented.")]
-    private static partial void LogUnderEighteenRegistered(ILogger logger, string userId);
-
     [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed: {ErrorCodes}")]
     private static partial void LogRegistrationFailed(ILogger logger, string errorCodes);
 

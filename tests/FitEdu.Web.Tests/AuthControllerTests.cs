@@ -25,6 +25,7 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
         ConfirmPassword = "Password1!",
         FirstName = "New",
         LastName = "User",
+        DateOfBirth = new DateTime(1998, 4, 12),
         GdprConsent = true
     };
 
@@ -86,6 +87,32 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
         var response = await client.PostAsJsonAsync("/api/auth/register", invalid);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Register_NoDateOfBirth_Returns400()
+    {
+        var request = Register($"nodob-{Guid.NewGuid():N}@test.com");
+        request.DateOfBirth = null;
+
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/register", request);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Register_UnderFifteen_Returns400AndCreatesNoAccount()
+    {
+        var request = Register($"young-{Guid.NewGuid():N}@test.com");
+        request.DateOfBirth = DateTime.UtcNow.AddYears(-10);
+
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/register", request);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var body = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        body!.Failure.ShouldBe(AuthFailure.UnderMinimumAge);
+        using var scope = _factory.Services.CreateScope();
+        (await scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>().FindByEmailAsync(request.Email)).ShouldBeNull();
     }
 
     [Fact]

@@ -96,6 +96,7 @@ public class AuthApiServiceTests
         ConfirmPassword = "Password1!",
         FirstName = "F",
         LastName = "L",
+        DateOfBirth = new DateTime(1998, 4, 12),
         GdprConsent = true
     };
 
@@ -374,35 +375,85 @@ public class AuthApiServiceTests
         await h.Email.Received(1).SendEmailConfirmationAsync("u@x.com", Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
-    // ---- The under-18 notice follows the members' date, not the server's UTC date (P01-19) ----
+    // ---- Sign-up needs a date of birth and an age of 15 or more, by the members' date, not the server's UTC date (P02-9) ----
 
-    [Fact]
-    public async Task Register_BirthdayAlreadyReachedInTheMembersZone_IsNotLoggedAsUnderEighteen()
+    private static async Task<(Harness Harness, ServiceResult<AuthResponseDto> Result)> RegisterBornOn(DateTime? dateOfBirth, DateTimeOffset now)
     {
-        // 22:30 UTC on 14 June is already 15 June in Athens: a member born on 15 June 2008 is 18 there, 17 in UTC.
-        var h = Build(timeProvider: new FixedTimeProvider(new DateTimeOffset(2026, 6, 14, 22, 30, 0, TimeSpan.Zero)));
+        var h = Build(timeProvider: new FixedTimeProvider(now));
         h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
         h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
         var request = RegisterRequest();
-        request.DateOfBirth = new DateTime(2008, 6, 15);
+        request.DateOfBirth = dateOfBirth;
 
-        await h.Svc.RegisterAsync(request);
+        return (h, await h.Svc.RegisterAsync(request));
+    }
 
+    [Fact]
+    public async Task Register_UnderFifteen_IsRefusedNoAccount()
+    {
+        // 10:00 UTC on 14 June is 13:00 in Athens: still 14 June, so a member born on 15 June 2011 is 14.
+        var (h, result) = await RegisterBornOn(new DateTime(2011, 6, 15), new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero));
+
+        result.IsSuccess.ShouldBeFalse();
+        result.StatusCode.ShouldBe(400);
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.SignUpMinimumAge);
+        result.Value.Failure.ShouldBe(AuthFailure.UnderMinimumAge);
+        await h.Um.DidNotReceiveWithAnyArgs().CreateAsync(default!, default!);
+        await h.Email.DidNotReceiveWithAnyArgs().SendEmailConfirmationAsync(default!, default!, default!, default);
+    }
+
+    [Fact]
+    public async Task Register_FifteenTodayInTheMembersZone_IsAccepted()
+    {
+        // 22:30 UTC on 14 June is already 15 June in Athens: a member born on 15 June 2011 turns 15 there (14 in UTC).
+        var (h, result) = await RegisterBornOn(new DateTime(2011, 6, 15), new DateTimeOffset(2026, 6, 14, 22, 30, 0, TimeSpan.Zero));
+
+        result.IsSuccess.ShouldBeTrue();
+        await h.Um.ReceivedWithAnyArgs(1).CreateAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task Register_SixteenYearOld_IsAcceptedWithoutAnyParentalConsentNotice()
+    {
+        var (h, result) = await RegisterBornOn(new DateTime(2010, 1, 1), new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero));
+
+        result.IsSuccess.ShouldBeTrue();
         h.Log.Information.ShouldNotContain(entry => entry.Contains("Under-18", StringComparison.Ordinal));
     }
 
     [Fact]
-    public async Task Register_StillSeventeenInTheMembersZone_LogsTheUnderEighteenNotice()
+    public async Task Register_DateOfBirthInTheFuture_IsRefusedNoAccount()
+    {
+        var (h, result) = await RegisterBornOn(new DateTime(2026, 6, 15), new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero));
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Failure.ShouldBe(AuthFailure.UnderMinimumAge);
+        await h.Um.DidNotReceiveWithAnyArgs().CreateAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task Register_NoDateOfBirth_IsRefusedNoAccount()
+    {
+        // The model check rejects it first on the API; the service keeps the rule for every other caller.
+        var (h, result) = await RegisterBornOn(null, new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero));
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.Auth_DateOfBirthRequired);
+        result.Value.Failure.ShouldBe(AuthFailure.DateOfBirthRequired);
+        await h.Um.DidNotReceiveWithAnyArgs().CreateAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task RegisterFromSignUpPage_UnderFifteen_IsRefusedToo()
     {
         var h = Build(timeProvider: new FixedTimeProvider(new DateTimeOffset(2026, 6, 14, 10, 0, 0, TimeSpan.Zero)));
-        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
-        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
         var request = RegisterRequest();
-        request.DateOfBirth = new DateTime(2008, 6, 15);
+        request.DateOfBirth = new DateTime(2012, 1, 1);
 
-        await h.Svc.RegisterAsync(request);
+        var result = await h.Svc.RegisterFromSignUpPageAsync(request);
 
-        h.Log.Information.ShouldContain(entry => entry.Contains("Under-18", StringComparison.Ordinal));
+        result.Value!.Failure.ShouldBe(AuthFailure.UnderMinimumAge);
+        await h.Um.DidNotReceiveWithAnyArgs().CreateAsync(default!, default!);
     }
 
     // ---- Logs never hold an email address (P01-1) ----

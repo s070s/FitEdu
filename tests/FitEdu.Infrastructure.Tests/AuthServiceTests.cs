@@ -425,6 +425,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true
         });
 
@@ -447,6 +448,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true
         });
 
@@ -468,6 +470,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true
         });
 
@@ -489,6 +492,7 @@ public class AuthServiceTests
             ConfirmPassword = "weak",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true
         });
 
@@ -512,6 +516,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true,
             Status = UserStatus.Advanced
         });
@@ -535,6 +540,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true,
             Status = UserStatus.Unknown
         });
@@ -558,6 +564,7 @@ public class AuthServiceTests
             ConfirmPassword = "Password1",
             FirstName = "F",
             LastName = "L",
+            DateOfBirth = new DateTime(1998, 4, 12),
             GdprConsent = true,
             Goal = FitnessGoal.Mobility
         });

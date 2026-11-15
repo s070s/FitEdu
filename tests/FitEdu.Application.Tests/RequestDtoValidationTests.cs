@@ -54,6 +54,7 @@ public class RequestDtoValidationTests
         ConfirmPassword = "Password1",
         FirstName = "First",
         LastName = "Last",
+        DateOfBirth = new DateTime(1998, 4, 12),
         GdprConsent = true
     };
 
@@ -108,6 +109,16 @@ public class RequestDtoValidationTests
         var dto = ValidRegister();
         dto.GdprConsent = false;
         IsValid(dto).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Register_NoDateOfBirth_FailsWithTheTranslatedMessage()
+    {
+        var dto = ValidRegister();
+        dto.DateOfBirth = null;
+
+        IsValid(dto).ShouldBeFalse();
+        GreekErrors(dto).ShouldContain(GreekMessage(nameof(ErrorMessagesRes.Auth_DateOfBirthRequired)));
     }
 
     [Fact]

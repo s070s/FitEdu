@@ -7,6 +7,13 @@ namespace FitEdu.Application.DTOs;
 
 public class RegisterRequestDto
 {
+    /// <summary>
+    /// The youngest age that may sign up: 15, Greece's age of digital consent (Law 4624/2019, article 21), so no
+    /// parental consent is needed. The "You need to be at least 15" message (ErrorMessagesRes.SignUpMinimumAge)
+    /// names the same number.
+    /// </summary>
+    public const int MinimumSignUpAge = 15;
+
     /// <summary>Email address (must be unique).</summary>
     /// <example>new.student@example.com</example>
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_EmailRequired))]
@@ -39,9 +46,12 @@ public class RegisterRequestDto
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Optional. Use DateTime (client &amp; API). Date-only semantics are stored as DateOnly on the user entity.
+    /// Required: a sign-up needs an age of at least <see cref="MinimumSignUpAge"/> on the members' date, and a
+    /// date in the future is refused. Use DateTime (client &amp; API). Date-only semantics are stored as DateOnly
+    /// on the user entity.
     /// </summary>
     /// <example>1998-04-12T00:00:00Z</example>
+    [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_DateOfBirthRequired))]
     public DateTime? DateOfBirth { get; set; }
 
     /// <summary>

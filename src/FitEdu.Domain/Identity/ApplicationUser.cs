@@ -73,8 +73,8 @@ public class ApplicationUser : IdentityUser
     public DateTime? GdprConsentDate { get; set; }
 
     /// <summary>
-    /// Placeholder: if user is under 18, parental consent may be required.
-    /// Implementation deferred; this flag allows future gating.
+    /// Unused: nothing reads or sets it. Sign-up refuses members under 15 (Greece's age of digital consent),
+    /// so no parental-consent flow exists. The column is kept so no migration or data change is needed.
     /// </summary>
     public bool ParentalConsentGiven { get; set; }
 

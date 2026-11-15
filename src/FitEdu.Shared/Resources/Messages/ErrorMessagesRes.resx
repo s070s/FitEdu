@@ -297,6 +297,12 @@
   <data name="Auth_GdprConsentRequired" xml:space="preserve">
     <value>You must consent to data processing.</value>
   </data>
+  <data name="Auth_DateOfBirthRequired" xml:space="preserve">
+    <value>Date of birth is required.</value>
+  </data>
+  <data name="SignUpMinimumAge" xml:space="preserve">
+    <value>You need to be at least 15 to create an account.</value>
+  </data>
   <data name="Exercise_NotFound" xml:space="preserve">
     <value>Exercise not found.</value>
   </data>

@@ -202,7 +202,7 @@ The tables below are a quick static reference; **Swagger UI is the authoritative
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `POST` | `api/auth/register` | Register new user (Student role) | No |
+| `POST` | `api/auth/register` | Register new user (Student role). Needs a date of birth; under 15 on the members' date (Greece's age of digital consent) is refused, so there is no parental-consent flow | No |
 | `POST` | `api/auth/confirm-email` | Confirm email with the `userId` and `token` of the emailed link (body: `ConfirmEmailRequestDto`) | No |
 | `POST` | `api/auth/login` | Log in — returns JWT + refresh token | No |
 | `POST` | `api/auth/forgot-password` | Request password-reset email | No |

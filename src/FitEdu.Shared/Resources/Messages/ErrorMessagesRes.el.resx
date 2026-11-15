@@ -297,6 +297,12 @@
   <data name="Auth_GdprConsentRequired" xml:space="preserve">
     <value>Χρειάζεται η συγκατάθεσή σου για την επεξεργασία των δεδομένων.</value>
   </data>
+  <data name="Auth_DateOfBirthRequired" xml:space="preserve">
+    <value>Η ημερομηνία γέννησης είναι υποχρεωτική.</value>
+  </data>
+  <data name="SignUpMinimumAge" xml:space="preserve">
+    <value>Πρέπει να είσαι τουλάχιστον 15 ετών για να δημιουργήσεις λογαριασμό.</value>
+  </data>
   <data name="Exercise_NotFound" xml:space="preserve">
     <value>Η άσκηση δεν βρέθηκε.</value>
   </data>

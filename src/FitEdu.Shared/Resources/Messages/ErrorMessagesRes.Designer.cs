@@ -599,6 +599,24 @@ namespace FitEdu.Shared.Resources.Messages {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth is required..
+        /// </summary>
+        public static string Auth_DateOfBirthRequired {
+            get {
+                return ResourceManager.GetString("Auth_DateOfBirthRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be at least 15 to create an account..
+        /// </summary>
+        public static string SignUpMinimumAge {
+            get {
+                return ResourceManager.GetString("SignUpMinimumAge", resourceCulture);
+            }
+        }
+
 
         /// <summary>
         ///   Looks up a localized string similar to Exercise not found..
