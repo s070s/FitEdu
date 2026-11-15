@@ -20,7 +20,7 @@ public interface IAuthService
 
     /// <summary>
     /// Validates credentials.  On success, <see cref="AuthResponseDto.Token"/>
-    /// holds a short-lived ticket GUID.  Navigate to
+    /// holds a short-lived signed DataProtection ticket (valid once, for five minutes).  Navigate to
     /// <c>/auth/complete?ticket={Token}&amp;returnUrl=…</c> with forceLoad: true.
     /// </summary>
     Task<AuthResponseDto> LoginAsync(LoginRequestDto request);

@@ -116,7 +116,7 @@ public static class AuthenticationSetupExtensions
             // Re-validate the cookie principal on every request. Without this, a custom cookie
             // scheme bypasses Identity's SecurityStampValidator, so disabling a user or rotating
             // their security stamp (password reset / forced logout) would not end an active
-            // session until the 7-day MaxAge. Reject + sign out when the user is gone, disabled,
+            // session until its cookie expires (7 days, renewed on activity). Reject + sign out when the user is gone, disabled,
             // or the security stamp no longer matches the one embedded in the cookie at sign-in.
             options.Events.OnValidatePrincipal = async context =>
             {

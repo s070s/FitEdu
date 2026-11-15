@@ -118,7 +118,7 @@ public class AuthController : ControllerBase
     // the self-confirm / self-reset buttons on the Register/Login/ForgotPassword pages, which is
     // why those flows complete in Development despite no email being delivered. They are compiled
     // out of Release builds (#if DEBUG) and additionally gated by IsDevelopment() at runtime, so
-    // they provide no fallback in production — the real email flows (AUTH-1/AUTH-2) must be wired.
+    // they provide no fallback in production — there the emailed confirmation and reset links are the only way.
 #if DEBUG
     /// <summary>
     /// Dev-only: Confirm email without token (development mode only).

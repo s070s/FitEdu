@@ -21,9 +21,10 @@ using System.Text.Json;
 namespace FitEdu.Web.Startup;
 
 /// <summary>
-/// Minimal-API endpoints tagged "Infrastructure": culture switching, the two Blazor
-/// auth-completion endpoints, and the XML sitemap. Grouped together because none of
-/// them are JSON APIs — they're browser-navigation or crawler endpoints.
+/// Minimal-API endpoints tagged "Infrastructure": culture switching, the Blazor auth-completion
+/// endpoints (sign-in, leaving an impersonation, sign-out), the XML sitemap and the health probes.
+/// Grouped together because none of them are JSON APIs — they're browser-navigation, crawler or
+/// monitoring endpoints.
 /// </summary>
 public static class InfrastructureEndpointsExtensions
 {
@@ -157,7 +158,8 @@ public static class InfrastructureEndpointsExtensions
             // --- Issue auth cookie -------------------------------------------------------
             // IsPersistent=false (unchecked "Remember Me") issues a session cookie the browser
             // discards on close; the cookie middleware's 24h sliding ExpireTimeSpan still governs
-            // the ticket while the session is open. IsPersistent=true adds a 7-day hard cap.
+            // the ticket while the session is open. IsPersistent=true makes it a 7-day cookie that
+            // is renewed while the member stays active (sliding expiration).
             var authProperties = new AuthenticationProperties { IsPersistent = rememberMe };
             if (rememberMe)
                 authProperties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7);
