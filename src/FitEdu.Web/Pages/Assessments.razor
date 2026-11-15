@@ -30,7 +30,7 @@
     {
         <p class="visually-hidden" role="status">@AssessmentRes.LoadingAssessments</p>
         <div class="grid-auto assessments-grid" aria-hidden="true">
-            @for (var index = 0; index < 4; index++)
+            @for (var index = 0; index < SkeletonCardCount; index++)
             {
                 <SkeletonBlock Height="15rem" />
             }

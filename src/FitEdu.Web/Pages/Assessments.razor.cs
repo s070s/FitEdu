@@ -29,6 +29,7 @@ public partial class Assessments : IDisposable
 
     private static readonly int[] PageSizeOptions = [5, 10, 20, 50];
     private const int FullPercent = 100;
+    private const int SkeletonCardCount = 4;
 
     /// <summary>Ids of the self-checks this member has sent at least once.</summary>
     private HashSet<Guid> _completedIds = [];

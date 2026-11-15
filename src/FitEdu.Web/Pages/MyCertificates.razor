@@ -15,7 +15,7 @@
     {
         <p class="visually-hidden" role="status">@CertificateRes.Loading</p>
         <div class="grid-auto certificate-grid" aria-hidden="true">
-            @for (var index = 0; index < 4; index++)
+            @for (var index = 0; index < SkeletonCardCount; index++)
             {
                 <SkeletonBlock Height="20rem" />
             }

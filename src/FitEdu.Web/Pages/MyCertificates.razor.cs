@@ -11,6 +11,7 @@ public partial class MyCertificates
 {
     /// <summary>The plan that includes certificates (SubscriptionPlanSeeder).</summary>
     private const SubscriptionTier CertificateTier = SubscriptionTier.Pro;
+    private const int SkeletonCardCount = 4;
 
     [Inject] private ICertificateConsumer CertificateConsumer { get; set; } = default!;
     [Inject] private ISubscriptionConsumer SubscriptionConsumer { get; set; } = default!;
