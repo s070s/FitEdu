@@ -40,6 +40,8 @@ public class EmailLinkPagesTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
         Services.AddSingleton(_authApiService);
+        // After a step change the pages move focus to the result (the control that had it is gone).
+        JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
     }
 
     private void Open(string url) => Services.GetRequiredService<NavigationManager>().NavigateTo(url);
@@ -120,6 +122,45 @@ public class EmailLinkPagesTests : BunitContext
         var loginLink = page.Find("a.auth-submit");
         loginLink.GetAttribute("href").ShouldBe("/login");
         loginLink.TextContent.Trim().ShouldBe(GlobalRes.Label_GoToLogin);
+    }
+
+    [Fact]
+    public void ConfirmEmail_Success_FocusesTheResult()
+    {
+        // The button the member clicked is replaced by the result, so focus would fall back to the page top.
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true }));
+        Open(ConfirmEmailUrl);
+        var page = Render<ConfirmEmail>();
+
+        page.Find("button.auth-submit").Click();
+
+        page.WaitForAssertion(() => JSInterop.VerifyInvoke("inputInterop.scrollIntoView"));
+        page.Find(".alert-success").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
+    public void ConfirmEmail_InvalidLinkAfterTheClick_FocusesTheResult()
+    {
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new ServiceResult<AuthResponseDto>(new AuthResponseDto { Success = false }, 400));
+        Open(ConfirmEmailUrl);
+        var page = Render<ConfirmEmail>();
+
+        page.Find("button.auth-submit").Click();
+
+        page.WaitForAssertion(() => JSInterop.VerifyInvoke("inputInterop.scrollIntoView"));
+        page.Find(".alert-danger").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
+    public void ConfirmEmail_InvalidLinkOnLoad_DoesNotMoveFocus()
+    {
+        Open("/confirm-email");
+
+        Render<ConfirmEmail>();
+
+        JSInterop.VerifyNotInvoke("inputInterop.scrollIntoView");
     }
 
     [Fact]
@@ -264,6 +305,45 @@ public class EmailLinkPagesTests : BunitContext
         page.Find(".alert-success").TextContent.ShouldContain(SuccessMessagesRes.PasswordResetSuccessful);
         page.Find("a.auth-submit").GetAttribute("href").ShouldBe("/login");
         page.FindAll("form").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ResetPassword_Success_FocusesTheResult()
+    {
+        _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        Open(ResetPasswordUrl);
+        var page = Render<ResetPassword>();
+
+        FillPasswords(page, ValidPassword, ValidPassword);
+        page.Find("form").Submit();
+
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+        page.Find(".alert-success").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
+    public void ResetPassword_InvalidLinkAfterTheSubmit_FocusesTheResult()
+    {
+        _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>())
+            .Returns(new AuthResponseDto { Success = false, Failure = AuthFailure.LinkInvalid });
+        Open(ResetPasswordUrl);
+        var page = Render<ResetPassword>();
+
+        FillPasswords(page, ValidPassword, ValidPassword);
+        page.Find("form").Submit();
+
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+        page.Find(".alert-danger").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
+    public void ResetPassword_InvalidLinkOnLoad_DoesNotMoveFocus()
+    {
+        Open("/reset-password");
+
+        Render<ResetPassword>();
+
+        JSInterop.VerifyNotInvoke("inputInterop.scrollIntoView");
     }
 
     [Fact]

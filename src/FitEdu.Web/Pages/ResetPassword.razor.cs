@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
@@ -15,6 +16,7 @@ public partial class ResetPassword
 {
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private ILogger<ResetPassword> Logger { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
 
     [SupplyParameterFromQuery] public string? Email { get; set; }
 
@@ -28,6 +30,9 @@ public partial class ResetPassword
     private bool isSaving;
     private bool showNewPassword;
     private bool showConfirmPassword;
+    private ElementReference resultRegion;
+    // The submit removes the form that had focus, so the render that shows the result focuses the result.
+    private bool focusResult;
 
     private string newPasswordInputType => showNewPassword ? "text" : "password";
     private string confirmPasswordInputType => showConfirmPassword ? "text" : "password";
@@ -42,6 +47,22 @@ public partial class ResetPassword
     {
         resetRequest.Email = Email ?? string.Empty;
         resetRequest.Token = Token ?? string.Empty;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!focusResult)
+            return;
+
+        focusResult = false;
+        try
+        {
+            await JS.InvokeVoidAsync("inputInterop.scrollIntoView", resultRegion);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit closed; there is no page left to focus.
+        }
     }
 
     private void ToggleNewPasswordVisibility() => showNewPassword = !showNewPassword;
@@ -60,11 +81,13 @@ public partial class ResetPassword
             if (result.Success)
             {
                 step = Step.Done;
+                focusResult = true;
             }
             else if (result.Failure == AuthFailure.LinkInvalid)
             {
                 // A used, expired or altered link (or an unknown email): a new email is needed.
                 step = Step.LinkInvalid;
+                focusResult = true;
             }
             else if (result.Errors is not null && result.Errors.Any())
             {

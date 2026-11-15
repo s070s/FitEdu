@@ -8,12 +8,12 @@
     <ChildContent>
         @if (CurrentStep == Step.Confirmed)
         {
-            <div class="alert alert-success" role="status">@SuccessMessagesRes.EmailConfirmedSuccessfully</div>
+            <div class="alert alert-success" role="status" tabindex="-1" @ref="resultRegion">@SuccessMessagesRes.EmailConfirmedSuccessfully</div>
             <a class="btn-cta auth-submit" href="/login">@GlobalRes.Label_GoToLogin</a>
         }
         else if (CurrentStep == Step.LinkInvalid)
         {
-            <div class="alert alert-danger" role="alert">@ErrorMessagesRes.EmailConfirmationLinkInvalid</div>
+            <div class="alert alert-danger" role="alert" tabindex="-1" @ref="resultRegion">@ErrorMessagesRes.EmailConfirmationLinkInvalid</div>
             @* Not a dead end: signing in with an unconfirmed account offers a new link. *@
             <p>@GlobalRes.ConfirmEmailLinkInvalidHint</p>
             <a class="btn-cta auth-submit" href="/login">@GlobalRes.Label_GoToLogin</a>

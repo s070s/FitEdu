@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Shared.Resources.Messages;
 
@@ -17,6 +18,7 @@ public partial class ConfirmEmail
 
     [Inject] private IAuthApiService AuthApiService { get; set; } = default!;
     [Inject] private ILogger<ConfirmEmail> Logger { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
 
     [SupplyParameterFromQuery] public string? UserId { get; set; }
 
@@ -26,9 +28,28 @@ public partial class ConfirmEmail
 
     private Step step = Step.Ready;
     private string? errorMessage;
+    private ElementReference resultRegion;
+    // The click removes the button that had focus, so the render that shows the result focuses the result.
+    private bool focusResult;
 
     // A link missing either value cannot be confirmed, so it shows the invalid-link state straight away.
     private Step CurrentStep => string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Token) ? Step.LinkInvalid : step;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!focusResult)
+            return;
+
+        focusResult = false;
+        try
+        {
+            await JS.InvokeVoidAsync("inputInterop.scrollIntoView", resultRegion);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit closed; there is no page left to focus.
+        }
+    }
 
     private async Task Confirm()
     {
@@ -42,11 +63,13 @@ public partial class ConfirmEmail
             if (result.IsSuccess)
             {
                 step = Step.Confirmed;
+                focusResult = true;
             }
             else if (result.StatusCode is BadRequestStatusCode or NotFoundStatusCode)
             {
                 // 400 means a used, expired or altered token and 404 an unknown member; either needs a new email.
                 step = Step.LinkInvalid;
+                focusResult = true;
             }
             else
             {
