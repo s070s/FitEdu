@@ -3,7 +3,8 @@
 <AppPageTitle Text="@GlobalRes.ConfirmEmailTitle" />
 
 @* The link in the confirmation email opens this page, which only offers the button: opening the link
-   (a mail scanner does that too) must not spend the one-time token, so the member's click confirms. *@
+   (a mail scanner does that too) must not confirm the address, so the member's click does. The link in the
+   email stays valid until it expires (EmailTemplates.LinkLifetimeHours). *@
 <AuthCard Title="@GlobalRes.ConfirmEmailTitle" Subtitle="@(CurrentStep == Step.Ready ? GlobalRes.ConfirmEmailInstructions : null)">
     <ChildContent>
         @if (CurrentStep == Step.Confirmed)
