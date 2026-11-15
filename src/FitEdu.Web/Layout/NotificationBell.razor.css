@@ -15,7 +15,7 @@
     border-radius: 50%;
     width: var(--tap-min);
     height: var(--tap-min);
-    transition: box-shadow 0.2s;
+    transition: box-shadow var(--duration-base);
 }
 
     .bell-button:hover {

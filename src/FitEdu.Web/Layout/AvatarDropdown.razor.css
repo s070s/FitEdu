@@ -15,7 +15,7 @@
     width: var(--tap-min);
     height: var(--tap-min);
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    transition: box-shadow var(--duration-base);
 }
 
     .avatar-button:hover {

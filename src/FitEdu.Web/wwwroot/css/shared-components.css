@@ -124,7 +124,7 @@ th.sort-active {
 
 .chevron-icon {
     color: var(--text-strong-accent);
-    transition: transform 0.2s ease;
+    transition: transform var(--duration-base) ease;
     flex-shrink: 0;
 }
 
@@ -142,7 +142,7 @@ th.sort-active {
 
 .collapsible-body-wrapper.collapsed {
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.2s ease;
+    transition: grid-template-rows var(--duration-base) ease;
 }
 
 /* min-height: 0 is required for the grid trick */
