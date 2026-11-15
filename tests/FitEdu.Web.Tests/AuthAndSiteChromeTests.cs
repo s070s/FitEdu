@@ -534,6 +534,21 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_ErrorMentioningUsername_IsShown()
+    {
+        // Regression guard: an error that merely names the username must not be filtered out.
+        const string usernameError = "Username 'bad name' is invalid.";
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Errors = [usernameError] });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find("form .register-errors").TextContent.ShouldContain(usernameError);
+    }
+
+    [Fact]
     public void Register_RefusalWithNothingToShow_ShowsTheGenericMessage()
     {
         _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = false });
