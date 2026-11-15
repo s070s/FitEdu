@@ -101,6 +101,17 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Login_FormKeepsAutocomplete()
+    {
+        // autocomplete="off" on the form stops a password manager from filling the saved sign-in.
+        var page = Render<Login>();
+
+        page.Find("form").HasAttribute("autocomplete").ShouldBeFalse();
+        page.Find("#email").GetAttribute("autocomplete").ShouldBe("username");
+        page.Find("#password").GetAttribute("autocomplete").ShouldBe("current-password");
+    }
+
+    [Fact]
     public void Login_WrongPassword_ErrorSitsInAnAlertRegion()
     {
         // A screen reader announces text that appears in a region that was already on the page.

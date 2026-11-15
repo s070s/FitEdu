@@ -200,6 +200,54 @@ public class EmailLinkPagesTests : BunitContext
     }
 
     [Fact]
+    public void ResetPassword_ShowsRulesHintAndToggle()
+    {
+        Open(ResetPasswordUrl);
+
+        var page = Render<ResetPassword>();
+
+        var newPassword = page.Find("#newPassword");
+        newPassword.GetAttribute("aria-describedby").ShouldBe("password-help");
+        page.Find("#password-help").TextContent.ShouldBe(GlobalRes.PasswordRulesHint);
+        foreach (var fieldId in new[] { "newPassword", "confirmPassword" })
+        {
+            var toggle = page.Find($"#{fieldId} + button");
+            toggle.GetAttribute("aria-label").ShouldBe(GlobalRes.ShowHidePassword);
+            toggle.GetAttribute("aria-pressed").ShouldBe("false");
+
+            toggle.Click();
+
+            page.Find($"#{fieldId}").GetAttribute("type").ShouldBe("text");
+            page.Find($"#{fieldId} + button").GetAttribute("aria-pressed").ShouldBe("true");
+        }
+    }
+
+    [Fact]
+    public void ResetPassword_HasAReadOnlyUsernameFieldForPasswordManagers()
+    {
+        Open(ResetPasswordUrl);
+
+        var page = Render<ResetPassword>();
+
+        var username = page.Find("#email");
+        username.GetAttribute("autocomplete").ShouldBe("username");
+        username.HasAttribute("readonly").ShouldBeTrue();
+        username.GetAttribute("value").ShouldBe("maria@fitedu.local");
+        page.Find("label[for=email]").TextContent.ShouldBe(GlobalRes.Label_Info_Email);
+    }
+
+    [Fact]
+    public void ResetPassword_FormKeepsAutocomplete()
+    {
+        // autocomplete="off" on the form stops a password manager from offering the new password.
+        Open(ResetPasswordUrl);
+
+        var page = Render<ResetPassword>();
+
+        page.Find("form").HasAttribute("autocomplete").ShouldBeFalse();
+    }
+
+    [Fact]
     public void ResetPassword_Submit_SendsTheEmailTokenAndNewPasswordAndShowsTheSuccess()
     {
         _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>())

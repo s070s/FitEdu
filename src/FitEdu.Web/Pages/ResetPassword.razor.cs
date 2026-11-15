@@ -26,6 +26,11 @@ public partial class ResetPassword
     private readonly List<string> errors = [];
     private Step step = Step.Ready;
     private bool isSaving;
+    private bool showNewPassword;
+    private bool showConfirmPassword;
+
+    private string newPasswordInputType => showNewPassword ? "text" : "password";
+    private string confirmPasswordInputType => showConfirmPassword ? "text" : "password";
 
     // A link without a usable email and token cannot reset anything, so it shows the invalid-link state straight away.
     private Step CurrentStep => HasLinkValues ? step : Step.LinkInvalid;
@@ -38,6 +43,10 @@ public partial class ResetPassword
         resetRequest.Email = Email ?? string.Empty;
         resetRequest.Token = Token ?? string.Empty;
     }
+
+    private void ToggleNewPasswordVisibility() => showNewPassword = !showNewPassword;
+
+    private void ToggleConfirmPasswordVisibility() => showConfirmPassword = !showConfirmPassword;
 
     private async Task HandleSubmit()
     {
