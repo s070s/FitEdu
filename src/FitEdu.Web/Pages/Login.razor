@@ -9,12 +9,22 @@
         <div role="status">
             @if (unconfirmedEmailPending)
             {
-                <div class="alert alert-warning">@ErrorMessagesRes.EmailNotConfirmedHint</div>
+                <div class="alert alert-warning">
+                    @ErrorMessagesRes.EmailNotConfirmedHint
+                    <div class="mt-2">
+                        <button type="button" class="btn-cta btn-cta--ghost" disabled="@isResending" @onclick="ResendConfirmation">@GlobalRes.Label_ResendConfirmation</button>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(resendMessage))
+            {
+                <div class="alert alert-success">@resendMessage</div>
             }
         </div>
 
         <div role="alert">
-            @if (!string.IsNullOrEmpty(errorMessage) && !unconfirmedEmailPending)
+            @if (!string.IsNullOrEmpty(errorMessage))
             {
                 <div class="alert alert-danger">
                     @errorMessage

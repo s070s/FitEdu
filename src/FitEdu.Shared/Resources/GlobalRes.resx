@@ -162,6 +162,9 @@
   <data name="Label_ResendConfirmation" xml:space="preserve">
     <value>Resend confirmation email</value>
   </data>
+  <data name="ConfirmEmailLinkInvalidHint" xml:space="preserve">
+    <value>Log in with your email and password to get a new link: the resend button appears if your email still needs confirming.</value>
+  </data>
   <data name="Label_Info_LastName" xml:space="preserve">
     <value>Last name</value>
   </data>

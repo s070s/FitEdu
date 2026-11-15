@@ -214,6 +214,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log in with your email and password to get a new link: the resend button appears if your email still needs confirming..
+        /// </summary>
+        public static string ConfirmEmailLinkInvalidHint {
+            get {
+                return ResourceManager.GetString("ConfirmEmailLinkInvalidHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I consent to the processing of my personal data (required)..
         /// </summary>
         public static string Label_GdprConsent {

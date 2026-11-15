@@ -160,6 +160,96 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Login_RightPasswordUnconfirmed_ShowsTheHintOnly()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        var page = Render<Login>();
+
+        SubmitLogin(page);
+
+        page.Find(".alert-warning").TextContent.ShouldContain(ErrorMessagesRes.EmailNotConfirmedHint);
+        page.FindAll(".alert-danger").ShouldBeEmpty(); // not also the generic "could not log in" error
+    }
+
+    [Fact]
+    public void Login_WrongPassword_OffersNoResendButton()
+    {
+        // Only a right password on an unconfirmed account is told "not confirmed", so only then is there a button.
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto
+        {
+            Success = false,
+            Message = ErrorMessagesRes.InvalidCredentials,
+            Failure = AuthFailure.InvalidCredentials
+        });
+        var page = Render<Login>();
+
+        SubmitLogin(page);
+
+        page.FindAll("button").Select(button => button.TextContent.Trim()).ShouldNotContain(GlobalRes.Label_ResendConfirmation);
+    }
+
+    [Fact]
+    public void Login_UnconfirmedAccount_ResendCallsTheService()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        _authService.ResendConfirmationAsync(Arg.Any<string>())
+            .Returns(new AuthResponseDto { Success = true, Message = SuccessMessagesRes.ConfirmationEmailResent });
+        var page = Render<Login>();
+        SubmitLogin(page);
+
+        var button = page.Find(".alert-warning button");
+        button.TextContent.Trim().ShouldBe(GlobalRes.Label_ResendConfirmation);
+        button.GetAttribute("type").ShouldBe("button"); // it must not submit the sign-in form
+        button.Click();
+
+        page.WaitForAssertion(() => _ = _authService.Received(1).ResendConfirmationAsync("alice@fitedu.local"));
+        page.Find("[role=status] .alert-success").TextContent.ShouldContain(SuccessMessagesRes.ConfirmationEmailResent);
+        _ = _authService.Received(1).LoginAsync(Arg.Any<LoginRequestDto>());
+    }
+
+    [Fact]
+    public void Login_UnconfirmedAccount_ResendUsesTheEmailThatWasRefused()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        _authService.ResendConfirmationAsync(Arg.Any<string>()).Returns(new AuthResponseDto { Success = true });
+        var page = Render<Login>();
+        SubmitLogin(page);
+
+        page.Find("#email").Change("someone.else@fitedu.local"); // edited after the refusal, before the click
+        page.Find(".alert-warning button").Click();
+
+        page.WaitForAssertion(() => _ = _authService.Received(1).ResendConfirmationAsync("alice@fitedu.local"));
+    }
+
+    [Fact]
+    public void Login_ResendOverTheLimit_ShowsTheTooManyAttemptsMessage()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        _authService.ResendConfirmationAsync(Arg.Any<string>())
+            .Returns(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.TooManyAttempts, Failure = AuthFailure.TooManyAttempts });
+        var page = Render<Login>();
+        SubmitLogin(page);
+
+        page.Find(".alert-warning button").Click();
+
+        page.WaitForAssertion(() => page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.TooManyAttempts));
+        page.FindAll("[role=status] .alert-success").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Login_ResendThrows_ShowsTryAgain()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        _authService.ResendConfirmationAsync(Arg.Any<string>()).Returns<AuthResponseDto>(_ => throw new InvalidOperationException("boom"));
+        var page = Render<Login>();
+        SubmitLogin(page);
+
+        page.Find(".alert-warning button").Click();
+
+        page.WaitForAssertion(() => page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain));
+    }
+
+    [Fact]
     public void Login_UnconfirmedAccount_HintSitsInAStatusRegion()
     {
         _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
@@ -610,6 +700,13 @@ public class AuthAndSiteChromeTests : BunitContext
         style.ShouldNotContain("overflow");
         table.FindAll("tbody tr").Count.ShouldBe(2);
         table.Find("caption.visually-hidden").TextContent.ShouldBe("Users"); // the table's accessible name
+    }
+
+    private static void SubmitLogin(IRenderedComponent<Login> page)
+    {
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
     }
 
     // What the service answers for the right password on an account whose email is not confirmed yet.

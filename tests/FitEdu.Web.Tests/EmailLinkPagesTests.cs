@@ -102,6 +102,26 @@ public class EmailLinkPagesTests : BunitContext
         page.FindAll("button.auth-submit").ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData("/confirm-email")]
+    [InlineData(ConfirmEmailUrl)]
+    public void ConfirmEmail_InvalidLink_OffersTheWayForward(string url)
+    {
+        // A link that no longer works must not be a dead end: the sign-in page has the resend button.
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new ServiceResult<AuthResponseDto>(new AuthResponseDto { Success = false }, 400));
+        Open(url);
+        var page = Render<ConfirmEmail>();
+        if (url == ConfirmEmailUrl)
+            page.Find("button.auth-submit").Click();
+
+        page.WaitForAssertion(() => page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.EmailConfirmationLinkInvalid));
+        page.Find(".auth-card").TextContent.ShouldContain(GlobalRes.ConfirmEmailLinkInvalidHint);
+        var loginLink = page.Find("a.auth-submit");
+        loginLink.GetAttribute("href").ShouldBe("/login");
+        loginLink.TextContent.Trim().ShouldBe(GlobalRes.Label_GoToLogin);
+    }
+
     [Fact]
     public void ConfirmEmail_ServiceThrows_ShowsATryAgainMessageAndKeepsTheButton()
     {

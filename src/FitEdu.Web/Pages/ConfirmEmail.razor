@@ -14,6 +14,9 @@
         else if (CurrentStep == Step.LinkInvalid)
         {
             <div class="alert alert-danger" role="alert">@ErrorMessagesRes.EmailConfirmationLinkInvalid</div>
+            @* Not a dead end: signing in with an unconfirmed account offers a new link. *@
+            <p>@GlobalRes.ConfirmEmailLinkInvalidHint</p>
+            <a class="btn-cta auth-submit" href="/login">@GlobalRes.Label_GoToLogin</a>
         }
         else
         {

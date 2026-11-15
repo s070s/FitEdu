@@ -20,7 +20,9 @@ public partial class Login
 
     private LoginRequestDto loginRequest = new();
     private string? errorMessage;
+    private string? resendMessage;
     private bool isLoading;
+    private bool isResending;
     private bool showPassword;
 
     // Tracks whether the most recent failure is due to unconfirmed email and which email is pending
@@ -42,6 +44,7 @@ public partial class Login
     {
         isLoading = true;
         errorMessage = null;
+        resendMessage = null;
         unconfirmedEmailPending = false;
         pendingUnconfirmedEmail = string.Empty;
 
@@ -85,6 +88,33 @@ public partial class Login
         isLoading = false;
     }
 
+    // Emails a new confirmation link to the address that was just refused as unconfirmed (not whatever
+    // the field says now). The answer is the same for every address, so it tells nothing about accounts.
+    private async Task ResendConfirmation()
+    {
+        isResending = true;
+        errorMessage = null;
+        resendMessage = null;
+
+        try
+        {
+            var result = await AuthService.ResendConfirmationAsync(pendingUnconfirmedEmail);
+            if (result.Success)
+                resendMessage = SuccessMessagesRes.ConfirmationEmailResent;
+            else
+                errorMessage = result.Message ?? ErrorMessagesRes.UnexpectedErrorTryAgain;
+        }
+        catch (Exception ex)
+        {
+            LogResendFailed(Logger, ex);
+            errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
+        }
+        finally
+        {
+            isResending = false;
+        }
+    }
+
     /// <summary>
     /// The return address when it is a path on this site, otherwise the home page. "//host" and
     /// "/\host" are rejected because browsers read both as another site (an open redirect).
@@ -115,4 +145,7 @@ public partial class Login
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
     [LoggerMessage(Level = LogLevel.Error, Message = "Unexpected error during login.")]
     private static partial void LogLoginFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Resending the confirmation email failed.")]
+    private static partial void LogResendFailed(ILogger logger, Exception exception);
 }
