@@ -38,6 +38,17 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task Register_EmailWithApostrophe_Returns200()
+    {
+        var client = _factory.CreateClient();
+
+        // The user name is the email, so Identity's default user-name character list must not reject it.
+        var response = await client.PostAsJsonAsync("/api/auth/register", Register($"o'brien-{Guid.NewGuid():N}@test.com"));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
     public async Task Register_InvalidModel_Returns400()
     {
         var client = _factory.CreateClient();

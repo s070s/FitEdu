@@ -40,6 +40,10 @@ public static class AuthenticationSetupExtensions
             options.Password.RequireUppercase = true;
             options.Password.RequireNonAlphanumeric = false;
             options.User.RequireUniqueEmail = true;
+            // The user name is the email (RegistrationMappings). Identity's default character list has no
+            // apostrophe, plus sign or non-Latin letters, so it would turn such emails away; the email
+            // validator already checks the address, so the list is switched off.
+            options.User.AllowedUserNameCharacters = string.Empty;
             options.SignIn.RequireConfirmedEmail = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
