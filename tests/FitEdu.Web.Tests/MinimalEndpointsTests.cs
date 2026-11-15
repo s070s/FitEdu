@@ -116,6 +116,94 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
     }
 
+    // A return address that points to another site, or only looks local, is replaced by the home page;
+    // an absolute address keeps its path and query (the redirect stays on this site).
+    public static TheoryData<string, string> ReturnUrlCases => new()
+    {
+        { "https://x//evil.com", "/" },
+        { "//evil.com", "/" },
+        { "/\\evil.com", "/" },
+        { "https://evil.com/p?q=1", "/p?q=1" },
+        { "/courses/42", "/courses/42" }
+    };
+
+    [Theory]
+    [MemberData(nameof(ReturnUrlCases))]
+    public async Task CultureSet_ReturnUrl_RedirectsOnlyToALocalPath(string returnUrl, string expectedLocation)
+    {
+        var client = NoRedirectClient();
+
+        var response = await client.GetAsync($"/culture/set?culture=el-GR&returnUrl={Uri.EscapeDataString(returnUrl)}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe(expectedLocation);
+    }
+
+    [Theory]
+    [MemberData(nameof(ReturnUrlCases))]
+    public async Task Signout_ReturnUrl_RedirectsOnlyToALocalPath(string returnUrl, string expectedLocation)
+    {
+        var client = NoRedirectClient();
+
+        var response = await client.GetAsync($"/auth/signout?returnUrl={Uri.EscapeDataString(returnUrl)}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe(expectedLocation);
+    }
+
+    [Theory]
+    [MemberData(nameof(ReturnUrlCases))]
+    public async Task AuthComplete_ReturnUrl_RedirectsOnlyToALocalPathAndKeepsTheSignIn(string returnUrl, string expectedLocation)
+    {
+        var ticket = await SignInTicketAsync();
+        var client = NoRedirectClient();
+
+        var response = await client.GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl={Uri.EscapeDataString(returnUrl)}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe(expectedLocation);
+        response.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("zz!!")]
+    [InlineData("fr-FR")]
+    [InlineData("")]
+    public async Task CultureSet_MalformedOrUnsupportedCulture_Redirects302AndSetsTheDefaultLanguage(string culture)
+    {
+        var client = NoRedirectClient();
+
+        var response = await client.GetAsync($"/culture/set?culture={Uri.EscapeDataString(culture)}&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        var cultureCookie = response.Headers.GetValues("Set-Cookie").Single(cookie => cookie.StartsWith(".AspNetCore.Culture=", StringComparison.Ordinal));
+        Uri.UnescapeDataString(cultureCookie).ShouldContain("c=en-GB|uic=en-GB");
+    }
+
+    [Fact]
+    public async Task CultureSet_SupportedCulture_IsStoredInItsOwnSpelling()
+    {
+        var client = NoRedirectClient();
+
+        var response = await client.GetAsync("/culture/set?culture=EL-gr&returnUrl=%2F");
+
+        var cultureCookie = response.Headers.GetValues("Set-Cookie").Single(cookie => cookie.StartsWith(".AspNetCore.Culture=", StringComparison.Ordinal));
+        Uri.UnescapeDataString(cultureCookie).ShouldContain("c=el-GR|uic=el-GR");
+    }
+
+    /// <summary>A valid sign-in ticket for a fresh confirmed member, as the sign-in page hands to /auth/complete.</summary>
+    private async Task<string> SignInTicketAsync()
+    {
+        var email = $"ticket-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+
+        using var scope = _factory.Services.CreateScope();
+        var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
+        var loginResult = await authService.LoginAsync(new LoginRequestDto { Email = email, Password = CustomWebAppFactory.TestPassword });
+        loginResult.Success.ShouldBeTrue();
+        return loginResult.Token!;
+    }
+
     [Fact]
     public async Task CultureSet_SignedInMember_KeepsTheStoredLanguage()
     {

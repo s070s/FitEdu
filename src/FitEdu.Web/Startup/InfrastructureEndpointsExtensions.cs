@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Services;
+using FitEdu.Web.Pages;
 using FitEdu.Web.Services;
 using System.Globalization;
 using System.Security.Claims;
@@ -28,31 +30,20 @@ public static class InfrastructureEndpointsExtensions
     public static WebApplication MapInfrastructureEndpoints(this WebApplication app)
     {
         // --- Culture endpoint ---
-        app.MapGet("/culture/set", (string culture, string? returnUrl, HttpContext ctx) =>
+        app.MapGet("/culture/set", (string? culture, string? returnUrl, HttpContext ctx, IOptions<RequestLocalizationOptions> localization) =>
         {
             ctx.Response.Cookies.Append(
                 Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
                 Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
-                    new Microsoft.AspNetCore.Localization.RequestCulture(culture)),
+                    new Microsoft.AspNetCore.Localization.RequestCulture(SupportedCultureName(culture, localization.Value))),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
 
-            // NavigationManager.Uri passes an absolute URL; extract the local path so
-            // Results.LocalRedirect (which only accepts local paths) doesn't throw.
-            var redirect = "/";
-            if (!string.IsNullOrEmpty(returnUrl))
-            {
-                if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var absolute))
-                    redirect = absolute.PathAndQuery;
-                else if (returnUrl.StartsWith('/'))
-                    redirect = returnUrl;
-            }
-
-            return Results.LocalRedirect(redirect);
+            return ToLocalRedirect(returnUrl);
         })
         .WithTags("Infrastructure")
         .WithName("SetCulture")
         .WithSummary("Set the UI culture cookie and redirect back.")
-        .WithDescription("Writes the ASP.NET Core localization cookie (supported cultures: en-GB, el-GR) and 302-redirects to a local returnUrl. Used by the language switcher; browser-navigation endpoint, not a JSON API.")
+        .WithDescription("Writes the ASP.NET Core localization cookie (supported cultures: en-GB, el-GR; any other value stores the default) and 302-redirects to a local returnUrl. Used by the language switcher; browser-navigation endpoint, not a JSON API.")
         .Produces(StatusCodes.Status302Found);
 
         // --- Auth completion endpoints ---
@@ -179,16 +170,7 @@ public static class InfrastructureEndpointsExtensions
             if (!string.IsNullOrEmpty(adminBackupId))
                 StartupLog.AuthImpersonating(logger, adminBackupId, userId);
 
-            var redirect = "/";
-            if (!string.IsNullOrEmpty(returnUrl))
-            {
-                if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var abs))
-                    redirect = abs.PathAndQuery;
-                else if (returnUrl.StartsWith('/'))
-                    redirect = returnUrl;
-            }
-
-            return Results.LocalRedirect(redirect);
+            return ToLocalRedirect(returnUrl);
         }).AllowAnonymous()
         .WithTags("Infrastructure")
         .WithName("CompleteAuth")
@@ -201,16 +183,7 @@ public static class InfrastructureEndpointsExtensions
             await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             ctx.Response.Cookies.Delete(AuthService.AdminBackupCookieName);
 
-            var redirect = "/";
-            if (!string.IsNullOrEmpty(returnUrl))
-            {
-                if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var abs))
-                    redirect = abs.PathAndQuery;
-                else if (returnUrl.StartsWith('/'))
-                    redirect = returnUrl;
-            }
-
-            return Results.LocalRedirect(redirect);
+            return ToLocalRedirect(returnUrl);
         }).AllowAnonymous()
         .WithTags("Infrastructure")
         .WithName("SignOut")
@@ -294,5 +267,29 @@ public static class InfrastructureEndpointsExtensions
             .ExcludeFromDescription();
 
         return app;
+    }
+
+    /// <summary>
+    /// Redirects to the return address when it is a path on this site, otherwise to the home page.
+    /// NavigationManager.Uri passes an absolute URL, so its path and query are taken first. "//host"
+    /// and "/\host" (also what "https://x//host" turns into) fall back to the home page, as does
+    /// anything with a control character, so <see cref="Results.LocalRedirect(string)"/> never throws.
+    /// </summary>
+    private static IResult ToLocalRedirect(string? returnUrl)
+    {
+        var path = returnUrl;
+        if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var absolute))
+            path = absolute.Scheme is "http" or "https" ? absolute.PathAndQuery : null;
+
+        var localPath = Login.LocalReturnPath(path);
+        return Results.LocalRedirect(localPath.Any(char.IsControl) ? "/" : localPath);
+    }
+
+    /// <summary>The supported UI culture the requested name stands for (any spelling), else the default one.</summary>
+    private static string SupportedCultureName(string? culture, RequestLocalizationOptions options)
+    {
+        var supported = options.SupportedUICultures?.FirstOrDefault(candidate =>
+            string.Equals(candidate.Name, culture, StringComparison.OrdinalIgnoreCase));
+        return (supported ?? options.DefaultRequestCulture.UICulture).Name;
     }
 }
