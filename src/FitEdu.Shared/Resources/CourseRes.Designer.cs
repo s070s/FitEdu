@@ -788,5 +788,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("PlanCourseUsageFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All programmes.
+        /// </summary>
+        public static string CoursesListHeading {
+            get {
+                return ResourceManager.GetString("CoursesListHeading", resourceCulture);
+            }
+        }
     }
 }

@@ -341,4 +341,7 @@
 	<data name="PlanCourseUsageFormat" xml:space="preserve">
 		<value>Ενεργά προγράμματα: {0} από {1}</value>
 	</data>
+	<data name="CoursesListHeading" xml:space="preserve">
+		<value>Όλα τα προγράμματα</value>
+	</data>
 </root>

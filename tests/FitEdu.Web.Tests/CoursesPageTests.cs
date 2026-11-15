@@ -75,6 +75,7 @@ public class CoursesPageTests : BunitContext
         page.FindAll("a.course-card-link").Count.ShouldBe(CoursesOnPage);
         page.FindAll(".skeleton-grid").ShouldBeEmpty();
         page.Find(".courses-toolbar__count").TextContent.Trim().ShouldBe("3 programmes");
+        page.Find("h2.visually-hidden").TextContent.ShouldBe("All programmes"); // no skip from h1 to the card h3s
     }
 
     [Fact]

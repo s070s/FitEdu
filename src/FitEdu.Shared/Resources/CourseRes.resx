@@ -341,4 +341,7 @@
 	<data name="PlanCourseUsageFormat" xml:space="preserve">
 		<value>Active programmes: {0} of {1}</value>
 	</data>
+	<data name="CoursesListHeading" xml:space="preserve">
+		<value>All programmes</value>
+	</data>
 </root>
