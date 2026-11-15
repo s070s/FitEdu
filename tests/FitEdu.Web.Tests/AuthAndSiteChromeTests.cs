@@ -317,6 +317,35 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_TakenEmailContainingUsername_ShowsEmailTaken()
+    {
+        // An email such as username@… makes Identity's "already taken" text contain "username"; it must not be hidden.
+        const string email = "username@fitedu.local";
+        var emailTaken = _errorDescriber.DuplicateEmail(email).Description;
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Errors = [emailTaken], Failure = AuthFailure.EmailTaken });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("#email").Change(email);
+        page.Find("form").Submit();
+
+        page.Find("form .register-errors").TextContent.ShouldContain(ErrorMessagesRes.EmailTakenError);
+    }
+
+    [Fact]
+    public void Register_RefusalWithNothingToShow_ShowsTheGenericMessage()
+    {
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = false });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find("form .register-errors .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.RegistrationFailedGeneric);
+    }
+
+    [Fact]
     public void Register_EmailTakenInGreek_ShowsTheShortGreekMessage()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el-GR");

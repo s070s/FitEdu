@@ -152,13 +152,7 @@ public partial class Register : IDisposable
             errorMessage = result.Message;
             if (result.Errors != null)
             {
-                // Filter out Identity errors that mention username/UserName because the UI does not expose a username field
-                // and usernames are set to the email server-side. Showing username errors is confusing to users.
-                errors = result.Errors
-                    .Where(e => !(e?.Contains("username", StringComparison.OrdinalIgnoreCase) == true
-                                  || e?.Contains("user name", StringComparison.OrdinalIgnoreCase) == true
-                                  || e?.Contains("UserName", StringComparison.OrdinalIgnoreCase) == true))
-                    .ToList();
+                errors = result.Errors.ToList();
 
                 // Matched on the describer's own (translated) text, so it works in every language.
                 var emailTakenText = ErrorDescriber.DuplicateEmail(registeredEmail).Description;
@@ -169,6 +163,10 @@ public partial class Register : IDisposable
                     errors.Clear();
                 }
             }
+
+            // A refusal always says something, so the visitor is never left with a form that does nothing.
+            if (string.IsNullOrEmpty(errorMessage) && errors.Count == 0)
+                errorMessage = ErrorMessagesRes.RegistrationFailedGeneric;
         }
     }
 
