@@ -152,7 +152,7 @@ public static class InfrastructureEndpointsExtensions
                     new CookieOptions
                     {
                         HttpOnly = true,
-                        SameSite = SameSiteMode.Lax,
+                        SameSite = SameSiteMode.Strict,
                         Secure = !app.Environment.IsDevelopment(),
                         Expires = DateTimeOffset.UtcNow.AddHours(8),
                         IsEssential = true

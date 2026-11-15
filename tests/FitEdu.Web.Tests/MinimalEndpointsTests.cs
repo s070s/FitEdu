@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
+using FitEdu.Infrastructure.Services;
 using Shouldly;
 using Xunit;
 
@@ -163,6 +166,37 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
         response.Headers.Location!.ToString().ShouldBe(expectedLocation);
         response.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task AuthComplete_Impersonation_BackupCookieIsStrictAndHttpOnly()
+    {
+        var ticket = await CraftedTicketAsync(adminBackupId: "admin-1");
+
+        var response = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        var backupCookie = response.Headers.GetValues("Set-Cookie").Single(cookie => cookie.StartsWith(".FitEdu.AdminUserId=", StringComparison.Ordinal));
+        backupCookie.ShouldContain("samesite=strict", Case.Insensitive);
+        backupCookie.ShouldContain("httponly", Case.Insensitive);
+    }
+
+    /// <summary>
+    /// A sign-in ticket for a fresh confirmed member, built the way the sign-in page's service builds it
+    /// but with the impersonation fields chosen by the test.
+    /// </summary>
+    private async Task<string> CraftedTicketAsync(string? adminBackupId = null, bool deleteAdminBackup = false)
+    {
+        var email = $"crafted-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var member = (await userManager.FindByEmailAsync(email))!;
+        var ticket = new AuthCompletionTicket(member.Id, adminBackupId, deleteAdminBackup, member.SecurityStamp!, RememberMe: false, Guid.NewGuid());
+        var protector = scope.ServiceProvider.GetRequiredService<IDataProtectionProvider>()
+            .CreateProtector(AuthService.ProtectorPurpose)
+            .ToTimeLimitedDataProtector();
+        return protector.Protect(JsonSerializer.Serialize(ticket), AuthService.SignInTicketLifetime);
     }
 
     [Fact]
