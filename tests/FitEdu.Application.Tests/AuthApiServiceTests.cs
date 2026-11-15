@@ -906,6 +906,21 @@ public class AuthApiServiceTests
         await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u2@x.com" });
 
         await h.Email.Received(2).SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+
+        // The kind: a confirmation email does not use up the same account's reset email.
+        var thirdMember = User("u3");
+        thirdMember.Email = "u3@x.com";
+        h.Um.FindByEmailAsync("u3@x.com").Returns(thirdMember);
+        h.Um.IsEmailConfirmedAsync(thirdMember).Returns(false);
+        h.Um.GenerateEmailConfirmationTokenAsync(thirdMember).Returns("confirm-token");
+        h.Um.GeneratePasswordResetTokenAsync(thirdMember).Returns("reset-token-3");
+
+        await h.Svc.ResendConfirmationAsync("u3@x.com");
+        h.Um.IsEmailConfirmedAsync(thirdMember).Returns(true); // confirmed a moment later, still inside the two minutes
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u3@x.com" });
+
+        await h.Email.Received(1).SendEmailConfirmationAsync("u3@x.com", Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await h.Email.Received(3).SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     // ---- Every refusal names its reason in Failure, so a page never compares translated text (P02-18) ----
