@@ -13,7 +13,8 @@
 
     @if (_loading)
     {
-        <LoadingSpinner Label="@CertificateRes.Loading" />
+        <p class="visually-hidden" role="status">@CertificateRes.Loading</p>
+        <SkeletonBlock Rows="3" Height="12rem" Gap="1rem" />
     }
     else if (HasNoCertificates && !_certificateAccess)
     {

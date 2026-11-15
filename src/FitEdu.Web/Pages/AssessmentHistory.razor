@@ -19,7 +19,8 @@
 
     @if (pagedResult == null)
     {
-        <LoadingSpinner Label="@AssessmentRes.Loading" />
+        <p class="visually-hidden" role="status">@AssessmentRes.Loading</p>
+        <SkeletonBlock Rows="4" Height="6rem" Gap="1rem" />
     }
     else if (pagedResult.TotalCount == 0)
     {

@@ -26,7 +26,8 @@
     }
     else if (_loading)
     {
-        <LoadingSpinner Label="@SearchRes.SearchLabel" />
+        <p class="visually-hidden" role="status">@SearchRes.SearchLabel</p>
+        <SkeletonBlock Rows="5" Height="4.5rem" Gap="0.75rem" />
     }
     else if (_result is { Hits.Count: 0 })
     {

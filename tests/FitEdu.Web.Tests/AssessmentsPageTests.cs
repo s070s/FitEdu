@@ -58,6 +58,23 @@ public class AssessmentsPageTests : BunitContext
     }
 
     [Fact]
+    public void Loading_RendersSkeletonRowsAndNoSpinner()
+    {
+        GivenAccess(true);
+        _assessmentConsumer.GetAssessmentsAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<Guid?>(), Arg.Any<string?>())
+            .Returns(new TaskCompletionSource<PagedResult<AssessmentDefinitionDto>>().Task);
+        _assessmentConsumer.GetMySubmissionsAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new TaskCompletionSource<PagedResult<AssessmentSubmissionDto>?>().Task);
+
+        var cut = Render<Assessments>();
+
+        cut.FindAll(".skeleton-stack .skeleton-block").Count.ShouldBe(4);
+        cut.Find("p.visually-hidden[role=status]").TextContent.ShouldNotBeNullOrWhiteSpace();
+        cut.FindAll(".pulse-loader").ShouldBeEmpty();
+        cut.FindAll(".assessment-card").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void WithoutAccess_ShowsTheUpgradePrompt()
     {
         GivenAccess(false);

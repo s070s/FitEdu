@@ -34,7 +34,8 @@
 
     @if (pagedResult == null)
     {
-        <LoadingSpinner Label="@NotificationRes.Loading" />
+        <p class="visually-hidden" role="status">@NotificationRes.Loading</p>
+        <SkeletonBlock Rows="6" Height="4rem" />
     }
     else if (!pagedResult.Items.Any())
     {

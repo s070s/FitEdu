@@ -17,7 +17,8 @@
 
 @if (_pagedResult == null)
 {
-    <LoadingSpinner Label="@AdminRes.Loading" />
+    <p class="visually-hidden" role="status">@AdminRes.Loading</p>
+    <SkeletonBlock Rows="8" Height="2.75rem" />
 }
 else
 {

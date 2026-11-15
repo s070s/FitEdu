@@ -47,6 +47,20 @@ public class AdminCategoriesPageTests : BunitContext
     }
 
     [Fact]
+    public void Loading_RendersSkeletonRowsAndNoSpinner()
+    {
+        _categoryConsumer
+            .GetCategoriesAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new TaskCompletionSource<PagedResult<AdminCategoryDto>?>().Task);
+
+        var page = Render<AdminCategories>();
+
+        page.FindAll(".skeleton-stack .skeleton-block").Count.ShouldBe(8);
+        page.Find("p.visually-hidden[role=status]").TextContent.ShouldBe(CategoryRes.LoadingCategories);
+        page.FindAll(".pulse-loader").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void DeleteConfirm_Greek_NamesTheCategoryByItsGreekName()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el");

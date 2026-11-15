@@ -28,7 +28,8 @@
 
     @if (_loading)
     {
-        <LoadingSpinner Label="@AssessmentRes.LoadingAssessments" />
+        <p class="visually-hidden" role="status">@AssessmentRes.LoadingAssessments</p>
+        <SkeletonBlock Rows="4" Height="5rem" Gap="1rem" />
     }
     else if (!_assessmentAccess)
     {
