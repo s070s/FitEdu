@@ -294,14 +294,9 @@ public static class ServiceRegistrationExtensions
         // fronting proxy) before running more than one instance.
         builder.Services.AddRateLimiter(options =>
         {
-            options.AddFixedWindowLimiter("auth", limiterOptions =>
-            {
-                limiterOptions.PermitLimit = 10;
-                limiterOptions.Window = TimeSpan.FromMinutes(1);
-                limiterOptions.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-                limiterOptions.QueueLimit = 0;
-            });
-            // Per-user (not global, unlike "auth") so one chatty student can't starve everyone else's quota.
+            // Per caller IP, so one caller who uses up its attempts cannot lock everyone else out (see AuthRateLimit).
+            options.AddPolicy(AuthRateLimit.PolicyName, AuthRateLimit.PartitionFor);
+            // Per-user so one chatty student can't starve everyone else's quota.
             options.AddPolicy("assistant", httpContext =>
             {
                 var userId = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "anonymous";
@@ -315,7 +310,7 @@ public static class ServiceRegistrationExtensions
             });
             // SEC-3: default per-user limiter for authenticated, state-changing endpoints that
             // had no back-pressure at all (password change/reset, avatar upload, checkout,
-            // assessment submission). Per-user (like "assistant"), not global (like "auth") —
+            // assessment submission). Per-user (like "assistant") —
             // these are individual account actions, so a shared bucket would let one user's
             // burst lock out everyone else's legitimate change-password/checkout calls.
             options.AddPolicy("sensitive", httpContext =>
