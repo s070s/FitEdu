@@ -743,20 +743,9 @@ input[type="date"].form-control:focus {
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     color: var(--text-light-normal);
-    transition: transform var(--duration-base) var(--ease-out);
-}
-
-/* The hover border colour fades in on a pseudo-element (opacity is composited, border-color is a
-   repaint). overflow: hidden clips at the padding edge, so the ring sits just inside the 1px border. */
-.card-surface::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(var(--text-strong-accent-rgb), 0.5);
-    border-radius: calc(var(--radius-lg) - 1px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--duration-base) var(--ease-out);
+    /* border-color repaints only this card for the 200 ms of the hover (the 2026-11-15 trace showed no
+       frame cost); a composited ring cannot sit on the border itself because overflow: hidden clips it. */
+    transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out);
 }
 
 .card-surface__body {
@@ -779,11 +768,7 @@ a.card-surface {
     a.card-surface:hover,
     .card-surface--interactive:hover {
         transform: translateY(-2px);
-    }
-
-    a.card-surface:hover::after,
-    .card-surface--interactive:hover::after {
-        opacity: 1;
+        border-color: rgba(var(--text-strong-accent-rgb), 0.5);
     }
 }
 
