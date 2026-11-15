@@ -595,7 +595,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 
 The email transport is selected at startup from configuration:
 
-- **`Email:Smtp:Host` configured** → `SmtpEmailService` (MailKit) sends real email — point it at a local catcher (Papercut/Mailhog) in Development or any SMTP relay (SES, SendGrid SMTP, etc.) in production. Settings live under `Email:Smtp:*` (host, port, StartTLS, credentials, from address, timeout in seconds). Sign-up and forgotten-password requests only queue the email (`EmailOutbox`, up to 500 waiting); `EmailDispatcher` sends them one at a time in the background and logs a failure with the subject only, never the address.
+- **`Email:Smtp:Host` configured** → `SmtpEmailService` (MailKit) sends real email — point it at a local catcher (Papercut/Mailhog) in Development or any SMTP relay (SES, SendGrid SMTP, etc.) in production. Settings live under `Email:Smtp:*` (host, port, StartTLS, credentials, from address, timeout in seconds). Every account email (sign-up, forgotten password, resend confirmation, admin forced reset) is only queued (`EmailOutbox`, up to 500 waiting); `EmailDispatcher` sends them one at a time in the background and logs a failure with the subject (and the relay's status code when it refused), never the address.
 - **No SMTP host, Development** → `StubEmailService` logs all emails to file instead of sending them — find links in `Logs/log-YYYY-MM-DD.txt` (search `STUB EMAIL`).
 - **No SMTP host, Production** → the application **throws at startup**, so emails are never silently swallowed.
 

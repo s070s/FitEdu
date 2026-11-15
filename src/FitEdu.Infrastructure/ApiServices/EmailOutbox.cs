@@ -6,7 +6,8 @@ namespace FitEdu.Infrastructure.ApiServices;
 public sealed record QueuedEmail(string To, EmailContent Content);
 
 /// <summary>
-/// The in-memory line of emails between the code that asks for one (sign-up, forgotten password) and
+/// The in-memory line of emails between the code that asks for one (sign-up, forgotten password, resend
+/// confirmation, admin forced reset: every account email is only queued) and
 /// <see cref="EmailDispatcher"/>, which sends them. A request therefore never waits for the SMTP relay.
 /// The line is bounded, so a dead relay cannot grow memory without limit; a message still waiting when
 /// the app stops is lost, and the member asks for a new link.
