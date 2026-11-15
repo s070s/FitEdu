@@ -4,8 +4,8 @@ import { defineConfig } from '@playwright/test';
 /**
  * Local-only e2e smoke suite (TEST-2). Runs against the real dev server on
  * https://localhost:7090 — Playwright starts it via `dotnet run` if it isn't
- * already running (reuseExistingServer). Deliberately NOT wired into CI: the
- * GitHub workflow is a Linux `dotnet test` job with no SQL Server/LocalDB, and
+ * already running (reuseExistingServer). Deliberately NOT part of tools/check.ps1: the
+ * check script runs `dotnet test`, which has no seeded database, and
  * the suite depends on the Development-seeded database and dev-only endpoints.
  */
 export default defineConfig({

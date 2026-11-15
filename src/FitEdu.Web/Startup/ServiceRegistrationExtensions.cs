@@ -154,7 +154,7 @@ public static class ServiceRegistrationExtensions
         // config plus this one registration. AssistantIndexSignal is always registered (cheap,
         // no Ollama dependency) so the admin reindex endpoint never 500s; when disabled, IAssistantService
         // resolves to a no-op that reports unavailable instead of the real Ollama-backed pipeline —
-        // that's what keeps Ollama out of CI/test hosts entirely.
+        // that's what keeps Ollama out of test hosts entirely.
         builder.Services.AddOptions<AssistantOptions>()
             .Bind(config.GetSection(AssistantOptions.SectionName))
             .ValidateDataAnnotations()   // CFG-4

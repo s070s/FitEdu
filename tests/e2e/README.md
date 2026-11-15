@@ -35,8 +35,8 @@ and reuses it if already running on `https://localhost:7090`.
   (`alice.johnson@` / `bob.smith@fitedu.local`) to a known test value through the
   Development-only `/api/auth/dev/reset-password` endpoint. This only touches regenerable
   local seed data and keeps real credential values out of the suite.
-- **Not in CI:** the `test` job is a Linux `dotnet test` job with no database. CI does now have a
-  SQL Server container, but only in the separate `migrations` job, which applies the migration
+- **Not in `tools/check.ps1`:** that script runs `dotnet test` (InMemory/SQLite) and, with `-Migrations`, a
+  LocalDB migration check, which applies the migration
   chain and never boots or seeds the app. The suite depends on the seeded Development database and
   dev-only endpoints, so it stays a local, on-demand suite by design.
 - **Serial by design:** one worker — the call spec drives two logged-in users against shared

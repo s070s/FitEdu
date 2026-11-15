@@ -15,7 +15,7 @@ namespace FitEdu.Infrastructure.Tests;
 /// <para><see cref="Model_HasNoPendingChanges_AgainstSqlServer"/> is provider-correct and needs no
 /// database — it catches the most common migration bug (a model change with no matching migration).
 /// <see cref="FullMigrationChain_AppliesCleanly_AgainstLocalDb"/> actually applies every migration
-/// to a throwaway LocalDB database; it self-skips when LocalDB is unreachable (CI, non-Windows), the
+/// to a throwaway LocalDB database; it self-skips when LocalDB is unreachable (non-Windows), the
 /// same opt-out shape the Ollama live smoke test uses, so it runs automatically on developer machines
 /// without breaking hosts that lack SQL Server.</para>
 /// </summary>

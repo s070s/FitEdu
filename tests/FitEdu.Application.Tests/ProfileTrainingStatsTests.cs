@@ -15,7 +15,7 @@ namespace FitEdu.Application.Tests;
 /// <summary>
 /// The home dashboard's training stats: completions, minutes and the daily streak, counted in days
 /// of the members' time zone (Europe/Athens, SiteClock) against a fixed clock, so the result is the
-/// same on every machine and in CI.
+/// same on every machine.
 /// </summary>
 public class ProfileTrainingStatsTests
 {

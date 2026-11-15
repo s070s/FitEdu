@@ -11,7 +11,7 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// Live smoke test against a locally running Ollama — guarded by FITEDU_OLLAMA_LIVE=1 so it
-/// self-passes (effectively skips) in CI and on machines without Ollama. Run with:
+/// self-passes (effectively skips) by default and on machines without Ollama. Run with:
 ///   FITEDU_OLLAMA_LIVE=1 dotnet test --filter AssistantLiveSmoke
 /// Unloads the chat model first so the app has to load it (the cold-start path), boots its own
 /// factory with the assistant enabled (the shared "web" host keeps it off), waits for the

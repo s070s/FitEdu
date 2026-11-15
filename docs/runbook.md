@@ -54,7 +54,7 @@ automatic undo. Always follow this order:
    dotnet tool restore
    dotnet ef migrations script --idempotent --project src/FitEdu.Infrastructure --startup-project src/FitEdu.Web -o migrate.sql
    ```
-   CI already applies the full migration chain against a real SQL Server container (BUILD-2), so a
+   `tools/check.ps1 -Migrations` applies the full migration chain to a throwaway LocalDB database (BUILD-2), so a
    SQL-Server-only break is usually caught before you get here.
 3. **Deploy the new binaries**, then start the app — migrations apply on boot.
 4. **Verify:** `/health/ready` returns healthy, a page that reads data renders, and the startup log
