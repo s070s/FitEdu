@@ -44,6 +44,8 @@ public class ServiceRegistrationExtensionsTests : IClassFixture<CustomWebAppFact
         var options = _factory.Services.GetRequiredService<IOptions<DataProtectionTokenProviderOptions>>().Value;
 
         options.TokenLifespan.ShouldBe(TimeSpan.FromHours(EmailTemplates.LinkLifetimeHours));
+        // Identity's own default is also 24 hours, so the value alone would pass without our setting: check it is configured.
+        _factory.Services.GetServices<IConfigureOptions<DataProtectionTokenProviderOptions>>().ShouldNotBeEmpty();
     }
 
     [Fact]
