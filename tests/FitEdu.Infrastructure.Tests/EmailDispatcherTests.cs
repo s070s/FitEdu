@@ -82,6 +82,34 @@ public sealed class EmailDispatcherTests
     }
 
     [Fact]
+    public async Task AFailedSendOfAnotherKind_IsLoggedBySubjectAndExceptionTypeOnly()
+    {
+        var second = new TaskCompletionSource<MimeMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var client = Substitute.For<ISmtpClient>();
+        client.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>())
+            .Returns(
+                _ => Task.FromException<string>(new InvalidOperationException($"550 <{PrivateAddress}> recipient rejected")),
+                call =>
+                {
+                    second.TrySetResult(call.Arg<MimeMessage>());
+                    return Task.FromResult("ok");
+                });
+        var dispatcher = NewDispatcher(client);
+        await dispatcher.StartAsync(CancellationToken.None);
+
+        _queue.TryEnqueue(Email(PrivateAddress, "https://fitedu.test/one")).ShouldBeTrue();
+        _queue.TryEnqueue(Email("other@fitedu.test", "https://fitedu.test/two")).ShouldBeTrue();
+        await second.Task.WaitAsync(Patience);
+        await dispatcher.StopAsync(CancellationToken.None);
+
+        // The exception text may carry the address, so only its type is logged.
+        var entry = _dispatcherLog.Errors.ShouldHaveSingleItem();
+        entry.ShouldContain(EmailTemplates.PasswordResetSubject, Case.Sensitive);
+        entry.ShouldContain(nameof(InvalidOperationException));
+        entry.ShouldNotContain("secret-mail");
+    }
+
+    [Fact]
     public async Task Stop_WithAnEmptyQueue_FinishesWithoutError()
     {
         var dispatcher = NewDispatcher(Substitute.For<ISmtpClient>());
