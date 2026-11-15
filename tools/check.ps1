@@ -14,7 +14,8 @@
          migration that is valid there but broken on SQL Server.
 
     The tests need a few settings that Program.cs requires at startup. Harmless dummy values
-    are set for this script's own process only, and only when they are not already set.
+    are set only when they are not already set, and the previous values are put back at the
+    end, so a pwsh window that ran the script keeps its own settings.
 
     SDK pin: $PinnedSdkVersion below is the SDK the committed lock files were refreshed with.
     A different SDK resolves another SDK-supplied Microsoft.AspNetCore.App.Internal.Assets
@@ -41,6 +42,13 @@ $solution = 'FitEdu.sln'
 $localDbServer = '(localdb)\MSSQLLocalDB'
 # The SDK the committed packages.lock.json files match (it bundles ASP.NET Core 10.0.15).
 $PinnedSdkVersion = '10.0.404'
+# Dummy, non-secret values so the integration host (WebApplicationFactory<Program>) can boot.
+$dummySettings = [ordered]@{
+    'Jwt__Key'            = 'local-test-signing-key-not-a-secret-min-32-bytes!!'
+    'Jwt__Issuer'         = 'FitEdu.Tests'
+    'Jwt__Audience'       = 'FitEdu.Tests'
+    'AdminUser__Password' = 'Local-Test-Admin-1!'
+}
 
 # Runs one dotnet command and stops the script when it exits with a non-zero code.
 function Invoke-Dotnet {
@@ -70,9 +78,15 @@ function Test-PinnedSdk {
         throw "The SDK required by global.json is not installed. Install it, then run again.`n$globalJson`n$sdkVersion"
     }
     Write-Host "dotnet $sdkVersion"
-    if ("$sdkVersion" -ne $PinnedSdkVersion) {
-        throw "dotnet resolves SDK $sdkVersion, but the lock files match SDK $PinnedSdkVersion. Install SDK $PinnedSdkVersion, or refresh the lock files with this SDK (dotnet restore FitEdu.sln --force-evaluate) and set `$PinnedSdkVersion in tools/check.ps1 in the same commit."
+    if ("$sdkVersion" -eq $PinnedSdkVersion) {
+        return
     }
+    $refreshAdvice = "refresh the lock files with SDK $sdkVersion (dotnet restore FitEdu.sln --force-evaluate) and set `$PinnedSdkVersion in tools/check.ps1 in the same commit."
+    $pinnedIsInstalled = @(& dotnet --list-sdks | Where-Object { $_ -like "$PinnedSdkVersion *" }).Count -gt 0
+    if ($pinnedIsInstalled) {
+        throw "SDK $PinnedSdkVersion is installed, but global.json rolls forward to SDK $sdkVersion. To move to it, $refreshAdvice"
+    }
+    throw "dotnet resolves SDK $sdkVersion, but the lock files match SDK $PinnedSdkVersion. Install SDK $PinnedSdkVersion, or $refreshAdvice"
 }
 
 function Invoke-MigrationCheck {
@@ -93,19 +107,26 @@ function Invoke-MigrationCheck {
     finally {
         Write-Host "== Migrations: drop $databaseName =="
         & dotnet ef database drop --force @efArguments
+        if ($LASTEXITCODE -ne 0) {
+            # A warning, not a throw: an error from the update above must stay the one reported.
+            Write-Warning "Could not drop $databaseName on $localDbServer; drop it by hand (sqllocaldb or SSMS)."
+        }
         $env:ConnectionStrings__DefaultConnection = $previousConnection
     }
+}
+
+$previousSettings = @{}
+foreach ($name in $dummySettings.Keys) {
+    $previousSettings[$name] = [Environment]::GetEnvironmentVariable($name)
 }
 
 Push-Location $repositoryRoot
 try {
     Test-PinnedSdk
 
-    # Dummy, non-secret values so the integration host (WebApplicationFactory<Program>) can boot.
-    Initialize-DummyEnvironmentVariable 'Jwt__Key' 'local-test-signing-key-not-a-secret-min-32-bytes!!'
-    Initialize-DummyEnvironmentVariable 'Jwt__Issuer' 'FitEdu.Tests'
-    Initialize-DummyEnvironmentVariable 'Jwt__Audience' 'FitEdu.Tests'
-    Initialize-DummyEnvironmentVariable 'AdminUser__Password' 'Local-Test-Admin-1!'
+    foreach ($name in $dummySettings.Keys) {
+        Initialize-DummyEnvironmentVariable $name $dummySettings[$name]
+    }
 
     Write-Host '== Restore (locked mode) =='
     Invoke-Dotnet @('restore', $solution, '--locked-mode')
@@ -126,5 +147,8 @@ try {
     Write-Host 'All checks passed.'
 }
 finally {
+    foreach ($name in $previousSettings.Keys) {
+        [Environment]::SetEnvironmentVariable($name, $previousSettings[$name])
+    }
     Pop-Location
 }
