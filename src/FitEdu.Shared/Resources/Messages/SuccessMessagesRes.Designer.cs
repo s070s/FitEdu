@@ -79,15 +79,6 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Registration successful. Please confirm your email..
-        /// </summary>
-        public static string RegistrationSuccessfulNoEmail {
-            get {
-                return ResourceManager.GetString("RegistrationSuccessfulNoEmail", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Registration successful. Please check your email to confirm your account..
         /// </summary>
         public static string RegistrationSuccessfulCheckEmail {

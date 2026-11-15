@@ -123,9 +123,6 @@
   <data name="RegistrationSuccess" xml:space="preserve">
     <value>Your account is ready. Please check your email to confirm it.</value>
   </data>
-  <data name="RegistrationSuccessfulNoEmail" xml:space="preserve">
-    <value>You're signed up. Please confirm your email to log in.</value>
-  </data>
   <data name="RegistrationSuccessfulCheckEmail" xml:space="preserve">
     <value>You're signed up. Please check your email to confirm your account.</value>
   </data>
