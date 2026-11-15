@@ -95,6 +95,42 @@ public class TokenServiceTests
     }
 
     [Fact]
+    public void SignClaims_SignsTheGivenClaimsWithTheSameKeyIssuerAudienceAndLifetime()
+    {
+        var svc = NewService();
+
+        var token = svc.SignClaims([new Claim(ClaimTypes.NameIdentifier, "user-1"), new Claim("impersonatedBy", "admin-9")]);
+
+        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        jwt.Issuer.ShouldBe("test-issuer");
+        jwt.Audiences.ShouldHaveSingleItem().ShouldBe("test-audience");
+        jwt.Claims.ShouldContain(c => c.Type == ClaimTypes.NameIdentifier && c.Value == "user-1");
+        jwt.Claims.ShouldContain(c => c.Type == "impersonatedBy" && c.Value == "admin-9");
+        jwt.ValidTo.ShouldBeInRange(DateTime.UtcNow.AddMinutes(58), DateTime.UtcNow.AddMinutes(62));
+    }
+
+    [Fact]
+    public async Task EveryAccessToken_IsVerifiedByTheSameKey()
+    {
+        var svc = NewService(SubscriptionTier.Pro, "Student");
+        var parameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidIssuer = "test-issuer",
+            ValidAudience = "test-audience",
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes("test-signing-key-at-least-32-bytes-long-1234567890"))
+        };
+        var handler = new JwtSecurityTokenHandler();
+
+        var (login, _) = await svc.GenerateAccessTokenAsync(User());
+        var (impersonation, _) = await svc.GenerateImpersonationTokenAsync(User(), "admin-9");
+        var signed = svc.SignClaims([new Claim(ClaimTypes.NameIdentifier, "user-1")]);
+
+        foreach (var token in new[] { login, impersonation, signed })
+            handler.ValidateToken(token, parameters, out _);
+    }
+
+    [Fact]
     public void GenerateRefreshToken_ReturnsDistinct64ByteBase64()
     {
         var svc = NewService();

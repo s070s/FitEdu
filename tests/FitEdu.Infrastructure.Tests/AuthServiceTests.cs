@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using FitEdu.Application.ApiServices;
@@ -28,6 +27,7 @@ public class AuthServiceTests
         SignInManager<ApplicationUser> Sm,
         ISubscriptionService Subs,
         IEmailService Email,
+        ITokenService Tokens,
         EphemeralDataProtectionProvider Dp,
         IHttpContextAccessor Accessor,
         RecordingLogger<AuthService> Log);
@@ -40,24 +40,17 @@ public class AuthServiceTests
         var sm = IdentityMocks.MockSignInManager(um);
         var subs = Substitute.For<ISubscriptionService>();
         var email = Substitute.For<IEmailService>();
+        var tokens = Substitute.For<ITokenService>();
         var accessor = Substitute.For<IHttpContextAccessor>();
         var dp = new EphemeralDataProtectionProvider();
         var ctx = DbContextFactory.CreateInMemory();
-        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            ["Jwt:Key"] = "test-signing-key-at-least-32-bytes-long-1234567890",
-            ["Jwt:Issuer"] = "iss",
-            ["Jwt:Audience"] = "aud",
-            ["Jwt:AccessTokenExpirationMinutes"] = "60"
-        }).Build();
-
         var log = new RecordingLogger<AuthService>();
         // The register, forgot and reset flows live in AuthApiService; the real one runs behind AuthService.
-        var authApi = new AuthApiService(um, sm, Substitute.For<ITokenService>(), subs, new RecordingLogger<AuthApiService>(), ctx, email,
+        var authApi = new AuthApiService(um, sm, tokens, subs, new RecordingLogger<AuthApiService>(), ctx, email,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System);
 
-        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, config, log);
-        return new Harness(svc, um, sm, subs, email, dp, accessor, log);
+        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens, log);
+        return new Harness(svc, um, sm, subs, email, tokens, dp, accessor, log);
     }
 
     private static ApplicationUser User(bool enabled = true) =>
@@ -542,6 +535,28 @@ public class AuthServiceTests
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe(ErrorMessagesRes.NotAuthenticated);
+    }
+
+    // ---- GetTokenAsync: signed by the one token service ----
+
+    [Fact]
+    public async Task GetToken_AuthenticatedPrincipal_IsSignedByTheTokenService()
+    {
+        var h = Build();
+        var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "u1")], "cookie"));
+        h.Tokens.SignClaims(Arg.Any<IEnumerable<Claim>>()).Returns("signed-token");
+
+        (await h.Svc.GetTokenAsync(principal)).ShouldBe("signed-token");
+        h.Tokens.Received(1).SignClaims(Arg.Is<IEnumerable<Claim>>(claims => claims.Any(c => c.Type == ClaimTypes.NameIdentifier && c.Value == "u1")));
+    }
+
+    [Fact]
+    public async Task GetToken_AnonymousPrincipal_ReturnsNull()
+    {
+        var h = Build();
+
+        (await h.Svc.GetTokenAsync(new ClaimsPrincipal(new ClaimsIdentity()))).ShouldBeNull();
+        h.Tokens.DidNotReceiveWithAnyArgs().SignClaims(default!);
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
@@ -40,26 +41,10 @@ public class TokenService : ITokenService
         _jwtAudience = config["Jwt:Audience"];
     }
 
-    public async Task<(string AccessToken, DateTime Expiration)> GenerateAccessTokenAsync(ApplicationUser user)
-    {
-        var creds = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
-        var expiration = DateTime.UtcNow.AddMinutes(_accessTokenExpirationMinutes);
+    public Task<(string AccessToken, DateTime Expiration)> GenerateAccessTokenAsync(ApplicationUser user) =>
+        MintAsync(user, adminId: null);
 
-        var roles = await _userManager.GetRolesAsync(user);
-        var tier = await _subscriptionService.GetUserTierAsync(user.Id);
-
-        var claims = UserClaimsBuilder.Build(user, roles, tier);
-        claims.Add(new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-        var token = new JwtSecurityToken(
-            issuer: _jwtIssuer,
-            audience: _jwtAudience,
-            claims: claims,
-            expires: expiration,
-            signingCredentials: creds);
-
-        return (_tokenHandler.WriteToken(token), expiration);
-    }
+    public string SignClaims(IEnumerable<Claim> claims) => Sign(claims, NewExpiration());
 
     /// <summary>
     /// Generates a cryptographically secure opaque refresh token.
@@ -73,17 +58,29 @@ public class TokenService : ITokenService
         return Convert.ToBase64String(randomBytes);
     }
 
-    public async Task<(string AccessToken, DateTime Expiration)> GenerateImpersonationTokenAsync(ApplicationUser user, string adminId)
-    {
-        var creds = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
-        var expiration = DateTime.UtcNow.AddMinutes(_accessTokenExpirationMinutes);
+    public Task<(string AccessToken, DateTime Expiration)> GenerateImpersonationTokenAsync(ApplicationUser user, string adminId) =>
+        MintAsync(user, adminId);
 
+    // The one place a user's access token is built: login and impersonation differ only in the
+    // impersonatedBy claim (adminId), so they cannot drift apart.
+    private async Task<(string AccessToken, DateTime Expiration)> MintAsync(ApplicationUser user, string? adminId)
+    {
         var roles = await _userManager.GetRolesAsync(user);
         var tier = await _subscriptionService.GetUserTierAsync(user.Id);
 
         var claims = UserClaimsBuilder.Build(user, roles, tier, adminBackupId: adminId);
         claims.Add(new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
+        var expiration = NewExpiration();
+        return (Sign(claims, expiration), expiration);
+    }
+
+    private DateTime NewExpiration() => DateTime.UtcNow.AddMinutes(_accessTokenExpirationMinutes);
+
+    // The shared signing step: key, issuer and audience come from the one configuration read in the constructor.
+    private string Sign(IEnumerable<Claim> claims, DateTime expiration)
+    {
+        var creds = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
             issuer: _jwtIssuer,
             audience: _jwtAudience,
@@ -91,6 +88,6 @@ public class TokenService : ITokenService
             expires: expiration,
             signingCredentials: creds);
 
-        return (_tokenHandler.WriteToken(token), expiration);
+        return _tokenHandler.WriteToken(token);
     }
 }

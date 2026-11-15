@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
@@ -8,9 +7,7 @@ using FitEdu.Application.Data;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
 
 namespace FitEdu.Infrastructure.Services;
@@ -39,10 +36,7 @@ public partial class AuthService : IAuthService
     private readonly IAuthApiService _authApiService;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AuthService> _logger;
-    private readonly string _jwtKey;
-    private readonly string? _jwtIssuer;
-    private readonly string? _jwtAudience;
-    private readonly double _jwtExpirationMinutes;
+    private readonly ITokenService _tokenService;
     private readonly ITimeLimitedDataProtector _protector;
     private readonly IDataProtector _adminCookieProtector;
     private readonly ITimeLimitedDataProtector _lessonAssetProtector;
@@ -61,8 +55,6 @@ public partial class AuthService : IAuthService
 
     private static readonly TimeSpan LessonAssetTokenLifetime = TimeSpan.FromMinutes(10);
 
-    private static readonly JwtSecurityTokenHandler TokenHandler = new() { SetDefaultTimesOnTokenCreation = false };
-
     public AuthService(
         IHttpContextAccessor httpContextAccessor,
         UserManager<ApplicationUser> userManager,
@@ -70,7 +62,7 @@ public partial class AuthService : IAuthService
         IAuthApiService authApiService,
         ApplicationDbContext context,
         IDataProtectionProvider dataProtectionProvider,
-        IConfiguration config,
+        ITokenService tokenService,
         ILogger<AuthService> logger)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -79,10 +71,7 @@ public partial class AuthService : IAuthService
         _authApiService = authApiService;
         _context = context;
         _logger = logger;
-        _jwtKey = config["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured");
-        _jwtIssuer = config["Jwt:Issuer"];
-        _jwtAudience = config["Jwt:Audience"];
-        _jwtExpirationMinutes = config.GetValue<double>("Jwt:AccessTokenExpirationMinutes", 60);
+        _tokenService = tokenService;
         _protector = dataProtectionProvider
             .CreateProtector(ProtectorPurpose)
             .ToTimeLimitedDataProtector();
@@ -252,16 +241,7 @@ public partial class AuthService : IAuthService
         if (principal.Identity?.IsAuthenticated != true)
             return Task.FromResult<string?>(null);
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var jwt = new JwtSecurityToken(
-            issuer: _jwtIssuer,
-            audience: _jwtAudience,
-            claims: principal.Claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtExpirationMinutes),
-            signingCredentials: creds);
-
-        return Task.FromResult<string?>(TokenHandler.WriteToken(jwt));
+        return Task.FromResult<string?>(_tokenService.SignClaims(principal.Claims));
     }
 
     /// <inheritdoc />

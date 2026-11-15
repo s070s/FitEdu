@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FitEdu.Domain.Identity;
 
 namespace FitEdu.Application.ApiInterfaces;
@@ -13,6 +14,13 @@ public interface ITokenService
     /// <param name="user">The application user</param>
     /// <returns>Access token and expiration timestamp</returns>
     Task<(string AccessToken, DateTime Expiration)> GenerateAccessTokenAsync(ApplicationUser user);
+
+    /// <summary>
+    /// Signs the given claims as an access token (same key, issuer, audience and lifetime as the tokens
+    /// minted for a user). Used for the page's own API calls, which carry the signed-in principal's claims
+    /// as they are.
+    /// </summary>
+    string SignClaims(IEnumerable<Claim> claims);
 
     /// <summary>
     /// Generates a cryptographically secure opaque refresh token.
