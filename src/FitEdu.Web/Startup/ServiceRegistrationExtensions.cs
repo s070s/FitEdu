@@ -444,7 +444,8 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddTransient<AcceptLanguageHandler>();
         builder.Services.ConfigureHttpClientDefaults(http => http.AddHttpMessageHandler<AcceptLanguageHandler>());
 
-        // Named client for dev-only endpoints (no auth handler needed)
+        // Loopback client without the auth handler; no page uses it since the dev buttons went (P02-6):
+        // AcceptLanguageHandlerTests and LocalizedIdentityErrorDescriberTests call the API through it.
         builder.Services.AddHttpClient("SelfClient", Configure);
 
         builder.Services.AddHttpClient<ICourseConsumer, CourseConsumer>(Configure)
