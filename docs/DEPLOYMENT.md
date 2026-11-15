@@ -50,7 +50,11 @@ key vault so every instance can decrypt the shared key ring.
 Papercut/Mailhog in Development or a real relay (SES/SendGrid SMTP/etc.) in production.
 Development falls back to `StubEmailService` (logs only) when no SMTP host is configured; any
 other environment **fails fast at startup** so emails are never silently swallowed in
-production. Full SMTP options: `Email:Smtp:{Host,Port,UseStartTls,Username,Password,FromAddress,FromName}`.
+production. Full SMTP options: `Email:Smtp:{Host,Port,UseStartTls,Username,Password,FromAddress,FromName,TimeoutSeconds}`.
+
+Emails are queued in memory and sent in the background by `EmailDispatcher`, so a slow relay never
+holds up a sign-up or reset request. One SMTP command may take `Email:Smtp:TimeoutSeconds` (default
+15, at most 300). A message still queued when the app stops is lost; the member asks for a new link.
 
 ## Public demo
 

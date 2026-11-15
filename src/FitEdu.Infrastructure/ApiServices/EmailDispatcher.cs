@@ -1,0 +1,41 @@
+namespace FitEdu.Infrastructure.ApiServices;
+
+/// <summary>
+/// Sends the emails of the <see cref="EmailOutbox"/>, one at a time, through <see cref="SmtpEmailService"/>
+/// (resolved in its own scope, as the service is scoped). A failed send is logged with the subject and the
+/// kind of error, never the address: a relay's reply can repeat the recipient. The next email still goes.
+/// </summary>
+public sealed partial class EmailDispatcher(EmailOutbox queue, IServiceScopeFactory scopeFactory, ILogger<EmailDispatcher> logger) : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        try
+        {
+            await foreach (var email in queue.Reader.ReadAllAsync(stoppingToken))
+                await SendAsync(email, stoppingToken);
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            // The app is stopping.
+        }
+    }
+
+    private async Task SendAsync(QueuedEmail email, CancellationToken stoppingToken)
+    {
+        try
+        {
+            using var scope = scopeFactory.CreateScope();
+            var transport = scope.ServiceProvider.GetRequiredService<SmtpEmailService>();
+            await transport.SendAsync(email.To, email.Content, stoppingToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException || !stoppingToken.IsCancellationRequested)
+        {
+            LogSendFailed(logger, email.Content.Subject, ex.GetType().Name);
+        }
+    }
+
+    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Email '{Subject}' could not be sent ({ErrorType}).")]
+    private static partial void LogSendFailed(ILogger logger, string subject, string errorType);
+}

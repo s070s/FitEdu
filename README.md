@@ -96,7 +96,7 @@ winget install Ollama.Ollama   # see the "AI Assistant" section below
 | Testing | xUnit + Shouldly + NSubstitute · EF Core InMemory/SQLite · `WebApplicationFactory` · Playwright e2e (local) |
 | Checks | Local only: `tools/check.ps1` (no GitHub Actions) |
 | Logging | Custom daily file logger |
-| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured; `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek: the request language when the member asks for the email, the member's stored language when an admin triggers it |
+| Email | MailKit `SmtpEmailService` whenever `Email:Smtp:Host` is configured, behind an in-memory `EmailOutbox` that `EmailDispatcher` empties in the background (a request never waits for the relay; a send times out after `Email:Smtp:TimeoutSeconds`, default 15; a message still waiting when the app stops is lost); `StubEmailService` (logs to file) as the Development fallback; startup throws in Production if neither. Both take their subjects and bodies from `EmailTemplates`, in English or Greek: the request language when the member asks for the email, the member's stored language when an admin triggers it |
 | Security | HSTS · `X-Content-Type-Options` · `X-Frame-Options` · `Referrer-Policy` · `Permissions-Policy` |
 | AI Assistant | Local Ollama sidecar via `Microsoft.Extensions.AI` — `qwen3:8b` chat (tool-calling agent) + `bge-m3` embeddings, auto-pulled at startup, no cloud API |
 
@@ -595,7 +595,7 @@ All secrets are loaded from `.env` at startup (see `.env.template`). The `.env` 
 
 The email transport is selected at startup from configuration:
 
-- **`Email:Smtp:Host` configured** → `SmtpEmailService` (MailKit) sends real email — point it at a local catcher (Papercut/Mailhog) in Development or any SMTP relay (SES, SendGrid SMTP, etc.) in production. Settings live under `Email:Smtp:*` (host, port, StartTLS, credentials, from address).
+- **`Email:Smtp:Host` configured** → `SmtpEmailService` (MailKit) sends real email — point it at a local catcher (Papercut/Mailhog) in Development or any SMTP relay (SES, SendGrid SMTP, etc.) in production. Settings live under `Email:Smtp:*` (host, port, StartTLS, credentials, from address, timeout in seconds). Sign-up and forgotten-password requests only queue the email (`EmailOutbox`, up to 500 waiting); `EmailDispatcher` sends them one at a time in the background and logs a failure with the subject only, never the address.
 - **No SMTP host, Development** → `StubEmailService` logs all emails to file instead of sending them — find links in `Logs/log-YYYY-MM-DD.txt` (search `STUB EMAIL`).
 - **No SMTP host, Production** → the application **throws at startup**, so emails are never silently swallowed.
 

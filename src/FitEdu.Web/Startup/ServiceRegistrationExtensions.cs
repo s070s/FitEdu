@@ -85,7 +85,12 @@ public static class ServiceRegistrationExtensions
             .ValidateOnStart();
         if (!string.IsNullOrWhiteSpace(config["Email:Smtp:Host"]))
         {
-            builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+            // P02-2: requests only queue an email (QueuedEmailService); EmailDispatcher sends it through
+            // SmtpEmailService in the background, so a slow relay never holds up a sign-up or reset request.
+            builder.Services.AddSingleton<EmailOutbox>();
+            builder.Services.AddScoped<SmtpEmailService>();
+            builder.Services.AddScoped<IEmailService, QueuedEmailService>();
+            builder.Services.AddHostedService<EmailDispatcher>();
         }
         else if (builder.Environment.IsDevelopment())
         {

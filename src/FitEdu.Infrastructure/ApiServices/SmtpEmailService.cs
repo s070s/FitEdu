@@ -38,7 +38,8 @@ public sealed partial class SmtpEmailService : IEmailService
     public Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default) =>
         SendAsync(email, EmailTemplates.PasswordReset(resetLink, language), cancellationToken);
 
-    private async Task SendAsync(string to, EmailContent content, CancellationToken ct)
+    /// <summary>Sends one finished email; the <see cref="EmailDispatcher"/> calls this for queued mail.</summary>
+    public async Task SendAsync(string to, EmailContent content, CancellationToken ct)
     {
         var message = BuildMessage(_options, to, content);
 
