@@ -152,17 +152,10 @@ app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");
 app.MapHub<CallHub>("/hubs/call");
 app.MapHub<NotificationHub>("/hubs/notifications");
+// appsettings.json sets DisableStaticAssetNotFoundRuntimeFallback: when MapStaticAssets runs from the build-time
+// manifest (dotnet run, test hosts) it would otherwise map a GET/HEAD-only {**path:file} fallback that turns a
+// POST/PUT/DELETE to an unknown URL into 405 instead of 404.
 app.MapStaticAssets().ShortCircuit();
-// MapStaticAssets also maps a GET/HEAD-only file fallback ({**path:file}) in every environment, which turns a
-// POST/PUT/DELETE to an unknown /api URL into 405 instead of 404 (verified in Production by
-// ProductionStaticFileTests). This last-resort route restores the 404 (and so the problem+json contract). It is
-// limited to /api and takes every method: a method-restricted catch-all over all paths would itself produce a 405
-// endpoint for a GET (e.g. /images), and the static file middleware skips requests that already have an endpoint.
-// Trade-off: a wrong method on a real /api route is answered by this route too, so it is 404, not 405.
-app.Map("/api/{**unmatched}", () => Results.NotFound())
-   .WithOrder(int.MaxValue - 1)
-   .AllowAnonymous()
-   .ExcludeFromDescription();
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode()
    .WithStaticAssets();

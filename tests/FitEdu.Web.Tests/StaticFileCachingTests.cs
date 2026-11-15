@@ -62,6 +62,15 @@ public partial class StaticFileCachingTests : IClassFixture<CustomWebAppFactory>
         (await client.PostAsync("/api/no-such-endpoint", content: null)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    // A real API route keeps answering a wrong method with 405 (no catch-all route takes it over).
+    [Fact]
+    public async Task RealApiRoute_WrongMethod_Is405()
+    {
+        var client = _factory.CreateClient();
+
+        (await client.DeleteAsync("/api/blog/summaries")).StatusCode.ShouldBe(HttpStatusCode.MethodNotAllowed);
+    }
+
     // The static asset endpoint short-circuits before authentication, so a stale auth cookie (here: the user
     // was disabled after signing in) neither costs a user lookup nor gets a sign-out Set-Cookie next to "immutable".
     [Fact]
