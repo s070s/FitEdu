@@ -126,12 +126,7 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     [EnableRateLimiting("sensitive")]
     public async Task<ActionResult<bool>> ForcePasswordReset(string userId, CancellationToken cancellationToken = default)
     {
-        var result = await adminUserService.ForcePasswordResetAsync(userId, (email, token) =>
-            Url.Action(
-                "ResetPassword", "Auth",
-                new { email, token },
-                Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/reset-password?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}",
-            cancellationToken);
+        var result = await adminUserService.ForcePasswordResetAsync(userId, cancellationToken);
         return result.ToActionResult(this);
     }
 

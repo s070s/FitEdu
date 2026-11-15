@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -22,7 +23,8 @@ public partial class AdminUserService(
     IApplicationDbContext context,
     IEmailService emailService,
     ICurrentUserAccessor currentUser,
-    TimeProvider timeProvider) : IAdminUserService
+    TimeProvider timeProvider,
+    IOptions<AppOptions> appOptions) : IAdminUserService
 {
     // LOG-4: the acting admin's id for audit attribution ("who did it"), from the request principal.
     private string ActingAdmin => currentUser.UserId ?? "unknown";
@@ -271,8 +273,7 @@ public partial class AdminUserService(
         ));
     }
 
-    public async Task<ServiceResult<bool>> ForcePasswordResetAsync(
-        string userId, Func<string, string, string> buildResetUrl, CancellationToken cancellationToken = default)
+    public async Task<ServiceResult<bool>> ForcePasswordResetAsync(string userId, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user == null)
@@ -282,7 +283,7 @@ public partial class AdminUserService(
             return ServiceResult<bool>.BadRequest(error: "User has no email address.");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var resetUrl = buildResetUrl(user.Email, token);
+        var resetUrl = AuthLinks.ResetPassword(appOptions.Value.BaseUrl, user.Email, token);
 
         // The admin may read the site in another language; the member gets the email in their own.
         await emailService.SendPasswordResetAsync(user.Email, resetUrl, user.PreferredLanguage, cancellationToken);

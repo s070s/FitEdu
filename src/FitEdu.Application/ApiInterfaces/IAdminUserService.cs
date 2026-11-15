@@ -18,13 +18,9 @@ public interface IAdminUserService
     Task<ServiceResult<string>> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
     Task<IEnumerable<AdminUserSearchResultDto>> SearchUsersAsync(string query, CancellationToken cancellationToken = default);
 
-    /// <param name="userId">The user to reset.</param>
-    /// <param name="buildResetUrl">
-    /// Builds the reset-password URL from (email, token). Passed in because URL generation
-    /// (Url.Action / Request.Scheme) is an ASP.NET Core concern that belongs in the controller.
-    /// </param>
+    /// <param name="userId">The user to reset; the emailed link is built from <c>App:BaseUrl</c> like every account email.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task<ServiceResult<bool>> ForcePasswordResetAsync(string userId, Func<string, string, string> buildResetUrl, CancellationToken cancellationToken = default);
+    Task<ServiceResult<bool>> ForcePasswordResetAsync(string userId, CancellationToken cancellationToken = default);
     Task<ServiceResult<bool>> DisableUserAsync(string userId, CancellationToken cancellationToken = default);
     Task<ServiceResult<bool>> EnableUserAsync(string userId, CancellationToken cancellationToken = default);
     Task<ServiceResult<AuthResponseDto>> ImpersonateUserAsync(string userId, string adminId, CancellationToken cancellationToken = default);

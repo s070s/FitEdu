@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.ApiServices;
+using FitEdu.Application.Common;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
@@ -37,7 +39,8 @@ public class AdminUserServiceTests
             db,
             emailService ?? Substitute.For<IEmailService>(),
             currentUser,
-            TimeProvider.System);
+            TimeProvider.System,
+            Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
     }
 
     /// <summary>
@@ -189,11 +192,32 @@ public class AdminUserServiceTests
         using var adminCulture = new CultureScope("en-GB"); // the admin reads the site in English
 
         var result = await NewService(db, userManager, emailService)
-            .ForcePasswordResetAsync("greek-member", (email, token) => $"https://x/reset?email={email}&token={token}");
+            .ForcePasswordResetAsync("greek-member");
 
         result.IsSuccess.ShouldBeTrue();
         await emailService.Received(1).SendPasswordResetAsync(
             "greek-member@test.local", Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ForcePasswordReset_LinkStartsWithTheSiteAddressAndEscapesTheEmail()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("plus-member");
+        member.Email = "a+b@test.local";
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        var userManager = UserManagerOver(db);
+        userManager.GeneratePasswordResetTokenAsync(Arg.Any<ApplicationUser>()).Returns("reset-token");
+        var emailService = Substitute.For<IEmailService>();
+
+        await NewService(db, userManager, emailService).ForcePasswordResetAsync("plus-member");
+
+        await emailService.Received(1).SendPasswordResetAsync(
+            "a+b@test.local", "https://site.test/reset-password?email=a%2Bb%40test.local&token=reset-token",
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

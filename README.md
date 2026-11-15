@@ -772,7 +772,8 @@ You can install or start Ollama **after** the app is already running — it keep
 | Security headers | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (`camera`/`microphone`/`display-capture` allowed same-origin for video calls; `geolocation` denied) |
 | File uploads | Content-type allowlist enforced per upload type (image / PDF / video); extension allowlist on media serve |
 | Sitemap | Slugs XML-escaped via `SecurityElement.Escape()` |
-| Account enumeration | Login, forgot-password, reset-password all return generic messages; duplicate-email registration mapped to generic error |
+| Account enumeration | Login (a disabled account is only reported after the right password; an unknown email costs a password hash too), forgot-password and reset-password return generic messages, and `POST api/auth/register` maps a taken email to a generic error. The sign-up page deliberately tells the visitor an email is already registered (owner decision: its UX), an accepted Low |
+| Logs | Auth logs carry user ids and Identity error codes, never email addresses |
 | Sensitive data at rest | Special-category assessment answers (`AnswersJson`/`SummaryJson`) encrypted at rest via ASP.NET Core Data Protection (transparent EF value converter); the Data Protection key ring is persisted to the database |
 | GDPR posture | Bilingual Privacy Policy (`/privacy`) and Terms (`/terms`) linked from the registration consent and the landing footer; registration requires explicit consent with captured timestamp; self-service account erasure and "download my data" export from the Profile page (the export includes the stored preferred language, which the Privacy Policy lists among the account data); expired refresh tokens purged on a background sweep |
 
