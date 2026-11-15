@@ -1,8 +1,7 @@
 using System.Globalization;
-using System.Net;
-using System.Text.Json;
 using Bunit;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
@@ -31,22 +30,7 @@ public class EmailLinkPagesTests : BunitContext
     private readonly CultureScope _cultureScope = new();
 
     private readonly IAuthService _authService = Substitute.For<IAuthService>();
-    private readonly RecordingHandler _handler = new();
-
-    /// <summary>Answers each request from <see cref="Respond"/> and remembers what was sent.</summary>
-    private sealed class RecordingHandler : HttpMessageHandler
-    {
-        public List<(HttpMethod Method, string Path, string Body)> Requests { get; } = [];
-
-        public Func<HttpResponseMessage> Respond { get; set; } = () => new HttpResponseMessage(HttpStatusCode.OK);
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var body = request.Content is null ? string.Empty : await request.Content.ReadAsStringAsync(cancellationToken);
-            Requests.Add((request.Method, request.RequestUri!.AbsolutePath, body));
-            return Respond();
-        }
-    }
+    private readonly IAuthApiService _authApiService = Substitute.For<IAuthApiService>();
 
     public EmailLinkPagesTests()
     {
@@ -55,12 +39,7 @@ public class EmailLinkPagesTests : BunitContext
 
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
-        var httpClientFactory = Substitute.For<IHttpClientFactory>();
-        httpClientFactory.CreateClient("SelfClient").Returns(_ => new HttpClient(_handler, disposeHandler: false)
-        {
-            BaseAddress = new Uri("http://localhost/")
-        });
-        Services.AddSingleton(httpClientFactory);
+        Services.AddSingleton(_authApiService);
     }
 
     private void Open(string url) => Services.GetRequiredService<NavigationManager>().NavigateTo(url);
@@ -77,29 +56,25 @@ public class EmailLinkPagesTests : BunitContext
         page.Find(".auth-card h1").TextContent.ShouldBe(GlobalRes.ConfirmEmailTitle);
         page.Find("button.auth-submit").TextContent.Trim().ShouldBe(GlobalRes.Label_ConfirmMyEmail);
         // A mail scanner that opens the link must not spend the token: nothing is sent until the click.
-        _handler.Requests.ShouldBeEmpty();
+        _ = _authApiService.DidNotReceiveWithAnyArgs().ConfirmEmailAsync(default!, default!);
     }
 
     [Fact]
-    public void ConfirmEmail_Click_PostsTheUserIdAndTokenToTheApi()
+    public void ConfirmEmail_Click_ConfirmsTheUserIdAndTokenInProcess()
     {
         Open(ConfirmEmailUrl);
         var page = Render<ConfirmEmail>();
 
         page.Find("button.auth-submit").Click();
 
-        page.WaitForAssertion(() => _handler.Requests.Count.ShouldBe(1));
-        var request = _handler.Requests.Single();
-        request.Method.ShouldBe(HttpMethod.Post);
-        request.Path.ShouldBe("/api/auth/confirm-email");
-        using var body = JsonDocument.Parse(request.Body);
-        body.RootElement.GetProperty("userId").GetString().ShouldBe("user-1");
-        body.RootElement.GetProperty("token").GetString().ShouldBe("a+b/c=");
+        page.WaitForAssertion(() => _ = _authApiService.Received(1).ConfirmEmailAsync("user-1", "a+b/c="));
     }
 
     [Fact]
     public void ConfirmEmail_Success_ShowsTheResultAndALinkToSignIn()
     {
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto { Success = true }));
         Open(ConfirmEmailUrl);
         var page = Render<ConfirmEmail>();
 
@@ -110,10 +85,13 @@ public class EmailLinkPagesTests : BunitContext
         page.FindAll("button.auth-submit").ShouldBeEmpty();
     }
 
-    [Fact]
-    public void ConfirmEmail_ExpiredOrInvalidLink_ShowsTheFailureWithALinkToSignIn()
+    [Theory]
+    [InlineData(400)]
+    [InlineData(404)]
+    public void ConfirmEmail_ExpiredOrInvalidLink_ShowsTheFailureWithALinkToSignIn(int statusCode)
     {
-        _handler.Respond = () => new HttpResponseMessage(HttpStatusCode.BadRequest);
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new ServiceResult<AuthResponseDto>(new AuthResponseDto { Success = false }, statusCode));
         Open(ConfirmEmailUrl);
         var page = Render<ConfirmEmail>();
 
@@ -125,9 +103,24 @@ public class EmailLinkPagesTests : BunitContext
     }
 
     [Fact]
-    public void ConfirmEmail_ServerUnreachable_ShowsATryAgainMessageAndKeepsTheButton()
+    public void ConfirmEmail_ServiceThrows_ShowsATryAgainMessageAndKeepsTheButton()
     {
-        _handler.Respond = () => throw new HttpRequestException("connection refused");
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns<ServiceResult<AuthResponseDto>>(_ => throw new InvalidOperationException("boom"));
+        Open(ConfirmEmailUrl);
+        var page = Render<ConfirmEmail>();
+
+        page.Find("button.auth-submit").Click();
+
+        page.WaitForAssertion(() => page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.EmailConfirmationError));
+        page.FindAll("button.auth-submit").Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void ConfirmEmail_UnexpectedAnswer_ShowsATryAgainMessageAndKeepsTheButton()
+    {
+        _authApiService.ConfirmEmailAsync(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new ServiceResult<AuthResponseDto>(new AuthResponseDto { Success = false }, 500));
         Open(ConfirmEmailUrl);
         var page = Render<ConfirmEmail>();
 
@@ -149,7 +142,7 @@ public class EmailLinkPagesTests : BunitContext
 
         page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.EmailConfirmationLinkInvalid);
         page.FindAll("button.auth-submit").ShouldBeEmpty();
-        _handler.Requests.ShouldBeEmpty();
+        _ = _authApiService.DidNotReceiveWithAnyArgs().ConfirmEmailAsync(default!, default!);
     }
 
     [Fact]

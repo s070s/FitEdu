@@ -1,20 +1,21 @@
-using System.Net;
 using Microsoft.AspNetCore.Components;
-using FitEdu.Application.DTOs;
+using FitEdu.Application.ApiInterfaces;
 using FitEdu.Shared.Resources.Messages;
-using System.Net.Http.Json;
 
 namespace FitEdu.Web.Pages;
 
 /// <summary>
 /// The page the link in the confirmation email opens: <c>/confirm-email?userId=…&amp;token=…</c> (built by
-/// <c>AuthLinks</c>). It posts the two values to <c>api/auth/confirm-email</c> when the member clicks.
+/// <c>AuthLinks</c>). When the member clicks, it confirms the two values in this process through
+/// <see cref="IAuthApiService"/> (not over HTTP, where every member's click would count against the
+/// server's own address in the "auth" rate limit).
 /// </summary>
 public partial class ConfirmEmail
 {
-    private const string ConfirmEmailApiPath = "api/auth/confirm-email";
+    private const int BadRequestStatusCode = 400;
+    private const int NotFoundStatusCode = 404;
 
-    [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
+    [Inject] private IAuthApiService AuthApiService { get; set; } = default!;
     [Inject] private ILogger<ConfirmEmail> Logger { get; set; } = default!;
 
     [SupplyParameterFromQuery] public string? UserId { get; set; }
@@ -36,16 +37,15 @@ public partial class ConfirmEmail
 
         try
         {
-            var http = HttpClientFactory.CreateClient("SelfClient");
-            using var response = await http.PostAsJsonAsync(ConfirmEmailApiPath, new ConfirmEmailRequestDto { UserId = UserId!, Token = Token! });
+            var result = await AuthApiService.ConfirmEmailAsync(UserId!, Token!);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess)
             {
                 step = Step.Confirmed;
             }
-            else if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+            else if (result.StatusCode is BadRequestStatusCode or NotFoundStatusCode)
             {
-                // The API answers 400 for a used, expired or altered token; the member needs a new email.
+                // 400 means a used, expired or altered token and 404 an unknown member; either needs a new email.
                 step = Step.LinkInvalid;
             }
             else
