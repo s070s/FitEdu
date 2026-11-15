@@ -34,6 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Lets the test project hand SmtpEmailService a fake SMTP client through its internal constructor. -->
+    <InternalsVisibleTo Include="FitEdu.Infrastructure.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FitEdu.Application\FitEdu.Application.csproj" />
     <ProjectReference Include="..\FitEdu.Domain\FitEdu.Domain.csproj" />
     <ProjectReference Include="..\FitEdu.Shared\FitEdu.Shared.csproj" />

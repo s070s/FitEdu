@@ -17,11 +17,19 @@ public sealed partial class SmtpEmailService : IEmailService
 {
     private readonly EmailOptions _options;
     private readonly ILogger<SmtpEmailService> _logger;
+    private readonly Func<ISmtpClient> _createClient;
 
     public SmtpEmailService(IOptions<EmailOptions> options, ILogger<SmtpEmailService> logger)
+        : this(options, logger, () => new SmtpClient())
+    {
+    }
+
+    // The seam the tests use to hand in a fake SMTP client instead of opening a connection.
+    internal SmtpEmailService(IOptions<EmailOptions> options, ILogger<SmtpEmailService> logger, Func<ISmtpClient> createClient)
     {
         _options = options.Value;
         _logger = logger;
+        _createClient = createClient;
     }
 
     public Task SendEmailConfirmationAsync(string email, string confirmationLink, string language, CancellationToken cancellationToken = default) =>
@@ -34,7 +42,7 @@ public sealed partial class SmtpEmailService : IEmailService
     {
         var message = BuildMessage(_options, to, content);
 
-        using var client = new SmtpClient();
+        using var client = _createClient();
         try
         {
             var socketOptions = _options.Smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
@@ -49,7 +57,8 @@ public sealed partial class SmtpEmailService : IEmailService
                 await client.DisconnectAsync(true, ct);
         }
 
-        LogEmailSent(_logger, content.Subject, to);
+        // The subject only: an address in the log is personal data kept in the log files.
+        LogEmailSent(_logger, content.Subject);
     }
 
     /// <summary>Builds the MIME message. Extracted so message construction is unit-testable
@@ -66,6 +75,6 @@ public sealed partial class SmtpEmailService : IEmailService
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Email '{Subject}' sent to {To}.")]
-    private static partial void LogEmailSent(ILogger logger, string subject, string to);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Email '{Subject}' sent.")]
+    private static partial void LogEmailSent(ILogger logger, string subject);
 }

@@ -1,3 +1,7 @@
+using MailKit;
+using MailKit.Net.Smtp;
+using MimeKit;
+using NSubstitute;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Infrastructure.Configuration;
@@ -104,6 +108,40 @@ public sealed class SmtpEmailServiceTests : IDisposable
         using var cultureScope = new CultureScope("el-GR");
 
         EmailTemplates.PasswordReset(ResetLink, "fr").Subject.ShouldBe("Reset your FitEdu password");
+    }
+
+    // ---- SendAsync, through a fake SMTP client ----------------------------------
+
+    private const string PrivateAddress = "private.person@secret-mail.test";
+
+    private readonly RecordingLogger<SmtpEmailService> _logger = new();
+
+    private SmtpEmailService NewService(ISmtpClient client, EmailOptions? options = null) =>
+        new(Microsoft.Extensions.Options.Options.Create(options ?? Options()), _logger, () => client);
+
+    [Fact]
+    public async Task SendAsync_LogsWithoutTheRecipientAddress()
+    {
+        var client = Substitute.For<ISmtpClient>();
+
+        await NewService(client).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English);
+
+        var entry = _logger.Information.ShouldHaveSingleItem();
+        entry.ShouldContain("Welcome to FitEdu", Case.Sensitive);
+        entry.ShouldNotContain(PrivateAddress);
+        entry.ShouldNotContain("secret-mail");
+    }
+
+    [Fact]
+    public async Task SendAsync_SendsTheMessageToTheRecipient()
+    {
+        var client = Substitute.For<ISmtpClient>();
+
+        await NewService(client).SendPasswordResetAsync(PrivateAddress, ResetLink, English);
+
+        await client.Received(1).SendAsync(
+            Arg.Is<MimeMessage>(message => message.To.Mailboxes.Single().Address == PrivateAddress),
+            Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>());
     }
 
     public void Dispose() => _cultureScope.Dispose();
