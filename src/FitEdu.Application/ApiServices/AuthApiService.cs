@@ -28,9 +28,43 @@ public partial class AuthApiService(
     IEmailService emailService,
     IOptions<AppOptions> appOptions) : IAuthApiService
 {
-    public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request)
+    private const string StudentRole = "Student";
+
+    /// <summary>
+    /// Registration for the JSON API. A taken email is answered with the same generic error as any other
+    /// failure, so the endpoint cannot be used to find out which emails have an account.
+    /// </summary>
+    public Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request) =>
+        RegisterCoreAsync(request, revealTakenEmail: false);
+
+    /// <summary>
+    /// Registration for the sign-up page: the same flow, but a taken email is reported as such
+    /// (owner decision D1: the page tells the visitor to use another email or log in).
+    /// </summary>
+    public Task<ServiceResult<AuthResponseDto>> RegisterFromSignUpPageAsync(RegisterRequestDto request) =>
+        RegisterCoreAsync(request, revealTakenEmail: true);
+
+    // The one registration flow behind both entry points: create the account, make it a Student on the
+    // Free plan, email the confirmation link. Account, role and plan are all-or-nothing.
+    private async Task<ServiceResult<AuthResponseDto>> RegisterCoreAsync(RegisterRequestDto request, bool revealTakenEmail)
     {
         var user = request.ToNewUser();
+
+        var result = await userManager.CreateAsync(user, request.Password);
+        if (!result.Succeeded)
+        {
+            // The error codes, not the descriptions: a description can hold the email address.
+            LogRegistrationFailed(logger, string.Join(", ", result.Errors.Select(e => e.Code)));
+
+            // Duplicate-account errors become a generic message on the API to prevent account enumeration.
+            // Password-policy errors (too short, no digits, etc.) are safe to surface verbatim.
+            var safeErrors = result.Errors.Select(e =>
+                !revealTakenEmail && e.Code is "DuplicateUserName" or "DuplicateEmail"
+                    ? ErrorMessagesRes.RegistrationFailedGeneric
+                    : e.Description);
+
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = safeErrors });
+        }
 
         // Parental consent placeholder: if under 18, flag for future handling
         if (user.Age.HasValue && user.Age < 18)
@@ -39,29 +73,19 @@ public partial class AuthApiService(
             LogUnderEighteenRegistered(logger, user.Id);
         }
 
-        var result = await userManager.CreateAsync(user, request.Password);
-        if (!result.Succeeded)
+        var confirmToken = await TrySetUpNewAccountAsync(user);
+        if (confirmToken is null)
         {
-            LogRegistrationFailed(logger, request.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
-
-            // Map duplicate-account errors to a generic message to prevent account enumeration.
-            // Password-policy errors (too short, no digits, etc.) are safe to surface verbatim.
-            var safeErrors = result.Errors.Select(e =>
-                e.Code is "DuplicateUserName" or "DuplicateEmail"
-                    ? ErrorMessagesRes.RegistrationFailedGeneric
-                    : e.Description);
-
-            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = safeErrors });
+            // Half an account would be stuck: it could not register again (the email is taken) and
+            // could not sign in. Remove it so the visitor can simply try again.
+            await RemoveHalfCreatedAccountAsync(user);
+            return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = ErrorMessagesRes.RegistrationFailedGeneric
+            });
         }
 
-        // Assign default role
-        await userManager.AddToRoleAsync(user, "Student");
-
-        // Assign Free subscription plan
-        await subscriptionService.AssignFreePlanAsync(user.Id);
-
-        // Generate email confirmation token
-        var confirmToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
         var confirmUrl = AuthLinks.ConfirmEmail(appOptions.Value.BaseUrl, user.Id, confirmToken);
 
         // NOTE: confirmUrl points at the site's /confirm-email page, which posts the userId and token
@@ -88,6 +112,43 @@ public partial class AuthApiService(
         });
     }
 
+    // Student role, Free plan and the confirmation token of a just-created account. Returns the token,
+    // or null when any of them failed (logged), so the caller can undo the account.
+    private async Task<string?> TrySetUpNewAccountAsync(ApplicationUser user)
+    {
+        try
+        {
+            var roleResult = await userManager.AddToRoleAsync(user, StudentRole);
+            if (!roleResult.Succeeded)
+            {
+                LogRegistrationRoleFailed(logger, user.Id, string.Join(", ", roleResult.Errors.Select(e => e.Code)));
+                return null;
+            }
+
+            await subscriptionService.AssignFreePlanAsync(user.Id);
+            return await userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+        catch (Exception ex)
+        {
+            LogRegistrationSetupFailed(logger, ex, user.Id);
+            return null;
+        }
+    }
+
+    private async Task RemoveHalfCreatedAccountAsync(ApplicationUser user)
+    {
+        try
+        {
+            var deleteResult = await userManager.DeleteAsync(user);
+            if (!deleteResult.Succeeded)
+                LogRegistrationCleanupFailed(logger, user.Id, string.Join(", ", deleteResult.Errors.Select(e => e.Code)));
+        }
+        catch (Exception ex)
+        {
+            LogRegistrationCleanupThrew(logger, ex, user.Id);
+        }
+    }
+
     public async Task<ServiceResult<AuthResponseDto>> ConfirmEmailAsync(string userId, string token)
     {
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
@@ -100,7 +161,7 @@ public partial class AuthApiService(
         var result = await userManager.ConfirmEmailAsync(user, token);
         if (!result.Succeeded)
         {
-            LogEmailConfirmationFailed(logger, userId, string.Join(", ", result.Errors.Select(e => e.Description)));
+            LogEmailConfirmationFailed(logger, userId, string.Join(", ", result.Errors.Select(e => e.Code)));
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description) });
         }
 
@@ -113,7 +174,23 @@ public partial class AuthApiService(
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            LogLoginUnknownUser(logger, request.Email);
+            // Spend the time of a real password check, so the answer does not reveal that the email has no account.
+            UnknownUserPasswordCheck.Run(request.Password);
+            LogLoginUnknownUser(logger);
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
+        }
+
+        // The password comes first: an unconfirmed or disabled account is only reported as such to someone
+        // who knows its password, so a wrong guess never learns anything about the account.
+        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
+        if (!result.Succeeded)
+        {
+            if (result.IsLockedOut)
+            {
+                LogUserLockedOut(logger, user.Id);
+                return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked });
+            }
+            LogInvalidPassword(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
@@ -127,18 +204,6 @@ public partial class AuthApiService(
         {
             LogLoginDisabledUser(logger, user.Id);
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport });
-        }
-
-        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
-        if (!result.Succeeded)
-        {
-            if (result.IsLockedOut)
-            {
-                LogUserLockedOut(logger, user.Id);
-                return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountLocked });
-            }
-            LogInvalidPassword(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
         // The language the member signs in from is kept for the emails an admin may send them later.
@@ -221,14 +286,16 @@ public partial class AuthApiService(
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidOrExpiredRefreshToken });
         }
 
-        // Rotate: revoke the old token and issue a new pair
+        // Rotate: revoke the old token and issue a new pair. The new token lives as long as the old one was
+        // issued for (7 days, or 30 with "remember me"), so a remember-me session is not cut to 7 days.
         var newRefreshTokenPlain = tokenService.GenerateRefreshToken();
+        var issuedLifetime = stored.ExpiresAt - stored.CreatedAt;
         var newEntity = new RefreshToken
         {
             Id = Guid.NewGuid(),
             UserId = user.Id,
             TokenHash = HashToken(newRefreshTokenPlain),
-            ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
+            ExpiresAt = DateTimeOffset.UtcNow.Add(issuedLifetime),
             CreatedAt = DateTimeOffset.UtcNow,
             SecurityStampAtIssuance = user.SecurityStamp
         };
@@ -322,7 +389,7 @@ public partial class AuthApiService(
         var result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
         if (!result.Succeeded)
         {
-            LogPasswordResetFailed(logger, user.Id, string.Join(", ", result.Errors.Select(e => e.Description)));
+            LogPasswordResetFailed(logger, user.Id, string.Join(", ", result.Errors.Select(e => e.Code)));
             // Return generic message — specific errors would confirm account existence or reveal policy hints.
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
         }
@@ -372,7 +439,7 @@ public partial class AuthApiService(
         if (!updateResult.Succeeded)
         {
             var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
-            LogDevConfirmEmailFailed(logger, user.Id, errors);
+            LogDevConfirmEmailFailed(logger, user.Id, string.Join(", ", updateResult.Errors.Select(e => e.Code)));
             return ServiceResult<AuthResponseDto>.BadRequest(new AuthResponseDto { Success = false, Message = $"Confirm failed: {errors}" });
         }
 
@@ -413,8 +480,20 @@ public partial class AuthApiService(
     [LoggerMessage(Level = LogLevel.Information, Message = "Under-18 user registered: {UserId}. Parental consent not yet implemented.")]
     private static partial void LogUnderEighteenRegistered(ILogger logger, string userId);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed for {Email}: {Errors}")]
-    private static partial void LogRegistrationFailed(ILogger logger, string email, string errors);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed: {ErrorCodes}")]
+    private static partial void LogRegistrationFailed(ILogger logger, string errorCodes);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration of user {UserId} failed to assign the Student role: {ErrorCodes}")]
+    private static partial void LogRegistrationRoleFailed(ILogger logger, string userId, string errorCodes);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Registration of user {UserId} failed while setting up the account.")]
+    private static partial void LogRegistrationSetupFailed(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Could not remove the half-created account of user {UserId}: {ErrorCodes}")]
+    private static partial void LogRegistrationCleanupFailed(ILogger logger, string userId, string errorCodes);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Could not remove the half-created account of user {UserId}.")]
+    private static partial void LogRegistrationCleanupThrew(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} registered. Confirmation email queued.")]
     private static partial void LogUserRegistered(ILogger logger, string userId);
@@ -428,8 +507,8 @@ public partial class AuthApiService(
     [LoggerMessage(Level = LogLevel.Information, Message = "Email confirmed for user {UserId}")]
     private static partial void LogEmailConfirmed(ILogger logger, string userId);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for non-existent user: {Email}")]
-    private static partial void LogLoginUnknownUser(ILogger logger, string email);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for a non-existent user.")]
+    private static partial void LogLoginUnknownUser(ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for unconfirmed email: user {UserId}")]
     private static partial void LogLoginUnconfirmedEmail(ILogger logger, string userId);

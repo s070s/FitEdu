@@ -6,9 +6,9 @@ using FitEdu.Domain.Identity;
 namespace FitEdu.Application.Mappings;
 
 /// <summary>
-/// Builds the new user from a register request. Shared by the Blazor register page
-/// (Infrastructure AuthService) and POST api/auth/register (AuthApiService), so both paths
-/// apply the same training level, goal and language rules.
+/// Builds the new user from a register request. Both the Blazor register page (through
+/// Infrastructure AuthService) and POST api/auth/register run the one AuthApiService registration
+/// flow, so both paths apply the same training level, goal and language rules.
 /// </summary>
 public static class RegistrationMappings
 {

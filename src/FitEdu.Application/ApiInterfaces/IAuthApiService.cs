@@ -14,6 +14,12 @@ public interface IAuthApiService
     /// Registers a Student and emails the confirmation link (built from <c>App:BaseUrl</c>).
     /// </summary>
     Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto request);
+
+    /// <summary>
+    /// The same registration for the sign-up page, except that a taken email is reported as such (the page
+    /// tells the visitor to use another email or log in); the API hides it.
+    /// </summary>
+    Task<ServiceResult<AuthResponseDto>> RegisterFromSignUpPageAsync(RegisterRequestDto request);
     Task<ServiceResult<AuthResponseDto>> ConfirmEmailAsync(string userId, string token);
     Task<ServiceResult<AuthResponseDto>> LoginAsync(LoginRequestDto request);
     Task<ServiceResult<AuthResponseDto>> RefreshAsync(RefreshTokenRequestDto request);

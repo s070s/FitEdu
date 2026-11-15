@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
-using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
@@ -38,7 +36,7 @@ public partial class AuthService : IAuthService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ISubscriptionService _subscriptionService;
+    private readonly IAuthApiService _authApiService;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AuthService> _logger;
     private readonly string _jwtKey;
@@ -69,7 +67,7 @@ public partial class AuthService : IAuthService
         IHttpContextAccessor httpContextAccessor,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ISubscriptionService subscriptionService,
+        IAuthApiService authApiService,
         ApplicationDbContext context,
         IDataProtectionProvider dataProtectionProvider,
         IConfiguration config,
@@ -78,7 +76,7 @@ public partial class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
         _signInManager = signInManager;
-        _subscriptionService = subscriptionService;
+        _authApiService = authApiService;
         _context = context;
         _logger = logger;
         _jwtKey = config["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured");
@@ -116,18 +114,14 @@ public partial class AuthService : IAuthService
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
         {
-            LogLoginUnknownUser(_logger, request.Email);
+            // Spend the time of a real password check, so the answer does not reveal that the email has no account.
+            UnknownUserPasswordCheck.Run(request.Password);
+            LogLoginUnknownUser(_logger);
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
         }
 
         if (!await _userManager.IsEmailConfirmedAsync(user))
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.EmailNotConfirmedError };
-
-        if (!user.IsEnabled)
-        {
-            LogLoginDisabledUser(_logger, request.Email);
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport };
-        }
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
         if (!result.Succeeded)
@@ -137,12 +131,19 @@ public partial class AuthService : IAuthService
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials };
         }
 
+        // "Disabled" is only told to someone who knows the password; a wrong guess learns nothing about the account.
+        if (!user.IsEnabled)
+        {
+            LogLoginDisabledUser(_logger, user.Id);
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabledContactSupport };
+        }
+
         // The language the member signs in from is kept for the emails an admin may send them later.
         await PreferredLanguageSaver.SaveRequestLanguageAsync(_userManager, user, _logger);
 
         var stamp = await _userManager.GetSecurityStampAsync(user);
         var token = CreateSignInToken(userId: user.Id, adminBackupId: null, deleteAdminBackup: false, securityStamp: stamp, rememberMe: request.RememberMe);
-        LogSignInTokenIssued(_logger, user.Email);
+        LogSignInTokenIssued(_logger, user.Id);
         return new AuthResponseDto { Success = true, Token = token };
     }
 
@@ -156,39 +157,12 @@ public partial class AuthService : IAuthService
         return Task.FromResult("/auth/signout?returnUrl=%2F");
     }
 
-    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
-    {
-        var user = request.ToNewUser();
-
-        var createResult = await _userManager.CreateAsync(user, request.Password);
-        if (!createResult.Succeeded)
-        {
-            LogRegistrationFailed(_logger, request.Email, string.Join(", ", createResult.Errors.Select(e => e.Description)));
-            return new AuthResponseDto
-            {
-                Success = false,
-                Errors = createResult.Errors.Select(e => e.Description)
-            };
-        }
-
-        await _userManager.AddToRoleAsync(user, "Student");
-        await _subscriptionService.AssignFreePlanAsync(user.Id);
-
-        // NOTE:
-        // The confirmation token is generated but deliberately NOT emailed on this Blazor
-        // (cookie) path, which has no IEmailService dependency. In Development users self-confirm
-        // via the dev-only button on the Register/Login pages (/api/auth/dev/confirm-email).
-        // For production: inject IEmailService, send the confirmation link here, and consolidate
-        // with the API path (AuthController.Register already emails) so there is a single flow.
-        _ = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        LogUserRegistered(_logger, request.Email);
-
-        return new AuthResponseDto
-        {
-            Success = true,
-            Message = SuccessMessagesRes.RegistrationSuccessfulNoEmail
-        };
-    }
+    /// <summary>
+    /// Registers through the same flow as the API (Student role, Free plan, confirmation email); the page
+    /// keeps telling the visitor when the email is already taken.
+    /// </summary>
+    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request) =>
+        ToDto(await _authApiService.RegisterFromSignUpPageAsync(request));
 
     /// <inheritdoc />
     /// <remarks>
@@ -301,53 +275,20 @@ public partial class AuthService : IAuthService
         return Task.FromResult(_lessonAssetProtector.Protect(payload, lifetime: LessonAssetTokenLifetime));
     }
 
-    public async Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request)
-    {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user is null || !await _userManager.IsEmailConfirmedAsync(user))
-            return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
+    /// <summary>Emails a reset link when the email belongs to a confirmed account; always answers the same.</summary>
+    public Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request) =>
+        _authApiService.ForgotPasswordAsync(request);
 
-        // NOTE:
-        // The reset token is generated but NOT emailed here, and there is no /reset-password
-        // Blazor page for a link to target. In Development users reset via the dev-only button
-        // on the ForgotPassword page (/api/auth/dev/reset-password). For production: send the
-        // reset email here and add a /reset-password page.
-        _ = await _userManager.GeneratePasswordResetTokenAsync(user);
-        LogPasswordResetRequested(_logger, request.Email);
-
-        return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
-    }
-
-    public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request)
-    {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user is null)
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest };
-
-        var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
-        if (!result.Succeeded)
-            return new AuthResponseDto { Success = false, Errors = result.Errors.Select(e => e.Description) };
-
-        // SEC-1: this rotated SecurityStamp. This path doesn't itself issue JWT refresh tokens
-        // (Blazor circuits use the cookie flow above), but the same user may hold ones minted via
-        // the /api/auth/* REST path — revoke them too so *any* password-reset path fully evicts
-        // a stolen credential, not just the one whose UI happened to be used. Tracked mutation +
-        // SaveChanges (not ExecuteUpdateAsync) so this runs on every provider, including the EF
-        // InMemory provider integration tests use.
-        var activeTokens = await _context.RefreshTokens
-            .Where(rt => rt.UserId == user.Id && rt.RevokedAt == null)
-            .ToListAsync();
-        foreach (var token in activeTokens)
-            token.RevokedAt = DateTimeOffset.UtcNow;
-        await _context.SaveChangesAsync();
-
-        LogPasswordReset(_logger, request.Email);
-        return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetSuccessful };
-    }
+    public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request) =>
+        ToDto(await _authApiService.ResetPasswordAsync(request));
 
     // ---------------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------------
+
+    // The API service embeds its outcome in Value on success and failure alike.
+    private static AuthResponseDto ToDto(ServiceResult<AuthResponseDto> result) =>
+        result.Value ?? new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest };
 
     /// <summary>
     /// Creates a short-lived signed DataProtection token encoding the user ID and
@@ -375,20 +316,14 @@ public partial class AuthService : IAuthService
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for non-existent user: {Email}")]
-    private static partial void LogLoginUnknownUser(ILogger logger, string? email);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login attempt for a non-existent user.")]
+    private static partial void LogLoginUnknownUser(ILogger logger);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for disabled user: {Email}")]
-    private static partial void LogLoginDisabledUser(ILogger logger, string? email);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Login blocked for disabled user: {UserId}")]
+    private static partial void LogLoginDisabledUser(ILogger logger, string userId);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "User {Email} validated — sign-in token issued.")]
-    private static partial void LogSignInTokenIssued(ILogger logger, string? email);
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Registration failed for {Email}: {Errors}")]
-    private static partial void LogRegistrationFailed(ILogger logger, string? email, string errors);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "User {Email} registered.")]
-    private static partial void LogUserRegistered(ILogger logger, string? email);
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} validated — sign-in token issued.")]
+    private static partial void LogSignInTokenIssued(ILogger logger, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} issued impersonation token for user {UserId}.")]
     private static partial void LogImpersonationTokenIssued(ILogger logger, string adminId, string userId);
@@ -401,10 +336,4 @@ public partial class AuthService : IAuthService
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} exiting impersonation — token issued.")]
     private static partial void LogExitImpersonationTokenIssued(ILogger logger, string adminId);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset requested for {Email}.")]
-    private static partial void LogPasswordResetRequested(ILogger logger, string? email);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Password reset for {Email}")]
-    private static partial void LogPasswordReset(ILogger logger, string? email);
 }

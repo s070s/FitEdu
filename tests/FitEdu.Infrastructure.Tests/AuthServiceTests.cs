@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using NSubstitute;
+using FitEdu.Application.ApiServices;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Infrastructure.Data;
@@ -24,15 +27,19 @@ public class AuthServiceTests
         UserManager<ApplicationUser> Um,
         SignInManager<ApplicationUser> Sm,
         ISubscriptionService Subs,
+        IEmailService Email,
         EphemeralDataProtectionProvider Dp,
-        IHttpContextAccessor Accessor);
+        IHttpContextAccessor Accessor,
+        RecordingLogger<AuthService> Log);
 
     private static Harness Build()
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+        um.AddToRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
         var sm = IdentityMocks.MockSignInManager(um);
         var subs = Substitute.For<ISubscriptionService>();
+        var email = Substitute.For<IEmailService>();
         var accessor = Substitute.For<IHttpContextAccessor>();
         var dp = new EphemeralDataProtectionProvider();
         var ctx = DbContextFactory.CreateInMemory();
@@ -44,8 +51,13 @@ public class AuthServiceTests
             ["Jwt:AccessTokenExpirationMinutes"] = "60"
         }).Build();
 
-        var svc = new AuthService(accessor, um, sm, subs, ctx, dp, config, NullLogger<AuthService>.Instance);
-        return new Harness(svc, um, sm, subs, dp, accessor);
+        var log = new RecordingLogger<AuthService>();
+        // The register, forgot and reset flows live in AuthApiService; the real one runs behind AuthService.
+        var authApi = new AuthApiService(um, sm, Substitute.For<ITokenService>(), subs, new RecordingLogger<AuthApiService>(), ctx, email,
+            Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
+
+        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, config, log);
+        return new Harness(svc, um, sm, subs, email, dp, accessor, log);
     }
 
     private static ApplicationUser User(bool enabled = true) =>
@@ -85,8 +97,48 @@ public class AuthServiceTests
         var user = User(enabled: false);
         h.Um.FindByEmailAsync("u@x.com").Returns(user);
         h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<bool>())
+            .Returns(SignInResult.Success);
 
         (await h.Svc.LoginAsync(Login())).Message!.ShouldContain("disabled");
+    }
+
+    [Fact]
+    public async Task Login_DisabledAccountWrongPassword_ReturnsInvalidCredentials()
+    {
+        var h = Build();
+        var user = User(enabled: false);
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<bool>())
+            .Returns(SignInResult.Failed);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Login_Branches_NeverLogTheEmail()
+    {
+        const string privateEmail = "private.person@secret-mail.test";
+        var h = Build();
+        var user = User(enabled: false);
+        user.Email = privateEmail;
+        var login = new LoginRequestDto { Email = privateEmail, Password = "Password1" };
+
+        h.Um.FindByEmailAsync(privateEmail).Returns((ApplicationUser?)null);
+        await h.Svc.LoginAsync(login);
+
+        h.Um.FindByEmailAsync(privateEmail).Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Um.GetSecurityStampAsync(user).Returns("stamp-1");
+        h.Sm.CheckPasswordSignInAsync(user, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+        await h.Svc.LoginAsync(login); // disabled, right password
+        user.IsEnabled = true;
+        await h.Svc.LoginAsync(login); // signed in
+
+        var logged = h.Log.Information.Concat(h.Log.Warnings).Concat(h.Log.Errors).ToList();
+        logged.ShouldNotBeEmpty();
+        logged.ShouldAllBe(entry => !entry.Contains(privateEmail, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -213,8 +265,50 @@ public class AuthServiceTests
         });
 
         result.Success.ShouldBeTrue();
-        result.Message!.ShouldContain("You're signed up");
+        result.Message.ShouldBe(SuccessMessagesRes.RegistrationSuccessfulCheckEmail);
         await h.Subs.Received().AssignFreePlanAsync(Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task Register_Success_SendsTheConfirmationEmail()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+
+        await h.Svc.RegisterAsync(new RegisterRequestDto
+        {
+            Email = "u@x.com",
+            Password = "Password1",
+            ConfirmPassword = "Password1",
+            FirstName = "F",
+            LastName = "L",
+            GdprConsent = true
+        });
+
+        await h.Email.Received(1).SendEmailConfirmationAsync("u@x.com", Arg.Is<string>(link => link.StartsWith("https://site.test/confirm-email?userId=")),
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Register_DuplicateEmail_StillTellsThePageTheEmailIsTaken()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(
+            IdentityResult.Failed(new IdentityError { Code = "DuplicateEmail", Description = "Email 'u@x.com' is already taken." }));
+
+        var result = await h.Svc.RegisterAsync(new RegisterRequestDto
+        {
+            Email = "u@x.com",
+            Password = "Password1",
+            ConfirmPassword = "Password1",
+            FirstName = "F",
+            LastName = "L",
+            GdprConsent = true
+        });
+
+        result.Success.ShouldBeFalse();
+        result.Errors!.ShouldContain("Email 'u@x.com' is already taken.");
     }
 
     [Fact]
@@ -319,6 +413,46 @@ public class AuthServiceTests
 
         result.Success.ShouldBeTrue();
         result.Message!.ShouldContain("If an account uses that email");
+    }
+
+    [Fact]
+    public async Task ForgotPassword_ConfirmedUser_SendsResetEmail()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(user).Returns("reset-token");
+
+        var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u@x.com" });
+
+        result.Success.ShouldBeTrue();
+        await h.Email.Received(1).SendPasswordResetAsync("u@x.com", "https://site.test/reset-password?email=u%40x.com&token=reset-token",
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResetPassword_KnownUserBadToken_ReturnsSameGenericMessageAsUnknownUser()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.FindByEmailAsync("nobody@x.com").Returns((ApplicationUser?)null);
+        h.Um.ResetPasswordAsync(user, "bad-token", Arg.Any<string>())
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+
+        var knownUser = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto
+        {
+            Email = "u@x.com", Token = "bad-token", NewPassword = "Password1", ConfirmPassword = "Password1"
+        });
+        var unknownUser = await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto
+        {
+            Email = "nobody@x.com", Token = "bad-token", NewPassword = "Password1", ConfirmPassword = "Password1"
+        });
+
+        knownUser.Success.ShouldBeFalse();
+        knownUser.Message.ShouldBe(unknownUser.Message);
+        knownUser.Errors.ShouldBeNull();
     }
 
     [Fact]

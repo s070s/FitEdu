@@ -1,6 +1,5 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
@@ -23,12 +22,15 @@ public class AuthApiServiceTests
 {
     private const string SiteBaseUrl = "https://site.test";
 
-    private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, SignInManager<ApplicationUser> Sm, ApplicationDbContext Db, ITokenService Tok, IEmailService Email);
+    private sealed record Harness(AuthApiService Svc, UserManager<ApplicationUser> Um, SignInManager<ApplicationUser> Sm, ApplicationDbContext Db, ITokenService Tok, IEmailService Email,
+        ISubscriptionService Subs, RecordingLogger<AuthApiService> Log);
 
     private static Harness Build()
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+        um.AddToRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        um.DeleteAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
         var sm = IdentityMocks.MockSignInManager(um);
         var tok = Substitute.For<ITokenService>();
         tok.GenerateAccessTokenAsync(Arg.Any<ApplicationUser>())
@@ -38,9 +40,11 @@ public class AuthApiServiceTests
         var email = Substitute.For<IEmailService>();
         var db = DbContextFactory.CreateInMemory();
 
-        var svc = new AuthApiService(um, sm, tok, subs, NullLogger<AuthApiService>.Instance, db, email,
+        var log = new RecordingLogger<AuthApiService>();
+
+        var svc = new AuthApiService(um, sm, tok, subs, log, db, email,
             Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }));
-        return new Harness(svc, um, sm, db, tok, email);
+        return new Harness(svc, um, sm, db, tok, email, subs, log);
     }
 
     private static ApplicationUser User(string id = "u1", bool enabled = true, string stamp = "stamp-1") =>
@@ -293,6 +297,238 @@ public class AuthApiServiceTests
         await h.Svc.RegisterAsync(request);
 
         createdUser!.Goal.ShouldBe(FitnessGoal.Strength);
+    }
+
+    // ---- Registration is all or nothing (P01-14) ----
+
+    [Fact]
+    public async Task Register_AssignPlanThrows_DeletesUserAndReturnsError()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Subs.AssignFreePlanAsync(Arg.Any<string>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("database unreachable")));
+
+        var result = await h.Svc.RegisterAsync(RegisterRequest());
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Success.ShouldBeFalse();
+        result.Value.Message.ShouldBe(ErrorMessagesRes.RegistrationFailedGeneric);
+        await h.Um.Received(1).DeleteAsync(Arg.Any<ApplicationUser>());
+        await h.Email.DidNotReceiveWithAnyArgs().SendEmailConfirmationAsync(default!, default!, default!, default);
+    }
+
+    [Fact]
+    public async Task Register_RoleAssignmentFails_DeletesUserAndReturnsError()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.AddToRoleAsync(Arg.Any<ApplicationUser>(), "Student")
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "RoleMissing", Description = "Role STUDENT does not exist." }));
+
+        var result = await h.Svc.RegisterAsync(RegisterRequest());
+
+        result.IsSuccess.ShouldBeFalse();
+        await h.Um.Received(1).DeleteAsync(Arg.Any<ApplicationUser>());
+        await h.Subs.DidNotReceive().AssignFreePlanAsync(Arg.Any<string>());
+    }
+
+    // ---- Sign-up page: the one visible difference from the API is the taken email (owner decision D1) ----
+
+    [Fact]
+    public async Task RegisterFromSignUpPage_DuplicateEmail_ReportsTheTakenEmail()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(
+            IdentityResult.Failed(new IdentityError { Code = "DuplicateEmail", Description = "Email 'u@x.com' is already taken." }));
+
+        var result = await h.Svc.RegisterFromSignUpPageAsync(RegisterRequest());
+
+        result.Value!.Errors.ShouldBe(["Email 'u@x.com' is already taken."]);
+    }
+
+    [Fact]
+    public async Task Register_DuplicateEmail_ReturnsTheGenericMessageOnTheApi()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(
+            IdentityResult.Failed(new IdentityError { Code = "DuplicateEmail", Description = "Email 'u@x.com' is already taken." }));
+
+        var result = await h.Svc.RegisterAsync(RegisterRequest());
+
+        result.Value!.Errors.ShouldBe([ErrorMessagesRes.RegistrationFailedGeneric]);
+    }
+
+    [Fact]
+    public async Task RegisterFromSignUpPage_Success_SendsTheConfirmationEmail()
+    {
+        var h = Build();
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+
+        var result = await h.Svc.RegisterFromSignUpPageAsync(RegisterRequest());
+
+        result.IsSuccess.ShouldBeTrue();
+        await h.Subs.Received(1).AssignFreePlanAsync(Arg.Any<string>());
+        await h.Email.Received(1).SendEmailConfirmationAsync("u@x.com", Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    // ---- Logs never hold an email address (P01-1) ----
+
+    private const string PrivateEmail = "private.person@secret-mail.test";
+
+    private static List<string> LoggedText(Harness h) => [.. h.Log.Information, .. h.Log.Warnings, .. h.Log.Errors];
+
+    [Fact]
+    public async Task Register_Branches_NeverLogTheEmail()
+    {
+        var h = Build();
+        var request = RegisterRequest();
+        request.Email = PrivateEmail;
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Failed(
+            new IdentityError { Code = "DuplicateEmail", Description = $"Email '{PrivateEmail}' is already taken." }));
+        await h.Svc.RegisterAsync(request);
+
+        h.Um.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        h.Um.GenerateEmailConfirmationTokenAsync(Arg.Any<ApplicationUser>()).Returns("token");
+        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
+        await h.Svc.RegisterAsync(request);
+
+        LoggedText(h).ShouldNotBeEmpty();
+        LoggedText(h).ShouldAllBe(entry => !entry.Contains(PrivateEmail, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task Login_Branches_NeverLogTheEmail()
+    {
+        var h = Build();
+        var member = User();
+        member.Email = PrivateEmail;
+        var login = new LoginRequestDto { Email = PrivateEmail, Password = "Password1!" };
+
+        // unknown email
+        h.Um.FindByEmailAsync(PrivateEmail).Returns((ApplicationUser?)null);
+        await h.Svc.LoginAsync(login);
+
+        h.Um.FindByEmailAsync(PrivateEmail).Returns(member);
+
+        // email not confirmed (right password)
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+        h.Um.IsEmailConfirmedAsync(member).Returns(false);
+        await h.Svc.LoginAsync(login);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+
+        // wrong password, locked out, disabled (right password), success
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Failed);
+        await h.Svc.LoginAsync(login);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.LockedOut);
+        await h.Svc.LoginAsync(login);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+        member.IsEnabled = false;
+        await h.Svc.LoginAsync(login);
+        member.IsEnabled = true;
+        await h.Svc.LoginAsync(login);
+
+        LoggedText(h).ShouldNotBeEmpty();
+        LoggedText(h).ShouldAllBe(entry => !entry.Contains(PrivateEmail, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ForgotAndResetPassword_Branches_NeverLogTheEmail()
+    {
+        var h = Build();
+        var member = User();
+        member.Email = PrivateEmail;
+
+        // unknown email, then a confirmed account whose reset email cannot be sent
+        h.Um.FindByEmailAsync(PrivateEmail).Returns((ApplicationUser?)null);
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = PrivateEmail });
+        await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = PrivateEmail, Token = "t", NewPassword = "Password1!", ConfirmPassword = "Password1!" });
+
+        h.Um.FindByEmailAsync(PrivateEmail).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        h.Email.SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = PrivateEmail });
+
+        // reset with a bad token, then a good one
+        h.Um.ResetPasswordAsync(member, "bad", Arg.Any<string>()).Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+        await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = PrivateEmail, Token = "bad", NewPassword = "Password1!", ConfirmPassword = "Password1!" });
+        h.Um.ResetPasswordAsync(member, "good", Arg.Any<string>()).Returns(IdentityResult.Success);
+        await h.Svc.ResetPasswordAsync(new ResetPasswordRequestDto { Email = PrivateEmail, Token = "good", NewPassword = "Password1!", ConfirmPassword = "Password1!" });
+
+        LoggedText(h).ShouldNotBeEmpty();
+        LoggedText(h).ShouldAllBe(entry => !entry.Contains(PrivateEmail, StringComparison.OrdinalIgnoreCase));
+    }
+
+    // ---- LoginAsync: "disabled" is only told after the right password (P01-11) ----
+
+    [Fact]
+    public async Task Login_DisabledUserWrongPassword_ReturnsInvalidCredentials()
+    {
+        var h = Build();
+        var member = User(enabled: false);
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Failed);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Wrong-Pass-9!" });
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Login_DisabledUserRightPassword_SaysTheAccountIsDisabled()
+    {
+        var h = Build();
+        var member = User(enabled: false);
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.AccountDisabledContactSupport);
+        await h.Tok.DidNotReceive().GenerateAccessTokenAsync(Arg.Any<ApplicationUser>());
+    }
+
+    // ---- RefreshAsync: rotation keeps the lifetime the token was issued with (P01-8) ----
+
+    [Fact]
+    public async Task Refresh_RememberMeToken_KeepsThirtyDayWindow()
+    {
+        var h = Build();
+        var user = User();
+        var issuedAt = DateTimeOffset.UtcNow.AddDays(-1);
+        var token = Seed(h.Db, user, "plain-1", user.SecurityStamp, expiresAt: issuedAt.AddDays(30));
+        token.CreatedAt = issuedAt;
+        await h.Db.SaveChangesAsync();
+
+        var result = await h.Svc.RefreshAsync(new RefreshTokenRequestDto { RefreshToken = "plain-1" });
+
+        result.IsSuccess.ShouldBeTrue();
+        var rotated = await h.Db.RefreshTokens.SingleAsync(rt => rt.Id != token.Id);
+        (rotated.ExpiresAt - rotated.CreatedAt).ShouldBe(TimeSpan.FromDays(30), TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task Refresh_ShortLivedToken_KeepsItsSevenDayWindow()
+    {
+        var h = Build();
+        var user = User();
+        var issuedAt = DateTimeOffset.UtcNow.AddDays(-1);
+        var token = Seed(h.Db, user, "plain-1", user.SecurityStamp, expiresAt: issuedAt.AddDays(7));
+        token.CreatedAt = issuedAt;
+        await h.Db.SaveChangesAsync();
+
+        await h.Svc.RefreshAsync(new RefreshTokenRequestDto { RefreshToken = "plain-1" });
+
+        var rotated = await h.Db.RefreshTokens.SingleAsync(rt => rt.Id != token.Id);
+        (rotated.ExpiresAt - rotated.CreatedAt).ShouldBe(TimeSpan.FromDays(7), TimeSpan.FromSeconds(1));
     }
 
     // ---- RefreshAsync: baseline behaviour -------------------------------------
