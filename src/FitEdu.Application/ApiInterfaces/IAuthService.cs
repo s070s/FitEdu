@@ -51,6 +51,14 @@ public interface IAuthService
     Task<AuthResponseDto> ImpersonateAsync(ClaimsPrincipal admin, string userId);
 
     Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request);
+
+    /// <summary>
+    /// Emails a new confirmation link to an account that has not confirmed yet; the same success answer for
+    /// every email. Counts against the page's attempt limit, like the other anonymous calls
+    /// (<see cref="AuthFailure.TooManyAttempts"/> when it is used up).
+    /// </summary>
+    Task<AuthResponseDto> ResendConfirmationAsync(string email);
+
     Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request);
 
     /// <summary>

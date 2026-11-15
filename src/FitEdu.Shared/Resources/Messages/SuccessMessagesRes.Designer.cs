@@ -106,6 +106,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to If an account with that email is waiting to be confirmed, we've sent a new link..
+        /// </summary>
+        public static string ConfirmationEmailResent {
+            get {
+                return ResourceManager.GetString("ConfirmationEmailResent", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Password reset successfully..
         /// </summary>
         public static string PasswordResetSuccessful {

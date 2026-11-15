@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
@@ -27,12 +28,22 @@ public partial class AuthApiService(
     IApplicationDbContext context,
     IEmailService emailService,
     IOptions<AppOptions> appOptions,
-    TimeProvider timeProvider) : IAuthApiService
+    TimeProvider timeProvider,
+    IMemoryCache cache) : IAuthApiService
 {
     private const string StudentRole = "Student";
 
     // Identity's password-rule errors (PasswordTooShort, PasswordRequiresDigit, ...) and our PasswordTooCommon.
     private const string PasswordErrorCodePrefix = "Password";
+
+    // One email of each kind per account in this time, however often it is asked for, so the forgotten-password
+    // and resend forms cannot be used to flood a member's inbox.
+    private static readonly TimeSpan EmailCooldown = TimeSpan.FromMinutes(2);
+    private const string ConfirmationEmailKind = "confirm";
+    private const string ResetEmailKind = "reset";
+
+    // Serialises the check-and-claim of an email slot, so a burst of parallel requests sends one email, not all.
+    private static readonly Lock EmailSlotLock = new();
 
     /// <summary>
     /// Registration for the JSON API. A taken email is answered with the same generic error as any other
@@ -93,24 +104,8 @@ public partial class AuthApiService(
             });
         }
 
-        var confirmUrl = AuthLinks.ConfirmEmail(appOptions.Value.BaseUrl, user.Id, confirmToken);
-
-        // NOTE: confirmUrl points at the site's /confirm-email page, which posts the userId and token
-        // to POST /api/auth/confirm-email. In Development StubEmailService only writes it to the log.
-        //
-        // REL-2: the account/role/Free-plan are already committed above — a transient SMTP
-        // failure here must not turn into a 500 after the account exists (the user would be
-        // stuck: can't re-register with a duplicate email, and never got the confirmation link).
-        // Log and swallow instead; registration still reports success.
         LogUserRegistered(logger, user.Id);
-        try
-        {
-            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl, user.PreferredLanguage);
-        }
-        catch (Exception ex)
-        {
-            LogConfirmationEmailFailed(logger, ex, user.Id);
-        }
+        await SendConfirmationEmailAsync(user, confirmToken, user.PreferredLanguage);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
         {
@@ -180,6 +175,56 @@ public partial class AuthApiService(
         catch (Exception ex)
         {
             LogRegistrationCleanupThrew(logger, ex, user.Id);
+        }
+    }
+
+    // Emails the confirmation link of an account.
+    //
+    // NOTE: the link points at the site's /confirm-email page, which confirms the userId and token in
+    // process. In Development StubEmailService only writes it to the log.
+    //
+    // REL-2: the account/role/Free-plan may already be committed — a transient email failure here must not
+    // turn into a 500 (the member would be stuck: can't re-register with a duplicate email, and never got the
+    // confirmation link). Log and swallow instead; the caller still reports success.
+    private async Task SendConfirmationEmailAsync(ApplicationUser user, string confirmToken, string language)
+    {
+        var confirmUrl = AuthLinks.ConfirmEmail(appOptions.Value.BaseUrl, user.Id, confirmToken);
+        try
+        {
+            await emailService.SendEmailConfirmationAsync(user.Email!, confirmUrl, language);
+        }
+        catch (Exception ex)
+        {
+            LogConfirmationEmailFailed(logger, ex, user.Id);
+        }
+    }
+
+    // A new confirmation link for an account that has not confirmed yet: a member whose first email is lost,
+    // or who asks for a password reset instead. Silent when this account got one in the last two minutes.
+    private async Task SendNewConfirmationLinkAsync(ApplicationUser user, string language)
+    {
+        if (!TryClaimEmailSlot(ConfirmationEmailKind, user.Id))
+            return;
+
+        var confirmToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        LogConfirmationEmailResent(logger, user.Id);
+        await SendConfirmationEmailAsync(user, confirmToken, language);
+    }
+
+    // True, and starts the cooldown, when this account may be emailed this kind of message now.
+    private bool TryClaimEmailSlot(string kind, string userId)
+    {
+        var key = $"auth-email:{kind}:{userId}";
+        var now = timeProvider.GetUtcNow();
+
+        lock (EmailSlotLock)
+        {
+            // The time is stored and compared with the injected clock; the cache's own expiry only frees the memory.
+            if (cache.TryGetValue(key, out DateTimeOffset sentAt) && now - sentAt < EmailCooldown)
+                return false;
+
+            cache.Set(key, now, EmailCooldown);
+            return true;
         }
     }
 
@@ -408,18 +453,29 @@ public partial class AuthApiService(
     public async Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
-        if (user == null || !await userManager.IsEmailConfirmedAsync(user))
+        if (user == null)
         {
             // Don't reveal if user exists
             return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
         }
 
-        var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var resetUrl = AuthLinks.ResetPassword(appOptions.Value.BaseUrl, user.Email!, token);
-
         // The email uses the language of the page the request came from. It is not saved: this request
         // is anonymous, so anyone who knows the email could flip it. The next sign-in saves it.
         var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
+
+        if (!await userManager.IsEmailConfirmedAsync(user))
+        {
+            // The member never confirmed, so a reset link would not let them sign in. The email they get is the
+            // confirmation link instead, and the answer stays the same, so it reveals nothing about the account.
+            await SendNewConfirmationLinkAsync(user, requestLanguage);
+            return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
+        }
+
+        if (!TryClaimEmailSlot(ResetEmailKind, user.Id))
+            return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
+
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        var resetUrl = AuthLinks.ResetPassword(appOptions.Value.BaseUrl, user.Email!, token);
 
         LogPasswordResetRequested(logger, user.Id);
 
@@ -435,6 +491,22 @@ public partial class AuthApiService(
         }
 
         return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.PasswordResetLinkSent };
+    }
+
+    public async Task<AuthResponseDto> ResendConfirmationAsync(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+
+        // The same answer for an unknown email, a confirmed account and an unconfirmed one, so the endpoint
+        // cannot be used to find out which emails have an account or which have confirmed.
+        if (user != null && !await userManager.IsEmailConfirmedAsync(user))
+        {
+            // Like the forgotten-password email, in the language of the page the request came from.
+            var requestLanguage = UserLanguage.FromCulture(CultureInfo.CurrentUICulture);
+            await SendNewConfirmationLinkAsync(user, requestLanguage);
+        }
+
+        return new AuthResponseDto { Success = true, Message = SuccessMessagesRes.ConfirmationEmailResent };
     }
 
     public async Task<ServiceResult<AuthResponseDto>> ResetPasswordAsync(ResetPasswordRequestDto request)
@@ -531,7 +603,10 @@ public partial class AuthApiService(
     [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} registered. Confirmation email queued.")]
     private static partial void LogUserRegistered(ILogger logger, string userId);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to send confirmation email for user {UserId} after registration.")]
+    [LoggerMessage(Level = LogLevel.Information, Message = "A new confirmation email was requested for user {UserId}. Email queued.")]
+    private static partial void LogConfirmationEmailResent(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to send the confirmation email for user {UserId}.")]
     private static partial void LogConfirmationEmailFailed(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Email confirmation failed for {UserId}: {Errors}")]

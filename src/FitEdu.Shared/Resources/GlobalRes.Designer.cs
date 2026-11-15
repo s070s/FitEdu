@@ -230,6 +230,15 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Label_ForgotPassword", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Resend confirmation email.
+        /// </summary>
+        public static string Label_ResendConfirmation {
+            get {
+                return ResourceManager.GetString("Label_ResendConfirmation", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to I consent to the processing of my personal data (required)..

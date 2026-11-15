@@ -307,6 +307,10 @@ internal sealed class RequestExampleSchemaTransformer : IOpenApiSchemaTransforme
         {
             ["email"] = "student@example.com"
         },
+        [typeof(ResendConfirmationRequestDto)] = () => new JsonObject
+        {
+            ["email"] = "student@example.com"
+        },
         [typeof(ResetPasswordRequestDto)] = () => new JsonObject
         {
             ["email"] = "student@example.com",

@@ -74,13 +74,27 @@ public class AuthController : ControllerBase
 
     /// <summary>
     /// Request a password reset. Always answers with the same generic success; when the email belongs
-    /// to a confirmed account, a reset link is emailed.
+    /// to a confirmed account, a reset link is emailed, and when it belongs to an unconfirmed one, a new
+    /// confirmation link is (at most one email every two minutes per account).
     /// </summary>
     [HttpPost("forgot-password")]
     [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResponseDto>> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
     {
         var dto = await _authApiService.ForgotPasswordAsync(request);
+        return Ok(dto);
+    }
+
+    /// <summary>
+    /// Ask for the confirmation email again. Always answers with the same generic success; when the email
+    /// belongs to an account that has not confirmed yet, a new confirmation link is emailed (at most one
+    /// every two minutes per account).
+    /// </summary>
+    [HttpPost("resend-confirmation")]
+    [EnableRateLimiting("auth")]
+    public async Task<ActionResult<AuthResponseDto>> ResendConfirmation([FromBody] ResendConfirmationRequestDto request)
+    {
+        var dto = await _authApiService.ResendConfirmationAsync(request.Email);
         return Ok(dto);
     }
 

@@ -132,6 +132,9 @@
   <data name="PasswordResetLinkSent" xml:space="preserve">
     <value>If an account uses that email, we've sent a reset link.</value>
   </data>
+  <data name="ConfirmationEmailResent" xml:space="preserve">
+    <value>If an account with that email is waiting to be confirmed, we've sent a new link.</value>
+  </data>
   <data name="PasswordResetSuccessful" xml:space="preserve">
     <value>Your password has been changed.</value>
   </data>

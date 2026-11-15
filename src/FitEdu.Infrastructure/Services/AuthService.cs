@@ -249,6 +249,16 @@ public partial class AuthService : IAuthService
         return _authApiService.ForgotPasswordAsync(request);
     }
 
+    /// <summary>Emails a new confirmation link to an unconfirmed account; always answers the same.</summary>
+    public Task<AuthResponseDto> ResendConfirmationAsync(string email)
+    {
+        if (!AttemptAllowed(email))
+            return Task.FromResult(TooManyAttempts());
+
+        ReadFreshData();
+        return _authApiService.ResendConfirmationAsync(email);
+    }
+
     public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request)
     {
         ReadFreshData();

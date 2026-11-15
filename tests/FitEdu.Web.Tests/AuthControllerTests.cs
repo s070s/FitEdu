@@ -252,6 +252,43 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
         body!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
     }
 
+    // ---- Resend confirmation: the same generic answer for every email ----
+
+    [Fact]
+    public async Task ResendConfirmation_AnswersGenerically()
+    {
+        var client = _factory.CreateClient();
+        var unconfirmedEmail = $"pending-{Guid.NewGuid():N}@test.com";
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var pending = new ApplicationUser { UserName = unconfirmedEmail, Email = unconfirmedEmail, FirstName = "Test", LastName = "User" };
+            (await userManager.CreateAsync(pending, CustomWebAppFactory.TestPassword)).Succeeded.ShouldBeTrue();
+        }
+
+        var confirmedEmail = $"confirmed-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(confirmedEmail, CustomWebAppFactory.TestPassword);
+
+        var unconfirmed = await client.PostAsJsonAsync("/api/auth/resend-confirmation", new ResendConfirmationRequestDto { Email = unconfirmedEmail });
+        var confirmed = await client.PostAsJsonAsync("/api/auth/resend-confirmation", new ResendConfirmationRequestDto { Email = confirmedEmail });
+        var unknown = await client.PostAsJsonAsync("/api/auth/resend-confirmation", new ResendConfirmationRequestDto { Email = $"nobody-{Guid.NewGuid():N}@test.com" });
+
+        foreach (var response in new[] { unconfirmed, confirmed, unknown })
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var expected = (await unconfirmed.Content.ReadFromJsonAsync<AuthResponseDto>())!;
+        expected.Message.ShouldBe(SuccessMessagesRes.ConfirmationEmailResent);
+        (await confirmed.Content.ReadFromJsonAsync<AuthResponseDto>())!.Message.ShouldBe(expected.Message);
+        (await unknown.Content.ReadFromJsonAsync<AuthResponseDto>())!.Message.ShouldBe(expected.Message);
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_InvalidEmail_Returns400()
+    {
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/resend-confirmation", new ResendConfirmationRequestDto { Email = "not-an-email" });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
     // ---- Forgot password: the same generic answer for every email ----
 
     [Fact]

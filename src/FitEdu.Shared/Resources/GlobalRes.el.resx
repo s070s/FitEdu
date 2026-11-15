@@ -162,6 +162,9 @@
   <data name="Label_ForgotPassword" xml:space="preserve">
     <value>Ξέχασες τον κωδικό σου;</value>
   </data>
+  <data name="Label_ResendConfirmation" xml:space="preserve">
+    <value>Στείλε ξανά το email επιβεβαίωσης</value>
+  </data>
   <data name="Label_Info_LastName" xml:space="preserve">
     <value>Επώνυμο</value>
   </data>

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
@@ -44,7 +45,8 @@ public class AuthApiServiceTests
         var log = new RecordingLogger<AuthApiService>();
 
         var svc = new AuthApiService(um, sm, tok, subs, log, db, email,
-            Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }), timeProvider ?? TimeProvider.System);
+            Options.Create(new AppOptions { BaseUrl = SiteBaseUrl }), timeProvider ?? TimeProvider.System,
+            new MemoryCache(new MemoryCacheOptions()));
         return new Harness(svc, um, sm, db, tok, email, subs, log);
     }
 
@@ -682,6 +684,207 @@ public class AuthApiServiceTests
 
         result.IsSuccess.ShouldBeTrue();
         result.Value!.Message.ShouldBe(SuccessMessagesRes.EmailConfirmedSuccessfully);
+    }
+
+    // ---- Resending the confirmation link (P02-3) -----------------------------------------------------
+
+    private static ApplicationUser UnconfirmedMember(Harness h, string token = "confirm-token")
+    {
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(false);
+        h.Um.GenerateEmailConfirmationTokenAsync(member).Returns(token);
+        return member;
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_Unconfirmed_SendsOneAuthLinksLink()
+    {
+        var h = Build();
+        var member = UnconfirmedMember(h, "a+b/c==");
+
+        var result = await h.Svc.ResendConfirmationAsync(member.Email!);
+
+        result.Success.ShouldBeTrue();
+        result.Message.ShouldBe(SuccessMessagesRes.ConfirmationEmailResent);
+        await h.Email.Received(1).SendEmailConfirmationAsync(
+            member.Email!,
+            AuthLinks.ConfirmEmail(SiteBaseUrl, member.Id, "a+b/c=="),
+            UserLanguage.English, Arg.Any<CancellationToken>());
+        LoggedText(h).ShouldContain(entry => entry.Contains(member.Id, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_OnTheGreekSite_SendsTheGreekEmail()
+    {
+        var h = Build();
+        var member = UnconfirmedMember(h);
+        using var cultureScope = new CultureScope("el-GR");
+
+        await h.Svc.ResendConfirmationAsync(member.Email!);
+
+        await h.Email.Received(1).SendEmailConfirmationAsync(member.Email!, Arg.Any<string>(), UserLanguage.Greek, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_UnknownOrConfirmed_SendsNothingSameAnswer()
+    {
+        var h = Build();
+        var confirmed = User("u-confirmed");
+        confirmed.Email = "confirmed@x.com";
+        h.Um.FindByEmailAsync("confirmed@x.com").Returns(confirmed);
+        h.Um.IsEmailConfirmedAsync(confirmed).Returns(true);
+        h.Um.FindByEmailAsync("ghost@x.com").Returns((ApplicationUser?)null);
+        var unconfirmed = User("u-pending");
+        unconfirmed.Email = "pending@x.com";
+        h.Um.FindByEmailAsync("pending@x.com").Returns(unconfirmed);
+        h.Um.IsEmailConfirmedAsync(unconfirmed).Returns(false);
+        h.Um.GenerateEmailConfirmationTokenAsync(unconfirmed).Returns("confirm-token");
+
+        var forUnconfirmed = await h.Svc.ResendConfirmationAsync("pending@x.com");
+        var forConfirmed = await h.Svc.ResendConfirmationAsync(confirmed.Email!);
+        var forUnknown = await h.Svc.ResendConfirmationAsync("ghost@x.com");
+
+        forConfirmed.Message.ShouldBe(forUnconfirmed.Message);
+        forUnknown.Message.ShouldBe(forUnconfirmed.Message);
+        forConfirmed.Success.ShouldBeTrue();
+        forUnknown.Success.ShouldBeTrue();
+        await h.Email.Received(1).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_EmailSendThrows_StillGivesTheSameAnswer()
+    {
+        var h = Build();
+        var member = UnconfirmedMember(h);
+        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
+
+        var result = await h.Svc.ResendConfirmationAsync(member.Email!);
+
+        result.Success.ShouldBeTrue();
+        result.Message.ShouldBe(SuccessMessagesRes.ConfirmationEmailResent);
+        h.Log.Errors.ShouldContain(entry => entry.Contains(member.Id, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_NeverLogsTheEmail()
+    {
+        var h = Build();
+        var member = UnconfirmedMember(h);
+        member.Email = PrivateEmail;
+        h.Um.FindByEmailAsync(PrivateEmail).Returns(member);
+        h.Email.SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException(new InvalidOperationException("SMTP unreachable")));
+        await h.Svc.ResendConfirmationAsync(PrivateEmail);
+        await h.Svc.ResendConfirmationAsync("ghost@x.com");
+
+        LoggedText(h).ShouldNotBeEmpty();
+        LoggedText(h).ShouldAllBe(entry => !entry.Contains(PrivateEmail, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ForgotPassword_UnconfirmedAccount_SendsTheConfirmationLinkInstead()
+    {
+        // A member who never confirmed would otherwise get nothing, and be stuck.
+        var h = Build();
+        var member = UnconfirmedMember(h);
+
+        var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = member.Email! });
+
+        result.Success.ShouldBeTrue();
+        result.Message.ShouldBe(SuccessMessagesRes.PasswordResetLinkSent); // the answer does not reveal the state
+        await h.Email.Received(1).SendEmailConfirmationAsync(
+            member.Email!, AuthLinks.ConfirmEmail(SiteBaseUrl, member.Id, "confirm-token"), UserLanguage.English, Arg.Any<CancellationToken>());
+        await h.Email.DidNotReceiveWithAnyArgs().SendPasswordResetAsync(default!, default!, default!, default);
+    }
+
+    // ---- One email per account every two minutes (P02-10) ----------------------------------------------
+
+    // A clock the test moves by hand; the project has no fake-clock package.
+    private sealed class AdjustableTimeProvider(DateTimeOffset start) : TimeProvider
+    {
+        private DateTimeOffset _now = start;
+
+        public override DateTimeOffset GetUtcNow() => _now;
+
+        public void Advance(TimeSpan time) => _now += time;
+    }
+
+    private static readonly DateTimeOffset CooldownStart = new(2026, 6, 14, 10, 0, 0, TimeSpan.Zero);
+
+    [Fact]
+    public async Task ForgotPassword_TwiceInsideCooldown_SendsOneEmail()
+    {
+        var clock = new AdjustableTimeProvider(CooldownStart);
+        var h = Build(timeProvider: clock);
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        var request = new ForgotPasswordRequestDto { Email = member.Email! };
+
+        var first = await h.Svc.ForgotPasswordAsync(request);
+        clock.Advance(TimeSpan.FromSeconds(119));
+        var second = await h.Svc.ForgotPasswordAsync(request);
+
+        second.Message.ShouldBe(first.Message); // skipped silently, the same answer
+        await h.Email.Received(1).SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ForgotPassword_AfterTheCooldown_SendsAgain()
+    {
+        var clock = new AdjustableTimeProvider(CooldownStart);
+        var h = Build(timeProvider: clock);
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        var request = new ForgotPasswordRequestDto { Email = member.Email! };
+
+        await h.Svc.ForgotPasswordAsync(request);
+        clock.Advance(TimeSpan.FromMinutes(2));
+        await h.Svc.ForgotPasswordAsync(request);
+
+        await h.Email.Received(2).SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_TwiceInsideCooldown_SendsOneEmail()
+    {
+        var clock = new AdjustableTimeProvider(CooldownStart);
+        var h = Build(timeProvider: clock);
+        var member = UnconfirmedMember(h);
+
+        await h.Svc.ResendConfirmationAsync(member.Email!);
+        clock.Advance(TimeSpan.FromSeconds(30));
+        await h.Svc.ResendConfirmationAsync(member.Email!);
+        clock.Advance(TimeSpan.FromMinutes(2));
+        await h.Svc.ResendConfirmationAsync(member.Email!);
+
+        await h.Email.Received(2).SendEmailConfirmationAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Cooldown_IsPerAccountAndPerKindOfEmail()
+    {
+        var h = Build(timeProvider: new AdjustableTimeProvider(CooldownStart));
+        var confirmedMember = User("u1");
+        h.Um.FindByEmailAsync("u1@x.com").Returns(confirmedMember);
+        confirmedMember.Email = "u1@x.com";
+        h.Um.IsEmailConfirmedAsync(confirmedMember).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(confirmedMember).Returns("reset-token");
+        var otherMember = User("u2");
+        otherMember.Email = "u2@x.com";
+        h.Um.FindByEmailAsync("u2@x.com").Returns(otherMember);
+        h.Um.IsEmailConfirmedAsync(otherMember).Returns(true);
+        h.Um.GeneratePasswordResetTokenAsync(otherMember).Returns("reset-token-2");
+
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u1@x.com" });
+        await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u2@x.com" });
+
+        await h.Email.Received(2).SendPasswordResetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     // ---- Every refusal names its reason in Failure, so a page never compares translated text (P02-18) ----

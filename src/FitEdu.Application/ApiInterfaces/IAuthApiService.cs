@@ -24,8 +24,20 @@ public interface IAuthApiService
     Task<ServiceResult<AuthResponseDto>> LoginAsync(LoginRequestDto request);
     Task<ServiceResult<AuthResponseDto>> RefreshAsync(RefreshTokenRequestDto request);
 
-    /// <param name="request">The email to send a reset link to (built from <c>App:BaseUrl</c>).</param>
+    /// <summary>
+    /// Emails a reset link (built from <c>App:BaseUrl</c>) when the email belongs to a confirmed account, and
+    /// a new confirmation link when it belongs to an unconfirmed one (a reset link could not sign them in).
+    /// Always answers the same, and sends at most one email per account every two minutes.
+    /// </summary>
+    /// <param name="request">The email to send the link to.</param>
     Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request);
+
+    /// <summary>
+    /// Emails a new confirmation link (built from <c>App:BaseUrl</c>, in the request language) when the email
+    /// belongs to an account that has not confirmed yet. Always the same success answer, whether the email is
+    /// unknown, already confirmed or unconfirmed; at most one email per account every two minutes.
+    /// </summary>
+    Task<AuthResponseDto> ResendConfirmationAsync(string email);
     Task<ServiceResult<AuthResponseDto>> ResetPasswordAsync(ResetPasswordRequestDto request);
     Task<CurrentUserDto?> GetCurrentUserAsync(string userId);
 

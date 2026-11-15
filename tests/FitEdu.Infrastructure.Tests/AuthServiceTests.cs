@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using FitEdu.Application.ApiServices;
@@ -47,7 +48,8 @@ public class AuthServiceTests
         var log = new RecordingLogger<AuthService>();
         // The register, forgot and reset flows live in AuthApiService; the real one runs behind AuthService.
         var authApi = new AuthApiService(um, sm, tokens, subs, new RecordingLogger<AuthApiService>(), ctx, email,
-            Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System);
+            Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System,
+            new MemoryCache(new MemoryCacheOptions()));
 
         var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens,
             attemptLimiter ?? new AuthAttemptLimiter(), clientAddress ?? new CircuitClientAddress(), log);
@@ -600,6 +602,37 @@ public class AuthServiceTests
         result.Success.ShouldBeTrue();
         await h.Email.Received(1).SendPasswordResetAsync("u@x.com", "https://site.test/reset-password?email=u%40x.com&token=reset-token",
             Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_UnconfirmedUser_SendsTheConfirmationLink()
+    {
+        var h = Build();
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(false);
+        h.Um.GenerateEmailConfirmationTokenAsync(user).Returns("confirm-token");
+
+        var result = await h.Svc.ResendConfirmationAsync("u@x.com");
+
+        result.Success.ShouldBeTrue();
+        result.Message.ShouldBe(SuccessMessagesRes.ConfirmationEmailResent);
+        await h.Email.Received(1).SendEmailConfirmationAsync("u@x.com", Arg.Is<string>(link => link.Contains("confirm-token", StringComparison.Ordinal)), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResendConfirmation_OverLimit_RejectsWithoutSendingAnEmail()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(false);
+        var h = Build(limiter);
+
+        var result = await h.Svc.ResendConfirmationAsync("u@x.com");
+
+        result.Success.ShouldBeFalse();
+        result.Failure.ShouldBe(AuthFailure.TooManyAttempts);
+        await h.Um.DidNotReceiveWithAnyArgs().FindByEmailAsync(default!);
+        await h.Email.DidNotReceiveWithAnyArgs().SendEmailConfirmationAsync(default!, default!, default!, default);
     }
 
     [Fact]
