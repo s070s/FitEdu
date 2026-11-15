@@ -17,8 +17,8 @@ public static class PasswordRules
     // so the two patterns repeat them. CommonPasswordTests fails when a pattern drifts from the numbers.
 
     /// <summary>The form and API rule: the minimum length, a capital letter, a lowercase letter and a digit.</summary>
-    public const string ComplexityPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$";
+    public const string ComplexityPattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$";
 
     /// <summary>The same rule with the maximum length, for the profile's change-password form.</summary>
-    public const string ComplexityPatternWithMaximum = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,128}$";
+    public const string ComplexityPatternWithMaximum = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,128}$";
 }

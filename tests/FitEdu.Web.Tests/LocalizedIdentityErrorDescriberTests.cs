@@ -89,9 +89,10 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
         var request = new RegisterRequestDto
         {
             Email = $"greek-{Guid.NewGuid():N}@test.com",
-            // Passes the form's rule (8+ characters, a capital and a digit) but not Identity's lowercase rule.
-            Password = "SUMMIT-PEAK-9",
-            ConfirmPassword = "SUMMIT-PEAK-9",
+            // Passes the form's rule (8+ characters, a capital, a lowercase letter and a digit) but not
+            // Identity's common-password check, which only Identity runs.
+            Password = "Password1",
+            ConfirmPassword = "Password1",
             FirstName = "Maria",
             LastName = "Papa",
             DateOfBirth = new DateTime(2000, 1, 1),
@@ -102,6 +103,6 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
         var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
 
         result.ShouldNotBeNull().Errors.ShouldNotBeNull()
-            .ShouldContain("Ο κωδικός σου χρειάζεται τουλάχιστον ένα πεζό γράμμα (a-z).");
+            .ShouldContain("Αυτός ο κωδικός είναι πολύ συνηθισμένος. Διάλεξε έναν πιο δύσκολο.");
     }
 }

@@ -274,7 +274,7 @@
     <value>Δοκίμασε ξανά</value>
   </data>
   <data name="PasswordRulesHint" xml:space="preserve">
-    <value>Τουλάχιστον 8 χαρακτήρες, με έναν αριθμό και ένα κεφαλαίο γράμμα.</value>
+    <value>Τουλάχιστον 8 χαρακτήρες, με έναν αριθμό, ένα κεφαλαίο και ένα πεζό γράμμα.</value>
   </data>
   <data name="PresenceOnline" xml:space="preserve">
     <value>Σε σύνδεση</value>

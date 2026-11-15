@@ -430,7 +430,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to At least 8 characters, including a number and an uppercase letter..
+        ///   Looks up a localized string similar to At least 8 characters, including a number, an uppercase letter and a lowercase letter..
         /// </summary>
         public static string PasswordRulesHint {
             get {
