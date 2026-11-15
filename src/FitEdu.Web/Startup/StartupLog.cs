@@ -43,9 +43,6 @@ internal static partial class StartupLog
     [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: security stamp mismatch for user {UserId} — token invalidated.")]
     internal static partial void AuthStampMismatch(ILogger logger, string userId);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: GetUserTierAsync failed for {UserId} — defaulting to Free.")]
-    internal static partial void AuthTierLookupFailed(ILogger logger, Exception exception, string userId);
-
     [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} signed in via /auth/complete.")]
     internal static partial void AuthSignedIn(ILogger logger, string userId);
 

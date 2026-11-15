@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Domain.Identity;
+using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Web.Services;
 using System.Security.Claims;
@@ -54,12 +56,14 @@ public static class AuthenticationSetupExtensions
         // Password-rule and email errors in the member's language instead of Identity's English.
         .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
+        // --- JWT settings: the one place Jwt:* is read (signer, bearer validation and the startup check use it) ---
+        builder.Services.AddOptions<JwtOptions>()
+            .Bind(config.GetSection(JwtOptions.SectionName))
+            .Validate(jwt => jwt.KeyProblem is null, "Jwt:Key is missing or shorter than 32 bytes.")
+            .ValidateOnStart();
+        builder.Services.AddSingleton<JwtTokenSigner>();
+
         // --- Authentication: MultiAuth policy (Cookie for Blazor pages, JWT for API/SignalR) ---
-        var jwtKey = config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");
-        if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
-            throw new InvalidOperationException("Jwt:Key must be at least 32 bytes for HMAC-SHA256 security.");
-        var jwtIssuer = config["Jwt:Issuer"];
-        var jwtAudience = config["Jwt:Audience"];
 
         builder.Services.AddAuthentication(options =>
         {
@@ -126,7 +130,7 @@ public static class AuthenticationSetupExtensions
                 var userManager = context.HttpContext.RequestServices
                     .GetRequiredService<UserManager<ApplicationUser>>();
                 var user = await userManager.FindByIdAsync(userId);
-                var cookieStamp = context.Principal?.FindFirstValue("securityStamp");
+                var cookieStamp = context.Principal?.FindFirstValue(UserClaimsBuilder.SecurityStampClaim);
 
                 if (user is null || !user.IsEnabled || user.SecurityStamp != cookieStamp)
                 {
@@ -138,18 +142,6 @@ public static class AuthenticationSetupExtensions
         })
         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtIssuer,
-                ValidAudience = jwtAudience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-                ClockSkew = TimeSpan.Zero
-            };
-
             options.Events = new JwtBearerEvents
             {
                 // Allow SignalR (WebSocket) requests to receive JWT from query string — a
@@ -185,25 +177,34 @@ public static class AuthenticationSetupExtensions
                     if (user is null || !user.IsEnabled)
                     {
                         context.Fail("Account is disabled.");
-                        context.HttpContext.Items["UserDisabled"] = true;
                         return;
                     }
 
                     // Reject tokens minted before a password reset or security-stamp rotation.
-                    var tokenStamp = context.Principal?.FindFirstValue("securityStamp");
+                    var tokenStamp = context.Principal?.FindFirstValue(UserClaimsBuilder.SecurityStampClaim);
                     if (tokenStamp != user.SecurityStamp)
                         context.Fail("Security stamp mismatch — token has been invalidated.");
-                },
-                OnChallenge = context =>
-                {
-                    if (context.HttpContext.Items.ContainsKey("UserDisabled"))
-                    {
-                        context.Response.Headers["X-User-Disabled"] = "true";
-                    }
-                    return Task.CompletedTask;
                 }
             };
         });
+
+        // The bearer token is checked against the same Jwt settings the signer uses.
+        builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+            .Configure<IOptions<JwtOptions>>((bearer, jwtOptions) =>
+            {
+                var jwt = jwtOptions.Value;
+                bearer.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwt.Issuer,
+                    ValidAudience = jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
         // --- Authorization Policies ---
         builder.Services.AddAuthorizationBuilder()

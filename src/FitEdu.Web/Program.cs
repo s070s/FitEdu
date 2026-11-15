@@ -117,8 +117,8 @@ app.UseRequestLocalization();
 
 // Disabled-user enforcement is handled by two mechanisms:
 // - Cookie auth: CookieAuthenticationHandler.OnValidatePrincipal re-validates on every Blazor request.
-// - JWT auth: OnTokenValidated sets context.HttpContext.Items["UserDisabled"] and fails the token;
-//             the OnChallenge handler then adds the X-User-Disabled response header.
+// - JWT auth: OnTokenValidated looks the user up and fails the token (401) when the user is gone,
+//             disabled, or the token's security stamp no longer matches.
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -389,7 +389,7 @@ public static class ServiceRegistrationExtensions
     // otherwise every API-backed page silently renders empty (ApiClientBase swallows non-success
     // responses). Consider calling the application services in-process instead of over HTTP.
     /// <summary>
-    /// Fail fast like Jwt:Key (AuthenticationSetupExtensions.cs) — an unset/localhost SelfBaseUrl
+    /// Fail fast like Jwt:Key (StartupConfigValidation.cs) — an unset/localhost SelfBaseUrl
     /// outside Development means every API-backed page silently renders empty (ApiClientBase
     /// swallows non-success responses) instead of throwing at startup.
     /// </summary>

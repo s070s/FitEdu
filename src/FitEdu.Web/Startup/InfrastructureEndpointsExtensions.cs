@@ -59,7 +59,6 @@ public static class InfrastructureEndpointsExtensions
             HttpContext ctx,
             IDataProtectionProvider dpProvider,
             UserManager<ApplicationUser> userManager,
-            ISubscriptionService subscriptionService,
             IMemoryCache ticketCache,
             ILoggerFactory loggerFactory) =>
         {
@@ -130,7 +129,7 @@ public static class InfrastructureEndpointsExtensions
                 return Results.LocalRedirect("/login");
             }
 
-            var principal = await BuildPrincipalAsync(user, adminBackupId, userManager, subscriptionService, logger);
+            var principal = await BuildPrincipalAsync(user, adminBackupId, userManager);
 
             // --- Write / clear admin backup cookie ---------------------------------------
             // Session-only, like the impersonated session it leads back from. A plain sign-in deletes
@@ -187,7 +186,6 @@ public static class InfrastructureEndpointsExtensions
             HttpContext ctx,
             IDataProtectionProvider dpProvider,
             UserManager<ApplicationUser> userManager,
-            ISubscriptionService subscriptionService,
             ILoggerFactory loggerFactory) =>
         {
             var logger = loggerFactory.CreateLogger("AuthCompletion");
@@ -210,7 +208,7 @@ public static class InfrastructureEndpointsExtensions
                 return Results.LocalRedirect("/");
             }
 
-            var principal = await BuildPrincipalAsync(admin, adminBackupId: null, userManager, subscriptionService, logger);
+            var principal = await BuildPrincipalAsync(admin, adminBackupId: null, userManager);
             await ctx.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
@@ -335,27 +333,14 @@ public static class InfrastructureEndpointsExtensions
     /// <summary>Where the impersonation banner sends the admin to leave an impersonated session.</summary>
     public const string ExitImpersonationPath = "/auth/exit-impersonation";
 
-    /// <summary>The cookie principal for a user: identity, roles, plan tier and (when impersonating) the admin's id.</summary>
+    /// <summary>The cookie principal for a user: identity, roles and (when impersonating) the admin's id.</summary>
     private static async Task<ClaimsPrincipal> BuildPrincipalAsync(
         ApplicationUser user,
         string? adminBackupId,
-        UserManager<ApplicationUser> userManager,
-        ISubscriptionService subscriptionService,
-        ILogger logger)
+        UserManager<ApplicationUser> userManager)
     {
         var roles = await userManager.GetRolesAsync(user);
-        SubscriptionTier tier;
-        try
-        {
-            tier = await subscriptionService.GetUserTierAsync(user.Id);
-        }
-        catch (Exception ex)
-        {
-            StartupLog.AuthTierLookupFailed(logger, ex, user.Id);
-            tier = SubscriptionTier.Free;
-        }
-
-        var claims = UserClaimsBuilder.Build(user, roles, tier, adminBackupId);
+        var claims = UserClaimsBuilder.Build(user, roles, adminBackupId);
         return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
     }
 

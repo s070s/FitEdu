@@ -668,28 +668,6 @@ public class AuthServiceTests
         h.Tokens.DidNotReceiveWithAnyArgs().SignClaims(default!);
     }
 
-    [Fact]
-    public async Task IsAuthenticated_ReflectsPrincipal()
-    {
-        var h = Build();
-        var http = new DefaultHttpContext
-        {
-            User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "u1")], "cookie"))
-        };
-        h.Accessor.HttpContext.Returns(http);
-
-        (await h.Svc.IsAuthenticatedAsync()).ShouldBeTrue();
-    }
-
-    [Fact]
-    public async Task IsImpersonating_NoBackupCookie_ReturnsFalse()
-    {
-        var h = Build();
-        h.Accessor.HttpContext.Returns(new DefaultHttpContext());
-
-        (await h.Svc.IsImpersonatingAsync()).ShouldBeFalse();
-    }
-
     // ---- CreateLessonAssetTokenAsync (SEC-2) ----------------------------------
 
     [Fact]

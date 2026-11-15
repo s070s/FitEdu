@@ -1,6 +1,4 @@
-using System.Globalization;
 using System.Security.Claims;
-using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 
 namespace FitEdu.Application.Common;
@@ -19,10 +17,17 @@ public static class UserClaimsBuilder
     /// <summary>Claim carrying the admin's id while that admin impersonates this user.</summary>
     public const string ImpersonatedByClaim = "impersonatedBy";
 
+    /// <summary>
+    /// Claim carrying the user's security stamp at sign-in; the cookie and bearer-token checks compare it
+    /// with the stored stamp, so a password reset or forced sign-out ends the session.
+    /// </summary>
+    public const string SecurityStampClaim = "securityStamp";
+
+    // The user's status, enabled flag and plan tier are not claims: nothing read them, and the cookie and
+    // bearer-token checks look the user up on each request, so a stale copy in the token could only mislead.
     public static List<Claim> Build(
         ApplicationUser user,
         IEnumerable<string> roles,
-        SubscriptionTier tier,
         string? adminBackupId = null)
     {
         var claims = new List<Claim>
@@ -31,10 +36,7 @@ public static class UserClaimsBuilder
             new(ClaimTypes.Email, user.Email!),
             new("firstName", user.FirstName),
             new("lastName", user.LastName),
-            new("status", ((int)user.Status).ToString(CultureInfo.InvariantCulture)),
-            new("isEnabled", user.IsEnabled.ToString().ToLowerInvariant()),
-            new("subscriptionTier", ((int)tier).ToString(CultureInfo.InvariantCulture)),
-            new("securityStamp", user.SecurityStamp ?? string.Empty)
+            new(SecurityStampClaim, user.SecurityStamp ?? string.Empty)
         };
 
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

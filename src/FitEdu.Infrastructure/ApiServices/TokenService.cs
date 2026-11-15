@@ -1,9 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using FitEdu.Domain.Identity;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
@@ -17,34 +15,18 @@ namespace FitEdu.Infrastructure.ApiServices;
 public class TokenService : ITokenService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ISubscriptionService _subscriptionService;
-    private readonly SymmetricSecurityKey _signingKey;
-    private readonly double _accessTokenExpirationMinutes;
-    private readonly string? _jwtIssuer;
-    private readonly string? _jwtAudience;
-    private static readonly JwtSecurityTokenHandler _tokenHandler = new() { SetDefaultTimesOnTokenCreation = false };
+    private readonly JwtTokenSigner _signer;
 
-    public TokenService(
-        IConfiguration config,
-        UserManager<ApplicationUser> userManager,
-        ISubscriptionService subscriptionService)
+    public TokenService(JwtTokenSigner signer, UserManager<ApplicationUser> userManager)
     {
+        _signer = signer;
         _userManager = userManager;
-        _subscriptionService = subscriptionService;
-        var jwtKey = config["Jwt:Key"];
-        if (string.IsNullOrWhiteSpace(jwtKey))
-            throw new InvalidOperationException(
-                "Jwt:Key is required. Set it via User Secrets (dev) or environment variable Jwt__Key (prod).");
-        _signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-        _accessTokenExpirationMinutes = config.GetValue<double>("Jwt:AccessTokenExpirationMinutes", 60);
-        _jwtIssuer = config["Jwt:Issuer"];
-        _jwtAudience = config["Jwt:Audience"];
     }
 
     public Task<(string AccessToken, DateTime Expiration)> GenerateAccessTokenAsync(ApplicationUser user) =>
         MintAsync(user, adminId: null);
 
-    public string SignClaims(IEnumerable<Claim> claims) => Sign(claims, NewExpiration());
+    public string SignClaims(IEnumerable<Claim> claims) => _signer.Sign(claims, _signer.NewExpiration());
 
     /// <summary>
     /// Generates a cryptographically secure opaque refresh token.
@@ -66,28 +48,11 @@ public class TokenService : ITokenService
     private async Task<(string AccessToken, DateTime Expiration)> MintAsync(ApplicationUser user, string? adminId)
     {
         var roles = await _userManager.GetRolesAsync(user);
-        var tier = await _subscriptionService.GetUserTierAsync(user.Id);
 
-        var claims = UserClaimsBuilder.Build(user, roles, tier, adminBackupId: adminId);
+        var claims = UserClaimsBuilder.Build(user, roles, adminBackupId: adminId);
         claims.Add(new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-        var expiration = NewExpiration();
-        return (Sign(claims, expiration), expiration);
-    }
-
-    private DateTime NewExpiration() => DateTime.UtcNow.AddMinutes(_accessTokenExpirationMinutes);
-
-    // The shared signing step: key, issuer and audience come from the one configuration read in the constructor.
-    private string Sign(IEnumerable<Claim> claims, DateTime expiration)
-    {
-        var creds = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            issuer: _jwtIssuer,
-            audience: _jwtAudience,
-            claims: claims,
-            expires: expiration,
-            signingCredentials: creds);
-
-        return _tokenHandler.WriteToken(token);
+        var expiration = _signer.NewExpiration();
+        return (_signer.Sign(claims, expiration), expiration);
     }
 }

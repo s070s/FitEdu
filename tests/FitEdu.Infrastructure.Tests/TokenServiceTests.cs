@@ -1,12 +1,8 @@
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using NSubstitute;
-using FitEdu.Application.DTOs;
 using FitEdu.TestSupport;
-using FitEdu.Application.ApiInterfaces;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
@@ -17,14 +13,13 @@ namespace FitEdu.Infrastructure.Tests;
 
 public class TokenServiceTests
 {
-    private static IConfiguration Config(string? key = "test-signing-key-at-least-32-bytes-long-1234567890") =>
-        new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            ["Jwt:Key"] = key,
-            ["Jwt:Issuer"] = "test-issuer",
-            ["Jwt:Audience"] = "test-audience",
-            ["Jwt:AccessTokenExpirationMinutes"] = "60"
-        }).Build();
+    private static JwtOptions Jwt(string? key = "test-signing-key-at-least-32-bytes-long-1234567890") => new()
+    {
+        Key = key ?? string.Empty,
+        Issuer = "test-issuer",
+        Audience = "test-audience",
+        AccessTokenExpirationMinutes = 60
+    };
 
     private static ApplicationUser User() => new()
     {
@@ -38,28 +33,27 @@ public class TokenServiceTests
         SecurityStamp = "stamp-1"
     };
 
-    private static TokenService NewService(SubscriptionTier tier = SubscriptionTier.Pro, params string[] roles)
+    private static TokenService NewService(params string[] roles)
     {
         var um = IdentityMocks.MockUserManager();
         um.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns(roles.ToList());
-        var subs = Substitute.For<ISubscriptionService>();
-        subs.GetUserTierAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(tier);
-        return new TokenService(Config(), um, subs);
+        return new TokenService(new JwtTokenSigner(Options.Create(Jwt())), um);
     }
 
-    [Fact]
-    public void Constructor_MissingJwtKey_Throws()
+    [Theory]
+    [InlineData(null, "Jwt:Key is required")]
+    [InlineData("too-short", "at least 32 bytes")]
+    public void Signer_MissingOrShortJwtKey_Throws(string? key, string expectedMessagePart)
     {
-        var um = IdentityMocks.MockUserManager();
-        var subs = Substitute.For<ISubscriptionService>();
+        var exception = Should.Throw<InvalidOperationException>(() => new JwtTokenSigner(Options.Create(Jwt(key))));
 
-        Should.Throw<InvalidOperationException>(() => new TokenService(Config(key: null), um, subs));
+        exception.Message.ShouldContain(expectedMessagePart);
     }
 
     [Fact]
     public async Task GenerateAccessToken_EmbedsExpectedClaims()
     {
-        var svc = NewService(SubscriptionTier.Pro, "Student");
+        var svc = NewService("Student");
 
         var (token, _) = await svc.GenerateAccessTokenAsync(User());
 
@@ -67,10 +61,21 @@ public class TokenServiceTests
         jwt.Claims.ShouldContain(c => c.Type == ClaimTypes.NameIdentifier && c.Value == "user-1");
         jwt.Claims.ShouldContain(c => c.Type == ClaimTypes.Email && c.Value == "user@example.com");
         jwt.Claims.ShouldContain(c => c.Type == "firstName" && c.Value == "John");
-        jwt.Claims.ShouldContain(c => c.Type == "status" && c.Value == ((int)UserStatus.Beginner).ToString(CultureInfo.InvariantCulture));
-        jwt.Claims.ShouldContain(c => c.Type == "subscriptionTier" && c.Value == "2");
         jwt.Claims.ShouldContain(c => c.Type == "securityStamp" && c.Value == "stamp-1");
         jwt.Claims.ShouldContain(c => c.Value == "Student");
+    }
+
+    [Fact]
+    public async Task GenerateAccessToken_CarriesNoClaimNothingReads()
+    {
+        // status, isEnabled and subscriptionTier were never read by anything (the API checks the
+        // database on each request), so they are no longer put into every token.
+        var svc = NewService("Student");
+
+        var (token, _) = await svc.GenerateAccessTokenAsync(User());
+
+        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        jwt.Claims.ShouldNotContain(c => c.Type == "status" || c.Type == "isEnabled" || c.Type == "subscriptionTier");
     }
 
     [Fact]
@@ -86,7 +91,7 @@ public class TokenServiceTests
     [Fact]
     public async Task GenerateImpersonationToken_IncludesImpersonatedByClaim()
     {
-        var svc = NewService(SubscriptionTier.Plus, "Student");
+        var svc = NewService("Student");
 
         var (token, _) = await svc.GenerateImpersonationTokenAsync(User(), adminId: "admin-9");
 
@@ -112,7 +117,7 @@ public class TokenServiceTests
     [Fact]
     public async Task EveryAccessToken_IsVerifiedByTheSameKey()
     {
-        var svc = NewService(SubscriptionTier.Pro, "Student");
+        var svc = NewService("Student");
         var parameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
             ValidIssuer = "test-issuer",

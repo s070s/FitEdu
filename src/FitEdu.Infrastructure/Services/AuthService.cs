@@ -197,17 +197,6 @@ public partial class AuthService : IAuthService
         return new AuthResponseDto { Success = true, Token = token };
     }
 
-    public Task<bool> IsImpersonatingAsync()
-    {
-        var value = HttpContext.Request.Cookies[AdminBackupCookieName];
-        return Task.FromResult(!string.IsNullOrEmpty(value));
-    }
-
-    public Task<bool> IsAuthenticatedAsync()
-    {
-        return Task.FromResult(HttpContext.User.Identity?.IsAuthenticated == true);
-    }
-
     /// <summary>
     /// Generates a short-lived JWT from HttpContext.User claims.
     /// Only safe to call during HTTP requests (SSR render, API controllers).

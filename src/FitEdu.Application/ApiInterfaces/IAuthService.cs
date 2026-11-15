@@ -28,8 +28,6 @@ public interface IAuthService
     /// <summary>Returns the URL to navigate to (forceLoad: true) to sign out.</summary>
     Task<string> LogoutAsync();
 
-    Task<bool> IsAuthenticatedAsync();
-
     /// <summary>
     /// Generates a JWT from HttpContext.User claims. Only valid during HTTP requests (SSR/API).
     /// Use <see cref="GetTokenAsync(ClaimsPrincipal)"/> inside Blazor Server circuits.
@@ -51,7 +49,6 @@ public interface IAuthService
     /// </summary>
     Task<AuthResponseDto> ImpersonateAsync(ClaimsPrincipal admin, string userId);
 
-    Task<bool> IsImpersonatingAsync();
     Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request);
     Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request);
 

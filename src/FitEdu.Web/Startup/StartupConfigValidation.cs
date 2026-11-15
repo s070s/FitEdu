@@ -1,4 +1,4 @@
-using System.Text;
+using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Web.Services;
 
 namespace FitEdu.Web.Startup;
@@ -19,11 +19,9 @@ public static class StartupConfigValidation
         var config = builder.Configuration;
         var errors = new List<string>();
 
-        var jwtKey = config["Jwt:Key"];
-        if (string.IsNullOrWhiteSpace(jwtKey))
-            errors.Add("Jwt:Key is required. Set it via User Secrets (dev) or environment variable Jwt__Key (prod).");
-        else if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
-            errors.Add("Jwt:Key must be at least 32 bytes for HMAC-SHA256 security.");
+        var jwtOptions = config.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+        if (jwtOptions.KeyProblem is { } jwtKeyProblem)
+            errors.Add(jwtKeyProblem);
 
         if (string.IsNullOrWhiteSpace(config["AdminUser:Password"]))
             errors.Add("AdminUser:Password is required. Set it via User Secrets (dev) or environment variable AdminUser__Password (prod).");
