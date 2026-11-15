@@ -104,12 +104,7 @@ public partial class AuthService : IAuthService
         if (!AttemptAllowed(request.Email))
             return TooManyAttempts();
 
-        // Clear the EF Core change tracker so this call always reads fresh data from the
-        // database.  In Blazor Server the DbContext is scoped to the circuit lifetime
-        // (long-lived), so without this a previously-loaded entity (e.g. from a failed
-        // login attempt before the email was confirmed) would be returned stale from the
-        // identity map and IsEmailConfirmedAsync would still see the old false value.
-        _context.ChangeTracker.Clear();
+        ReadFreshData();
 
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
@@ -171,10 +166,14 @@ public partial class AuthService : IAuthService
     /// Registers through the same flow as the API (Student role, Free plan, confirmation email); the page
     /// keeps telling the visitor when the email is already taken.
     /// </summary>
-    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request) =>
-        AttemptAllowed(request.Email)
-            ? ToDto(await _authApiService.RegisterFromSignUpPageAsync(request))
-            : TooManyAttempts();
+    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
+    {
+        if (!AttemptAllowed(request.Email))
+            return TooManyAttempts();
+
+        ReadFreshData();
+        return ToDto(await _authApiService.RegisterFromSignUpPageAsync(request));
+    }
 
     /// <inheritdoc />
     /// <remarks>
@@ -241,17 +240,31 @@ public partial class AuthService : IAuthService
     }
 
     /// <summary>Emails a reset link when the email belongs to a confirmed account; always answers the same.</summary>
-    public Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request) =>
-        AttemptAllowed(request.Email)
-            ? _authApiService.ForgotPasswordAsync(request)
-            : Task.FromResult(TooManyAttempts());
+    public Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request)
+    {
+        if (!AttemptAllowed(request.Email))
+            return Task.FromResult(TooManyAttempts());
 
-    public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request) =>
-        ToDto(await _authApiService.ResetPasswordAsync(request));
+        ReadFreshData();
+        return _authApiService.ForgotPasswordAsync(request);
+    }
+
+    public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request)
+    {
+        ReadFreshData();
+        return ToDto(await _authApiService.ResetPasswordAsync(request));
+    }
 
     // ---------------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------------
+
+    // Clears the EF Core change tracker so the call about to run reads fresh data from the database. In Blazor
+    // Server the DbContext lives as long as the circuit, so without this a member read earlier (for example
+    // by a failed sign-in before the email was confirmed, here or in another tab) would come back from the
+    // identity map as it was then, and IsEmailConfirmedAsync would still see the old false value. Call it
+    // before every call that is handed on to the API service.
+    private void ReadFreshData() => _context.ChangeTracker.Clear();
 
     // One budget per email (case and surrounding spaces do not matter), one per client address, one flood cap.
     private bool AttemptAllowed(string? email) =>
