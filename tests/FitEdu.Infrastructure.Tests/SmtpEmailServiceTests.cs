@@ -144,5 +144,35 @@ public sealed class SmtpEmailServiceTests : IDisposable
             Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>());
     }
 
+    [Fact]
+    public async Task SendAsync_WhenTheSendFails_ThrowsTheSendError_NotTheCloseError()
+    {
+        var client = Substitute.For<ISmtpClient>();
+        client.IsConnected.Returns(true);
+        client.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>())
+            .Returns(Task.FromException<string>(new InvalidOperationException("the relay refused the message")));
+        client.DisconnectAsync(Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException(new IOException("connection already closed")));
+
+        var thrown = await Should.ThrowAsync<InvalidOperationException>(
+            NewService(client).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English));
+
+        thrown.Message.ShouldBe("the relay refused the message");
+    }
+
+    [Fact]
+    public async Task SendAsync_WhenTheSendWorks_ClosesTheConnectionOnce_AndAFailedCloseDoesNotFailTheSend()
+    {
+        var client = Substitute.For<ISmtpClient>();
+        client.IsConnected.Returns(true);
+        client.DisconnectAsync(Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException(new IOException("connection already closed")));
+
+        await NewService(client).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English);
+
+        await client.Received(1).DisconnectAsync(true, Arg.Any<CancellationToken>());
+        _logger.Information.ShouldHaveSingleItem().ShouldContain("sent", Case.Sensitive);
+    }
+
     public void Dispose() => _cultureScope.Dispose();
 }

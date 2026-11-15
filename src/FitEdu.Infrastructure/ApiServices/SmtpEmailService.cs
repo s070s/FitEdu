@@ -42,23 +42,33 @@ public sealed partial class SmtpEmailService : IEmailService
     {
         var message = BuildMessage(_options, to, content);
 
+        // Disposing the client closes a connection a failed send left open; a close inside a finally
+        // block would throw its own error over the send error that explains what went wrong.
         using var client = _createClient();
+        var socketOptions = _options.Smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
+        await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, socketOptions, ct);
+        if (!string.IsNullOrEmpty(_options.Smtp.Username))
+            await client.AuthenticateAsync(_options.Smtp.Username, _options.Smtp.Password ?? string.Empty, ct);
+        await client.SendAsync(message, ct);
+
+        // The subject only: an address in the log is personal data kept in the log files.
+        LogEmailSent(_logger, content.Subject);
+
+        await DisconnectQuietlyAsync(client, ct);
+    }
+
+    // The message is already sent here, so a failing goodbye must not turn the send into a failure.
+    private async Task DisconnectQuietlyAsync(ISmtpClient client, CancellationToken ct)
+    {
         try
-        {
-            var socketOptions = _options.Smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
-            await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, socketOptions, ct);
-            if (!string.IsNullOrEmpty(_options.Smtp.Username))
-                await client.AuthenticateAsync(_options.Smtp.Username, _options.Smtp.Password ?? string.Empty, ct);
-            await client.SendAsync(message, ct);
-        }
-        finally
         {
             if (client.IsConnected)
                 await client.DisconnectAsync(true, ct);
         }
-
-        // The subject only: an address in the log is personal data kept in the log files.
-        LogEmailSent(_logger, content.Subject);
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogDisconnectFailed(_logger, ex);
+        }
     }
 
     /// <summary>Builds the MIME message. Extracted so message construction is unit-testable
@@ -77,4 +87,7 @@ public sealed partial class SmtpEmailService : IEmailService
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Email '{Subject}' sent.")]
     private static partial void LogEmailSent(ILogger logger, string subject);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Closing the SMTP connection failed after the email was sent.")]
+    private static partial void LogDisconnectFailed(ILogger logger, Exception exception);
 }
