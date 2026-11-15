@@ -4,7 +4,7 @@ namespace FitEdu.Web.Startup;
 
 /// <summary>
 /// PERF-12: the shipped images under /images change only with a deploy, so browsers may keep them
-/// for a week instead of revalidating on every page load. Other static files keep the default.
+/// for a week instead of revalidating on every page load. Only /images is served by the static file middleware (Program.cs); everything else is MapStaticAssets.
 /// </summary>
 public static class StaticFileCaching
 {
@@ -17,6 +17,8 @@ public static class StaticFileCaching
 
     private static void ApplyImageCaching(StaticFileResponseContext context)
     {
+        // Safety guard: the middleware is branched to /images in Program.cs, but a path change there must not
+        // put a week-long cache on other files.
         var isShippedImage = context.Context.Request.Path.StartsWithSegments(ImagesPath);
         if (!isShippedImage)
         {

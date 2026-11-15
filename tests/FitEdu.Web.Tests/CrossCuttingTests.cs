@@ -84,7 +84,7 @@ public class CrossCuttingTests : IClassFixture<CustomWebAppFactory>
         // The error page is rendered by a plain endpoint without the asset manifest, so its URLs may be unfingerprinted.
         body.ShouldMatch("css/app([.][A-Za-z0-9]+)?[.]css");
         body.ShouldMatch("css/shared-components([.][A-Za-z0-9]+)?[.]css");
-        body.ShouldContain("_framework/blazor.web.js");
+        body.ShouldMatch("_framework/blazor[.]web([.][A-Za-z0-9]+)?[.]js");
     }
 
     [Fact]

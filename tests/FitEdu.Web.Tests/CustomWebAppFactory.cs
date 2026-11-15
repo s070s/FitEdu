@@ -45,9 +45,12 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>
         Environment.SetEnvironmentVariable("Assistant__Enabled", "false");
     }
 
+    /// <summary>The host environment; the Production subclass exercises the Release-only paths (static asset manifest).</summary>
+    protected virtual string EnvironmentName => "Development";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment(EnvironmentName);
 
         builder.ConfigureTestServices(services =>
         {
