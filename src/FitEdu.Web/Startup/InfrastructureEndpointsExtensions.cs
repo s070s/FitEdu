@@ -320,12 +320,13 @@ public static class InfrastructureEndpointsExtensions
     /// Redirects to the return address when it is a path on this site, otherwise to the home page.
     /// NavigationManager.Uri passes an absolute URL, so its path and query are taken first. "//host"
     /// and "/\host" (also what "https://x//host" turns into) fall back to the home page, as does
-    /// anything with a control character, so <c>Results.LocalRedirect</c> never throws.
+    /// anything with a control character, so <c>Results.LocalRedirect</c> never throws. A value that starts
+    /// with "/" is never parsed as an absolute URL: on Linux "/courses/42" parses as a file: URI.
     /// </summary>
-    private static IResult ToLocalRedirect(string? returnUrl)
+    internal static IResult ToLocalRedirect(string? returnUrl)
     {
         var path = returnUrl;
-        if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var absolute))
+        if (returnUrl is not null && !returnUrl.StartsWith('/') && Uri.TryCreate(returnUrl, UriKind.Absolute, out var absolute))
             path = absolute.Scheme is "http" or "https" ? absolute.PathAndQuery : null;
 
         var localPath = Login.LocalReturnPath(path);

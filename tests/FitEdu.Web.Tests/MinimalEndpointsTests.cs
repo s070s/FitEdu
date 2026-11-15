@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Services;
+using FitEdu.Web.Startup;
 using Shouldly;
 using Xunit;
 
@@ -315,9 +317,9 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
 
         exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     }
 
-        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     [Theory]
     [InlineData(null)]
     [InlineData(".FitEdu.AdminUserId=not-a-protected-value")]
@@ -332,9 +334,9 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
 
         exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
         exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
     }
-        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
 
     [Fact]
     public async Task ExitImpersonation_AdminNoLongerEnabled_SignsOutInsteadOfSigningIn()
@@ -354,9 +356,25 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
 
         exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     }
 
-        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+    // A local path must come back unchanged on every OS: on Linux "/courses/42" also parses as an absolute
+    // file: URI, which once sent every local return address to the home page.
+    [Theory]
+    [InlineData("/courses/42?x=1", "/courses/42?x=1")]
+    [InlineData("https://fitedu.example/courses/42?x=1", "/courses/42?x=1")]
+    [InlineData("//evil.example/path", "/")]
+    [InlineData("ftp://evil.example/path", "/")]
+    [InlineData("courses/42", "/")]
+    [InlineData(null, "/")]
+    public void ToLocalRedirect_KeepsLocalPathsAndSendsEverythingElseHome(string? returnUrl, string expectedLocation)
+    {
+        var result = InfrastructureEndpointsExtensions.ToLocalRedirect(returnUrl);
+
+        result.ShouldBeOfType<RedirectHttpResult>().Url.ShouldBe(expectedLocation);
+    }
+
     private static bool IsDeletedBackupCookie(string cookie) =>
         cookie.StartsWith(".FitEdu.AdminUserId=;", StringComparison.Ordinal);
 
