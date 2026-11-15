@@ -70,6 +70,24 @@ namespace FitEdu.Shared.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This confirmation link is invalid or has expired..
+        /// </summary>
+        public static string EmailConfirmationLinkInvalid {
+            get {
+                return ResourceManager.GetString("EmailConfirmationLinkInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This reset link is invalid or has expired. Please request a new one..
+        /// </summary>
+        public static string PasswordResetLinkInvalid {
+            get {
+                return ResourceManager.GetString("PasswordResetLinkInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already registered. Please use a different email or try logging in..
         /// </summary>
         public static string EmailTakenError {

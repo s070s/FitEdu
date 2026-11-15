@@ -120,6 +120,33 @@
   <data name="Label_ConfirmEmail" xml:space="preserve">
     <value>Επιβεβαίωση email</value>
   </data>
+  <data name="ConfirmEmailTitle" xml:space="preserve">
+    <value>Επιβεβαίωση του email σου</value>
+  </data>
+  <data name="ConfirmEmailInstructions" xml:space="preserve">
+    <value>Πάτησε το κουμπί για να ολοκληρώσεις την επιβεβαίωση της διεύθυνσης email σου.</value>
+  </data>
+  <data name="Label_ConfirmMyEmail" xml:space="preserve">
+    <value>Επιβεβαίωση του email μου</value>
+  </data>
+  <data name="Label_Confirming" xml:space="preserve">
+    <value>Επιβεβαίωση…</value>
+  </data>
+  <data name="ResetPasswordTitle" xml:space="preserve">
+    <value>Νέος κωδικός πρόσβασης</value>
+  </data>
+  <data name="ResetPasswordInstructions" xml:space="preserve">
+    <value>Διάλεξε νέο κωδικό πρόσβασης για τον λογαριασμό σου.</value>
+  </data>
+  <data name="Label_SetNewPassword" xml:space="preserve">
+    <value>Αποθήκευση νέου κωδικού</value>
+  </data>
+  <data name="Label_Saving" xml:space="preserve">
+    <value>Αποθήκευση…</value>
+  </data>
+  <data name="Label_RequestNewLink" xml:space="preserve">
+    <value>Ζήτα νέο σύνδεσμο</value>
+  </data>
   <data name="Label_CreateAccount" xml:space="preserve">
     <value>Δημιουργία λογαριασμού</value>
   </data>

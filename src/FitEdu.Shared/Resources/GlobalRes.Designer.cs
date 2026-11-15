@@ -106,6 +106,87 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm your email.
+        /// </summary>
+        public static string ConfirmEmailTitle {
+            get {
+                return ResourceManager.GetString("ConfirmEmailTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap the button to finish confirming your email address..
+        /// </summary>
+        public static string ConfirmEmailInstructions {
+            get {
+                return ResourceManager.GetString("ConfirmEmailInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm my email.
+        /// </summary>
+        public static string Label_ConfirmMyEmail {
+            get {
+                return ResourceManager.GetString("Label_ConfirmMyEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirming….
+        /// </summary>
+        public static string Label_Confirming {
+            get {
+                return ResourceManager.GetString("Label_Confirming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set a new password.
+        /// </summary>
+        public static string ResetPasswordTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a new password for your account..
+        /// </summary>
+        public static string ResetPasswordInstructions {
+            get {
+                return ResourceManager.GetString("ResetPasswordInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save new password.
+        /// </summary>
+        public static string Label_SetNewPassword {
+            get {
+                return ResourceManager.GetString("Label_SetNewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving….
+        /// </summary>
+        public static string Label_Saving {
+            get {
+                return ResourceManager.GetString("Label_Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request a new link.
+        /// </summary>
+        public static string Label_RequestNewLink {
+            get {
+                return ResourceManager.GetString("Label_RequestNewLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password.
         /// </summary>
         public static string Label_ConfirmPassword {

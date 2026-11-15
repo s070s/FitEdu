@@ -120,6 +120,12 @@
   <data name="EmailConfirmationError" xml:space="preserve">
     <value>Δεν ήταν δυνατή η επιβεβαίωση του email. Δοκίμασε ξανά.</value>
   </data>
+  <data name="EmailConfirmationLinkInvalid" xml:space="preserve">
+    <value>Ο σύνδεσμος επιβεβαίωσης δεν είναι έγκυρος ή έχει λήξει.</value>
+  </data>
+  <data name="PasswordResetLinkInvalid" xml:space="preserve">
+    <value>Ο σύνδεσμος επαναφοράς δεν είναι έγκυρος ή έχει λήξει. Ζήτα νέο.</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>Σφάλμα</value>
   </data>

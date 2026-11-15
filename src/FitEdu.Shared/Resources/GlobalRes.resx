@@ -120,6 +120,33 @@
   <data name="Label_ConfirmEmail" xml:space="preserve">
     <value>Confirm email</value>
   </data>
+  <data name="ConfirmEmailTitle" xml:space="preserve">
+    <value>Confirm your email</value>
+  </data>
+  <data name="ConfirmEmailInstructions" xml:space="preserve">
+    <value>Tap the button to finish confirming your email address.</value>
+  </data>
+  <data name="Label_ConfirmMyEmail" xml:space="preserve">
+    <value>Confirm my email</value>
+  </data>
+  <data name="Label_Confirming" xml:space="preserve">
+    <value>Confirming…</value>
+  </data>
+  <data name="ResetPasswordTitle" xml:space="preserve">
+    <value>Set a new password</value>
+  </data>
+  <data name="ResetPasswordInstructions" xml:space="preserve">
+    <value>Choose a new password for your account.</value>
+  </data>
+  <data name="Label_SetNewPassword" xml:space="preserve">
+    <value>Save new password</value>
+  </data>
+  <data name="Label_Saving" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="Label_RequestNewLink" xml:space="preserve">
+    <value>Request a new link</value>
+  </data>
   <data name="Label_CreateAccount" xml:space="preserve">
     <value>Create account</value>
   </data>

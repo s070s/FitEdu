@@ -1,0 +1,33 @@
+@page "/confirm-email"
+
+<AppPageTitle Text="@GlobalRes.ConfirmEmailTitle" />
+
+@* The link in the confirmation email opens this page, which only offers the button: opening the link
+   (a mail scanner does that too) must not spend the one-time token, so the member's click confirms. *@
+<AuthCard Title="@GlobalRes.ConfirmEmailTitle" Subtitle="@(CurrentStep == Step.Ready ? GlobalRes.ConfirmEmailInstructions : null)">
+    <ChildContent>
+        @if (CurrentStep == Step.Confirmed)
+        {
+            <div class="alert alert-success" role="status">@SuccessMessagesRes.EmailConfirmedSuccessfully</div>
+            <a class="btn-cta auth-submit" href="/login">@GlobalRes.Label_GoToLogin</a>
+        }
+        else if (CurrentStep == Step.LinkInvalid)
+        {
+            <div class="alert alert-danger" role="alert">@ErrorMessagesRes.EmailConfirmationLinkInvalid</div>
+        }
+        else
+        {
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert">@errorMessage</div>
+            }
+
+            <button type="button" class="btn-cta auth-submit" disabled="@(CurrentStep == Step.Confirming)" @onclick="Confirm">
+                @if (CurrentStep == Step.Confirming) { <span>@GlobalRes.Label_Confirming</span> } else { <span>@GlobalRes.Label_ConfirmMyEmail</span> }
+            </button>
+        }
+    </ChildContent>
+    <Footer>
+        <a href="/login"><span class="bi bi-arrow-left" aria-hidden="true"></span> @ErrorMessagesRes.BackToLogin</a>
+    </Footer>
+</AuthCard>
