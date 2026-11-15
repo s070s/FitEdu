@@ -98,6 +98,76 @@ public class AuthServiceTests
         (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
     }
 
+    private static ApplicationUser UnconfirmedUserWithLockout(Harness h, bool lockoutEnabled = true)
+    {
+        var user = User();
+        h.Um.FindByEmailAsync("u@x.com").Returns(user);
+        h.Um.IsEmailConfirmedAsync(user).Returns(false);
+        h.Um.SupportsUserLockout.Returns(true);
+        h.Um.GetLockoutEnabledAsync(user).Returns(lockoutEnabled);
+        return user;
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedWrongPassword_CountsAsAFailedAttempt()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(false);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+
+        await h.Um.Received(1).AccessFailedAsync(user);
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedWrongPasswordThatLocksTheAccount_AnswersAccountLocked()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(false);
+        h.Um.IsLockedOutAsync(user).Returns(false, true);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.AccountLocked);
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedAndLockedOut_AnswersAccountLockedWithoutCheckingThePassword()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h);
+        h.Um.IsLockedOutAsync(user).Returns(true);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.AccountLocked);
+
+        await h.Um.DidNotReceiveWithAnyArgs().CheckPasswordAsync(default!, default!);
+        await h.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedRightPassword_IsNotAFailedAttempt()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(true);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.EmailNotConfirmedError);
+
+        await h.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+    }
+
+    [Fact]
+    public async Task Login_EmailNotConfirmedWrongPasswordWithLockoutDisabledForTheUser_IsNotCounted()
+    {
+        var h = Build();
+        var user = UnconfirmedUserWithLockout(h, lockoutEnabled: false);
+        h.Um.CheckPasswordAsync(user, "Password1").Returns(false);
+
+        (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+
+        await h.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+    }
+
     [Fact]
     public async Task Login_DisabledAccount_Fails()
     {

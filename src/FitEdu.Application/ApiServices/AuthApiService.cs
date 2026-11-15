@@ -185,14 +185,18 @@ public partial class AuthApiService(
             return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
         }
 
-        // An unconfirmed account always answers like a wrong password. With RequireConfirmedEmail the sign-in
-        // check below refuses such an account (NotAllowed) before it hashes the password, so the password is
-        // checked here instead: the answer and the time then match those of a confirmed account.
+        // An unconfirmed account answers like a wrong password, and like a confirmed account once it is locked
+        // out. With RequireConfirmedEmail the sign-in check below refuses such an account (NotAllowed) before
+        // it hashes the password or counts a failure, so both are done here instead: the answer, the time and
+        // the lockout then match those of a confirmed account.
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
-            await userManager.CheckPasswordAsync(user, request.Password);
+            var outcome = await UnconfirmedAccountPasswordCheck.RunAsync(userManager, user, request.Password);
             LogLoginUnconfirmedEmail(logger, user.Id);
-            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidCredentials });
+            var message = outcome == UnconfirmedPasswordOutcome.LockedOut
+                ? ErrorMessagesRes.AccountLocked
+                : ErrorMessagesRes.InvalidCredentials;
+            return ServiceResult<AuthResponseDto>.Unauthorized(new AuthResponseDto { Success = false, Message = message });
         }
 
         // The password comes next: a disabled account is only reported as such to someone who knows its

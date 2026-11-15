@@ -736,6 +736,74 @@ public class AuthApiServiceTests
         await h.Tok.DidNotReceive().GenerateAccessTokenAsync(Arg.Any<ApplicationUser>());
     }
 
+    private static ApplicationUser UnconfirmedMemberWithLockout(Harness h, bool lockoutEnabled = true)
+    {
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(false);
+        h.Um.SupportsUserLockout.Returns(true);
+        h.Um.GetLockoutEnabledAsync(member).Returns(lockoutEnabled);
+        return member;
+    }
+
+    [Fact]
+    public async Task Login_UnconfirmedAccountWrongPassword_CountsAsAFailedAttempt()
+    {
+        var h = Build();
+        var member = UnconfirmedMemberWithLockout(h);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(false);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+        await h.Um.Received(1).AccessFailedAsync(member);
+    }
+
+    [Fact]
+    public async Task Login_UnconfirmedAccountWrongPasswordThatLocksTheAccount_AnswersAccountLocked()
+    {
+        var h = Build();
+        var member = UnconfirmedMemberWithLockout(h);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(false);
+        h.Um.IsLockedOutAsync(member).Returns(false, true);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.AccountLocked);
+    }
+
+    [Fact]
+    public async Task Login_UnconfirmedAccountAlreadyLockedOut_AnswersAccountLockedWithoutCheckingThePassword()
+    {
+        var h = Build();
+        var member = UnconfirmedMemberWithLockout(h);
+        h.Um.IsLockedOutAsync(member).Returns(true);
+
+        var result = await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.AccountLocked);
+        await h.Um.DidNotReceiveWithAnyArgs().CheckPasswordAsync(default!, default!);
+        await h.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+    }
+
+    [Fact]
+    public async Task Login_UnconfirmedAccountRightPasswordOrLockoutDisabled_IsNotCounted()
+    {
+        var h = Build();
+        var member = UnconfirmedMemberWithLockout(h);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(true);
+        await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        var other = Build();
+        var otherMember = UnconfirmedMemberWithLockout(other, lockoutEnabled: false);
+        other.Um.CheckPasswordAsync(otherMember, "Password1!").Returns(false);
+        await other.Svc.LoginAsync(new LoginRequestDto { Email = otherMember.Email!, Password = "Password1!" });
+
+        await h.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+        await other.Um.DidNotReceiveWithAnyArgs().AccessFailedAsync(default!);
+    }
+
     [Fact]
     public async Task Login_ConfirmedAccount_HashesThePasswordOnce()
     {

@@ -124,11 +124,16 @@ public partial class AuthService : IAuthService
         // accounts. (CheckPasswordSignInAsync refuses an unconfirmed account before it hashes anything.)
         if (!await _userManager.IsEmailConfirmedAsync(user))
         {
-            var passwordIsRight = await _userManager.CheckPasswordAsync(user, request.Password);
+            var outcome = await UnconfirmedAccountPasswordCheck.RunAsync(_userManager, user, request.Password);
             return new AuthResponseDto
             {
                 Success = false,
-                Message = passwordIsRight ? ErrorMessagesRes.EmailNotConfirmedError : ErrorMessagesRes.InvalidCredentials
+                Message = outcome switch
+                {
+                    UnconfirmedPasswordOutcome.RightPassword => ErrorMessagesRes.EmailNotConfirmedError,
+                    UnconfirmedPasswordOutcome.LockedOut => ErrorMessagesRes.AccountLocked,
+                    _ => ErrorMessagesRes.InvalidCredentials
+                }
             };
         }
 
