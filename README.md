@@ -748,7 +748,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | Role-based page inaccessible | Check `AspNetUserRoles` table. Admin pages require `Admin` role. |
 | Chat not connecting | JWT via `access_token` query string. Check token expiry (default 15 min) — use `api/auth/refresh` to rotate. |
 | Video call has no camera/mic | Grant the browser camera/microphone permission for the site, and use HTTPS (WebRTC requires a secure context). When testing with two browsers on one PC, only one can hold the physical webcam — the other joins audio-only (expected). |
-| `401` after login | Match `Jwt:Key/Issuer/Audience`. Disabled accounts return `X-User-Disabled: true`. |
+| `401` after login | Match `Jwt:Key/Issuer/Audience`. Disabled accounts, and tokens with a stale security stamp, get 401. |
 | HTTPS not trusted | `dotnet dev-certs https --trust` |
 | Assistant shows "The coach is unavailable right now. Please try again later." | Ollama isn't reachable at `http://localhost:11434`. Install it (`winget install Ollama.Ollama`) and make sure it's running — open <http://localhost:11434> (should say "Ollama is running") or run `ollama list`; if not, start it via the Ollama app or `ollama serve`. The app re-probes automatically and recovers without a restart. See the [AI Assistant](#ai-assistant) setup steps. |
 | Assistant stuck "downloading its model" | Normal on first run (~6.4 GB total). Progress shows in the widget and in `Logs/`. On a metered/blocked network set `Assistant__AutoPullModels=false` and pull manually: `ollama pull qwen3:8b && ollama pull bge-m3`. |
