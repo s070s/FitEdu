@@ -1,3 +1,5 @@
+using MailKit.Net.Smtp;
+
 namespace FitEdu.Infrastructure.ApiServices;
 
 /// <summary>
@@ -30,6 +32,13 @@ public sealed partial class EmailDispatcher(EmailOutbox queue, IServiceScopeFact
         }
         catch (Exception ex) when (ex is not OperationCanceledException || !stoppingToken.IsCancellationRequested)
         {
+            if (ex is SmtpCommandException commandFailure)
+            {
+                // The relay's numeric reply and MailKit's error code say why it refused, without its text (which can name the address).
+                LogSmtpCommandFailed(logger, email.Content.Subject, (int)commandFailure.StatusCode, commandFailure.ErrorCode);
+                return;
+            }
+
             LogSendFailed(logger, email.Content.Subject, ex.GetType().Name);
         }
     }
@@ -38,4 +47,7 @@ public sealed partial class EmailDispatcher(EmailOutbox queue, IServiceScopeFact
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Email '{Subject}' could not be sent ({ErrorType}).")]
     private static partial void LogSendFailed(ILogger logger, string subject, string errorType);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Email '{Subject}' was refused by the mail server (SMTP status {StatusCode}, {ErrorCode}).")]
+    private static partial void LogSmtpCommandFailed(ILogger logger, string subject, int statusCode, SmtpErrorCode errorCode);
 }

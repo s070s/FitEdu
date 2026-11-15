@@ -57,7 +57,9 @@ public sealed class EmailDispatcherTests
         var client = Substitute.For<ISmtpClient>();
         client.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>())
             .Returns(
-                _ => Task.FromException<string>(new InvalidOperationException($"550 <{PrivateAddress}> recipient rejected")),
+                _ => Task.FromException<string>(new SmtpCommandException(
+                    SmtpErrorCode.RecipientNotAccepted, SmtpStatusCode.MailboxUnavailable,
+                    new MailboxAddress(string.Empty, PrivateAddress), $"<{PrivateAddress}> recipient rejected")),
                 call =>
                 {
                     second.TrySetResult(call.Arg<MimeMessage>());
@@ -73,6 +75,9 @@ public sealed class EmailDispatcherTests
 
         var entry = _dispatcherLog.Errors.ShouldHaveSingleItem();
         entry.ShouldContain(EmailTemplates.PasswordResetSubject, Case.Sensitive);
+        // The relay's status code (550) and MailKit's error code say why it failed, without the address.
+        entry.ShouldContain("550");
+        entry.ShouldContain(nameof(SmtpErrorCode.RecipientNotAccepted));
         entry.ShouldNotContain("secret-mail");
     }
 
