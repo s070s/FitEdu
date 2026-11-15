@@ -1,26 +1,20 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
-using System.Net.Http.Json;
 
 namespace FitEdu.Web.Pages;
 
 public partial class ForgotPassword
 {
     [Inject] private IAuthService AuthService { get; set; } = default!;
-    // HttpClient retained exclusively for the dev-only reset endpoint (not in IAuthService)
-    [Inject] private HttpClient Http { get; set; } = default!;
     [Inject] private ILogger<ForgotPassword> Logger { get; set; } = default!;
-    [Inject] private IWebHostEnvironment Env { get; set; } = default!;
 
     private ForgotPasswordRequestDto forgotPasswordRequest = new();
     private string? successMessage;
     private string? errorMessage;
     private bool isLoading;
-    private string devNewPassword = string.Empty;
 
     private async Task HandleSubmit()
     {
@@ -53,43 +47,7 @@ public partial class ForgotPassword
         }
     }
 
-    private async Task DevResetPassword()
-    {
-        if (string.IsNullOrEmpty(devNewPassword) || string.IsNullOrEmpty(forgotPasswordRequest.Email))
-        {
-            errorMessage = ErrorMessagesRes.EnterEmailAndPassword;
-            return;
-        }
-
-        try
-        {
-            var request = new
-            {
-                Email = forgotPasswordRequest.Email,
-                NewPassword = devNewPassword
-            };
-            var response = await Http.PostAsJsonAsync("api/auth/dev/reset-password", request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                successMessage = SuccessMessagesRes.PasswordResetSuccessful;
-            }
-            else
-            {
-                errorMessage = ErrorMessagesRes.PasswordResetFailed;
-            }
-        }
-        catch (Exception ex)
-        {
-            LogDevPasswordResetFailed(Logger, ex);
-            errorMessage = ErrorMessagesRes.UnexpectedErrorTryAgain;
-        }
-    }
-
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
     [LoggerMessage(Level = LogLevel.Error, Message = "Forgot-password request failed.")]
     private static partial void LogForgotPasswordFailed(ILogger logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Dev password reset failed.")]
-    private static partial void LogDevPasswordResetFailed(ILogger logger, Exception exception);
 }

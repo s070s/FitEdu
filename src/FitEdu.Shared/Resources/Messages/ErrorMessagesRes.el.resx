@@ -126,9 +126,6 @@
   <data name="PasswordResetLinkInvalid" xml:space="preserve">
     <value>Ο σύνδεσμος επαναφοράς δεν είναι έγκυρος ή έχει λήξει. Ζήτα νέο.</value>
   </data>
-  <data name="Error" xml:space="preserve">
-    <value>Σφάλμα</value>
-  </data>
   <data name="EmailTakenError" xml:space="preserve">
     <value>Αυτό το email είναι ήδη καταχωρισμένο. Χρησιμοποίησε άλλο email ή συνδέσου.</value>
   </data>
@@ -239,9 +236,6 @@
   </data>
   <data name="UnableToConnect" xml:space="preserve">
     <value>Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Δοκίμασε ξανά.</value>
-  </data>
-  <data name="EnterEmailAndPassword" xml:space="preserve">
-    <value>Γράψε το email σου και τον νέο κωδικό πρόσβασης.</value>
   </data>
   <data name="PasswordResetFailed" xml:space="preserve">
     <value>Δεν ήταν δυνατή η επαναφορά του κωδικού πρόσβασης. Δοκίμασε ξανά.</value>

@@ -97,15 +97,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Email.
-        /// </summary>
-        public static string Label_ConfirmEmail {
-            get {
-                return ResourceManager.GetString("Label_ConfirmEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
         public static string ConfirmEmailTitle {
@@ -201,24 +192,6 @@ namespace FitEdu.Shared.Resources {
         public static string Label_CreateAccount {
             get {
                 return ResourceManager.GetString("Label_CreateAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dev Mode:.
-        /// </summary>
-        public static string Label_DevMode {
-            get {
-                return ResourceManager.GetString("Label_DevMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dev: Reset Password.
-        /// </summary>
-        public static string Label_DevResetPassword {
-            get {
-                return ResourceManager.GetString("Label_DevResetPassword", resourceCulture);
             }
         }
         
@@ -902,15 +875,6 @@ namespace FitEdu.Shared.Resources {
         public static string AuthRegisterSubtitle {
             get {
                 return ResourceManager.GetString("AuthRegisterSubtitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset the password directly.
-        /// </summary>
-        public static string DevResetPasswordHint {
-            get {
-                return ResourceManager.GetString("DevResetPasswordHint", resourceCulture);
             }
         }
 

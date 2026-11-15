@@ -61,15 +61,6 @@ namespace FitEdu.Shared.Resources.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email confirmed.
-        /// </summary>
-        public static string EmailConfirmationSuccess {
-            get {
-                return ResourceManager.GetString("EmailConfirmationSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Your account is ready. Please check your email to confirm it..
         /// </summary>
         public static string RegistrationSuccess {

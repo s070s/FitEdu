@@ -51,8 +51,6 @@ public class AuthAndSiteChromeTests : BunitContext
         Services.AddSingleton<IdentityErrorDescriber>(_errorDescriber);
         // Register scrolls its result into view after a submit.
         JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
-        Services.AddSingleton(Substitute.For<IHttpClientFactory>());
-        Services.AddSingleton(new HttpClient());
     }
 
     // ---- Login / Register ---------------------------------------------------------------------
@@ -287,6 +285,50 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_InDevelopment_OffersNoDevConfirmButton()
+    {
+        _environment.EnvironmentName.Returns("Development");
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.FindAll(".register-success .btn-warning").ShouldBeEmpty();
+        page.FindAll("button").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Login_InDevelopment_UnconfirmedAccount_OffersNoDevConfirmButton()
+    {
+        _environment.EnvironmentName.Returns("Development");
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(UnconfirmedRefusal());
+        var page = Render<Login>();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        page.Find(".alert-warning").TextContent.ShouldContain(ErrorMessagesRes.EmailNotConfirmedHint);
+        page.FindAll(".btn-warning").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ForgotPassword_InDevelopment_OffersNoDevResetForm()
+    {
+        _environment.EnvironmentName.Returns("Development");
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true, Message = "sent" });
+        var page = Render<ForgotPassword>();
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        page.Find(".alert-success").TextContent.ShouldContain("sent");
+        page.FindAll(".btn-warning").ShouldBeEmpty();
+        page.FindAll("input[type=password]").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void ForgotPassword_OutsideDevelopment_HidesTheDirectReset()
     {
         _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true, Message = "sent" });
@@ -364,6 +406,14 @@ public class AuthAndSiteChromeTests : BunitContext
         table.FindAll("tbody tr").Count.ShouldBe(2);
         table.Find("caption.visually-hidden").TextContent.ShouldBe("Users"); // the table's accessible name
     }
+
+    // What the service answers for the right password on an account whose email is not confirmed yet.
+    private static AuthResponseDto UnconfirmedRefusal() => new()
+    {
+        Success = false,
+        Message = ErrorMessagesRes.EmailNotConfirmedError,
+        Failure = AuthFailure.EmailNotConfirmed
+    };
 
     private static void FillRequiredRegisterFields(IRenderedComponent<Register> page)
     {

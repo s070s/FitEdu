@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Label_ConfirmEmail" xml:space="preserve">
-    <value>Confirm email</value>
-  </data>
   <data name="ConfirmEmailTitle" xml:space="preserve">
     <value>Confirm your email</value>
   </data>
@@ -195,14 +192,8 @@
   <data name="ForgotPasswordInstructions" xml:space="preserve">
     <value>Enter your email address and we'll send you a password reset link.</value>
   </data>
-  <data name="Label_DevMode" xml:space="preserve">
-    <value>Dev mode:</value>
-  </data>
   <data name="Label_NewPassword" xml:space="preserve">
     <value>New password</value>
-  </data>
-  <data name="Label_DevResetPassword" xml:space="preserve">
-    <value>Dev: Reset password</value>
   </data>
   <data name="Label_Sending" xml:space="preserve">
     <value>Sending…</value>
@@ -398,9 +389,6 @@
     </data>
     <data name="AuthRegisterSubtitle" xml:space="preserve">
       <value>Joining is free. Your first workout is a few minutes away.</value>
-    </data>
-    <data name="DevResetPasswordHint" xml:space="preserve">
-      <value>Reset the password directly</value>
     </data>
   <data name="Label_GoToLogin" xml:space="preserve">
     <value>Go to login</value>

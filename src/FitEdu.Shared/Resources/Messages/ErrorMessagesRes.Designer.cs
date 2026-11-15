@@ -97,15 +97,6 @@ namespace FitEdu.Shared.Resources.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string Error {
-            get {
-                return ResourceManager.GetString("Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Login Error.
         /// </summary>
         public static string LoginError {
@@ -425,15 +416,6 @@ namespace FitEdu.Shared.Resources.Messages {
         public static string UnableToConnect {
             get {
                 return ResourceManager.GetString("UnableToConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please enter email and new password..
-        /// </summary>
-        public static string EnterEmailAndPassword {
-            get {
-                return ResourceManager.GetString("EnterEmailAndPassword", resourceCulture);
             }
         }
         

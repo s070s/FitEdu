@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using FitEdu.Web.Interfaces;
@@ -8,7 +7,6 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources.Messages;
-using System.Net.Http.Json;
 
 namespace FitEdu.Web.Pages;
 
@@ -18,8 +16,6 @@ public partial class Register : IDisposable
 
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
-    [Inject] private IWebHostEnvironment Env { get; set; } = default!;
-    [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
     [Inject] private IdentityErrorDescriber ErrorDescriber { get; set; } = default!;
 
@@ -158,29 +154,5 @@ public partial class Register : IDisposable
         scrollToFeedback = true;
 
         isLoading = false;
-    }
-
-    private async Task DevConfirmEmail()
-    {
-        if (string.IsNullOrEmpty(registeredEmail))
-            return;
-
-        try
-        {
-            var http = HttpClientFactory.CreateClient("SelfClient");
-            var response = await http.PostAsJsonAsync("api/auth/dev/confirm-email", registeredEmail);
-            if (response.IsSuccessStatusCode)
-            {
-                successMessage = SuccessMessagesRes.EmailConfirmationSuccess;
-            }
-            else
-            {
-                errorMessage = ErrorMessagesRes.EmailConfirmationError;
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"{ErrorMessagesRes.Error}: {ex.Message}";
-        }
     }
 }

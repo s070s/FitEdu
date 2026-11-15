@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
-using System.Net.Http.Json;
 
 namespace FitEdu.Web.Pages;
 
@@ -15,8 +13,6 @@ public partial class Login
 
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
-    [Inject] private IWebHostEnvironment Env { get; set; } = default!;
-    [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
     [Inject] private ILogger<Login> Logger { get; set; } = default!;
 
     /// <summary>Where to go after signing in, e.g. the programme a guest was looking at.</summary>
@@ -24,7 +20,6 @@ public partial class Login
 
     private LoginRequestDto loginRequest = new();
     private string? errorMessage;
-    private string? devSuccessMessage;
     private bool isLoading;
     private bool showPassword;
 
@@ -47,7 +42,6 @@ public partial class Login
     {
         isLoading = true;
         errorMessage = null;
-        devSuccessMessage = null;
         unconfirmedEmailPending = false;
         pendingUnconfirmedEmail = string.Empty;
 
@@ -71,8 +65,7 @@ public partial class Login
                 // Preserve original message
                 errorMessage = result.Message ?? ErrorMessagesRes.LoginError;
 
-                // Detect "email not confirmed" failure and surface targeted guidance (all
-                // environments). The dev-only self-confirm button is gated separately in the markup.
+                // Detect "email not confirmed" failure and surface targeted guidance.
                 // Compared against the resx value (not a hardcoded English substring) so this still
                 // matches once AuthService's message is localized to the request's culture.
                 if (result.Message == ErrorMessagesRes.EmailNotConfirmedError)
@@ -122,33 +115,6 @@ public partial class Login
             return pagePath;
 
         return $"{pagePath}?returnUrl={Uri.EscapeDataString(localPath)}";
-    }
-
-    private async Task DevConfirmPendingEmail()
-    {
-        if (string.IsNullOrEmpty(pendingUnconfirmedEmail))
-            return;
-
-        try
-        {
-            var http = HttpClientFactory.CreateClient("SelfClient");
-            var response = await http.PostAsJsonAsync("api/auth/dev/confirm-email", pendingUnconfirmedEmail);
-
-            if (response.IsSuccessStatusCode)
-            {
-                unconfirmedEmailPending = false;
-                devSuccessMessage = SuccessMessagesRes.EmailConfirmationSuccess;
-            }
-            else
-            {
-                var apiResp = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-                errorMessage = apiResp?.Message ?? ErrorMessagesRes.EmailConfirmationError;
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"{ErrorMessagesRes.Error}: {ex.Message}";
-        }
     }
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.

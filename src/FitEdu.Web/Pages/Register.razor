@@ -11,19 +11,7 @@
         @if (!string.IsNullOrEmpty(successMessage))
         {
             <div class="register-success" role="status" tabindex="-1" @ref="successRegion">
-                <div class="alert alert-success">
-                    @if (Env.IsDevelopment())
-                    {
-                        @successMessage
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-warning" @onclick="DevConfirmEmail">@GlobalRes.Label_ConfirmEmail</button>
-                        </div>
-                    }
-                    else
-                    {
-                        @SuccessMessagesRes.RegistrationSuccess
-                    }
-                </div>
+                <div class="alert alert-success">@SuccessMessagesRes.RegistrationSuccess</div>
                 @RegisterErrors
                 <a class="btn-cta auth-submit register-success__login" href="@LoginHref">@GlobalRes.Label_GoToLogin</a>
             </div>
