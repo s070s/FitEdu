@@ -317,6 +317,23 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData(".FitEdu.AdminUserId=not-a-protected-value")]
+    public async Task ExitImpersonation_BackupCookieMissingOrAltered_SignsOutInsteadOfSigningIn(string? backupCookie)
+    {
+        var (adminId, _) = await CreateAdminAsync();
+        var ticket = await CraftedTicketAsync(adminBackupId: adminId);
+        var completed = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+        var cookies = backupCookie is null ? new[] { AuthCookieOnly(completed) } : [AuthCookieOnly(completed), backupCookie];
+
+        var exit = await GetWithCookiesAsync("/auth/exit-impersonation", cookies);
+
+        exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
+            .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
+    }
+
     [Fact]
     public async Task ExitImpersonation_AdminNoLongerEnabled_SignsOutInsteadOfSigningIn()
     {
