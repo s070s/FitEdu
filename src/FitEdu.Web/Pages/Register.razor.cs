@@ -23,8 +23,9 @@ public partial class Register : IDisposable
     /// <summary>Where to go after the first log-in, e.g. the programme a guest was looking at.</summary>
     [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
 
-    // RegisterRequest.DateOfBirth is now DateTime? default to 2000-01-01 as requested
-    private RegisterRequestDto registerRequest = new() { DateOfBirth = new DateTime(2000, 1, 1) };
+    // The date of birth starts empty and is required: a pre-filled date would be kept by most visitors.
+    // The server refuses an age under RegisterRequestDto.MinimumSignUpAge; the page shows its message.
+    private RegisterRequestDto registerRequest = new();
     private EditContext editContext = default!;
     private string? successMessage;
     private string? errorMessage;
@@ -139,10 +140,7 @@ public partial class Register : IDisposable
         {
             // Always our own translated text, never the server's message.
             successMessage = SuccessMessagesRes.RegistrationSuccess;
-            registerRequest = new()
-            {
-                DateOfBirth = new DateTime(2000, 1, 1)
-            }; // Reset, keep default DOB
+            registerRequest = new(); // Reset the form for the next visitor
             editContext.OnFieldChanged -= HandleFieldChanged;
             editContext = new EditContext(registerRequest);
             editContext.OnFieldChanged += HandleFieldChanged;

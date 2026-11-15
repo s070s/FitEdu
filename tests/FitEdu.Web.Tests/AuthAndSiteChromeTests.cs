@@ -317,6 +317,52 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_DateOfBirth_StartsEmpty()
+    {
+        // A pre-filled date was kept by most visitors, so it was not their real age.
+        var page = Render<Register>();
+
+        (page.Find("#dob").GetAttribute("value") ?? string.Empty).ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("el-GR")]
+    public void Register_WithoutDateOfBirth_ShowsTheTranslatedRequiredMessageAndSendsNothing(string culture)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("#dob").Change(string.Empty);
+        page.Find("form").Submit();
+
+        page.Find("#dob ~ .validation-message").TextContent.ShouldBe(ErrorMessagesRes.Auth_DateOfBirthRequired);
+        _ = _authService.DidNotReceiveWithAnyArgs().RegisterAsync(default!);
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("el-GR")]
+    public void Register_UnderFifteen_ShowsTheTranslatedMinimumAgeMessageAndKeepsTheForm(string culture)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto
+        {
+            Success = false,
+            Message = ErrorMessagesRes.SignUpMinimumAge,
+            Failure = AuthFailure.UnderMinimumAge
+        });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        page.Find("form .register-errors .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.SignUpMinimumAge);
+        page.Find("#dob").GetAttribute("value").ShouldBe("1998-04-12");
+    }
+
+    [Fact]
     public void Register_TakenEmailContainingUsername_ShowsEmailTaken()
     {
         // An email such as username@… makes Identity's "already taken" text contain "username"; it must not be hidden.
@@ -526,6 +572,7 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("#firstName").Change("Maria");
         page.Find("#lastName").Change("Papadopoulou");
         page.Find("#email").Change(RegisterEmail);
+        page.Find("#dob").Change("1998-04-12");
         page.Find("#password").Change(ValidPassword);
         page.Find("#confirmPassword").Change(ValidPassword);
         page.Find("#gdprConsent").Change(true);
