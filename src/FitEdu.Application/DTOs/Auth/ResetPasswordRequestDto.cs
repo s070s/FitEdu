@@ -13,8 +13,8 @@ public class ResetPasswordRequestDto
     [Required]
     public string Token { get; set; } = string.Empty;
 
-    /// <summary>Min 8 chars, at least one uppercase letter and one digit — matches the Identity
-    /// policy configured in AuthenticationSetupExtensions.</summary>
+    /// <summary>Min 8 chars, at least one uppercase letter, one lowercase letter and one digit — matches the
+    /// Identity policy configured in AuthenticationSetupExtensions.</summary>
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordRequired))]
     [RegularExpression(PasswordRules.ComplexityPattern, ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
     public string NewPassword { get; set; } = string.Empty;

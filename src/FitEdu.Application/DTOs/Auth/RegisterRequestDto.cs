@@ -13,8 +13,8 @@ public class RegisterRequestDto
     [EmailAddress(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_EmailInvalid))]
     public string Email { get; set; } = string.Empty;
 
-    /// <summary>Password: min 8 chars, at least one uppercase letter and one digit — must match the
-    /// Identity policy configured in AuthenticationSetupExtensions (RequiredLength/RequireDigit/RequireUppercase).</summary>
+    /// <summary>Password: min 8 chars, at least one uppercase letter, one lowercase letter and one digit — must
+    /// match the Identity policy configured in AuthenticationSetupExtensions (RequiredLength/RequireDigit/RequireUppercase; RequireLowercase is Identity's default).</summary>
     /// <example>P@ssw0rd123</example>
     [Required(ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordRequired))]
     [RegularExpression(PasswordRules.ComplexityPattern, ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.Auth_PasswordComplexity))]
