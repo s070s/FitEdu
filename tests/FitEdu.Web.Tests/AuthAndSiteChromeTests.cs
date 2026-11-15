@@ -619,6 +619,51 @@ public class AuthAndSiteChromeTests : BunitContext
         page.FindAll(".alert-success input[type=password]").ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData("en", "not-an-email", nameof(ErrorMessagesRes.Auth_EmailInvalid))]
+    [InlineData("el-GR", "not-an-email", nameof(ErrorMessagesRes.Auth_EmailInvalid))]
+    [InlineData("en", "", nameof(ErrorMessagesRes.Auth_EmailRequired))]
+    [InlineData("el-GR", "", nameof(ErrorMessagesRes.Auth_EmailRequired))]
+    public void ForgotPassword_InvalidEmail_ShowsTranslatedMessageSendsNothing(string culture, string typed, string messageKey)
+    {
+        // The browser's own validation message is not in the page's language, so the page validates itself.
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        var expected = (string)typeof(ErrorMessagesRes).GetProperty(messageKey)!.GetValue(null)!;
+        var page = Render<ForgotPassword>();
+
+        page.Find("#email").Change(typed);
+        page.Find("form").Submit();
+
+        page.Find("#email ~ .validation-message").TextContent.ShouldBe(expected);
+        _ = _authService.DidNotReceiveWithAnyArgs().ForgotPasswordAsync(default!);
+    }
+
+    [Fact]
+    public void ForgotPassword_EmailField_HasNoBrowserValidationAndAnEmailKeyboard()
+    {
+        var page = Render<ForgotPassword>();
+
+        var email = page.Find("#email");
+        email.GetAttribute("type").ShouldNotBe("email"); // type=email would show the browser's English bubble
+        email.HasAttribute("required").ShouldBeFalse();
+        email.GetAttribute("inputmode").ShouldBe("email");
+        email.GetAttribute("autocomplete").ShouldBe("email");
+    }
+
+    [Fact]
+    public void ForgotPassword_ServiceThrows_ShowsTryAgain()
+    {
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns<AuthResponseDto>(_ => throw new InvalidOperationException("boom"));
+        var page = Render<ForgotPassword>();
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.FindAll("form").Count.ShouldBe(1);
+        page.Find("button[type=submit]").HasAttribute("disabled").ShouldBeFalse();
+    }
+
     [Fact]
     public void ForgotPassword_SuccessSitsInAStatusRegion()
     {
