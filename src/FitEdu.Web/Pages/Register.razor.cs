@@ -111,10 +111,8 @@ public partial class Register : IDisposable
         errorMessage = null;
         errors.Clear();
 
-        // Trim all text inputs
+        // Trim the text inputs, but not the passwords: they are sent exactly as typed, as the sign-in and the API take them.
         registerRequest.Email = registerRequest.Email?.Trim() ?? string.Empty;
-        registerRequest.Password = registerRequest.Password?.Trim() ?? string.Empty;
-        registerRequest.ConfirmPassword = registerRequest.ConfirmPassword?.Trim() ?? string.Empty;
         registerRequest.FirstName = registerRequest.FirstName?.Trim() ?? string.Empty;
         registerRequest.LastName = registerRequest.LastName?.Trim() ?? string.Empty;
 

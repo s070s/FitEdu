@@ -31,6 +31,7 @@ public class AuthAndSiteChromeTests : BunitContext
     private readonly CultureScope _cultureScope = new();
 
     private const string ValidPassword = "Password1";
+    private const string PasswordWithSpaces = " Password1 ";
     private const string RegisterEmail = "maria@fitedu.local";
 
     private readonly IAuthService _authService = Substitute.For<IAuthService>();
@@ -85,6 +86,21 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("form").Submit();
 
         navigation.Uri.ShouldEndWith("/auth/complete?ticket=ticket&returnUrl=" + expectedReturnUrl);
+    }
+
+    [Fact]
+    public void Login_SendsThePasswordExactlyAsTyped()
+    {
+        // Only the email is trimmed: a password with a space at an end must reach the check as it was set.
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto { Success = true, Token = "ticket" });
+        var page = Render<Login>();
+
+        page.Find("#email").Change(" alice@fitedu.local ");
+        page.Find("#password").Change(PasswordWithSpaces);
+        page.Find("form").Submit();
+
+        _authService.Received(1).LoginAsync(Arg.Is<LoginRequestDto>(request =>
+            request.Email == "alice@fitedu.local" && request.Password == PasswordWithSpaces));
     }
 
     [Fact]
@@ -184,6 +200,21 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("form").Submit();
 
         _authService.Received(1).RegisterAsync(Arg.Is<RegisterRequestDto>(request => request.Goal == null));
+    }
+
+    [Fact]
+    public void Register_SendsThePasswordExactlyAsTyped()
+    {
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(new AuthResponseDto { Success = true });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("#password").Change(PasswordWithSpaces);
+        page.Find("#confirmPassword").Change(PasswordWithSpaces);
+        page.Find("form").Submit();
+
+        _authService.Received(1).RegisterAsync(Arg.Is<RegisterRequestDto>(request =>
+            request.Password == PasswordWithSpaces && request.ConfirmPassword == PasswordWithSpaces));
     }
 
     [Fact]

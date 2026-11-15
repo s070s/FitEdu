@@ -51,9 +51,8 @@ public partial class Login
         unconfirmedEmailPending = false;
         pendingUnconfirmedEmail = string.Empty;
 
-        // Trim inputs
+        // Only the email is trimmed: a password is sent exactly as typed, as the sign-up and the API take it.
         loginRequest.Email = loginRequest.Email?.Trim() ?? string.Empty;
-        loginRequest.Password = loginRequest.Password?.Trim() ?? string.Empty;
 
         try
         {
