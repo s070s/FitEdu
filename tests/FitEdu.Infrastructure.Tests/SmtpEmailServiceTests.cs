@@ -54,7 +54,7 @@ public sealed class SmtpEmailServiceTests : IDisposable
         message.Subject.ShouldBe("Reset your FitEdu password");
         var html = message.HtmlBody.ShouldNotBeNull();
         html.ShouldContain("https://fitedu.test/reset-password?email=u%40x.com&amp;token=xyz", Case.Sensitive);
-        html.ShouldContain("If you did not ask for this");
+        html.ShouldContain("you can ignore this email");
         message.TextBody.ShouldNotBeNull().ShouldContain(ResetLink, Case.Sensitive);
     }
 
@@ -83,8 +83,60 @@ public sealed class SmtpEmailServiceTests : IDisposable
         message.Subject.ShouldBe("Επαναφορά του κωδικού πρόσβασής σου στο FitEdu");
         var html = message.HtmlBody.ShouldNotBeNull();
         html.ShouldContain("https://fitedu.test/reset-password?email=u%40x.com&amp;token=xyz", Case.Sensitive);
-        html.ShouldContain("Αν δεν το ζήτησες εσύ");
+        html.ShouldContain("αγνόησε αυτό το email");
         message.TextBody.ShouldNotBeNull().ShouldContain(ResetLink, Case.Sensitive);
+    }
+
+    // Both parts of the message, HTML and plain text, carry the lifetime and the ignore line.
+    private static void ShouldStateLifetimeAnd(MimeMessage message, string lifetimeLine, string ignoreLine)
+    {
+        foreach (var body in new[] { message.HtmlBody.ShouldNotBeNull(), message.TextBody.ShouldNotBeNull() })
+        {
+            body.ShouldContain(lifetimeLine, Case.Sensitive);
+            body.ShouldContain(ignoreLine, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void BuildMessage_Confirmation_StatesLifetimeAndIgnoreLine_EnEl()
+    {
+        var english = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink, English));
+        var greek = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.EmailConfirmation(ConfirmationLink, Greek));
+
+        ShouldStateLifetimeAnd(english, "This link works for 24 hours.", "If you didn't create a FitEdu account, you can ignore this email.");
+        ShouldStateLifetimeAnd(greek, "Ο σύνδεσμος ισχύει για 24 ώρες.", "Αν δεν δημιούργησες εσύ λογαριασμό στο FitEdu, αγνόησε αυτό το email.");
+    }
+
+    [Fact]
+    public void BuildMessage_PasswordReset_StatesLifetimeAndIgnoreLine_EnEl()
+    {
+        var english = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink, English));
+        var greek = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.PasswordReset(ResetLink, Greek));
+
+        ShouldStateLifetimeAnd(english, "This link works for 24 hours.", "If you didn't ask to reset your password, you can ignore this email.");
+        ShouldStateLifetimeAnd(greek, "Ο σύνδεσμος ισχύει για 24 ώρες.", "Αν δεν ζήτησες εσύ αλλαγή κωδικού, αγνόησε αυτό το email.");
+    }
+
+    [Theory]
+    [InlineData(UserLanguage.English, "en")]
+    [InlineData(UserLanguage.Greek, "el")]
+    public void EmailTemplates_HtmlIsAFullDocumentInTheEmailLanguage(string language, string htmlLang)
+    {
+        EmailTemplates.EmailConfirmation(ConfirmationLink, language).HtmlBody.ShouldStartWith($"<html lang=\"{htmlLang}\">", Case.Sensitive);
+        EmailTemplates.PasswordReset(ResetLink, language).HtmlBody.ShouldStartWith($"<html lang=\"{htmlLang}\">", Case.Sensitive);
+        EmailTemplates.PasswordReset(ResetLink, language).HtmlBody.ShouldEndWith("</html>", Case.Sensitive);
+    }
+
+    [Fact]
+    public void EmailTemplates_TheStatedLifetimeIsTheTokenLifetimeConstant()
+    {
+        EmailTemplates.LinkLifetimeHours.ShouldBe(24); // Identity's default: the stated lifetime changes no behaviour
+        EmailTemplates.EmailConfirmation(ConfirmationLink, English).TextBody
+            .ShouldContain($"works for {EmailTemplates.LinkLifetimeHours} hours", Case.Sensitive);
     }
 
     [Fact]

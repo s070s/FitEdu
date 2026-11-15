@@ -56,6 +56,10 @@ public static class AuthenticationSetupExtensions
         // Password-rule and email errors in the member's language instead of Identity's English.
         .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
+        // The emailed confirmation and reset links work for as long as the emails say (EmailTemplates).
+        builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromHours(EmailTemplates.LinkLifetimeHours));
+
         // --- JWT settings: the one place Jwt:* is read (signer, bearer validation and the startup check use it) ---
         builder.Services.AddOptions<JwtOptions>()
             .Bind(config.GetSection(JwtOptions.SectionName))

@@ -26,6 +26,18 @@ public static class EmailTemplates
     private const string GreekHtmlSignOff = "<p>Καλή προπόνηση,<br>Η ομάδα του FitEdu</p>";
     private const string GreekTextSignOff = "Καλή προπόνηση, η ομάδα του FitEdu.";
 
+    /// <summary>How long the emailed confirmation and reset links work, in hours. The emails state it and
+    /// the token providers expire the links after it (set in the startup code from this one constant);
+    /// 24 hours is Identity's own default, so stating it changes no behaviour.</summary>
+    public const int LinkLifetimeHours = 24;
+
+    private static readonly string LifetimeLine = $"This link works for {LinkLifetimeHours} hours.";
+    private static readonly string GreekLifetimeLine = $"Ο σύνδεσμος ισχύει για {LinkLifetimeHours} ώρες.";
+    private const string ConfirmationIgnoreLine = "If you didn't create a FitEdu account, you can ignore this email.";
+    private const string GreekConfirmationIgnoreLine = "Αν δεν δημιούργησες εσύ λογαριασμό στο FitEdu, αγνόησε αυτό το email.";
+    private const string ResetIgnoreLine = "If you didn't ask to reset your password, you can ignore this email.";
+    private const string GreekResetIgnoreLine = "Αν δεν ζήτησες εσύ αλλαγή κωδικού, αγνόησε αυτό το email.";
+
     /// <summary>The welcome email with the confirmation link: Greek for "el", English otherwise.</summary>
     public static EmailContent EmailConfirmation(string confirmationLink, string language) =>
         IsGreek(language) ? GreekEmailConfirmation(confirmationLink) : EnglishEmailConfirmation(confirmationLink);
@@ -36,55 +48,67 @@ public static class EmailTemplates
 
     private static bool IsGreek(string language) => language == UserLanguage.Greek;
 
+    // The HTML part is a whole document with the language on it, so a screen reader reads Greek as Greek.
+    private static string HtmlDocument(string languageCode, string body) =>
+        $"<html lang=\"{languageCode}\"><body>{body}</body></html>";
+
     private static EmailContent EnglishEmailConfirmation(string confirmationLink)
     {
         var safeLink = WebUtility.HtmlEncode(confirmationLink);
-        var html = "<p>Welcome to FitEdu! Your training programmes, workouts and exercise library are ready.</p>" +
+        var html = HtmlDocument("en",
+                   "<p>Welcome to FitEdu! Your training programmes, workouts and exercise library are ready.</p>" +
                    "<p>Confirm your email address to start your first workout:</p>" +
                    $"<p><a href=\"{safeLink}\">Confirm my email</a></p>" +
                    $"<p>If the link does not work, copy this URL into your browser:<br>{safeLink}</p>" +
-                   HtmlSignOff;
+                   $"<p>{LifetimeLine} {ConfirmationIgnoreLine}</p>" +
+                   HtmlSignOff);
         var text = "Welcome to FitEdu! Your training programmes, workouts and exercise library are ready. " +
-                   $"Confirm your email to start your first workout: {confirmationLink}\n\n{TextSignOff}";
+                   $"Confirm your email to start your first workout: {confirmationLink}\n\n" +
+                   $"{LifetimeLine} {ConfirmationIgnoreLine}\n\n{TextSignOff}";
         return new EmailContent(EmailConfirmationSubject, html, text);
     }
 
     private static EmailContent GreekEmailConfirmation(string confirmationLink)
     {
         var safeLink = WebUtility.HtmlEncode(confirmationLink);
-        var html = "<p>Καλώς ήρθες στο FitEdu! Τα προγράμματα, οι προπονήσεις και η βιβλιοθήκη ασκήσεων σε περιμένουν.</p>" +
+        var html = HtmlDocument("el",
+                   "<p>Καλώς ήρθες στο FitEdu! Τα προγράμματα, οι προπονήσεις και η βιβλιοθήκη ασκήσεων σε περιμένουν.</p>" +
                    "<p>Επιβεβαίωσε το email σου για να ξεκινήσεις την πρώτη σου προπόνηση:</p>" +
                    $"<p><a href=\"{safeLink}\">Επιβεβαίωση email</a></p>" +
                    $"<p>Αν ο σύνδεσμος δεν ανοίγει, αντέγραψε αυτή τη διεύθυνση στο πρόγραμμα περιήγησής σου:<br>{safeLink}</p>" +
-                   GreekHtmlSignOff;
+                   $"<p>{GreekLifetimeLine} {GreekConfirmationIgnoreLine}</p>" +
+                   GreekHtmlSignOff);
         var text = "Καλώς ήρθες στο FitEdu! Τα προγράμματα, οι προπονήσεις και η βιβλιοθήκη ασκήσεων σε περιμένουν. " +
-                   $"Επιβεβαίωσε το email σου για να ξεκινήσεις την πρώτη σου προπόνηση: {confirmationLink}\n\n{GreekTextSignOff}";
+                   $"Επιβεβαίωσε το email σου για να ξεκινήσεις την πρώτη σου προπόνηση: {confirmationLink}\n\n" +
+                   $"{GreekLifetimeLine} {GreekConfirmationIgnoreLine}\n\n{GreekTextSignOff}";
         return new EmailContent(GreekEmailConfirmationSubject, html, text);
     }
 
     private static EmailContent EnglishPasswordReset(string resetLink)
     {
         var safeLink = WebUtility.HtmlEncode(resetLink);
-        var html = "<p>We received a request to reset the password of your FitEdu account.</p>" +
+        var html = HtmlDocument("en",
+                   "<p>We received a request to reset the password of your FitEdu account.</p>" +
                    $"<p><a href=\"{safeLink}\">Reset my password</a></p>" +
-                   "<p>If you did not ask for this, you can ignore this email and keep training as usual. " +
-                   $"If the link does not work, copy this URL into your browser:<br>{safeLink}</p>" +
-                   HtmlSignOff;
+                   $"<p>If the link does not work, copy this URL into your browser:<br>{safeLink}</p>" +
+                   $"<p>{LifetimeLine} {ResetIgnoreLine}</p>" +
+                   HtmlSignOff);
         var text = $"Reset your FitEdu password: {resetLink}\n\n" +
-                   $"If you did not ask for this, you can ignore this email. {TextSignOff}";
+                   $"{LifetimeLine} {ResetIgnoreLine}\n\n{TextSignOff}";
         return new EmailContent(PasswordResetSubject, html, text);
     }
 
     private static EmailContent GreekPasswordReset(string resetLink)
     {
         var safeLink = WebUtility.HtmlEncode(resetLink);
-        var html = "<p>Λάβαμε ένα αίτημα για επαναφορά του κωδικού πρόσβασης του λογαριασμού σου στο FitEdu.</p>" +
+        var html = HtmlDocument("el",
+                   "<p>Λάβαμε ένα αίτημα για επαναφορά του κωδικού πρόσβασης του λογαριασμού σου στο FitEdu.</p>" +
                    $"<p><a href=\"{safeLink}\">Επαναφορά κωδικού πρόσβασης</a></p>" +
-                   "<p>Αν δεν το ζήτησες εσύ, αγνόησε αυτό το email και συνέχισε την προπόνηση κανονικά. " +
-                   $"Αν ο σύνδεσμος δεν ανοίγει, αντέγραψε αυτή τη διεύθυνση στο πρόγραμμα περιήγησής σου:<br>{safeLink}</p>" +
-                   GreekHtmlSignOff;
+                   $"<p>Αν ο σύνδεσμος δεν ανοίγει, αντέγραψε αυτή τη διεύθυνση στο πρόγραμμα περιήγησής σου:<br>{safeLink}</p>" +
+                   $"<p>{GreekLifetimeLine} {GreekResetIgnoreLine}</p>" +
+                   GreekHtmlSignOff);
         var text = $"Επαναφορά του κωδικού πρόσβασής σου στο FitEdu: {resetLink}\n\n" +
-                   $"Αν δεν το ζήτησες εσύ, αγνόησε αυτό το email. {GreekTextSignOff}";
+                   $"{GreekLifetimeLine} {GreekResetIgnoreLine}\n\n{GreekTextSignOff}";
         return new EmailContent(GreekPasswordResetSubject, html, text);
     }
 }

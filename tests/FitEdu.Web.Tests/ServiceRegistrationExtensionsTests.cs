@@ -1,7 +1,9 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Web.Startup;
 using Shouldly;
 using Xunit;
@@ -34,6 +36,14 @@ public class ServiceRegistrationExtensionsTests : IClassFixture<CustomWebAppFact
         greek.DateTimeFormat.ShortTimePattern.ShouldBe("HH:mm");
         options.SupportedUICultures.ShouldNotBeNull().ShouldContain(greek);
         options.DefaultRequestCulture.Culture.Name.ShouldBe("en-GB");
+    }
+
+    [Fact]
+    public void EmailLinks_ExpireAfterTheLifetimeTheEmailsState()
+    {
+        var options = _factory.Services.GetRequiredService<IOptions<DataProtectionTokenProviderOptions>>().Value;
+
+        options.TokenLifespan.ShouldBe(TimeSpan.FromHours(EmailTemplates.LinkLifetimeHours));
     }
 
     [Fact]
