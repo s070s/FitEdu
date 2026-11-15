@@ -73,9 +73,10 @@
         @if (HasResults)
         {
             <div class="grid-auto exercise-library__grid @(_refreshing ? "is-refreshing" : "")" aria-busy="@(_refreshing ? "true" : "false")">
-                @foreach (var exercise in _result!.Items)
+                @for (var index = 0; index < _result!.Items.Count; index++)
                 {
-                    <ExerciseCard Exercise="exercise" @key="exercise.Id" />
+                    var exercise = _result.Items[index];
+                    <ExerciseCard Exercise="exercise" Eager="@(index == 0)" @key="exercise.Id" />
                 }
             </div>
 

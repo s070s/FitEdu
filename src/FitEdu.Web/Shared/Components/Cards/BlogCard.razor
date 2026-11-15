@@ -8,7 +8,7 @@
     <div class="blog-card__cover">
         @if (CoverUrl is not null)
         {
-            <img src="@CoverUrl" alt="" width="@CoverWidth" height="@CoverHeight" loading="lazy" decoding="async" />
+            <img src="@CoverUrl" alt="" width="@CoverWidth" height="@CoverHeight" loading="@(Eager ? "eager" : "lazy")" fetchpriority="@(Eager ? "high" : null)" decoding="async" />
         }
         else
         {
@@ -54,6 +54,9 @@
     private const string ArticlePathPrefix = "/blog/";
 
     [Parameter, EditorRequired] public BlogArticleSummaryDto Article { get; set; } = default!;
+
+    /// <summary>True for the first card of a page: its cover is not lazy-loaded and is fetched first.</summary>
+    [Parameter] public bool Eager { get; set; }
 
     private string? CoverUrl => MediaUrls.Resolve(Article.CoverImageUrl);
 

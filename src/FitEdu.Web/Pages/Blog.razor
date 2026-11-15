@@ -31,7 +31,7 @@
             {
                 var article = _articles[index];
                 <li class="blog-grid__item @(index == 0 ? "blog-grid__item--featured" : "")" @key="article.Id">
-                    <BlogCard Article="article" />
+                    <BlogCard Article="article" Eager="@(index == 0)" />
                 </li>
             }
         </ul>

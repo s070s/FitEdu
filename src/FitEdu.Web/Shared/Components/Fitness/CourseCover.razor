@@ -7,7 +7,7 @@
     @if (ShowPhoto)
     {
         <img class="course-cover__photo" src="@ImageUrl" alt="" width="@PhotoWidth" height="@PhotoHeight"
-             loading="@(Eager ? "eager" : "lazy")" decoding="async" @onerror="OnPhotoError" />
+             loading="@(Eager ? "eager" : "lazy")" fetchpriority="@(Eager ? "high" : null)" decoding="async" @onerror="OnPhotoError" />
     }
     else
     {
@@ -31,7 +31,7 @@
     /// <summary>Category name in either language; picks the fallback icon.</summary>
     [Parameter] public string? CategoryName { get; set; }
 
-    /// <summary>True for a cover at the top of the page, so it is not lazy-loaded.</summary>
+    /// <summary>True for a cover at the top of the page: not lazy-loaded and fetched first.</summary>
     [Parameter] public bool Eager { get; set; }
 
     /// <summary>Content laid over the cover (chips, badges).</summary>

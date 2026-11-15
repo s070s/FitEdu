@@ -7,7 +7,7 @@
     <div class="exercise-media__frames">
         <img class="exercise-media__frame exercise-media__frame--start" src="@StartUrl"
              alt="@string.Format(ExerciseRes.StartPositionAltFormat, Name)"
-             width="@FrameWidth" height="@FrameHeight" loading="@LoadingMode" decoding="async" />
+             width="@FrameWidth" height="@FrameHeight" loading="@LoadingMode" fetchpriority="@(Eager ? "high" : null)" decoding="async" />
         <img class="exercise-media__frame exercise-media__frame--end" src="@EndUrl"
              alt="@string.Format(ExerciseRes.EndPositionAltFormat, Name)"
              width="@FrameWidth" height="@FrameHeight" loading="@LoadingMode" decoding="async" />
@@ -50,7 +50,7 @@
     /// </summary>
     [Parameter] public bool Interactive { get; set; } = true;
 
-    /// <summary>True for a photo at the top of the page, so it is not lazy-loaded.</summary>
+    /// <summary>True for a photo at the top of the page: not lazy-loaded, start photo fetched first.</summary>
     [Parameter] public bool Eager { get; set; }
 
     private bool _paused;

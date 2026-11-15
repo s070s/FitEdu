@@ -128,9 +128,10 @@
                 </div>
 
                 <div class="courses-grid grid-auto stagger">
-                    @foreach (var course in _pagedResult.Items)
+                    @for (var index = 0; index < _pagedResult.Items.Count; index++)
                     {
-                        <CourseCard Course="course" IsLocked="IsLocked(course)" @key="course.Id" />
+                        var course = _pagedResult.Items[index];
+                        <CourseCard Course="course" IsLocked="IsLocked(course)" Eager="@(index == 0)" @key="course.Id" />
                     }
                 </div>
 

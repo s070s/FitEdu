@@ -5,7 +5,7 @@
    .course-card and a.course-card-link. *@
 
 <article class="course-card card-surface card-surface--interactive @(IsLocked ? "course-locked" : "") @(Compact ? "course-card--compact" : "")">
-    <CourseCover ImageUrl="@Course.CoverImageUrl" CategoryName="@Course.CategoryName">
+    <CourseCover ImageUrl="@Course.CoverImageUrl" CategoryName="@Course.CategoryName" Eager="Eager">
         @if (Course.CategoryName is not null)
         {
             <span class="course-card__category">
@@ -80,6 +80,9 @@
 
     /// <summary>Hides the description (dashboard rows, "recommended" strips).</summary>
     [Parameter] public bool Compact { get; set; }
+
+    /// <summary>True for the first card of a page: its cover is not lazy-loaded and is fetched first.</summary>
+    [Parameter] public bool Eager { get; set; }
 
     private string Href => IsLocked ? PricingPath : CoursePathPrefix + Course.Id;
 }
