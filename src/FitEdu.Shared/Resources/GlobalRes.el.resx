@@ -163,7 +163,7 @@
     <value>Νέα αποστολή email επιβεβαίωσης</value>
   </data>
   <data name="ConfirmEmailLinkInvalidHint" xml:space="preserve">
-    <value>Συνδέσου με το email και τον κωδικό πρόσβασής σου για να πάρεις νέο σύνδεσμο: το κουμπί για νέα αποστολή εμφανίζεται αν το email σου δεν έχει επιβεβαιωθεί ακόμη.</value>
+    <value>Συνδέσου με το email και τον κωδικό πρόσβασής σου για να πάρεις νέο σύνδεσμο: Το κουμπί για νέα αποστολή εμφανίζεται αν το email σου δεν έχει επιβεβαιωθεί ακόμη.</value>
   </data>
   <data name="Label_Info_LastName" xml:space="preserve">
     <value>Επώνυμο</value>
