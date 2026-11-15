@@ -53,6 +53,9 @@ public partial class AuthService : IAuthService
     /// <summary>Data Protection purpose for lesson-asset tokens (SEC-2). Changing this invalidates all in-flight asset links.</summary>
     public const string LessonAssetProtectorPurpose = "FitEdu.LessonAsset.v1";
 
+    /// <summary>How long a sign-in ticket can be opened at /auth/complete (once; see <see cref="AuthCompletionTicket.TicketId"/>).</summary>
+    public static readonly TimeSpan SignInTicketLifetime = TimeSpan.FromMinutes(5);
+
     private static readonly TimeSpan LessonAssetTokenLifetime = TimeSpan.FromMinutes(10);
 
     public AuthService(
@@ -289,9 +292,9 @@ public partial class AuthService : IAuthService
     /// </param>
     private string CreateSignInToken(string userId, string? adminBackupId, bool deleteAdminBackup, string securityStamp, bool rememberMe)
     {
-        var ticket = new AuthCompletionTicket(userId, adminBackupId, deleteAdminBackup, securityStamp, rememberMe);
+        var ticket = new AuthCompletionTicket(userId, adminBackupId, deleteAdminBackup, securityStamp, rememberMe, Guid.NewGuid());
         var payload = JsonSerializer.Serialize(ticket);
-        return _protector.Protect(payload, lifetime: TimeSpan.FromMinutes(5));
+        return _protector.Protect(payload, lifetime: SignInTicketLifetime);
     }
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.

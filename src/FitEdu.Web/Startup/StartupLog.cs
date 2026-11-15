@@ -34,6 +34,9 @@ internal static partial class StartupLog
     [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: token had unexpected format.")]
     internal static partial void AuthTokenEmpty(ILogger logger);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: ticket was empty or already used — refused.")]
+    internal static partial void AuthTicketReused(ILogger logger);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: user {UserId} not found.")]
     internal static partial void AuthUserNotFound(ILogger logger, string userId);
 

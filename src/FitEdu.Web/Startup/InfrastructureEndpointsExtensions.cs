@@ -60,6 +60,7 @@ public static class InfrastructureEndpointsExtensions
             IDataProtectionProvider dpProvider,
             UserManager<ApplicationUser> userManager,
             ISubscriptionService subscriptionService,
+            IMemoryCache ticketCache,
             ILoggerFactory loggerFactory) =>
         {
             var logger = loggerFactory.CreateLogger("AuthCompletion");
@@ -92,6 +93,13 @@ public static class InfrastructureEndpointsExtensions
             if (decoded is null)
             {
                 StartupLog.AuthTokenEmpty(logger);
+                return Results.LocalRedirect("/login?error=session_expired");
+            }
+
+            // Each ticket opens once: a copy of the link (a login CSRF) finds it spent.
+            if (!TryUseTicket(ticketCache, decoded.TicketId))
+            {
+                StartupLog.AuthTicketReused(logger);
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
@@ -273,7 +281,7 @@ public static class InfrastructureEndpointsExtensions
     /// Redirects to the return address when it is a path on this site, otherwise to the home page.
     /// NavigationManager.Uri passes an absolute URL, so its path and query are taken first. "//host"
     /// and "/\host" (also what "https://x//host" turns into) fall back to the home page, as does
-    /// anything with a control character, so <see cref="Results.LocalRedirect(string)"/> never throws.
+    /// anything with a control character, so <c>Results.LocalRedirect</c> never throws.
     /// </summary>
     private static IResult ToLocalRedirect(string? returnUrl)
     {
@@ -283,6 +291,27 @@ public static class InfrastructureEndpointsExtensions
 
         var localPath = Login.LocalReturnPath(path);
         return Results.LocalRedirect(localPath.Any(char.IsControl) ? "/" : localPath);
+    }
+
+    // The ticket ids already opened. A used id is remembered a little longer than a ticket lives, so it is
+    // spent for as long as the ticket could still be decoded. One lock makes check-and-remember a single step.
+    private static readonly object TicketUseLock = new();
+
+    /// <summary>True the first time the ticket id is seen; false for an empty id or one already used.</summary>
+    private static bool TryUseTicket(IMemoryCache cache, Guid ticketId)
+    {
+        if (ticketId == Guid.Empty)
+            return false;
+
+        var cacheKey = $"auth-ticket-used:{ticketId}";
+        lock (TicketUseLock)
+        {
+            if (cache.TryGetValue(cacheKey, out _))
+                return false;
+
+            cache.Set(cacheKey, true, AuthService.SignInTicketLifetime + TimeSpan.FromMinutes(1));
+            return true;
+        }
     }
 
     /// <summary>The supported UI culture the requested name stands for (any spelling), else the default one.</summary>

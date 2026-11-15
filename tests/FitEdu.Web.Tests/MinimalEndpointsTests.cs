@@ -165,6 +165,22 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         response.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public async Task AuthComplete_SameTicketTwice_SecondRedirectsToLoginWithoutCookie()
+    {
+        // A ticket opened once is spent: a copy of the link cannot sign anyone else's browser in.
+        var ticket = await SignInTicketAsync();
+        var url = $"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F";
+
+        var first = await NoRedirectClient().GetAsync(url);
+        var second = await NoRedirectClient().GetAsync(url);
+
+        first.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+        second.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        second.Headers.Location!.ToString().ShouldBe("/login?error=session_expired");
+        second.Headers.TryGetValues("Set-Cookie", out var secondCookies).ShouldBeFalse(string.Join("; ", secondCookies ?? []));
+    }
+
     [Theory]
     [InlineData("zz!!")]
     [InlineData("fr-FR")]
