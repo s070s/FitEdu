@@ -234,9 +234,6 @@
   <data name="UnexpectedErrorTryAgain" xml:space="preserve">
     <value>Κάτι πήγε στραβά. Δοκίμασε ξανά.</value>
   </data>
-  <data name="UnableToConnect" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Δοκίμασε ξανά.</value>
-  </data>
   <data name="PasswordResetFailed" xml:space="preserve">
     <value>Δεν ήταν δυνατή η επαναφορά του κωδικού πρόσβασης. Δοκίμασε ξανά.</value>
   </data>

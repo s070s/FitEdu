@@ -234,9 +234,6 @@
   <data name="UnexpectedErrorTryAgain" xml:space="preserve">
     <value>Something went wrong. Please try again.</value>
   </data>
-  <data name="UnableToConnect" xml:space="preserve">
-    <value>Couldn't connect to the server. Please try again.</value>
-  </data>
   <data name="PasswordResetFailed" xml:space="preserve">
     <value>Couldn't reset the password. Please try again.</value>
   </data>

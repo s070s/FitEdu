@@ -77,10 +77,6 @@ public partial class Login
                 }
             }
         }
-        catch (HttpRequestException)
-        {
-            errorMessage = ErrorMessagesRes.UnableToConnect;
-        }
         catch (Exception ex)
         {
             LogLoginFailed(Logger, ex);

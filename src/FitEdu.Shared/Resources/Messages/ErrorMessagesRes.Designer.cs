@@ -411,15 +411,6 @@ namespace FitEdu.Shared.Resources.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to connect to the server. Please try again..
-        /// </summary>
-        public static string UnableToConnect {
-            get {
-                return ResourceManager.GetString("UnableToConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Error resetting password..
         /// </summary>
         public static string PasswordResetFailed {
