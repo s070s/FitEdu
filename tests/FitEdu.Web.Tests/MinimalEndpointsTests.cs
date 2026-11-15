@@ -317,6 +317,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     }
 
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     [Theory]
     [InlineData(null)]
     [InlineData(".FitEdu.AdminUserId=not-a-protected-value")]
@@ -333,6 +334,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
         exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
     }
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
 
     [Fact]
     public async Task ExitImpersonation_AdminNoLongerEnabled_SignsOutInsteadOfSigningIn()
@@ -354,6 +356,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
             .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     }
 
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
     private static bool IsDeletedBackupCookie(string cookie) =>
         cookie.StartsWith(".FitEdu.AdminUserId=;", StringComparison.Ordinal);
 
