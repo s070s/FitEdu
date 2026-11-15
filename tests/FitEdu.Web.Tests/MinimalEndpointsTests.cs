@@ -414,7 +414,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
     [Fact]
     public async Task AuthComplete_SameTicketTwice_SecondRedirectsToLoginWithoutCookie()
     {
-        // A ticket opened once is spent: a copy of the link cannot sign anyone else's browser in.
+        // A ticket opened once is spent: opening the same link again (a replay) signs nobody in.
         var ticket = await SignInTicketAsync();
         var url = $"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F";
 

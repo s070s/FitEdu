@@ -96,7 +96,8 @@ public static class InfrastructureEndpointsExtensions
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
-            // Each ticket opens once: a copy of the link (a login CSRF) finds it spent.
+            // Each ticket opens once: a link that was already opened (a replay) finds it spent. A still-unopened
+            // link can be forwarded within its 5 minutes.
             if (!TryUseTicket(ticketCache, decoded.TicketId))
             {
                 StartupLog.AuthTicketReused(logger);
