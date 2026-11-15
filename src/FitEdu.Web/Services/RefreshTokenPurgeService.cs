@@ -51,7 +51,7 @@ public sealed partial class RefreshTokenPurgeService : BackgroundService
         }
     }
 
-    private async Task PurgeExpiredTokensAsync(CancellationToken stoppingToken)
+    internal async Task PurgeExpiredTokensAsync(CancellationToken stoppingToken)
     {
         using var scope = _services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();

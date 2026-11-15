@@ -43,6 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Lets the test project call the internal purge method of RefreshTokenPurgeService directly. -->
+    <InternalsVisibleTo Include="FitEdu.Web.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FitEdu.Domain\FitEdu.Domain.csproj" />
     <ProjectReference Include="..\FitEdu.Application\FitEdu.Application.csproj" />
     <ProjectReference Include="..\FitEdu.Infrastructure\FitEdu.Infrastructure.csproj" />

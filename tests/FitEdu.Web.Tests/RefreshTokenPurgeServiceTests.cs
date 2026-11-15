@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -37,14 +36,10 @@ public class RefreshTokenPurgeServiceTests
         return new RefreshTokenPurgeService(provider, NullLogger<RefreshTokenPurgeService>.Instance);
     }
 
-    // PurgeExpiredTokensAsync is private on the sealed BackgroundService; invoke it directly to
-    // test the purge logic without waiting out the real poll interval.
-    private static Task RunPurge(RefreshTokenPurgeService service, CancellationToken ct)
-    {
-        var method = typeof(RefreshTokenPurgeService).GetMethod(
-            "PurgeExpiredTokensAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        return (Task)method.Invoke(service, [ct])!;
-    }
+    // PurgeExpiredTokensAsync is internal (visible to this project); call it directly to test the
+    // purge logic without waiting out the real poll interval.
+    private static Task RunPurge(RefreshTokenPurgeService service, CancellationToken ct) =>
+        service.PurgeExpiredTokensAsync(ct);
 
     [Fact]
     public async Task Purge_ExpiredToken_IsDeleted()

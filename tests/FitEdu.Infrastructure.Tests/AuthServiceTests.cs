@@ -580,7 +580,7 @@ public class AuthServiceTests
         var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "target");
 
         result.Success.ShouldBeFalse();
-        result.Message.ShouldBe("User not found.");
+        result.Message.ShouldBe(ErrorMessagesRes.UserNotFound);
     }
 
     [Theory]

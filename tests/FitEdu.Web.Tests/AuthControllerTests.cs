@@ -201,4 +201,103 @@ public class AuthControllerTests : IClassFixture<CustomWebAppFactory>
 
         (await client.GetAsync("/api/auth/me")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
+
+    // ---- Login: an unconfirmed account (the real SignInManager answers NotAllowed for it) ----
+
+    [Theory]
+    [InlineData(CustomWebAppFactory.TestPassword)]
+    [InlineData("Wrong-Pass-9!")]
+    public async Task Login_UnconfirmedAccount_Returns401LikeAWrongPassword(string password)
+    {
+        var (userId, _) = await CreateUnconfirmedUserWithTokenAsync();
+        string email;
+        using (var scope = _factory.Services.CreateScope())
+            email = (await scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>().FindByIdAsync(userId))!.Email!;
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequestDto { Email = email, Password = password });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        var body = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        body!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    // ---- Forgot password: the same generic answer for every email ----
+
+    [Fact]
+    public async Task ForgotPassword_KnownAndUnknownEmail_Return200WithTheSameMessage()
+    {
+        var email = $"forgot-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+        var client = _factory.CreateClient();
+
+        var known = await client.PostAsJsonAsync("/api/auth/forgot-password", new ForgotPasswordRequestDto { Email = email });
+        var unknown = await client.PostAsJsonAsync("/api/auth/forgot-password", new ForgotPasswordRequestDto { Email = $"nobody-{Guid.NewGuid():N}@test.com" });
+
+        known.StatusCode.ShouldBe(HttpStatusCode.OK);
+        unknown.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var knownBody = await known.Content.ReadFromJsonAsync<AuthResponseDto>();
+        var unknownBody = await unknown.Content.ReadFromJsonAsync<AuthResponseDto>();
+        knownBody!.Success.ShouldBeTrue();
+        knownBody.Message.ShouldBe(unknownBody!.Message);
+    }
+
+    // ---- Refresh: rotation through the real endpoint ----
+
+    private async Task<AuthResponseDto> LoginForTokensAsync()
+    {
+        var email = $"refresh-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/login",
+            new LoginRequestDto { Email = email, Password = CustomWebAppFactory.TestPassword });
+        return (await response.Content.ReadFromJsonAsync<AuthResponseDto>())!;
+    }
+
+    [Fact]
+    public async Task Refresh_ValidToken_ReturnsANewPairAndSpendsTheOldToken()
+    {
+        var login = await LoginForTokensAsync();
+        var client = _factory.CreateClient();
+
+        var first = await client.PostAsJsonAsync("/api/auth/refresh", new RefreshTokenRequestDto { RefreshToken = login.RefreshToken! });
+        var replay = await client.PostAsJsonAsync("/api/auth/refresh", new RefreshTokenRequestDto { RefreshToken = login.RefreshToken! });
+
+        first.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var rotated = await first.Content.ReadFromJsonAsync<AuthResponseDto>();
+        rotated!.Token.ShouldNotBeNullOrEmpty();
+        rotated.RefreshToken.ShouldNotBe(login.RefreshToken);
+        replay.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Refresh_UnknownToken_Returns401()
+    {
+        var response = await _factory.CreateClient().PostAsJsonAsync("/api/auth/refresh", new RefreshTokenRequestDto { RefreshToken = "not-a-token" });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+}
+
+/// <summary>SEC-6: the development-only endpoints are not reachable on a Production host (they exist only in Debug builds, and answer 404 outside Development even there).</summary>
+public class AuthControllerProductionTests : IClassFixture<ProductionWebAppFactory>
+{
+    private readonly ProductionWebAppFactory _factory;
+
+    public AuthControllerProductionTests(ProductionWebAppFactory factory) => _factory = factory;
+
+    [Theory]
+    [InlineData("/api/auth/dev/confirm-email")]
+    [InlineData("/api/auth/dev/reset-password")]
+    public async Task DevEndpoints_OnAProductionHost_Return404(string route)
+    {
+        var client = _factory.CreateClient();
+        var email = $"dev-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
+
+        var response = route.EndsWith("confirm-email", StringComparison.Ordinal)
+            ? await client.PostAsJsonAsync(route, email)
+            : await client.PostAsJsonAsync(route, new DevResetPasswordRequestDto { Email = email, NewPassword = "Another-Pass-1!" });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
 }

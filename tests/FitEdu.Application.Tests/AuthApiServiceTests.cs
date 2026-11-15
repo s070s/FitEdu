@@ -528,6 +528,191 @@ public class AuthApiServiceTests
         await h.Tok.DidNotReceive().GenerateAccessTokenAsync(Arg.Any<ApplicationUser>());
     }
 
+    // ---- LoginAsync: outcomes and the refresh-token lifetime ----
+
+    private static LoginRequestDto LoginRequest(string password = "Password1!", bool rememberMe = false) =>
+        new() { Email = "u@x.com", Password = password, RememberMe = rememberMe };
+
+    [Fact]
+    public async Task Login_UnknownEmail_Returns401InvalidCredentials()
+    {
+        var h = Build();
+        h.Um.FindByEmailAsync("u@x.com").Returns((ApplicationUser?)null);
+
+        var result = await h.Svc.LoginAsync(LoginRequest());
+
+        result.StatusCode.ShouldBe(401);
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Login_LockedOutAccount_SaysTheAccountIsLocked()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.LockedOut);
+
+        var result = await h.Svc.LoginAsync(LoginRequest());
+
+        result.StatusCode.ShouldBe(401);
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.AccountLocked);
+    }
+
+    [Theory]
+    [InlineData(false, 7)]
+    [InlineData(true, 30)]
+    public async Task Login_Success_StoresARefreshTokenForSevenDaysOrThirtyWithRememberMe(bool rememberMe, int days)
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.IsEmailConfirmedAsync(member).Returns(true);
+        h.Sm.CheckPasswordSignInAsync(member, Arg.Any<string>(), Arg.Any<bool>()).Returns(SignInResult.Success);
+
+        var result = await h.Svc.LoginAsync(LoginRequest(rememberMe: rememberMe));
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Token.ShouldBe("access-token");
+        var stored = await h.Db.RefreshTokens.SingleAsync();
+        stored.TokenHash.ShouldBe(HashToken(result.Value.RefreshToken!));
+        stored.SecurityStampAtIssuance.ShouldBe(member.SecurityStamp);
+        (stored.ExpiresAt - stored.CreatedAt).ShouldBe(TimeSpan.FromDays(days), TimeSpan.FromSeconds(5));
+    }
+
+    // ---- ConfirmEmailAsync ----
+
+    [Theory]
+    [InlineData("", "token")]
+    [InlineData("u1", "")]
+    public async Task ConfirmEmail_MissingValue_Returns400(string userId, string token)
+    {
+        var h = Build();
+
+        var result = await h.Svc.ConfirmEmailAsync(userId, token);
+
+        result.StatusCode.ShouldBe(400);
+        result.Value!.Message.ShouldBe(ErrorMessagesRes.InvalidConfirmationLink);
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_UnknownUser_Returns404()
+    {
+        var h = Build();
+        h.Um.FindByIdAsync("u1").Returns((ApplicationUser?)null);
+
+        (await h.Svc.ConfirmEmailAsync("u1", "token")).StatusCode.ShouldBe(404);
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_RejectedToken_Returns400WithTheIdentityErrors()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByIdAsync("u1").Returns(member);
+        h.Um.ConfirmEmailAsync(member, "bad").Returns(IdentityResult.Failed(new IdentityError { Code = "InvalidToken", Description = "Invalid token." }));
+
+        var result = await h.Svc.ConfirmEmailAsync("u1", "bad");
+
+        result.StatusCode.ShouldBe(400);
+        result.Value!.Errors.ShouldBe(["Invalid token."]);
+    }
+
+    [Fact]
+    public async Task ConfirmEmail_ValidToken_ConfirmsTheEmail()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByIdAsync("u1").Returns(member);
+        h.Um.ConfirmEmailAsync(member, "good").Returns(IdentityResult.Success);
+
+        var result = await h.Svc.ConfirmEmailAsync("u1", "good");
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Message.ShouldBe(SuccessMessagesRes.EmailConfirmedSuccessfully);
+    }
+
+    // ---- Development-only helpers (the controller exposes them only in Debug builds on a Development host) ----
+
+    [Fact]
+    public async Task DevConfirmEmail_UnknownUser_Returns404()
+    {
+        var h = Build();
+        h.Um.FindByEmailAsync("u@x.com").Returns((ApplicationUser?)null);
+
+        (await h.Svc.DevConfirmEmailAsync("u@x.com")).StatusCode.ShouldBe(404);
+    }
+
+    [Fact]
+    public async Task DevConfirmEmail_KnownUser_MarksTheEmailConfirmed()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+
+        var result = await h.Svc.DevConfirmEmailAsync(member.Email!);
+
+        result.IsSuccess.ShouldBeTrue();
+        member.EmailConfirmed.ShouldBeTrue();
+        await h.Um.Received(1).UpdateAsync(member);
+    }
+
+    [Fact]
+    public async Task DevConfirmEmail_UpdateFails_Returns400()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.UpdateAsync(member).Returns(IdentityResult.Failed(new IdentityError { Code = "Boom", Description = "boom" }));
+
+        (await h.Svc.DevConfirmEmailAsync(member.Email!)).StatusCode.ShouldBe(400);
+    }
+
+    [Fact]
+    public async Task DevResetPassword_UnknownUser_Returns404()
+    {
+        var h = Build();
+        h.Um.FindByEmailAsync("u@x.com").Returns((ApplicationUser?)null);
+
+        var result = await h.Svc.DevResetPasswordAsync(new DevResetPasswordRequestDto { Email = "u@x.com", NewPassword = "Another-Pass-1!" });
+
+        result.StatusCode.ShouldBe(404);
+    }
+
+    [Fact]
+    public async Task DevResetPassword_KnownUser_ResetsThePasswordAndRevokesTheirTokens()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        h.Um.ResetPasswordAsync(member, "reset-token", "Another-Pass-1!").Returns(IdentityResult.Success);
+        Seed(h.Db, member, "plain-1", member.SecurityStamp);
+        await h.Db.SaveChangesAsync();
+
+        var result = await h.Svc.DevResetPasswordAsync(new DevResetPasswordRequestDto { Email = member.Email!, NewPassword = "Another-Pass-1!" });
+
+        result.IsSuccess.ShouldBeTrue();
+        (await h.Db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task DevResetPassword_RejectedPassword_Returns400WithTheErrors()
+    {
+        var h = Build();
+        var member = User();
+        h.Um.FindByEmailAsync(member.Email!).Returns(member);
+        h.Um.GeneratePasswordResetTokenAsync(member).Returns("reset-token");
+        h.Um.ResetPasswordAsync(member, "reset-token", "weak")
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "PasswordTooShort", Description = "Too short." }));
+
+        var result = await h.Svc.DevResetPasswordAsync(new DevResetPasswordRequestDto { Email = member.Email!, NewPassword = "weak" });
+
+        result.StatusCode.ShouldBe(400);
+        result.Value!.Errors.ShouldBe(["Too short."]);
+    }
+
     // ---- LoginAsync: an unconfirmed account takes the same password check (R3) ----
 
     [Theory]

@@ -184,7 +184,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
     /// A sign-in ticket for a fresh confirmed member, built the way the sign-in page's service builds it
     /// but with the impersonation fields chosen by the test.
     /// </summary>
-    private async Task<string> CraftedTicketAsync(string? adminBackupId = null, bool disableMember = false)
+    private async Task<string> CraftedTicketAsync(string? adminBackupId = null, bool disableMember = false, string? stampOverride = null, string? userIdOverride = null)
     {
         var email = $"crafted-{Guid.NewGuid():N}@test.com";
         await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
@@ -197,7 +197,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
             member.IsEnabled = false;
             await userManager.UpdateAsync(member);
         }
-        var ticket = new AuthCompletionTicket(member.Id, adminBackupId, member.SecurityStamp!, RememberMe: false, Guid.NewGuid());
+        var ticket = new AuthCompletionTicket(userIdOverride ?? member.Id, adminBackupId, stampOverride ?? member.SecurityStamp!, RememberMe: false, Guid.NewGuid());
         var protector = scope.ServiceProvider.GetRequiredService<IDataProtectionProvider>()
             .CreateProtector(AuthService.ProtectorPurpose)
             .ToTimeLimitedDataProtector();
@@ -226,6 +226,33 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         var response = await GetWithCookiesAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F", staleBackupCookie);
 
         response.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
+    }
+
+    [Fact]
+    public async Task AuthComplete_StaleSecurityStamp_RedirectsToLoginWithoutAuthCookie()
+    {
+        // The member changed their password after the ticket was issued.
+        var ticket = await CraftedTicketAsync(stampOverride: "an-older-stamp");
+
+        var response = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe("/login?error=session_expired");
+        response.Headers.TryGetValues("Set-Cookie", out var cookies);
+        (cookies ?? []).ShouldNotContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task AuthComplete_UnknownUser_RedirectsToLoginWithoutAuthCookie()
+    {
+        var ticket = await CraftedTicketAsync(userIdOverride: "no-such-user");
+
+        var response = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe("/login");
+        response.Headers.TryGetValues("Set-Cookie", out var cookies);
+        (cookies ?? []).ShouldNotContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
     }
 
     [Fact]
