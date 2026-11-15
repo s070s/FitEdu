@@ -54,7 +54,9 @@ production. Full SMTP options: `Email:Smtp:{Host,Port,UseStartTls,Username,Passw
 
 Emails are queued in memory and sent in the background by `EmailDispatcher`, so a slow relay never
 holds up a sign-up or reset request. One SMTP command may take `Email:Smtp:TimeoutSeconds` (default
-15, at most 300). A message still queued when the app stops is lost; the member asks for a new link.
+15, at most 300). Port 465 connects with TLS from the first byte; elsewhere `UseStartTls` (default
+true) upgrades the connection. Outside Development, startup refuses a `Username` on a connection
+without TLS. A message still queued when the app stops is lost; the member asks for a new link.
 
 ## Public demo
 

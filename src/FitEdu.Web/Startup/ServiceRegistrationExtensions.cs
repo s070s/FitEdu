@@ -71,7 +71,7 @@ public static class ServiceRegistrationExtensions
         // With no SMTP host configured, Development falls back to StubEmailService (logs only); any other
         // environment fails fast so emails are never silently swallowed in production.
         // CFG-4: validate at startup so a typo'd SMTP port or timeout fails fast, not at the first email send.
-        builder.Services.AddSingleton<IValidateOptions<EmailOptions>, EmailOptionsValidator>();
+        builder.Services.AddSingleton<IValidateOptions<EmailOptions>>(new EmailOptionsValidator(builder.Environment.IsDevelopment()));
         builder.Services.AddOptions<EmailOptions>()
             .Bind(config.GetSection(EmailOptions.SectionName))
             .ValidateOnStart();

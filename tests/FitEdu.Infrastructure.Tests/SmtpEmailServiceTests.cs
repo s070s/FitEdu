@@ -1,5 +1,6 @@
 using MailKit;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 using NSubstitute;
 using FitEdu.Domain.Identity;
@@ -175,7 +176,7 @@ public sealed class SmtpEmailServiceTests : IDisposable
         var options = Options();
         options.Smtp.TimeoutSeconds = seconds;
 
-        var result = new EmailOptionsValidator().Validate(null, options);
+        var result = new EmailOptionsValidator(isDevelopment: false).Validate(null, options);
 
         result.Failed.ShouldBeTrue();
         result.FailureMessage.ShouldContain("TimeoutSeconds", Case.Sensitive);
@@ -189,16 +190,74 @@ public sealed class SmtpEmailServiceTests : IDisposable
         var options = Options();
         options.Smtp.Port = port;
 
-        var result = new EmailOptionsValidator().Validate(null, options);
+        var result = new EmailOptionsValidator(isDevelopment: false).Validate(null, options);
 
         result.Failed.ShouldBeTrue();
         result.FailureMessage.ShouldContain("Email:Smtp:Port", Case.Sensitive);
     }
 
+    [Theory]
+    [InlineData(587, true, SecureSocketOptions.StartTls)]
+    [InlineData(465, true, SecureSocketOptions.SslOnConnect)]
+    [InlineData(465, false, SecureSocketOptions.SslOnConnect)] // port 465 is TLS from the first byte, whatever UseStartTls says
+    [InlineData(25, false, SecureSocketOptions.None)]
+    public async Task SendAsync_PicksTheSocketSecurityFromThePortAndUseStartTls(int port, bool useStartTls, SecureSocketOptions expected)
+    {
+        var client = Substitute.For<ISmtpClient>();
+        var options = Options();
+        options.Smtp.Host = "relay.fitedu.test";
+        options.Smtp.Port = port;
+        options.Smtp.UseStartTls = useStartTls;
+
+        await NewService(client, options).SendEmailConfirmationAsync(PrivateAddress, ConfirmationLink, English);
+
+        await client.Received(1).ConnectAsync("relay.fitedu.test", port, expected, Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(25, false, false)]
+    [InlineData(587, true, true)]
+    [InlineData(465, false, true)]
+    public void Validator_CredentialsNeedTls_OutsideDevelopment(int port, bool useStartTls, bool accepted)
+    {
+        var options = Options();
+        options.Smtp.Port = port;
+        options.Smtp.UseStartTls = useStartTls;
+        options.Smtp.Username = "relay-user";
+        options.Smtp.Password = "not-a-real-password";
+
+        var result = new EmailOptionsValidator(isDevelopment: false).Validate(null, options);
+
+        result.Succeeded.ShouldBe(accepted);
+        if (!accepted)
+            result.FailureMessage.ShouldNotBeNull().ShouldContain("TLS", Case.Sensitive);
+    }
+
+    [Fact]
+    public void Validator_CredentialsWithoutTls_AreAllowedInDevelopment()
+    {
+        var options = Options();
+        options.Smtp.Port = 25;
+        options.Smtp.UseStartTls = false;
+        options.Smtp.Username = "relay-user";
+
+        new EmailOptionsValidator(isDevelopment: true).Validate(null, options).Succeeded.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Validator_NoCredentialsWithoutTls_IsAllowedOutsideDevelopment()
+    {
+        var options = Options();
+        options.Smtp.Port = 25;
+        options.Smtp.UseStartTls = false;
+
+        new EmailOptionsValidator(isDevelopment: false).Validate(null, options).Succeeded.ShouldBeTrue();
+    }
+
     [Fact]
     public void Validator_AcceptsTheDefaults()
     {
-        new EmailOptionsValidator().Validate(null, Options()).Succeeded.ShouldBeTrue();
+        new EmailOptionsValidator(isDevelopment: false).Validate(null, Options()).Succeeded.ShouldBeTrue();
     }
 
     [Fact]

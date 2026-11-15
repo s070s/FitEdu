@@ -47,8 +47,7 @@ public sealed partial class SmtpEmailService : IEmailService
         // block would throw its own error over the send error that explains what went wrong.
         using var client = _createClient();
         client.Timeout = _options.Smtp.TimeoutSeconds * 1000;
-        var socketOptions = _options.Smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
-        await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, socketOptions, ct);
+        await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, ChooseSocketOptions(_options.Smtp), ct);
         if (!string.IsNullOrEmpty(_options.Smtp.Username))
             await client.AuthenticateAsync(_options.Smtp.Username, _options.Smtp.Password ?? string.Empty, ct);
         await client.SendAsync(message, ct);
@@ -57,6 +56,15 @@ public sealed partial class SmtpEmailService : IEmailService
         LogEmailSent(_logger, content.Subject);
 
         await DisconnectQuietlyAsync(client, ct);
+    }
+
+    // Port 465 speaks TLS from the first byte, so StartTLS would hang there waiting for a greeting.
+    private static SecureSocketOptions ChooseSocketOptions(SmtpOptions smtp)
+    {
+        if (smtp.Port == SmtpOptions.ImplicitTlsPort)
+            return SecureSocketOptions.SslOnConnect;
+
+        return smtp.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
     }
 
     // The message is already sent here, so a failing goodbye must not turn the send into a failure.
