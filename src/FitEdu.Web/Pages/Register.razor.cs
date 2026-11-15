@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
@@ -18,7 +17,6 @@ public partial class Register : IDisposable
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
     [Inject] private ILogger<Register> Logger { get; set; } = default!;
-    [Inject] private IdentityErrorDescriber ErrorDescriber { get; set; } = default!;
 
     /// <summary>Where to go after the first log-in, e.g. the programme a guest was looking at.</summary>
     [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
@@ -33,7 +31,6 @@ public partial class Register : IDisposable
     private bool isLoading;
     private bool showPassword;
     private bool showConfirmPassword;
-    private string registeredEmail = string.Empty;
     private ElementReference errorRegion;
     private ElementReference successRegion;
     // A phone user taps Register at the bottom of a long form, far from where the result appears,
@@ -114,7 +111,6 @@ public partial class Register : IDisposable
         registerRequest.FirstName = registerRequest.FirstName?.Trim() ?? string.Empty;
         registerRequest.LastName = registerRequest.LastName?.Trim() ?? string.Empty;
 
-        registeredEmail = registerRequest.Email;
         try
         {
             var result = await AuthService.RegisterAsync(registerRequest);
@@ -149,17 +145,13 @@ public partial class Register : IDisposable
         {
             errorMessage = result.Message;
             if (result.Errors != null)
-            {
                 errors = result.Errors.ToList();
 
-                // Matched on the describer's own (translated) text, so it works in every language.
-                var emailTakenText = ErrorDescriber.DuplicateEmail(registeredEmail).Description;
-                if (errors.Contains(emailTakenText))
-                {
-                    // The short translated message says it all.
-                    errorMessage = ErrorMessagesRes.EmailTakenError;
-                    errors.Clear();
-                }
+            if (result.Failure == AuthFailure.EmailTaken)
+            {
+                // The short translated message says it all.
+                errorMessage = ErrorMessagesRes.EmailTakenError;
+                errors.Clear();
             }
 
             // A refusal always says something, so the visitor is never left with a form that does nothing.

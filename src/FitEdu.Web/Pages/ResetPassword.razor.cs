@@ -52,15 +52,15 @@ public partial class ResetPassword
             {
                 step = Step.Done;
             }
+            else if (result.Failure == AuthFailure.LinkInvalid)
+            {
+                // A used, expired or altered link (or an unknown email): a new email is needed.
+                step = Step.LinkInvalid;
+            }
             else if (result.Errors is not null && result.Errors.Any())
             {
                 // Only password-rule errors come back this way (the reset token was already accepted).
                 errors.AddRange(result.Errors);
-            }
-            else if (result.Message == ErrorMessagesRes.InvalidRequest)
-            {
-                // The generic answer for a used, expired or altered link.
-                step = Step.LinkInvalid;
             }
             else
             {

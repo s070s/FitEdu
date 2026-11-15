@@ -218,7 +218,7 @@ public class EmailLinkPagesTests : BunitContext
     public void ResetPassword_ExpiredOrInvalidLink_ShowsTheFailureWithALinkToRequestANewOne()
     {
         _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>())
-            .Returns(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
+            .Returns(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest, Failure = AuthFailure.LinkInvalid });
         Open(ResetPasswordUrl);
         var page = Render<ResetPassword>();
 
@@ -228,6 +228,37 @@ public class EmailLinkPagesTests : BunitContext
         page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.PasswordResetLinkInvalid);
         page.Find("a.auth-submit").GetAttribute("href").ShouldBe("/forgot-password");
         page.FindAll("form").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ResetPassword_LinkInvalidFailure_WithOtherText_ShowsInvalidLink()
+    {
+        // The page reads the reason, not the wording, so a reworded or translated message changes nothing.
+        _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>())
+            .Returns(new AuthResponseDto { Success = false, Message = "Some other wording.", Failure = AuthFailure.LinkInvalid });
+        Open(ResetPasswordUrl);
+        var page = Render<ResetPassword>();
+
+        FillPasswords(page, ValidPassword, ValidPassword);
+        page.Find("form").Submit();
+
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.PasswordResetLinkInvalid);
+        page.FindAll("form").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ResetPassword_SameTextWithoutTheFailure_IsNotTakenForAnInvalidLink()
+    {
+        _authService.ResetPasswordAsync(Arg.Any<ResetPasswordRequestDto>())
+            .Returns(new AuthResponseDto { Success = false, Message = ErrorMessagesRes.InvalidRequest });
+        Open(ResetPasswordUrl);
+        var page = Render<ResetPassword>();
+
+        FillPasswords(page, ValidPassword, ValidPassword);
+        page.Find("form").Submit();
+
+        page.FindAll("form").Count.ShouldBe(1);
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.InvalidRequest);
     }
 
     [Fact]

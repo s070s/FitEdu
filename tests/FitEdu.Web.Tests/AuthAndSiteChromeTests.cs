@@ -48,7 +48,6 @@ public class AuthAndSiteChromeTests : BunitContext
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
         Services.AddSingleton(_authService);
         Services.AddSingleton(_environment);
-        Services.AddSingleton<IdentityErrorDescriber>(_errorDescriber);
         // Register scrolls its result into view after a submit.
         JSInterop.SetupVoid("inputInterop.scrollIntoView", _ => true);
     }
@@ -119,6 +118,45 @@ public class AuthAndSiteChromeTests : BunitContext
         page.Find("form").Submit();
 
         page.Find("[role=alert] .alert-danger").TextContent.ShouldContain(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public void Login_UnconfirmedFailure_ShowsTheHintWhateverTheServerText()
+    {
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto
+        {
+            Success = false,
+            Message = "Some other wording of the same refusal.",
+            Failure = AuthFailure.EmailNotConfirmed
+        });
+        var page = Render<Login>();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        page.Find(".alert-warning").TextContent.ShouldContain(ErrorMessagesRes.EmailNotConfirmedHint);
+        page.FindAll(".alert-danger").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Login_SameTextWithoutTheFailure_IsNotTakenForUnconfirmed()
+    {
+        // The page reads the reason, not the wording: the same text under another reason is an ordinary error.
+        _authService.LoginAsync(Arg.Any<LoginRequestDto>()).Returns(new AuthResponseDto
+        {
+            Success = false,
+            Message = ErrorMessagesRes.EmailNotConfirmedError,
+            Failure = AuthFailure.InvalidCredentials
+        });
+        var page = Render<Login>();
+
+        page.Find("#email").Change("alice@fitedu.local");
+        page.Find("#password").Change(ValidPassword);
+        page.Find("form").Submit();
+
+        page.FindAll(".alert-warning").ShouldBeEmpty();
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.EmailNotConfirmedError);
     }
 
     [Fact]
@@ -286,7 +324,7 @@ public class AuthAndSiteChromeTests : BunitContext
     {
         var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
         _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
-            new AuthResponseDto { Success = false, Message = "failed", Errors = [emailTaken] });
+            new AuthResponseDto { Success = false, Message = "failed", Errors = [emailTaken], Failure = AuthFailure.EmailTaken });
         var page = Render<Register>();
 
         FillRequiredRegisterFields(page);
@@ -363,6 +401,21 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void Register_EmailTakenFailure_ShowsTheShortMessageWhateverTheServerText()
+    {
+        _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
+            new AuthResponseDto { Success = false, Errors = ["Some other wording of the same refusal."], Failure = AuthFailure.EmailTaken });
+        var page = Render<Register>();
+
+        FillRequiredRegisterFields(page);
+        page.Find("form").Submit();
+
+        var feedback = page.Find("form .register-errors").TextContent;
+        feedback.ShouldContain(ErrorMessagesRes.EmailTakenError);
+        feedback.ShouldNotContain("Some other wording");
+    }
+
+    [Fact]
     public void Register_TakenEmailContainingUsername_ShowsEmailTaken()
     {
         // An email such as username@… makes Identity's "already taken" text contain "username"; it must not be hidden.
@@ -397,7 +450,7 @@ public class AuthAndSiteChromeTests : BunitContext
         CultureInfo.CurrentUICulture = new CultureInfo("el-GR");
         var emailTaken = _errorDescriber.DuplicateEmail(RegisterEmail).Description;
         _authService.RegisterAsync(Arg.Any<RegisterRequestDto>()).Returns(
-            new AuthResponseDto { Success = false, Errors = [emailTaken] });
+            new AuthResponseDto { Success = false, Errors = [emailTaken], Failure = AuthFailure.EmailTaken });
         var page = Render<Register>();
 
         FillRequiredRegisterFields(page);

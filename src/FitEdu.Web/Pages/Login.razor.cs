@@ -65,10 +65,9 @@ public partial class Login
                 // Preserve original message
                 errorMessage = result.Message ?? ErrorMessagesRes.LoginError;
 
-                // Detect "email not confirmed" failure and surface targeted guidance.
-                // Compared against the resx value (not a hardcoded English substring) so this still
-                // matches once AuthService's message is localized to the request's culture.
-                if (result.Message == ErrorMessagesRes.EmailNotConfirmedError)
+                // "Email not confirmed" gets targeted guidance. The service names the reason in Failure,
+                // so this never depends on the wording or the language of the message.
+                if (result.Failure == AuthFailure.EmailNotConfirmed)
                 {
                     unconfirmedEmailPending = true;
                     pendingUnconfirmedEmail = loginRequest.Email;
