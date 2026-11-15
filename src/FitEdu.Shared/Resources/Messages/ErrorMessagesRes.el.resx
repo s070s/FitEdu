@@ -336,6 +336,15 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>Το email {0} δεν είναι έγκυρο.</value>
   </data>
+  <data name="IdentityInvalidToken" xml:space="preserve">
+    <value>Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει. Ζήτησε νέο.</value>
+  </data>
+  <data name="ImpersonationOnlyStudents" xml:space="preserve">
+    <value>Η σύνδεση ως χρήστης επιτρέπεται μόνο σε λογαριασμούς μελών.</value>
+  </data>
+  <data name="NotAuthenticated" xml:space="preserve">
+    <value>Δεν έχεις συνδεθεί.</value>
+  </data>
   <data name="Chat_MessageRequired" xml:space="preserve">
     <value>Γράψε πρώτα ένα μήνυμα.</value>
   </data>

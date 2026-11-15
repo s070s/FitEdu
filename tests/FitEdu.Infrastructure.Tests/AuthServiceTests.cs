@@ -512,6 +512,38 @@ public class AuthServiceTests
         result.Message.ShouldBe("User not found.");
     }
 
+    [Theory]
+    [InlineData("en-GB", "Only Student accounts can be impersonated.")]
+    [InlineData("el-GR", "Η σύνδεση ως χρήστης επιτρέπεται μόνο σε λογαριασμούς μελών.")]
+    public async Task Impersonate_NonStudent_MessageFollowsCulture(string culture, string expected)
+    {
+        var h = Build();
+        var target = User();
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Admin"]);
+        using var cultureScope = new CultureScope(culture);
+
+        var result = await h.Svc.ImpersonateAsync("u1");
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task Impersonate_WithoutASignedInAdmin_ReportsNotSignedIn()
+    {
+        var h = Build();
+        var target = User();
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Student"]);
+        h.Accessor.HttpContext.Returns(new DefaultHttpContext());
+
+        var result = await h.Svc.ImpersonateAsync("u1");
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.NotAuthenticated);
+    }
+
     [Fact]
     public async Task IsAuthenticated_ReflectsPrincipal()
     {

@@ -336,6 +336,15 @@
   <data name="IdentityInvalidEmailFormat" xml:space="preserve">
     <value>The email {0} is not valid.</value>
   </data>
+  <data name="IdentityInvalidToken" xml:space="preserve">
+    <value>This link is not valid or has expired. Please request a new one.</value>
+  </data>
+  <data name="ImpersonationOnlyStudents" xml:space="preserve">
+    <value>Only Student accounts can be impersonated.</value>
+  </data>
+  <data name="NotAuthenticated" xml:space="preserve">
+    <value>You're not signed in.</value>
+  </data>
   <data name="Chat_MessageRequired" xml:space="preserve">
     <value>Write a message first.</value>
   </data>

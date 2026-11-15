@@ -178,11 +178,11 @@ public partial class AuthService : IAuthService
 
         var targetRoles = await _userManager.GetRolesAsync(target);
         if (!targetRoles.Contains("Student"))
-            return new AuthResponseDto { Success = false, Message = "Only Student accounts can be impersonated." };
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.ImpersonationOnlyStudents };
 
         var adminId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(adminId))
-            return new AuthResponseDto { Success = false, Message = "Not authenticated." };
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.NotAuthenticated };
 
         var stamp = await _userManager.GetSecurityStampAsync(target);
         // Impersonation isn't checkbox-driven — preserve the admin's existing persistent session behavior.

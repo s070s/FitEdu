@@ -718,6 +718,33 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to This link is not valid or has expired. Please request a new one..
+        /// </summary>
+        public static string IdentityInvalidToken {
+            get {
+                return ResourceManager.GetString("IdentityInvalidToken", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only Student accounts can be impersonated..
+        /// </summary>
+        public static string ImpersonationOnlyStudents {
+            get {
+                return ResourceManager.GetString("ImpersonationOnlyStudents", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You're not signed in..
+        /// </summary>
+        public static string NotAuthenticated {
+            get {
+                return ResourceManager.GetString("NotAuthenticated", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Write a message first..
         /// </summary>
         public static string Chat_MessageRequired {

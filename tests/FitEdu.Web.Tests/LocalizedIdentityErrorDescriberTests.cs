@@ -49,11 +49,35 @@ public class LocalizedIdentityErrorDescriberTests : IClassFixture<SelfCallingWeb
     }
 
     [Fact]
+    public void English_InvalidTokenAndUserNameErrors()
+    {
+        using var cultureScope = new CultureScope("en-GB");
+
+        _describer.InvalidToken().Description.ShouldBe("This link is not valid or has expired. Please request a new one.");
+        // The user name is the email, so its errors read like the email errors.
+        _describer.DuplicateUserName("maria@fitedu.local").Description.ShouldBe("The email maria@fitedu.local is already registered.");
+        _describer.InvalidUserName("maria").Description.ShouldBe("The email maria is not valid.");
+    }
+
+    [Fact]
+    public void Greek_InvalidTokenAndUserNameErrors()
+    {
+        using var cultureScope = new CultureScope("el-GR");
+
+        _describer.InvalidToken().Description.ShouldBe("Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει. Ζήτησε νέο.");
+        _describer.DuplicateUserName("maria@fitedu.local").Description.ShouldBe("Το email maria@fitedu.local είναι ήδη καταχωρισμένο.");
+        _describer.InvalidUserName("maria").Description.ShouldBe("Το email maria δεν είναι έγκυρο.");
+    }
+
+    [Fact]
     public void Errors_KeepIdentitysCodes()
     {
         _describer.PasswordTooShort(8).Code.ShouldBe("PasswordTooShort");
         _describer.DuplicateEmail("maria@fitedu.local").Code.ShouldBe("DuplicateEmail");
         _describer.InvalidEmail("maria").Code.ShouldBe("InvalidEmail");
+        _describer.InvalidToken().Code.ShouldBe("InvalidToken");
+        _describer.DuplicateUserName("maria@fitedu.local").Code.ShouldBe("DuplicateUserName");
+        _describer.InvalidUserName("maria").Code.ShouldBe("InvalidUserName");
     }
 
     [Fact]

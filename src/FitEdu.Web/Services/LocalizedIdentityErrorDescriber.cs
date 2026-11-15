@@ -6,7 +6,7 @@ namespace FitEdu.Web.Services;
 
 /// <summary>
 /// Identity's own error texts are English only. This describer gives the errors a member can meet
-/// while registering or changing a password (password rules, a taken or invalid email) in the
+/// while registering, changing a password or following an emailed link (password rules, a taken or invalid email, an expired link) in the
 /// member's UI language. The error codes stay Identity's, so code can still match on them.
 /// </summary>
 public sealed class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
@@ -34,6 +34,17 @@ public sealed class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError InvalidEmail(string? email) =>
         Error(nameof(InvalidEmail), ResourceFormat.Fill(ErrorMessagesRes.IdentityInvalidEmailFormat, email));
+
+    // The user name is the email (RegistrationMappings), so its errors read like the email errors.
+    public override IdentityError DuplicateUserName(string userName) =>
+        Error(nameof(DuplicateUserName), ResourceFormat.Fill(ErrorMessagesRes.IdentityDuplicateEmailFormat, userName));
+
+    public override IdentityError InvalidUserName(string? userName) =>
+        Error(nameof(InvalidUserName), ResourceFormat.Fill(ErrorMessagesRes.IdentityInvalidEmailFormat, userName));
+
+    // Shown for an expired or tampered email-confirmation or password-reset link.
+    public override IdentityError InvalidToken() =>
+        Error(nameof(InvalidToken), ErrorMessagesRes.IdentityInvalidToken);
 
     private static IdentityError Error(string code, string description) =>
         new() { Code = code, Description = description };

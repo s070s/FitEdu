@@ -7,6 +7,7 @@ using FitEdu.Application.DTOs;
 using FitEdu.Application.Extensions;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.ApiServices;
 
@@ -325,7 +326,7 @@ public partial class AdminUserService(
 
         var targetRoles = await userManager.GetRolesAsync(target);
         if (!targetRoles.Contains("Student"))
-            return ServiceResult<AuthResponseDto>.BadRequest(error: "Only Student accounts can be impersonated.");
+            return ServiceResult<AuthResponseDto>.BadRequest(error: ErrorMessagesRes.ImpersonationOnlyStudents);
 
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
