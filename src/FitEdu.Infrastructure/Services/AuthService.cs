@@ -39,6 +39,7 @@ public partial class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
     private readonly ITokenService _tokenService;
     private readonly IAuthAttemptLimiter _attemptLimiter;
+    private readonly CircuitClientAddress _clientAddress;
     private readonly ITimeLimitedDataProtector _protector;
     private readonly ITimeLimitedDataProtector _lessonAssetProtector;
 
@@ -68,6 +69,7 @@ public partial class AuthService : IAuthService
         IDataProtectionProvider dataProtectionProvider,
         ITokenService tokenService,
         IAuthAttemptLimiter attemptLimiter,
+        CircuitClientAddress clientAddress,
         ILogger<AuthService> logger)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -78,6 +80,7 @@ public partial class AuthService : IAuthService
         _logger = logger;
         _tokenService = tokenService;
         _attemptLimiter = attemptLimiter;
+        _clientAddress = clientAddress;
         _protector = dataProtectionProvider
             .CreateProtector(ProtectorPurpose)
             .ToTimeLimitedDataProtector();
@@ -249,9 +252,9 @@ public partial class AuthService : IAuthService
     // Helpers
     // ---------------------------------------------------------------------------
 
-    // One budget per email (case and surrounding spaces do not matter) plus one for everyone.
+    // One budget per email (case and surrounding spaces do not matter), one per client address, one flood cap.
     private bool AttemptAllowed(string? email) =>
-        _attemptLimiter.TryAcquire((email ?? string.Empty).Trim().ToUpperInvariant());
+        _attemptLimiter.TryAcquire((email ?? string.Empty).Trim().ToUpperInvariant(), _clientAddress.Key);
 
     private static AuthResponseDto TooManyAttempts() =>
         new() { Success = false, Message = ErrorMessagesRes.TooManyAttempts };

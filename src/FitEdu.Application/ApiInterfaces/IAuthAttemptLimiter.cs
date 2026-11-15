@@ -7,8 +7,9 @@ namespace FitEdu.Application.ApiInterfaces;
 public interface IAuthAttemptLimiter
 {
     /// <summary>
-    /// True when the attempt may go ahead. <paramref name="normalizedEmail"/> picks the per-email budget;
-    /// one global budget applies to all emails together.
+    /// True when the attempt may go ahead. <paramref name="normalizedEmail"/> picks the per-email budget and
+    /// <paramref name="clientAddress"/> the per-address budget (null or loopback: one shared "unknown" budget);
+    /// one global flood cap applies to all attempts together.
     /// </summary>
-    bool TryAcquire(string normalizedEmail);
+    bool TryAcquire(string normalizedEmail, string? clientAddress);
 }

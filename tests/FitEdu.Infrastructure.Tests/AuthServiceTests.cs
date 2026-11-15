@@ -32,7 +32,7 @@ public class AuthServiceTests
         IHttpContextAccessor Accessor,
         RecordingLogger<AuthService> Log);
 
-    private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null)
+    private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null, CircuitClientAddress? clientAddress = null)
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
@@ -49,7 +49,8 @@ public class AuthServiceTests
         var authApi = new AuthApiService(um, sm, tokens, subs, new RecordingLogger<AuthApiService>(), ctx, email,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System);
 
-        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens, attemptLimiter ?? new AuthAttemptLimiter(), log);
+        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens,
+            attemptLimiter ?? new AuthAttemptLimiter(), clientAddress ?? new CircuitClientAddress(), log);
         return new Harness(svc, um, sm, subs, email, tokens, dp, accessor, log);
     }
 
@@ -127,7 +128,7 @@ public class AuthServiceTests
     public async Task Login_OverLimit_RejectsWithoutCheckingPassword()
     {
         var limiter = Substitute.For<IAuthAttemptLimiter>();
-        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(false);
         var h = Build(limiter);
 
         var result = await h.Svc.LoginAsync(Login());
@@ -142,7 +143,7 @@ public class AuthServiceTests
     public async Task Register_OverLimit_RejectsWithoutCreatingAnAccount()
     {
         var limiter = Substitute.For<IAuthAttemptLimiter>();
-        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(false);
         var h = Build(limiter);
 
         var result = await h.Svc.RegisterAsync(new RegisterRequestDto
@@ -160,7 +161,7 @@ public class AuthServiceTests
     public async Task ForgotPassword_OverLimit_RejectsWithoutSendingAnEmail()
     {
         var limiter = Substitute.For<IAuthAttemptLimiter>();
-        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(false);
         var h = Build(limiter);
 
         var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u@x.com" });
@@ -174,13 +175,39 @@ public class AuthServiceTests
     public async Task Login_AttemptsAreCountedPerEmailIgnoringCaseAndSpaces()
     {
         var limiter = Substitute.For<IAuthAttemptLimiter>();
-        limiter.TryAcquire(Arg.Any<string>()).Returns(true);
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(true);
         var h = Build(limiter);
         h.Um.FindByEmailAsync(Arg.Any<string>()).Returns((ApplicationUser?)null);
 
         await h.Svc.LoginAsync(new LoginRequestDto { Email = "  U@X.com ", Password = "Password1" });
 
-        limiter.Received(1).TryAcquire("U@X.COM");
+        limiter.Received(1).TryAcquire("U@X.COM", Arg.Any<string?>());
+    }
+
+    [Fact]
+    public async Task Login_AttemptsAreCountedPerClientAddressOfTheCircuit()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(true);
+        var h = Build(limiter, new CircuitClientAddress { Key = "203.0.113.7" });
+        h.Um.FindByEmailAsync(Arg.Any<string>()).Returns((ApplicationUser?)null);
+
+        await h.Svc.LoginAsync(Login());
+
+        limiter.Received(1).TryAcquire("U@X.COM", "203.0.113.7");
+    }
+
+    [Fact]
+    public async Task Login_CircuitWithoutAClientAddress_CountsAsTheUnknownAddress()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>(), Arg.Any<string?>()).Returns(true);
+        var h = Build(limiter);
+        h.Um.FindByEmailAsync(Arg.Any<string>()).Returns((ApplicationUser?)null);
+
+        await h.Svc.LoginAsync(Login());
+
+        limiter.Received(1).TryAcquire("U@X.COM", null);
     }
 
     [Fact]

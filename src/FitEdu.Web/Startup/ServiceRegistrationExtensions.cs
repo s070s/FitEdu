@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
@@ -115,6 +116,9 @@ public static class ServiceRegistrationExtensions
         // --- Web Services ---
         // Singleton: the sign-in page's attempt counters must outlive each Blazor circuit.
         builder.Services.AddSingleton<IAuthAttemptLimiter>(_ => new AuthAttemptLimiter());
+        // Scoped (one per circuit): the circuit handler sets it when the circuit opens, the limiter reads it.
+        builder.Services.AddScoped<CircuitClientAddress>();
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Scoped<CircuitHandler, ClientAddressCircuitHandler>());
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IAuthApiService, AuthApiService>();
         builder.Services.AddScoped<ICourseService, CourseService>();
