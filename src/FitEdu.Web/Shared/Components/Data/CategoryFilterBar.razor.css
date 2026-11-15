@@ -119,7 +119,7 @@
     display: flex;
     gap: var(--space-2);
     margin-inline: calc(-1 * var(--page-gutter));
-    padding: 4px var(--page-gutter);
+    padding: var(--space-1) var(--page-gutter);
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-padding-inline: var(--page-gutter);

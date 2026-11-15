@@ -91,7 +91,7 @@
 
 .collapsible-header {
     cursor: pointer;
-    min-height: 44px;
+    min-height: var(--tap-min);
     user-select: none;
     -webkit-user-select: none;
 }
@@ -683,7 +683,7 @@ input[type="date"].form-control:focus {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.2rem 0.6rem;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     white-space: nowrap;
     flex-shrink: 0;
     background: var(--bg-neutral-subtle);
@@ -701,7 +701,7 @@ input[type="date"].form-control:focus {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.2rem 0.6rem;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     white-space: nowrap;
     flex-shrink: 0;
 }

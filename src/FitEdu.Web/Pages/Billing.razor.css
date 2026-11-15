@@ -167,7 +167,7 @@
     font-size: 0.7rem;
     font-weight: 600;
     padding: 0.15rem 0.4rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     margin-right: 0.4rem;
     text-transform: uppercase;
     /* Long Greek labels ("ΑΝΑΒΑΘΜΙΣΗ") must not break mid-word in the phone card view. */

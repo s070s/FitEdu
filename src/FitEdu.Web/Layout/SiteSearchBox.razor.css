@@ -44,7 +44,7 @@
     width: 100%;
     background-color: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     color: var(--text-light-normal);
     font-size: 0.85rem;
     min-height: 2.5rem;

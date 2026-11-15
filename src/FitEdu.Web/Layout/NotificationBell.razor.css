@@ -39,7 +39,7 @@
     min-width: 16px;
     height: 16px;
     padding: 0 3px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     background-color: var(--color-error);
     color: #fff;
     font-size: 0.65rem;
