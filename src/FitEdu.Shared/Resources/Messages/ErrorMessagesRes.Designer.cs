@@ -178,6 +178,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Too many attempts. Please wait a minute and try again..
+        /// </summary>
+        public static string TooManyAttempts {
+            get {
+                return ResourceManager.GetString("TooManyAttempts", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to User not found..
         /// </summary>
         public static string UserNotFound {

@@ -38,6 +38,7 @@ public partial class AuthService : IAuthService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AuthService> _logger;
     private readonly ITokenService _tokenService;
+    private readonly IAuthAttemptLimiter _attemptLimiter;
     private readonly ITimeLimitedDataProtector _protector;
     private readonly ITimeLimitedDataProtector _lessonAssetProtector;
 
@@ -66,6 +67,7 @@ public partial class AuthService : IAuthService
         ApplicationDbContext context,
         IDataProtectionProvider dataProtectionProvider,
         ITokenService tokenService,
+        IAuthAttemptLimiter attemptLimiter,
         ILogger<AuthService> logger)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -75,6 +77,7 @@ public partial class AuthService : IAuthService
         _context = context;
         _logger = logger;
         _tokenService = tokenService;
+        _attemptLimiter = attemptLimiter;
         _protector = dataProtectionProvider
             .CreateProtector(ProtectorPurpose)
             .ToTimeLimitedDataProtector();
@@ -94,6 +97,10 @@ public partial class AuthService : IAuthService
     /// </remarks>
     public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
     {
+        // The page runs inside the circuit, past the API's rate limiter, so it counts its own attempts.
+        if (!AttemptAllowed(request.Email))
+            return TooManyAttempts();
+
         // Clear the EF Core change tracker so this call always reads fresh data from the
         // database.  In Blazor Server the DbContext is scoped to the circuit lifetime
         // (long-lived), so without this a previously-loaded entity (e.g. from a failed
@@ -152,7 +159,9 @@ public partial class AuthService : IAuthService
     /// keeps telling the visitor when the email is already taken.
     /// </summary>
     public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request) =>
-        ToDto(await _authApiService.RegisterFromSignUpPageAsync(request));
+        AttemptAllowed(request.Email)
+            ? ToDto(await _authApiService.RegisterFromSignUpPageAsync(request))
+            : TooManyAttempts();
 
     /// <inheritdoc />
     /// <remarks>
@@ -231,7 +240,9 @@ public partial class AuthService : IAuthService
 
     /// <summary>Emails a reset link when the email belongs to a confirmed account; always answers the same.</summary>
     public Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request) =>
-        _authApiService.ForgotPasswordAsync(request);
+        AttemptAllowed(request.Email)
+            ? _authApiService.ForgotPasswordAsync(request)
+            : Task.FromResult(TooManyAttempts());
 
     public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request) =>
         ToDto(await _authApiService.ResetPasswordAsync(request));
@@ -239,6 +250,13 @@ public partial class AuthService : IAuthService
     // ---------------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------------
+
+    // One budget per email (case and surrounding spaces do not matter) plus one for everyone.
+    private bool AttemptAllowed(string? email) =>
+        _attemptLimiter.TryAcquire((email ?? string.Empty).Trim().ToUpperInvariant());
+
+    private static AuthResponseDto TooManyAttempts() =>
+        new() { Success = false, Message = ErrorMessagesRes.TooManyAttempts };
 
     // The API service embeds its outcome in Value on success and failure alike.
     private static AuthResponseDto ToDto(ServiceResult<AuthResponseDto> result) =>

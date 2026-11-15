@@ -113,6 +113,8 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddSingleton<NotificationConnectionTracker>();
 
         // --- Web Services ---
+        // Singleton: the sign-in page's attempt counters must outlive each Blazor circuit.
+        builder.Services.AddSingleton<IAuthAttemptLimiter>(_ => new AuthAttemptLimiter());
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IAuthApiService, AuthApiService>();
         builder.Services.AddScoped<ICourseService, CourseService>();

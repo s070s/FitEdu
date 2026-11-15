@@ -156,6 +156,9 @@
   <data name="AccountLocked" xml:space="preserve">
     <value>Ο λογαριασμός κλειδώθηκε. Δοκίμασε ξανά αργότερα.</value>
   </data>
+  <data name="TooManyAttempts" xml:space="preserve">
+    <value>Πάρα πολλές προσπάθειες. Περίμενε ένα λεπτό και δοκίμασε ξανά.</value>
+  </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Ο χρήστης δεν βρέθηκε.</value>
   </data>

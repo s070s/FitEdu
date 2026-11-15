@@ -32,7 +32,7 @@ public class AuthServiceTests
         IHttpContextAccessor Accessor,
         RecordingLogger<AuthService> Log);
 
-    private static Harness Build()
+    private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null)
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
@@ -49,7 +49,7 @@ public class AuthServiceTests
         var authApi = new AuthApiService(um, sm, tokens, subs, new RecordingLogger<AuthApiService>(), ctx, email,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }), TimeProvider.System);
 
-        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens, log);
+        var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens, attemptLimiter ?? new AuthAttemptLimiter(), log);
         return new Harness(svc, um, sm, subs, email, tokens, dp, accessor, log);
     }
 
@@ -107,6 +107,66 @@ public class AuthServiceTests
             .Returns(SignInResult.Failed);
 
         (await h.Svc.LoginAsync(Login())).Message.ShouldBe(ErrorMessagesRes.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task Login_OverLimit_RejectsWithoutCheckingPassword()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        var h = Build(limiter);
+
+        var result = await h.Svc.LoginAsync(Login());
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.TooManyAttempts);
+        await h.Um.DidNotReceiveWithAnyArgs().FindByEmailAsync(default!);
+        await h.Sm.DidNotReceiveWithAnyArgs().CheckPasswordSignInAsync(default!, default!, default);
+    }
+
+    [Fact]
+    public async Task Register_OverLimit_RejectsWithoutCreatingAnAccount()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        var h = Build(limiter);
+
+        var result = await h.Svc.RegisterAsync(new RegisterRequestDto
+        {
+            Email = "u@x.com", Password = "Password1", ConfirmPassword = "Password1",
+            FirstName = "F", LastName = "L", GdprConsent = true
+        });
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.TooManyAttempts);
+        await h.Um.DidNotReceiveWithAnyArgs().CreateAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task ForgotPassword_OverLimit_RejectsWithoutSendingAnEmail()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>()).Returns(false);
+        var h = Build(limiter);
+
+        var result = await h.Svc.ForgotPasswordAsync(new ForgotPasswordRequestDto { Email = "u@x.com" });
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.TooManyAttempts);
+        await h.Email.DidNotReceiveWithAnyArgs().SendPasswordResetAsync(default!, default!, default!, default);
+    }
+
+    [Fact]
+    public async Task Login_AttemptsAreCountedPerEmailIgnoringCaseAndSpaces()
+    {
+        var limiter = Substitute.For<IAuthAttemptLimiter>();
+        limiter.TryAcquire(Arg.Any<string>()).Returns(true);
+        var h = Build(limiter);
+        h.Um.FindByEmailAsync(Arg.Any<string>()).Returns((ApplicationUser?)null);
+
+        await h.Svc.LoginAsync(new LoginRequestDto { Email = "  U@X.com ", Password = "Password1" });
+
+        limiter.Received(1).TryAcquire("U@X.COM");
     }
 
     [Fact]
