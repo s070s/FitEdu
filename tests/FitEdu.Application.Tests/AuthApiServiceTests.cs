@@ -805,6 +805,19 @@ public class AuthApiServiceTests
     }
 
     [Fact]
+    public async Task Login_UnconfirmedAccountRightPassword_ResetsTheFailedAttemptCount()
+    {
+        // As Identity does for a confirmed account: a right password clears the earlier wrong guesses.
+        var h = Build();
+        var member = UnconfirmedMemberWithLockout(h);
+        h.Um.CheckPasswordAsync(member, "Password1!").Returns(true);
+
+        await h.Svc.LoginAsync(new LoginRequestDto { Email = member.Email!, Password = "Password1!" });
+
+        await h.Um.Received(1).ResetAccessFailedCountAsync(member);
+    }
+
+    [Fact]
     public async Task Login_ConfirmedAccount_HashesThePasswordOnce()
     {
         var h = Build();
