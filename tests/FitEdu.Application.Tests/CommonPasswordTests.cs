@@ -95,6 +95,7 @@ public class CommonPasswordTests
     [InlineData("Abcdef1", false)]
     [InlineData("abcdefg1", false)]
     [InlineData("Abcdefgh", false)]
+    [InlineData("ABCDEFG1", false)]
     public void ComplexityPattern_FollowsTheSharedMinimumLength(string password, bool expected)
     {
         PasswordRules.MinimumLength.ShouldBe(8);

@@ -280,7 +280,7 @@
     <value>Password is required.</value>
   </data>
   <data name="Auth_PasswordComplexity" xml:space="preserve">
-    <value>Password must be at least 8 characters and include an uppercase letter and a number.</value>
+    <value>Password must be at least 8 characters and include an uppercase letter, a lowercase letter and a number.</value>
   </data>
   <data name="Auth_ConfirmPasswordRequired" xml:space="preserve">
     <value>Please confirm your password.</value>
