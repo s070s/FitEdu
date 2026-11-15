@@ -71,7 +71,7 @@ keeps its own licence.
 | Library | Version | How it is loaded | Licence | Where the licence is stated |
 |---|---|---|---|---|
 | Bootstrap (CSS) | 5.3.3 | Vendored in `wwwroot/lib/bootstrap` | MIT | Header of `bootstrap.min.css`; <https://github.com/twbs/bootstrap/blob/main/LICENSE> |
-| Bootstrap Icons | 1.11.3 | jsDelivr CDN, linked from `App.razor` | MIT | <https://github.com/twbs/icons/blob/main/LICENSE> |
+| Bootstrap Icons | 1.11.3 | Vendored in `wwwroot/lib/bootstrap-icons` (CSS and fonts) | MIT | `wwwroot/lib/bootstrap-icons/LICENSE`; <https://github.com/twbs/icons/blob/main/LICENSE> |
 | Quill (rich-text editor) | 2.0.3 | jsDelivr CDN, linked from `App.razor` | BSD-3-Clause | <https://github.com/slab/quill/blob/main/LICENSE> |
 
 ## Excluded
