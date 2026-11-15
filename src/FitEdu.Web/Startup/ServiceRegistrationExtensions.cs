@@ -78,8 +78,8 @@ public static class ServiceRegistrationExtensions
         // The links in account emails start with App:BaseUrl; a bad value fails at startup, not at the first email.
         builder.Services.AddOptions<AppOptions>()
             .Bind(config.GetSection(AppOptions.SectionName))
-            .Validate(o => Uri.TryCreate(o.BaseUrl, UriKind.Absolute, out var baseUri) && baseUri.Scheme is "http" or "https",
-                "App:BaseUrl must be an absolute http or https address, for example https://fitedu.com.")
+            .Validate(o => o.HasValidBaseUrl,
+                "App:BaseUrl must be an absolute http or https address without a query or fragment, for example https://fitedu.com.")
             .ValidateOnStart();
         if (!string.IsNullOrWhiteSpace(config["Email:Smtp:Host"]))
         {

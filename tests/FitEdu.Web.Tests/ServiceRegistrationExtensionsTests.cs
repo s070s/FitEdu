@@ -77,4 +77,18 @@ public class ServiceRegistrationExtensionsTests : IClassFixture<CustomWebAppFact
     {
         Should.Throw<InvalidOperationException>(() => ServiceRegistrationExtensions.ResolveSelfBaseUrl("https://localhost:7090", isDevelopment: false));
     }
+
+    // The links in account emails start with App:BaseUrl, so a value that cannot start a link stops the host at startup.
+    [Theory]
+    [InlineData("not-a-url")]
+    [InlineData("ftp://fitedu.com")]
+    [InlineData("https://fitedu.com/?campaign=1")]
+    [InlineData("https://fitedu.com/#top")]
+    [InlineData("")]
+    public void AppBaseUrl_ThatCannotStartALink_FailsTheHostStart(string baseUrl)
+    {
+        using var factory = new CustomWebAppFactory().WithWebHostBuilder(builder => builder.UseSetting("App:BaseUrl", baseUrl));
+
+        Should.Throw<OptionsValidationException>(() => factory.CreateClient());
+    }
 }
