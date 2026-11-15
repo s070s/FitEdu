@@ -12,7 +12,6 @@ namespace FitEdu.Application.DTOs;
 public record AuthCompletionTicket(
     string UserId,
     string? AdminBackupId,
-    bool DeleteAdminBackup,
     string SecurityStamp,
     bool RememberMe,
     Guid TicketId = default);

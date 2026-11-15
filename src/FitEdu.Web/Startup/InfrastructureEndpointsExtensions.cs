@@ -105,7 +105,6 @@ public static class InfrastructureEndpointsExtensions
 
             var userId = decoded.UserId;
             var adminBackupId = string.IsNullOrEmpty(decoded.AdminBackupId) ? null : decoded.AdminBackupId;
-            var deleteAdminBackup = decoded.DeleteAdminBackup;
             var tokenStamp = decoded.SecurityStamp;
             var rememberMe = decoded.RememberMe;
 
@@ -124,24 +123,18 @@ public static class InfrastructureEndpointsExtensions
                 return Results.LocalRedirect("/login?error=session_expired");
             }
 
-            var roles = await userManager.GetRolesAsync(user);
-            SubscriptionTier tier;
-            try
+            // A disabled account gets no session, even with a ticket issued before it was disabled.
+            if (!user.IsEnabled)
             {
-                tier = await subscriptionService.GetUserTierAsync(userId);
-            }
-            catch (Exception ex)
-            {
-                StartupLog.AuthTierLookupFailed(logger, ex, userId);
-                tier = SubscriptionTier.Free;
+                StartupLog.AuthUserDisabled(logger, userId);
+                return Results.LocalRedirect("/login");
             }
 
-            var claims = UserClaimsBuilder.Build(user, roles, tier, adminBackupId);
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+            var principal = await BuildPrincipalAsync(user, adminBackupId, userManager, subscriptionService, logger);
 
             // --- Write / clear admin backup cookie ---------------------------------------
+            // Session-only, like the impersonated session it leads back from. A plain sign-in deletes
+            // any backup cookie left behind, so it can never turn a later session into an exit.
             if (!string.IsNullOrEmpty(adminBackupId))
             {
                 var adminCookieProtector = dpProvider.CreateProtector(
@@ -154,12 +147,13 @@ public static class InfrastructureEndpointsExtensions
                         HttpOnly = true,
                         SameSite = SameSiteMode.Strict,
                         Secure = !app.Environment.IsDevelopment(),
-                        Expires = DateTimeOffset.UtcNow.AddHours(8),
                         IsEssential = true
                     });
             }
-            if (deleteAdminBackup)
+            else
+            {
                 ctx.Response.Cookies.Delete(AuthService.AdminBackupCookieName);
+            }
 
             // --- Issue auth cookie -------------------------------------------------------
             // IsPersistent=false (unchecked "Remember Me") issues a session cookie the browser
@@ -184,6 +178,51 @@ public static class InfrastructureEndpointsExtensions
         .WithName("CompleteAuth")
         .WithSummary("Complete Blazor sign-in and issue the auth cookie.")
         .WithDescription("Decodes a signed DataProtection ticket, rebuilds the principal from the database, and issues the .FitEdu.Auth cookie (and admin-backup cookie when impersonating). Invoked via full-page redirect from Blazor after login. Returns a 302 redirect; browser-navigation endpoint, not a JSON API.")
+        .Produces(StatusCodes.Status302Found);
+
+        // Leaving an impersonation. Trusts the session's impersonatedBy claim only together with the
+        // backup cookie naming the same admin, and signs that admin back in only while they are still an
+        // enabled Admin; a bare backup cookie on a plain session does nothing but get deleted.
+        app.MapGet(ExitImpersonationPath, async (
+            HttpContext ctx,
+            IDataProtectionProvider dpProvider,
+            UserManager<ApplicationUser> userManager,
+            ISubscriptionService subscriptionService,
+            ILoggerFactory loggerFactory) =>
+        {
+            var logger = loggerFactory.CreateLogger("AuthCompletion");
+            var impersonatedBy = ctx.User.FindFirstValue(UserClaimsBuilder.ImpersonatedByClaim);
+            var rawBackupCookie = ctx.Request.Cookies[AuthService.AdminBackupCookieName];
+
+            // The backup cookie is spent whatever happens next.
+            ctx.Response.Cookies.Delete(AuthService.AdminBackupCookieName);
+
+            if (string.IsNullOrEmpty(impersonatedBy))
+            {
+                StartupLog.AuthExitRefused(logger, "the session is not an impersonation");
+                return Results.LocalRedirect("/");
+            }
+
+            var admin = await FindAdminToRestoreAsync(rawBackupCookie, impersonatedBy, dpProvider, userManager, logger);
+            if (admin is null)
+            {
+                await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return Results.LocalRedirect("/");
+            }
+
+            var principal = await BuildPrincipalAsync(admin, adminBackupId: null, userManager, subscriptionService, logger);
+            await ctx.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties { IsPersistent = false });
+
+            StartupLog.AuthExitedImpersonation(logger, admin.Id);
+            return Results.LocalRedirect("/admin/users");
+        }).AllowAnonymous()
+        .WithTags("Infrastructure")
+        .WithName("ExitImpersonation")
+        .WithSummary("Leave an impersonation and sign the admin back in.")
+        .WithDescription("Checks the impersonatedBy claim against the signed admin-backup cookie, then signs the admin back in for the browser session and deletes the cookie. Any mismatch signs the browser out instead. Browser-navigation endpoint, not a JSON API.")
         .Produces(StatusCodes.Status302Found);
 
         app.MapGet("/auth/signout", async (string? returnUrl, HttpContext ctx) =>
@@ -291,6 +330,78 @@ public static class InfrastructureEndpointsExtensions
 
         var localPath = Login.LocalReturnPath(path);
         return Results.LocalRedirect(localPath.Any(char.IsControl) ? "/" : localPath);
+    }
+
+    /// <summary>Where the impersonation banner sends the admin to leave an impersonated session.</summary>
+    public const string ExitImpersonationPath = "/auth/exit-impersonation";
+
+    /// <summary>The cookie principal for a user: identity, roles, plan tier and (when impersonating) the admin's id.</summary>
+    private static async Task<ClaimsPrincipal> BuildPrincipalAsync(
+        ApplicationUser user,
+        string? adminBackupId,
+        UserManager<ApplicationUser> userManager,
+        ISubscriptionService subscriptionService,
+        ILogger logger)
+    {
+        var roles = await userManager.GetRolesAsync(user);
+        SubscriptionTier tier;
+        try
+        {
+            tier = await subscriptionService.GetUserTierAsync(user.Id);
+        }
+        catch (Exception ex)
+        {
+            StartupLog.AuthTierLookupFailed(logger, ex, user.Id);
+            tier = SubscriptionTier.Free;
+        }
+
+        var claims = UserClaimsBuilder.Build(user, roles, tier, adminBackupId);
+        return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+    }
+
+    /// <summary>
+    /// The admin named by the backup cookie, or null (with the reason logged) when the cookie is missing,
+    /// altered, names someone other than the session's impersonatedBy admin, or the admin is gone, disabled
+    /// or no longer an Admin.
+    /// </summary>
+    private static async Task<ApplicationUser?> FindAdminToRestoreAsync(
+        string? rawBackupCookie,
+        string impersonatedBy,
+        IDataProtectionProvider dpProvider,
+        UserManager<ApplicationUser> userManager,
+        ILogger logger)
+    {
+        if (string.IsNullOrEmpty(rawBackupCookie))
+        {
+            StartupLog.AuthExitRefused(logger, "the admin backup cookie is missing");
+            return null;
+        }
+
+        string adminIdFromCookie;
+        try
+        {
+            adminIdFromCookie = dpProvider.CreateProtector(AuthService.AdminBackupCookieProtectorPurpose).Unprotect(rawBackupCookie);
+        }
+        catch (Exception)
+        {
+            StartupLog.AuthExitRefused(logger, "the admin backup cookie failed its integrity check");
+            return null;
+        }
+
+        if (adminIdFromCookie != impersonatedBy)
+        {
+            StartupLog.AuthExitRefused(logger, "the admin backup cookie names another admin than the session");
+            return null;
+        }
+
+        var admin = await userManager.FindByIdAsync(adminIdFromCookie);
+        if (admin is null || !admin.IsEnabled || !await userManager.IsInRoleAsync(admin, "Admin"))
+        {
+            StartupLog.AuthExitRefused(logger, "the admin is gone, disabled or no longer an Admin");
+            return null;
+        }
+
+        return admin;
     }
 
     // The ticket ids already opened. A used id is remembered a little longer than a ticket lives, so it is

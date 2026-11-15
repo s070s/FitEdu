@@ -43,14 +43,13 @@ public interface IAuthService
     Task<string?> GetTokenAsync(ClaimsPrincipal principal);
 
     /// <summary>
-    /// Validates the impersonation target.  On success, <see cref="AuthResponseDto.Token"/>
-    /// holds a short-lived ticket GUID.  Navigate to
-    /// <c>/auth/complete?ticket={Token}&amp;returnUrl=…</c> with forceLoad: true.
+    /// Checks that <paramref name="admin"/> (the signed-in principal, e.g. the circuit's authentication
+    /// state) is an Admin and that the target is an enabled Student.  On success,
+    /// <see cref="AuthResponseDto.Token"/> holds a short-lived signed ticket.  Navigate to
+    /// <c>/auth/complete?ticket={Token}&amp;returnUrl=…</c> with forceLoad: true.  Leaving the
+    /// impersonation is the <c>/auth/exit-impersonation</c> endpoint.
     /// </summary>
-    Task<AuthResponseDto> ImpersonateAsync(string userId);
-
-    /// <summary>Returns the URL to navigate to (forceLoad: true) to restore the admin session.</summary>
-    Task<string> ExitImpersonationAsync();
+    Task<AuthResponseDto> ImpersonateAsync(ClaimsPrincipal admin, string userId);
 
     Task<bool> IsImpersonatingAsync();
     Task<AuthResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request);

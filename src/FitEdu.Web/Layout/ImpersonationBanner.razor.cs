@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Web.Interfaces;
-using FitEdu.Application.ApiInterfaces;
+using FitEdu.Web.Startup;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Layout;
 
 public partial class ImpersonationBanner : IDisposable
 {
-    [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthState { get; set; } = default!;
     [Inject] private ILogger<ImpersonationBanner> _logger { get; set; } = default!;
@@ -58,11 +57,9 @@ public partial class ImpersonationBanner : IDisposable
         return Task.CompletedTask;
     }
 
-    private async Task ExitAsync()
-    {
-        var url = await AuthService.ExitImpersonationAsync();
-        Navigation.NavigateTo(url, forceLoad: true);
-    }
+    // Leaving needs a fresh HTTP request (it writes cookies), so the banner navigates to the endpoint,
+    // which checks the session's impersonatedBy claim against the backup cookie.
+    private void Exit() => Navigation.NavigateTo(InfrastructureEndpointsExtensions.ExitImpersonationPath, forceLoad: true);
 
     public void Dispose()
     {

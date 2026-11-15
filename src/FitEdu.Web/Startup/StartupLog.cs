@@ -49,6 +49,15 @@ internal static partial class StartupLog
     [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} signed in via /auth/complete.")]
     internal static partial void AuthSignedIn(ILogger logger, string userId);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: user {UserId} is disabled — no session issued.")]
+    internal static partial void AuthUserDisabled(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Exit impersonation refused: {Reason}.")]
+    internal static partial void AuthExitRefused(ILogger logger, string reason);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} left the impersonation and is signed in again.")]
+    internal static partial void AuthExitedImpersonation(ILogger logger, string adminId);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Admin {AdminId} is impersonating user {UserId}.")]
     internal static partial void AuthImpersonating(ILogger logger, string? adminId, string userId);
 }

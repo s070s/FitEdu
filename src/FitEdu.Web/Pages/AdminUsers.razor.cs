@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
@@ -13,6 +14,7 @@ public partial class AdminUsers : IAsyncDisposable
     [Inject] private IAdminUserConsumer UserConsumer { get; set; } = default!;
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthState { get; set; } = default!;
 
     private PagedResult<AdminUserDto>? pagedResult;
     private int currentPage = 1;
@@ -132,7 +134,9 @@ public partial class AdminUsers : IAsyncDisposable
 
     private async Task ImpersonateUser(string userId)
     {
-        var result = await AuthService.ImpersonateAsync(userId);
+        // The circuit has no HttpContext, so the admin is read from the page's authentication state.
+        var admin = (await AuthState.GetAuthenticationStateAsync()).User;
+        var result = await AuthService.ImpersonateAsync(admin, userId);
         if (result.Success)
         {
             Navigation.NavigateTo(

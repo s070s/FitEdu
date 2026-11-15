@@ -493,13 +493,17 @@ public class AuthServiceTests
         (await Build().Svc.LogoutAsync()).ShouldBe("/auth/signout?returnUrl=%2F");
     }
 
+    private static ClaimsPrincipal AdminPrincipal() =>
+        new(new ClaimsIdentity(
+            [new Claim(ClaimTypes.NameIdentifier, "admin-1"), new Claim(ClaimTypes.Role, "Admin")], "cookie"));
+
     [Fact]
     public async Task Impersonate_TargetMissing_Fails()
     {
         var h = Build();
         h.Um.FindByIdAsync("target").Returns((ApplicationUser?)null);
 
-        var result = await h.Svc.ImpersonateAsync("target");
+        var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "target");
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe("User not found.");
@@ -516,25 +520,70 @@ public class AuthServiceTests
         h.Um.GetRolesAsync(target).Returns(["Admin"]);
         using var cultureScope = new CultureScope(culture);
 
-        var result = await h.Svc.ImpersonateAsync("u1");
+        var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "u1");
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe(expected);
     }
 
     [Fact]
-    public async Task Impersonate_WithoutASignedInAdmin_ReportsNotSignedIn()
+    public async Task Impersonate_CallerIsNotAnAdmin_Fails()
     {
         var h = Build();
         var target = User();
         h.Um.FindByIdAsync("u1").Returns(target);
         h.Um.GetRolesAsync(target).Returns(["Student"]);
-        h.Accessor.HttpContext.Returns(new DefaultHttpContext());
+        var student = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimTypes.NameIdentifier, "u2"), new Claim(ClaimTypes.Role, "Student")], "cookie"));
 
-        var result = await h.Svc.ImpersonateAsync("u1");
+        var result = await h.Svc.ImpersonateAsync(student, "u1");
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.AccessDenied);
+    }
+
+    [Fact]
+    public async Task Impersonate_NobodySignedIn_ReportsNotSignedIn()
+    {
+        var h = Build();
+
+        var result = await h.Svc.ImpersonateAsync(new ClaimsPrincipal(new ClaimsIdentity()), "u1");
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe(ErrorMessagesRes.NotAuthenticated);
+    }
+
+    [Fact]
+    public async Task Impersonate_DisabledTarget_Fails()
+    {
+        var h = Build();
+        var target = User(enabled: false);
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Student"]);
+
+        var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "u1");
+
+        result.Success.ShouldBeFalse();
+        result.Message.ShouldBe(ErrorMessagesRes.AccountDisabled);
+    }
+
+    [Fact]
+    public async Task Impersonate_Student_IssuesASessionOnlyTicketCarryingTheAdmin()
+    {
+        var h = Build();
+        var target = User();
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Student"]);
+        h.Um.GetSecurityStampAsync(target).Returns("stamp-1");
+
+        var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "u1");
+
+        result.Success.ShouldBeTrue();
+        var payload = h.Dp.CreateProtector(AuthService.ProtectorPurpose).ToTimeLimitedDataProtector().Unprotect(result.Token!);
+        var ticket = System.Text.Json.JsonSerializer.Deserialize<AuthCompletionTicket>(payload)!;
+        ticket.UserId.ShouldBe("u1");
+        ticket.AdminBackupId.ShouldBe("admin-1");
+        ticket.RememberMe.ShouldBeFalse();
     }
 
     // ---- GetTokenAsync: signed by the one token service ----

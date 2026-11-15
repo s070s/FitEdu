@@ -22,11 +22,12 @@ namespace FitEdu.Infrastructure.Services;
 /// has already been committed to the browser).
 ///
 /// To work around this, all cookie-writing operations are deferred.  The Blazor
-/// component calls LoginAsync / ImpersonateAsync / ExitImpersonationAsync, receives a
+/// component calls LoginAsync / ImpersonateAsync, receives a
 /// redirect URL containing a short-lived signed DataProtection token, then issues a
 /// forceLoad navigation.  The /auth/complete minimal endpoint is invoked on a fresh HTTP
 /// request (response not yet started), decodes the token, performs the DB lookup to
-/// rebuild the principal, calls SignInAsync, and redirects the browser.
+/// rebuild the principal, calls SignInAsync, and redirects the browser.  Leaving an
+/// impersonation needs no token: the banner navigates straight to /auth/exit-impersonation.
 /// </summary>
 public partial class AuthService : IAuthService
 {
@@ -38,7 +39,6 @@ public partial class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
     private readonly ITokenService _tokenService;
     private readonly ITimeLimitedDataProtector _protector;
-    private readonly IDataProtector _adminCookieProtector;
     private readonly ITimeLimitedDataProtector _lessonAssetProtector;
 
     /// <summary>Cookie name used to store the admin's user ID during impersonation.</summary>
@@ -78,8 +78,6 @@ public partial class AuthService : IAuthService
         _protector = dataProtectionProvider
             .CreateProtector(ProtectorPurpose)
             .ToTimeLimitedDataProtector();
-        _adminCookieProtector = dataProtectionProvider
-            .CreateProtector(AdminBackupCookieProtectorPurpose);
         _lessonAssetProtector = dataProtectionProvider
             .CreateProtector(LessonAssetProtectorPurpose)
             .ToTimeLimitedDataProtector();
@@ -134,7 +132,7 @@ public partial class AuthService : IAuthService
         await PreferredLanguageSaver.SaveRequestLanguageAsync(_userManager, user, _logger);
 
         var stamp = await _userManager.GetSecurityStampAsync(user);
-        var token = CreateSignInToken(userId: user.Id, adminBackupId: null, deleteAdminBackup: false, securityStamp: stamp, rememberMe: request.RememberMe);
+        var token = CreateSignInToken(userId: user.Id, adminBackupId: null, securityStamp: stamp, rememberMe: request.RememberMe);
         LogSignInTokenIssued(_logger, user.Id);
         return new AuthResponseDto { Success = true, Token = token };
     }
@@ -162,8 +160,16 @@ public partial class AuthService : IAuthService
     /// token.  Navigate to <c>/auth/complete?ticket={Token}&amp;returnUrl=…</c>
     /// with <c>forceLoad: true</c>.
     /// </remarks>
-    public async Task<AuthResponseDto> ImpersonateAsync(string userId)
+    public async Task<AuthResponseDto> ImpersonateAsync(ClaimsPrincipal admin, string userId)
     {
+        var adminId = admin.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (admin.Identity?.IsAuthenticated != true || string.IsNullOrEmpty(adminId))
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.NotAuthenticated };
+
+        // The admin pages are guarded already; this check keeps the service safe whoever calls it.
+        if (!admin.IsInRole("Admin"))
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccessDenied };
+
         var target = await _userManager.FindByIdAsync(userId);
         if (target is null)
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.UserNotFound };
@@ -172,49 +178,14 @@ public partial class AuthService : IAuthService
         if (!targetRoles.Contains("Student"))
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.ImpersonationOnlyStudents };
 
-        var adminId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(adminId))
-            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.NotAuthenticated };
+        if (!target.IsEnabled)
+            return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccountDisabled };
 
         var stamp = await _userManager.GetSecurityStampAsync(target);
-        // Impersonation isn't checkbox-driven — preserve the admin's existing persistent session behavior.
-        var token = CreateSignInToken(userId: target.Id, adminBackupId: adminId, deleteAdminBackup: false, securityStamp: stamp, rememberMe: true);
+        // Session-only: the impersonated session ends with the browser, like the backup cookie that leads back to the admin.
+        var token = CreateSignInToken(userId: target.Id, adminBackupId: adminId, securityStamp: stamp, rememberMe: false);
         LogImpersonationTokenIssued(_logger, adminId, userId);
         return new AuthResponseDto { Success = true, Token = token };
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Returns the URL to navigate to (with forceLoad: true) to restore the admin session.
-    /// </remarks>
-    public async Task<string> ExitImpersonationAsync()
-    {
-        var rawCookieValue = HttpContext.Request.Cookies[AdminBackupCookieName];
-        if (string.IsNullOrEmpty(rawCookieValue))
-            return "/";
-
-        string adminIdCookieValue;
-        try
-        {
-            adminIdCookieValue = _adminCookieProtector.Unprotect(rawCookieValue);
-        }
-        catch (Exception ex)
-        {
-            LogBackupCookieIntegrityFailed(_logger, ex);
-            return "/auth/signout?returnUrl=%2F";
-        }
-
-        var admin = await _userManager.FindByIdAsync(adminIdCookieValue);
-        if (admin is null)
-        {
-            LogBackupCookieInvalidUserId(_logger);
-            return "/auth/signout?returnUrl=%2F";
-        }
-
-        var stamp = await _userManager.GetSecurityStampAsync(admin);
-        var token = CreateSignInToken(userId: admin.Id, adminBackupId: null, deleteAdminBackup: true, securityStamp: stamp, rememberMe: true);
-        LogExitImpersonationTokenIssued(_logger, admin.Id);
-        return $"/auth/complete?ticket={Uri.EscapeDataString(token)}&returnUrl=%2Fadmin%2Fusers";
     }
 
     public Task<bool> IsImpersonatingAsync()
@@ -283,16 +254,13 @@ public partial class AuthService : IAuthService
     /// <param name="adminBackupId">
     /// If non-null, the admin's user ID to store in the backup cookie (impersonation start).
     /// </param>
-    /// <param name="deleteAdminBackup">
-    /// If true, the /auth/complete endpoint will delete the admin backup cookie (impersonation exit).
-    /// </param>
     /// <param name="rememberMe">
     /// If true, /auth/complete issues a persistent auth cookie (7-day expiry). If false, it issues
     /// a session cookie that the browser discards on close, regardless of the "Remember Me" checkbox.
     /// </param>
-    private string CreateSignInToken(string userId, string? adminBackupId, bool deleteAdminBackup, string securityStamp, bool rememberMe)
+    private string CreateSignInToken(string userId, string? adminBackupId, string securityStamp, bool rememberMe)
     {
-        var ticket = new AuthCompletionTicket(userId, adminBackupId, deleteAdminBackup, securityStamp, rememberMe, Guid.NewGuid());
+        var ticket = new AuthCompletionTicket(userId, adminBackupId, securityStamp, rememberMe, Guid.NewGuid());
         var payload = JsonSerializer.Serialize(ticket);
         return _protector.Protect(payload, lifetime: SignInTicketLifetime);
     }
@@ -310,13 +278,4 @@ public partial class AuthService : IAuthService
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} issued impersonation token for user {UserId}.")]
     private static partial void LogImpersonationTokenIssued(ILogger logger, string adminId, string userId);
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "ExitImpersonation: admin backup cookie failed integrity check — signing out.")]
-    private static partial void LogBackupCookieIntegrityFailed(ILogger logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "ExitImpersonation: admin backup cookie held an invalid user ID — signing out.")]
-    private static partial void LogBackupCookieInvalidUserId(ILogger logger);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} exiting impersonation — token issued.")]
-    private static partial void LogExitImpersonationTokenIssued(ILogger logger, string adminId);
 }

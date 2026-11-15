@@ -184,7 +184,7 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
     /// A sign-in ticket for a fresh confirmed member, built the way the sign-in page's service builds it
     /// but with the impersonation fields chosen by the test.
     /// </summary>
-    private async Task<string> CraftedTicketAsync(string? adminBackupId = null, bool deleteAdminBackup = false)
+    private async Task<string> CraftedTicketAsync(string? adminBackupId = null, bool disableMember = false)
     {
         var email = $"crafted-{Guid.NewGuid():N}@test.com";
         await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword);
@@ -192,11 +192,158 @@ public class MinimalEndpointsTests : IClassFixture<CustomWebAppFactory>
         using var scope = _factory.Services.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var member = (await userManager.FindByEmailAsync(email))!;
-        var ticket = new AuthCompletionTicket(member.Id, adminBackupId, deleteAdminBackup, member.SecurityStamp!, RememberMe: false, Guid.NewGuid());
+        if (disableMember)
+        {
+            member.IsEnabled = false;
+            await userManager.UpdateAsync(member);
+        }
+        var ticket = new AuthCompletionTicket(member.Id, adminBackupId, member.SecurityStamp!, RememberMe: false, Guid.NewGuid());
         var protector = scope.ServiceProvider.GetRequiredService<IDataProtectionProvider>()
             .CreateProtector(AuthService.ProtectorPurpose)
             .ToTimeLimitedDataProtector();
         return protector.Protect(JsonSerializer.Serialize(ticket), AuthService.SignInTicketLifetime);
+    }
+
+    [Fact]
+    public async Task AuthComplete_Impersonation_BackupCookieEndsWithTheBrowserSession()
+    {
+        var ticket = await CraftedTicketAsync(adminBackupId: "admin-1");
+
+        var response = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        var backupCookie = response.Headers.GetValues("Set-Cookie").Single(cookie => cookie.StartsWith(".FitEdu.AdminUserId=", StringComparison.Ordinal));
+        backupCookie.ShouldNotContain("expires=", Case.Insensitive);
+        backupCookie.ShouldNotContain("max-age=", Case.Insensitive);
+    }
+
+    [Fact]
+    public async Task AuthComplete_PlainLogin_DeletesAdminBackupCookie()
+    {
+        // A backup cookie left behind (a closed tab, an old impersonation) must not outlive a normal sign-in.
+        var staleBackupCookie = ProtectedBackupCookie("admin-1");
+        var ticket = await SignInTicketAsync();
+
+        var response = await GetWithCookiesAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F", staleBackupCookie);
+
+        response.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
+    }
+
+    [Fact]
+    public async Task AuthComplete_DisabledUser_RedirectsToLoginWithoutAuthCookie()
+    {
+        var ticket = await CraftedTicketAsync(disableMember: true);
+
+        var response = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        response.Headers.Location!.ToString().ShouldBe("/login");
+        response.Headers.TryGetValues("Set-Cookie", out var cookies);
+        (cookies ?? []).ShouldNotContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExitImpersonation_AdminImpersonating_SignsTheAdminBackInForTheSessionOnly()
+    {
+        var (adminId, adminEmail) = await CreateAdminAsync();
+        var ticket = await CraftedTicketAsync(adminBackupId: adminId);
+        var completed = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        var exit = await GetWithCookiesAsync("/auth/exit-impersonation", CookieHeader(completed));
+
+        exit.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        exit.Headers.Location!.ToString().ShouldBe("/admin/users");
+        var adminCookie = exit.Headers.GetValues("Set-Cookie").Single(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+        adminCookie.ShouldNotContain("expires=", Case.Insensitive);
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
+        var me = await GetWithCookiesAsync("/api/auth/me", CookieHeader(exit));
+        me.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await me.Content.ReadAsStringAsync()).ShouldContain(adminEmail);
+    }
+
+    [Fact]
+    public async Task ExitImpersonation_WithoutImpersonatedByClaim_DoesNotSignInAdmin()
+    {
+        // Only the backup cookie names an admin here; the signed-in session is a plain member's, so
+        // the cookie alone must not turn that browser into the admin.
+        var (adminId, _) = await CreateAdminAsync();
+        var plainSignIn = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(await SignInTicketAsync())}&returnUrl=%2F");
+
+        var exit = await GetWithCookiesAsync("/auth/exit-impersonation", CookieHeader(plainSignIn), ProtectedBackupCookie(adminId));
+
+        exit.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        exit.Headers.GetValues("Set-Cookie").ShouldNotContain(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal));
+        exit.Headers.GetValues("Set-Cookie").ShouldContain(cookie => IsDeletedBackupCookie(cookie));
+    }
+
+    [Fact]
+    public async Task ExitImpersonation_BackupCookieNamesAnotherAdmin_SignsOutInsteadOfSigningIn()
+    {
+        var (adminId, _) = await CreateAdminAsync();
+        var (otherAdminId, _) = await CreateAdminAsync();
+        var ticket = await CraftedTicketAsync(adminBackupId: adminId);
+        var completed = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+
+        // The browser keeps the impersonated session but carries a backup cookie naming a different admin.
+        var exit = await GetWithCookiesAsync("/auth/exit-impersonation", AuthCookieOnly(completed), ProtectedBackupCookie(otherAdminId));
+
+        exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
+            .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExitImpersonation_AdminNoLongerEnabled_SignsOutInsteadOfSigningIn()
+    {
+        var (adminId, _) = await CreateAdminAsync();
+        var ticket = await CraftedTicketAsync(adminBackupId: adminId);
+        var completed = await NoRedirectClient().GetAsync($"/auth/complete?ticket={Uri.EscapeDataString(ticket)}&returnUrl=%2F");
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var admin = (await userManager.FindByIdAsync(adminId))!;
+            admin.IsEnabled = false;
+            await userManager.UpdateAsync(admin);
+        }
+
+        var exit = await GetWithCookiesAsync("/auth/exit-impersonation", CookieHeader(completed));
+
+        exit.Headers.GetValues("Set-Cookie").Where(cookie => cookie.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal))
+            .ShouldAllBe(cookie => cookie.StartsWith(".FitEdu.Auth=;", StringComparison.Ordinal));
+    }
+
+    private static bool IsDeletedBackupCookie(string cookie) =>
+        cookie.StartsWith(".FitEdu.AdminUserId=;", StringComparison.Ordinal);
+
+    /// <summary>A backup cookie (name=value) naming the given admin, as /auth/complete writes it.</summary>
+    private string ProtectedBackupCookie(string adminId)
+    {
+        var protector = _factory.Services.GetRequiredService<IDataProtectionProvider>()
+            .CreateProtector(AuthService.AdminBackupCookieProtectorPurpose);
+        return $"{AuthService.AdminBackupCookieName}={Uri.EscapeDataString(protector.Protect(adminId))}";
+    }
+
+    private async Task<(string Id, string Email)> CreateAdminAsync()
+    {
+        var email = $"admin-{Guid.NewGuid():N}@test.com";
+        await _factory.CreateConfirmedUserAsync(email, CustomWebAppFactory.TestPassword, role: "Admin");
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        return ((await userManager.FindByEmailAsync(email))!.Id, email);
+    }
+
+    /// <summary>The cookies a browser keeps from a response: every Set-Cookie that is not a deletion, as name=value pairs.</summary>
+    private static string CookieHeader(HttpResponseMessage response) =>
+        string.Join("; ", response.Headers.GetValues("Set-Cookie")
+            .Select(cookie => cookie.Split(';')[0])
+            .Where(pair => !pair.EndsWith('='))); // a deletion is written as name=
+
+    private static string AuthCookieOnly(HttpResponseMessage response) =>
+        string.Join("; ", CookieHeader(response).Split("; ").Where(pair => pair.StartsWith(".FitEdu.Auth=", StringComparison.Ordinal)));
+
+    private async Task<HttpResponseMessage> GetWithCookiesAsync(string url, params string[] cookiePairs)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("Cookie", string.Join("; ", cookiePairs));
+        return await NoRedirectClient().SendAsync(request);
     }
 
     [Fact]
