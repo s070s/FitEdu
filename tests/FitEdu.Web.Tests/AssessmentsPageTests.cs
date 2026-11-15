@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Pages;
 using Shouldly;
@@ -68,8 +69,8 @@ public class AssessmentsPageTests : BunitContext
 
         var cut = Render<Assessments>();
 
-        cut.FindAll(".skeleton-stack .skeleton-block").Count.ShouldBe(4);
-        cut.Find("p.visually-hidden[role=status]").TextContent.ShouldNotBeNullOrWhiteSpace();
+        cut.FindAll(".assessments-grid .skeleton-block").Count.ShouldBe(4);
+        cut.Find("p.visually-hidden[role=status]").TextContent.ShouldBe(AssessmentRes.LoadingAssessments);
         cut.FindAll(".pulse-loader").ShouldBeEmpty();
         cut.FindAll(".assessment-card").ShouldBeEmpty();
     }

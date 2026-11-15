@@ -29,7 +29,12 @@
     @if (_loading)
     {
         <p class="visually-hidden" role="status">@AssessmentRes.LoadingAssessments</p>
-        <SkeletonBlock Rows="4" Height="5rem" Gap="1rem" />
+        <div class="grid-auto assessments-grid" aria-hidden="true">
+            @for (var index = 0; index < 4; index++)
+            {
+                <SkeletonBlock Height="15rem" />
+            }
+        </div>
     }
     else if (!_assessmentAccess)
     {

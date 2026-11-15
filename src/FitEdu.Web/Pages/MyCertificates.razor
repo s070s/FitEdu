@@ -14,7 +14,12 @@
     @if (_loading)
     {
         <p class="visually-hidden" role="status">@CertificateRes.Loading</p>
-        <SkeletonBlock Rows="3" Height="12rem" Gap="1rem" />
+        <div class="grid-auto certificate-grid" aria-hidden="true">
+            @for (var index = 0; index < 4; index++)
+            {
+                <SkeletonBlock Height="20rem" />
+            }
+        </div>
     }
     else if (HasNoCertificates && !_certificateAccess)
     {
