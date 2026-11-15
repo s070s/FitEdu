@@ -63,9 +63,11 @@ function Assert-AzureCliSignedIn {
 function Read-Password([string] $prompt) {
     $secure = Read-Host -Prompt $prompt -AsSecureString
     $plain = [System.Net.NetworkCredential]::new('', $secure).Password
-    # The app's Identity rules: 8+ characters with a digit, an upper-case and a lower-case letter.
+    # The app's character rules: 8+ characters with a digit, an upper-case and a lower-case letter. The app
+    # also refuses the most common passwords (a list in its code that this script does not know), so such a
+    # password passes here and is refused when the app seeds the account.
     if ($plain.Length -lt 8 -or $plain -notmatch '\d' -or $plain -cnotmatch '[A-Z]' -or $plain -cnotmatch '[a-z]') {
-        throw 'The password needs 8+ characters with a digit, an upper-case and a lower-case letter.'
+        throw 'The password needs 8+ characters with a digit, an upper-case and a lower-case letter. A very common password is refused when the account is seeded.'
     }
     return $plain
 }
