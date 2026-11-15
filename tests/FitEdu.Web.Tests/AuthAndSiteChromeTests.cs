@@ -693,6 +693,20 @@ public class AuthAndSiteChromeTests : BunitContext
     }
 
     [Fact]
+    public void ForgotPassword_Success_FocusesTheResult()
+    {
+        // The button the member pressed is removed with the form, so focus would fall back to the page top.
+        _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>()).Returns(new AuthResponseDto { Success = true, Message = "sent" });
+        var page = Render<ForgotPassword>();
+
+        page.Find("#email").Change("member@fitedu.local");
+        page.Find("form").Submit();
+
+        JSInterop.VerifyInvoke("inputInterop.scrollIntoView");
+        page.Find(".alert-success").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
     public void ForgotPassword_Failure_SitsInAnAlertRegionAndKeepsTheForm()
     {
         _authService.ForgotPasswordAsync(Arg.Any<ForgotPasswordRequestDto>())

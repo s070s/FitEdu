@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
@@ -10,11 +11,31 @@ public partial class ForgotPassword
 {
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private ILogger<ForgotPassword> Logger { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
 
     private ForgotPasswordRequestDto forgotPasswordRequest = new();
     private string? successMessage;
     private string? errorMessage;
     private bool isLoading;
+    private ElementReference resultRegion;
+    // The submit removes the form that had focus, so the render that shows the result focuses the result.
+    private bool focusResult;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!focusResult)
+            return;
+
+        focusResult = false;
+        try
+        {
+            await JS.InvokeVoidAsync("inputInterop.scrollIntoView", resultRegion);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit closed; there is no page left to focus.
+        }
+    }
 
     private async Task HandleSubmit()
     {
@@ -30,6 +51,7 @@ public partial class ForgotPassword
             if (result.Success)
             {
                 successMessage = result.Message ?? SuccessMessagesRes.PasswordResetLinkSent;
+                focusResult = true;
             }
             else
             {
