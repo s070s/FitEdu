@@ -124,6 +124,53 @@
     background-color: rgba(var(--text-strong-accent-rgb), 0.12);
 }
 
+/* Plan 13: the underline scales in from the centre on hover and keyboard focus and stays on the
+   current page. Only transform and opacity animate, so the global prefers-reduced-motion
+   kill-switch in app.css turns it into an instant change. */
+.site-links ::deep .site-link {
+    position: relative;
+}
+
+.site-links ::deep .site-link::after {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.3rem;
+    height: 2px;
+    border-radius: var(--radius-pill);
+    background-color: var(--text-strong-accent);
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform var(--duration-base) var(--ease-out), opacity var(--duration-base) var(--ease-out);
+    pointer-events: none;
+}
+
+.site-links ::deep .site-link:hover::after,
+.site-links ::deep .site-link:focus-visible::after {
+    opacity: 0.6;
+    transform: scaleX(1);
+}
+
+.site-links ::deep .site-link.active::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+/* The tighter link padding of 992-1199 px (above): the underline keeps to the text. */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .site-links ::deep .site-link::after {
+        left: 0.6rem;
+        right: 0.6rem;
+    }
+}
+
+/* The call-to-action pill is filled already: no underline. */
+.site-links ::deep .site-link--cta::after {
+    content: none;
+}
+
 .site-links ::deep .site-link--cta,
 .site-links ::deep .site-link--cta:hover,
 .site-links ::deep .site-link--cta.active {
