@@ -397,7 +397,7 @@
     <value>Πήγαινε στη σύνδεση</value>
   </data>
   <data name="ChooseFile" xml:space="preserve">
-    <value>Διάλεξε αρχείο</value>
+    <value>Επιλογή αρχείου</value>
   </data>
   <data name="NoFileChosen" xml:space="preserve">
     <value>Δεν επιλέχθηκε αρχείο</value>

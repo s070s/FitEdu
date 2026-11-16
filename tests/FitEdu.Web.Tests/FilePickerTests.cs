@@ -51,7 +51,7 @@ public class FilePickerTests : BunitContext
 
         var picker = Render<FilePicker>(parameters => parameters.Add(p => p.Id, PickerId));
 
-        picker.Find("label.file-picker__button").TextContent.Trim().ShouldBe("Διάλεξε αρχείο");
+        picker.Find("label.file-picker__button").TextContent.Trim().ShouldBe("Επιλογή αρχείου");
         picker.Find(".file-picker__name").TextContent.ShouldBe("Δεν επιλέχθηκε αρχείο");
     }
 
