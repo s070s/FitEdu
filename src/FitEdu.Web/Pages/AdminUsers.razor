@@ -83,26 +83,26 @@
                             <td class="table-actions" data-label="@AdminRes.ColActions">
                                 @if (user.Roles.Contains(NavItems.StudentRole))
                                 {
-                                    <button class="btn btn-sm btn-primary me-1" @onclick="() => ImpersonateUser(user.Id)">@AdminRes.LoginAs</button>
+                                    <button class="btn btn-sm btn-primary me-1" aria-label="@ResourceFormat.Fill(AdminRes.LoginAsUser, user.Email)" @onclick="() => ImpersonateUser(user.Id)">@AdminRes.LoginAs</button>
                                 }
                                 @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
-                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => OpenResetPasswordModal(user)">@AdminRes.ResetPassword</button>
+                                    <button class="btn btn-sm btn-outline-secondary" aria-label="@ResourceFormat.Fill(AdminRes.ResetPasswordFor, user.Email)" @onclick="() => OpenResetPasswordModal(user)">@AdminRes.ResetPassword</button>
                                 }
                                 @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
                                     @if (user.IsEnabled)
                                     {
-                                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => SetUserEnabled(user.Id, false)">@AdminRes.DisableUser</button>
+                                        <button class="btn btn-sm btn-outline-secondary" aria-label="@ResourceFormat.Fill(AdminRes.DisableUserFor, user.Email)" @onclick="() => SetUserEnabled(user.Id, false)">@AdminRes.DisableUser</button>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-sm btn-outline-primary" @onclick="() => SetUserEnabled(user.Id, true)">@AdminRes.EnableUser</button>
+                                        <button class="btn btn-sm btn-outline-primary" aria-label="@ResourceFormat.Fill(AdminRes.EnableUserFor, user.Email)" @onclick="() => SetUserEnabled(user.Id, true)">@AdminRes.EnableUser</button>
                                     }
                                 }
                                 @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
-                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDeleteUser(user)">@AdminRes.Delete</button>
+                                    <button class="btn btn-sm btn-outline-danger" aria-label="@ResourceFormat.Fill(AdminRes.DeleteUserFor, user.Email)" @onclick="() => RequestDeleteUser(user)">@AdminRes.Delete</button>
                                 }
                             </td>
                         </tr>

@@ -2283,6 +2283,42 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log in as {0}.
+        /// </summary>
+        public static string LoginAsUser {
+            get {
+                return ResourceManager.GetString("LoginAsUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable {0}.
+        /// </summary>
+        public static string DisableUserFor {
+            get {
+                return ResourceManager.GetString("DisableUserFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable {0}.
+        /// </summary>
+        public static string EnableUserFor {
+            get {
+                return ResourceManager.GetString("EnableUserFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete {0}.
+        /// </summary>
+        public static string DeleteUserFor {
+            get {
+                return ResourceManager.GetString("DeleteUserFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password must be at least 8 characters..
         /// </summary>
         public static string PasswordMinLength {

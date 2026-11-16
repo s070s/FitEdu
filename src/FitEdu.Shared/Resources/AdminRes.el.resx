@@ -858,6 +858,18 @@
   <data name="UserDeleteConflict" xml:space="preserve">
     <value>Δεν ήταν δυνατή η διαγραφή του χρήστη, επειδή έχει αναλάβει μια live προπόνηση ή υπάρχουν άλλα δεδομένα που τον αφορούν. Ακύρωσε ή ανάθεσε πρώτα την προπόνηση.</value>
   </data>
+  <data name="LoginAsUser" xml:space="preserve">
+    <value>Σύνδεση ως {0}</value>
+  </data>
+  <data name="DisableUserFor" xml:space="preserve">
+    <value>Απενεργοποίηση χρήστη {0}</value>
+  </data>
+  <data name="EnableUserFor" xml:space="preserve">
+    <value>Ενεργοποίηση χρήστη {0}</value>
+  </data>
+  <data name="DeleteUserFor" xml:space="preserve">
+    <value>Διαγραφή χρήστη {0}</value>
+  </data>
   <data name="PasswordMinLength" xml:space="preserve">
     <value>Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</value>
   </data>

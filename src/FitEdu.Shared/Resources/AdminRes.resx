@@ -839,6 +839,18 @@
   <data name="UserDeleteConflict" xml:space="preserve">
     <value>Couldn't delete the user because a live class they run, or other data, still depends on the account. Cancel or reassign it first.</value>
   </data>
+  <data name="LoginAsUser" xml:space="preserve">
+    <value>Log in as {0}</value>
+  </data>
+  <data name="DisableUserFor" xml:space="preserve">
+    <value>Disable {0}</value>
+  </data>
+  <data name="EnableUserFor" xml:space="preserve">
+    <value>Enable {0}</value>
+  </data>
+  <data name="DeleteUserFor" xml:space="preserve">
+    <value>Delete {0}</value>
+  </data>
   <data name="PasswordMinLength" xml:space="preserve">
     <value>Password must be at least 8 characters.</value>
   </data>

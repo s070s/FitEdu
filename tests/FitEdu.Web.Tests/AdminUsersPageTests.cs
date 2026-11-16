@@ -84,6 +84,34 @@ public class AdminUsersPageTests : BunitContext
         ButtonNames(rows[2]).ShouldBeEmpty("an admin row offers no action");
     }
 
+    [Theory]
+    [InlineData("en")]
+    [InlineData("el")]
+    public void RowButtons_EveryButtonNamesItsUser_SoAScreenReaderCanTellTheRowsApart(string culture)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        var page = RenderThreeUsers();
+        var rows = page.FindAll("tbody tr");
+        var emails = new[] { MemberEmail, DisabledMemberEmail };
+
+        var accessibleNames = new List<string>();
+        for (var rowIndex = 0; rowIndex < emails.Length; rowIndex++)
+        {
+            foreach (var button in rows[rowIndex].QuerySelectorAll("td.table-actions button"))
+            {
+                var accessibleName = button.GetAttribute("aria-label");
+                accessibleName.ShouldNotBeNull();
+                accessibleName.ShouldContain(emails[rowIndex]);
+                // WCAG 2.5.3: the accessible name starts with the text a sighted user reads on the button.
+                accessibleName.ShouldStartWith(button.TextContent.Trim());
+                accessibleNames.Add(accessibleName);
+            }
+        }
+
+        accessibleNames.Count.ShouldBe(8);
+        accessibleNames.Distinct().Count().ShouldBe(accessibleNames.Count, "two buttons share an accessible name");
+    }
+
     // ---- Delete ----------------------------------------------------------------------------------
 
     private IRenderedComponent<AdminUsers> OpenDeleteConfirmation()
