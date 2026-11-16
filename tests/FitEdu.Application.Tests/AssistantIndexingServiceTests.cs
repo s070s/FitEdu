@@ -142,8 +142,7 @@ public class AssistantIndexingServiceTests
             TitleEn = "Lesson A",
             ContentEn = "<p>Lesson body text.</p>",
             ModuleId = module.Id,
-            Module = module,
-            IsPublished = true
+            Module = module
         };
         db.Courses.Add(course);
         db.Modules.Add(module);
@@ -175,8 +174,7 @@ public class AssistantIndexingServiceTests
             ContentEn = "Warm up first.",
             ContentEl = "Ζεσταίνεσαι πρώτα.",
             ModuleId = module.Id,
-            Module = module,
-            IsPublished = true
+            Module = module
         };
         var pushUps = NewExercise("pushups", "Pushups", "Κάμψεις", "chest, triceps");
         var plank = NewExercise("plank", "Plank", nameEl: null, "abdominals");
@@ -204,7 +202,7 @@ public class AssistantIndexingServiceTests
     public async Task SecondPass_RenamedModule_ReindexesTheLessonEvenThoughOnlyItsHeaderChanged()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var lesson = NewLessonInCourse(coursePublished: true, lessonPublished: true);
+        var lesson = NewLessonInCourse(coursePublished: true);
         db.Lessons.Add(lesson);
         await db.SaveChangesAsync();
         var (svc, _) = NewService(db);
@@ -223,7 +221,7 @@ public class AssistantIndexingServiceTests
     {
         // The lesson page shows published exercises only (CourseService.PublishedPrescriptions).
         await using var db = DbContextFactory.CreateInMemory();
-        var lesson = NewLessonInCourse(coursePublished: true, lessonPublished: true);
+        var lesson = NewLessonInCourse(coursePublished: true);
         var pushUps = NewExercise("pushups", "Pushups", "Κάμψεις", "chest");
         var hidden = NewExercise("hidden-move", "Hidden Move", nameEl: null, "biceps");
         hidden.IsPublished = false;
@@ -259,7 +257,7 @@ public class AssistantIndexingServiceTests
     public async Task RunIndexPassAsync_LessonWithoutItsOwnPublishFlagInPublishedCourse_IsIndexedLikeStudentsSeeIt()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        db.Lessons.Add(NewLessonInCourse(coursePublished: true, lessonPublished: false));
+        db.Lessons.Add(NewLessonInCourse(coursePublished: true));
         await db.SaveChangesAsync();
         var (svc, _) = NewService(db);
 
@@ -272,7 +270,7 @@ public class AssistantIndexingServiceTests
     public async Task RunIndexPassAsync_LessonInUnpublishedCourse_IsSkipped()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        db.Lessons.Add(NewLessonInCourse(coursePublished: false, lessonPublished: true));
+        db.Lessons.Add(NewLessonInCourse(coursePublished: false));
         await db.SaveChangesAsync();
         var (svc, _) = NewService(db);
 
@@ -281,13 +279,13 @@ public class AssistantIndexingServiceTests
         (await db.AssistantContentChunks.ToListAsync()).ShouldNotContain(c => c.SourceType == AssistantSourceType.Lesson);
     }
 
-    private static Lesson NewLessonInCourse(bool coursePublished, bool lessonPublished)
+    private static Lesson NewLessonInCourse(bool coursePublished)
     {
         var course = new Course { Id = Guid.NewGuid(), TitleEn = "Course A", IsPublished = coursePublished };
         var module = new Module { Id = Guid.NewGuid(), TitleEn = "Module A", CourseId = course.Id, Course = course };
         return new Lesson
         {
-            Id = Guid.NewGuid(), TitleEn = "Lesson A", ModuleId = module.Id, Module = module, IsPublished = lessonPublished
+            Id = Guid.NewGuid(), TitleEn = "Lesson A", ModuleId = module.Id, Module = module
         };
     }
 

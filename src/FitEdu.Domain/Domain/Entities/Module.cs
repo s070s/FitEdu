@@ -7,7 +7,7 @@ namespace FitEdu.Domain.Entities;
 /// Belongs to exactly one Course.
 /// </summary>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Module is the established domain name of a course section; renaming would change the public API and database mapping.")]
-public class Module : AuditableEntity
+public class Module : AuditableEntity, ISoftDeletable
 {
     public Guid Id { get; set; }
 
@@ -44,4 +44,14 @@ public class Module : AuditableEntity
 
     // Navigation: one Module has many Lessons
     public ICollection<Lesson> Lessons { get; set; } = [];
+
+    /// <summary>
+    /// Whether the item is soft-deleted; a global query filter hides soft-deleted rows.
+    /// </summary>
+    public bool IsDeleted { get; set; }
+
+    /// <summary>
+    /// When the item was soft-deleted. Null while it is live.
+    /// </summary>
+    public DateTimeOffset? DeletedAt { get; set; }
 }

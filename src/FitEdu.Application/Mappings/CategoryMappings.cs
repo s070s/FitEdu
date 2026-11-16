@@ -16,7 +16,7 @@ public static class CategoryMappings
         c => new AdminCategoryDto(
             c.Id, c.NameEn, c.NameEl,
             c.Courses.Count(x => !x.IsDeleted),
-            c.AssessmentDefinitions.Count(x => !x.IsDeleted),
+            c.AssessmentDefinitions.Count,
             c.CreatedAt);
 
     /// <summary>Materialized variant; counts are supplied by the caller (0 for a new category).</summary>

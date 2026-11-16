@@ -4,7 +4,7 @@ namespace FitEdu.Domain.Entities;
 /// One exercise from the public-domain Free Exercise DB, with optional Greek text.
 /// Images live at wwwroot/images/exercises/{Slug}/0.webp … {ImageCount - 1}.webp.
 /// </summary>
-public class Exercise : AuditableEntity
+public class Exercise : AuditableEntity, IPublishable
 {
     /// <summary>
     /// Joins the muscle names stored in PrimaryMuscles and SecondaryMuscles.
@@ -82,4 +82,14 @@ public class Exercise : AuditableEntity
 
     // Navigation: lessons that prescribe this exercise
     public ICollection<LessonExercise> LessonExercises { get; set; } = [];
+
+    /// <summary>
+    /// Whether the item is visible to the public.
+    /// </summary>
+    public bool IsPublished { get; set; }
+
+    /// <summary>
+    /// When the item was first published. Null while it is a draft.
+    /// </summary>
+    public DateTimeOffset? PublishedAt { get; set; }
 }

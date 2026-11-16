@@ -287,7 +287,6 @@ public partial class AdminCourseService(
             DurationMinutes = request.DurationMinutes,
             SortOrder = request.SortOrder,
             ModuleId = request.ModuleId,
-            IsPublished = false,
             UpdatedByUserId = userId
         };
         await ReplaceExerciseRowsAsync(lesson, request.Exercises, exercisesBySlug, cancellationToken);
@@ -395,8 +394,8 @@ public partial class AdminCourseService(
         if (rows is null)
             return;
 
-        // lesson.Exercises was loaded through the query filter, which hides the rows of a soft-deleted
-        // exercise; load every row so none of those survives beside the new list.
+        // lesson.Exercises was loaded through the query filter; load every stored row so none that the
+        // filter hides survives beside the new list.
         var storedRows = await db.LessonExercises
             .IgnoreQueryFilters()
             .Where(row => row.LessonId == lesson.Id)

@@ -212,30 +212,31 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             }
         }
 
-        // Global soft-delete filter for all AuditableEntity subtypes, plus DB-7's concurrency
-        // token: every AuditableEntity gets a DB-generated RowVersion column checked on every
-        // UPDATE, so a stale read-modify-write throws instead of silently last-write-winning.
+        // Global soft-delete filter for every ISoftDeletable type (DB-4: only the entities that are soft-deleted
+        // carry the column), plus DB-7's concurrency token: every AuditableEntity gets a DB-generated
+        // RowVersion column checked on every UPDATE, so a stale read-modify-write throws instead of silently
+        // last-write-winning.
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
-            if (typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType))
+            if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
             {
                 var param = Expression.Parameter(entityType.ClrType, "e");
-                var prop = Expression.Property(param, nameof(AuditableEntity.IsDeleted));
+                var prop = Expression.Property(param, nameof(ISoftDeletable.IsDeleted));
                 var filter = Expression.Lambda(Expression.Not(prop), param);
                 builder.Entity(entityType.ClrType).HasQueryFilter(filter);
+            }
 
+            if (typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType))
+            {
                 builder.Entity(entityType.ClrType)
                     .Property(nameof(AuditableEntity.RowVersion))
                     .IsRowVersion();
             }
         }
 
-        // Matching soft-delete filters for dependent entities that reference AuditableEntity
+        // Matching soft-delete filters for dependent entities that reference ISoftDeletable
         // principals. Without these, EF Core warns (10622) that the required principal may
         // be silently filtered out, producing unexpected results when navigations are loaded.
-        builder.Entity<AssessmentSubmission>()
-            .HasQueryFilter(s => !s.AssessmentDefinition.IsDeleted);
-
         builder.Entity<Enrollment>()
             .HasQueryFilter(e => !e.Course.IsDeleted);
 
@@ -246,7 +247,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             .HasQueryFilter(s => !s.Course!.IsDeleted);
 
         builder.Entity<LessonExercise>()
-            .HasQueryFilter(le => !le.Lesson.IsDeleted && !le.Exercise.IsDeleted);
+            .HasQueryFilter(le => !le.Lesson.IsDeleted);
     }
 
     // ---------------------------------------------------------------------------

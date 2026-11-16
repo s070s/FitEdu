@@ -559,6 +559,42 @@ public class ApplicationDbContextTests
         await Should.ThrowAsync<DbUpdateConcurrencyException>(() => db.SaveChangesAsync());
     }
 
+    [Theory]
+    [InlineData(typeof(Course), true, true)]
+    [InlineData(typeof(LearningPath), true, true)]
+    [InlineData(typeof(BlogArticle), true, false)]
+    [InlineData(typeof(AssessmentDefinition), true, false)]
+    [InlineData(typeof(Exercise), true, false)]
+    [InlineData(typeof(Category), false, true)]
+    [InlineData(typeof(Module), false, true)]
+    [InlineData(typeof(Lesson), false, true)]
+    public void PublishAndSoftDeleteColumns_ExistOnlyOnTheEntitiesThatUseThem(Type entityType, bool published, bool softDeleted)
+    {
+        // DB-4: the publish and soft-delete columns are no longer shared by every AuditableEntity.
+        using var db = CtxWithUser(null);
+        var propertyNames = db.Model.FindEntityType(entityType)!.GetProperties().Select(property => property.Name).ToList();
+
+        propertyNames.Contains("IsPublished").ShouldBe(published);
+        propertyNames.Contains("PublishedAt").ShouldBe(published);
+        propertyNames.Contains("IsDeleted").ShouldBe(softDeleted);
+        propertyNames.Contains("DeletedAt").ShouldBe(softDeleted);
+        typeof(IPublishable).IsAssignableFrom(entityType).ShouldBe(published);
+        typeof(ISoftDeletable).IsAssignableFrom(entityType).ShouldBe(softDeleted);
+    }
+
+    [Fact]
+    public void SoftDeleteQueryFilter_AppliesToEverySoftDeletableTypeAndNoOther()
+    {
+        using var db = CtxWithUser(null);
+
+        var withFilter = db.Model.GetEntityTypes()
+            .Where(entityType => typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType))
+            .ToDictionary(entityType => entityType.ClrType, entityType => entityType.GetDeclaredQueryFilters().Count > 0);
+
+        foreach (var (clrType, hasFilter) in withFilter)
+            hasFilter.ShouldBe(typeof(ISoftDeletable).IsAssignableFrom(clrType), clrType.Name);
+    }
+
     [Fact]
     public void LessonCompletions_HaveNoPlainUserIdIndex_TheUniqueUserAndLessonIndexServesIt()
     {

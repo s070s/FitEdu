@@ -3,9 +3,9 @@ namespace FitEdu.Domain.Entities;
 /// <summary>
 /// Represents a blog article published on the public landing page.
 /// Bilingual content: En fields are required; El fields fall back to En when null.
-/// Inherits audit tracking (CreatedAt, UpdatedAt, IsPublished, PublishedAt) from AuditableEntity.
+/// Inherits audit tracking (CreatedAt, UpdatedAt) from AuditableEntity and the publish workflow from IPublishable. It is hard-deleted, never soft-deleted.
 /// </summary>
-public class BlogArticle : AuditableEntity
+public class BlogArticle : AuditableEntity, IPublishable
 {
     public Guid Id { get; set; }
 
@@ -26,4 +26,14 @@ public class BlogArticle : AuditableEntity
 
     /// <summary>JSON-serialized string[].</summary>
     public string? Tags { get; set; }
+
+    /// <summary>
+    /// Whether the item is visible to the public.
+    /// </summary>
+    public bool IsPublished { get; set; }
+
+    /// <summary>
+    /// When the item was first published. Null while it is a draft.
+    /// </summary>
+    public DateTimeOffset? PublishedAt { get; set; }
 }

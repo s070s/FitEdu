@@ -7,7 +7,7 @@ namespace FitEdu.Domain.Entities;
 /// Defines a self-assessment template (e.g. goals, training readiness) with its questions and structure.
 /// Admins create and publish these; students submit responses via AssessmentSubmission.
 /// </summary>
-public class AssessmentDefinition : AuditableEntity
+public class AssessmentDefinition : AuditableEntity, IPublishable
 {
     public Guid Id
     {
@@ -84,4 +84,14 @@ public class AssessmentDefinition : AuditableEntity
 
     // Navigation
     public ICollection<AssessmentSubmission> Submissions { get; set; } = [];
+
+    /// <summary>
+    /// Whether the item is visible to the public.
+    /// </summary>
+    public bool IsPublished { get; set; }
+
+    /// <summary>
+    /// When the item was first published. Null while it is a draft.
+    /// </summary>
+    public DateTimeOffset? PublishedAt { get; set; }
 }

@@ -3,10 +3,9 @@ namespace FitEdu.Domain.Entities;
 /// <summary>
 /// Educational unit within a Module. Contains text, PDF, or video content.
 /// Belongs to exactly one Module.
-/// IsPublished (from AuditableEntity) is not used: a lesson is visible exactly when its course is
-/// published. The column stays only to avoid a migration.
+/// A lesson has no publish flag of its own: it is visible exactly when its course is published.
 /// </summary>
-public class Lesson : AuditableEntity
+public class Lesson : AuditableEntity, ISoftDeletable
 {
     public Guid Id { get; set; }
 
@@ -58,4 +57,14 @@ public class Lesson : AuditableEntity
 
     // Navigation: exercises prescribed in this lesson, ordered by LessonExercise.SortOrder
     public ICollection<LessonExercise> Exercises { get; set; } = [];
+
+    /// <summary>
+    /// Whether the item is soft-deleted; a global query filter hides soft-deleted rows.
+    /// </summary>
+    public bool IsDeleted { get; set; }
+
+    /// <summary>
+    /// When the item was soft-deleted. Null while it is live.
+    /// </summary>
+    public DateTimeOffset? DeletedAt { get; set; }
 }

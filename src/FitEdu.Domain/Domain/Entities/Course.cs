@@ -6,7 +6,7 @@ namespace FitEdu.Domain.Entities;
 /// Represents a full learning program (e.g. "FitEdu").
 /// Independent of UI or pricing. Contains ordered Modules.
 /// </summary>
-public class Course : AuditableEntity
+public class Course : AuditableEntity, IPublishable, ISoftDeletable
 {
     /// <summary>
     /// Joins the codes stored in Equipment (e.g. "none,bands").
@@ -123,4 +123,24 @@ public class Course : AuditableEntity
 
     // Navigation: one Course has many Enrollments
     public ICollection<Enrollment> Enrollments { get; set; } = [];
+
+    /// <summary>
+    /// Whether the item is visible to the public.
+    /// </summary>
+    public bool IsPublished { get; set; }
+
+    /// <summary>
+    /// When the item was first published. Null while it is a draft.
+    /// </summary>
+    public DateTimeOffset? PublishedAt { get; set; }
+
+    /// <summary>
+    /// Whether the item is soft-deleted; a global query filter hides soft-deleted rows.
+    /// </summary>
+    public bool IsDeleted { get; set; }
+
+    /// <summary>
+    /// When the item was soft-deleted. Null while it is live.
+    /// </summary>
+    public DateTimeOffset? DeletedAt { get; set; }
 }
