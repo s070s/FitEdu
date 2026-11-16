@@ -1,4 +1,5 @@
 using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using Shouldly;
@@ -89,5 +90,82 @@ public class EnumValueTests
         ((int)FitnessGoal.Mobility).ShouldBe(5);
         ((int)FitnessGoal.Recovery).ShouldBe(6);
         ((int)FitnessGoal.Nutrition).ShouldBe(7);
+    }
+
+    [Fact]
+    public void AssistantSourceType_HasStableValues()
+    {
+        ((int)AssistantSourceType.Course).ShouldBe(1);
+        ((int)AssistantSourceType.Lesson).ShouldBe(2);
+        ((int)AssistantSourceType.Assessment).ShouldBe(3);
+        ((int)AssistantSourceType.BlogArticle).ShouldBe(4);
+    }
+
+    [Fact]
+    public void BillingTransactionType_HasStableValues()
+    {
+        ((int)BillingTransactionType.Purchase).ShouldBe(0);
+        ((int)BillingTransactionType.Upgrade).ShouldBe(1);
+        ((int)BillingTransactionType.Downgrade).ShouldBe(2);
+        ((int)BillingTransactionType.Renewal).ShouldBe(3);
+        ((int)BillingTransactionType.Refund).ShouldBe(4);
+        ((int)BillingTransactionType.FreePlanAssignment).ShouldBe(5);
+        ((int)BillingTransactionType.PlanSwitch).ShouldBe(6);
+        ((int)BillingTransactionType.Expired).ShouldBe(7);
+    }
+
+    [Fact]
+    public void CallEndReason_HasStableValues()
+    {
+        ((int)CallEndReason.Completed).ShouldBe(1);
+        ((int)CallEndReason.Missed).ShouldBe(2);
+        ((int)CallEndReason.Declined).ShouldBe(3);
+        ((int)CallEndReason.Cancelled).ShouldBe(4);
+    }
+
+    [Fact]
+    public void CallEventKind_HasStableValues()
+    {
+        ((int)CallEventKind.Started).ShouldBe(1);
+        ((int)CallEventKind.Missed).ShouldBe(2);
+        ((int)CallEventKind.Ended).ShouldBe(3);
+    }
+
+    [Fact]
+    public void CallParticipantStatus_HasStableValues()
+    {
+        ((int)CallParticipantStatus.Invited).ShouldBe(1);
+        ((int)CallParticipantStatus.Joined).ShouldBe(2);
+        ((int)CallParticipantStatus.Declined).ShouldBe(3);
+        ((int)CallParticipantStatus.Missed).ShouldBe(4);
+        ((int)CallParticipantStatus.Left).ShouldBe(5);
+    }
+
+    [Fact]
+    public void NotificationType_HasStableValues()
+    {
+        ((int)NotificationType.ChatMessage).ShouldBe(1);
+        ((int)NotificationType.CertificateIssued).ShouldBe(2);
+        ((int)NotificationType.SubscriptionActivated).ShouldBe(3);
+        ((int)NotificationType.SubscriptionExpiring).ShouldBe(4);
+        ((int)NotificationType.ReviewApproved).ShouldBe(5);
+        ((int)NotificationType.SessionReminder).ShouldBe(6);
+    }
+
+    [Fact]
+    public void ReviewStatus_HasStableValues()
+    {
+        ((int)ReviewStatus.Pending).ShouldBe(1);
+        ((int)ReviewStatus.Approved).ShouldBe(2);
+        ((int)ReviewStatus.Rejected).ShouldBe(3);
+    }
+
+    [Fact]
+    public void ScheduledSessionStatus_HasStableValues()
+    {
+        ((int)ScheduledSessionStatus.Scheduled).ShouldBe(1);
+        ((int)ScheduledSessionStatus.Live).ShouldBe(2);
+        ((int)ScheduledSessionStatus.Ended).ShouldBe(3);
+        ((int)ScheduledSessionStatus.Cancelled).ShouldBe(4);
     }
 }
