@@ -197,7 +197,7 @@ public partial class AssessmentService(
 
             writer.WritePropertyName("questions");
             writer.WriteStartArray();
-            foreach (var question in CollectQuestions(root))
+            foreach (var question in AssessmentSchemaQuestions.CollectQuestions(root))
                 WriteResolvedQuestion(writer, question, isEl);
             writer.WriteEndArray();
 
@@ -310,32 +310,6 @@ public partial class AssessmentService(
             : null;
 
 
-    /// Collects question elements from either a flat {"questions":[...]} or sectioned
-    /// {"sections":[{"questions":[...]}]} schema.
-    private static List<JsonElement> CollectQuestions(JsonElement schemaRoot)
-    {
-        var questions = new List<JsonElement>();
-
-        if (schemaRoot.TryGetProperty("questions", out var flatQ) && flatQ.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var q in flatQ.EnumerateArray())
-                questions.Add(q);
-        }
-        else if (schemaRoot.TryGetProperty("sections", out var sections) && sections.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var section in sections.EnumerateArray())
-            {
-                if (section.TryGetProperty("questions", out var sectionQ) && sectionQ.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var q in sectionQ.EnumerateArray())
-                        questions.Add(q);
-                }
-            }
-        }
-
-        return questions;
-    }
-
     /// <summary>
     /// DQ-2: structural validation only — confirms <paramref name="answersJson"/> is a JSON
     /// object whose keys are all real question ids on this assessment and that every
@@ -367,7 +341,7 @@ public partial class AssessmentService(
         try
         {
             using var schemaDoc = JsonDocument.Parse(schemaJson);
-            foreach (var q in CollectQuestions(schemaDoc.RootElement))
+            foreach (var q in AssessmentSchemaQuestions.CollectQuestions(schemaDoc.RootElement))
             {
                 if (!q.TryGetProperty("id", out var idProp) || idProp.ValueKind != JsonValueKind.String)
                     continue;

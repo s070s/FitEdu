@@ -1,3 +1,5 @@
+using FitEdu.Application.Common;
+
 namespace FitEdu.Web.Shared;
 
 /// <summary>The question types the admin editor offers, and which extra fields each type has.</summary>
@@ -14,17 +16,16 @@ public static class AssessmentQuestionTypes
     /// <summary>
     /// Types that list options. "single-select" and "multi-select" are other spellings the student form reads.
     /// </summary>
-    public static bool HasOptions(string type) =>
-        type is Choice or MultiSelect or "single-select" or "multi-select";
+    public static bool HasOptions(string type) => AssessmentQuestionKinds.HasOptions(type);
 
     /// <summary>Types shown as a number scale; the student form treats "likert" like "rating".</summary>
-    public static bool IsRatingScale(string type) => type is Rating or "likert";
+    public static bool IsRatingScale(string type) => AssessmentQuestionKinds.IsRatingScale(type);
 
     /// <summary>One answer from a list; seeds write "choice", older schemas "single-select".</summary>
-    public static bool IsSingleChoice(string type) => type is Choice or "single-select";
+    public static bool IsSingleChoice(string type) => AssessmentQuestionKinds.IsSingleChoice(type);
 
     /// <summary>Any number of answers from a list; seeds write "multiselect", older schemas "multi-select".</summary>
-    public static bool IsMultiSelect(string type) => type is MultiSelect or "multi-select";
+    public static bool IsMultiSelect(string type) => AssessmentQuestionKinds.IsMultiSelect(type);
 }
 
 /// <summary>An assessment schema as the admin editor holds it: a list of sections of questions.</summary>

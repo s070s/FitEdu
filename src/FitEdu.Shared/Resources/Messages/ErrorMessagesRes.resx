@@ -192,6 +192,24 @@
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
     <value>This self-assessment needs the {0} plan or higher.</value>
   </data>
+  <data name="AssessmentSchemaShapeInvalid" xml:space="preserve">
+    <value>The assessment needs a JSON schema with a list of questions or a list of sections.</value>
+  </data>
+  <data name="AssessmentSchemaQuestionIdBlank" xml:space="preserve">
+    <value>Every question needs an id.</value>
+  </data>
+  <data name="AssessmentSchemaQuestionIdDuplicateFormat" xml:space="preserve">
+    <value>The question id '{0}' is used more than once.</value>
+  </data>
+  <data name="AssessmentSchemaChoiceNeedsOptionsFormat" xml:space="preserve">
+    <value>The choice question '{0}' needs at least one option.</value>
+  </data>
+  <data name="AssessmentSchemaOptionsDifferFormat" xml:space="preserve">
+    <value>The question '{0}' needs the same number of English and Greek options.</value>
+  </data>
+  <data name="AssessmentSchemaRatingScaleFormat" xml:space="preserve">
+    <value>The rating question '{0}' needs a minimum of 0 or more, a maximum of 10 or less, and a minimum below the maximum.</value>
+  </data>
   <data name="AdminCannotEnroll" xml:space="preserve">
     <value>Administrators cannot join programmes.</value>
   </data>

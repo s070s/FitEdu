@@ -192,6 +192,24 @@
   <data name="AssessmentRequiresTierFormat" xml:space="preserve">
     <value>Αυτή η αξιολόγηση χρειάζεται το πλάνο {0} ή ανώτερο.</value>
   </data>
+  <data name="AssessmentSchemaShapeInvalid" xml:space="preserve">
+    <value>Η αξιολόγηση χρειάζεται σχήμα JSON με λίστα ερωτήσεων ή λίστα ενοτήτων.</value>
+  </data>
+  <data name="AssessmentSchemaQuestionIdBlank" xml:space="preserve">
+    <value>Κάθε ερώτηση χρειάζεται αναγνωριστικό.</value>
+  </data>
+  <data name="AssessmentSchemaQuestionIdDuplicateFormat" xml:space="preserve">
+    <value>Το αναγνωριστικό ερώτησης «{0}» χρησιμοποιείται περισσότερες από μία φορές.</value>
+  </data>
+  <data name="AssessmentSchemaChoiceNeedsOptionsFormat" xml:space="preserve">
+    <value>Η ερώτηση επιλογής «{0}» χρειάζεται τουλάχιστον μία επιλογή.</value>
+  </data>
+  <data name="AssessmentSchemaOptionsDifferFormat" xml:space="preserve">
+    <value>Η ερώτηση «{0}» χρειάζεται τον ίδιο αριθμό αγγλικών και ελληνικών επιλογών.</value>
+  </data>
+  <data name="AssessmentSchemaRatingScaleFormat" xml:space="preserve">
+    <value>Η ερώτηση βαθμολόγησης «{0}» χρειάζεται ελάχιστο 0 ή μεγαλύτερο, μέγιστο 10 ή μικρότερο και ελάχιστο μικρότερο από το μέγιστο.</value>
+  </data>
   <data name="AdminCannotEnroll" xml:space="preserve">
     <value>Οι διαχειριστές δεν μπορούν να γραφτούν σε προγράμματα.</value>
   </data>

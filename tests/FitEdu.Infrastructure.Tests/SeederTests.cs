@@ -480,7 +480,7 @@ public sealed class SeederTests : IDisposable
     {
         await using var db = DbContextFactory.CreateInMemory();
         var dir = TempDirWith("assessment.json", """
-        { "key": "fitness-check", "title": "Fitness Check", "category": "Performance", "categoryEl": "Απόδοση", "schemaJson": "{}" }
+        { "key": "fitness-check", "title": "Fitness Check", "category": "Performance", "categoryEl": "Απόδοση", "schemaJson": "{\"questions\":[]}" }
         """);
 
         await AssessmentSeeder.SeedFromJsonAsync(db, dir, NullLogger.Instance);
@@ -489,6 +489,32 @@ public sealed class SeederTests : IDisposable
         var category = await db.Categories.SingleAsync();
         category.NameEn.ShouldBe("Performance");
         category.NameEl.ShouldBe("Απόδοση");
+    }
+
+    private static string AssessmentSeedJson(string key, string schemaJson) =>
+        $$"""{ "key": "{{key}}", "title": "{{key}}", "schemaJson": {{System.Text.Json.JsonSerializer.Serialize(schemaJson)}} }""";
+
+    [Fact]
+    public async Task AssessmentSeeder_SkipsAnInvalidSchemaAndADuplicateKey_AndLogsTheRealCounts()
+    {
+        // P07-9: one bad file used to be counted as seeded, and a repeated Key threw at the single save,
+        // dropping every assessment of the run.
+        await using var db = DbContextFactory.CreateInMemory();
+        const string goodSchema = """{"questions":[{"id":"q1","type":"text"}]}""";
+        const string repeatedIds = """{"questions":[{"id":"q1","type":"text"},{"id":"q1","type":"text"}]}""";
+        var dir = TempDirWithFiles(
+            ("a.json", AssessmentSeedJson("good", goodSchema)),
+            ("b.json", AssessmentSeedJson("repeated-ids", repeatedIds)),
+            ("c.json", AssessmentSeedJson("good", goodSchema)));
+        var logger = new RecordingLogger();
+
+        await AssessmentSeeder.SeedFromJsonAsync(db, dir, logger);
+
+        (await db.AssessmentDefinitions.Select(a => a.Key).ToListAsync()).ShouldBe(["good"]);
+        logger.Warnings.Count.ShouldBe(2);
+        logger.Warnings.ShouldContain(warning => warning.Contains("repeated-ids"));
+        logger.Warnings.ShouldContain(warning => warning.Contains("good") && warning.Contains("already"));
+        logger.Information.ShouldContain("Seeded 1 assessment(s) from JSON files; skipped 2.");
     }
 
     // ---- ExerciseSeeder ------------------------------------------------------

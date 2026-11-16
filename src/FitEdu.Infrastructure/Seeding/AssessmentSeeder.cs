@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Domain.Entities;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using System.Text.Json;
 
@@ -40,7 +41,8 @@ public static partial class AssessmentSeeder
             return;
         }
 
-        var jsonFiles = Directory.GetFiles(resolvedPath, "*.json");
+        // Sorted, so which of two files with the same Key is kept does not depend on the file system.
+        var jsonFiles = Directory.GetFiles(resolvedPath, "*.json").Order(StringComparer.Ordinal).ToArray();
 
         if (jsonFiles.Length == 0)
         {
@@ -50,11 +52,14 @@ public static partial class AssessmentSeeder
 
         var categoryCache = await CategorySeedHelper.LoadCacheAsync(db, cancellationToken);
 
+        var seededKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seededCount = 0;
         foreach (var filePath in jsonFiles)
         {
             try
             {
-                await SeedAssessmentFromFileAsync(db, filePath, categoryCache, logger, cancellationToken);
+                if (await SeedAssessmentFromFileAsync(db, filePath, categoryCache, seededKeys, logger, cancellationToken))
+                    seededCount++;
             }
             catch (Exception ex)
             {
@@ -63,13 +68,15 @@ public static partial class AssessmentSeeder
         }
 
         await db.SaveChangesAsync(cancellationToken);
-        LogSeeded(logger, jsonFiles.Length);
+        LogSeeded(logger, seededCount, jsonFiles.Length - seededCount);
     }
 
-    private static async Task SeedAssessmentFromFileAsync(
+    /// <summary>Adds the assessment of one file; false (with a warning or error logged) when the file is skipped.</summary>
+    private static async Task<bool> SeedAssessmentFromFileAsync(
         ApplicationDbContext db,
         string filePath,
         Dictionary<string, Category> categoryCache,
+        HashSet<string> seededKeys,
         ILogger logger,
         CancellationToken cancellationToken)
     {
@@ -79,7 +86,21 @@ public static partial class AssessmentSeeder
         if (dto is null)
         {
             LogDeserializeFailed(logger, filePath);
-            return;
+            return false;
+        }
+
+        // The Key column is unique: a repeated Key would fail the single save below and drop every assessment.
+        if (!seededKeys.Add(dto.Key))
+        {
+            LogDuplicateKey(logger, dto.Key, filePath);
+            return false;
+        }
+
+        var schemaProblems = AssessmentSchemaValidator.Validate(dto.SchemaJson);
+        if (schemaProblems.Count > 0)
+        {
+            LogInvalidSchema(logger, dto.Key, filePath, string.Join("; ", schemaProblems.Select(problem => $"{problem.Kind} {problem.QuestionId}".Trim())));
+            return false;
         }
 
         var def = MapToAssessmentDefinition(dto);
@@ -88,6 +109,7 @@ public static partial class AssessmentSeeder
 
         var fileName = Path.GetFileName(filePath);
         LogAssessmentLoaded(logger, def.TitleEn, def.Key, fileName);
+        return true;
     }
 
     private static AssessmentDefinition MapToAssessmentDefinition(AssessmentSeedDto dto)
@@ -124,8 +146,14 @@ public static partial class AssessmentSeeder
     [LoggerMessage(Level = LogLevel.Error, Message = "Failed to seed assessment from file: {FilePath}")]
     private static partial void LogSeedFileFailed(ILogger logger, Exception exception, string filePath);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} assessment(s) from JSON files.")]
-    private static partial void LogSeeded(ILogger logger, int count);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Seeded} assessment(s) from JSON files; skipped {Skipped}.")]
+    private static partial void LogSeeded(ILogger logger, int seeded, int skipped);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Skipped assessment '{Key}' from {FilePath}: another file already seeded that key.")]
+    private static partial void LogDuplicateKey(ILogger logger, string key, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Skipped assessment '{Key}' from {FilePath}: its schema is not valid ({Problems}).")]
+    private static partial void LogInvalidSchema(ILogger logger, string key, string filePath, string problems);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to deserialize assessment from: {FilePath}")]
     private static partial void LogDeserializeFailed(ILogger logger, string filePath);

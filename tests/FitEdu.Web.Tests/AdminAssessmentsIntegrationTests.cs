@@ -42,6 +42,33 @@ public class AdminAssessmentsIntegrationTests : IClassFixture<CustomWebAppFactor
     }
 
     [Fact]
+    public async Task CreateAssessment_RepeatedQuestionId_Returns400WithTheReason()
+    {
+        // P07-8: ids are the answer keys, so a repeated id used to be stored and then merged two questions.
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var schema = """{"questions":[{"id":"q1","type":"text"},{"id":"q1","type":"text"}]}""";
+
+        var response = await client.PostAsJsonAsync("/api/admin/assessments", Request($"dup-ids-{Guid.NewGuid():N}", schema));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await response.Content.ReadAsStringAsync()).ShouldContain("q1");
+    }
+
+    [Fact]
+    public async Task UpdateAssessment_RatingScaleOfAMillion_Returns400()
+    {
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var created = await (await client.PostAsJsonAsync("/api/admin/assessments",
+            Request($"scale-{Guid.NewGuid():N}", """{"questions":[{"id":"q1","type":"text"}]}""")))
+            .Content.ReadFromJsonAsync<AdminAssessmentDefinitionDto>();
+        var hugeScale = """{"questions":[{"id":"q1","type":"rating","min":1,"max":1000000}]}""";
+
+        var response = await client.PutAsJsonAsync($"/api/admin/assessments/{created!.Id}", Request(created.Key, hugeScale));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task CreateAssessment_ValidSchemaJson_Returns201()
     {
         var client = await _factory.CreateAuthenticatedClientAsync("Admin");

@@ -12,7 +12,6 @@ using FitEdu.Domain.Extensions;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
-using System.Text.Json;
 
 
 namespace FitEdu.Web.Controllers;
@@ -126,11 +125,12 @@ public class AdminAssessmentsController : ControllerBase
             return Conflict($"Assessment with key '{request.Key}' already exists");
         }
 
-        // DQ-4: reject malformed/structurally-wrong schemas here instead of only failing later
-        // at render time (AssessmentService.ResolveSchemaJsonByLang) or submit time.
-        if (!IsStructurallyValidSchemaJson(request.SchemaJson))
+        // DQ-4 / P07-8: reject a schema a student could not answer here instead of failing later at
+        // render time (AssessmentService.ResolveSchemaJsonByLang) or submit time.
+        var schemaProblems = AssessmentSchemaValidator.Validate(request.SchemaJson);
+        if (schemaProblems.Count > 0)
         {
-            return BadRequest("SchemaJson must be a JSON object with a 'questions' or 'sections' array.");
+            return Problem(detail: schemaProblems[0].Message, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var categoryId = await AdminCategoryService.ResolveCategoryAsync(_db, request.CategoryId, request.NewCategoryName);
@@ -185,11 +185,12 @@ public class AdminAssessmentsController : ControllerBase
             return Conflict($"Assessment with key '{request.Key}' already exists");
         }
 
-        // DQ-4: reject malformed/structurally-wrong schemas here instead of only failing later
-        // at render time (AssessmentService.ResolveSchemaJsonByLang) or submit time.
-        if (!IsStructurallyValidSchemaJson(request.SchemaJson))
+        // DQ-4 / P07-8: reject a schema a student could not answer here instead of failing later at
+        // render time (AssessmentService.ResolveSchemaJsonByLang) or submit time.
+        var schemaProblems = AssessmentSchemaValidator.Validate(request.SchemaJson);
+        if (schemaProblems.Count > 0)
         {
-            return BadRequest("SchemaJson must be a JSON object with a 'questions' or 'sections' array.");
+            return Problem(detail: schemaProblems[0].Message, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var categoryId = await AdminCategoryService.ResolveCategoryAsync(_db, request.CategoryId, request.NewCategoryName);
@@ -222,22 +223,6 @@ public class AdminAssessmentsController : ControllerBase
 
         // Map updated entity to DTO and return 200 OK
         return Ok(assessment.ToAdminDto(categoryNameEn));
-    }
-
-    private static bool IsStructurallyValidSchemaJson(string schemaJson)
-    {
-        try
-        {
-            using var doc = JsonDocument.Parse(schemaJson);
-            var root = doc.RootElement;
-            return root.ValueKind == JsonValueKind.Object &&
-                ((root.TryGetProperty("questions", out var questions) && questions.ValueKind == JsonValueKind.Array) ||
-                 (root.TryGetProperty("sections", out var sections) && sections.ValueKind == JsonValueKind.Array));
-        }
-        catch (JsonException)
-        {
-            return false;
-        }
     }
 
     private async Task<string?> GetCategoryNameEnAsync(Guid? categoryId)

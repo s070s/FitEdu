@@ -286,6 +286,60 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The assessment needs a JSON schema with a list of questions or a list of sections..
+        /// </summary>
+        public static string AssessmentSchemaShapeInvalid {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaShapeInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every question needs an id..
+        /// </summary>
+        public static string AssessmentSchemaQuestionIdBlank {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaQuestionIdBlank", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The question id '{0}' is used more than once..
+        /// </summary>
+        public static string AssessmentSchemaQuestionIdDuplicateFormat {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaQuestionIdDuplicateFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The choice question '{0}' needs at least one option..
+        /// </summary>
+        public static string AssessmentSchemaChoiceNeedsOptionsFormat {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaChoiceNeedsOptionsFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The question '{0}' needs the same number of English and Greek options..
+        /// </summary>
+        public static string AssessmentSchemaOptionsDifferFormat {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaOptionsDifferFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The rating question '{0}' needs a minimum of 0 or more, a maximum of 10 or less, and a minimum below the maximum..
+        /// </summary>
+        public static string AssessmentSchemaRatingScaleFormat {
+            get {
+                return ResourceManager.GetString("AssessmentSchemaRatingScaleFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Administrators cannot join programmes..
         /// </summary>
         public static string AdminCannotEnroll {
