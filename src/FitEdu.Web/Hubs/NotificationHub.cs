@@ -19,9 +19,10 @@ public class NotificationHub(NotificationConnectionTracker tracker, LiveConnecti
         var userId = Context.UserIdentifier;
         if (userId is not null)
         {
-            liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             tracker.MarkConnected(userId);
+            // Registered last: a connect that throws above never runs OnDisconnectedAsync, so it must not stay listed.
+            liveConnections.Register(Context);
         }
 
         await base.OnConnectedAsync();

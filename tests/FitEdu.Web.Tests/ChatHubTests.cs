@@ -109,6 +109,23 @@ public class ChatHubTests
     }
 
     [Fact]
+    public async Task OnConnected_ThatFailsAfterTheChecks_LeavesNothingRegistered()
+    {
+        // SignalR does not run OnDisconnectedAsync for a connect that throws, so a registration made
+        // before the failure would never be removed.
+        await using var db = DbContextFactory.CreateInMemory();
+        var h = BuildHub(db, Me);
+        h.Um.FindByIdAsync(Me).Returns(AppUser(Me));
+        h.Groups.AddToGroupAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException(new InvalidOperationException("group store unavailable")));
+
+        await Should.ThrowAsync<InvalidOperationException>(h.Hub.OnConnectedAsync);
+        h.LiveConnections.CloseAll(Me);
+
+        h.Context.DidNotReceive().Abort();
+    }
+
+    [Fact]
     public async Task OnConnected_EnabledUser_JoinsGroup()
     {
         await using var db = DbContextFactory.CreateInMemory();

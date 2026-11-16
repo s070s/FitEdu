@@ -57,8 +57,9 @@ public partial class ChatHub : Hub
                 return;
             }
 
-            _liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+            // Registered last: a connect that throws above never runs OnDisconnectedAsync, so it must not stay listed.
+            _liveConnections.Register(Context);
             LogUserConnected(_logger, userId);
         }
 

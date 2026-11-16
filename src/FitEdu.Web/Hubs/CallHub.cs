@@ -63,7 +63,6 @@ public partial class CallHub : Hub
                 return;
             }
 
-            _liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             var wentOnline = _registry.AddUserConnection(userId);
             if (wentOnline)
@@ -71,6 +70,8 @@ public partial class CallHub : Hub
                 await PersistLastSeenAsync(user);
                 await Clients.All.SendAsync("PresenceChanged", userId, true, user.LastSeenAt);
             }
+            // Registered last: a connect that throws above never runs OnDisconnectedAsync, so it must not stay listed.
+            _liveConnections.Register(Context);
             LogUserConnected(_logger, userId);
         }
 
