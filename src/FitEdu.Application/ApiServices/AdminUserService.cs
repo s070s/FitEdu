@@ -177,7 +177,7 @@ public partial class AdminUserService(
         if (user == null)
             return ServiceResult<string>.NotFound(error: "User not found.");
 
-        if (await userManager.IsInRoleAsync(user, "Admin"))
+        if (await userManager.IsInRoleAsync(user, RoleNames.Admin))
             return ServiceResult<string>.BadRequest(error: "Admin accounts cannot be deleted.");
 
         // Chat and call history rows reference the user with Restrict FKs, so a bare
@@ -327,7 +327,7 @@ public partial class AdminUserService(
             return ServiceResult<AuthResponseDto>.NotFound(error: "User not found.");
 
         var targetRoles = await userManager.GetRolesAsync(target);
-        if (!targetRoles.Contains("Student"))
+        if (!targetRoles.Contains(RoleNames.Student))
             return ServiceResult<AuthResponseDto>.BadRequest(error: ErrorMessagesRes.ImpersonationOnlyStudents);
 
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
@@ -348,7 +348,7 @@ public partial class AdminUserService(
         if (user == null)
             return ServiceResult<bool>.NotFound(error: "User not found.");
 
-        if (await userManager.IsInRoleAsync(user, "Admin"))
+        if (await userManager.IsInRoleAsync(user, RoleNames.Admin))
             return ServiceResult<bool>.BadRequest(error: "Admin account passwords cannot be changed from the user table.");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);

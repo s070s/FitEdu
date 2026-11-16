@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
+using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources;
 
 namespace FitEdu.Web.Layout;
@@ -10,8 +11,8 @@ namespace FitEdu.Web.Layout;
 /// </summary>
 public static class NavItems
 {
-    public const string AdminRole = "Admin";
-    public const string StudentRole = "Student";
+    public const string AdminRole = RoleNames.Admin;
+    public const string StudentRole = RoleNames.Student;
 
     public static readonly IReadOnlyList<NavItem> Guest =
     [
