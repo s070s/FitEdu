@@ -54,10 +54,29 @@ not the local filesystem — this is what makes auth cookies and the `/auth/comp
 ticket valid across a redeploy or container rebuild onto a fresh disk, and across more than one
 instance reading the same database.
 
-On Windows, DPAPI (`ProtectKeysWithDpapi()`) also encrypts the keys at rest. **DPAPI is
-machine-locked** — fine for the single Windows host this runs on today, but before a genuine
-multi-instance or cross-platform deployment, swap it for `ProtectKeysWithCertificate()` or a
-key vault so every instance can decrypt the shared key ring.
+The keys sign the auth cookies and encrypt the assessment answers (`AnswersJson`, `SummaryJson`),
+so how they are protected at rest matters. Three cases, chosen at startup
+(`Startup/DataProtectionKeyProtection.cs`):
+
+- **With a certificate (recommended, any OS).** Set `DataProtection:CertificatePath` (a `.pfx`
+  file) and `DataProtection:CertificatePassword`, or `DataProtection:CertificateThumbprint` (a
+  certificate with a private key in the CurrentUser or LocalMachine `My` store). The keys are then
+  encrypted with that certificate, and every instance or host that has the certificate can read
+  the shared key ring. Startup fails when the file is missing, the password is wrong, the
+  certificate has no private key or the thumbprint is not found, so a typo never silently drops
+  the protection. Back the certificate up offline, apart from the database backup: without it a
+  restored database has keys nobody can read.
+- **Windows without a certificate.** DPAPI (`ProtectKeysWithDpapi()`), as before. **Only this
+  Windows account on this machine can read the keys**: a database restored onto another host or
+  account loses every sign-in session and every encrypted assessment answer.
+- **Linux without a certificate.** The keys are stored in the database unencrypted: anyone who can
+  read the database can forge auth cookies and decrypt the assessment answers.
+
+Outside Development, a start without a certificate logs one warning naming the risk of its case.
+Startup is not refused, so the demo deployment (below) keeps working without one. To add a
+certificate to an existing deployment, set the settings and restart: the old keys stay in the ring
+(still readable on the same Windows account) and a new key, protected by the certificate, is
+created for new data; nothing is re-encrypted.
 
 ## Email transport
 
@@ -87,5 +106,5 @@ from its `SeedJson/` folder. Never set the second key on a real deployment. With
 
 [`tools/azure-demo/`](../tools/azure-demo/README.md) sets all of this up on Azure's free offers
 (App Service F1 on Linux and the Azure SQL Database free offer, which pauses instead of billing)
-and lists the demo's limits. On Linux the key ring is stored in the database without DPAPI; only
-the web app's managed identity can sign in to that database.
+and lists the demo's limits. On Linux the key ring is stored in the database without a certificate (the start logs the
+warning described above); only the web app's managed identity can sign in to that database.

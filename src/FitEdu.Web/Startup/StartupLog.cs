@@ -28,6 +28,12 @@ internal static partial class StartupLog
     [LoggerMessage(Level = LogLevel.Warning, Message = "A request reached the app from a loopback address without X-Forwarded-For. Loopback callers are never rate limited, so if a reverse proxy on this host forwards visitors it must send X-Forwarded-For (nginx: proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;); otherwise every visitor looks like loopback and the rate limits do nothing. Logged once per process.")]
     internal static partial void LoopbackWithoutForwardedFor(ILogger logger);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The Data Protection keys are protected only by Windows DPAPI: this Windows account on this machine can read them and nothing else can. Restoring the database onto another host or account loses every sign-in session and every encrypted assessment answer. Set DataProtection:CertificatePath (with DataProtection:CertificatePassword) or DataProtection:CertificateThumbprint to protect them with a certificate you back up offline.")]
+    internal static partial void DataProtectionKeysDpapiOnly(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The Data Protection keys are stored in the database unencrypted: anyone who can read the database can read them, and with them forge sign-in cookies and decrypt the assessment answers. Set DataProtection:CertificatePath (with DataProtection:CertificatePassword) or DataProtection:CertificateThumbprint to protect them with a certificate you back up offline.")]
+    internal static partial void DataProtectionKeysUnencrypted(ILogger logger);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: token invalid or expired.")]
     internal static partial void AuthTokenInvalid(ILogger logger, Exception exception);
 

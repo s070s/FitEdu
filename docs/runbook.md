@@ -7,8 +7,8 @@ project is built for.
 
 The app has exactly **two stores of irreplaceable state**: the SQL Server database (users,
 enrollments, certificates, chat history, DataProtection keys) and the uploaded files (avatars,
-lesson videos, certificate PDFs). Everything else — the binaries, logs, the AI index — is
-rebuildable.
+lesson videos, certificate PDFs), plus the Data Protection certificate when one is configured (see
+the restore notes below). Everything else — the binaries, logs, the AI index — is rebuildable.
 
 ---
 
@@ -37,6 +37,15 @@ robocopy "<uploads-path>" "D:\backups\uploads-$(date +%F)" /MIR
 
 Restore is the reverse: `RESTORE DATABASE ... WITH REPLACE` (or `sqlpackage /a:Import`) and copy the
 uploads back, then restart the app.
+
+**The Data Protection certificate.** The database holds the key ring that signs sign-in cookies and
+encrypts the assessment answers. A database restored onto **another host or another Windows
+account loses every sign-in session AND every encrypted assessment answer**, unless the keys are
+protected with a certificate that the new host has too (`DataProtection:CertificatePath` +
+`DataProtection:CertificatePassword`, or `DataProtection:CertificateThumbprint`; see
+[DEPLOYMENT.md](DEPLOYMENT.md#dataprotection-key-ring)). Keep that certificate (the `.pfx` and its
+password) in an offline backup, apart from the database backup, and put it on the new host before
+the first start. Without a certificate the app logs a warning at every start.
 
 ---
 
@@ -120,7 +129,9 @@ code comments and [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ### Logins fail / users randomly signed out
 - **Symptom:** valid credentials rejected, or sessions dropping.
-- **Check:** the DataProtection key ring is in SQL Server (survives redeploy); behind a reverse
+- **Check:** the DataProtection key ring is in SQL Server (survives redeploy) and, after a restore
+  onto another host or account, can be read there (the certificate is configured: see
+  [Backup & restore](#backup--restore-ops-2)); behind a reverse
   proxy, forwarded headers must be on or the Secure cookie is refused (CLOUD-2 — see the README
   production checklist); a password reset / disable rotates the security stamp and ends existing
   sessions by design.

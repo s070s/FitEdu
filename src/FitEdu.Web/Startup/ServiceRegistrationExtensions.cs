@@ -355,16 +355,21 @@ public static class ServiceRegistrationExtensions
         // connects to) instead of the local filesystem — this fixes both single-instance problems
         // the old filesystem store had (keys lost on a redeploy/container rebuild onto a fresh
         // disk) and is what makes a *second* instance's cookies/auth-completion tickets valid too,
-        // since they now all read the same key ring. DPAPI protection still machine-locks the keys
-        // at rest, which is fine for the single Windows host this runs on today; before a genuine
-        // multi-instance or cross-platform deployment, swap ProtectKeysWithDpapi() for
-        // ProtectKeysWithCertificate() or Key Vault so every instance can decrypt the shared keys.
+        // since they now all read the same key ring.
+        // P03-2: the keys are protected at rest with the certificate from DataProtection:CertificatePath
+        // (+ CertificatePassword) or DataProtection:CertificateThumbprint when one is configured; every
+        // instance that has the certificate can read the shared keys, on any OS. Without one, Windows
+        // falls back to DPAPI (only this Windows account on this machine can read the keys) and Linux
+        // stores them unencrypted; outside Development that is logged once as a warning. Startup is not
+        // refused, so the demo deployment keeps running without a certificate.
         var dpBuilder = builder.Services.AddDataProtection()
             .PersistKeysToDbContext<ApplicationDbContext>()
             .SetApplicationName("FitEdu");
 
-        if (OperatingSystem.IsWindows())
-            dpBuilder.ProtectKeysWithDpapi();
+        var keyCertificate = DataProtectionKeyProtection.LoadCertificate(config);
+        DataProtectionKeyProtection.Protect(dpBuilder, keyCertificate);
+        if (keyCertificate is null && !builder.Environment.IsDevelopment())
+            builder.Services.AddHostedService<DataProtectionKeyRiskWarning>();
 
         // --- Blazor SSR ---
         // AddCascadingAuthenticationState registers the ServerAuthenticationStateProvider
