@@ -111,6 +111,21 @@ public class ProfileAvatarUploadTests
     }
 
     [Fact]
+    public async Task UploadAvatar_UserUpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var arranged = ArrangeAMemberWithAnOldAvatar();
+        await using var db = arranged.Db;
+        arranged.Users.UpdateAsync(Arg.Any<ApplicationUser>()).ThrowsAsync(new InvalidOperationException("db down"));
+
+        await Should.ThrowAsync<InvalidOperationException>(
+            () => arranged.Service.UploadAvatarAsync(UserId, new MemoryStream([1]), "image/png"));
+
+        arranged.User.AvatarPath.ShouldBe(OldPath);
+        await arranged.Storage.Received(1).DeleteFileAsync(NewPath, Arg.Any<CancellationToken>());
+        await arranged.Storage.DidNotReceive().DeleteFileAsync(OldPath, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task UploadAvatar_DeletingTheOldFileFails_StillSucceeds()
     {
         var arranged = ArrangeAMemberWithAnOldAvatar();

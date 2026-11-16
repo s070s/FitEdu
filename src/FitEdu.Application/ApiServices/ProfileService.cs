@@ -64,7 +64,18 @@ public partial class ProfileService(
         var path = await fileStorage.SaveFileAsync(fileStream, contentType, "avatars");
 
         user.AvatarPath = path;
-        var updateResult = await userManager.UpdateAsync(user);
+        IdentityResult updateResult;
+        try
+        {
+            updateResult = await userManager.UpdateAsync(user);
+        }
+        catch
+        {
+            user.AvatarPath = oldPath;
+            await fileStorage.DeleteUnusedFileAsync(path, logger);
+            throw;
+        }
+
         if (!updateResult.Succeeded)
         {
             user.AvatarPath = oldPath;
