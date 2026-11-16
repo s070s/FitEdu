@@ -53,7 +53,7 @@ internal static class SecurityHeaderAssertions
         response.Headers.GetValues("Content-Security-Policy").Single().ShouldNotContain("jsdelivr", Case.Insensitive);
     }
 
-    /// <summary>A page without an editor links no CDN file and no Quill file; only the local loader script is there.</summary>
+    /// <summary>A page without an editor links no Quill file and no CDN address; only the local loader script is there.</summary>
     public static void ShouldNotLoadQuillFromTheCdn(this string pageHtml)
     {
         pageHtml.ShouldContain("js/quill-interop");
@@ -247,7 +247,7 @@ public class QuillLazyLoadTests
     }
 
     [Fact]
-    public void QuillFiles_AreRequestedAsAnonymousCorsCalls_SoTheIntegrityCheckCanRun()
+    public void QuillFiles_AreRequestedAsAnonymousCorsCalls()
     {
         Script.ShouldContain("crossOrigin = 'anonymous'");
     }

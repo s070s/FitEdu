@@ -6,7 +6,7 @@
 // hashes have to match the vendored files; QuillLazyLoadTests checks that. The Content-Security-Policy
 // needs no extra source for them: they are served from this site.
 // How long a Quill file may take to load before the editor falls back to the plain text box. It has
-// to stay well under Blazor's one-minute JS call timeout, which a hanging CDN would otherwise hit.
+// to stay well under Blazor's one-minute JS call timeout, which a hanging request would otherwise hit.
 const LOAD_TIMEOUT_MILLISECONDS = 15000;
 
 window.quillInterop = {
@@ -88,7 +88,7 @@ window.quillInterop = {
         try {
             await this._load();
         } catch (error) {
-            // The CDN is unreachable or the file did not match its hash: the editor stays usable as a
+            // A Quill file could not be loaded or the file did not match its hash: the editor stays usable as a
             // plain box holding the HTML, so the page can still be saved.
             console.error('Quill did not load; using a plain HTML text box instead.', error);
             this._useFallback(container, elementId, initialContent, placeholder);

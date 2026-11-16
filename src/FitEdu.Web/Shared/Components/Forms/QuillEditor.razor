@@ -38,7 +38,7 @@
         if (firstRender)
         {
             // Loads Quill on the first editor of the page and returns when the editor is ready (a plain text box when
-            // the CDN cannot be reached), so GetContentAsync never runs before the editor exists.
+            // the Quill files cannot be loaded), so GetContentAsync never runs before the editor exists.
             await JS.InvokeVoidAsync("quillInterop.init", _editorId, Content, Placeholder);
             _initialized = true;
         }
