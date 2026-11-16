@@ -103,7 +103,7 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
-    public void AvatarUploading_KeepsTheInputEnabledAnnouncesTheStatusAndIgnoresASecondChoice()
+    public async Task AvatarUploading_KeepsTheInputEnabledAnnouncesTheStatusAndIgnoresASecondChoice()
     {
         var finishUpload = new TaskCompletionSource<bool>();
         _profileConsumer.UploadAvatarAsync(Arg.Any<IBrowserFile>()).Returns(finishUpload.Task);
@@ -121,9 +121,9 @@ public class ProfilePageTests : BunitContext
 
         FakeBrowserFile.Choose(picker, new FakeBrowserFile("other.png", 1024, "image/png"));
 
-        _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
+        _ = _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
         finishUpload.SetResult(true);
-        firstChoice.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
+        await firstChoice.WaitAsync(TimeSpan.FromSeconds(10));
         page.WaitForAssertion(() => page.FindAll("[role=status]").ShouldBeEmpty());
     }
 
