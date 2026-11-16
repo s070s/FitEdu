@@ -23,14 +23,77 @@ public class LessonAssetsIntegrationTests : IClassFixture<CustomWebAppFactory>
         return await authService.CreateLessonAssetTokenAsync(principal, lessonId);
     }
 
-    private static (Course course, Lesson lesson) BuildCourseWithLesson(string? pdfPath = null)
+    private static (Course course, Lesson lesson) BuildCourseWithLesson(
+        string? pdfPath = null, string? videoPath = null, bool published = true)
     {
-        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C", IsPublished = published };
         var module = new Module { Id = Guid.NewGuid(), TitleEn = "M", CourseId = course.Id };
-        var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "L", ModuleId = module.Id, PdfPath = pdfPath };
+        var lesson = new Lesson { Id = Guid.NewGuid(), TitleEn = "L", ModuleId = module.Id, PdfPath = pdfPath, VideoPath = videoPath };
         module.Lessons.Add(lesson);
         course.Modules.Add(module);
         return (course, lesson);
+    }
+
+    /// <summary>Saves a file through the storage the host reads from (the factory's own uploads folder).</summary>
+    private async Task<string> StoreFileAsync(byte[] bytes, string contentType, string folder)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var storage = scope.ServiceProvider.GetRequiredService<IFileStorage>();
+        using var stream = new MemoryStream(bytes);
+        return await storage.SaveFileAsync(stream, contentType, folder);
+    }
+
+    /// <summary>A student enrolled in a published course whose one lesson has the given stored files.</summary>
+    private async Task<(HttpClient Client, Lesson Lesson, string UserId)> EnrolledStudentAsync(
+        string? pdfPath = null, string? videoPath = null, bool published = true)
+    {
+        var (client, userId) = await _factory.CreateAuthenticatedClientWithIdAsync("Student");
+        var (course, lesson) = BuildCourseWithLesson(pdfPath, videoPath, published);
+        await _factory.SeedAsync(async db =>
+        {
+            db.Courses.Add(course);
+            db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = userId, CourseId = course.Id });
+            await db.SaveChangesAsync();
+        });
+        return (client, lesson, userId);
+    }
+
+    // P05-1: the lesson viewer shows the PDF in an iframe of this site, so only the PDF response may be framed, and
+    // only by the same origin; every other response keeps DENY and frame-ancestors 'none'.
+
+    [Fact]
+    public async Task PdfAsset_MayBeFramedBySameOriginOnly()
+    {
+        var pdfPath = await StoreFileAsync(UploadSamples.Pdf(), "application/pdf", "lessons/pdf");
+        var (client, lesson, _) = await EnrolledStudentAsync(pdfPath: pdfPath);
+
+        var response = await client.GetAsync($"/api/lessons/{lesson.Id}/asset?type=pdf");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Headers.GetValues("X-Frame-Options").ShouldBe(["SAMEORIGIN"]);
+        response.Headers.GetValues("Content-Security-Policy").ShouldBe(["frame-ancestors 'self'"]);
+    }
+
+    [Fact]
+    public async Task VideoAsset_KeepsDenyAndFrameAncestorsNone()
+    {
+        var videoPath = await StoreFileAsync(UploadSamples.Mp4(), "video/mp4", "lessons/video");
+        var (client, lesson, _) = await EnrolledStudentAsync(videoPath: videoPath);
+
+        var response = await client.GetAsync($"/api/lessons/{lesson.Id}/asset?type=video");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Headers.GetValues("X-Frame-Options").ShouldBe(["DENY"]);
+        response.Headers.GetValues("Content-Security-Policy").Single().ShouldContain("frame-ancestors 'none'");
+    }
+
+    [Fact]
+    public async Task OtherApiResponse_KeepsDenyAndFrameAncestorsNone()
+    {
+        var response = await _factory.CreateClient().GetAsync("/api/categories");
+
+        response.Headers.GetValues("X-Frame-Options").ShouldBe(["DENY"]);
+        response.Headers.GetValues("Content-Security-Policy").Single().ShouldContain("frame-ancestors 'none'");
     }
 
     [Fact]

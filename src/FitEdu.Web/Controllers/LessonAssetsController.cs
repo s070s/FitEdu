@@ -9,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Infrastructure.Services;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
 
@@ -122,6 +123,11 @@ public partial class LessonAssetsController : ControllerBase
         try
         {
             var (stream, contentType) = await _fileStorage.GetFileAsync(filePath);
+
+            // The lesson viewer shows the PDF in an iframe of this site, so only that response may be framed (P05-1).
+            if (string.Equals(type, "pdf", StringComparison.OrdinalIgnoreCase))
+                HttpContext.AllowFramingBySameOrigin();
+
             return File(stream, contentType, enableRangeProcessing: true);
         }
         catch (Exception ex)
