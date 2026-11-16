@@ -183,9 +183,9 @@ public partial class StaticFileCachingTests : IClassFixture<CustomWebAppFactory>
 
         var response = await client.GetAsync(stylesheetUrl);
 
-        response.Headers.GetValues("X-Content-Type-Options").ShouldContain("nosniff");
-        var contentSecurityPolicy = string.Join(" ", response.Headers.GetValues("Content-Security-Policy"));
-        contentSecurityPolicy.ShouldContain("font-src 'self' data:;");
+        response.ShouldCarryTheSecurityHeaders(development: true);
+        // The icon font comes from this site (and data: URIs), never from the CDN.
+        response.Headers.GetValues("Content-Security-Policy").Single().ShouldContain("font-src 'self' data:;");
     }
 
     private async Task<string> SignInCookieAsync(string email)

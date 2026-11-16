@@ -158,7 +158,9 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 // POST/PUT/DELETE to an unknown URL into 405 instead of 404.
 app.MapStaticAssets().ShortCircuit();
 app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode()
+   // The security headers middleware already sends frame-ancestors 'none' on every response; Blazor's own
+   // frame-ancestors 'self' on interactive pages would be a second Content-Security-Policy header.
+   .AddInteractiveServerRenderMode(options => options.ContentSecurityFrameAncestorsPolicy = null)
    .WithStaticAssets();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
