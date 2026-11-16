@@ -28,14 +28,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
         IHttpContextAccessor? httpContextAccessor = null,
-        IDataProtectionProvider? dataProtectionProvider = null)
+        IDataProtectionProvider? dataProtectionProvider = null,
+        ILoggerFactory? loggerFactory = null)
         : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
         _sensitiveDataConverter = dataProtectionProvider is null
             ? null
             : new EncryptedStringConverter(
-                dataProtectionProvider.CreateProtector("FitEdu.AssessmentSubmission.SensitiveData.v1"));
+                dataProtectionProvider.CreateProtector("FitEdu.AssessmentSubmission.SensitiveData.v1"),
+                loggerFactory?.CreateLogger<EncryptedStringConverter>());
     }
 
     /// <summary>

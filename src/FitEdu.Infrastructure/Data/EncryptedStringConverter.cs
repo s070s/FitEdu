@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
+using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using FitEdu.Application.Common;
 
 namespace FitEdu.Infrastructure.Data;
 
@@ -23,16 +25,16 @@ namespace FitEdu.Infrastructure.Data;
 /// only the columns that changed, so the value becomes ciphertext only when that column itself is
 /// written again, and it stays plaintext until then.
 /// </summary>
-public sealed class EncryptedStringConverter : ValueConverter<string, string>
+public sealed partial class EncryptedStringConverter : ValueConverter<string, string>
 {
-    public EncryptedStringConverter(IDataProtector protector)
+    public EncryptedStringConverter(IDataProtector protector, ILogger? logger = null)
         : base(
             plaintext => protector.Protect(plaintext),
-            stored => Decrypt(protector, stored))
+            stored => Decrypt(protector, logger, stored))
     {
     }
 
-    private static string Decrypt(IDataProtector protector, string stored)
+    private static string Decrypt(IDataProtector protector, ILogger? logger, string stored)
     {
         try
         {
@@ -40,11 +42,33 @@ public sealed class EncryptedStringConverter : ValueConverter<string, string>
         }
         catch (CryptographicException)
         {
-            // Value predates encryption (or the key ring can't read it) — return the raw
-            // string rather than crashing the read. It becomes ciphertext only when this column is
-            // written again. The fallback is silent: an unreadable ciphertext (a lost key) also comes
-            // back as-is, and the converter does not tell the two cases apart.
-            return stored;
+            // A value written before encryption existed is plain JSON: return it as it is rather than
+            // crashing the read (it becomes ciphertext when this column is written again). Anything
+            // else is ciphertext this key ring cannot open (a lost or replaced key): the fixed marker
+            // tells the page to say so, and the warning (never the value) tells the operator.
+            if (IsJson(stored))
+                return stored;
+
+            if (logger is not null)
+                LogUnreadableValue(logger);
+            return UnreadableAnswers.Marker;
         }
     }
+
+    private static bool IsJson(string text)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(text);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    // Source-generated log method (LoggerMessage) avoids the CA1848/CA1873 analyzer warnings.
+    [LoggerMessage(Level = LogLevel.Warning, Message = "An encrypted assessment value could not be decrypted with the current Data Protection keys; it reads as unreadable. Check that the key ring was not lost or replaced.")]
+    private static partial void LogUnreadableValue(ILogger logger);
 }
