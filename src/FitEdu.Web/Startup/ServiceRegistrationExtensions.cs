@@ -141,6 +141,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
         builder.Services.AddScoped<IAdminUserService, AdminUserService>();
+        builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
         builder.Services.AddScoped<IChatQueryService, ChatQueryService>();
         builder.Services.AddScoped<IChatCommandService, ChatCommandService>();
         builder.Services.AddScoped<ICallEventService, CallEventService>();

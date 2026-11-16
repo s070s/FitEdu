@@ -84,6 +84,17 @@ public class EndpointAuthorizationTests : IClassFixture<CustomWebAppFactory>
         adminEndpoints.Count.ShouldBeGreaterThan(60);
         adminEndpoints.ShouldContain(endpoint => endpoint.Name == "POST api/admin/site/background-image");
         adminEndpoints.ShouldContain(endpoint => endpoint.Name == "GET api/admin/courses");
+        adminEndpoints.ShouldContain(endpoint => endpoint.Name == "GET api/admin/audit");
+    }
+
+    [Fact]
+    public void TheAuditLog_IsReadOnly()
+    {
+        // BR-002: nobody changes or removes a row through the app, so the log has a list and nothing else.
+        ApiEndpoints()
+            .Where(endpoint => endpoint.Route.StartsWith("api/admin/audit", StringComparison.Ordinal))
+            .Select(endpoint => endpoint.Name)
+            .ShouldBe(["GET api/admin/audit"]);
     }
 
     [Fact]
