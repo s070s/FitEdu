@@ -374,5 +374,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Audit log.
+        /// </summary>
+        public static string Audit {
+            get {
+                return ResourceManager.GetString("Audit", resourceCulture);
+            }
+        }
     }
 }

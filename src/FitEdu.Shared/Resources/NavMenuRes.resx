@@ -224,4 +224,7 @@
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Audit log</value>
+  </data>
 </root>

@@ -2758,5 +2758,158 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("FileTooLargeFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Admin audit log.
+        /// </summary>
+        public static string AuditLogTitle {
+            get {
+                return ResourceManager.GetString("AuditLogTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What admins did to user accounts, newest first. Entries cannot be edited or deleted..
+        /// </summary>
+        public static string AuditLogIntro {
+            get {
+                return ResourceManager.GetString("AuditLogIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When.
+        /// </summary>
+        public static string AuditColWhen {
+            get {
+                return ResourceManager.GetString("AuditColWhen", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string AuditColAdmin {
+            get {
+                return ResourceManager.GetString("AuditColAdmin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string AuditColAction {
+            get {
+                return ResourceManager.GetString("AuditColAction", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string AuditColUser {
+            get {
+                return ResourceManager.GetString("AuditColUser", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Detail.
+        /// </summary>
+        public static string AuditColDetail {
+            get {
+                return ResourceManager.GetString("AuditColDetail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No admin actions have been logged yet..
+        /// </summary>
+        public static string AuditNoEntries {
+            get {
+                return ResourceManager.GetString("AuditNoEntries", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted account ({0}).
+        /// </summary>
+        public static string AuditDeletedAccountFormat {
+            get {
+                return ResourceManager.GetString("AuditDeletedAccountFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to entries.
+        /// </summary>
+        public static string ItemLabelAuditEntries {
+            get {
+                return ResourceManager.GetString("ItemLabelAuditEntries", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Account disabled.
+        /// </summary>
+        public static string AuditActionUserDisabled {
+            get {
+                return ResourceManager.GetString("AuditActionUserDisabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Account enabled.
+        /// </summary>
+        public static string AuditActionUserEnabled {
+            get {
+                return ResourceManager.GetString("AuditActionUserEnabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Role added.
+        /// </summary>
+        public static string AuditActionRoleAdded {
+            get {
+                return ResourceManager.GetString("AuditActionRoleAdded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Role removed.
+        /// </summary>
+        public static string AuditActionRoleRemoved {
+            get {
+                return ResourceManager.GetString("AuditActionRoleRemoved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Password set.
+        /// </summary>
+        public static string AuditActionPasswordSet {
+            get {
+                return ResourceManager.GetString("AuditActionPasswordSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logged in as user.
+        /// </summary>
+        public static string AuditActionImpersonationStarted {
+            get {
+                return ResourceManager.GetString("AuditActionImpersonationStarted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Account deleted.
+        /// </summary>
+        public static string AuditActionAccountDeleted {
+            get {
+                return ResourceManager.GetString("AuditActionAccountDeleted", resourceCulture);
+            }
+        }
     }
 }

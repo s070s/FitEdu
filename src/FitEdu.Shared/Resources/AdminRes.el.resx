@@ -1019,4 +1019,55 @@
   <data name="FileTooLargeFormat" xml:space="preserve">
     <value>Το αρχείο είναι πολύ μεγάλο (έως {0} MB).</value>
   </data>
+  <data name="AuditLogTitle" xml:space="preserve">
+    <value>Αρχείο ελέγχου διαχειριστών</value>
+  </data>
+  <data name="AuditLogIntro" xml:space="preserve">
+    <value>Ό,τι έκαναν οι διαχειριστές στους λογαριασμούς χρηστών, με τα πιο πρόσφατα πρώτα. Οι καταγραφές δεν μπορούν να αλλάξουν ή να διαγραφούν.</value>
+  </data>
+  <data name="AuditColWhen" xml:space="preserve">
+    <value>Πότε</value>
+  </data>
+  <data name="AuditColAdmin" xml:space="preserve">
+    <value>Διαχειριστής</value>
+  </data>
+  <data name="AuditColAction" xml:space="preserve">
+    <value>Ενέργεια</value>
+  </data>
+  <data name="AuditColUser" xml:space="preserve">
+    <value>Χρήστης</value>
+  </data>
+  <data name="AuditColDetail" xml:space="preserve">
+    <value>Λεπτομέρεια</value>
+  </data>
+  <data name="AuditNoEntries" xml:space="preserve">
+    <value>Δεν έχει καταγραφεί ακόμη καμία ενέργεια διαχειριστή.</value>
+  </data>
+  <data name="AuditDeletedAccountFormat" xml:space="preserve">
+    <value>Διαγραμμένος λογαριασμός ({0})</value>
+  </data>
+  <data name="ItemLabelAuditEntries" xml:space="preserve">
+    <value>καταγραφές</value>
+  </data>
+  <data name="AuditActionUserDisabled" xml:space="preserve">
+    <value>Απενεργοποίηση λογαριασμού</value>
+  </data>
+  <data name="AuditActionUserEnabled" xml:space="preserve">
+    <value>Ενεργοποίηση λογαριασμού</value>
+  </data>
+  <data name="AuditActionRoleAdded" xml:space="preserve">
+    <value>Προσθήκη ρόλου</value>
+  </data>
+  <data name="AuditActionRoleRemoved" xml:space="preserve">
+    <value>Αφαίρεση ρόλου</value>
+  </data>
+  <data name="AuditActionPasswordSet" xml:space="preserve">
+    <value>Ορισμός κωδικού πρόσβασης</value>
+  </data>
+  <data name="AuditActionImpersonationStarted" xml:space="preserve">
+    <value>Σύνδεση ως χρήστης</value>
+  </data>
+  <data name="AuditActionAccountDeleted" xml:space="preserve">
+    <value>Διαγραφή λογαριασμού</value>
+  </data>
 </root>

@@ -224,4 +224,7 @@
   <data name="Search" xml:space="preserve">
     <value>Αναζήτηση</value>
   </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Αρχείο ελέγχου</value>
+  </data>
 </root>

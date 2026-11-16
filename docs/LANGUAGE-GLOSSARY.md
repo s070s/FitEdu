@@ -52,6 +52,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 | Sort a list (admin) | sort by, ascending, descending | ταξινόμηση κατά, αύξουσα, φθίνουσα |
 | AI assistant | FitEdu Coach | Προπονητής FitEdu (in body text: ο προπονητής AI) |
 | Impersonation (admin) | log in as user / stop impersonating | σύνδεση ως χρήστης / τέλος σύνδεσης ως χρήστης |
+| Admin audit log (who did what to an account) | audit log (nav), admin audit log (page); entries | αρχείο ελέγχου (nav), αρχείο ελέγχου διαχειριστών (page); καταγραφές |
 | Member vs account | member (user only in admin account management) | μέλος (χρήστης only in admin account management) |
 | Sign in / out | log in, log out, sign up | σύνδεση, αποσύνδεση, εγγραφή |
 | Password | password | κωδικός πρόσβασης (in labels and the first mention; «κωδικός» is fine in short messages) |
