@@ -10,8 +10,9 @@ namespace FitEdu.Web.Tests;
 
 /// <summary>
 /// The account re-check belongs on the chat and call hubs only. Added globally it also ran on Blazor's
-/// own circuit hub, where a guest has no account and the sign-in cookie has no bearer stamp claim, so
-/// every circuit was refused and no interactive page (the login page included) ever started.
+/// own circuit hub, where a guest has no account (no user id), so every guest circuit was refused and no
+/// interactive page (the login page included) ever started; a stale signed-in circuit would be killed
+/// instead of signed out.
 /// </summary>
 public class ActiveSessionHubFilterScopeTests : IClassFixture<CustomWebAppFactory>
 {

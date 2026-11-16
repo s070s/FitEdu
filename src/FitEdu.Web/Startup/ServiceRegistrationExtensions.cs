@@ -299,8 +299,9 @@ public static class ServiceRegistrationExtensions
         // call, so a call made on an open connection is refused once an admin disables the account or
         // changes its roles/password; LiveConnectionRegistry also closes those open connections right
         // away (chat, call and notifications). The filter is added per hub, not globally: a global
-        // filter would also run on Blazor's own circuit hub, where guests have no account and the
-        // sign-in cookie carries no bearer stamp claim, so every circuit would be refused.
+        // filter would also run on Blazor's own circuit hub, where a guest has no account (no user
+        // id), so every guest circuit, the login page included, would be refused, and a stale
+        // signed-in circuit would be killed instead of signed out.
         // NotificationHub has no client methods to filter.
         builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes)
             .AddHubOptions<ChatHub>(o => o.AddFilter<ActiveSessionHubFilter>())
