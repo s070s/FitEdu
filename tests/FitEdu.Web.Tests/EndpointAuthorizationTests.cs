@@ -19,9 +19,9 @@ public class EndpointAuthorizationTests : IClassFixture<CustomWebAppFactory>
     // The landing page background image: every guest's page loads it, so it is the one SiteSettings action open to all.
     private static readonly string[] AnonymousAdminSurfaceEndpoints = ["GET api/site/background-image"];
 
-    // The anonymous API surface, the README's "Anonymous reads" row plus the sign-in family, the media and lesson-asset
-    // files every page embeds, the public certificate check and the payment provider's signed webhook. Adding an
-    // anonymous endpoint means listing it here.
+    // The anonymous API surface, the README's "Anonymous reads" row plus the public certificate check, the media
+    // files and the site background image every page embeds, the token-checked lesson asset, the sign-in family and the
+    // payment provider's signed webhook. Adding an anonymous endpoint means listing it here.
     private static readonly string[] AnonymousApiEndpoints =
     [
         "GET api/blog/summaries",
@@ -103,7 +103,7 @@ public class EndpointAuthorizationTests : IClassFixture<CustomWebAppFactory>
         var endpoints = _factory.Services.GetRequiredService<EndpointDataSource>().Endpoints.OfType<RouteEndpoint>();
         foreach (var endpoint in endpoints)
         {
-            var route = endpoint.RoutePattern.RawText ?? string.Empty;
+            var route = (endpoint.RoutePattern.RawText ?? string.Empty).TrimStart('/');
             var methods = endpoint.Metadata.GetMetadata<HttpMethodMetadata>()?.HttpMethods ?? [];
             if (!route.StartsWith("api/", StringComparison.Ordinal))
             {
@@ -111,6 +111,13 @@ public class EndpointAuthorizationTests : IClassFixture<CustomWebAppFactory>
             }
 
             var controllerName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ControllerTypeInfo.Name ?? string.Empty;
+            // An endpoint with no method restriction answers every method: list it once, so it cannot slip past the check.
+            if (methods.Count == 0)
+            {
+                yield return new ApiEndpoint($"* {route}", route, controllerName, endpoint);
+                continue;
+            }
+
             foreach (var method in methods)
             {
                 yield return new ApiEndpoint($"{method} {route}", route, controllerName, endpoint);

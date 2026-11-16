@@ -255,7 +255,7 @@ The public exercise library (published exercises only). Photos are served from `
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/lessons/{lessonId}/asset?type=pdf\|video` | Download lesson PDF or video (enrolled only) | Yes |
+| `GET` | `api/lessons/{lessonId}/asset?type=pdf\|video` | Download lesson PDF or video (enrolled only) | Yes (or an `assetToken`) |
 
 ### Assessments — `api/assessments`
 
