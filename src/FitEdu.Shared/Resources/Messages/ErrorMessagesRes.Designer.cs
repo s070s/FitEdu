@@ -754,7 +754,7 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Only Student accounts can be impersonated..
+        ///   Looks up a localized string similar to Only member accounts can be impersonated..
         /// </summary>
         public static string ImpersonationOnlyStudents {
             get {

@@ -808,7 +808,7 @@ public class AuthServiceTests
     }
 
     [Theory]
-    [InlineData("en-GB", "Only Student accounts can be impersonated.")]
+    [InlineData("en-GB", "Only member accounts can be impersonated.")]
     [InlineData("el-GR", "Η σύνδεση ως χρήστης επιτρέπεται μόνο σε λογαριασμούς μελών.")]
     public async Task Impersonate_NonStudent_MessageFollowsCulture(string culture, string expected)
     {
