@@ -78,9 +78,22 @@ public class PublicRateLimitTests : IClassFixture<CustomWebAppFactory>
     [InlineData("api/blog/{slug}", "GET")]
     [InlineData("api/testimonials", "GET")]
     [InlineData("api/search", "GET")]
+    [InlineData("api/subscriptions/plans", "GET")]
+    [InlineData("api/certificates/verify/{verificationId:guid}", "GET")]
+    [InlineData("/sitemap.xml", "GET")]
     public void AnonymousReads_UseThePublicPolicy(string route, string method)
     {
         PolicyFor(route, method).ShouldBe(PublicRateLimit.PolicyName);
+    }
+
+    // The browser fetches these with every page, so a per-address limit would break pages behind a
+    // shared address (an office or a mobile network); README lists them as exempt.
+    [Theory]
+    [InlineData("api/site/background-image", "GET")]
+    [InlineData("api/media/{*filePath}", "GET")]
+    public void FilesTheBrowserFetchesPerPage_AreDeliberatelyNotLimited(string route, string method)
+    {
+        PolicyFor(route, method).ShouldBeNull();
     }
 
     [Theory]

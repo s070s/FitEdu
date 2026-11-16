@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -10,6 +11,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Infrastructure.ApiServices;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Startup;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -143,6 +145,7 @@ public partial class CertificatesController : ControllerBase
     /// </summary>
     [HttpGet("verify/{verificationId:guid}")]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<CertificateVerificationDto>> Verify(
         Guid verificationId,
         [FromQuery] string lang = "en")

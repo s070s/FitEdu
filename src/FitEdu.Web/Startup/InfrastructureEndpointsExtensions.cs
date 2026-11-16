@@ -285,6 +285,7 @@ public static class InfrastructureEndpointsExtensions
             ctx.Response.ContentType = "application/xml; charset=utf-8";
             await ctx.Response.WriteAsync(xml!);
         }).AllowAnonymous()
+        .RequireRateLimiting(PublicRateLimit.PolicyName)
         .WithTags("Infrastructure")
         .WithName("Sitemap")
         .WithSummary("XML sitemap of public pages, published blog articles, programmes, learning paths and exercises.")

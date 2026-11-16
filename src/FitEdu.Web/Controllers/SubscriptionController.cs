@@ -6,6 +6,7 @@ using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Startup;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -48,6 +49,7 @@ public partial class SubscriptionController : ControllerBase
     /// </summary>
     [HttpGet("plans")]
     [AllowAnonymous]
+    [EnableRateLimiting(PublicRateLimit.PolicyName)]
     public async Task<ActionResult<List<SubscriptionPlanDto>>> GetPlans(
         [FromQuery] string lang = "en", CancellationToken cancellationToken = default)
     {
