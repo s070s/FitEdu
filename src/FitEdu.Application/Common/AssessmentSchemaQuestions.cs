@@ -3,8 +3,15 @@ using System.Text.Json;
 namespace FitEdu.Application.Common;
 
 /// <summary>One question of an assessment schema, read in both languages.</summary>
+/// <param name="Id">The question's id in the schema.</param>
+/// <param name="Type">The question's type as written in the schema (for example text, rating or choice).</param>
+/// <param name="LabelEn">The English label.</param>
+/// <param name="LabelEl">The Greek label, or null when the schema has none.</param>
+/// <param name="Required">True when the question must be answered.</param>
 /// <param name="Min">The rating scale's lowest value as written in the schema, or null when it has none.</param>
 /// <param name="Max">The rating scale's highest value as written in the schema, or null when it has none.</param>
+/// <param name="OptionsEn">The English options of a choice question; empty for other types.</param>
+/// <param name="OptionsEl">The Greek options of a choice question; empty when the schema has none.</param>
 public sealed record AssessmentQuestion(
     string Id,
     string Type,
