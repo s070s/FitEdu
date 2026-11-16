@@ -6,6 +6,10 @@
 // path and the integrity hashes have to match the Content-Security-Policy, which allows only
 // https://cdn.jsdelivr.net/npm/quill@2.0.3/ (SecurityHeadersMiddlewareExtensions); QuillLazyLoadTests
 // checks that. Vendoring Quill under wwwroot/lib would remove the CDN (owner download question).
+// How long a Quill file may take to load before the editor falls back to the plain text box. It has
+// to stay well under Blazor's one-minute JS call timeout, which a hanging CDN would otherwise hit.
+const LOAD_TIMEOUT_MILLISECONDS = 15000;
+
 window.quillInterop = {
     _instances: {},
 
@@ -30,12 +34,24 @@ window.quillInterop = {
                 const element = createElement(file.url);
                 element.integrity = file.integrity;
                 element.crossOrigin = 'anonymous';
-                element.onload = resolve;
+                let failed = false;
+                // A hanging CDN would keep init past Blazor's one-minute JS call timeout, which
+                // crashes the circuit; failing sooner leaves the plain text box.
+                element.onload = function () {
+                    clearTimeout(timer);
+                    resolve();
+                };
                 element.onerror = function () {
+                    clearTimeout(timer);
+                    if (failed) {
+                        return;
+                    }
+                    failed = true;
                     element.remove();
                     file.pending = null;
                     reject(new Error('Could not load ' + file.url));
                 };
+                const timer = setTimeout(element.onerror, LOAD_TIMEOUT_MILLISECONDS);
                 document.head.appendChild(element);
             });
         }
