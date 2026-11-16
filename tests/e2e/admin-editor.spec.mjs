@@ -10,9 +10,9 @@ const BLOG_EDITOR_PATH = '/admin/blog/new';
 const QUILL_CDN_PATTERN = 'https://cdn.jsdelivr.net/**';
 
 // Global setup resets the students only; the seeded admin gets the same known password here.
-test.beforeAll( async () => {
+test.beforeAll( async ( {}, testInfo ) => {
     const api = await request.newContext( {
-        baseURL: 'https://localhost:7090',
+        baseURL: testInfo.project.use.baseURL,
         ignoreHTTPSErrors: true,
     } );
 
