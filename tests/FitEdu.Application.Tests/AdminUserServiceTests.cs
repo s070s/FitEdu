@@ -1049,6 +1049,7 @@ public class AdminUserServiceTests
             }
 
             await db.Database.ExecuteSqlRawAsync("UPDATE AspNetUsers SET ConcurrencyStamp = 'changed-elsewhere' WHERE Id = 'member'");
+            try { await db.SaveChangesAsync(); } catch (DbUpdateConcurrencyException) { }
             return ConcurrencyFailure();
         });
 
