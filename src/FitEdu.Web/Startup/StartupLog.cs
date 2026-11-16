@@ -25,6 +25,9 @@ internal static partial class StartupLog
     [LoggerMessage(Level = LogLevel.Critical, Message = "Failed to seed admin user '{Email}': {Errors}")]
     internal static partial void AdminSeedFailed(ILogger logger, string email, string errors);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "A request reached the app from a loopback address without X-Forwarded-For. Loopback callers are never rate limited, so if a reverse proxy on this host forwards visitors it must send X-Forwarded-For (nginx: proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;); otherwise every visitor looks like loopback and the rate limits do nothing. Logged once per process.")]
+    internal static partial void LoopbackWithoutForwardedFor(ILogger logger);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Auth completion: token invalid or expired.")]
     internal static partial void AuthTokenInvalid(ILogger logger, Exception exception);
 

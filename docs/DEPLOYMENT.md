@@ -40,6 +40,13 @@ architectural tradeoff (ARCH-1), not a bug. Three things follow:
    call each other through a load balancer. Without the marker every visitor's page load would
    share one limit and a busy site would answer its own pages with 429. The secret is never logged.
 
+The limiters still never limit a loopback caller, so a reverse proxy on the same host **must send
+`X-Forwarded-For`**; without it every visitor looks like loopback and the rate limits do nothing.
+nginx: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`. Caddy sends it by default.
+IIS ARR: Server Proxy Settings, "Preserve client IP in the following header: X-Forwarded-For".
+Outside Development the app logs one warning per process when a loopback request arrives with
+neither the self-call secret nor `X-Forwarded-For` (`Startup/LoopbackProxyWarning.cs`).
+
 ## DataProtection key ring
 
 Keys are persisted to the shared SQL database (`PersistKeysToDbContext<ApplicationDbContext>`),

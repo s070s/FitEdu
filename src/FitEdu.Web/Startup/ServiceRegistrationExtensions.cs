@@ -250,6 +250,10 @@ public static class ServiceRegistrationExtensions
         // http, causing redirect loops and a refused auth cookie — the classic first-deploy failure).
         // Loopback (a same-host proxy) is trusted by default; a non-loopback load balancer's IPs go in
         // ForwardedHeaders:KnownProxies.
+        // P03-6: a same-host proxy must send X-Forwarded-For, or its visitors look like loopback and are
+        // never rate limited; outside Development the app logs one warning when it sees such a request.
+        if (!builder.Environment.IsDevelopment())
+            builder.Services.AddSingleton<IStartupFilter, LoopbackProxyWarning>();
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
