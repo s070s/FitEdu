@@ -29,13 +29,16 @@ public sealed class UploadReplacementOrderTests : IDisposable
     private const string NewPath = "blog/covers/0123456789abcdef0123456789abcdef.png";
 
     private readonly string _databaseName = Guid.NewGuid().ToString("N");
-    private readonly ApplicationDbContext _db;
+    private readonly FailableSaveContext _db;
     private readonly ApplicationDbContext _observer;
     private readonly IFileStorage _storage = Substitute.For<IFileStorage>();
 
     public UploadReplacementOrderTests()
     {
-        _db = DbContextFactory.CreateInMemory(_databaseName);
+        _db = new FailableSaveContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(_databaseName)
+            .EnableSensitiveDataLogging()
+            .Options);
         _observer = DbContextFactory.CreateInMemory(_databaseName); // a second view of the store: what is really saved
     }
 
@@ -321,6 +324,155 @@ public sealed class UploadReplacementOrderTests : IDisposable
         (await controller.UploadBackgroundImage(Png())).ShouldBeOfType<OkObjectResult>();
 
         savedValueWhenTheOldFileWasDeleted.ShouldBe("backgrounds/0123456789abcdef0123456789abcdef.png");
+    }
+
+    // ── A save that throws: the new file is deleted, the old file and the old value stay ──
+
+    private const string NewLessonPdf = "lessons/pdf/0123456789abcdef0123456789abcdef.pdf";
+    private const string NewLessonVideo = "lessons/video/0123456789abcdef0123456789abcdef.mp4";
+    private const string NewAvatar = "testimonials/avatars/0123456789abcdef0123456789abcdef.png";
+    private const string NewBackground = "backgrounds/0123456789abcdef0123456789abcdef.png";
+
+    [Fact]
+    public async Task BlogCover_UpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var (controller, articleId) = await BlogWithACoverAsync(OldPath);
+        StorageSavesAs(NewPath);
+        _db.FailSaves = true;
+
+        await Should.ThrowAsync<InvalidOperationException>(() => controller.UploadBlogCoverImage(articleId, Png()));
+
+        await _storage.Received(1).DeleteFileAsync(NewPath, Arg.Any<CancellationToken>());
+        await _storage.DidNotReceive().DeleteFileAsync(OldPath, Arg.Any<CancellationToken>());
+        (await _observer.BlogArticles.AsNoTracking().SingleAsync(a => a.Id == articleId)).CoverImageUrl.ShouldBe(OldPath);
+    }
+
+    [Fact]
+    public async Task LessonPdf_UpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var (controller, lesson) = await LessonsWithAFilesAsync("lessons/pdf/old.pdf", null);
+        StorageSavesAs(NewLessonPdf);
+        _db.FailSaves = true;
+
+        await Should.ThrowAsync<InvalidOperationException>(() => controller.UploadPdf(lesson.Id, Pdf()));
+
+        await _storage.Received(1).DeleteFileAsync(NewLessonPdf, Arg.Any<CancellationToken>());
+        await _storage.DidNotReceive().DeleteFileAsync("lessons/pdf/old.pdf", Arg.Any<CancellationToken>());
+        (await _observer.Lessons.AsNoTracking().SingleAsync(l => l.Id == lesson.Id)).PdfPath.ShouldBe("lessons/pdf/old.pdf");
+    }
+
+    [Fact]
+    public async Task LessonVideo_UpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var (controller, lesson) = await LessonsWithAFilesAsync(null, "lessons/video/old.mp4");
+        StorageSavesAs(NewLessonVideo);
+        _db.FailSaves = true;
+
+        await Should.ThrowAsync<InvalidOperationException>(() => controller.UploadVideo(lesson.Id, Mp4()));
+
+        await _storage.Received(1).DeleteFileAsync(NewLessonVideo, Arg.Any<CancellationToken>());
+        await _storage.DidNotReceive().DeleteFileAsync("lessons/video/old.mp4", Arg.Any<CancellationToken>());
+        (await _observer.Lessons.AsNoTracking().SingleAsync(l => l.Id == lesson.Id)).VideoPath.ShouldBe("lessons/video/old.mp4");
+    }
+
+    [Fact]
+    public async Task Background_UpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var controller = await SettingsWithABackgroundAsync("backgrounds/old.png");
+        StorageSavesAs(NewBackground);
+        _db.FailSaves = true;
+
+        await Should.ThrowAsync<InvalidOperationException>(() => controller.UploadBackgroundImage(Png()));
+
+        await _storage.Received(1).DeleteFileAsync(NewBackground, Arg.Any<CancellationToken>());
+        await _storage.DidNotReceive().DeleteFileAsync("backgrounds/old.png", Arg.Any<CancellationToken>());
+        (await _observer.SiteSettings.AsNoTracking().SingleAsync()).Value.ShouldBe("backgrounds/old.png");
+    }
+
+    [Fact]
+    public async Task TestimonialAvatar_UpdateThrows_DeletesTheNewFileKeepsTheOldOneAndRethrows()
+    {
+        var id = Guid.NewGuid();
+        var testimonials = Substitute.For<ITestimonialService>();
+        var controller = TestimonialWithAnAvatar(id, testimonials, "testimonials/avatars/old.png");
+        StorageSavesAs(NewAvatar);
+        testimonials.SetAvatarPathAsync(id, NewAvatar, Arg.Any<CancellationToken>()).ThrowsAsync(new InvalidOperationException("db down"));
+
+        await Should.ThrowAsync<InvalidOperationException>(() => controller.UploadAvatar(id, Png()));
+
+        await _storage.Received(1).DeleteFileAsync(NewAvatar, Arg.Any<CancellationToken>());
+        await _storage.DidNotReceive().DeleteFileAsync("testimonials/avatars/old.png", Arg.Any<CancellationToken>());
+    }
+
+    // ── Testimonial avatar removal and delete: the row changes first, the file goes after ──
+
+    [Fact]
+    public async Task TestimonialRemoveAvatar_DeletesTheFileOnlyAfterTheRowChanged()
+    {
+        var id = Guid.NewGuid();
+        var testimonials = Substitute.For<ITestimonialService>();
+        var controller = TestimonialWithAnAvatar(id, testimonials, "testimonials/avatars/old.png");
+        testimonials.RemoveAvatarAsync(id, Arg.Any<CancellationToken>()).Returns(true);
+
+        (await controller.RemoveAvatar(id)).ShouldBeOfType<NoContentResult>();
+
+        Received.InOrder(() =>
+        {
+            testimonials.RemoveAvatarAsync(id, Arg.Any<CancellationToken>());
+            _storage.DeleteFileAsync("testimonials/avatars/old.png", Arg.Any<CancellationToken>());
+        });
+    }
+
+    [Fact]
+    public async Task TestimonialRemoveAvatar_RowNotChanged_DeletesNoFile()
+    {
+        var id = Guid.NewGuid();
+        var testimonials = Substitute.For<ITestimonialService>();
+        var controller = TestimonialWithAnAvatar(id, testimonials, "testimonials/avatars/old.png");
+        testimonials.RemoveAvatarAsync(id, Arg.Any<CancellationToken>()).Returns(false);
+
+        (await controller.RemoveAvatar(id)).ShouldBeOfType<NotFoundResult>();
+
+        await _storage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task TestimonialDelete_DeletesTheFileOnlyAfterTheRowIsGone()
+    {
+        var id = Guid.NewGuid();
+        var testimonials = Substitute.For<ITestimonialService>();
+        var controller = TestimonialWithAnAvatar(id, testimonials, "testimonials/avatars/old.png");
+        testimonials.DeleteAsync(id, Arg.Any<CancellationToken>()).Returns(true);
+
+        (await controller.Delete(id)).ShouldBeOfType<NoContentResult>();
+
+        Received.InOrder(() =>
+        {
+            testimonials.DeleteAsync(id, Arg.Any<CancellationToken>());
+            _storage.DeleteFileAsync("testimonials/avatars/old.png", Arg.Any<CancellationToken>());
+        });
+    }
+
+    [Fact]
+    public async Task TestimonialDelete_RowNotDeleted_DeletesNoFile()
+    {
+        var id = Guid.NewGuid();
+        var testimonials = Substitute.For<ITestimonialService>();
+        var controller = TestimonialWithAnAvatar(id, testimonials, "testimonials/avatars/old.png");
+        testimonials.DeleteAsync(id, Arg.Any<CancellationToken>()).Returns(false);
+
+        (await controller.Delete(id)).ShouldBeOfType<NotFoundResult>();
+
+        await _storage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    /// <summary>The in-memory context, with a switch that makes every save throw, like a database that went down.</summary>
+    private sealed class FailableSaveContext(DbContextOptions<ApplicationDbContext> options) : ApplicationDbContext(options)
+    {
+        public bool FailSaves { get; set; }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            FailSaves ? throw new InvalidOperationException("db down") : base.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>Builds plain problem details, as the app's factory does, without a service provider.</summary>
