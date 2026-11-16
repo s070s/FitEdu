@@ -291,13 +291,15 @@ public static class ServiceRegistrationExtensions
         // not invalidated at all: each simply expires after 60 s, so every node is at most a
         // minute behind an admin's edit.
         builder.Services.AddMemoryCache();
-        // The hub filter re-checks the account and its security stamp on every hub call, so an open
-        // connection stops working once an admin disables the account or changes its roles/password.
-        builder.Services.AddSignalR(o =>
-        {
-            o.MaximumReceiveMessageSize = AppHubMessageLimitBytes;
-            o.AddFilter<ActiveSessionHubFilter>();
-        });
+        // The hub filter re-checks the account and its security stamp on every chat and call hub
+        // call, so an open connection stops working once an admin disables the account or changes
+        // its roles/password. It is added per hub, not globally: a global filter would also run on
+        // Blazor's own circuit hub, where guests have no account and the sign-in cookie carries no
+        // bearer stamp claim, so every circuit would be refused. NotificationHub has no client
+        // methods to filter.
+        builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes)
+            .AddHubOptions<ChatHub>(o => o.AddFilter<ActiveSessionHubFilter>())
+            .AddHubOptions<CallHub>(o => o.AddFilter<ActiveSessionHubFilter>());
         builder.Services.AddControllers();
         // Enables IProblemDetailsService, used by UseStatusCodePages() (bare-status error responses,
         // e.g. NotFound()/Forbid()/429 rate-limit rejections) and the production exception handler
