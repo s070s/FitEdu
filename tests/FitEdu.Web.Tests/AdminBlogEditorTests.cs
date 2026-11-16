@@ -7,6 +7,7 @@ using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
@@ -32,6 +33,8 @@ public class AdminBlogEditorTests : BunitContext
         JSInterop.Mode = JSRuntimeMode.Loose;
 
         _blogConsumer.GetArticleAsync(_articleId, Arg.Any<CancellationToken>()).Returns(Article(coverImageUrl: null));
+        _blogConsumer.UpdateArticleAsync(Arg.Any<Guid>(), Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>())
+            .Returns(ApiActionResult.Success);
     }
 
     private AdminBlogArticleDto Article(string? coverImageUrl) => new(
@@ -170,6 +173,30 @@ public class AdminBlogEditorTests : BunitContext
         ClickSave(page);
 
         _blogConsumer.Received(1).UpdateArticleAsync(_articleId, Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void EditMode_UpdateRefusedWithADetail_ShowsThatDetail()
+    {
+        _blogConsumer.UpdateArticleAsync(_articleId, Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>())
+            .Returns(ApiActionResult.Refused(System.Net.HttpStatusCode.Conflict, ErrorMessagesRes.ModifiedConcurrently));
+        var page = RenderEditMode();
+
+        ClickSave(page);
+
+        page.Find("#blog-error").TextContent.ShouldBe(ErrorMessagesRes.ModifiedConcurrently);
+    }
+
+    [Fact]
+    public void EditMode_UpdateRefusedWithoutADetail_ShowsTheSlugInUseMessage()
+    {
+        _blogConsumer.UpdateArticleAsync(_articleId, Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>())
+            .Returns(ApiActionResult.Refused(System.Net.HttpStatusCode.BadRequest));
+        var page = RenderEditMode();
+
+        ClickSave(page);
+
+        page.Find("#blog-error").TextContent.ShouldBe(AdminRes.SlugInUse);
     }
 
     [Fact]

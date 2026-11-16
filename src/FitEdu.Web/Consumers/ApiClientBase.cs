@@ -159,6 +159,10 @@ public abstract class ApiClientBase
     protected Task<ApiActionResult> PostJsonResultAsync<TBody>(string url, TBody body, CancellationToken ct = default) =>
         SendForResultAsync(c => Http.PostAsJsonAsync(url, body, c), ct);
 
+    /// <summary>PUTs a JSON body and reports the outcome with the API's refusal reason (see <see cref="ApiActionResult"/>).</summary>
+    protected Task<ApiActionResult> PutJsonResultAsync<TBody>(string url, TBody body, CancellationToken ct = default) =>
+        SendForResultAsync(c => Http.PutAsJsonAsync(url, body, c), ct);
+
     /// <summary>DELETEs and reports the outcome with the API's refusal reason (see <see cref="ApiActionResult"/>).</summary>
     protected Task<ApiActionResult> DeleteResultAsync(string url, CancellationToken ct = default) =>
         SendForResultAsync(c => Http.DeleteAsync(url, c), ct);

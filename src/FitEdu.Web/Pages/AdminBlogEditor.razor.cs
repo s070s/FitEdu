@@ -196,26 +196,35 @@ public partial class AdminBlogEditor
                 Tags: tags,
                 IsPublished: _isPublished);
 
-            AdminBlogArticleDto? result;
             var isNewArticle = !_isEditMode;
+            AdminBlogArticleDto? created = null;
 
             if (isNewArticle)
-                result = await BlogConsumer.CreateArticleAsync(request);
-            else
-                result = await BlogConsumer.UpdateArticleAsync(_articleId!.Value, request);
-
-            if (result is null)
             {
-                _error = AdminRes.SlugInUse;
-                return;
+                created = await BlogConsumer.CreateArticleAsync(request);
+                if (created is null)
+                {
+                    _error = AdminRes.SlugInUse;
+                    return;
+                }
+            }
+            else
+            {
+                var updated = await BlogConsumer.UpdateArticleAsync(_articleId!.Value, request);
+                if (!updated.Succeeded)
+                {
+                    // The server's reason (another admin changed the article meanwhile) beats the slug guess.
+                    _error = updated.Detail ?? AdminRes.SlugInUse;
+                    return;
+                }
             }
 
             // Upload the cover chosen before the article existed. The article is saved either way; when
             // the cover fails the page stays, now editing that article, so the admin sees why and can retry.
-            if (isNewArticle && _pendingCoverFile is not null)
+            if (created is not null && _pendingCoverFile is not null)
             {
-                _createdId = result.Id;
-                var coverPath = await UploadCoverOrNullAsync(result.Id, _pendingCoverFile);
+                _createdId = created.Id;
+                var coverPath = await UploadCoverOrNullAsync(created.Id, _pendingCoverFile);
                 if (coverPath is null)
                 {
                     _isDirty = false;

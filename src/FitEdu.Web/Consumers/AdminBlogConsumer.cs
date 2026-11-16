@@ -25,9 +25,9 @@ public class AdminBlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
         SaveBlogArticleRequest request, CancellationToken ct = default)
         => PostJsonAsync<SaveBlogArticleRequest, AdminBlogArticleDto>("api/admin/blog", request, ct);
 
-    public Task<AdminBlogArticleDto?> UpdateArticleAsync(
+    public Task<ApiActionResult> UpdateArticleAsync(
         Guid id, SaveBlogArticleRequest request, CancellationToken ct = default)
-        => PutJsonAsync<SaveBlogArticleRequest, AdminBlogArticleDto>($"api/admin/blog/{id}", request, ct);
+        => PutJsonResultAsync($"api/admin/blog/{id}", request, ct);
 
     public Task<bool> PublishArticleAsync(Guid id, CancellationToken ct = default)
         => ActionAsync($"api/admin/blog/{id}/publish", ct);
