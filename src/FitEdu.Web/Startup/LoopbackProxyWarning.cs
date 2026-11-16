@@ -38,6 +38,9 @@ public sealed class LoopbackProxyWarning(ILogger<LoopbackProxyWarning> logger) :
 
     private void WarnOnce(HttpContext httpContext)
     {
+        // A plain read first: after the warning every request skips the check and the atomic write.
+        if (Volatile.Read(ref _warned) != 0)
+            return;
         if (!IsUnforwardedLoopback(httpContext))
             return;
 
