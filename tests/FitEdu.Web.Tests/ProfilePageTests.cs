@@ -122,6 +122,8 @@ public class ProfilePageTests : BunitContext
         FakeBrowserFile.Choose(picker, new FakeBrowserFile("other.png", 1024, "image/png"));
 
         _ = _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
+        // The picker does not keep naming the ignored second file.
+        picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
         finishUpload.SetResult(true);
         await firstChoice.WaitAsync(TimeSpan.FromSeconds(10));
         page.WaitForAssertion(() => page.FindAll("[role=status]").ShouldBeEmpty());

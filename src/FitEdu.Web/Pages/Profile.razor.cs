@@ -197,7 +197,11 @@ public partial class Profile
         // The input stays enabled while a photo uploads (a disabled input loses the keyboard focus), so a
         // second choice during the upload is ignored here.
         if (_uploadingAvatar)
+        {
+            // The picker already shows the ignored file's name; take it back.
+            _avatarPicker?.ClearFileName();
             return;
+        }
 
         message = string.Empty;
         var file = e.File;
