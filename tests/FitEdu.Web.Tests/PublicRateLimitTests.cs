@@ -37,10 +37,29 @@ public class PublicRateLimitTests : IClassFixture<CustomWebAppFactory>
     [Theory]
     [InlineData("203.0.113.7", "203.0.113.7")]
     [InlineData("::ffff:203.0.113.7", "203.0.113.7")]
-    [InlineData("2001:db8::5", "2001:db8::5")]
+    [InlineData("2001:db8::5", "2001:db8::/64")]
     public void PartitionKeyFor_OutsideAddress_IsItsOwnBucket(string address, string expectedKey)
     {
         PublicRateLimit.PartitionKeyFor(IPAddress.Parse(address)).ShouldBe(expectedKey);
+    }
+
+    // A home connection gets a whole /64 from its provider, so every address in it is one caller.
+    [Fact]
+    public void PartitionKeyFor_Ipv6AddressesInOneSlash64_ShareABucket()
+    {
+        var first = PublicRateLimit.PartitionKeyFor(IPAddress.Parse("2001:db8:1:2::5"));
+        var second = PublicRateLimit.PartitionKeyFor(IPAddress.Parse("2001:db8:1:2:aaaa:bbbb:cccc:dddd"));
+
+        second.ShouldBe(first);
+    }
+
+    [Fact]
+    public void PartitionKeyFor_Ipv6AddressesInDifferentSlash64s_AreDifferentBuckets()
+    {
+        var first = PublicRateLimit.PartitionKeyFor(IPAddress.Parse("2001:db8:1:2::5"));
+        var second = PublicRateLimit.PartitionKeyFor(IPAddress.Parse("2001:db8:1:3::5"));
+
+        second.ShouldNotBe(first);
     }
 
     [Theory]

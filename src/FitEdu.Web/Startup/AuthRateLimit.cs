@@ -5,7 +5,7 @@ namespace FitEdu.Web.Startup;
 /// <summary>
 /// The "auth" rate limiter for the sign-in API endpoints (register, login, refresh, forgot and reset
 /// password, confirm email): a fixed window per caller IP address, so one caller who uses up its
-/// attempts cannot lock every other visitor out. Loopback and address-less calls (the app's own
+/// attempts cannot lock every other visitor out (an IPv6 caller counts as its whole /64 network). Loopback and address-less calls (the app's own
 /// calls, and the test server) are not limited, as for <see cref="PublicRateLimit"/>.
 /// </summary>
 public static class AuthRateLimit

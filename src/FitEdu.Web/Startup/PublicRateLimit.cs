@@ -34,8 +34,13 @@ public static class PublicRateLimit
         });
     }
 
+    // A provider hands one connection a whole /64, so a caller could otherwise pick a fresh address
+    // per request and never reach the limit.
+    private const int Ipv6PrefixBytes = 8;
+
     /// <summary>
-    /// The caller's bucket: its address as text, or null (not limited) for loopback or no address.
+    /// The caller's bucket: its address as text (an IPv6 address as its /64 network, "2001:db8::/64"),
+    /// or null (not limited) for loopback or no address.
     /// An IPv4 address seen through a dual-stack socket (::ffff:1.2.3.4) counts as the IPv4 address.
     /// </summary>
     public static string? PartitionKeyFor(IPAddress? remoteAddress)
@@ -47,6 +52,11 @@ public static class PublicRateLimit
         if (IPAddress.IsLoopback(address))
             return null;
 
-        return address.ToString();
+        if (address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+            return address.ToString();
+
+        var networkBytes = new byte[16];
+        address.GetAddressBytes().AsSpan(0, Ipv6PrefixBytes).CopyTo(networkBytes);
+        return $"{new IPAddress(networkBytes)}/64";
     }
 }

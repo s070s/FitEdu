@@ -45,6 +45,19 @@ public class AuthRateLimitTests
         limiter.AttemptAcquire(otherCaller).IsAcquired.ShouldBeTrue();
     }
 
+    [Fact]
+    public void Limiter_Ipv6AddressesInOneSlash64_ShareTheAttempts()
+    {
+        using var limiter = PartitionedRateLimiter.Create<HttpContext, string>(AuthRateLimit.PartitionFor);
+        var firstAddress = ContextFrom("2001:db8:1:2::5");
+        var otherAddressOfTheSameCaller = ContextFrom("2001:db8:1:2:aaaa:bbbb:cccc:dddd");
+
+        for (var attempt = 0; attempt < AuthRateLimit.PermitsPerWindow; attempt++)
+            limiter.AttemptAcquire(firstAddress).IsAcquired.ShouldBeTrue();
+
+        limiter.AttemptAcquire(otherAddressOfTheSameCaller).IsAcquired.ShouldBeFalse();
+    }
+
     [Theory]
     [InlineData("127.0.0.1")]
     [InlineData("::1")]
