@@ -107,8 +107,8 @@
 	<data name="TotalUsers" xml:space="preserve">
 		<value>Total users</value>
 	</data>
-	<data name="ActiveUsers" xml:space="preserve">
-		<value>Active users</value>
+	<data name="MembersWithEnrolment" xml:space="preserve">
+		<value>Members with an enrolment</value>
 	</data>
 	<data name="TotalEnrollments" xml:space="preserve">
 		<value>Total enrolments</value>

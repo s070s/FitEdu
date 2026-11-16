@@ -127,6 +127,19 @@ public class RemainingPagesTests : BunitContext
         page.FindAll(".completion-rate").Count.ShouldBe(1, "a course nobody enrolled in shows a dash, not a bar");
     }
 
+    [Theory]
+    [InlineData("en", "Members with an enrolment")]
+    [InlineData("el", "Μέλη με εγγραφή")]
+    public void AdminAnalytics_SecondTile_SaysItCountsMembersWithAnEnrolment(string culture, string expectedLabel)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        _analyticsConsumer.GetSummaryAsync().Returns(new AnalyticsSummaryDto(10, 5, 30, 10, [], []));
+
+        var page = Render<AdminAnalytics>();
+
+        page.FindAll(".stat-tile__label")[1].TextContent.ShouldBe(expectedLabel);
+    }
+
     [Fact]
     public void AdminAnalytics_TwoCoursesAndAssessmentsWithTheSameTitle_ListEveryRowAcrossRenders()
     {

@@ -35,23 +35,26 @@ public class AdminAnalyticsController : ControllerBase
     /// Get analytics summary for admin dashboard.
     /// </summary>
     [HttpGet("summary")]
-    public async Task<ActionResult<AnalyticsSummaryDto>> GetSummary()
+    public async Task<ActionResult<AnalyticsSummaryDto>> GetSummary(CancellationToken cancellationToken = default)
     {
-        var totalUsers = await _userManager.Users.CountAsync();
+        var totalUsers = await _userManager.Users.CountAsync(cancellationToken);
 
         var activeUsers = await _db.Enrollments
             .Select(e => e.UserId)
             .Distinct()
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
-        var totalEnrollments = await _db.Enrollments.CountAsync();
+        var totalEnrollments = await _db.Enrollments.CountAsync(cancellationToken);
 
         var completedCourses = await _db.Enrollments
-            .CountAsync(e => e.Status == EnrollmentStatus.Completed);
+            .CountAsync(e => e.Status == EnrollmentStatus.Completed, cancellationToken);
 
-        // GroupBy pushed into SQL — avoids loading every row into memory.
+        // GroupBy pushed into SQL — avoids loading every row into memory. The most enrolled course
+        // comes first; the title keeps courses with the same count in a fixed order.
         var courseStats = await _db.Enrollments
             .GroupBy(e => new { e.CourseId, CourseTitle = e.Course.TitleEn, CourseTitleEl = e.Course.TitleEl })
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key.CourseTitle)
             .Select(g => new CourseStatDto(
                 g.Key.CourseId,
                 g.Key.CourseTitle,
@@ -59,12 +62,14 @@ public class AdminAnalyticsController : ControllerBase
                 g.Count(e => e.Status == EnrollmentStatus.Completed),
                 g.Key.CourseTitleEl
             ))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var assessmentStats = await _db.AssessmentSubmissions
             .GroupBy(s => new { s.AssessmentDefinitionId, AssessmentTitle = s.AssessmentDefinition.TitleEn, AssessmentTitleEl = s.AssessmentDefinition.TitleEl })
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key.AssessmentTitle)
             .Select(g => new AssessmentStatDto(g.Key.AssessmentDefinitionId, g.Key.AssessmentTitle, g.Count(), g.Key.AssessmentTitleEl))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var dto = new AnalyticsSummaryDto(
             totalUsers,

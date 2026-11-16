@@ -1,6 +1,9 @@
 using System.Net;
+using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.DTOs;
+using FitEdu.Domain.Entities;
 using Shouldly;
 using Xunit;
 
@@ -72,6 +75,29 @@ public class MediaAndAnalyticsIntegrationTests : IClassFixture<CustomWebAppFacto
         var client = await _factory.CreateAuthenticatedClientAsync("Admin");
 
         (await client.GetAsync("/api/admin/analytics/summary")).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Analytics_CourseStats_ListTheMostEnrolledCourseFirst()
+    {
+        var quietCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Analytics quiet course", IsPublished = true };
+        var popularCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Analytics popular course", IsPublished = true };
+        await _factory.SeedAsync(async db =>
+        {
+            db.Courses.AddRange(quietCourse, popularCourse);
+            db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = "analytics-a", CourseId = quietCourse.Id });
+            for (var member = 0; member < 3; member++)
+                db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = $"analytics-b{member}", CourseId = popularCourse.Id });
+            await db.SaveChangesAsync();
+        });
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var summary = await client.GetFromJsonAsync<AnalyticsSummaryDto>("/api/admin/analytics/summary");
+
+        var enrolmentCounts = summary!.CourseStats.Select(stat => stat.EnrollmentCount).ToList();
+        enrolmentCounts.ShouldBe(enrolmentCounts.OrderByDescending(count => count).ToList());
+        var courseIds = summary.CourseStats.Select(stat => stat.CourseId).ToList();
+        courseIds.IndexOf(popularCourse.Id).ShouldBeLessThan(courseIds.IndexOf(quietCourse.Id));
     }
 
     [Fact]

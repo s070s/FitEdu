@@ -79,11 +79,11 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Active Users.
+        ///   Looks up a localized string similar to Members with an enrolment.
         /// </summary>
-        public static string ActiveUsers {
+        public static string MembersWithEnrolment {
             get {
-                return ResourceManager.GetString("ActiveUsers", resourceCulture);
+                return ResourceManager.GetString("MembersWithEnrolment", resourceCulture);
             }
         }
         
