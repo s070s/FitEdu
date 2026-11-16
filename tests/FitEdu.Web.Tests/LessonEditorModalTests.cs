@@ -299,6 +299,9 @@ public class LessonEditorModalTests : BunitContext
 
         modal.Find(".alert-danger").TextContent.ShouldContain(UploadSizeText.TooLarge(limit));
         picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+        // A screen reader hears the error when it appears, and the picker names it when focused.
+        modal.Find(".alert-danger").GetAttribute("role").ShouldBe("alert");
+        picker.Find("input[type=file]").GetAttribute("aria-describedby")!.ShouldContain(modal.Find(".alert-danger").Id!);
 
         ClickSave(modal);
 

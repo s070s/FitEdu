@@ -52,6 +52,9 @@ public class AdminLessonEditTests : BunitContext
 
         page.Find(".modal .alert-danger").TextContent.ShouldContain(UploadSizeText.TooLarge(limit));
         picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+        // A screen reader hears the error when it appears, and the picker names it when focused.
+        page.Find(".modal .alert-danger").GetAttribute("role").ShouldBe("alert");
+        picker.Find("input[type=file]").GetAttribute("aria-describedby")!.ShouldContain(page.Find(".modal .alert-danger").Id!);
 
         page.Find(".modal-footer .btn-primary").Click();
 

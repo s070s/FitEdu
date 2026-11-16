@@ -60,7 +60,7 @@
     <Body>
         @if (!string.IsNullOrEmpty(fileError))
         {
-            <div class="alert alert-danger py-2">@fileError</div>
+            <div id="lesson-file-error" class="alert alert-danger py-2" role="alert">@fileError</div>
         }
         <div class="row">
             <div class="col-md-3 mb-3">
@@ -100,7 +100,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-pdf">@AdminRes.UploadPdf</label>
-                <FilePicker @ref="pdfPicker" Id="lesson-pdf" OnChange="OnPdfSelected" OnCleared="@(() => pendingPdf = null)" Accept=".pdf" />
+                <FilePicker @ref="pdfPicker" Id="lesson-pdf" DescribedBy="@(string.IsNullOrEmpty(fileError) ? null : "lesson-file-error")" OnChange="OnPdfSelected" OnCleared="@(() => pendingPdf = null)" Accept=".pdf" />
                 @if (!string.IsNullOrEmpty(lessonPdfPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonPdfPath</small>
@@ -108,7 +108,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-video">@AdminRes.UploadVideo</label>
-                <FilePicker @ref="videoPicker" Id="lesson-video" OnChange="OnVideoSelected" OnCleared="@(() => pendingVideo = null)" Accept="video/*" />
+                <FilePicker @ref="videoPicker" Id="lesson-video" DescribedBy="@(string.IsNullOrEmpty(fileError) ? null : "lesson-file-error")" OnChange="OnVideoSelected" OnCleared="@(() => pendingVideo = null)" Accept="video/*" />
                 @if (!string.IsNullOrEmpty(lessonVideoPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonVideoPath</small>

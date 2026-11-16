@@ -8,7 +8,7 @@
     <Body>
         @if (!string.IsNullOrEmpty(_errorMessage))
         {
-            <div class="alert alert-danger py-2">@_errorMessage</div>
+            <div id="lesson-modal-error" class="alert alert-danger py-2" role="alert">@_errorMessage</div>
         }
         <div class="row">
             <div class="col-md-3 mb-3">
@@ -48,7 +48,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-pdf">@AdminRes.UploadPdf</label>
-                <FilePicker @ref="_pdfPicker" Id="lesson-pdf" OnChange="OnPdfSelected" OnCleared="@(() => _pendingPdf = null)" Accept=".pdf" />
+                <FilePicker @ref="_pdfPicker" Id="lesson-pdf" DescribedBy="@(string.IsNullOrEmpty(_errorMessage) ? null : "lesson-modal-error")" OnChange="OnPdfSelected" OnCleared="@(() => _pendingPdf = null)" Accept=".pdf" />
                 @if (!string.IsNullOrEmpty(_existingPdfPath))
                 {
                     <small class="text-success">@AdminRes.Current @_existingPdfPath</small>
@@ -56,7 +56,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-video">@AdminRes.UploadVideo</label>
-                <FilePicker @ref="_videoPicker" Id="lesson-video" OnChange="OnVideoSelected" OnCleared="@(() => _pendingVideo = null)" Accept="video/*" />
+                <FilePicker @ref="_videoPicker" Id="lesson-video" DescribedBy="@(string.IsNullOrEmpty(_errorMessage) ? null : "lesson-modal-error")" OnChange="OnVideoSelected" OnCleared="@(() => _pendingVideo = null)" Accept="video/*" />
                 @if (!string.IsNullOrEmpty(_existingVideoPath))
                 {
                     <small class="text-success">@AdminRes.Current @_existingVideoPath</small>
