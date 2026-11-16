@@ -13,6 +13,7 @@ using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Services;
@@ -35,7 +36,7 @@ public class AuthServiceTests
         RecordingLogger<AuthService> Log,
         ApplicationDbContext Db);
 
-    private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null, CircuitClientAddress? clientAddress = null)
+    private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null, CircuitClientAddress? clientAddress = null, ApplicationDbContext? context = null)
     {
         var um = IdentityMocks.MockUserManager();
         um.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
@@ -46,7 +47,7 @@ public class AuthServiceTests
         var tokens = Substitute.For<ITokenService>();
         var accessor = Substitute.For<IHttpContextAccessor>();
         var dp = new EphemeralDataProtectionProvider();
-        var ctx = DbContextFactory.CreateInMemory();
+        var ctx = context ?? DbContextFactory.CreateInMemory();
         var log = new RecordingLogger<AuthService>();
         // The register, forgot and reset flows live in AuthApiService; the real one runs behind AuthService.
         var authApi = new AuthApiService(um, sm, tokens, subs, new RecordingLogger<AuthApiService>(), ctx, email,
@@ -904,6 +905,22 @@ public class AuthServiceTests
         row.Action.ShouldBe(AdminAuditAction.ImpersonationStarted);
         row.Detail.ShouldBeNull();
         row.OccurredAt.ShouldBeInRange(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1));
+    }
+
+    [Fact]
+    public async Task Impersonate_TheSaveThrows_LeavesNoPendingAuditRow()
+    {
+        var store = new FailingSaveInterceptor();
+        var h = Build(context: DbContextFactory.CreateInMemory(store));
+        var target = User();
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Student"]);
+        h.Um.GetSecurityStampAsync(target).Returns("stamp-1");
+        store.FailSaves = true;
+
+        await Should.ThrowAsync<DbUpdateException>(() => h.Svc.ImpersonateAsync(AdminPrincipal(), "u1"));
+
+        h.Db.ChangeTracker.Entries<AdminAuditEntry>().ShouldBeEmpty();
     }
 
     [Fact]

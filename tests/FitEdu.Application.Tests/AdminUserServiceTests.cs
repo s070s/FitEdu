@@ -1474,4 +1474,25 @@ public class AdminUserServiceTests
 
         await ShouldHaveWrittenNoAuditRow(db);
     }
+
+    [Fact]
+    public async Task Impersonate_TheSaveThrows_LeavesNoPendingAuditRow()
+    {
+        var store = new FailingSaveInterceptor();
+        await using var db = DbContextFactory.CreateInMemory(store);
+        db.Users.Add(NewUser("student"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns([RoleNames.Student]);
+        var tokenService = Substitute.For<ITokenService>();
+        tokenService.GenerateImpersonationTokenAsync(Arg.Any<ApplicationUser>(), "admin-actor")
+            .Returns(("impersonation-token", DateTime.UtcNow.AddHours(1)));
+        store.FailSaves = true;
+
+        await Should.ThrowAsync<DbUpdateException>(() =>
+            NewService(db, userManager, tokenService: tokenService).ImpersonateUserAsync("student", "admin-actor"));
+
+        PendingAuditRows(db).ShouldBe(0);
+    }
 }

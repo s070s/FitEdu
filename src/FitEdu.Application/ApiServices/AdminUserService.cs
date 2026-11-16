@@ -438,8 +438,16 @@ public partial class AdminUserService(
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
         // Saved before the token leaves the service, so a session is never handed out without its row.
-        AdminAuditStaging.Stage(context, adminId, userId, AdminAuditAction.ImpersonationStarted, timeProvider.GetUtcNow());
-        await context.SaveChangesAsync(cancellationToken);
+        var audit = AdminAuditStaging.Stage(context, adminId, userId, AdminAuditAction.ImpersonationStarted, timeProvider.GetUtcNow());
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            AdminAuditStaging.Discard(context, audit);
+            throw;
+        }
 
         LogImpersonationStarted(logger, adminId, userId);
 

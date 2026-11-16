@@ -24,6 +24,19 @@ public static class DbContextFactory
     }
 
     /// <summary>
+    /// InMemory context whose saves can be made to throw through the given interceptor.
+    /// </summary>
+    public static ApplicationDbContext CreateInMemory(FailingSaveInterceptor interceptor)
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString("N"))
+            .AddInterceptors(interceptor)
+            .Options;
+
+        return new ApplicationDbContext(options);
+    }
+
+    /// <summary>
     /// Relational SQLite (<c>:memory:</c>) for cases the InMemory provider can't run:
     /// <c>EF.Functions.Like</c>, <c>ExecuteUpdate</c>/<c>ExecuteDelete</c>, ISO-string ordering.
     /// The caller owns the returned context AND its open connection — dispose the context
