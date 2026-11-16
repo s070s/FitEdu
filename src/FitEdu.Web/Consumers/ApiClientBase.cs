@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using FitEdu.Web.Services;
 
 namespace FitEdu.Web.Consumers;
@@ -61,7 +63,8 @@ public abstract class ApiClientBase
         bool retryable,
         T? fallback,
         CancellationToken ct,
-        bool readNotFound = false)
+        bool readNotFound = false,
+        bool readFailure = false)
     {
         for (var attempt = 1; ; attempt++)
         {
@@ -70,6 +73,7 @@ public abstract class ApiClientBase
                 await EnsureAuthorizationAsync();
                 using var response = await send(ct);
                 var isReadable = response.IsSuccessStatusCode
+                    || readFailure
                     || (readNotFound && response.StatusCode == HttpStatusCode.NotFound);
                 return isReadable ? await read(response, ct) : fallback;
             }
@@ -148,6 +152,17 @@ public abstract class ApiClientBase
         ExecuteAsync(c => Http.PostAsJsonAsync(url, body, c),
             (_, _) => Task.FromResult(true), retryable: false, fallback: false, ct);
 
+    /// <summary>
+    /// POSTs a JSON body and reports the outcome with the API's refusal reason, for a page that shows
+    /// the reason (see <see cref="ApiActionResult"/>).
+    /// </summary>
+    protected Task<ApiActionResult> PostJsonResultAsync<TBody>(string url, TBody body, CancellationToken ct = default) =>
+        SendForResultAsync(c => Http.PostAsJsonAsync(url, body, c), ct);
+
+    /// <summary>DELETEs and reports the outcome with the API's refusal reason (see <see cref="ApiActionResult"/>).</summary>
+    protected Task<ApiActionResult> DeleteResultAsync(string url, CancellationToken ct = default) =>
+        SendForResultAsync(c => Http.DeleteAsync(url, c), ct);
+
     protected Task<TResult?> PutJsonAsync<TBody, TResult>(string url, TBody body, CancellationToken ct = default) =>
         ExecuteAsync(c => Http.PutAsJsonAsync(url, body, c),
             (r, c) => r.Content.ReadFromJsonAsync<TResult>(cancellationToken: c), retryable: false, fallback: default, ct);
@@ -155,6 +170,36 @@ public abstract class ApiClientBase
     protected Task<bool> DeleteAsync(string url, CancellationToken ct = default) =>
         ExecuteAsync(c => Http.DeleteAsync(url, c),
             (_, _) => Task.FromResult(true), retryable: false, fallback: false, ct);
+
+    private async Task<ApiActionResult> SendForResultAsync(Func<CancellationToken, Task<HttpResponseMessage>> send, CancellationToken ct)
+    {
+        var result = await ExecuteAsync(send, ReadActionResultAsync, retryable: false,
+            fallback: ApiActionResult.Unreachable, ct, readFailure: true);
+        return result ?? ApiActionResult.Unreachable;
+    }
+
+    private static async Task<ApiActionResult?> ReadActionResultAsync(HttpResponseMessage response, CancellationToken ct)
+    {
+        if (response.IsSuccessStatusCode)
+            return ApiActionResult.Success;
+
+        return ApiActionResult.Refused(response.StatusCode, await ReadProblemDetailAsync(response, ct));
+    }
+
+    // The detail of an RFC 7807 body (what ServiceResultExtensions sends for a refusal), or null for
+    // any other body: a model-validation problem has no detail, a proxy may answer with HTML.
+    private static async Task<string?> ReadProblemDetailAsync(HttpResponseMessage response, CancellationToken ct)
+    {
+        try
+        {
+            var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken: ct);
+            return string.IsNullOrWhiteSpace(problem?.Detail) ? null : problem.Detail;
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return null;
+        }
+    }
 
     protected Task<TResult?> PostFormAsync<TResult>(string url, HttpContent form, CancellationToken ct = default) =>
         ExecuteAsync(c => Http.PostAsync(url, form, c),

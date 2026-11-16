@@ -1,9 +1,11 @@
+using System.Net;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 
@@ -171,7 +173,7 @@ public partial class AdminUsers : IAsyncDisposable
 
     private async Task SubmitResetPassword()
     {
-        if (string.IsNullOrWhiteSpace(_resetPwdNew) || _resetPwdNew.Length < 8)
+        if (string.IsNullOrWhiteSpace(_resetPwdNew) || _resetPwdNew.Length < PasswordRules.MinimumLength)
         {
             _resetPwdError = AdminRes.PasswordMinLength;
             return;
@@ -188,8 +190,8 @@ public partial class AdminUsers : IAsyncDisposable
 
         try
         {
-            var success = await UserConsumer.SetPasswordAsync(_resetPwdUserId!, _resetPwdNew);
-            if (success)
+            var result = await UserConsumer.SetPasswordAsync(_resetPwdUserId!, _resetPwdNew);
+            if (result.Succeeded)
             {
                 message = AdminRes.PasswordUpdated;
                 messageType = "success";
@@ -197,7 +199,7 @@ public partial class AdminUsers : IAsyncDisposable
             }
             else
             {
-                _resetPwdError = AdminRes.PasswordUpdateFailed;
+                _resetPwdError = PasswordRefusalMessage(result);
             }
         }
         catch (Exception)
@@ -209,6 +211,13 @@ public partial class AdminUsers : IAsyncDisposable
             _resetPwdBusy = false;
         }
     }
+
+    // A 400 carries the server's own rule message (which rule the password broke); any other
+    // failure (a missing member, a busy server, no connection) has no rule to show.
+    private static string PasswordRefusalMessage(ApiActionResult result) =>
+        result.StatusCode == HttpStatusCode.BadRequest && !string.IsNullOrWhiteSpace(result.Detail)
+            ? result.Detail
+            : AdminRes.PasswordUpdateFailed;
 
     private async Task SetUserEnabled(string userId, bool enable)
     {

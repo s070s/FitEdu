@@ -137,16 +137,16 @@
     <Body>
         @if (_resetPwdError is not null)
         {
-            <div class="alert alert-danger py-1">@_resetPwdError</div>
+            <div class="alert alert-danger py-1" role="alert">@_resetPwdError</div>
         }
         <div class="mb-3">
             <label class="form-label" for="reset-pwd-new">@AdminRes.NewPassword</label>
-            <input id="reset-pwd-new" type="password" class="form-control" aria-describedby="reset-pwd-help" @bind="_resetPwdNew" />
+            <input id="reset-pwd-new" type="password" class="form-control" autocomplete="new-password" aria-describedby="reset-pwd-help" @bind="_resetPwdNew" />
             <div class="form-text" id="reset-pwd-help">@GlobalRes.PasswordRulesHint</div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="reset-pwd-confirm">@AdminRes.ConfirmPasswordLabel</label>
-            <input id="reset-pwd-confirm" type="password" class="form-control" @bind="_resetPwdConfirm" />
+            <input id="reset-pwd-confirm" type="password" class="form-control" autocomplete="new-password" @bind="_resetPwdConfirm" />
         </div>
     </Body>
     <Footer>

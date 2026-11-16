@@ -24,8 +24,8 @@ public class AdminUserConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
     public Task<bool> DisableUserAsync(string userId)
         => ActionAsync($"api/admin/users/{userId}/disable");
 
-    public Task<bool> SetPasswordAsync(string userId, string newPassword)
-        => PostJsonActionAsync(
+    public Task<ApiActionResult> SetPasswordAsync(string userId, string newPassword)
+        => PostJsonResultAsync(
                $"api/admin/users/{userId}/set-password",
                new AdminSetPasswordDto { NewPassword = newPassword });
 

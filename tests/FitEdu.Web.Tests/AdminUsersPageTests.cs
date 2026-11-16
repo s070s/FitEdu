@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using Bunit;
 using Bunit.TestDoubles;
 using Microsoft.Extensions.Configuration;
@@ -81,6 +82,86 @@ public class AdminUsersPageTests : BunitContext
         ButtonNames(rows[0]).ShouldBe([AdminRes.LoginAs, AdminRes.ResetPassword, AdminRes.DisableUser, AdminRes.Delete]);
         ButtonNames(rows[1]).ShouldBe([AdminRes.LoginAs, AdminRes.ResetPassword, AdminRes.EnableUser, AdminRes.Delete]);
         ButtonNames(rows[2]).ShouldBeEmpty("an admin row offers no action");
+    }
+
+    // ---- Set-password dialog ---------------------------------------------------------------------
+
+    private static void ClickRowButton(AngleSharp.Dom.IElement row, string buttonText) =>
+        row.QuerySelectorAll("td.table-actions button").Single(button => button.TextContent.Trim() == buttonText).Click();
+
+    private IRenderedComponent<AdminUsers> OpenSetPasswordDialog()
+    {
+        var page = RenderThreeUsers();
+        ClickRowButton(page.FindAll("tbody tr")[0], AdminRes.ResetPassword);
+        return page;
+    }
+
+    private static void SubmitPassword(IRenderedComponent<AdminUsers> page, string password, string confirmation)
+    {
+        page.Find("#reset-pwd-new").Change(password);
+        page.Find("#reset-pwd-confirm").Change(confirmation);
+        page.FindAll(".modal-footer button")[^1].Click();
+    }
+
+    [Fact]
+    public void SetPasswordDialog_BothFieldsAreNewPasswordFields_SoABrowserDoesNotFillTheAdminsOwnPassword()
+    {
+        var page = OpenSetPasswordDialog();
+
+        page.Find("#reset-pwd-new").GetAttribute("autocomplete").ShouldBe("new-password");
+        page.Find("#reset-pwd-confirm").GetAttribute("autocomplete").ShouldBe("new-password");
+    }
+
+    [Fact]
+    public void SetPasswordDialog_ATooShortPassword_ShowsTheErrorAsAnAlertWithoutCallingTheApi()
+    {
+        var page = OpenSetPasswordDialog();
+
+        SubmitPassword(page, "Short1a", "Short1a");
+
+        var alert = page.Find(".modal-body [role='alert']");
+        alert.TextContent.Trim().ShouldBe(AdminRes.PasswordMinLength);
+        _users.DidNotReceiveWithAnyArgs().SetPasswordAsync(default!, default!);
+    }
+
+    [Fact]
+    public void SetPasswordDialog_AMinimumLengthPassword_IsSentAndTheDialogCloses()
+    {
+        _users.SetPasswordAsync("member-1", "Passw0rd").Returns(ApiActionResult.Success);
+        var page = OpenSetPasswordDialog();
+
+        SubmitPassword(page, "Passw0rd", "Passw0rd");
+
+        _users.Received(1).SetPasswordAsync("member-1", "Passw0rd");
+        page.FindAll(".modal-dialog").ShouldBeEmpty();
+        page.Find(".alert-success").TextContent.ShouldContain(AdminRes.PasswordUpdated);
+    }
+
+    [Fact]
+    public void SetPasswordDialog_TheServerRefusesThePassword_ShowsTheServersRuleMessage()
+    {
+        const string serverMessage = "Passwords must have at least one uppercase ('A'-'Z').";
+        _users.SetPasswordAsync("member-1", "passw0rd").Returns(ApiActionResult.Refused(HttpStatusCode.BadRequest, serverMessage));
+        var page = OpenSetPasswordDialog();
+
+        SubmitPassword(page, "passw0rd", "passw0rd");
+
+        page.Find(".modal-body [role='alert']").TextContent.Trim().ShouldBe(serverMessage);
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.NotFound, "User not found.")]
+    [InlineData(HttpStatusCode.TooManyRequests, null)]
+    [InlineData(null, null)]
+    public void SetPasswordDialog_AnyOtherFailure_ShowsTheGenericMessage(HttpStatusCode? status, string? detail)
+    {
+        _users.SetPasswordAsync("member-1", "Passw0rd")
+            .Returns(status is null ? ApiActionResult.Unreachable : ApiActionResult.Refused(status.Value, detail));
+        var page = OpenSetPasswordDialog();
+
+        SubmitPassword(page, "Passw0rd", "Passw0rd");
+
+        page.Find(".modal-body [role='alert']").TextContent.Trim().ShouldBe(AdminRes.PasswordUpdateFailed);
     }
 
     protected override void Dispose(bool disposing)
