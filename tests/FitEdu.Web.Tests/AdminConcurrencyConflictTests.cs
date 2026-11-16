@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.ApiInterfaces;
@@ -72,7 +73,7 @@ public sealed class AdminConcurrencyConflictTests : IDisposable
     {
         var assessment = new AssessmentDefinition { Id = Guid.NewGuid(), Key = "old-key", TitleEn = "Old", SchemaJson = "{}" };
         await MakeStaleAsync(assessment);
-        var controller = WithContext(new AdminAssessmentsController(_db, new HtmlSanitizer()));
+        var controller = WithContext(new AdminAssessmentsController(_db, new HtmlSanitizer(), new MemoryCache(new MemoryCacheOptions())));
         var request = new SaveAssessmentDefinitionRequest("old-key", "Renamed", null, null, null, """{"questions":[]}""");
 
         var result = await controller.UpdateAssessment(assessment.Id, request);

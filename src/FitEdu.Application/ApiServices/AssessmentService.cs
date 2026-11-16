@@ -151,15 +151,15 @@ public partial class AssessmentService(
     }
 
     /// Returns cached resolved schema JSON, or computes and caches it on miss.
-    /// Key: (assessmentId, "en"|"el"). TTL: 30 minutes — short enough to pick up admin edits.
+    /// Key: (assessmentId, "en"|"el"). Every admin change to the definition evicts both keys
+    /// (AssessmentSchemaCache.Evict); the 30 minute TTL only bounds an entry nothing evicted.
     private string GetCachedResolvedSchema(Guid assessmentId, string schemaJson, bool isEl)
     {
-        var langKey = isEl ? "el" : "en";
-        var cacheKey = $"schema:{assessmentId}:{langKey}";
+        var cacheKey = AssessmentSchemaCache.Key(assessmentId, isEl);
 
         return cache.GetOrCreate(cacheKey, entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            entry.AbsoluteExpirationRelativeToNow = AssessmentSchemaCache.Lifetime;
             return ResolveSchemaJsonByLang(assessmentId, schemaJson, isEl);
         })!;
     }

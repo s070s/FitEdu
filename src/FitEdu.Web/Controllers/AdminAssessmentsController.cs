@@ -2,6 +2,7 @@ using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using FitEdu.Application.ApiServices;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -31,11 +32,14 @@ public class AdminAssessmentsController : ControllerBase
     // EF Core DB context used to read and write application data
     private readonly IApplicationDbContext _db;
     private readonly IHtmlSanitizer _sanitizer;
+    // Holds each assessment's resolved schema for students; every change here evicts the entry.
+    private readonly IMemoryCache _cache;
 
-    public AdminAssessmentsController(IApplicationDbContext db, IHtmlSanitizer sanitizer)
+    public AdminAssessmentsController(IApplicationDbContext db, IHtmlSanitizer sanitizer, IMemoryCache cache)
     {
         _db = db;
         _sanitizer = sanitizer;
+        _cache = cache;
     }
 
     // Helper property to get the current authenticated user's ID or throw if missing
@@ -212,6 +216,8 @@ public class AdminAssessmentsController : ControllerBase
             return Problem(detail: ErrorMessagesRes.ModifiedConcurrently, statusCode: StatusCodes.Status409Conflict);
         }
 
+        AssessmentSchemaCache.Evict(_cache, id);
+
         var categoryNameEn = await GetCategoryNameEnAsync(categoryId);
 
         // Map updated entity to DTO and return 200 OK
@@ -265,6 +271,7 @@ public class AdminAssessmentsController : ControllerBase
             assessment.PublishedAt = DateTimeOffset.UtcNow;
             assessment.UpdatedByUserId = UserId;
             await _db.SaveChangesAsync();
+            AssessmentSchemaCache.Evict(_cache, id);
         }
 
         // Return 204 No Content to indicate success without body
@@ -290,6 +297,7 @@ public class AdminAssessmentsController : ControllerBase
             assessment.UpdatedAt = DateTimeOffset.UtcNow;
             assessment.UpdatedByUserId = UserId;
             await _db.SaveChangesAsync();
+            AssessmentSchemaCache.Evict(_cache, id);
         }
 
         return NoContent();
@@ -315,6 +323,7 @@ public class AdminAssessmentsController : ControllerBase
         _db.AssessmentSubmissions.RemoveRange(assessment.Submissions);
         _db.AssessmentDefinitions.Remove(assessment);
         await _db.SaveChangesAsync();
+        AssessmentSchemaCache.Evict(_cache, id);
 
         return NoContent();
     }
