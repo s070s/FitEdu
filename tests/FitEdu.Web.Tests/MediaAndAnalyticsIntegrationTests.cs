@@ -55,12 +55,8 @@ public class MediaAndAnalyticsIntegrationTests : IClassFixture<CustomWebAppFacto
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-            var csp = response.Headers.TryGetValues("Content-Security-Policy", out var v)
-                ? string.Join(" ", v)
-                : response.Content.Headers.TryGetValues("Content-Security-Policy", out var cv)
-                    ? string.Join(" ", cv)
-                    : "";
-            csp.ShouldContain("sandbox");
+            response.Headers.GetValues("Content-Security-Policy").Single()
+                .ShouldBe("default-src 'none'; style-src 'unsafe-inline'; sandbox");
         }
         finally
         {
