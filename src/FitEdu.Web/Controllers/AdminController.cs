@@ -153,8 +153,10 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     /// <summary>
     /// Generates a short-lived JWT so an admin can view the platform as a specific student.
     /// Returns no refresh token — the session is temporary and cannot be silently extended.
+    /// The target must be an enabled Student, like the admin page's "log in as user".
     /// </summary>
     [HttpPost("users/{userId}/impersonate")]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResponseDto>> ImpersonateUser(string userId, CancellationToken cancellationToken = default)
     {
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;

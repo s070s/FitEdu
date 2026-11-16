@@ -1,7 +1,10 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
@@ -209,6 +212,43 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
         var response = await admin.PostAsJsonAsync($"/api/admin/users/{memberId}/set-password", new AdminSetPasswordDto { NewPassword = tooLong });
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public void ImpersonateEndpoint_UsesTheAuthRateLimit()
+    {
+        var endpoint = _factory.Services.GetRequiredService<EndpointDataSource>().Endpoints.OfType<RouteEndpoint>()
+            .Single(candidate => candidate.RoutePattern.RawText == "api/admin/users/{userId}/impersonate");
+
+        var policyName = endpoint.Metadata.GetMetadata<EnableRateLimitingAttribute>()?.PolicyName;
+
+        policyName.ShouldBe("auth");
+    }
+
+    [Fact]
+    public async Task Impersonate_DisabledMember_Returns400()
+    {
+        var (memberId, _) = await SignInNewUserAsync();
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+        await admin.PostAsync($"/api/admin/users/{memberId}/disable", content: null);
+
+        var response = await admin.PostAsync($"/api/admin/users/{memberId}/impersonate", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Impersonate_EnabledMember_ReturnsAShortLivedTokenWithoutARefreshToken()
+    {
+        var (memberId, _) = await SignInNewUserAsync();
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var response = await admin.PostAsync($"/api/admin/users/{memberId}/impersonate", content: null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        body!.Token.ShouldNotBeNullOrEmpty();
+        body.RefreshToken.ShouldBeNull();
     }
 
     [Fact]

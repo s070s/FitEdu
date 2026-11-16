@@ -369,6 +369,10 @@ public partial class AdminUserService(
         if (!targetRoles.Contains(RoleNames.Student))
             return ServiceResult<AuthResponseDto>.BadRequest(error: ErrorMessagesRes.ImpersonationOnlyStudents);
 
+        // The page flow refuses a disabled member too; a disabled account gets no session of any kind.
+        if (!target.IsEnabled)
+            return ServiceResult<AuthResponseDto>.BadRequest(error: ErrorMessagesRes.AccountDisabled);
+
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
         LogImpersonationStarted(logger, adminId, userId);

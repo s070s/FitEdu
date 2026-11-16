@@ -400,7 +400,7 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `DELETE` | `api/admin/users/{userId}` | Delete user; returns `204 No Content` | Admin |
 | `POST` | `api/admin/users/{userId}/force-password-reset` | Force password reset — emails reset link to user; returns `204 No Content` | Admin |
 | `POST` | `api/admin/users/{userId}/set-password` | Directly set password | Admin |
-| `POST` | `api/admin/users/{userId}/impersonate` | Generate temporary JWT as that user | Admin |
+| `POST` | `api/admin/users/{userId}/impersonate` | Generate temporary JWT as that user; the target must be an enabled Student, and the `auth` rate limit applies | Admin |
 
 ### Admin — Courses — `api/admin/courses`
 

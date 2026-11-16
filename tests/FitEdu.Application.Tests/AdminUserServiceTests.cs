@@ -23,7 +23,8 @@ namespace FitEdu.Application.Tests;
 /// </summary>
 public class AdminUserServiceTests
 {
-    private static AdminUserService NewService(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null)
+    private static AdminUserService NewService(
+        ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null)
     {
         var roleManager = Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
@@ -34,7 +35,7 @@ public class AdminUserServiceTests
         return new AdminUserService(
             userManager,
             roleManager,
-            Substitute.For<ITokenService>(),
+            tokenService ?? Substitute.For<ITokenService>(),
             NullLogger<AdminUserService>.Instance,
             db,
             emailService ?? Substitute.For<IEmailService>(),
@@ -300,6 +301,59 @@ public class AdminUserServiceTests
         var result = await NewService(db, userManager).RemoveRoleAsync("admin-actor", RoleNames.Student);
 
         result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task Impersonate_DisabledStudent_IsRefusedAndNoTokenIsIssued()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var student = NewUser("disabled-student");
+        student.IsEnabled = false;
+        db.Users.Add(student);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns([RoleNames.Student]);
+        var tokenService = Substitute.For<ITokenService>();
+
+        var result = await NewService(db, userManager, tokenService: tokenService).ImpersonateUserAsync("disabled-student", "admin-actor");
+
+        result.StatusCode.ShouldBe(400);
+        await tokenService.DidNotReceive().GenerateImpersonationTokenAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task Impersonate_EnabledStudent_IssuesATokenForThatStudent()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("student"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns([RoleNames.Student]);
+        var tokenService = Substitute.For<ITokenService>();
+        tokenService.GenerateImpersonationTokenAsync(Arg.Any<ApplicationUser>(), "admin-actor")
+            .Returns(("impersonation-token", DateTime.UtcNow.AddHours(1)));
+
+        var result = await NewService(db, userManager, tokenService: tokenService).ImpersonateUserAsync("student", "admin-actor");
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Token.ShouldBe("impersonation-token");
+    }
+
+    [Fact]
+    public async Task Impersonate_AccountWithoutTheStudentRole_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("coach"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns([RoleNames.Admin]);
+
+        var result = await NewService(db, userManager).ImpersonateUserAsync("coach", "admin-actor");
+
+        result.StatusCode.ShouldBe(400);
     }
 
     [Fact]
