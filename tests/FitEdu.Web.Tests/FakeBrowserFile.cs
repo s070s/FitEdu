@@ -24,6 +24,14 @@ internal sealed class FakeBrowserFile(string name, long size, string contentType
     public static void Choose(IRenderedComponent<FilePicker> picker, IBrowserFile file) =>
         StartChoosing(picker, file).GetAwaiter().GetResult();
 
+    /// <summary>Raises the change the browser sends when the dialog is cancelled after a choice: no file at all.</summary>
+    public static void ChooseNothing(IRenderedComponent<FilePicker> picker)
+    {
+        var inputChanged = picker.FindComponent<InputFile>().Instance.OnChange;
+        var args = new InputFileChangeEventArgs(Array.Empty<IBrowserFile>());
+        picker.InvokeAsync(() => inputChanged.InvokeAsync(args)).GetAwaiter().GetResult();
+    }
+
     /// <summary>Like <see cref="Choose"/> but returns at once, so a test can look at the page while a slow upload is running.</summary>
     public static Task StartChoosing(IRenderedComponent<FilePicker> picker, IBrowserFile file)
     {

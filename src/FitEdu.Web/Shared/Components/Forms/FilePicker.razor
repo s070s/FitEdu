@@ -31,6 +31,9 @@
 
     [Parameter] public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
 
+    /// <summary>Raised when the choice is taken back (the dialog was cancelled after a file was chosen), so the parent drops the file it kept.</summary>
+    [Parameter] public EventCallback OnCleared { get; set; }
+
     private string? _fileName;
 
     // A new key makes Blazor build a fresh input element. The browser keeps the old element's chosen
@@ -59,6 +62,7 @@
         if (args.FileCount == 0)
         {
             _fileName = null;
+            await OnCleared.InvokeAsync();
             return;
         }
 

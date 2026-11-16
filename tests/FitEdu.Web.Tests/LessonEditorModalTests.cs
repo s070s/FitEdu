@@ -308,6 +308,21 @@ public class LessonEditorModalTests : BunitContext
     }
 
     [Fact]
+    public void ChoiceThatIsClearedAgain_IsNotUploadedOnSave()
+    {
+        var modal = RenderModal(null);
+        modal.Find("#lesson-title-en").Change("Leg day");
+        var picker = modal.FindComponents<FilePicker>().Single(candidate => candidate.Instance.Id == "lesson-pdf");
+        FakeBrowserFile.Choose(picker, new FakeBrowserFile("notes.pdf", 1024, "application/pdf"));
+
+        // The browser sends a change with no file when the dialog is cancelled after a choice.
+        FakeBrowserFile.ChooseNothing(picker);
+        ClickSave(modal);
+
+        _lessonConsumer.DidNotReceive().UploadPdfAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>());
+    }
+
+    [Fact]
     public void ContentEditors_GetAPlaceholderInTheirOwnContentLanguage()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el");

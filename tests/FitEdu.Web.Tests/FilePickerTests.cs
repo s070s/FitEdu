@@ -110,6 +110,19 @@ public class FilePickerTests : BunitContext
     }
 
     [Fact]
+    public void AnEmptyChange_TellsTheParentTheChoiceIsGone()
+    {
+        var cleared = 0;
+        var picker = Render<FilePicker>(parameters => parameters
+            .Add(p => p.Id, PickerId)
+            .Add(p => p.OnCleared, () => cleared++));
+
+        FakeBrowserFile.ChooseNothing(picker);
+
+        cleared.ShouldBe(1);
+    }
+
+    [Fact]
     public void ClearFileName_RendersANewInputSoTheSameFileCanBePickedAgain()
     {
         var picker = Render<FilePicker>(parameters => parameters.Add(p => p.Id, PickerId));

@@ -99,7 +99,7 @@
                 </div>
             }
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*"
+                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" OnCleared="@(() => _pendingCoverFile = null)" Accept="image/*"
                             DescribedBy="@(_error is null ? null : "blog-error")" />
                 @if (!_isEditMode)
                 {
