@@ -391,15 +391,15 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `GET` | `api/admin/users` | List users (paged, searchable) | Admin |
 | `GET` | `api/admin/users/{userId}` | User detail | Admin |
 | `GET` | `api/admin/users/search` | Search users | Admin |
-| `POST` | `api/admin/users/{userId}/roles/{roleName}` | Add role; the user's current sessions end, so the next sign-in carries the new role | Admin |
-| `DELETE` | `api/admin/users/{userId}/roles/{roleName}` | Remove role; the user's current sessions end. The Admin role cannot be removed from yourself or from the last admin | Admin |
+| `POST` | `api/admin/users/{userId}/roles/{roleName}` | Add role; the user's current sessions end and their open live connections are closed, so the next sign-in carries the new role | Admin |
+| `DELETE` | `api/admin/users/{userId}/roles/{roleName}` | Remove role; the user's current sessions end and their open live connections are closed. The Admin role cannot be removed from yourself or from the last admin | Admin |
 | `GET` | `api/admin/roles` | List all roles | Admin |
 | `POST` | `api/admin/roles/{roleName}` | Create role | Admin |
-| `POST` | `api/admin/users/{userId}/disable` | Disable user: sets `IsEnabled` to false, signs them out everywhere (new security stamp, refresh tokens revoked) and blocks sign-in; Admin accounts and your own account are refused | Admin |
+| `POST` | `api/admin/users/{userId}/disable` | Disable user: sets `IsEnabled` to false, signs them out everywhere (new security stamp, refresh tokens revoked), closes their open live connections (chat, call and notifications; a chat or call action from a stale session is refused) and blocks sign-in; Admin accounts and your own account are refused | Admin |
 | `POST` | `api/admin/users/{userId}/enable` | Enable user: sets `IsEnabled` to true and clears any lock-out date | Admin |
 | `DELETE` | `api/admin/users/{userId}` | Delete user for good with their chat and call history and profile photo; returns `204 No Content`, or `409` for a member who hosts a scheduled session | Admin |
 | `POST` | `api/admin/users/{userId}/force-password-reset` | Force password reset — emails reset link to user; returns `204 No Content` | Admin |
-| `POST` | `api/admin/users/{userId}/set-password` | Directly set password (not for Admin accounts); the member gets a notice email in their stored language, with no password and no link | Admin |
+| `POST` | `api/admin/users/{userId}/set-password` | Directly set password (not for Admin accounts); the member's open live connections are closed, and they get a notice email in their stored language, with no password and no link | Admin |
 | `POST` | `api/admin/users/{userId}/impersonate` | Generate temporary JWT as that user; the target must be an enabled Student, and the `auth` rate limit applies | Admin |
 
 ### Admin — Courses — `api/admin/courses`
