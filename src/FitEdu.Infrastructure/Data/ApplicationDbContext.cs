@@ -249,7 +249,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     // ---------------------------------------------------------------------------
     // Audit: stamp CreatedAt / UpdatedAt / *ByUserId on every save.
-    // Called from both sync and async overrides to ensure neither path is missed.
+    // Called from the sync and async overrides of the acceptAllChangesOnSuccess overloads: both
+    // parameterless SaveChanges methods call them, so no save path is missed.
     // ---------------------------------------------------------------------------
 
     private void ApplyAuditFields()
@@ -280,15 +281,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         }
     }
 
-    public override int SaveChanges()
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         ApplyAuditFields();
-        return base.SaveChanges();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
         ApplyAuditFields();
-        return base.SaveChangesAsync(cancellationToken);
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 }

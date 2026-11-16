@@ -49,6 +49,32 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public void SaveChanges_KeepingTheChangesAccepted_StillStampsAuditFields()
+    {
+        // The overload with acceptAllChangesOnSuccess is what both parameterless SaveChanges call; a caller
+        // (or the EF Core internals) that uses it directly must not skip the audit stamp.
+        using var db = CtxWithUser("direct-caller");
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        db.Courses.Add(course);
+
+        db.SaveChanges(acceptAllChangesOnSuccess: false);
+
+        course.CreatedByUserId.ShouldBe("direct-caller");
+    }
+
+    [Fact]
+    public async Task SaveChangesAsync_KeepingTheChangesAccepted_StillStampsAuditFields()
+    {
+        await using var db = CtxWithUser("direct-caller");
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        db.Courses.Add(course);
+
+        await db.SaveChangesAsync(acceptAllChangesOnSuccess: false);
+
+        course.CreatedByUserId.ShouldBe("direct-caller");
+    }
+
+    [Fact]
     public async Task SaveChanges_NoHttpContext_StampsTimestampsButNullUser()
     {
         await using var db = CtxWithUser(null);
