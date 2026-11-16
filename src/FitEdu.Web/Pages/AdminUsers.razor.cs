@@ -13,13 +13,20 @@ namespace FitEdu.Web.Pages;
 
 public partial class AdminUsers : IAsyncDisposable
 {
-    private const string FirstPagePersistKey = "admin-users-first-page";
+    private const string SnapshotPersistKey = "admin-users-snapshot";
 
     [Inject] private IAdminUserConsumer UserConsumer { get; set; } = default!;
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthState { get; set; } = default!;
     [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
+
+    /// <summary>
+    /// What the prerender hands to the interactive render (and a resumed circuit): the loaded list together
+    /// with the paging, search and sort it was loaded for, so the page never shows one list with another's state.
+    /// </summary>
+    public sealed record UsersSnapshot(
+        int Page, int PageSize, string Search, string SortBy, string SortDir, PagedResult<AdminUserDto> Result);
 
     private PagedResult<AdminUserDto>? pagedResult;
     private int currentPage = 1;
@@ -48,13 +55,18 @@ public partial class AdminUsers : IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _persistSubscription = ApplicationState.RegisterOnPersisting(PersistFirstPage);
+        _persistSubscription = ApplicationState.RegisterOnPersisting(PersistSnapshot);
 
-        // The prerender already loaded the first page; the interactive render reuses it instead of
-        // asking the API a second time.
-        if (ApplicationState.TryTakeFromJson<PagedResult<AdminUserDto>>(FirstPagePersistKey, out var firstPage) && firstPage is not null)
+        // The prerender already loaded the list; the interactive render reuses it, with the paging it
+        // was loaded for, instead of asking the API a second time.
+        if (ApplicationState.TryTakeFromJson<UsersSnapshot>(SnapshotPersistKey, out var snapshot) && snapshot is not null)
         {
-            pagedResult = firstPage;
+            currentPage = snapshot.Page;
+            pageSize = snapshot.PageSize;
+            searchTerm = snapshot.Search;
+            _sortBy = snapshot.SortBy;
+            _sortDir = snapshot.SortDir;
+            pagedResult = snapshot.Result;
             return;
         }
 
@@ -72,11 +84,11 @@ public partial class AdminUsers : IAsyncDisposable
         await _headingRef.FocusAsync();
     }
 
-    private Task PersistFirstPage()
+    private Task PersistSnapshot()
     {
         // A failed load stays out, so the interactive render asks the API again.
         if (pagedResult is not null)
-            ApplicationState.PersistAsJson(FirstPagePersistKey, pagedResult);
+            ApplicationState.PersistAsJson(SnapshotPersistKey, new UsersSnapshot(currentPage, pageSize, searchTerm, _sortBy, _sortDir, pagedResult));
 
         return Task.CompletedTask;
     }

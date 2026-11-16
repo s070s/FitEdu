@@ -166,10 +166,12 @@ public class AdminUsersPageTests : BunitContext
         page.Find("button.btn-cta").TextContent.Trim().ShouldBe(GlobalRes.TryAgain);
     }
 
+    private const string SnapshotKey = "admin-users-snapshot";
+
     [Fact]
     public void List_ThePrerenderedFirstPageIsReusedInteractively_WithoutAskingTheApiAgain()
     {
-        _persistentState.Persist("admin-users-first-page", OnePage(MemberEmail));
+        _persistentState.Persist(SnapshotKey, new AdminUsers.UsersSnapshot(1, 10, string.Empty, "email", "asc", OnePage(MemberEmail)));
 
         var page = Render<AdminUsers>();
 
@@ -178,15 +180,35 @@ public class AdminUsersPageTests : BunitContext
     }
 
     [Fact]
-    public void List_TheFirstPageIsHandedToTheInteractiveRender()
+    public void List_ARestoredSnapshot_KeepsItsPageSizeSearchAndSortForTheNextRequest()
+    {
+        // A resumed circuit must not show page 3 of the list while its own state says page 1 of everything.
+        var restored = new PagedResult<AdminUserDto>([User("member-9", MemberEmail, true, "Student")], 60, 3, 25);
+        _persistentState.Persist(SnapshotKey, new AdminUsers.UsersSnapshot(3, 25, "alice", "createdat", "desc", restored));
+        _users.GetUsersAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(OnePage(MemberEmail));
+        var page = Render<AdminUsers>();
+
+        page.Find("input[type='text']").GetAttribute("value").ShouldBe("alice");
+        page.FindAll(".pagination-controls button")[0].Click();
+
+        _users.Received(1).GetUsersAsync(2, 25, "alice", "createdat", "desc");
+    }
+
+    [Fact]
+    public void List_TheListAndItsPagingAreHandedToTheInteractiveRender()
     {
         ReturnsUsers(User("member-1", MemberEmail, true, "Student"));
         Render<AdminUsers>();
 
         _persistentState.TriggerOnPersisting();
 
-        _persistentState.TryTake<PagedResult<AdminUserDto>>("admin-users-first-page", out var handedOver).ShouldBeTrue();
-        handedOver!.Items.Single().Email.ShouldBe(MemberEmail);
+        _persistentState.TryTake<AdminUsers.UsersSnapshot>(SnapshotKey, out var handedOver).ShouldBeTrue();
+        handedOver!.Result.Items.Single().Email.ShouldBe(MemberEmail);
+        handedOver.Page.ShouldBe(1);
+        handedOver.PageSize.ShouldBe(10);
+        handedOver.SortBy.ShouldBe("email");
+        handedOver.SortDir.ShouldBe("asc");
     }
 
     [Fact]
@@ -199,7 +221,7 @@ public class AdminUsersPageTests : BunitContext
 
         _persistentState.TriggerOnPersisting();
 
-        _persistentState.TryTake<PagedResult<AdminUserDto>>("admin-users-first-page", out _).ShouldBeFalse();
+        _persistentState.TryTake<AdminUsers.UsersSnapshot>(SnapshotKey, out _).ShouldBeFalse();
     }
 
     // ---- Delete ----------------------------------------------------------------------------------
