@@ -54,7 +54,7 @@
     }
 
     .analytics-panels {
-        grid-template-columns: 3fr 2fr;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
         align-items: start;
     }
 }
