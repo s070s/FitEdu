@@ -15,6 +15,10 @@ namespace FitEdu.Web.Services;
 /// REST calls via <see cref="ApiTokenProvider"/> and the SignalR hub via its AccessTokenProvider —
 /// because HttpContext (and therefore <c>SsrApiHandler</c>) is null inside the interactive circuit,
 /// where these calls would otherwise go out unauthenticated and 401.
+///
+/// Registered as a typed HttpClient, so it is transient: every component that injects it gets its own
+/// instance and hub connection, unlike the scoped CallService. That works today; ServiceLifetimeTests
+/// pins both lifetimes so a change to either one is deliberate (ARCH-8).
 /// </summary>
 public partial class ChatService : IChatService
 {
