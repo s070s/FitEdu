@@ -95,8 +95,19 @@ public partial class AdminUsers : IAsyncDisposable
                 string.IsNullOrEmpty(searchTerm) ? null : searchTerm,
                 _sortBy,
                 _sortDir);
-            if (sequence == _loadSequence)
-                pagedResult = loaded;
+            if (sequence != _loadSequence)
+                return;
+
+            // The consumer answers null for any failed request (an error status, no connection).
+            if (loaded is null)
+            {
+                message = ErrorMessagesRes.UnexpectedErrorTryAgain;
+                messageType = "danger";
+                _loadFailed = true;
+                return;
+            }
+
+            pagedResult = loaded;
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {

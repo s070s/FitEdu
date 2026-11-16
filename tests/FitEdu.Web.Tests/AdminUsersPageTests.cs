@@ -11,6 +11,7 @@ using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Shared.Resources;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
@@ -141,6 +142,20 @@ public class AdminUsersPageTests : BunitContext
 
         page.Find("tbody").TextContent.ShouldContain(newerEmail);
         page.Find("tbody").TextContent.ShouldNotContain(olderEmail);
+    }
+
+    [Fact]
+    public void List_TheApiAnswersWithAnError_OffersToTryAgainInsteadOfASkeletonThatNeverEnds()
+    {
+        // The consumer turns every failed request (a 500, a 403, no connection) into a null list.
+        _users.GetUsersAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns((PagedResult<AdminUserDto>?)null);
+
+        var page = Render<AdminUsers>();
+
+        page.FindAll(".skeleton-block").ShouldBeEmpty();
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.Find("button.btn-cta").TextContent.Trim().ShouldBe(GlobalRes.TryAgain);
     }
 
     [Fact]
