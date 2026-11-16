@@ -81,13 +81,9 @@ public class SiteSettingsController : ControllerBase
         var setting = await _db.SiteSettings
             .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey, cancellationToken);
 
-        // Delete old background if exists
-        if (setting != null && !string.IsNullOrEmpty(setting.Value))
-        {
-            await _fileStorage.DeleteFileAsync(setting.Value, cancellationToken);
-        }
-
-        // Save new background
+        // Save the new background, update the setting, then delete the old file (P05-6): a failure before the
+        // update keeps the old file and the old value.
+        var oldPath = setting?.Value;
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "backgrounds", cancellationToken: cancellationToken);
 
@@ -110,8 +106,17 @@ public class SiteSettingsController : ControllerBase
             setting.UpdatedAt = DateTimeOffset.UtcNow;
         }
 
-        await _db.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await _fileStorage.DeleteUnusedFileAsync(path, _logger);
+            throw;
+        }
 
+        await _fileStorage.DeleteUnusedFileAsync(oldPath, _logger);
         return Ok(new BackgroundImageUploadResultDto(path));
     }
 }

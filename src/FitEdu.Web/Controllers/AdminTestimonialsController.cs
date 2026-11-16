@@ -117,15 +117,22 @@ public partial class AdminTestimonialsController : ControllerBase
         if (existing is null)
             return NotFound();
 
-        // Delete old avatar if it was an uploaded file
-        if (!string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
-
+        // Save the new avatar, update the testimonial, then delete the old file (P05-6): a failure before the update
+        // keeps the old file and the old value.
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "testimonials/avatars", cancellationToken: cancellationToken);
 
-        await _testimonials.SetAvatarPathAsync(id, path, cancellationToken);
+        try
+        {
+            await _testimonials.SetAvatarPathAsync(id, path, cancellationToken);
+        }
+        catch
+        {
+            await _fileStorage.DeleteUnusedFileAsync(path, _logger);
+            throw;
+        }
 
+        await _fileStorage.DeleteUnusedFileAsync(existing.AvatarPath, _logger);
         LogAvatarUploaded(_logger, id, path);
         return Ok(new AvatarUploadResultDto(path));
     }
@@ -139,10 +146,11 @@ public partial class AdminTestimonialsController : ControllerBase
         if (existing is null)
             return NotFound();
 
-        if (!string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
-
+        // The row is updated first, so a failed update keeps the file (P05-6).
         var success = await _testimonials.RemoveAvatarAsync(id, cancellationToken);
+        if (success)
+            await _fileStorage.DeleteUnusedFileAsync(existing.AvatarPath, _logger);
+
         return success ? NoContent() : NotFound();
     }
 
@@ -151,12 +159,13 @@ public partial class AdminTestimonialsController : ControllerBase
     public async Task<IActionResult> Delete(
         Guid id, CancellationToken cancellationToken = default)
     {
-        // Delete associated avatar file if present
         var existing = await _testimonials.GetByIdAsync(id, cancellationToken);
-        if (existing is not null && !string.IsNullOrEmpty(existing.AvatarPath))
-            await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
 
+        // The row is deleted first, then its avatar file (P05-6).
         var success = await _testimonials.DeleteAsync(id, cancellationToken);
+        if (success)
+            await _fileStorage.DeleteUnusedFileAsync(existing?.AvatarPath, _logger);
+
         return success ? NoContent() : NotFound();
     }
 

@@ -56,24 +56,24 @@ public partial class ProfileService(
         if (user is null)
             return ServiceResult<AvatarUploadResultDto>.NotFound();
 
-        // Delete old avatar if exists
-        if (!string.IsNullOrEmpty(user.AvatarPath))
-        {
-            await fileStorage.DeleteFileAsync(user.AvatarPath);
-        }
+        var oldPath = user.AvatarPath;
 
-        // Save new avatar. The storage names it by a GUID and the validated content type, so the member's own
-        // file name never reaches the stored path or the log line (the controller validated the type and size).
+        // Save the new avatar first (P05-6): a failed save or update then leaves the old file and the old value alone.
+        // The storage names it by a GUID and the validated content type, so the member's own file name never reaches
+        // the stored path or the log line (the controller validated the type, size and first bytes).
         var path = await fileStorage.SaveFileAsync(fileStream, contentType, "avatars");
 
         user.AvatarPath = path;
         var updateResult = await userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {
+            user.AvatarPath = oldPath;
+            await fileStorage.DeleteUnusedFileAsync(path, logger); // the new file is not used by anything
             LogAvatarPathPersistFailed(logger, userId, string.Join(", ", updateResult.Errors.Select(e => e.Description)));
             return new ServiceResult<AvatarUploadResultDto>(null, StatusCodes.Status500InternalServerError, ErrorMessagesRes.FailedToSaveAvatar);
         }
 
+        await fileStorage.DeleteUnusedFileAsync(oldPath, logger);
         return ServiceResult<AvatarUploadResultDto>.Ok(new AvatarUploadResultDto(path));
     }
 

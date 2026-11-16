@@ -31,13 +31,19 @@ public class AdminLessonsController : ControllerBase
     private readonly IFileStorage _fileStorage;
     // Lesson create/update (sanitising, exercise rows, concurrency) lives in the admin course service.
     private readonly IAdminCourseService _adminCourseService;
+    private readonly ILogger<AdminLessonsController> _logger;
 
-    // Constructor receives dependencies (DbContext, file storage and the admin course service) via DI.
-    public AdminLessonsController(IApplicationDbContext db, IFileStorage fileStorage, IAdminCourseService adminCourseService)
+    // Constructor receives dependencies (DbContext, file storage, the admin course service and a logger) via DI.
+    public AdminLessonsController(
+        IApplicationDbContext db,
+        IFileStorage fileStorage,
+        IAdminCourseService adminCourseService,
+        ILogger<AdminLessonsController> logger)
     {
         _db = db;
         _fileStorage = fileStorage;
         _adminCourseService = adminCourseService;
+        _logger = logger;
     }
 
     // Helper property to get the current authenticated user's ID (used for audit fields).
@@ -117,20 +123,14 @@ public class AdminLessonsController : ControllerBase
             .ToListAsync();
         _db.LessonCompletions.RemoveRange(completions);
 
-        // Delete associated PDF file if present.
-        if (!string.IsNullOrEmpty(lesson.PdfPath))
-        {
-            await _fileStorage.DeleteFileAsync(lesson.PdfPath);
-        }
-        // Delete associated video file if present (skip URLs — only delete uploaded files).
-        if (!string.IsNullOrEmpty(lesson.VideoPath) && !lesson.VideoPath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-        {
-            await _fileStorage.DeleteFileAsync(lesson.VideoPath);
-        }
-
-        // Remove the lesson entity and persist deletion.
+        // Remove the lesson entity and persist the deletion first; its files go afterwards (P05-6), so a failed
+        // save never leaves a lesson whose files are gone.
         _db.Lessons.Remove(lesson);
         await _db.SaveChangesAsync();
+
+        // Delete the associated PDF and video files (an http(s) video URL is skipped: only uploaded files are deleted).
+        await _fileStorage.DeleteUnusedFileAsync(lesson.PdfPath, _logger);
+        await _fileStorage.DeleteUnusedFileAsync(lesson.VideoPath, _logger);
 
         // Return 204 No Content to indicate successful deletion.
         return NoContent();
@@ -151,13 +151,9 @@ public class AdminLessonsController : ControllerBase
         if (!check.IsValid)
             return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
 
-        // Delete previous PDF if it exists to avoid orphaned files.
-        if (!string.IsNullOrEmpty(lesson.PdfPath))
-        {
-            await _fileStorage.DeleteFileAsync(lesson.PdfPath, cancellationToken);
-        }
-
-        // Save the new PDF using the file storage abstraction.
+        // Save the new PDF, update the lesson, then delete the previous file (P05-6): a failure before the update
+        // keeps the old file and the old value.
+        var oldPath = lesson.PdfPath;
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "lessons/pdf", cancellationToken: cancellationToken);
 
@@ -165,7 +161,17 @@ public class AdminLessonsController : ControllerBase
         lesson.PdfPath = path;
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.UpdatedByUserId = UserId;
-        await _db.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await _fileStorage.DeleteUnusedFileAsync(path, _logger);
+            throw;
+        }
+
+        await _fileStorage.DeleteUnusedFileAsync(oldPath, _logger);
 
         // Return the stored PDF path to the caller.
         return Ok(new LessonPdfUploadResultDto(path));
@@ -188,13 +194,9 @@ public class AdminLessonsController : ControllerBase
         if (!check.IsValid)
             return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
 
-        // Delete previous video if present to prevent orphaned files.
-        if (!string.IsNullOrEmpty(lesson.VideoPath))
-        {
-            await _fileStorage.DeleteFileAsync(lesson.VideoPath, cancellationToken);
-        }
-
-        // Save the new video and get its storage path.
+        // Save the new video, update the lesson, then delete the previous file (P05-6): a failure before the update
+        // keeps the old file and the old value. The old value may be an http(s) URL, which is never deleted.
+        var oldPath = lesson.VideoPath;
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "lessons/video", cancellationToken: cancellationToken);
 
@@ -202,7 +204,17 @@ public class AdminLessonsController : ControllerBase
         lesson.VideoPath = path;
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.UpdatedByUserId = UserId;
-        await _db.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await _fileStorage.DeleteUnusedFileAsync(path, _logger);
+            throw;
+        }
+
+        await _fileStorage.DeleteUnusedFileAsync(oldPath, _logger);
 
         // Return the new video path.
         return Ok(new LessonVideoUploadResultDto(path));

@@ -23,15 +23,18 @@ public class AdminBlogController : ControllerBase
     private readonly IBlogArticleService _blogService;
     private readonly IFileStorage _fileStorage;
     private readonly IApplicationDbContext _context;
+    private readonly ILogger<AdminBlogController> _logger;
 
     public AdminBlogController(
         IBlogArticleService blogService,
         IFileStorage fileStorage,
-        IApplicationDbContext context)
+        IApplicationDbContext context,
+        ILogger<AdminBlogController> logger)
     {
         _blogService = blogService;
         _fileStorage = fileStorage;
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>Get a paged list of all blog articles (published and draft) with optional search.</summary>
@@ -132,20 +135,25 @@ public class AdminBlogController : ControllerBase
         if (article is null)
             return NotFound();
 
-        // Delete the old cover image if it was an uploaded file (not a URL).
-        if (!string.IsNullOrEmpty(article.CoverImageUrl) &&
-             !article.CoverImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-        {
-            await _fileStorage.DeleteFileAsync(article.CoverImageUrl, cancellationToken);
-        }
-
+        // Save the new cover, update the article, then delete the old one (P05-6): a failure before the update keeps
+        // the old file and the old value. The old value may be a site file or a URL; only an uploaded file is deleted.
+        var oldCover = article.CoverImageUrl;
         using var stream = file.OpenReadStream();
         var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "blog/covers", cancellationToken: cancellationToken);
 
         article.CoverImageUrl = path;
         article.UpdatedAt = DateTimeOffset.UtcNow;
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await _fileStorage.DeleteUnusedFileAsync(path, _logger);
+            throw;
+        }
 
+        await _fileStorage.DeleteUnusedFileAsync(oldCover, _logger);
         return Ok(new BlogCoverUploadResultDto(path));
     }
 }
