@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -31,7 +32,8 @@ public class AuthServiceTests
         ITokenService Tokens,
         EphemeralDataProtectionProvider Dp,
         IHttpContextAccessor Accessor,
-        RecordingLogger<AuthService> Log);
+        RecordingLogger<AuthService> Log,
+        ApplicationDbContext Db);
 
     private static Harness Build(IAuthAttemptLimiter? attemptLimiter = null, CircuitClientAddress? clientAddress = null)
     {
@@ -53,7 +55,7 @@ public class AuthServiceTests
 
         var svc = new AuthService(accessor, um, sm, authApi, ctx, dp, tokens,
             attemptLimiter ?? new AuthAttemptLimiter(), clientAddress ?? new CircuitClientAddress(), log);
-        return new Harness(svc, um, sm, subs, email, tokens, dp, accessor, log);
+        return new Harness(svc, um, sm, subs, email, tokens, dp, accessor, log, ctx);
     }
 
     private static ApplicationUser User(bool enabled = true) =>
@@ -882,6 +884,49 @@ public class AuthServiceTests
         ticket.UserId.ShouldBe("u1");
         ticket.AdminBackupId.ShouldBe("admin-1");
         ticket.RememberMe.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task Impersonate_Student_WritesOneAuditRowNamingTheAdminAndTheMember()
+    {
+        var h = Build();
+        var target = User();
+        h.Um.FindByIdAsync("u1").Returns(target);
+        h.Um.GetRolesAsync(target).Returns(["Student"]);
+        h.Um.GetSecurityStampAsync(target).Returns("stamp-1");
+
+        var result = await h.Svc.ImpersonateAsync(AdminPrincipal(), "u1");
+
+        result.Success.ShouldBeTrue();
+        var row = await h.Db.AdminAuditEntries.AsNoTracking().SingleAsync();
+        row.ActorUserId.ShouldBe("admin-1");
+        row.TargetUserId.ShouldBe("u1");
+        row.Action.ShouldBe(AdminAuditAction.ImpersonationStarted);
+        row.Detail.ShouldBeNull();
+        row.OccurredAt.ShouldBeInRange(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1));
+    }
+
+    [Fact]
+    public async Task Impersonate_Refused_WritesNoAuditRow()
+    {
+        var h = Build();
+        h.Um.FindByIdAsync("missing").Returns((ApplicationUser?)null);
+        var coach = User();
+        h.Um.FindByIdAsync("coach").Returns(coach);
+        h.Um.GetRolesAsync(coach).Returns(["Admin"]);
+        var disabled = User(enabled: false);
+        h.Um.FindByIdAsync("disabled").Returns(disabled);
+        h.Um.GetRolesAsync(disabled).Returns(["Student"]);
+        var student = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimTypes.NameIdentifier, "u2"), new Claim(ClaimTypes.Role, "Student")], "cookie"));
+
+        await h.Svc.ImpersonateAsync(AdminPrincipal(), "missing");
+        await h.Svc.ImpersonateAsync(AdminPrincipal(), "coach");
+        await h.Svc.ImpersonateAsync(AdminPrincipal(), "disabled");
+        await h.Svc.ImpersonateAsync(student, "disabled");
+        await h.Svc.ImpersonateAsync(new ClaimsPrincipal(new ClaimsIdentity()), "disabled");
+
+        (await h.Db.AdminAuditEntries.CountAsync()).ShouldBe(0);
     }
 
     // ---- GetTokenAsync: signed by the one token service ----

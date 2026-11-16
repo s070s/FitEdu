@@ -5,6 +5,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
@@ -205,6 +206,10 @@ public partial class AuthService : IAuthService
         var stamp = await _userManager.GetSecurityStampAsync(target);
         // Session-only: the impersonated session ends with the browser, like the backup cookie that leads back to the admin.
         var token = CreateSignInToken(userId: target.Id, adminBackupId: adminId, securityStamp: stamp, rememberMe: false);
+
+        // Saved before the ticket leaves the service, so a session is never handed out without its row.
+        AdminAudit.Stage(_context, adminId, target.Id, AdminAuditAction.ImpersonationStarted, DateTimeOffset.UtcNow);
+        await _context.SaveChangesAsync();
         LogImpersonationTokenIssued(_logger, adminId, userId);
         return new AuthResponseDto { Success = true, Token = token };
     }
