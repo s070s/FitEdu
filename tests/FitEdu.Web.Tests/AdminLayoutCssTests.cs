@@ -95,7 +95,7 @@ public class AdminLayoutCssTests
     {
         var css = StripComments(File.ReadAllText(Path.Combine(PagesFolder, "AdminUsers.razor.css")));
 
-        MediaBodies(css, BelowExtraLargeBreakpoint).ShouldHaveSingleItem().ShouldContain("min-height: 2.75rem;");
+        MediaBodies(css, BelowExtraLargeBreakpoint).ShouldHaveSingleItem().ShouldContain("min-height: var(--tap-min);");
     }
 
     /// <summary>The bodies of every top-level <c>@media</c> block with exactly this condition.</summary>

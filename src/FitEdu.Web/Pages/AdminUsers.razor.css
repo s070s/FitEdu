@@ -1,7 +1,7 @@
 ﻿/* Below 1200 px the table is stacked into cards (StackBelow="xl"), so the buttons are for thumbs. */
 @media (max-width: 1199.98px) {
     .table-actions .btn {
-        min-height: 2.75rem;
+        min-height: var(--tap-min);
     }
 }
 
