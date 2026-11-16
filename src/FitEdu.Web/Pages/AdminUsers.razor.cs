@@ -13,10 +13,13 @@ namespace FitEdu.Web.Pages;
 
 public partial class AdminUsers : IAsyncDisposable
 {
+    private const string FirstPagePersistKey = "admin-users-first-page";
+
     [Inject] private IAdminUserConsumer UserConsumer { get; set; } = default!;
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthState { get; set; } = default!;
+    [Inject] private PersistentComponentState ApplicationState { get; set; } = default!;
 
     private PagedResult<AdminUserDto>? pagedResult;
     private int currentPage = 1;
@@ -30,6 +33,8 @@ public partial class AdminUsers : IAsyncDisposable
     private AdminUserDto? _deleteTarget;
     private CancellationTokenSource? _searchCts;
     private bool _loadFailed;
+    private int _loadSequence;
+    private PersistingComponentStateSubscription _persistSubscription;
 
     private bool _resetPwdModalVisible;
     private string? _resetPwdUserId;
@@ -41,7 +46,26 @@ public partial class AdminUsers : IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        _persistSubscription = ApplicationState.RegisterOnPersisting(PersistFirstPage);
+
+        // The prerender already loaded the first page; the interactive render reuses it instead of
+        // asking the API a second time.
+        if (ApplicationState.TryTakeFromJson<PagedResult<AdminUserDto>>(FirstPagePersistKey, out var firstPage) && firstPage is not null)
+        {
+            pagedResult = firstPage;
+            return;
+        }
+
         await LoadUsers();
+    }
+
+    private Task PersistFirstPage()
+    {
+        // A failed load stays out, so the interactive render asks the API again.
+        if (pagedResult is not null)
+            ApplicationState.PersistAsJson(FirstPagePersistKey, pagedResult);
+
+        return Task.CompletedTask;
     }
 
     private async Task OnSort(string columnKey)
@@ -59,24 +83,35 @@ public partial class AdminUsers : IAsyncDisposable
 
     private async Task LoadUsers()
     {
+        // Answers can arrive out of order (a second search typed while the first is still loading):
+        // only the newest request may change the page.
+        var sequence = ++_loadSequence;
         _loadFailed = false;
         try
         {
-            pagedResult = await UserConsumer.GetUsersAsync(
+            var loaded = await UserConsumer.GetUsersAsync(
                 currentPage,
                 pageSize,
                 string.IsNullOrEmpty(searchTerm) ? null : searchTerm,
                 _sortBy,
                 _sortDir);
+            if (sequence == _loadSequence)
+                pagedResult = loaded;
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
+            if (sequence != _loadSequence)
+                return;
+
             message = ErrorMessagesRes.AccessDenied;
             messageType = "danger";
             _loadFailed = true;
         }
         catch (Exception)
         {
+            if (sequence != _loadSequence)
+                return;
+
             // UX-6: any other failure (network, 500, etc.) used to be unhandled here and crash
             // the circuit; pagedResult stays null so the skeleton would otherwise spin forever.
             message = ErrorMessagesRes.UnexpectedErrorTryAgain;
@@ -290,6 +325,7 @@ public partial class AdminUsers : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
+        _persistSubscription.Dispose();
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }

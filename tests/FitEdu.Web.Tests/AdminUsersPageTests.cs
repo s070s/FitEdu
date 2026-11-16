@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net;
 using Bunit;
 using Bunit.TestDoubles;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -35,6 +36,7 @@ public class AdminUsersPageTests : BunitContext
     private const string AdminEmail = "admin@fitedu.local";
 
     private readonly IAdminUserConsumer _users = Substitute.For<IAdminUserConsumer>();
+    private readonly BunitPersistentComponentState _persistentState;
 
     public AdminUsersPageTests()
     {
@@ -44,7 +46,7 @@ public class AdminUsersPageTests : BunitContext
         Services.AddSingleton(Substitute.For<IAuthService>());
         Services.AddSingleton(new PresenceService(Substitute.For<ICallService>()));
         Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build()); // _Imports.razor injects it everywhere
-        AddBunitPersistentComponentState();
+        _persistentState = AddBunitPersistentComponentState();
         JSInterop.Mode = JSRuntimeMode.Loose;
         AddAuthorization().SetAuthorized(AdminEmail).SetRoles("Admin");
     }
@@ -110,6 +112,71 @@ public class AdminUsersPageTests : BunitContext
 
         accessibleNames.Count.ShouldBe(8);
         accessibleNames.Distinct().Count().ShouldBe(accessibleNames.Count, "two buttons share an accessible name");
+    }
+
+    // ---- Loading the list ------------------------------------------------------------------------
+
+    private static PagedResult<AdminUserDto> OnePage(string email) =>
+        new([User("only-" + email, email, true, "Student")], 1, 1, 10);
+
+    [Fact]
+    public async Task List_AnOlderSlowAnswerArrivingAfterANewerOne_DoesNotReplaceTheNewerList()
+    {
+        const string olderEmail = "older.answer@fitedu.local";
+        const string newerEmail = "newer.answer@fitedu.local";
+        ReturnsUsers(User("member-1", MemberEmail, true, "Student"));
+        var page = Render<AdminUsers>();
+        var olderAnswer = new TaskCompletionSource<PagedResult<AdminUserDto>?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var newerAnswer = new TaskCompletionSource<PagedResult<AdminUserDto>?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _users.GetUsersAsync(1, 10, Arg.Any<string?>(), "firstname", "asc").Returns(olderAnswer.Task);
+        _users.GetUsersAsync(1, 10, Arg.Any<string?>(), "firstname", "desc").Returns(newerAnswer.Task);
+
+        // Two clicks on the name header: ascending first, then descending, each asking the API again.
+        var olderRequest = page.FindAll("thead th")[1].ClickAsync(new MouseEventArgs());
+        var newerRequest = page.FindAll("thead th")[1].ClickAsync(new MouseEventArgs());
+        newerAnswer.SetResult(OnePage(newerEmail));
+        await newerRequest;
+        olderAnswer.SetResult(OnePage(olderEmail));
+        await olderRequest;
+
+        page.Find("tbody").TextContent.ShouldContain(newerEmail);
+        page.Find("tbody").TextContent.ShouldNotContain(olderEmail);
+    }
+
+    [Fact]
+    public void List_ThePrerenderedFirstPageIsReusedInteractively_WithoutAskingTheApiAgain()
+    {
+        _persistentState.Persist("admin-users-first-page", OnePage(MemberEmail));
+
+        var page = Render<AdminUsers>();
+
+        page.Find("tbody").TextContent.ShouldContain(MemberEmail);
+        _users.DidNotReceiveWithAnyArgs().GetUsersAsync();
+    }
+
+    [Fact]
+    public void List_TheFirstPageIsHandedToTheInteractiveRender()
+    {
+        ReturnsUsers(User("member-1", MemberEmail, true, "Student"));
+        Render<AdminUsers>();
+
+        _persistentState.TriggerOnPersisting();
+
+        _persistentState.TryTake<PagedResult<AdminUserDto>>("admin-users-first-page", out var handedOver).ShouldBeTrue();
+        handedOver!.Items.Single().Email.ShouldBe(MemberEmail);
+    }
+
+    [Fact]
+    public void List_AFailedLoad_IsNotHandedToTheInteractiveRender()
+    {
+        // A stored failure would show an empty table without calling the API once the circuit starts.
+        _users.GetUsersAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(Task.FromException<PagedResult<AdminUserDto>?>(new HttpRequestException("down")));
+        Render<AdminUsers>();
+
+        _persistentState.TriggerOnPersisting();
+
+        _persistentState.TryTake<PagedResult<AdminUserDto>>("admin-users-first-page", out _).ShouldBeFalse();
     }
 
     // ---- Delete ----------------------------------------------------------------------------------
