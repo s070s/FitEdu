@@ -265,6 +265,13 @@ public partial class AdminUserService(
             .Where(c => c.UserId == userId)
             .ToListAsync(cancellationToken);
 
+        // The PDFs carry the recipient's name, so their files must go with the certificate rows.
+        var certificatePdfPaths = certificates
+            .SelectMany(c => new[] { c.PdfPath, c.PdfPathEl })
+            .OfType<string>()
+            .Where(path => path.Length > 0)
+            .ToList();
+
         var enrollments = await context.Enrollments
             .Where(e => e.UserId == userId)
             .ToListAsync(cancellationToken);
@@ -303,6 +310,8 @@ public partial class AdminUserService(
         if (!string.IsNullOrEmpty(avatarPath))
             await DeleteAvatarFileAsync(avatarPath, userId, cancellationToken);
 
+        await DeleteCertificatePdfsAsync(certificatePdfPaths, userId, cancellationToken);
+
         if (userId == ActingAdmin)
             LogAccountErasedByOwner(logger, userId);
         else
@@ -321,6 +330,22 @@ public partial class AdminUserService(
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
         {
             LogAvatarFileNotDeleted(logger, ex, userId);
+        }
+    }
+
+    // Same rule as the avatar: the account is gone, so a PDF that cannot be removed is logged and the others still go.
+    private async Task DeleteCertificatePdfsAsync(IReadOnlyList<string> pdfPaths, string userId, CancellationToken cancellationToken)
+    {
+        foreach (var pdfPath in pdfPaths)
+        {
+            try
+            {
+                await fileStorage.DeleteFileAsync(pdfPath, cancellationToken);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+            {
+                LogCertificatePdfNotDeleted(logger, ex, userId);
+            }
         }
     }
 
@@ -587,6 +612,9 @@ public partial class AdminUserService(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "The profile photo of deleted user {UserId} could not be removed from storage")]
     private static partial void LogAvatarFileNotDeleted(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "A certificate PDF of deleted user {UserId} could not be removed from storage")]
+    private static partial void LogCertificatePdfNotDeleted(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "The password-changed notice for user {UserId} could not be sent")]
     private static partial void LogPasswordChangedNoticeFailed(ILogger logger, Exception exception, string userId);

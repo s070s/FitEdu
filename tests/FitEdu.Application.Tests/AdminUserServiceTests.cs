@@ -271,6 +271,85 @@ public class AdminUserServiceTests
         log.Warnings.ShouldContain(line => line.Contains("locked-file"));
     }
 
+    private static Certificate NewCertificate(ApplicationUser member, string? pdfPath, string? pdfPathEl)
+    {
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        var enrollment = new Enrollment { Id = Guid.NewGuid(), UserId = member.Id, CourseId = course.Id };
+        return new Certificate
+        {
+            Id = Guid.NewGuid(),
+            UserId = member.Id,
+            EnrollmentId = enrollment.Id,
+            CourseId = course.Id,
+            RecipientName = "First Last",
+            CourseTitleEn = "C",
+            PdfPath = pdfPath,
+            PdfPathEl = pdfPathEl,
+            Course = course,
+            Enrollment = enrollment
+        };
+    }
+
+    [Fact]
+    public async Task DeleteUser_WithCertificatePdfs_DeletesBothFilesOfEachCertificateOnceTheUserIsGone()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("with-certificates");
+        db.Users.Add(member);
+        db.Certificates.Add(NewCertificate(member, "certificates/en-1.pdf", "certificates/el-1.pdf"));
+        db.Certificates.Add(NewCertificate(member, "certificates/en-2.pdf", pdfPathEl: null));
+        db.Certificates.Add(NewCertificate(member, pdfPath: null, pdfPathEl: null));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var fileStorage = Substitute.For<IFileStorage>();
+
+        var result = await NewService(db, UserManagerOver(db), fileStorage: fileStorage).DeleteUserAsync("with-certificates");
+
+        result.IsSuccess.ShouldBeTrue();
+        await fileStorage.Received(1).DeleteFileAsync("certificates/en-1.pdf", Arg.Any<CancellationToken>());
+        await fileStorage.Received(1).DeleteFileAsync("certificates/el-1.pdf", Arg.Any<CancellationToken>());
+        await fileStorage.Received(1).DeleteFileAsync("certificates/en-2.pdf", Arg.Any<CancellationToken>());
+        await fileStorage.Received(3).DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task DeleteUser_FailedDelete_KeepsTheCertificatePdfs()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("blocked-certificates");
+        db.Users.Add(member);
+        db.Certificates.Add(NewCertificate(member, "certificates/en-1.pdf", "certificates/el-1.pdf"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).ThrowsAsync(new DbUpdateException("FK violation"));
+        var fileStorage = Substitute.For<IFileStorage>();
+
+        await NewService(db, userManager, fileStorage: fileStorage).DeleteUserAsync("blocked-certificates");
+
+        await fileStorage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task DeleteUser_CertificatePdfCannotBeRemoved_StillDeletesTheOthersAndReportsTheDeletion()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("locked-certificate");
+        db.Users.Add(member);
+        db.Certificates.Add(NewCertificate(member, "certificates/en-1.pdf", "certificates/el-1.pdf"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var fileStorage = Substitute.For<IFileStorage>();
+        fileStorage.DeleteFileAsync("certificates/en-1.pdf", Arg.Any<CancellationToken>()).ThrowsAsync(new IOException("in use"));
+        var log = new RecordingLogger<AdminUserService>();
+
+        var result = await NewService(db, UserManagerOver(db), fileStorage: fileStorage, logger: log).DeleteUserAsync("locked-certificate");
+
+        result.IsSuccess.ShouldBeTrue();
+        await fileStorage.Received(1).DeleteFileAsync("certificates/el-1.pdf", Arg.Any<CancellationToken>());
+        log.Warnings.ShouldContain(line => line.Contains("locked-certificate"));
+    }
+
     private static UserManager<ApplicationUser> UserManagerThatResetsPasswords(ApplicationDbContext db)
     {
         var userManager = UserManagerOver(db);
