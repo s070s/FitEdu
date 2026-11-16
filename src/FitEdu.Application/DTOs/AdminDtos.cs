@@ -16,9 +16,11 @@ public record AnalyticsSummaryDto(
 );
 
 /// <summary>
-/// Per-course enrollment and completion stats.
+/// Per-course enrollment and completion stats. <paramref name="CourseId"/> identifies the row: two
+/// courses can share a title.
 /// </summary>
 public record CourseStatDto(
+    Guid CourseId,
     string CourseTitle,
     int EnrollmentCount,
     int CompletionCount,
@@ -26,9 +28,11 @@ public record CourseStatDto(
 );
 
 /// <summary>
-/// Per-assessment submission stats.
+/// Per-assessment submission stats. <paramref name="AssessmentDefinitionId"/> identifies the row: two
+/// assessments can share a title.
 /// </summary>
 public record AssessmentStatDto(
+    Guid AssessmentDefinitionId,
     string AssessmentTitle,
     int SubmissionCount,
     string? AssessmentTitleEl = null

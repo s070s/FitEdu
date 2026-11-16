@@ -115,8 +115,8 @@ public class RemainingPagesTests : BunitContext
     public void AdminAnalytics_ShowsFourTilesAndCompletionBars()
     {
         _analyticsConsumer.GetSummaryAsync().Returns(new AnalyticsSummaryDto(1240, 873, 2310, 418,
-            [new("Strength Foundations", 640, 212), new("Draft course", 0, 0)],
-            [new("Training readiness", 380)]));
+            [new(Guid.NewGuid(), "Strength Foundations", 640, 212), new(Guid.NewGuid(), "Draft course", 0, 0)],
+            [new(Guid.NewGuid(), "Training readiness", 380)]));
 
         var page = Render<AdminAnalytics>();
 
@@ -125,6 +125,20 @@ public class RemainingPagesTests : BunitContext
         page.Find(".completion-rate__bar").GetAttribute("value").ShouldBe("33");
         page.Find(".completion-rate").TextContent.ShouldContain("33%");
         page.FindAll(".completion-rate").Count.ShouldBe(1, "a course nobody enrolled in shows a dash, not a bar");
+    }
+
+    [Fact]
+    public void AdminAnalytics_TwoCoursesAndAssessmentsWithTheSameTitle_ListEveryRowAcrossRenders()
+    {
+        _analyticsConsumer.GetSummaryAsync().Returns(new AnalyticsSummaryDto(10, 5, 30, 10,
+            [new(Guid.NewGuid(), "Strength Foundations", 20, 10), new(Guid.NewGuid(), "Strength Foundations", 10, 0)],
+            [new(Guid.NewGuid(), "Training readiness", 4), new(Guid.NewGuid(), "Training readiness", 6)]));
+
+        var page = Render<AdminAnalytics>();
+        page.Render();
+
+        page.FindAll("#course-stats-title ~ .table-responsive tbody tr").Count.ShouldBe(2);
+        page.FindAll("#assessment-stats-title ~ .table-responsive tbody tr").Count.ShouldBe(2);
     }
 
     protected override void Dispose(bool disposing)

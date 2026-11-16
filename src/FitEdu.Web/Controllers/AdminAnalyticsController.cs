@@ -53,6 +53,7 @@ public class AdminAnalyticsController : ControllerBase
         var courseStats = await _db.Enrollments
             .GroupBy(e => new { e.CourseId, CourseTitle = e.Course.TitleEn, CourseTitleEl = e.Course.TitleEl })
             .Select(g => new CourseStatDto(
+                g.Key.CourseId,
                 g.Key.CourseTitle,
                 g.Count(),
                 g.Count(e => e.Status == EnrollmentStatus.Completed),
@@ -62,7 +63,7 @@ public class AdminAnalyticsController : ControllerBase
 
         var assessmentStats = await _db.AssessmentSubmissions
             .GroupBy(s => new { s.AssessmentDefinitionId, AssessmentTitle = s.AssessmentDefinition.TitleEn, AssessmentTitleEl = s.AssessmentDefinition.TitleEl })
-            .Select(g => new AssessmentStatDto(g.Key.AssessmentTitle, g.Count(), g.Key.AssessmentTitleEl))
+            .Select(g => new AssessmentStatDto(g.Key.AssessmentDefinitionId, g.Key.AssessmentTitle, g.Count(), g.Key.AssessmentTitleEl))
             .ToListAsync();
 
         var dto = new AnalyticsSummaryDto(

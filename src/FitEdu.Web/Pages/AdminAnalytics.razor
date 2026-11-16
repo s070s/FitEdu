@@ -48,7 +48,7 @@ else if (stats is not null)
                                 @foreach (var courseStat in stats.CourseStats)
                                 {
                                     var completionPercent = CompletionPercent(courseStat);
-                                    <tr @key="courseStat.CourseTitle">
+                                    <tr @key="courseStat.CourseId">
                                         <td data-label="@AdminRes.ColCourse">@AdminText.Pick(courseStat.CourseTitle, courseStat.CourseTitleEl)</td>
                                         <td data-label="@AdminRes.ColEnrollments">@FormatCount(courseStat.EnrollmentCount)</td>
                                         <td data-label="@AdminRes.ColCompletions">@FormatCount(courseStat.CompletionCount)</td>
@@ -94,7 +94,7 @@ else if (stats is not null)
                             <tbody>
                                 @foreach (var assessmentStat in stats.AssessmentStats)
                                 {
-                                    <tr @key="assessmentStat.AssessmentTitle">
+                                    <tr @key="assessmentStat.AssessmentDefinitionId">
                                         <td data-label="@AdminRes.ColAssessment">@AdminText.Pick(assessmentStat.AssessmentTitle, assessmentStat.AssessmentTitleEl)</td>
                                         <td data-label="@AdminRes.ColSubmissions">@FormatCount(assessmentStat.SubmissionCount)</td>
                                     </tr>
