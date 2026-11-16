@@ -82,7 +82,12 @@ public sealed class ProductionSecurityHeadersFactory : ProductionWebAppFactory
     {
         // appsettings.json allows only localhost; added after it, so this value wins.
         builder.ConfigureAppConfiguration((_, configuration) =>
-            configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["AllowedHosts"] = HostName }));
+            configuration.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["AllowedHosts"] = HostName,
+                // The test server has no listening address, so the HTTPS redirect needs its port named.
+                ["HTTPS_PORT"] = "443"
+            }));
         base.ConfigureWebHost(builder);
         builder.ConfigureTestServices(services =>
         {
@@ -194,6 +199,22 @@ public class ProductionSecurityHeadersTests : IClassFixture<ProductionSecurityHe
         response.ShouldCarryTheSecurityHeaders(development: false);
         // The exception handler runs its own small pipeline, which needs HSTS too.
         response.Headers.GetValues("Strict-Transport-Security").ShouldBe(["max-age=31536000"]);
+    }
+
+    [Fact]
+    public async Task HttpToHttpsRedirect_CarriesTheSecurityHeaders()
+    {
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            BaseAddress = new Uri($"http://{ProductionSecurityHeadersFactory.HostName}"),
+            AllowAutoRedirect = false
+        });
+
+        var response = await client.GetAsync("/pricing");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.RedirectKeepVerb);
+        response.Headers.Location?.Scheme.ShouldBe("https");
+        response.Headers.GetValues("X-Content-Type-Options").ShouldBe(["nosniff"]);
     }
 
     [Fact]

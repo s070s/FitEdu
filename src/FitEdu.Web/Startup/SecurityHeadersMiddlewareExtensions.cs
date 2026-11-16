@@ -1,7 +1,7 @@
 namespace FitEdu.Web.Startup;
 
 /// <summary>
-/// Security response headers (CSP, nosniff, frame-ancestors, etc.), added to every response.
+/// Security response headers (CSP, nosniff, frame-ancestors, etc.), added to every response the app's pipeline answers (host filtering runs before it).
 /// </summary>
 public static class SecurityHeadersMiddlewareExtensions
 {

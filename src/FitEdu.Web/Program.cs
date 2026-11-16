@@ -93,6 +93,10 @@ else
 // cookies) so the app works behind a TLS-terminating reverse proxy. No-op when no proxy sends them.
 app.UseForwardedHeaders();
 
+// Right after the forwarded headers so every response the pipeline answers carries the security
+// headers, the HTTP to HTTPS redirect below included.
+app.UseFitEduSecurityHeaders();
+
 app.UseStatusCodePagesWithReExecute("/__status-code-dispatch");
 
 app.UseHttpsRedirection();
@@ -102,8 +106,6 @@ if (!app.Environment.IsDevelopment())
     // Enforce HTTPS: max-age one year (AddFitEduHsts; the framework default would be 30 days), this host only.
     app.UseHsts();
 }
-
-app.UseFitEduSecurityHeaders();
 
 // MapStaticAssets (below) serves the compressed, fingerprinted CSS/JS/fonts. /images is excluded from its
 // manifest in the csproj, so only that path goes through the static file middleware (which would
