@@ -39,7 +39,7 @@ public class AdminAnalyticsController : ControllerBase
     {
         var totalUsers = await _userManager.Users.CountAsync(cancellationToken);
 
-        var activeUsers = await _db.Enrollments
+        var membersWithEnrolment = await _db.Enrollments
             .Select(e => e.UserId)
             .Distinct()
             .CountAsync(cancellationToken);
@@ -73,7 +73,7 @@ public class AdminAnalyticsController : ControllerBase
 
         var dto = new AnalyticsSummaryDto(
             totalUsers,
-            activeUsers,
+            membersWithEnrolment,
             totalEnrollments,
             completedCourses,
             courseStats,

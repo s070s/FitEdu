@@ -4,7 +4,8 @@ using FitEdu.Domain.Enums;
 namespace FitEdu.Application.DTOs;
 
 /// <summary>
-/// Analytics summary for admin dashboard.
+/// Analytics summary for admin dashboard. <paramref name="ActiveUsers"/> counts the members with at least
+/// one enrolment, in any status (the JSON name stays for API compatibility).
 /// </summary>
 public record AnalyticsSummaryDto(
     int TotalUsers,
