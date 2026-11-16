@@ -236,7 +236,8 @@ public partial class AdminUserService(
         // Stage the history cleanup in the change tracker; userManager.DeleteAsync shares
         // this scoped DbContext, so its SaveChanges flushes the cleanup and the user row
         // in a single transaction. Remaining user data (subscriptions, tokens, submissions,
-        // lesson completions) is removed by the database cascades.
+        // lesson completions) is removed by the database cascades. Billing records are kept and detached
+        // (UserId SET NULL, see BillingRetention), not deleted.
         var avatarPath = user.AvatarPath;
         var conversations = await context.ChatConversations
             .Where(c => c.CreatorId == userId || c.ParticipantId == userId)
