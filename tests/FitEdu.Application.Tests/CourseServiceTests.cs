@@ -431,6 +431,22 @@ public class CourseServiceTests
     }
 
     [Fact]
+    public async Task Enroll_ReadsTheCourseWithoutTrackingIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var course = CourseWithLessons("Free", 0);
+        db.Courses.Add(course);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var (svc, _, _) = NewService(db);
+
+        var result = await svc.EnrollAsync(UserId, course.Id);
+
+        result.IsSuccess.ShouldBeTrue();
+        db.ChangeTracker.Entries<Course>().ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task Enroll_TierBelowRequired_ReturnsForbidden()
     {
         await using var db = DbContextFactory.CreateInMemory();

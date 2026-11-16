@@ -213,7 +213,7 @@ public partial class CourseService(
 
     public async Task<ServiceResult<EnrollmentResultDto>> EnrollAsync(string userId, Guid courseId, CancellationToken cancellationToken = default)
     {
-        var course = await db.Courses.FirstOrDefaultAsync(c => c.Id == courseId && c.IsPublished, cancellationToken);
+        var course = await db.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.Id == courseId && c.IsPublished, cancellationToken);
         if (course is null)
             return ServiceResult<EnrollmentResultDto>.NotFound(new EnrollmentResultDto(false, ErrorMessagesRes.CourseNotFound, null));
 

@@ -165,6 +165,24 @@ public class ChatQueryServiceTests
         dto.CallDurationSeconds.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task GetMessages_ReadsTheConversationAndMessagesWithoutTrackingThem()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        db.Users.AddRange(AppUser(A), AppUser(B));
+        var conv = Conversation(A, B);
+        db.ChatConversations.Add(conv);
+        db.ChatMessages.Add(new ChatMessage { Id = Guid.NewGuid(), ConversationId = conv.Id, SenderId = A, Content = "hi" });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var (svc, _) = NewService(db);
+
+        var result = await svc.GetMessagesAsync(A, conv.Id, 1, 10);
+
+        result.Value!.Items.ShouldHaveSingleItem();
+        db.ChangeTracker.Entries().ShouldBeEmpty();
+    }
+
     // ---- StartConversationAsync ---------------------------------------------
 
     [Fact]

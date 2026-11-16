@@ -97,6 +97,7 @@ public class ChatQueryService(
         string userId, Guid conversationId, int page, int pageSize, CancellationToken ct = default)
     {
         var conversation = await db.ChatConversations
+            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == conversationId, ct);
 
         if (conversation is null)
@@ -106,6 +107,7 @@ public class ChatQueryService(
             return ServiceResult<PagedResult<ChatMessageDto>>.Forbidden();
 
         var query = db.ChatMessages
+            .AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.CallSession)
             .Where(m => m.ConversationId == conversationId);
