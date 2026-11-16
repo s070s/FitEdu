@@ -20,11 +20,15 @@ internal sealed class FakeBrowserFile(string name, long size, string contentType
             ? throw new IOException($"Supplied file with size {Size} bytes exceeds the maximum of {maxAllowedSize} bytes.")
             : new MemoryStream(new byte[Size]);
 
-    /// <summary>Raises the picker's change as the browser does when this file is chosen.</summary>
-    public static void Choose(IRenderedComponent<FilePicker> picker, IBrowserFile file)
+    /// <summary>Raises the picker's change as the browser does when this file is chosen, and waits for the page to handle it.</summary>
+    public static void Choose(IRenderedComponent<FilePicker> picker, IBrowserFile file) =>
+        StartChoosing(picker, file).GetAwaiter().GetResult();
+
+    /// <summary>Like <see cref="Choose"/> but returns at once, so a test can look at the page while a slow upload is running.</summary>
+    public static Task StartChoosing(IRenderedComponent<FilePicker> picker, IBrowserFile file)
     {
         var inputChanged = picker.FindComponent<InputFile>().Instance.OnChange;
         var args = new InputFileChangeEventArgs([file]);
-        picker.InvokeAsync(() => inputChanged.InvokeAsync(args)).GetAwaiter().GetResult();
+        return picker.InvokeAsync(() => inputChanged.InvokeAsync(args));
     }
 }

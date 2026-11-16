@@ -13,7 +13,7 @@
 
     @if (_error is not null)
     {
-        <div class="alert alert-danger">@_error</div>
+        <div id="blog-error" class="alert alert-danger" role="alert">@_error</div>
     }
 
     <UnsavedChangesGuard IsDirty="_isDirty" />
@@ -99,7 +99,8 @@
                 </div>
             }
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*" />
+                <FilePicker @ref="_coverPicker" Id="blog-cover-file" OnChange="OnCoverFileSelected" Accept="image/*"
+                            DescribedBy="@(_error is null ? null : "blog-error")" />
                 @if (!_isEditMode)
                 {
                     <small class="form-text">@AdminRes.CoverUploadHint</small>

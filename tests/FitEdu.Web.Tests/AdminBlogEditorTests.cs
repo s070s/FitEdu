@@ -171,6 +171,20 @@ public class AdminBlogEditorTests : BunitContext
     }
 
     [Fact]
+    public void UploadError_IsAnnouncedAndLinkedToThePicker()
+    {
+        var page = RenderEditMode();
+        page.FindAll("[role=alert]").ShouldBeEmpty();
+
+        page.FindComponent<InputFile>().UploadFiles(File("big.jpg", UploadLimits.MaxCoverImageBytes + 1));
+
+        var alert = page.Find("[role=alert]");
+        alert.TextContent.ShouldContain(UploadSizeText.TooLarge(UploadLimits.MaxCoverImageBytes));
+        alert.Id.ShouldNotBeNullOrEmpty();
+        page.Find("input[type=file]").GetAttribute("aria-describedby")!.Split(' ').ShouldContain(alert.Id);
+    }
+
+    [Fact]
     public void EditMode_CoverThatCannotBeRead_ShowsTheUploadFailedMessageInsteadOfThrowing()
     {
         _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())

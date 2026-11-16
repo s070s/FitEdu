@@ -103,6 +103,31 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void AvatarUploading_KeepsTheInputEnabledAnnouncesTheStatusAndIgnoresASecondChoice()
+    {
+        var finishUpload = new TaskCompletionSource<bool>();
+        _profileConsumer.UploadAvatarAsync(Arg.Any<IBrowserFile>()).Returns(finishUpload.Task);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+        var picker = page.FindComponent<FilePicker>();
+
+        var firstChoice = FakeBrowserFile.StartChoosing(picker, new FakeBrowserFile("me.png", 1024, "image/png"));
+
+        // A disabled input loses the keyboard focus the member is working with.
+        page.Find("#profile-avatar").HasAttribute("disabled").ShouldBeFalse();
+        var status = page.Find("[role=status]");
+        status.TextContent.ShouldContain(ProfileRes.UploadingAvatar);
+        status.HasAttribute("aria-hidden").ShouldBeFalse();
+
+        FakeBrowserFile.Choose(picker, new FakeBrowserFile("other.png", 1024, "image/png"));
+
+        _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
+        finishUpload.SetResult(true);
+        firstChoice.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
+        page.WaitForAssertion(() => page.FindAll("[role=status]").ShouldBeEmpty());
+    }
+
+    [Fact]
     public void AvatarOverTheLimit_IsRefusedWithoutUploading()
     {
         var page = Render<Profile>();

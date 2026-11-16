@@ -68,6 +68,20 @@ public class AdminTestimonialEditorTests : BunitContext
     }
 
     [Fact]
+    public void UploadError_IsAnnouncedAndLinkedToThePicker()
+    {
+        var page = RenderEditMode();
+        page.FindAll("[role=alert]").ShouldBeEmpty();
+
+        page.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromBinary(new byte[6 * 1024 * 1024], "big.jpg"));
+
+        var alert = page.Find("[role=alert]");
+        alert.TextContent.ShouldContain(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
+        alert.Id.ShouldNotBeNullOrEmpty();
+        page.Find("input[type=file]").GetAttribute("aria-describedby")!.Split(' ').ShouldContain(alert.Id);
+    }
+
+    [Fact]
     public void Photo_ThatCannotBeRead_ShowsTheUploadFailedMessageInsteadOfThrowing()
     {
         _testimonialConsumer.UploadAvatarAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())

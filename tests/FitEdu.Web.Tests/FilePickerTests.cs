@@ -45,6 +45,16 @@ public class FilePickerTests : BunitContext
     }
 
     [Fact]
+    public void DescribedBy_IsAddedAfterTheFileNameInTheInputsDescription()
+    {
+        var picker = Render<FilePicker>(parameters => parameters
+            .Add(p => p.Id, PickerId)
+            .Add(p => p.DescribedBy, "avatar-error"));
+
+        picker.Find("input[type=file]").GetAttribute("aria-describedby").ShouldBe($"{PickerId}-file-name avatar-error");
+    }
+
+    [Fact]
     public void InGreek_TheButtonAndTheEmptyTextAreGreek()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("el");

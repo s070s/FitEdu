@@ -194,6 +194,11 @@ public partial class Profile
 
     private async Task HandleAvatarUpload(InputFileChangeEventArgs e)
     {
+        // The input stays enabled while a photo uploads (a disabled input loses the keyboard focus), so a
+        // second choice during the upload is ignored here.
+        if (_uploadingAvatar)
+            return;
+
         message = string.Empty;
         var file = e.File;
         // Over the limit, like the server: a file of exactly the limit is accepted.

@@ -82,11 +82,12 @@
                         <div class="mb-3">
                             <label class="form-label" for="profile-avatar">@ProfileRes.LabelAvatar</label>
                             <div>
-                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" Disabled="_uploadingAvatar" />
+                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" />
                                 @if (_uploadingAvatar)
                                 {
-                                    <div class="mt-2 d-flex align-items-center gap-2">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    @* The status wrapper is read out; only the spinner picture is hidden. *@
+                                    <div class="mt-2 d-flex align-items-center gap-2" role="status">
+                                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                                         <span>@ProfileRes.UploadingAvatar</span>
                                     </div>
                                 }

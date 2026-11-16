@@ -11,7 +11,7 @@
 
     @if (_error is not null)
     {
-        <div class="alert alert-danger">@_error</div>
+        <div id="t-error" class="alert alert-danger" role="alert">@_error</div>
     }
 
     <UnsavedChangesGuard IsDirty="_isDirty" />
@@ -91,7 +91,8 @@
                     </div>
                 }
 
-                <FilePicker @ref="_avatarPicker" Id="t-avatar" OnChange="OnAvatarFileSelected" Accept="image/*" />
+                <FilePicker @ref="_avatarPicker" Id="t-avatar" OnChange="OnAvatarFileSelected" Accept="image/*"
+                            DescribedBy="@(_error is null ? null : "t-error")" />
                 <div class="form-text">@AdminRes.AvatarHint</div>
             </div>
         }
