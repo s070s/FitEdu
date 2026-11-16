@@ -9,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Infrastructure.Services;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Startup;
 
 namespace FitEdu.Web.Controllers;
@@ -38,6 +39,12 @@ public partial class LessonAssetsController : ControllerBase
     private readonly IDataProtectionProvider _dataProtectionProvider;
     private readonly ILogger<LessonAssetsController> _logger;
 
+    /// <summary>
+    /// A lesson file is for enrolled members only, so shared caches may not keep it; a browser may, but asks again each
+    /// time (a cheap 304 by ETag), because the member's access can end.
+    /// </summary>
+    private const string CacheControlValue = "private, no-cache";
+
     public LessonAssetsController(
         IApplicationDbContext db,
         IFileStorage fileStorage,
@@ -59,8 +66,10 @@ public partial class LessonAssetsController : ControllerBase
     /// Required only when the caller has no Authorization header/cookie (the browser
     /// &lt;video&gt;/&lt;iframe&gt; case) — a token from <c>CreateLessonAssetTokenAsync</c>.
     /// </param>
+    /// <param name="cancellationToken">Cancelled when the browser drops the request (a seek or a closed tab).</param>
     [HttpGet("{lessonId:guid}/asset")]
-    public async Task<IActionResult> GetAsset(Guid lessonId, [FromQuery] string type, [FromQuery] string? assetToken)
+    public async Task<IActionResult> GetAsset(
+        Guid lessonId, [FromQuery] string type, [FromQuery] string? assetToken, CancellationToken cancellationToken = default)
     {
         string userId;
         if (User.Identity?.IsAuthenticated == true)
@@ -74,23 +83,25 @@ public partial class LessonAssetsController : ControllerBase
         }
         else
         {
-            return Problem(detail: "Authentication required.", statusCode: StatusCodes.Status401Unauthorized);
+            return Problem(detail: ErrorMessagesRes.NotAuthenticated, statusCode: StatusCodes.Status401Unauthorized);
         }
 
         // Get lesson with course information
         var lesson = await _db.Lessons
+            .AsNoTracking()
             .Include(l => l.Module)
             .ThenInclude(m => m.Course)
-            .FirstOrDefaultAsync(l => l.Id == lessonId);
+            .FirstOrDefaultAsync(l => l.Id == lessonId, cancellationToken);
 
-        if (lesson == null)
+        // A lesson of an unpublished course is not there for members (the lesson page says the same), P05-16.
+        if (lesson == null || !lesson.Module.Course.IsPublished)
         {
             return Problem(detail: ErrorMessagesRes.LessonNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
         // Check if user is enrolled in the course
         var isEnrolled = await _db.Enrollments
-            .AnyAsync(e => e.UserId == userId && e.CourseId == lesson.Module.Course.Id);
+            .AnyAsync(e => e.UserId == userId && e.CourseId == lesson.Module.Course.Id, cancellationToken);
 
         if (!isEnrolled)
         {
@@ -112,25 +123,23 @@ public partial class LessonAssetsController : ControllerBase
             return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
         }
 
-        // Check if file exists
-        if (!_fileStorage.FileExists(filePath))
-        {
-            LogFileNotFound(_logger, filePath);
-            return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
-        }
-
-        // Stream file
+        // Stream file (with ETag and ranges); a file that is missing, or deleted just now, is a 404
         try
         {
-            var (stream, contentType) = await _fileStorage.GetFileAsync(filePath);
+            var result = await this.TryServeStoredFileAsync(_fileStorage, filePath, CacheControlValue, cancellationToken);
+            if (result is null)
+            {
+                LogFileNotFound(_logger, filePath);
+                return Problem(detail: ErrorMessagesRes.LessonFileNotFound, statusCode: StatusCodes.Status404NotFound);
+            }
 
             // The lesson viewer shows the PDF in an iframe of this site, so only that response may be framed (P05-1).
             if (string.Equals(type, "pdf", StringComparison.OrdinalIgnoreCase))
                 HttpContext.AllowFramingBySameOrigin();
 
-            return File(stream, contentType, enableRangeProcessing: true);
+            return result;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             LogStreamingFailed(_logger, ex, filePath);
             return Problem(detail: ErrorMessagesRes.LessonFileLoadFailed, statusCode: StatusCodes.Status500InternalServerError);
@@ -153,9 +162,10 @@ public partial class LessonAssetsController : ControllerBase
             userId = ticket.UserId;
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            LogAssetTokenInvalid(_logger, ex, lessonId);
+            // A bad, expired or other lesson's token is an everyday event (a stale tab), not a fault: Debug, no stack.
+            LogAssetTokenInvalid(_logger, lessonId);
             return false;
         }
     }
@@ -167,6 +177,6 @@ public partial class LessonAssetsController : ControllerBase
     [LoggerMessage(Level = LogLevel.Error, Message = "Error streaming file: {FilePath}")]
     private static partial void LogStreamingFailed(ILogger logger, Exception exception, string filePath);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Lesson asset token invalid or expired for lesson {LessonId}.")]
-    private static partial void LogAssetTokenInvalid(ILogger logger, Exception exception, Guid lessonId);
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Lesson asset token invalid or expired for lesson {LessonId}.")]
+    private static partial void LogAssetTokenInvalid(ILogger logger, Guid lessonId);
 }
