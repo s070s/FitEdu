@@ -175,6 +175,21 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void PasswordMismatchError_IsNotLinkedToTheAvatarPicker()
+    {
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        page.Find("#profile-current-password").Change("OldPassword1!");
+        page.Find("#profile-new-password").Change("NewPassword1!");
+        page.Find("#profile-confirm-password").Change("Different1!");
+        page.Find("#profile-confirm-password").Closest("form")!.Submit();
+
+        page.Find(".alert[role=alert]").TextContent.ShouldContain(ProfileRes.PasswordsDoNotMatch);
+        (page.Find("#profile-avatar").GetAttribute("aria-describedby") ?? string.Empty).ShouldNotContain("profile-message");
+    }
+
+    [Fact]
     public void PreferNotToSayLevel_ShowsNoLevelChip()
     {
         _profileConsumer.GetProfileAsync().Returns(AliceProfile with { Status = UserStatus.Other });

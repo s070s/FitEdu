@@ -48,6 +48,8 @@ public partial class Profile
     private string? avatarDataUrl;
     private string? _loadError;
     private bool _uploadingAvatar;
+    // True only while the shown page message is an avatar problem, so the picker is not linked to other errors.
+    private bool _avatarErrorShown;
     private FilePicker? _avatarPicker;
     private bool _showDeleteConfirm;
     private bool _isDeleting;
@@ -250,10 +252,12 @@ public partial class Profile
     {
         message = text;
         messageType = SuccessAlert;
+        _avatarErrorShown = false;
     }
 
     private void ShowError(string text)
     {
+        _avatarErrorShown = false;
         message = text;
         messageType = ErrorAlert;
     }
@@ -262,6 +266,7 @@ public partial class Profile
     private void RejectAvatar(string reason)
     {
         ShowError(reason);
+        _avatarErrorShown = true;
         _avatarPicker?.ClearFileName();
     }
 
