@@ -97,7 +97,7 @@ else
                     else
                     {
                         @* src sits on the video itself: an error on a <source> child never reaches the video's handler. *@
-                        <video controls controlsList="nodownload" preload="metadata" src="@VideoAssetUrl" @onerror="OnMediaErrorAsync"></video>
+                        <video controls controlsList="nodownload" preload="metadata" src="@VideoAssetUrl" @onerror="OnMediaErrorAsync" @onloadeddata="() => _assetTokenRefreshed = false"></video>
                     }
                 </div>
             }

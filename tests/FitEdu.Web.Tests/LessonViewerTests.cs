@@ -265,6 +265,22 @@ public class LessonViewerTests : BunitContext
     }
 
     [Fact]
+    public async Task VideoLesson_MediaFailsAgainAfterAnotherSuccessfulLoad_GetsAnotherNewToken()
+    {
+        var cut = RenderUploadedVideoLesson("token-one", "token-two", "token-three");
+
+        await MediaFails(cut);
+        // The video loaded with the new token (it can expire again during a long lesson).
+        await cut.Find(".video-container video").TriggerEventAsync("onloadeddata", EventArgs.Empty);
+        await MediaFails(cut);
+
+        cut.FindAll(".media-unavailable").ShouldBeEmpty();
+        cut.Find(".video-container video").GetAttribute("src")!.ShouldEndWith("&assetToken=token-three");
+        // The token is minted for the page and once for each of the two retries.
+        await _authService.Received(3).CreateLessonAssetTokenAsync(Arg.Any<ClaimsPrincipal>(), _lessonId);
+    }
+
+    [Fact]
     public void TextLesson_MarkdownContent_RendersHeadingAndListItems()
     {
         var lesson = Lesson(contentType: 1, content: "# Heading\n- one\n- two");
