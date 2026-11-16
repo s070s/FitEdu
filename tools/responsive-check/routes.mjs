@@ -99,6 +99,7 @@ export const PAGES_BY_ROLE = {
         '/admin/testimonials/new',
         '/admin/testimonials/{adminTestimonialId}',
         '/admin/sessions',
+        '/admin/audit',
         '/profile',
         '/notifications',
         '/chat',
