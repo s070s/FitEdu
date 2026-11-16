@@ -11,6 +11,7 @@ using FitEdu.Application.Common;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
@@ -323,7 +324,25 @@ public class AdminUserServiceTests
         var result = await NewService(db, userManager, emailService).SetPasswordAsync("other-admin", "New-Pass-1!");
 
         result.StatusCode.ShouldBe(400);
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.AdminPasswordNotChangeable);
         await emailService.DidNotReceiveWithAnyArgs().SendPasswordChangedByAdminAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task SetPassword_AdminAccount_IsRefusedInTheCallersLanguage()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        using var greek = new CultureScope("el");
+
+        var result = await NewService(db, userManager).SetPasswordAsync("other-admin", "New-Pass-1!");
+
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.AdminPasswordNotChangeable);
+        result.ErrorMessage.ShouldNotBe("Admin account passwords cannot be changed from the user table.");
     }
 
     [Fact]

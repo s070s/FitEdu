@@ -431,7 +431,7 @@ public partial class AdminUserService(
             return ServiceResult<bool>.NotFound(error: "User not found.");
 
         if (await userManager.IsInRoleAsync(user, RoleNames.Admin))
-            return ServiceResult<bool>.BadRequest(error: "Admin account passwords cannot be changed from the user table.");
+            return ServiceResult<bool>.BadRequest(error: ErrorMessagesRes.AdminPasswordNotChangeable);
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         var result = await userManager.ResetPasswordAsync(user, token, newPassword);

@@ -763,6 +763,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Admin account passwords cannot be changed from the user table..
+        /// </summary>
+        public static string AdminPasswordNotChangeable {
+            get {
+                return ResourceManager.GetString("AdminPasswordNotChangeable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to You're not signed in..
         /// </summary>
         public static string NotAuthenticated {
