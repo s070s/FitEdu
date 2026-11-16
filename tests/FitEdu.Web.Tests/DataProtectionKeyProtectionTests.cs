@@ -29,11 +29,15 @@ public sealed class TestKeyCertificate : IDisposable
 
     public string Thumbprint { get; }
 
-    public TestKeyCertificate()
+    /// <param name="useEcdsaKey">Makes the private key an ECDSA key, which the Data Protection key ring cannot use.</param>
+    public TestKeyCertificate(bool useEcdsaKey = false)
     {
         Directory.CreateDirectory(_folder);
         using var rsa = RSA.Create(2048);
-        var request = new CertificateRequest("CN=FitEdu test keys", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        using var ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var request = useEcdsaKey
+            ? new CertificateRequest("CN=FitEdu test keys", ecdsa, HashAlgorithmName.SHA256)
+            : new CertificateRequest("CN=FitEdu test keys", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         using var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(30));
         PfxPath = Path.Combine(_folder, "keys.pfx");
         File.WriteAllBytes(PfxPath, certificate.Export(X509ContentType.Pfx, Password));
@@ -175,6 +179,91 @@ public class DataProtectionKeyProtectionTests : IClassFixture<ProductionWithKeyC
         var error = Should.Throw<InvalidOperationException>(() => app.CreateClient());
 
         error.Message.ShouldContain(DataProtectionKeyProtection.CertificatePathSetting);
+    }
+
+    [Fact]
+    public void LoadCertificate_CertificateWithAnEcdsaKey_FailsNamingTheRsaKey()
+    {
+        using var ecdsaCertificate = new TestKeyCertificate(useEcdsaKey: true);
+
+        var error = Should.Throw<InvalidOperationException>(() => DataProtectionKeyProtection.LoadCertificate(ConfigWith(
+            (DataProtectionKeyProtection.CertificatePathSetting, ecdsaCertificate.PfxPath),
+            (DataProtectionKeyProtection.CertificatePasswordSetting, TestKeyCertificate.Password))));
+
+        error.Message.ShouldContain("cannot open its RSA private key");
+    }
+
+    [Fact]
+    public void StartingTheHost_WithACertificateThatHasAnEcdsaKey_Fails()
+    {
+        using var ecdsaCertificate = new TestKeyCertificate(useEcdsaKey: true);
+        using var app = _withoutCertificate.WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting(DataProtectionKeyProtection.CertificatePathSetting, ecdsaCertificate.PfxPath);
+            builder.UseSetting(DataProtectionKeyProtection.CertificatePasswordSetting, TestKeyCertificate.Password);
+        });
+
+        var error = Should.Throw<InvalidOperationException>(() => app.CreateClient());
+
+        error.Message.ShouldContain("cannot open its RSA private key");
+    }
+
+    [Fact]
+    public void Host_WithAThumbprintWrittenWithSpaces_EncryptsTheKeysWithTheStoreCertificate()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        using var testCertificate = new TestKeyCertificate();
+        // PersistKeySet: a key that only lives in memory would not survive being added to the store.
+        using var storeCertificate = X509CertificateLoader.LoadPkcs12FromFile(
+            testCertificate.PfxPath, TestKeyCertificate.Password, X509KeyStorageFlags.PersistKeySet);
+        using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+        store.Open(OpenFlags.ReadWrite);
+        store.Add(storeCertificate);
+        try
+        {
+            var spaced = string.Join(' ', Enumerable.Range(0, testCertificate.Thumbprint.Length / 2)
+                .Select(index => testCertificate.Thumbprint.Substring(index * 2, 2)));
+            using var app = _withoutCertificate.WithWebHostBuilder(builder =>
+                builder.UseSetting(DataProtectionKeyProtection.CertificateThumbprintSetting, spaced));
+
+            app.Services.GetRequiredService<IOptions<KeyManagementOptions>>().Value
+                .XmlEncryptor.ShouldBeOfType<CertificateXmlEncryptor>();
+        }
+        finally
+        {
+            store.Remove(storeCertificate);
+            // Removing the certificate leaves its key file in the user profile; delete it too.
+            using var rsa = storeCertificate.GetRSAPrivateKey();
+            if (rsa is RSACng cng)
+                cng.Key.Delete();
+        }
+    }
+
+    [Fact]
+    public void Host_MovedFromDpapiToACertificate_StillReadsDataProtectedBefore()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var payload = "p03-2-dpapi-" + Guid.NewGuid().ToString("N");
+        string protectedPayload;
+        using (var firstHost = _withoutCertificate.WithWebHostBuilder(_ => { }))
+        {
+            protectedPayload = firstHost.Services.GetRequiredService<IDataProtectionProvider>()
+                .CreateProtector("P03-2").Protect(payload);
+        }
+
+        using var testCertificate = new TestKeyCertificate();
+        using var secondHost = _withoutCertificate.WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting(DataProtectionKeyProtection.CertificatePathSetting, testCertificate.PfxPath);
+            builder.UseSetting(DataProtectionKeyProtection.CertificatePasswordSetting, TestKeyCertificate.Password);
+        });
+
+        secondHost.Services.GetRequiredService<IDataProtectionProvider>()
+            .CreateProtector("P03-2").Unprotect(protectedPayload).ShouldBe(payload);
     }
 
     [Fact]

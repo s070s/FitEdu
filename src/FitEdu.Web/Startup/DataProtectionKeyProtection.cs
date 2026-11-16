@@ -75,7 +75,37 @@ public static class DataProtectionKeyProtection
             throw new InvalidOperationException($"The certificate in {CertificatePathSetting} has no private key; the keys could not be decrypted.");
         }
 
+        try
+        {
+            RequireOpenableRsaPrivateKey(certificate, CertificatePathSetting);
+        }
+        catch (InvalidOperationException)
+        {
+            certificate.Dispose();
+            throw;
+        }
+
         return certificate;
+    }
+
+    /// <summary>
+    /// Proves the private key opens as an RSA key, so a certificate with an ECDSA key or a key the
+    /// account cannot use stops startup here and not at the first key written.
+    /// </summary>
+    private static void RequireOpenableRsaPrivateKey(X509Certificate2 candidate, string settingName)
+    {
+        try
+        {
+            using var rsa = candidate.GetRSAPrivateKey();
+            if (rsa is not null)
+                return;
+        }
+        catch (CryptographicException)
+        {
+            // Falls through to the same message as a missing RSA key.
+        }
+
+        throw new InvalidOperationException($"The certificate in {settingName} is not usable: the app cannot open its RSA private key.");
     }
 
     private static X509Certificate2 FindInStores(string thumbprint)
@@ -94,20 +124,50 @@ public static class DataProtectionKeyProtection
             $"{CertificateThumbprintSetting} names no certificate with a private key in the CurrentUser or LocalMachine \"My\" store.");
     }
 
+    private static void DisposeAllExcept(X509Certificate2Collection? certificates, X509Certificate2? keep)
+    {
+        if (certificates is null)
+            return;
+
+        foreach (var certificate in certificates)
+        {
+            if (!ReferenceEquals(certificate, keep))
+                certificate.Dispose();
+        }
+    }
+
     private static X509Certificate2? FindWithPrivateKey(StoreLocation location, string thumbprint)
     {
+        X509Certificate2Collection? allCertificates = null;
+        X509Certificate2Collection? matches = null;
+        X509Certificate2? chosen = null;
+        X509Certificate2? returned = null;
         try
         {
             using var store = new X509Store(StoreName.My, location);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+            allCertificates = store.Certificates;
             // Not only valid ones: a self-signed key certificate is not trusted, and need not be.
-            var matches = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, validOnly: false);
-            return matches.FirstOrDefault(candidate => candidate.HasPrivateKey);
+            matches = allCertificates.Find(X509FindType.FindByThumbprint, thumbprint, validOnly: false);
+            chosen = matches.FirstOrDefault(candidate => candidate.HasPrivateKey);
+            if (chosen is not null)
+                RequireOpenableRsaPrivateKey(chosen, CertificateThumbprintSetting);
+
+            returned = chosen;
+            return returned;
         }
         catch (CryptographicException)
         {
             // The store does not exist on this machine (common on Linux).
             return null;
+        }
+        finally
+        {
+            // Every certificate the store handed out is disposed except the one returned to the caller.
+            DisposeAllExcept(allCertificates, returned);
+            DisposeAllExcept(matches, returned);
+            if (!ReferenceEquals(chosen, returned))
+                chosen?.Dispose();
         }
     }
 }
