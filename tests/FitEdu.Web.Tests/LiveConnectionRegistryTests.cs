@@ -51,6 +51,22 @@ public class LiveConnectionRegistryTests
     }
 
     [Fact]
+    public void Unregister_OfTheLastConnection_RemovesTheUser_SoPastUsersAreNotKept()
+    {
+        var registry = new LiveConnectionRegistry();
+        var first = Connection("member", "conn-1");
+        var second = Connection("member", "conn-2");
+        registry.Register(first);
+        registry.Register(second);
+
+        registry.Unregister(first);
+        registry.UserCount.ShouldBe(1);
+        registry.Unregister(second);
+
+        registry.UserCount.ShouldBe(0);
+    }
+
+    [Fact]
     public void CloseAll_ForAUserWithoutConnections_DoesNothing()
     {
         var registry = new LiveConnectionRegistry();
