@@ -148,6 +148,18 @@ public sealed class UploadReplacementOrderTests : IDisposable
     }
 
     [Fact]
+    public async Task BlogCover_OldValueInAnotherUploadFolder_IsNeverDeleted()
+    {
+        // A hand-edited or imported value can point into another feature's folder; a cover upload must not delete that file.
+        var (controller, articleId) = await BlogWithACoverAsync("lessons/pdf/notes.pdf");
+        StorageSavesAs(NewPath);
+
+        (await controller.UploadBlogCoverImage(articleId, Png())).ShouldBeOfType<OkObjectResult>();
+
+        await _storage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task BlogCover_DeletingTheOldFileFails_StillAnswersOk()
     {
         var (controller, articleId) = await BlogWithACoverAsync(OldPath);

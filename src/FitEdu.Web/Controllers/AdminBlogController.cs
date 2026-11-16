@@ -20,6 +20,9 @@ namespace FitEdu.Web.Controllers;
 [ProducesResponseType(StatusCodes.Status404NotFound)]
 public class AdminBlogController : ControllerBase
 {
+    // The folder a cover upload stores into; only a file in it is deleted when a cover is replaced.
+    private const string CoverFolder = "blog/covers";
+
     private readonly IBlogArticleService _blogService;
     private readonly IFileStorage _fileStorage;
     private readonly IApplicationDbContext _context;
@@ -136,10 +139,11 @@ public class AdminBlogController : ControllerBase
             return NotFound();
 
         // Save the new cover, update the article, then delete the old one (P05-6): a failure before the update keeps
-        // the old file and the old value. The old value may be a site file or a URL; only an uploaded file is deleted.
+        // the old file and the old value. The old value may be a site file, a URL or a path in another upload folder;
+        // only a file in the cover folder is deleted.
         var oldCover = article.CoverImageUrl;
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "blog/covers", cancellationToken: cancellationToken);
+        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, CoverFolder, cancellationToken: cancellationToken);
 
         article.CoverImageUrl = path;
         article.UpdatedAt = DateTimeOffset.UtcNow;
@@ -153,7 +157,8 @@ public class AdminBlogController : ControllerBase
             throw;
         }
 
-        await _fileStorage.DeleteUnusedFileAsync(oldCover, _logger);
+        if (oldCover?.StartsWith(CoverFolder + "/", StringComparison.Ordinal) == true)
+            await _fileStorage.DeleteUnusedFileAsync(oldCover, _logger);
         return Ok(new BlogCoverUploadResultDto(path));
     }
 }
