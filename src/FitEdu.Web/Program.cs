@@ -53,6 +53,9 @@ else
 {
     app.UseExceptionHandler(exceptionHandlerApp =>
     {
+        // This small pipeline replaces the main one for the 500 response, so it needs HSTS itself
+        // (the main pipeline sends it for every non-Development host too).
+        exceptionHandlerApp.UseHsts();
         exceptionHandlerApp.Run(async context =>
         {
             // OBS-3: log the unhandled exception with the same traceId ProblemDetails returns to the

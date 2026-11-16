@@ -192,6 +192,8 @@ public class ProductionSecurityHeadersTests : IClassFixture<ProductionSecurityHe
         body.ShouldNotContain("the blog store is down");
         // The exception handler clears the response, so the headers have to be set as the response starts.
         response.ShouldCarryTheSecurityHeaders(development: false);
+        // The exception handler runs its own small pipeline, which needs HSTS too.
+        response.Headers.GetValues("Strict-Transport-Security").ShouldBe(["max-age=31536000"]);
     }
 
     [Fact]
