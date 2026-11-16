@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Interfaces;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Web.Services;
 using System.Security.Claims;
 
@@ -72,7 +73,7 @@ public partial class AvatarDropdown : IDisposable
     /// which is unavailable inside a Blazor Server circuit.
     /// </summary>
     private static bool IsImpersonating(ClaimsPrincipal user)
-        => user.FindFirst("impersonatedBy") is not null;
+        => user.FindFirst(UserClaimsBuilder.ImpersonatedByClaim) is not null;
 
     private async Task LoadAvatarAsync()
     {

@@ -86,7 +86,7 @@ public partial class Profile
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthStateProvider.GetAuthenticationStateAsync();
-        _isImpersonating = state.User.FindFirst("impersonatedBy") is not null;
+        _isImpersonating = state.User.FindFirst(UserClaimsBuilder.ImpersonatedByClaim) is not null;
         await LoadProfileAsync();
         if (profile is not null)
             await LoadStatsAsync();
