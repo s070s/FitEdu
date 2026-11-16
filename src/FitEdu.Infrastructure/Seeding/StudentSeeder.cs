@@ -42,7 +42,7 @@ public static partial class StudentSeeder
         }
 
         // Skip entirely if students are already seeded — avoids N×4 Identity queries on every startup
-        if (await userManager.GetUsersInRoleAsync("Student") is { Count: > 0 })
+        if (await userManager.GetUsersInRoleAsync(RoleNames.Student) is { Count: > 0 })
         {
             LogAlreadySeeded(logger);
             return;
@@ -87,7 +87,7 @@ public static partial class StudentSeeder
                     var result = await userManager.CreateAsync(student, password);
                     if (result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(student, "Student");
+                        await userManager.AddToRoleAsync(student, RoleNames.Student);
                         seededCount++;
                     }
                     else

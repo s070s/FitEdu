@@ -7,6 +7,7 @@ using FitEdu.Web.Extensions;
 using FitEdu.Web.Startup;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
 
@@ -91,7 +92,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     [HttpPost("{courseId:guid}/enroll")]
     public async Task<ActionResult<EnrollmentResultDto>> Enroll(Guid courseId, CancellationToken cancellationToken = default)
     {
-        if (User.IsInRole("Admin"))
+        if (User.IsInRole(RoleNames.Admin))
             return StatusCode(403, new EnrollmentResultDto(false, ErrorMessagesRes.AdminCannotEnroll, null));
 
         var result = await courseService.EnrollAsync(UserId, courseId, cancellationToken);
@@ -130,7 +131,7 @@ public class CoursesController(ICourseService courseService, ICourseReviewServic
     {
         var reviews = await reviewService.GetApprovedForCourseAsync(courseId, cancellationToken);
         var summary = await reviewService.GetRatingSummaryAsync(courseId, cancellationToken);
-        var canHaveOwnReview = IsSignedIn && !User.IsInRole("Admin");
+        var canHaveOwnReview = IsSignedIn && !User.IsInRole(RoleNames.Admin);
         var mine = canHaveOwnReview ? await reviewService.GetMyReviewAsync(UserId, courseId, cancellationToken) : null;
 
         return Ok(new CourseReviewsResponseDto([.. reviews], summary, mine));

@@ -99,7 +99,7 @@ public static partial class BulkStudentSeeder
             var result = await userManager.CreateAsync(student, password);
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(student, "Student");
+                await userManager.AddToRoleAsync(student, RoleNames.Student);
                 seededCount++;
             }
             else

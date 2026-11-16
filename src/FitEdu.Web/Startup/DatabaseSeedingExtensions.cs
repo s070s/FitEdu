@@ -93,7 +93,7 @@ public static class DatabaseSeedingExtensions
 
         // Seed Roles
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        string[] roles = ["Admin", "Student"];
+        string[] roles = [RoleNames.Admin, RoleNames.Student];
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
@@ -130,7 +130,7 @@ public static class DatabaseSeedingExtensions
             var result = await userManager.CreateAsync(admin, adminPassword);
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(admin, "Admin");
+                await userManager.AddToRoleAsync(admin, RoleNames.Admin);
                 StartupLog.AdminSeeded(startupLogger, adminEmail);
             }
             else

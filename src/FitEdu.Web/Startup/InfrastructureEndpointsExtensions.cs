@@ -385,7 +385,7 @@ public static class InfrastructureEndpointsExtensions
         }
 
         var admin = await userManager.FindByIdAsync(adminIdFromCookie);
-        if (admin is null || !admin.IsEnabled || !await userManager.IsInRoleAsync(admin, "Admin"))
+        if (admin is null || !admin.IsEnabled || !await userManager.IsInRoleAsync(admin, RoleNames.Admin))
         {
             StartupLog.AuthExitRefused(logger, "the admin is gone, disabled or no longer an Admin");
             return null;

@@ -212,8 +212,8 @@ public static class AuthenticationSetupExtensions
 
         // --- Authorization Policies ---
         builder.Services.AddAuthorizationBuilder()
-            .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
-            .AddPolicy("StudentOnly", policy => policy.RequireRole("Student"));
+            .AddPolicy("AdminOnly", policy => policy.RequireRole(RoleNames.Admin))
+            .AddPolicy("StudentOnly", policy => policy.RequireRole(RoleNames.Student));
 
         return builder;
     }
