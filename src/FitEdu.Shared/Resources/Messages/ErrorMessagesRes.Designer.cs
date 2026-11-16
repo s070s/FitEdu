@@ -637,6 +637,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Someone else changed this item. Reload the page and try again..
+        /// </summary>
+        public static string ModifiedConcurrently {
+            get {
+                return ResourceManager.GetString("ModifiedConcurrently", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Certificate not found..
         /// </summary>
         public static string Certificate_NotFound {

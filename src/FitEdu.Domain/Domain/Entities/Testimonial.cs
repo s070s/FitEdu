@@ -33,4 +33,11 @@ public class Testimonial
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? UpdatedAt { get; set; }
+
+    /// <summary>
+    /// DB-7: DB-generated concurrency token (SQL Server <c>rowversion</c>), so an admin edit of a testimonial
+    /// another admin changed in the meantime throws instead of overwriting it. Testimonial is not an
+    /// <see cref="AuditableEntity"/>, so it declares the token itself.
+    /// </summary>
+    public byte[]? RowVersion { get; set; }
 }

@@ -4,6 +4,7 @@ using FitEdu.Application.ApiServices;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Infrastructure.Data;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
@@ -80,6 +81,23 @@ public class AdminCategoryServiceTests
         result.IsSuccess.ShouldBeTrue();
         result.Value!.NameEn.ShouldBe("New");
         result.Value.NameEl.ShouldBe("Νέο");
+    }
+
+    [Fact]
+    public async Task UpdateCategory_ChangedByAnotherAdminMeanwhile_ReturnsConflict_AndKeepsTheirVersion()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var category = new Category { Id = Guid.NewGuid(), NameEn = "Old" };
+        db.Categories.Add(category);
+        await db.SaveChangesAsync();
+        // A stale original RowVersion is what a concurrent SQL Server write leaves behind (DB-7).
+        db.Entry(category).OriginalValues[nameof(Category.RowVersion)] = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        var result = await NewService(db).UpdateCategoryAsync(category.Id, new SaveCategoryRequest("New", null));
+
+        result.StatusCode.ShouldBe(409);
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.ModifiedConcurrently);
+        (await db.Categories.AsNoTracking().SingleAsync(c => c.Id == category.Id)).NameEn.ShouldBe("Old");
     }
 
     [Fact]

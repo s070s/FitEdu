@@ -309,6 +309,9 @@
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
     <value>This lesson was modified by someone else. Reload and try again.</value>
   </data>
+  <data name="ModifiedConcurrently" xml:space="preserve">
+    <value>Someone else changed this item. Reload the page and try again.</value>
+  </data>
   <data name="Certificate_NotFound" xml:space="preserve">
     <value>Certificate not found.</value>
   </data>

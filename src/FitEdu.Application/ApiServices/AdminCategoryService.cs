@@ -75,7 +75,15 @@ public partial class AdminCategoryService(IApplicationDbContext db, ILogger<Admi
         category.NameEl = NormalizeOptional(request.NameEl);
         category.UpdatedAt = DateTimeOffset.UtcNow;
 
-        await db.SaveChangesAsync(cancellationToken);
+        // DB-7: a category changed by another admin in between matches zero rows (RowVersion), so answer 409.
+        try
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return ServiceResult<AdminCategoryDto>.Conflict(error: ErrorMessagesRes.ModifiedConcurrently);
+        }
 
         var courseCount = await db.Courses.CountAsync(c => c.CategoryId == id, cancellationToken);
         var assessmentCount = await db.AssessmentDefinitions.CountAsync(a => a.CategoryId == id, cancellationToken);

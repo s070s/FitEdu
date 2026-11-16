@@ -309,6 +309,9 @@
   <data name="Lesson_ModifiedConcurrently" xml:space="preserve">
     <value>Κάποιος άλλος άλλαξε αυτό το μάθημα. Φόρτωσε ξανά τη σελίδα και δοκίμασε πάλι.</value>
   </data>
+  <data name="ModifiedConcurrently" xml:space="preserve">
+    <value>Κάποιος άλλος άλλαξε αυτό το στοιχείο. Φόρτωσε ξανά τη σελίδα και δοκίμασε πάλι.</value>
+  </data>
   <data name="Certificate_NotFound" xml:space="preserve">
     <value>Το πιστοποιητικό δεν βρέθηκε.</value>
   </data>

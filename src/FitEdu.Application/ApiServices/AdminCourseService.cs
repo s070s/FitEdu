@@ -144,7 +144,15 @@ public partial class AdminCourseService(
         course.UpdatedAt = DateTimeOffset.UtcNow;
         course.UpdatedByUserId = userId;
 
-        await db.SaveChangesAsync(cancellationToken);
+        // DB-7: a course changed by another admin in between matches zero rows (RowVersion), so answer 409.
+        try
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return ServiceResult<AdminCourseDto>.Conflict(error: ErrorMessagesRes.ModifiedConcurrently);
+        }
 
         var updated = await GetCourseByIdAsync(course.Id, cancellationToken) ?? MapToDto(course);
         return ServiceResult<AdminCourseDto>.Ok(updated);

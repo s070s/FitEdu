@@ -6,6 +6,7 @@ using FitEdu.Application.Data;
 using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
 
 namespace FitEdu.Web.Controllers;
@@ -93,6 +94,7 @@ public class AdminModulesController : ControllerBase
 
     /// <summary>Update an existing module by id.</summary>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AdminModuleDto>> UpdateModule(Guid id, [FromBody] SaveModuleRequest request)
     {
         var module = await _db.Modules
@@ -110,7 +112,15 @@ public class AdminModulesController : ControllerBase
         module.UpdatedAt = DateTimeOffset.UtcNow;
         module.UpdatedByUserId = UserId;
 
-        await _db.SaveChangesAsync();
+        // DB-7: a module changed by another admin in between matches zero rows (RowVersion), so answer 409.
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Problem(detail: ErrorMessagesRes.ModifiedConcurrently, statusCode: StatusCodes.Status409Conflict);
+        }
 
         return Ok(module.ToAdminDto());
     }

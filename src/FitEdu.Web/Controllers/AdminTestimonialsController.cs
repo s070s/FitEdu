@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
@@ -67,13 +68,22 @@ public class AdminTestimonialsController : ControllerBase
 
     /// <summary>Update an existing testimonial by id.</summary>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AdminTestimonialDto>> Update(
         Guid id,
         [FromBody] SaveTestimonialRequest request,
         CancellationToken cancellationToken = default)
     {
-        var result = await _testimonials.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
+        try
+        {
+            var result = await _testimonials.UpdateAsync(id, request, cancellationToken);
+            return result is null ? NotFound() : Ok(result);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // DB-7: a testimonial changed by another admin in between matches zero rows (RowVersion).
+            return Problem(detail: ErrorMessagesRes.ModifiedConcurrently, statusCode: StatusCodes.Status409Conflict);
+        }
     }
 
     /// <summary>Toggle a testimonial's active (published) state.</summary>

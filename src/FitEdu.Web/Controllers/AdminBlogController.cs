@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.Data;
@@ -86,7 +87,17 @@ public class AdminBlogController : ControllerBase
         [FromBody] SaveBlogArticleRequest request,
         CancellationToken cancellationToken = default)
     {
-        var result = await _blogService.UpdateAsync(id, request, cancellationToken);
+        AdminBlogArticleDto? result;
+        try
+        {
+            result = await _blogService.UpdateAsync(id, request, cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // DB-7: an article changed by another admin in between matches zero rows (RowVersion).
+            return Problem(detail: ErrorMessagesRes.ModifiedConcurrently, statusCode: StatusCodes.Status409Conflict);
+        }
+
         if (result is null)
         {
             var exists = await _blogService.GetByIdForAdminAsync(id, cancellationToken);

@@ -9,6 +9,7 @@ using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Extensions;
 using FitEdu.Application.DTOs;
+using FitEdu.Shared.Resources.Messages;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -165,6 +166,7 @@ public class AdminAssessmentsController : ControllerBase
     /// Update an existing assessment definition.
     /// </summary>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AdminAssessmentDefinitionDto>> UpdateAssessment(Guid id, [FromBody] SaveAssessmentDefinitionRequest request)
     {
         // Try to find the assessment by id and return 404 if not found
@@ -201,8 +203,16 @@ public class AdminAssessmentsController : ControllerBase
         assessment.UpdatedAt = DateTimeOffset.UtcNow;
         assessment.UpdatedByUserId = UserId;
 
-        // Persist changes
-        await _db.SaveChangesAsync();
+        // Persist changes. DB-7: an assessment changed by another admin in between matches zero rows
+        // (RowVersion), so answer 409.
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Problem(detail: ErrorMessagesRes.ModifiedConcurrently, statusCode: StatusCodes.Status409Conflict);
+        }
 
         var categoryNameEn = await GetCategoryNameEnAsync(categoryId);
 

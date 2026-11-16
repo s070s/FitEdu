@@ -36,6 +36,9 @@ public class TestimonialConfiguration : IEntityTypeConfiguration<Testimonial>
         builder.Property(t => t.IsActive)
             .HasDefaultValue(true);
 
+        builder.Property(t => t.RowVersion)
+            .IsRowVersion();
+
         builder.HasIndex(t => new { t.IsActive, t.DisplayOrder })
             .HasDatabaseName("IX_Testimonials_IsActive_DisplayOrder");
     }
