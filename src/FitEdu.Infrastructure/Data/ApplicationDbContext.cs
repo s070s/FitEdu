@@ -264,11 +264,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = now;
+                if (entry.Entity.CreatedAt == default)
+                    entry.Entity.CreatedAt = now;
+
                 entry.Entity.CreatedByUserId ??= currentUserId;
             }
             else if (entry.State == EntityState.Modified)
             {
+                // The creation stamp is written once, on insert: an edit (or an entity attached as modified
+                // from a form) must never change who created the row or when.
+                entry.Property(e => e.CreatedAt).IsModified = false;
+                entry.Property(e => e.CreatedByUserId).IsModified = false;
+
                 // DB-3: was `??=`, a permanent no-op once CreatedByUserId's sibling stamp on
                 // Added made UpdatedByUserId non-null from insertion onward — every later edit
                 // kept recording the *creator*, not the actual last editor. Assign unconditionally

@@ -93,13 +93,10 @@ public class AdminCourseServiceTests
     public async Task GetCourses_OrdersByCreatedAtDescending()
     {
         await using var db = DbContextFactory.CreateInMemory();
-        var older = new Course { Id = Guid.NewGuid(), TitleEn = "Older" };
-        var newer = new Course { Id = Guid.NewGuid(), TitleEn = "Newer" };
+        // The audit fields keep a CreatedAt that is already set on insert.
+        var older = new Course { Id = Guid.NewGuid(), TitleEn = "Older", CreatedAt = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero) };
+        var newer = new Course { Id = Guid.NewGuid(), TitleEn = "Newer", CreatedAt = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero) };
         db.Courses.AddRange(older, newer);
-        await db.SaveChangesAsync();
-        // Audit stamping overwrites CreatedAt on insert; reassign on a 2nd (Modified) save to get distinct values.
-        older.CreatedAt = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        newer.CreatedAt = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
         await db.SaveChangesAsync();
 
         var page = await NewService(db).GetCoursesAsync(1, 10, "createdat", "desc");

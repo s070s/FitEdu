@@ -32,15 +32,14 @@ public class BlogArticleSearchExtensionsTests
             PublishedAt = publishedAt
         };
 
-    /// <summary>Seeds articles; CreatedAt is stamped on insert by the audit fields,
-    /// so it is reassigned (2020, 2021, … in argument order) on a second save.</summary>
+    /// <summary>Seeds articles; CreatedAt is set before the save (2020, 2021, … in argument order)
+    /// and the audit fields keep a CreatedAt that is already set.</summary>
     private static async Task<ApplicationDbContext> SeedAsync(params BlogArticle[] articles)
     {
         var db = DbContextFactory.CreateInMemory();
-        db.BlogArticles.AddRange(articles);
-        await db.SaveChangesAsync();
         for (var i = 0; i < articles.Length; i++)
             articles[i].CreatedAt = new DateTimeOffset(2020 + i, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        db.BlogArticles.AddRange(articles);
         await db.SaveChangesAsync();
         return db;
     }

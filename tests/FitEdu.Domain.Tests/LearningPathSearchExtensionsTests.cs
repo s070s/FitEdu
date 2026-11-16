@@ -25,15 +25,14 @@ public class LearningPathSearchExtensionsTests
         DisplayOrder = displayOrder
     };
 
-    /// <summary>Seeds paths; CreatedAt is stamped on insert by the audit fields, so it is
-    /// reassigned (2020, 2021, … in argument order) on a second save.</summary>
+    /// <summary>Seeds paths; CreatedAt is set before the save (2020, 2021, … in argument order)
+    /// and the audit fields keep a CreatedAt that is already set.</summary>
     private static async Task<ApplicationDbContext> SeedAsync(params LearningPath[] paths)
     {
         var db = DbContextFactory.CreateInMemory();
-        db.LearningPaths.AddRange(paths);
-        await db.SaveChangesAsync();
         for (var i = 0; i < paths.Length; i++)
             paths[i].CreatedAt = new DateTimeOffset(2020 + i, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        db.LearningPaths.AddRange(paths);
         await db.SaveChangesAsync();
         return db;
     }

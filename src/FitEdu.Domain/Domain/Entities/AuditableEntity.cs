@@ -5,7 +5,11 @@ namespace FitEdu.Domain.Entities;
 /// </summary>
 public abstract class AuditableEntity
 {
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    /// <summary>
+    /// Left at its default, the save stamps it when the row is added; a value set before then (a seed row's
+    /// own date) is kept. An edit never changes it.
+    /// </summary>
+    public DateTimeOffset CreatedAt { get; set; }
 
     public string? CreatedByUserId { get; set; }
 

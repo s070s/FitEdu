@@ -75,6 +75,53 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public async Task SaveChanges_Added_KeepsACreatedAtTheCallerSet_AndStampsOneWhenNoneWasSet()
+    {
+        // A seed row carries its own creation date (AssessmentSeeder), which the save must not replace.
+        var seededCreatedAt = new DateTimeOffset(2026, 10, 1, 8, 30, 0, TimeSpan.Zero);
+        var beforeSave = DateTimeOffset.UtcNow;
+        await using var db = CtxWithUser("seeder");
+        var seeded = new Course { Id = Guid.NewGuid(), TitleEn = "Seeded", CreatedAt = seededCreatedAt };
+        var fresh = new Course { Id = Guid.NewGuid(), TitleEn = "Fresh" };
+
+        db.Courses.AddRange(seeded, fresh);
+        await db.SaveChangesAsync();
+
+        seeded.CreatedAt.ShouldBe(seededCreatedAt);
+        fresh.CreatedAt.ShouldBeGreaterThanOrEqualTo(beforeSave);
+    }
+
+    [Fact]
+    public async Task SaveChanges_Modified_CannotChangeCreatedAtOrCreatedByUserId()
+    {
+        var originalCreatedAt = new DateTimeOffset(2026, 10, 1, 8, 30, 0, TimeSpan.Zero);
+        var dbName = Guid.NewGuid().ToString("N");
+        Guid courseId;
+        await using (var seedDb = CtxWithUser("creator", dbName))
+        {
+            var course = new Course { Id = Guid.NewGuid(), TitleEn = "C", CreatedAt = originalCreatedAt };
+            courseId = course.Id;
+            seedDb.Courses.Add(course);
+            await seedDb.SaveChangesAsync();
+        }
+
+        await using (var editorDb = CtxWithUser("editor", dbName))
+        {
+            var tracked = await editorDb.Courses.SingleAsync(c => c.Id == courseId);
+            tracked.TitleEn = "Edited";
+            tracked.CreatedAt = originalCreatedAt.AddYears(5);
+            tracked.CreatedByUserId = "someone-else";
+            await editorDb.SaveChangesAsync();
+        }
+
+        await using var freshDb = CtxWithUser("reader", dbName);
+        var saved = await freshDb.Courses.AsNoTracking().SingleAsync(c => c.Id == courseId);
+        saved.TitleEn.ShouldBe("Edited");
+        saved.CreatedAt.ShouldBe(originalCreatedAt);
+        saved.CreatedByUserId.ShouldBe("creator");
+    }
+
+    [Fact]
     public async Task SaveChanges_NoHttpContext_StampsTimestampsButNullUser()
     {
         await using var db = CtxWithUser(null);
