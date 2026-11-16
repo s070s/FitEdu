@@ -123,14 +123,14 @@ public class FilePickerTests : BunitContext
     }
 
     [Fact]
-    public void ClearFileName_RendersANewInputSoTheSameFileCanBePickedAgain()
+    public void ClearFileName_KeepsTheSameInputSoItKeepsKeyboardFocus()
     {
         var picker = Render<FilePicker>(parameters => parameters.Add(p => p.Id, PickerId));
         var inputBefore = picker.FindComponent<InputFile>().Instance;
 
         picker.InvokeAsync(() => picker.Instance.ClearFileName());
 
-        picker.FindComponent<InputFile>().Instance.ShouldNotBeSameAs(inputBefore);
+        picker.FindComponent<InputFile>().Instance.ShouldBeSameAs(inputBefore);
     }
 
     [Fact]

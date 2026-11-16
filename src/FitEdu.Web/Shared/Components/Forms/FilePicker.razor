@@ -3,8 +3,7 @@
    focusable, so the keyboard and the field's own <label for> still reach it. *@
 
 <div class="file-picker">
-    <InputFile @key="_inputKey"
-               id="@Id"
+    <InputFile id="@Id"
                class="file-picker__input visually-hidden"
                accept="@Accept"
                disabled="@Disabled"
@@ -36,23 +35,17 @@
 
     private string? _fileName;
 
-    // A new key makes Blazor build a fresh input element. The browser keeps the old element's chosen
-    // file, and picking the same file again would not raise a change event.
-    private int _inputKey;
-
     private string FileNameId => $"{Id}-file-name";
 
     private string DescribedByIds => string.IsNullOrWhiteSpace(DescribedBy) ? FileNameId : $"{FileNameId} {DescribedBy}";
 
     /// <summary>
     /// Shows "no file chosen" again. The parent calls it (through @ref) when it rejects the file or
-    /// removes it, so the picker never names a file the form did not keep. It also resets the input,
-    /// so the same file can be chosen again.
+    /// removes it, so the picker never names a file the form did not keep.
     /// </summary>
     public void ClearFileName()
     {
         _fileName = null;
-        _inputKey++;
         StateHasChanged();
     }
 
