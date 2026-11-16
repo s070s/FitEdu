@@ -250,6 +250,101 @@ public class AdminUserServiceTests
         log.Warnings.ShouldContain(line => line.Contains("locked-file"));
     }
 
+    private static UserManager<ApplicationUser> UserManagerThatResetsPasswords(ApplicationDbContext db)
+    {
+        var userManager = UserManagerOver(db);
+        userManager.GeneratePasswordResetTokenAsync(Arg.Any<ApplicationUser>()).Returns("reset-token");
+        userManager.ResetPasswordAsync(Arg.Any<ApplicationUser>(), "reset-token", Arg.Any<string>()).Returns(IdentityResult.Success);
+        return userManager;
+    }
+
+    [Fact]
+    public async Task SetPassword_SendsTheMemberANoticeInTheirOwnLanguage()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var greekMember = NewUser("greek-member");
+        greekMember.PreferredLanguage = UserLanguage.Greek;
+        db.Users.Add(greekMember);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var emailService = Substitute.For<IEmailService>();
+        using var adminCulture = new CultureScope("en-GB");
+
+        var result = await NewService(db, UserManagerThatResetsPasswords(db), emailService).SetPasswordAsync("greek-member", "New-Pass-1!");
+
+        result.IsSuccess.ShouldBeTrue();
+        await emailService.Received(1).SendPasswordChangedByAdminAsync(
+            "greek-member@test.local", UserLanguage.Greek, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task SetPassword_EndsTheMembersRefreshTokens()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        db.RefreshTokens.Add(new RefreshToken { Id = Guid.NewGuid(), UserId = "member", TokenHash = "hash", ExpiresAt = DateTimeOffset.UtcNow.AddDays(7) });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        await NewService(db, UserManagerThatResetsPasswords(db)).SetPasswordAsync("member", "New-Pass-1!");
+
+        (await db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task SetPassword_AdminAccount_IsRefusedAndNoNoticeIsSent()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        var emailService = Substitute.For<IEmailService>();
+
+        var result = await NewService(db, userManager, emailService).SetPasswordAsync("other-admin", "New-Pass-1!");
+
+        result.StatusCode.ShouldBe(400);
+        await emailService.DidNotReceiveWithAnyArgs().SendPasswordChangedByAdminAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task SetPassword_RejectedPassword_SendsNoNotice()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.ResetPasswordAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(IdentityResult.Failed(new IdentityError { Description = "Too common." }));
+        var emailService = Substitute.For<IEmailService>();
+
+        var result = await NewService(db, userManager, emailService).SetPasswordAsync("member", "Password1!");
+
+        result.StatusCode.ShouldBe(400);
+        await emailService.DidNotReceiveWithAnyArgs().SendPasswordChangedByAdminAsync(default!, default!);
+    }
+
+    [Fact]
+    public async Task SetPassword_NoticeCannotBeQueued_StillSucceedsAndTheLogHasNoAddress()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var emailService = Substitute.For<IEmailService>();
+        emailService.SendPasswordChangedByAdminAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new InvalidOperationException("The email queue is full."));
+        var log = new RecordingLogger<AdminUserService>();
+
+        var result = await NewService(db, UserManagerThatResetsPasswords(db), emailService, logger: log).SetPasswordAsync("member", "New-Pass-1!");
+
+        result.IsSuccess.ShouldBeTrue();
+        log.Warnings.ShouldHaveSingleItem().ShouldContain("member");
+        log.Warnings.ShouldNotContain(line => line.Contains("member@test.local"));
+    }
+
     [Fact]
     public async Task DeleteUser_Missing_ReturnsNotFound()
     {

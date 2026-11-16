@@ -38,6 +38,18 @@ public sealed class QueuedEmailServiceTests
     }
 
     [Fact]
+    public async Task SendPasswordChangedByAdmin_QueuesTheNoticeInTheMemberLanguage()
+    {
+        var queue = new EmailOutbox();
+
+        await new QueuedEmailService(queue).SendPasswordChangedByAdminAsync(Address, UserLanguage.Greek);
+
+        queue.Reader.TryRead(out var queued).ShouldBeTrue();
+        queued!.To.ShouldBe(Address);
+        queued.Content.Subject.ShouldBe(EmailTemplates.GreekPasswordChangedByAdminSubject);
+    }
+
+    [Fact]
     public async Task Send_WhenTheQueueIsFull_Throws_SoTheCallerCanLogTheFailure()
     {
         var queue = new EmailOutbox(capacity: 1);

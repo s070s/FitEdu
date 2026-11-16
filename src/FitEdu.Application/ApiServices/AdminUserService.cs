@@ -429,7 +429,25 @@ public partial class AdminUserService(
         await RefreshTokenRevocation.RevokeActiveTokensAsync(context, userId, cancellationToken);
 
         LogPasswordSetByAdmin(logger, ActingAdmin, userId);
+        await SendPasswordChangedNoticeAsync(user, cancellationToken);
         return ServiceResult<bool>.Ok(true);
+    }
+
+    // The member is told in their own language, since the admin may read the site in another one. The password
+    // is already changed here, so a notice that cannot be queued is logged (by id, never the address), not an error.
+    private async Task SendPasswordChangedNoticeAsync(ApplicationUser user, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(user.Email))
+            return;
+
+        try
+        {
+            await emailService.SendPasswordChangedByAdminAsync(user.Email, user.PreferredLanguage, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogPasswordChangedNoticeFailed(logger, ex, user.Id);
+        }
     }
 
     // Ends every session of the user: the new security stamp makes the cookie and bearer-token checks reject
@@ -465,6 +483,9 @@ public partial class AdminUserService(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "The profile photo of deleted user {UserId} could not be removed from storage")]
     private static partial void LogAvatarFileNotDeleted(ILogger logger, Exception exception, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The password-changed notice for user {UserId} could not be sent")]
+    private static partial void LogPasswordChangedNoticeFailed(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} triggered forced password reset for user {UserId}.")]
     private static partial void LogForcedPasswordResetTriggered(ILogger logger, string adminId, string userId);

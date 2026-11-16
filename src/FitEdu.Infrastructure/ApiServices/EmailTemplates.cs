@@ -21,6 +21,9 @@ public static class EmailTemplates
     public const string GreekEmailConfirmationSubject = "Καλώς ήρθες στο FitEdu — ώρα για κίνηση";
     public const string GreekPasswordResetSubject = "Επαναφορά του κωδικού πρόσβασής σου στο FitEdu";
 
+    public const string PasswordChangedByAdminSubject = "Your FitEdu password was changed";
+    public const string GreekPasswordChangedByAdminSubject = "Ο κωδικός πρόσβασής σου στο FitEdu άλλαξε";
+
     private const string HtmlSignOff = "<p>Train well,<br>The FitEdu team</p>";
     private const string TextSignOff = "Train well, the FitEdu team.";
     private const string GreekHtmlSignOff = "<p>Καλή προπόνηση,<br>Η ομάδα του FitEdu</p>";
@@ -45,6 +48,13 @@ public static class EmailTemplates
     /// <summary>The password-reset email with the reset link: Greek for "el", English otherwise.</summary>
     public static EmailContent PasswordReset(string resetLink, string language) =>
         IsGreek(language) ? GreekPasswordReset(resetLink) : EnglishPasswordReset(resetLink);
+
+    /// <summary>
+    /// The notice that an admin set a new password: Greek for "el", English otherwise. It has no link and
+    /// never the password itself; the admin hands the new password over in person.
+    /// </summary>
+    public static EmailContent PasswordChangedByAdmin(string language) =>
+        IsGreek(language) ? GreekPasswordChangedByAdmin() : EnglishPasswordChangedByAdmin();
 
     private static bool IsGreek(string language) => language == UserLanguage.Greek;
 
@@ -110,5 +120,35 @@ public static class EmailTemplates
         var text = $"Επαναφορά του κωδικού πρόσβασής σου στο FitEdu: {resetLink}\n\n" +
                    $"{GreekLifetimeLine} {GreekResetIgnoreLine}\n\n{GreekTextSignOff}";
         return new EmailContent(GreekPasswordResetSubject, html, text);
+    }
+
+    private static EmailContent EnglishPasswordChangedByAdmin()
+    {
+        const string changedLine = "A FitEdu admin has set a new password for your account.";
+        const string effectLine = "Your old password no longer works, and every device that was signed in has been signed out. " +
+                                  "Log in with the new password you were given, and change it on your Profile page if you like.";
+        const string unexpectedLine = "If you were not expecting this change, please contact the FitEdu team.";
+        var html = HtmlDocument("en",
+                   $"<p>{changedLine}</p>" +
+                   $"<p>{effectLine}</p>" +
+                   $"<p>{unexpectedLine}</p>" +
+                   HtmlSignOff);
+        var text = $"{changedLine}\n\n{effectLine}\n\n{unexpectedLine}\n\n{TextSignOff}";
+        return new EmailContent(PasswordChangedByAdminSubject, html, text);
+    }
+
+    private static EmailContent GreekPasswordChangedByAdmin()
+    {
+        const string changedLine = "Ένας διαχειριστής του FitEdu όρισε νέο κωδικό πρόσβασης για τον λογαριασμό σου.";
+        const string effectLine = "Ο παλιός κωδικός δεν ισχύει πια και κάθε συσκευή που ήταν συνδεδεμένη αποσυνδέθηκε. " +
+                                  "Συνδέσου με τον νέο κωδικό που σου δόθηκε και, αν θέλεις, άλλαξέ τον από τη σελίδα Προφίλ.";
+        const string unexpectedLine = "Αν δεν περίμενες αυτή την αλλαγή, επικοινώνησε με την ομάδα του FitEdu.";
+        var html = HtmlDocument("el",
+                   $"<p>{changedLine}</p>" +
+                   $"<p>{effectLine}</p>" +
+                   $"<p>{unexpectedLine}</p>" +
+                   GreekHtmlSignOff);
+        var text = $"{changedLine}\n\n{effectLine}\n\n{unexpectedLine}\n\n{GreekTextSignOff}";
+        return new EmailContent(GreekPasswordChangedByAdminSubject, html, text);
     }
 }

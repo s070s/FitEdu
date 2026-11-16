@@ -3,7 +3,7 @@ namespace FitEdu.Application.ApiInterfaces;
 /// <summary>
 /// Abstraction for sending transactional emails.
 /// NOTE
-/// Only confirmation and password-reset messages exist today.
+/// Only confirmation, password-reset and password-changed-by-an-admin messages exist today.
 /// A production build would likely add welcome, payment-receipt, subscription-change, and
 /// course-completion notifications here.
 /// Every message takes the language to write it in ("en" or "el", see UserLanguage): the caller
@@ -29,4 +29,13 @@ public interface IEmailService
     /// <param name="language">Language of the email: "el" is Greek, anything else English</param>
     /// <param name="cancellationToken">Cancellation token</param>
     Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Tells a member that an admin has set a new password for their account. The email carries neither the
+    /// password nor a link: the admin hands the password over themselves.
+    /// </summary>
+    /// <param name="email">User's email address</param>
+    /// <param name="language">Language of the email: "el" is Greek, anything else English</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    Task SendPasswordChangedByAdminAsync(string email, string language, CancellationToken cancellationToken = default);
 }

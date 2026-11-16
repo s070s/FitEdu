@@ -15,6 +15,9 @@ public sealed class QueuedEmailService(EmailOutbox queue) : IEmailService
     public Task SendPasswordResetAsync(string email, string resetLink, string language, CancellationToken cancellationToken = default) =>
         Enqueue(email, EmailTemplates.PasswordReset(resetLink, language));
 
+    public Task SendPasswordChangedByAdminAsync(string email, string language, CancellationToken cancellationToken = default) =>
+        Enqueue(email, EmailTemplates.PasswordChangedByAdmin(language));
+
     // A full line throws, like a failed send used to: the callers already catch and log that.
     private Task Enqueue(string to, EmailContent content)
     {

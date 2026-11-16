@@ -40,7 +40,19 @@ public partial class StubEmailService : IEmailService
         return Task.CompletedTask;
     }
 
+    // The notice has no link to find, so only its subject is logged, never the recipient's address.
+    public Task SendPasswordChangedByAdminAsync(string email, string language, CancellationToken cancellationToken = default)
+    {
+        var subject = EmailTemplates.PasswordChangedByAdmin(language).Subject;
+        LogPasswordChangedByAdmin(_logger, subject);
+
+        return Task.CompletedTask;
+    }
+
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "STUB EMAIL - Password Changed By Admin:\nSubject: {Subject}")]
+    private static partial void LogPasswordChangedByAdmin(ILogger logger, string subject);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "STUB EMAIL - Email Confirmation:\nTo: {Email}\nSubject: {Subject}\nLink: {ConfirmationLink}")]
     private static partial void LogEmailConfirmation(ILogger logger, string email, string subject, string confirmationLink);

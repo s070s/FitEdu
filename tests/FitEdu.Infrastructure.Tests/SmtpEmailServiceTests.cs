@@ -87,6 +87,33 @@ public sealed class SmtpEmailServiceTests : IDisposable
         message.TextBody.ShouldNotBeNull().ShouldContain(ResetLink, Case.Sensitive);
     }
 
+    [Theory]
+    [InlineData(UserLanguage.English, "Your FitEdu password was changed", "en", "If you were not expecting this change")]
+    [InlineData(UserLanguage.Greek, "Ο κωδικός πρόσβασής σου στο FitEdu άλλαξε", "el", "Αν δεν περίμενες αυτή την αλλαγή")]
+    public void BuildMessage_PasswordChangedByAdmin_IsANoticeInBothPartsWithNoPasswordAndNoLink(
+        string language, string subject, string htmlLang, string unexpectedLine)
+    {
+        var message = SmtpEmailService.BuildMessage(
+            Options(), "user@example.com", EmailTemplates.PasswordChangedByAdmin(language));
+
+        message.Subject.ShouldBe(subject);
+        var html = message.HtmlBody.ShouldNotBeNull();
+        html.ShouldStartWith($"<html lang=\"{htmlLang}\">", Case.Sensitive);
+        var text = message.TextBody.ShouldNotBeNull();
+        foreach (var body in new[] { html, text })
+        {
+            body.ShouldContain(unexpectedLine, Case.Sensitive);
+            body.ShouldNotContain("http", Case.Insensitive);
+            body.ShouldNotContain("<a ", Case.Insensitive);
+        }
+    }
+
+    [Fact]
+    public void EmailTemplates_PasswordChangedByAdmin_UnknownLanguage_FallsBackToEnglish()
+    {
+        EmailTemplates.PasswordChangedByAdmin("fr").Subject.ShouldBe(EmailTemplates.PasswordChangedByAdminSubject);
+    }
+
     // Both parts of the message, HTML and plain text, carry the lifetime and the ignore line.
     private static void ShouldStateLifetimeAnd(MimeMessage message, string lifetimeLine, string ignoreLine)
     {
@@ -183,6 +210,20 @@ public sealed class SmtpEmailServiceTests : IDisposable
         entry.ShouldContain("Welcome to FitEdu", Case.Sensitive);
         entry.ShouldNotContain(PrivateAddress);
         entry.ShouldNotContain("secret-mail");
+    }
+
+    [Fact]
+    public async Task SendPasswordChangedByAdmin_SendsTheNoticeWithoutLoggingTheAddress()
+    {
+        var client = Substitute.For<ISmtpClient>();
+
+        await NewService(client).SendPasswordChangedByAdminAsync(PrivateAddress, Greek);
+
+        await client.Received(1).SendAsync(
+            Arg.Is<MimeMessage>(message => message.To.Mailboxes.Single().Address == PrivateAddress
+                && message.Subject == EmailTemplates.GreekPasswordChangedByAdminSubject),
+            Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>());
+        _logger.Information.ShouldHaveSingleItem().ShouldNotContain("secret-mail");
     }
 
     [Fact]

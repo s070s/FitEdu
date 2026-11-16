@@ -53,5 +53,16 @@ public sealed class StubEmailServiceTests : IDisposable
         _logger.Information.ShouldHaveSingleItem().ShouldContain("Subject: Επαναφορά του κωδικού πρόσβασής σου στο FitEdu", Case.Sensitive);
     }
 
+    [Fact]
+    public async Task SendPasswordChangedByAdmin_LogsTheSubjectButNotTheAddress()
+    {
+        await NewService().SendPasswordChangedByAdminAsync("private.person@secret-mail.test", UserLanguage.English);
+
+        var entry = _logger.Information.ShouldHaveSingleItem();
+        entry.ShouldStartWith("STUB EMAIL", Case.Sensitive);
+        entry.ShouldContain("Subject: Your FitEdu password was changed", Case.Sensitive);
+        entry.ShouldNotContain("secret-mail");
+    }
+
     public void Dispose() => _cultureScope.Dispose();
 }
