@@ -772,6 +772,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The role was changed, but the member's sessions could not be ended. Disable and enable the account to sign them out..
+        /// </summary>
+        public static string RoleChangedSessionsNotEnded {
+            get {
+                return ResourceManager.GetString("RoleChangedSessionsNotEnded", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to You're not signed in..
         /// </summary>
         public static string NotAuthenticated {

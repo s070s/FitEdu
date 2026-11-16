@@ -354,6 +354,9 @@
   <data name="AdminPasswordNotChangeable" xml:space="preserve">
     <value>Admin account passwords cannot be changed from the user table.</value>
   </data>
+  <data name="RoleChangedSessionsNotEnded" xml:space="preserve">
+    <value>The role was changed, but the member's sessions could not be ended. Disable and enable the account to sign them out.</value>
+  </data>
   <data name="NotAuthenticated" xml:space="preserve">
     <value>You're not signed in.</value>
   </data>

@@ -138,8 +138,9 @@ public partial class AdminUserService(
 
         // The roles travel in the token and the cookie, so the old sessions would keep the old roles.
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        // The role is saved already, so a retry would be refused (the user has or lacks the role): the admin is told what to do instead.
         if (!sessionsEnded.Succeeded)
-            return IdentityFailure<string>(sessionsEnded);
+            return ServiceResult<string>.Conflict(error: ErrorMessagesRes.RoleChangedSessionsNotEnded);
 
         LogRoleAssigned(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' assigned.");
@@ -161,8 +162,9 @@ public partial class AdminUserService(
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        // The role is saved already, so a retry would be refused (the user has or lacks the role): the admin is told what to do instead.
         if (!sessionsEnded.Succeeded)
-            return IdentityFailure<string>(sessionsEnded);
+            return ServiceResult<string>.Conflict(error: ErrorMessagesRes.RoleChangedSessionsNotEnded);
 
         LogRoleRemoved(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' removed.");

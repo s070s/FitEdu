@@ -939,4 +939,40 @@ public class AdminUserServiceTests
         result.StatusCode.ShouldBe(400);
         closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
     }
+
+    [Fact]
+    public async Task AssignRole_WhenTheSessionsCannotBeEnded_SaysTheRoleWasChangedAndClosesNothing()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(IdentityResult.Success);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Failed(new IdentityError { Description = "Store failed." }));
+        var roleManager = Substitute.For<RoleManager<IdentityRole>>(Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
+        roleManager.RoleExistsAsync(RoleNames.Admin).Returns(true);
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, roleManager: roleManager, liveConnectionCloser: closer)
+            .AssignRoleAsync("member", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(409);
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.RoleChangedSessionsNotEnded);
+        closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
+    }
+
+    [Fact]
+    public async Task RemoveRole_WhenTheSessionsCannotBeEnded_SaysTheRoleWasChangedAndClosesNothing()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(IdentityResult.Success);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, liveConnectionCloser: closer).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.StatusCode.ShouldBe(409);
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.RoleChangedSessionsNotEnded);
+        closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
+    }
 }
