@@ -44,6 +44,7 @@ public partial class LessonViewer
     private string? _completionError;
     private bool _mediaError;
     private string? _assetToken;
+    private bool _assetTokenRefreshed;
 
     private static string CurrentLang =>
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el" ? "el" : "en";
@@ -96,13 +97,13 @@ public partial class LessonViewer
         _completionResult = null;
         _completionError = null;
         _mediaError = false;
+        _assetTokenRefreshed = false;
         _courseLessons = [];
         _progress = null;
 
         try
         {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            _assetToken = await AuthService.CreateLessonAssetTokenAsync(authState.User, LessonId);
+            await MintAssetTokenAsync();
             _lesson = await CourseService.GetLessonAsync(LessonId, CurrentLang);
             if (_lesson is null)
                 _error = LessonRes.LessonNotFoundOrNotEnrolled;
@@ -177,9 +178,35 @@ public partial class LessonViewer
         }
     }
 
-    private void OnMediaError()
+    /// <summary>
+    /// The first media error is most likely an expired asset token (it lives 10 minutes, a long lesson
+    /// outlasts it), so one new token is minted and the video reloads with it. A second error gives
+    /// up and shows the "unavailable" message.
+    /// </summary>
+    private async Task OnMediaErrorAsync()
     {
-        _mediaError = true;
+        if (_assetTokenRefreshed)
+        {
+            _mediaError = true;
+            return;
+        }
+
+        _assetTokenRefreshed = true;
+        try
+        {
+            await MintAssetTokenAsync();
+        }
+        catch (Exception ex)
+        {
+            LogAssetTokenRefreshFailed(_logger, ex, LessonId);
+            _mediaError = true;
+        }
+    }
+
+    private async Task MintAssetTokenAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        _assetToken = await AuthService.CreateLessonAssetTokenAsync(authState.User, LessonId);
     }
 
     private static string LessonHref(Guid lessonId) => $"/lessons/{lessonId}";
@@ -306,6 +333,9 @@ public partial class LessonViewer
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to load the outline of course {CourseId}.")]
     private static partial void LogCourseOutlineFailed(ILogger logger, Exception exception, Guid courseId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to renew the media token of lesson {LessonId}.")]
+    private static partial void LogAssetTokenRefreshFailed(ILogger logger, Exception exception, Guid lessonId);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Failed to mark lesson {LessonId} as complete.")]
     private static partial void LogCompletionFailed(ILogger logger, Exception exception, Guid lessonId);

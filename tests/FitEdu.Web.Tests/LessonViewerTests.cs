@@ -217,6 +217,53 @@ public class LessonViewerTests : BunitContext
         cut.Find(".video-container video").ShouldNotBeNull();
     }
 
+    private IRenderedComponent<LessonViewer> RenderUploadedVideoLesson(params string[] assetTokens)
+    {
+        _authService.CreateLessonAssetTokenAsync(Arg.Any<ClaimsPrincipal>(), _lessonId)
+            .Returns(assetTokens[0], assetTokens[1..]);
+        _courseService.GetLessonAsync(_lessonId, Arg.Any<string>()).Returns(Lesson(contentType: 2, content: "/media/lesson-video.mp4"));
+        return Render<LessonViewer>(p => p.Add(c => c.LessonId, _lessonId));
+    }
+
+    private static Task MediaFails(IRenderedComponent<LessonViewer> cut) =>
+        cut.Find(".video-container video").TriggerEventAsync("onerror", new Microsoft.AspNetCore.Components.Web.ErrorEventArgs());
+
+    [Fact]
+    public void VideoLesson_UploadedFile_PutsTheAssetUrlOnTheVideoItself()
+    {
+        var cut = RenderUploadedVideoLesson("token-one");
+
+        var video = cut.Find(".video-container video");
+        video.GetAttribute("src")!.ShouldEndWith($"/api/lessons/{_lessonId}/asset?type=video&assetToken=token-one");
+        // An error on a <source> child never reaches the video's own handler, so there is none.
+        cut.FindAll(".video-container source").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task VideoLesson_MediaError_MintsOneNewTokenAndLoadsTheVideoAgain()
+    {
+        var cut = RenderUploadedVideoLesson("token-one", "token-two");
+
+        await MediaFails(cut);
+
+        cut.Find(".video-container video").GetAttribute("src")!.ShouldEndWith("&assetToken=token-two");
+        cut.FindAll(".media-unavailable").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task VideoLesson_MediaFailsAgainAfterTheNewToken_ShowsTheUnavailableMessage()
+    {
+        var cut = RenderUploadedVideoLesson("token-one", "token-two", "token-three");
+
+        await MediaFails(cut);
+        await MediaFails(cut);
+
+        cut.Find(".media-unavailable").TextContent.ShouldBe(LessonRes.MediaUnavailable);
+        cut.FindAll(".video-container video").ShouldBeEmpty();
+        // The token is minted for the page and once more for the retry, never a third time.
+        await _authService.Received(2).CreateLessonAssetTokenAsync(Arg.Any<ClaimsPrincipal>(), _lessonId);
+    }
+
     [Fact]
     public void TextLesson_MarkdownContent_RendersHeadingAndListItems()
     {
