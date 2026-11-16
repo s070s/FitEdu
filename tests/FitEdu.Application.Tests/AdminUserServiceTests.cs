@@ -9,6 +9,7 @@ using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.ApiServices;
 using FitEdu.Application.Common;
 using FitEdu.Domain.Entities;
+using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using FitEdu.Shared.Resources.Messages;
@@ -28,7 +29,7 @@ public class AdminUserServiceTests
     private static AdminUserService NewService(
         ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null,
         IFileStorage? fileStorage = null, ILogger<AdminUserService>? logger = null, string actingAdminId = "admin-actor",
-        RoleManager<IdentityRole>? roleManager = null, ILiveConnectionCloser? liveConnectionCloser = null)
+        RoleManager<IdentityRole>? roleManager = null, ILiveConnectionCloser? liveConnectionCloser = null, TimeProvider? timeProvider = null)
     {
         roleManager ??= Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
@@ -46,7 +47,7 @@ public class AdminUserServiceTests
             fileStorage ?? Substitute.For<IFileStorage>(),
             liveConnectionCloser ?? Substitute.For<ILiveConnectionCloser>(),
             currentUser,
-            TimeProvider.System,
+            timeProvider ?? TimeProvider.System,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
     }
 
@@ -974,5 +975,503 @@ public class AdminUserServiceTests
         result.StatusCode.ShouldBe(409);
         result.ErrorMessage.ShouldBe(ErrorMessagesRes.RoleChangedSessionsNotEnded);
         closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
+    }
+
+    // ---- Admin audit log: one row per action, in the action's own save ---------------------------------------
+
+    private static readonly DateTimeOffset AuditClock = new(2026, 11, 16, 8, 30, 0, TimeSpan.Zero);
+
+    // Rows the change tracker still has to insert: what the next SaveChanges would store.
+    private static int PendingAuditRows(ApplicationDbContext db) =>
+        db.ChangeTracker.Entries<AdminAuditEntry>().Count(entry => entry.State == EntityState.Added);
+
+    private static Task<List<AdminAuditEntry>> StoredAuditRows(ApplicationDbContext db) =>
+        db.AdminAuditEntries.AsNoTracking().ToListAsync();
+
+    // A failed action must leave nothing behind, not even a row a later save of the same request could store.
+    private static async Task ShouldHaveWrittenNoAuditRow(ApplicationDbContext db)
+    {
+        PendingAuditRows(db).ShouldBe(0);
+        await db.SaveChangesAsync();
+        (await StoredAuditRows(db)).ShouldBeEmpty();
+    }
+
+    private static RoleManager<IdentityRole> RoleManagerWithRole(string roleName)
+    {
+        var roleManager = Substitute.For<RoleManager<IdentityRole>>(Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
+        roleManager.RoleExistsAsync(roleName).Returns(true);
+        return roleManager;
+    }
+
+    private static void ShouldBeTheRow(
+        AdminAuditEntry row, string targetUserId, AdminAuditAction action, string? detail = null, string actorUserId = "admin-actor")
+    {
+        row.ActorUserId.ShouldBe(actorUserId);
+        row.TargetUserId.ShouldBe(targetUserId);
+        row.Action.ShouldBe(action);
+        row.Detail.ShouldBe(detail);
+        row.OccurredAt.ShouldBe(AuditClock);
+    }
+
+    [Fact]
+    public async Task DisableUser_WritesOneAuditRowInTheSaveThatDisablesTheMember()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        var pendingWhenTheStampWasSaved = -1;
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            pendingWhenTheStampWasSaved = PendingAuditRows(db);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, timeProvider: new FixedTimeProvider(AuditClock)).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenTheStampWasSaved.ShouldBe(1);
+        ShouldBeTheRow((await StoredAuditRows(db)).ShouldHaveSingleItem(), "member", AdminAuditAction.UserDisabled);
+    }
+
+    [Fact]
+    public async Task DisableUser_ARowChangedSinceItWasRead_StillWritesExactlyOneAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        var attempts = 0;
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            attempts++;
+            if (attempts > 1)
+            {
+                await db.SaveChangesAsync();
+                return IdentityResult.Success;
+            }
+
+            await db.Database.ExecuteSqlRawAsync("UPDATE AspNetUsers SET ConcurrencyStamp = 'changed-elsewhere' WHERE Id = 'member'");
+            return ConcurrencyFailure();
+        });
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        (await StoredAuditRows(db)).ShouldHaveSingleItem().Action.ShouldBe(AdminAuditAction.UserDisabled);
+    }
+
+    [Fact]
+    public async Task DisableUser_ARowThatKeepsChanging_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.StatusCode.ShouldBe(409);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task DisableUser_TheStoreRefusesTheUpdate_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Failed(new IdentityError { Description = "Store failed." }));
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.StatusCode.ShouldBe(400);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task DisableUser_RefusedOrMissing_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.AddRange(NewUser("admin-actor"), NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Is<ApplicationUser>(user => user.Id == "other-admin"), RoleNames.Admin).Returns(true);
+        var service = NewService(db, userManager);
+
+        (await service.DisableUserAsync("admin-actor")).StatusCode.ShouldBe(400);
+        (await service.DisableUserAsync("other-admin")).StatusCode.ShouldBe(400);
+        (await service.DisableUserAsync("nobody")).StatusCode.ShouldBe(404);
+
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task EnableUser_WritesOneAuditRowInTheSaveThatEnablesTheMember()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("member");
+        member.IsEnabled = false;
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        var pendingWhenTheUserWasSaved = -1;
+        userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            pendingWhenTheUserWasSaved = PendingAuditRows(db);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, timeProvider: new FixedTimeProvider(AuditClock)).EnableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenTheUserWasSaved.ShouldBe(1);
+        ShouldBeTheRow((await StoredAuditRows(db)).ShouldHaveSingleItem(), "member", AdminAuditAction.UserEnabled);
+    }
+
+    [Fact]
+    public async Task EnableUser_TheUpdateFails_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager).EnableUserAsync("member");
+
+        result.StatusCode.ShouldBe(409);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task EnableUser_MissingMember_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+
+        var result = await NewService(db, UserManagerOver(db)).EnableUserAsync("nobody");
+
+        result.StatusCode.ShouldBe(404);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task AssignRole_WritesOneAuditRowWithTheRoleNameInTheSaveThatAddsTheRole()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        var pendingWhenTheRoleWasSaved = -1;
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(async _ =>
+        {
+            pendingWhenTheRoleWasSaved = PendingAuditRows(db);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, roleManager: RoleManagerWithRole(RoleNames.Admin), timeProvider: new FixedTimeProvider(AuditClock))
+            .AssignRoleAsync("member", RoleNames.Admin);
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenTheRoleWasSaved.ShouldBe(1);
+        ShouldBeTheRow((await StoredAuditRows(db)).ShouldHaveSingleItem(), "member", AdminAuditAction.RoleAdded, RoleNames.Admin);
+    }
+
+    [Fact]
+    public async Task AssignRole_TheStoreRefusesTheRole_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(IdentityResult.Failed(new IdentityError { Description = "Store failed." }));
+
+        var result = await NewService(db, userManager, roleManager: RoleManagerWithRole(RoleNames.Admin)).AssignRoleAsync("member", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(400);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task AssignRole_UnknownRoleOrRoleAlreadyHeldOrMissingMember_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        var roleManager = RoleManagerWithRole(RoleNames.Student);
+        var service = NewService(db, userManager, roleManager: roleManager);
+
+        (await service.AssignRoleAsync("member", "Nonexistent")).StatusCode.ShouldBe(400);
+        (await service.AssignRoleAsync("member", RoleNames.Student)).StatusCode.ShouldBe(400);
+        (await service.AssignRoleAsync("nobody", RoleNames.Student)).StatusCode.ShouldBe(404);
+
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task AssignRole_WhenTheSessionsCannotBeEnded_KeepsTheRowOfTheRoleThatWasSaved()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(async _ =>
+        {
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager, roleManager: RoleManagerWithRole(RoleNames.Admin)).AssignRoleAsync("member", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(409);
+        (await StoredAuditRows(db)).ShouldHaveSingleItem().Action.ShouldBe(AdminAuditAction.RoleAdded);
+    }
+
+    [Fact]
+    public async Task RemoveRole_WritesOneAuditRowWithTheRoleNameInTheSaveThatRemovesTheRole()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        var pendingWhenTheRoleWasSaved = -1;
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(async _ =>
+        {
+            pendingWhenTheRoleWasSaved = PendingAuditRows(db);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, timeProvider: new FixedTimeProvider(AuditClock)).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenTheRoleWasSaved.ShouldBe(1);
+        ShouldBeTheRow((await StoredAuditRows(db)).ShouldHaveSingleItem(), "member", AdminAuditAction.RoleRemoved, RoleNames.Student);
+    }
+
+    [Fact]
+    public async Task RemoveRole_TheStoreRefusesTheRemoval_WritesNoAuditRow()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(IdentityResult.Failed(new IdentityError { Description = "Store failed." }));
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.StatusCode.ShouldBe(400);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task RemoveRole_AdminRoleRefusedOrRoleNotHeldOrMissingMember_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.AddRange(NewUser("admin-actor"), NewUser("only-admin"), NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Is<ApplicationUser>(user => user.Id != "member"), RoleNames.Admin).Returns(true);
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns([NewUser("only-admin")]);
+        var service = NewService(db, userManager);
+
+        (await service.RemoveRoleAsync("admin-actor", RoleNames.Admin)).StatusCode.ShouldBe(400);
+        (await service.RemoveRoleAsync("only-admin", RoleNames.Admin)).StatusCode.ShouldBe(400);
+        (await service.RemoveRoleAsync("member", RoleNames.Admin)).StatusCode.ShouldBe(400);
+        (await service.RemoveRoleAsync("nobody", RoleNames.Admin)).StatusCode.ShouldBe(404);
+
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task RemoveRole_WhenTheSessionsCannotBeEnded_KeepsTheRowOfTheRoleThatWasRemoved()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(async _ =>
+        {
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.StatusCode.ShouldBe(409);
+        (await StoredAuditRows(db)).ShouldHaveSingleItem().Action.ShouldBe(AdminAuditAction.RoleRemoved);
+    }
+
+    [Fact]
+    public async Task SetPassword_WritesOneAuditRowWithoutThePasswordInTheSaveThatChangesIt()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GeneratePasswordResetTokenAsync(Arg.Any<ApplicationUser>()).Returns("reset-token");
+        var pendingWhenThePasswordWasSaved = -1;
+        userManager.ResetPasswordAsync(Arg.Any<ApplicationUser>(), "reset-token", Arg.Any<string>()).Returns(async _ =>
+        {
+            pendingWhenThePasswordWasSaved = PendingAuditRows(db);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, timeProvider: new FixedTimeProvider(AuditClock)).SetPasswordAsync("member", "New-Pass-1!");
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenThePasswordWasSaved.ShouldBe(1);
+        var row = (await StoredAuditRows(db)).ShouldHaveSingleItem();
+        ShouldBeTheRow(row, "member", AdminAuditAction.PasswordSet);
+        new[] { row.ActorUserId, row.TargetUserId, row.Detail }.ShouldAllBe(text => text == null || !text.Contains("New-Pass-1!"));
+    }
+
+    [Fact]
+    public async Task SetPassword_RejectedPassword_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.ResetPasswordAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(IdentityResult.Failed(new IdentityError { Description = "Too common." }));
+
+        var result = await NewService(db, userManager).SetPasswordAsync("member", "Password1!");
+
+        result.StatusCode.ShouldBe(400);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task SetPassword_AdminAccountOrMissingMember_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        var service = NewService(db, userManager);
+
+        (await service.SetPasswordAsync("other-admin", "New-Pass-1!")).StatusCode.ShouldBe(400);
+        (await service.SetPasswordAsync("nobody", "New-Pass-1!")).StatusCode.ShouldBe(404);
+
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task DeleteUser_WritesOneAuditRowInTheSaveThatDeletesTheAccount_AndTheRowOutlivesIt()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("victim"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        var pendingWhenTheAccountWasDeleted = -1;
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).Returns(async call =>
+        {
+            pendingWhenTheAccountWasDeleted = PendingAuditRows(db);
+            db.Users.Remove(call.Arg<ApplicationUser>());
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager, timeProvider: new FixedTimeProvider(AuditClock)).DeleteUserAsync("victim");
+
+        result.IsSuccess.ShouldBeTrue();
+        pendingWhenTheAccountWasDeleted.ShouldBe(1);
+        (await db.Users.AnyAsync(user => user.Id == "victim")).ShouldBeFalse();
+        ShouldBeTheRow((await StoredAuditRows(db)).ShouldHaveSingleItem(), "victim", AdminAuditAction.AccountDeleted);
+    }
+
+    [Fact]
+    public async Task DeleteUser_TheDeletionFails_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("victim"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Failed(new IdentityError { Description = "Store failed." }));
+
+        var result = await NewService(db, userManager).DeleteUserAsync("victim");
+
+        result.StatusCode.ShouldBe(400);
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task DeleteUser_AConstraintBlocksTheDeletion_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("blocked"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).ThrowsAsync(new DbUpdateException("FK violation"));
+
+        var result = await NewService(db, userManager).DeleteUserAsync("blocked");
+
+        result.StatusCode.ShouldBe(409);
+        PendingAuditRows(db).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task DeleteUser_OwnAccountAdminAccountOrMissingMember_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.AddRange(NewUser("admin-actor"), NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Is<ApplicationUser>(user => user.Id == "other-admin"), RoleNames.Admin).Returns(true);
+
+        // A member erasing their own account (ProfileController) is not an admin action.
+        (await NewService(db, userManager, actingAdminId: "admin-actor").DeleteUserAsync("admin-actor")).IsSuccess.ShouldBeTrue();
+        (await NewService(db, userManager).DeleteUserAsync("other-admin")).StatusCode.ShouldBe(400);
+        (await NewService(db, userManager).DeleteUserAsync("nobody")).StatusCode.ShouldBe(404);
+
+        await ShouldHaveWrittenNoAuditRow(db);
+    }
+
+    [Fact]
+    public async Task Impersonate_WritesOneAuditRowBeforeTheTokenIsHandedOut()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("student"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Any<ApplicationUser>()).Returns([RoleNames.Student]);
+        var tokenService = Substitute.For<ITokenService>();
+        tokenService.GenerateImpersonationTokenAsync(Arg.Any<ApplicationUser>(), "admin-actor")
+            .Returns(("impersonation-token", DateTime.UtcNow.AddHours(1)));
+
+        var result = await NewService(db, userManager, tokenService: tokenService, timeProvider: new FixedTimeProvider(AuditClock))
+            .ImpersonateUserAsync("student", "admin-actor");
+
+        result.IsSuccess.ShouldBeTrue();
+        PendingAuditRows(db).ShouldBe(0);
+        var row = (await StoredAuditRows(db)).ShouldHaveSingleItem();
+        ShouldBeTheRow(row, "student", AdminAuditAction.ImpersonationStarted);
+        new[] { row.ActorUserId, row.TargetUserId, row.Detail }.ShouldAllBe(text => text == null || !text.Contains("impersonation-token"));
+    }
+
+    [Fact]
+    public async Task Impersonate_RefusedOrMissingOrNoTokenIssued_WritesNoAuditRow()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var disabled = NewUser("disabled-student");
+        disabled.IsEnabled = false;
+        db.Users.AddRange(disabled, NewUser("coach"), NewUser("student"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.GetRolesAsync(Arg.Is<ApplicationUser>(user => user.Id == "coach")).Returns([RoleNames.Admin]);
+        userManager.GetRolesAsync(Arg.Is<ApplicationUser>(user => user.Id != "coach")).Returns([RoleNames.Student]);
+        var tokenService = Substitute.For<ITokenService>();
+        tokenService.GenerateImpersonationTokenAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).ThrowsAsync(new InvalidOperationException("No signing key."));
+        var service = NewService(db, userManager, tokenService: tokenService);
+
+        (await service.ImpersonateUserAsync("nobody", "admin-actor")).StatusCode.ShouldBe(404);
+        (await service.ImpersonateUserAsync("coach", "admin-actor")).StatusCode.ShouldBe(400);
+        (await service.ImpersonateUserAsync("disabled-student", "admin-actor")).StatusCode.ShouldBe(400);
+        await Should.ThrowAsync<InvalidOperationException>(() => service.ImpersonateUserAsync("student", "admin-actor"));
+
+        await ShouldHaveWrittenNoAuditRow(db);
     }
 }

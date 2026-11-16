@@ -6,6 +6,7 @@ using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
 using FitEdu.Application.Extensions;
+using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Shared.Resources.Messages;
@@ -132,9 +133,13 @@ public partial class AdminUserService(
         if (await userManager.IsInRoleAsync(user, roleName))
             return ServiceResult<string>.BadRequest(error: $"User already has role '{roleName}'.");
 
+        var audit = StageAudit(AdminAuditAction.RoleAdded, userId, roleName);
         var result = await userManager.AddToRoleAsync(user, roleName);
         if (!result.Succeeded)
+        {
+            DiscardAudit(audit);
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
 
         // The roles travel in the token and the cookie, so the old sessions would keep the old roles.
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
@@ -155,11 +160,15 @@ public partial class AdminUserService(
         if (!await userManager.IsInRoleAsync(user, roleName))
             return ServiceResult<string>.BadRequest(error: $"User does not have role '{roleName}'.");
 
+        var audit = StageAudit(AdminAuditAction.RoleRemoved, userId, roleName);
         var result = string.Equals(roleName, RoleNames.Admin, StringComparison.OrdinalIgnoreCase)
             ? await RemoveAdminRoleAsync(user, cancellationToken)
             : await userManager.RemoveFromRoleAsync(user, roleName);
         if (!result.Succeeded)
+        {
+            DiscardAudit(audit);
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
 
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
         // The role is saved already, so a retry would be refused (the user has or lacks the role): the admin is told what to do instead.
@@ -267,14 +276,21 @@ public partial class AdminUserService(
         context.Certificates.RemoveRange(certificates);
         context.Enrollments.RemoveRange(enrollments);
 
+        // The row goes into the same save as the deletion. A member erasing their own account is not an admin
+        // action, so it has no row. The row keeps only the ids, so it outlives the account it names.
+        var audit = userId == ActingAdmin ? null : StageAudit(AdminAuditAction.AccountDeleted, userId);
         try
         {
             var result = await userManager.DeleteAsync(user);
             if (!result.Succeeded)
+            {
+                DiscardAudit(audit);
                 return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
         }
         catch (DbUpdateException ex)
         {
+            DiscardAudit(audit);
             // A member erasing their own account (ProfileController) is not an admin action in the log.
             if (userId == ActingAdmin)
                 LogOwnAccountErasureConstraintFailed(logger, ex, userId);
@@ -375,7 +391,7 @@ public partial class AdminUserService(
         // IsEnabled is the flag every session check reads (cookie, bearer token, refresh, hubs); a lock-out
         // date alone left the member signed in. It is saved by the stamp update, in the same UPDATE, so a
         // failure cannot leave the flag set with the old sessions still valid.
-        var sessionsEnded = await EndSessionsAsync(user, cancellationToken, endedUser => endedUser.IsEnabled = false);
+        var sessionsEnded = await EndSessionsAsync(user, cancellationToken, endedUser => endedUser.IsEnabled = false, AdminAuditAction.UserDisabled);
         if (!sessionsEnded.Succeeded)
             return IdentityFailure<bool>(sessionsEnded);
 
@@ -393,9 +409,13 @@ public partial class AdminUserService(
         // Both changes go out in one UPDATE.
         user.IsEnabled = true;
         user.LockoutEnd = null;
+        var audit = StageAudit(AdminAuditAction.UserEnabled, userId);
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
+        {
+            DiscardAudit(audit);
             return IdentityFailure<bool>(result);
+        }
 
         LogUserEnabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
@@ -417,6 +437,10 @@ public partial class AdminUserService(
 
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
+        // Saved before the token leaves the service, so a session is never handed out without its row.
+        AdminAudit.Stage(context, adminId, userId, AdminAuditAction.ImpersonationStarted, timeProvider.GetUtcNow());
+        await context.SaveChangesAsync(cancellationToken);
+
         LogImpersonationStarted(logger, adminId, userId);
 
         return ServiceResult<AuthResponseDto>.Ok(new AuthResponseDto
@@ -437,10 +461,15 @@ public partial class AdminUserService(
             return ServiceResult<bool>.BadRequest(error: ErrorMessagesRes.AdminPasswordNotChangeable);
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        // The row (never the password) goes into the save that stores the new password hash.
+        var audit = StageAudit(AdminAuditAction.PasswordSet, userId);
         var result = await userManager.ResetPasswordAsync(user, token, newPassword);
 
         if (!result.Succeeded)
+        {
+            DiscardAudit(audit);
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
 
         // SEC-1: this rotated SecurityStamp — revoke outstanding refresh tokens explicitly
         // rather than waiting for RefreshAsync's stamp check to reject them one by one.
@@ -474,11 +503,16 @@ public partial class AdminUserService(
     // failed stamp update never leaves a token that could still renew a session. The stamp update saves every
     // pending change of the user too: userChange runs right before it, so that change and the stamp are one UPDATE.
     // Once the stamp is saved, the open chat, call and notification connections of the user are closed too.
+    // An audited action is staged after the refresh tokens' own save, so its row joins the stamp update's save
+    // (the one that stores the action) and a failed update leaves no row. A retry after a concurrency failure
+    // saves the same row, so there is still exactly one.
     private async Task<IdentityResult> EndSessionsAsync(
-        ApplicationUser user, CancellationToken cancellationToken, Action<ApplicationUser>? userChange = null)
+        ApplicationUser user, CancellationToken cancellationToken, Action<ApplicationUser>? userChange = null,
+        AdminAuditAction? auditedAction = null)
     {
         await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id, cancellationToken);
 
+        var audit = auditedAction is { } action ? StageAudit(action, user.Id) : null;
         userChange?.Invoke(user);
         var stampResult = await userManager.UpdateSecurityStampAsync(user);
         if (HasConcurrencyFailure(stampResult))
@@ -492,8 +526,21 @@ public partial class AdminUserService(
 
         if (stampResult.Succeeded)
             liveConnectionCloser.CloseAll(user.Id);
+        else
+            DiscardAudit(audit);
 
         return stampResult;
+    }
+
+    // The audit row of this action, staged so the save that stores the action stores the row too.
+    private AdminAuditEntry StageAudit(AdminAuditAction action, string targetUserId, string? detail = null)
+        => AdminAudit.Stage(context, ActingAdmin, targetUserId, action, timeProvider.GetUtcNow(), detail);
+
+    // A failed action leaves no row, not even one that a later save of the same request could store.
+    private void DiscardAudit(AdminAuditEntry? audit)
+    {
+        if (audit is not null)
+            AdminAudit.Discard(context, audit);
     }
 
     private static bool HasConcurrencyFailure(IdentityResult result)
