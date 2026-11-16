@@ -26,11 +26,6 @@ public class Enrollment
     /// </summary>
     public DateTime? CompletedAt { get; set; }
 
-    /// <summary>
-    /// Optional JSON for flexible progress tracking (e.g. completed lessons, bookmarks).
-    /// </summary>
-    public string? ProgressJson { get; set; }
-
     // Foreign key to ApplicationUser
     public required string UserId { get; set; }
 

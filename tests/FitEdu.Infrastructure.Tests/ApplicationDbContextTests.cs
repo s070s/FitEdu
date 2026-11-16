@@ -572,6 +572,15 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public void Enrollment_HasNoProgressJsonColumn()
+    {
+        // P06-9: the column was never read or written, so it is gone from the model.
+        using var db = CtxWithUser(null);
+
+        db.Model.FindEntityType(typeof(Enrollment))!.GetProperties().ShouldNotContain(property => property.Name == "ProgressJson");
+    }
+
+    [Fact]
     public void UserSubscriptions_HaveOneUserIdIndex_TheFilteredUniqueOne()
     {
         // DB-9: a plain UserId index declared next to the filtered unique one was merged into it by EF,
