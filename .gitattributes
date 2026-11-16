@@ -1,0 +1,2 @@
+# Vendored Quill is checked out byte for byte: line-ending conversion would break the integrity hashes in quill-interop.js.
+src/FitEdu.Web/wwwroot/lib/quill/** -text
