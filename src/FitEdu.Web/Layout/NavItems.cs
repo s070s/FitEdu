@@ -54,6 +54,7 @@ public static class NavItems
         new("admin/course-reviews", AppIcons.Reviews, () => NavMenuRes.CourseReviews),
         new("admin/paths", AppIcons.Path, () => NavMenuRes.Paths),
         new("admin/sessions", AppIcons.Session, () => NavMenuRes.Sessions),
+        new("admin/audit", AppIcons.Audit, () => NavMenuRes.Audit),
         new("chat", AppIcons.Chat, () => NavMenuRes.Chat),
     ];
 

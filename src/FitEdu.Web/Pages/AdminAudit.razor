@@ -1,0 +1,64 @@
+@page "/admin/audit"
+@attribute [Authorize(Roles = "Admin")]
+@using System.Globalization
+@using FitEdu.Web.Extensions
+
+<AppPageTitle Text="@AdminRes.AuditLogTitle" />
+
+<div class="admin-container">
+    <h1 class="h2">@AdminRes.AuditLogTitle</h1>
+    <p class="text-light-muted">@AdminRes.AuditLogIntro</p>
+
+    @if (_loadFailed)
+    {
+        <div class="alert alert-danger d-flex flex-wrap align-items-center gap-3" role="alert">
+            <span>@ErrorMessagesRes.UnexpectedErrorTryAgain</span>
+            <button type="button" class="btn-cta btn-cta--ghost" @onclick="LoadAsync">@GlobalRes.TryAgain</button>
+        </div>
+    }
+    else if (pagedResult == null)
+    {
+        <SkeletonBlock Rows="8" Height="2.75rem" />
+    }
+    else if (!pagedResult.Items.Any())
+    {
+        <p>@AdminRes.AuditNoEntries</p>
+    }
+    else
+    {
+        <ScrollableTable Items="pagedResult.Items" TItem="AdminAuditEntryDto" Caption="@AdminRes.AuditLogTitle" StackBelow="xl">
+            <HeaderRow>
+                <tr>
+                    <th scope="col">@AdminRes.AuditColWhen</th>
+                    <th scope="col">@AdminRes.AuditColAdmin</th>
+                    <th scope="col">@AdminRes.AuditColAction</th>
+                    <th scope="col">@AdminRes.AuditColUser</th>
+                    <th scope="col">@AdminRes.AuditColDetail</th>
+                </tr>
+            </HeaderRow>
+            <RowTemplate Context="entry">
+                <tr @key="entry.Id">
+                    <td class="audit-when" data-label="@AdminRes.AuditColWhen">
+                        <time datetime="@entry.OccurredAt.ToString("o", CultureInfo.InvariantCulture)">@SiteClock.ToSiteTime(entry.OccurredAt).ToString("g", CultureInfo.CurrentCulture)</time>
+                    </td>
+                    <td class="audit-account" data-label="@AdminRes.AuditColAdmin">@AccountText(entry.ActorEmail, entry.ActorUserId)</td>
+                    <td data-label="@AdminRes.AuditColAction">@AuditActionLabels.Label(entry.Action)</td>
+                    <td class="audit-account" data-label="@AdminRes.AuditColUser">@AccountText(entry.TargetEmail, entry.TargetUserId)</td>
+                    <td data-label="@AdminRes.AuditColDetail">@DetailText(entry)</td>
+                </tr>
+            </RowTemplate>
+        </ScrollableTable>
+
+        <AdminPaginationToolbar CurrentPage="pagedResult.Page"
+                                TotalPages="pagedResult.TotalPages"
+                                TotalCount="pagedResult.TotalCount"
+                                PageSize="pagedResult.PageSize"
+                                HasPreviousPage="pagedResult.HasPreviousPage"
+                                HasNextPage="pagedResult.HasNextPage"
+                                PageSizeOptions="PageSizeOptions"
+                                ItemLabel="@AdminRes.ItemLabelAuditEntries"
+                                OnPageSizeChanged="OnPageSizeChanged"
+                                OnPreviousPage="PreviousPage"
+                                OnNextPage="NextPage" />
+    }
+</div>

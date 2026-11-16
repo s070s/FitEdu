@@ -1,0 +1,11 @@
+/* Desktop table: a long email may wrap instead of widening the table, and the time stays on one line.
+   Below 1200 px the rows are stacked cards (StackBelow="xl"), which already wrap. */
+@media (min-width: 1200px) {
+    .audit-account {
+        overflow-wrap: anywhere;
+    }
+
+    .audit-when {
+        white-space: nowrap;
+    }
+}

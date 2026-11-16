@@ -22,6 +22,7 @@ public static class AppIcons
     public const string Register = "bi-person-plus";
     public const string Users = "bi-people";
     public const string Analytics = "bi-bar-chart-line";
+    public const string Audit = "bi-shield-check";
     public const string Categories = "bi-tags";
     public const string Testimonials = "bi-chat-quote";
     public const string Reviews = "bi-star";

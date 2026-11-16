@@ -172,6 +172,23 @@ public class NavigationComponentTests : BunitContext
         navMenu.Find(".site-menu .culture-selector").ShouldNotBeNull();
     }
 
+    [Theory]
+    [InlineData("en", "Audit log")]
+    [InlineData("el", "Αρχείο ελέγχου")]
+    public void NavMenu_AdminMenuLinksToTheAuditLogButKeepsItOutOfTheHeaderAndTheTabBar(string culture, string expectedLabel)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        SignInAs(NavItems.AdminRole);
+        var navMenu = Render<NavMenu>();
+        var auditItem = NavItems.Admin.Single(item => item.Href == "admin/audit");
+
+        navMenu.Find(".site-menu-toggle").Click();
+
+        auditItem.InHeader.ShouldBeFalse();
+        auditItem.InBottomNav.ShouldBeFalse();
+        navMenu.FindAll(".site-menu a").Single(link => link.GetAttribute("href") == "admin/audit").TextContent.Trim().ShouldBe(expectedLabel);
+    }
+
     [Fact]
     public void NavMenu_EscapeOrNavigation_ClosesTheMenu()
     {
