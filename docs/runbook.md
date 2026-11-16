@@ -81,6 +81,16 @@ record outlive its account (`UserId` becomes NULL when the account is deleted). 
 needs a user on every row and the only ways out would delete or falsify tax records. Export those rows
 (they are tax records, kept for the retention period in the README), delete them on purpose, then roll back.
 
+**One migration refuses to apply:** `TrimUnusedColumnsAndIndexesAddTestimonialRowVersion` drops columns
+no code uses any more. Before each drop it checks that no row holds a value there, and stops with a message
+naming the table and column if one does; because migrations apply on boot, the app then does not start.
+It checks `IsPublished = 1` / `PublishedAt` set on `Modules`, `Lessons` and `Categories`; `IsDeleted = 1` /
+`DeletedAt` set on `Exercises`, `BlogArticles` and `AssessmentDefinitions`; and a non-empty `ProgressJson`
+on `Enrollments`. The lesson, module and category publish flags mean nothing (a lesson follows its course;
+the lesson "Publish" button was removed on 2026-10-13), so clear them, e.g.
+`UPDATE [Lessons] SET [IsPublished] = 0, [PublishedAt] = NULL` (the same for `Modules` and `Categories`).
+For any other column, export the rows first, then clear the value and start the app again.
+
 > Deploying by "delete the folder and re-copy" is destructive if uploads/logs live inside it. Point
 > `Storage:UploadsPath` and `Logging:File:Directory` outside the deploy folder (CLOUD-1) first.
 
