@@ -800,6 +800,9 @@
   <data name="CoverImageUploadFailed" xml:space="preserve">
     <value>Couldn't upload the cover image. Please try again.</value>
   </data>
+  <data name="CoverMustBeSiteFile" xml:space="preserve">
+    <value>This cover is an outside image. Remove it or upload a file.</value>
+  </data>
   <data name="SlugInUse" xml:space="preserve">
     <value>This slug is already in use. Please choose a different one.</value>
   </data>

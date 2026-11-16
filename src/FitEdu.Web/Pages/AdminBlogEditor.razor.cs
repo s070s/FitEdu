@@ -167,6 +167,14 @@ public partial class AdminBlogEditor
 
         try
         {
+            // An older article may still hold an outside image URL; the server refuses it and the page
+            // cannot show it, so say so here instead of failing with a generic error.
+            if (IsOutsideImageUrl(_coverImageUrl))
+            {
+                _error = AdminRes.CoverMustBeSiteFile;
+                return;
+            }
+
             // Read latest content from Quill editors
             var contentEn = _editorEn is not null ? await _editorEn.GetContentAsync() : _contentEn;
             var contentEl = _editorEl is not null ? await _editorEl.GetContentAsync() : _contentEl;
@@ -230,6 +238,10 @@ public partial class AdminBlogEditor
     }
 
     private void Cancel() => Navigation.NavigateTo("/admin/blog");
+
+    private static bool IsOutsideImageUrl(string? coverImageUrl) =>
+        coverImageUrl is not null
+        && (coverImageUrl.Contains("://", StringComparison.Ordinal) || coverImageUrl.StartsWith("//", StringComparison.Ordinal));
 
     private static string GenerateSlug(string title)
     {

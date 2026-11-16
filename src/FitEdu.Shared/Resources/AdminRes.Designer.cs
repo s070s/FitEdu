@@ -2166,6 +2166,15 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This cover is an outside image. Remove it or upload a file..
+        /// </summary>
+        public static string CoverMustBeSiteFile {
+            get {
+                return ResourceManager.GetString("CoverMustBeSiteFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slug already in use. Please choose a different slug..
         /// </summary>
         public static string SlugInUse {

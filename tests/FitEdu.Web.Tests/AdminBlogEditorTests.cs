@@ -144,6 +144,23 @@ public class AdminBlogEditorTests : BunitContext
     }
 
     [Fact]
+    public void EditMode_OutsideCoverUrl_IsNotSaved_UntilItIsRemoved()
+    {
+        _blogConsumer.GetArticleAsync(_articleId, Arg.Any<CancellationToken>()).Returns(Article("https://x/y.jpg"));
+        var page = RenderEditMode();
+
+        ClickSave(page);
+
+        page.Find("#blog-error").TextContent.ShouldBe(AdminRes.CoverMustBeSiteFile);
+        _blogConsumer.DidNotReceive().UpdateArticleAsync(Arg.Any<Guid>(), Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>());
+
+        page.Find(".cover-preview-row button").Click();
+        ClickSave(page);
+
+        _blogConsumer.Received(1).UpdateArticleAsync(_articleId, Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public void CreateMode_CoverThatCannotBeReadAfterSaving_ShowsTheUploadFailedMessage()
     {
         _blogConsumer.CreateArticleAsync(Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>()).Returns(Article(null));

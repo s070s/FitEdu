@@ -819,6 +819,9 @@
   <data name="CoverImageUploadFailed" xml:space="preserve">
     <value>Δεν ήταν δυνατό το ανέβασμα της εικόνας εξωφύλλου. Δοκίμασε ξανά.</value>
   </data>
+  <data name="CoverMustBeSiteFile" xml:space="preserve">
+    <value>Αυτό το εξώφυλλο είναι εξωτερική εικόνα. Αφαιρέστε το ή ανεβάστε αρχείο.</value>
+  </data>
   <data name="SlugInUse" xml:space="preserve">
     <value>Το slug χρησιμοποιείται ήδη. Διάλεξε άλλο.</value>
   </data>
