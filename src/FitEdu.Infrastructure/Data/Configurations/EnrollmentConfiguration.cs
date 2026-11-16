@@ -17,8 +17,8 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
         builder.Property(e => e.Status)
             .HasConversion<int>();
 
-        // Progress stored as JSON (flexible schema). DB-8: was unbounded nvarchar(max); capped
-        // (currently unused/unwritten — bound is precautionary for when it is).
+        // Progress stored as JSON (flexible schema). Currently unused/unwritten. It is nvarchar(max) in
+        // SQL Server: a max length above 4000 does not limit the column.
         builder.Property(e => e.ProgressJson)
             .HasMaxLength(20_000);
 

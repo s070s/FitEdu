@@ -20,7 +20,8 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
         builder.Property(l => l.TitleEl)
             .HasMaxLength(200);
 
-        // Content can be large (rich text / markdown)
+        // Content can be large (rich text / markdown). nvarchar(max) in SQL Server: a max length above
+        // 4000 does not limit the column, so the DTO validation is the real limit.
         builder.Property(l => l.ContentEn)
             .HasMaxLength(50000);
 

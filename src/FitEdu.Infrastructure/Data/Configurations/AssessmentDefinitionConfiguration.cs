@@ -32,7 +32,8 @@ public class AssessmentDefinitionConfiguration : IEntityTypeConfiguration<Assess
         builder.Property(a => a.DescriptionEl)
             .HasMaxLength(1000);
 
-        // DB-8: was unbounded nvarchar(max); capped generously for a hand-authored schema.
+        // DB-8: nvarchar(max) in SQL Server (a max length above 4000 does not limit the column); the
+        // real limit is the DTO validation. 100_000 is a generous size for a hand-authored schema.
         builder.Property(a => a.SchemaJson)
             .IsRequired()
             .HasMaxLength(100_000);

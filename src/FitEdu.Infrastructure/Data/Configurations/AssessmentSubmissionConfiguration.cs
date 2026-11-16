@@ -13,14 +13,15 @@ public class AssessmentSubmissionConfiguration : IEntityTypeConfiguration<Assess
         builder.Property(s => s.UserId)
             .IsRequired();
 
-        // DB-8: was unbounded nvarchar(max). These columns are encrypted at rest (COMP-2,
+        // DB-8: both columns are nvarchar(max) in SQL Server: a max length above 4000 does not limit
+        // the column, so the real limit is the DTO validation. The HasMaxLength values state the size
+        // the model expects. These columns are encrypted at rest (COMP-2,
         // EncryptedStringConverter) — the stored value is ciphertext, not the plaintext DTO
         // measures, and ciphertext is *larger* than plaintext (Data Protection's base64 envelope
         // measured empirically at up to ~2.7x for all-Greek/2-byte-UTF8 input, vs ~1.34x for
-        // ASCII). Column caps are sized for worst-case ciphertext of SubmitAssessmentRequest's
+        // ASCII). The sizes are worst-case ciphertext of SubmitAssessmentRequest's
         // DTO MaxLength (50_000 / 20_000 plaintext chars) plus headroom, not the plaintext
-        // length itself — sizing the column to the plaintext DTO cap directly would truncate
-        // every real submission.
+        // length itself.
         builder.Property(s => s.AnswersJson)
             .IsRequired()
             .HasMaxLength(150_000);
