@@ -204,6 +204,142 @@ public class MigrationChainTests(ITestOutputHelper output)
         }
     }
 
+    // The migration before the one that drops the unused publish, soft-delete and progress columns.
+    private const string MigrationBeforeTrimmedColumns = "20261116070636_BillingTransactionKeepsRecordAfterUserDelete";
+
+    [Theory]
+    [InlineData("Modules", "IsPublished", "1")]
+    [InlineData("Modules", "PublishedAt", "SYSDATETIMEOFFSET()")]
+    [InlineData("Lessons", "IsPublished", "1")]
+    [InlineData("Categories", "IsPublished", "1")]
+    [InlineData("Exercises", "IsDeleted", "1")]
+    [InlineData("BlogArticles", "DeletedAt", "SYSDATETIMEOFFSET()")]
+    [InlineData("AssessmentDefinitions", "IsDeleted", "1")]
+    [InlineData("Enrollments", "ProgressJson", "'progress'")]
+    public async Task TrimMigration_RefusesToDropAColumnThatHoldsData_AndDropsItOnceTheDataIsGone(
+        string table, string column, string valueSql)
+    {
+        if (!await LocalDbIsReachableAsync())
+        {
+            output.WriteLine(NotRunMessage);
+            return;
+        }
+
+        var dbName = "FitEduTrimGuardTest_" + Guid.NewGuid().ToString("N");
+        await using var db = NewLocalDbContext(dbName);
+        try
+        {
+            var migrator = db.GetService<IMigrator>();
+            await migrator.MigrateAsync(MigrationBeforeTrimmedColumns);
+            await InsertRowAsync(db, table, new Dictionary<string, string> { [column] = valueSql });
+
+            var refusal = await Should.ThrowAsync<SqlException>(() => migrator.MigrateAsync());
+            refusal.Message.ShouldContain($"Cannot drop {table}.");
+            (await ColumnExistsAsync(db, table, column)).ShouldBeTrue();
+
+            var deleteRows = $"DELETE FROM [{table}]";
+            await db.Database.ExecuteSqlRawAsync(deleteRows);
+            await migrator.MigrateAsync();
+            (await ColumnExistsAsync(db, table, column)).ShouldBeFalse();
+        }
+        finally
+        {
+            await db.Database.EnsureDeletedAsync();
+        }
+    }
+
+    [Fact]
+    public async Task TrimMigration_KeepsRowsWithDefaultValues_AndDownAddsTheColumnsBackWithTheirDefaults()
+    {
+        if (!await LocalDbIsReachableAsync())
+        {
+            output.WriteLine(NotRunMessage);
+            return;
+        }
+
+        var dbName = "FitEduTrimDownTest_" + Guid.NewGuid().ToString("N");
+        await using var db = NewLocalDbContext(dbName);
+        try
+        {
+            var migrator = db.GetService<IMigrator>();
+            await migrator.MigrateAsync(MigrationBeforeTrimmedColumns);
+            await InsertRowAsync(db, "Categories", []);
+            (await IndexExistsAsync(db, "IX_LessonCompletions_UserId")).ShouldBeTrue();
+
+            await migrator.MigrateAsync();
+
+            (await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS [Value] FROM [Categories]").SingleAsync()).ShouldBe(1);
+            (await ColumnExistsAsync(db, "Categories", "IsPublished")).ShouldBeFalse();
+            (await ColumnExistsAsync(db, "Testimonials", "RowVersion")).ShouldBeTrue();
+            (await IndexExistsAsync(db, "IX_LessonCompletions_UserId")).ShouldBeFalse();
+
+            await migrator.MigrateAsync(MigrationBeforeTrimmedColumns);
+
+            (await ColumnExistsAsync(db, "Categories", "IsPublished")).ShouldBeTrue();
+            (await ColumnExistsAsync(db, "Enrollments", "ProgressJson")).ShouldBeTrue();
+            (await ColumnExistsAsync(db, "Testimonials", "RowVersion")).ShouldBeFalse();
+            (await IndexExistsAsync(db, "IX_LessonCompletions_UserId")).ShouldBeTrue();
+            (await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS [Value] FROM [Categories] WHERE [IsPublished] = 0 AND [PublishedAt] IS NULL").SingleAsync())
+                .ShouldBe(1);
+        }
+        finally
+        {
+            await db.Database.EnsureDeletedAsync();
+        }
+    }
+
+    private static async Task<bool> ColumnExistsAsync(ApplicationDbContext db, string table, string column) =>
+        await db.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS [Value] FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = {0} AND COLUMN_NAME = {1}", table, column)
+            .SingleAsync() > 0;
+
+    private static async Task<bool> IndexExistsAsync(ApplicationDbContext db, string indexName) =>
+        await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS [Value] FROM sys.indexes WHERE name = {0}", indexName).SingleAsync() > 0;
+
+    /// <summary>
+    /// Inserts one row into a table of an older schema with raw SQL, because the current model no longer has every
+    /// column. Every required column without a default gets a dummy value of its type; the overrides (column to SQL
+    /// literal) replace or add values. Foreign keys are not checked, so the row needs no parents.
+    /// </summary>
+    private static async Task InsertRowAsync(ApplicationDbContext db, string table, Dictionary<string, string> overrides)
+    {
+        var values = new Dictionary<string, string>();
+        await db.Database.OpenConnectionAsync();
+        await using (var command = db.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText =
+                "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS " +
+                "WHERE TABLE_NAME = @table AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL AND DATA_TYPE <> 'timestamp'";
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@table";
+            parameter.Value = table;
+            command.Parameters.Add(parameter);
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+                values[reader.GetString(0)] = DummyValueSql(reader.GetString(1));
+        }
+
+        foreach (var (column, valueSql) in overrides)
+            values[column] = valueSql;
+
+        var columns = string.Join(", ", values.Keys.Select(name => $"[{name}]"));
+        var insert = $"INSERT INTO [{table}] ({columns}) VALUES ({string.Join(", ", values.Values)})";
+        var skipForeignKeyChecks = $"ALTER TABLE [{table}] NOCHECK CONSTRAINT ALL";
+        await db.Database.ExecuteSqlRawAsync(skipForeignKeyChecks);
+        await db.Database.ExecuteSqlRawAsync(insert);
+    }
+
+    private static string DummyValueSql(string sqlType) => sqlType switch
+    {
+        "nvarchar" or "varchar" or "nchar" or "char" => "'x'",
+        "bit" or "int" or "bigint" or "smallint" or "tinyint" or "decimal" or "float" => "0",
+        "uniqueidentifier" => "NEWID()",
+        "datetimeoffset" => "SYSDATETIMEOFFSET()",
+        "datetime2" or "datetime" => "SYSUTCDATETIME()",
+        "varbinary" => "0x00",
+        _ => throw new InvalidOperationException($"No dummy value for SQL type {sqlType}.")
+    };
+
     private static async Task<bool> LocalDbIsReachableAsync()
     {
         try
