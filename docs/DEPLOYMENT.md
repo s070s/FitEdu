@@ -78,6 +78,14 @@ certificate to an existing deployment, set the settings and restart: the old key
 (still readable on the same Windows account) and a new key, protected by the certificate, is
 created for new data; nothing is re-encrypted.
 
+## Response compression
+
+The app does not compress its HTML or JSON responses on purpose: the pages carry antiforgery
+tokens and reflect request input, which makes compressed HTTPS responses open to BREACH-style
+attacks. The fingerprinted static assets (CSS, JavaScript, fonts) are already served precompressed.
+If you want compressed pages anyway, enable it at the reverse proxy (for example nginx `gzip on;`
+for `text/html`) and accept that trade-off there.
+
 ## Email transport
 
 `SmtpEmailService` (MailKit) is used whenever `Email:Smtp:Host` is configured — point it at
