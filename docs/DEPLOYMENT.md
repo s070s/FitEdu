@@ -74,9 +74,12 @@ so how they are protected at rest matters. Three cases, chosen at startup
 
 Outside Development, a start without a certificate logs one warning naming the risk of its case.
 Startup is not refused, so the demo deployment (below) keeps working without one. To add a
-certificate to an existing deployment, set the settings and restart: the old keys stay in the ring
-(still readable on the same Windows account) and a new key, protected by the certificate, is
-created for new data; nothing is re-encrypted.
+certificate to an existing deployment, set the settings and restart: the old keys stay in the ring:
+the current key keeps protecting new data until Data Protection replaces it (about 2 days before
+its 90-day lifetime ends); only keys made after that are protected by the certificate. Anything
+encrypted with an older key (sign-in cookies until then, the assessment answers written before,
+permanently) stays readable only by this Windows account on this machine (on Linux, by anyone who
+can read the database); nothing is re-encrypted.
 
 ## Response compression
 

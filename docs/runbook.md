@@ -46,6 +46,9 @@ protected with a certificate that the new host has too (`DataProtection:Certific
 [DEPLOYMENT.md](DEPLOYMENT.md#dataprotection-key-ring)). Keep that certificate (the `.pfx` and its
 password) in an offline backup, apart from the database backup, and put it on the new host before
 the first start. Without a certificate the app logs a warning at every start.
+For a deployment that ran without a certificate first, this covers only data written after its
+first key rotation under the certificate; answers written earlier stay readable only on the
+original host and account.
 
 ---
 
