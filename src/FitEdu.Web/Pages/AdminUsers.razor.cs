@@ -162,8 +162,9 @@ public partial class AdminUsers : IAsyncDisposable
             }
 
             pagedResult = loaded;
-            // Try again worked: the error the failed load left behind no longer applies.
-            if (failureShown)
+            // Try again worked: the error the failed load left behind no longer applies. Only that error goes:
+            // a success message an action set in the meantime (a reload after it) has to stay.
+            if (failureShown && message == ErrorMessagesRes.UnexpectedErrorTryAgain)
                 message = string.Empty;
         }
         catch (Exception)

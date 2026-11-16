@@ -273,6 +273,25 @@ public class AdminUsersPageTests : BunitContext
     }
 
     [Fact]
+    public void Disable_AcceptedWhileAnotherLoadFailed_KeepsItsSuccessMessageThroughTheReload()
+    {
+        // The disable is still in flight when a sort change's load fails and shows its error.
+        var disableAnswer = new TaskCompletionSource<bool>();
+        _users.DisableUserAsync("member-1").Returns(disableAnswer.Task);
+        var page = RenderThreeUsers();
+        ClickRowButton(page.FindAll("tbody tr")[0], AdminRes.DisableUser);
+        MakeTheNextListLoadFail();
+        page.Find(SortSelectSelector).Change("createdat|desc");
+        page.Find(".alert-danger");
+        ReturnsUsers(User("member-1", MemberEmail, false, "Student"));
+
+        disableAnswer.SetResult(true);
+
+        page.WaitForAssertion(() => page.Find(".alert-success").TextContent.ShouldContain(AdminRes.UserStatusToggled));
+        page.FindAll(".alert-danger").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Disable_AcceptedButTheReloadFails_ShowsTheLoadErrorInsteadOfASuccessMessage()
     {
         _users.DisableUserAsync("member-1").Returns(true);
