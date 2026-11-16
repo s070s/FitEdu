@@ -240,8 +240,7 @@ public partial class AdminBlogEditor
     private void Cancel() => Navigation.NavigateTo("/admin/blog");
 
     private static bool IsOutsideImageUrl(string? coverImageUrl) =>
-        coverImageUrl is not null
-        && (coverImageUrl.Contains("://", StringComparison.Ordinal) || coverImageUrl.StartsWith("//", StringComparison.Ordinal));
+        coverImageUrl is not null && !Regex.IsMatch(coverImageUrl, BlogCoverRules.SiteFilePattern);
 
     private static string GenerateSlug(string title)
     {

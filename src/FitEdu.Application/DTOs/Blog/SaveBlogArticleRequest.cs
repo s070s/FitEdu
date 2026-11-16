@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitEdu.Application.Common;
 using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.DTOs;
@@ -23,7 +24,7 @@ public record SaveBlogArticleRequest(
     // protocol-relative one ("//host/x.png", also with leading spaces or backslashes, which browsers read as slashes),
     // would be blocked by the browser and never show (P05-10).
     [MaxLength(500)]
-    [RegularExpression(@"^(?!\s*[/\\][/\\])(?![\s\S]*://)[\s\S]*$",
+    [RegularExpression(BlogCoverRules.SiteFilePattern,
         ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.CoverImageMustBeSiteFile))]
     string? CoverImageUrl,
     [Required, MaxLength(100)] string AuthorName,
