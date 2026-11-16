@@ -298,9 +298,22 @@ public partial class AdminUserService(
         if (user == null)
             return ServiceResult<bool>.NotFound(error: "User not found");
 
-        var result = await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+        if (user.Id == ActingAdmin)
+            return ServiceResult<bool>.BadRequest(error: "You cannot disable your own account.");
+
+        if (await userManager.IsInRoleAsync(user, RoleNames.Admin))
+            return ServiceResult<bool>.BadRequest(error: "Admin accounts cannot be disabled.");
+
+        // IsEnabled is the flag every session check reads (cookie, bearer token, refresh, hubs); a lock-out
+        // date alone left the member signed in.
+        user.IsEnabled = false;
+        var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+
+        var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        if (!sessionsEnded.Succeeded)
+            return ServiceResult<bool>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
 
         LogUserDisabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
@@ -312,6 +325,12 @@ public partial class AdminUserService(
         if (user == null)
             return ServiceResult<bool>.NotFound(error: "User not found");
 
+        user.IsEnabled = true;
+        var enableResult = await userManager.UpdateAsync(user);
+        if (!enableResult.Succeeded)
+            return ServiceResult<bool>.BadRequest(error: string.Join(", ", enableResult.Errors.Select(e => e.Description)));
+
+        // Accounts the old code "disabled" carry a lock-out date far in the future; clear it so they can sign in.
         var result = await userManager.SetLockoutEndDateAsync(user, null);
         if (!result.Succeeded)
             return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
@@ -363,6 +382,18 @@ public partial class AdminUserService(
 
         LogPasswordSetByAdmin(logger, ActingAdmin, userId);
         return ServiceResult<bool>.Ok(true);
+    }
+
+    // Ends every session of the user: the new security stamp makes the cookie and bearer-token checks reject
+    // what is already signed in, and the refresh tokens can no longer renew it.
+    private async Task<IdentityResult> EndSessionsAsync(ApplicationUser user, CancellationToken cancellationToken)
+    {
+        var stampResult = await userManager.UpdateSecurityStampAsync(user);
+        if (!stampResult.Succeeded)
+            return stampResult;
+
+        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id, cancellationToken);
+        return stampResult;
     }
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.

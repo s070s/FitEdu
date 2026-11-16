@@ -221,6 +221,37 @@ public class AdminUserServiceTests
     }
 
     [Fact]
+    public async Task DisableUser_TheActingAdminsOwnAccount_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("admin-actor"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+
+        var result = await NewService(db, userManager).DisableUserAsync("admin-actor");
+
+        result.StatusCode.ShouldBe(400);
+        await userManager.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
+    }
+
+    [Fact]
+    public async Task DisableUser_AdminAccount_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("other-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+
+        var result = await NewService(db, userManager).DisableUserAsync("other-admin");
+
+        result.StatusCode.ShouldBe(400);
+        await userManager.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
+    }
+
+    [Fact]
     public async Task DeleteUser_ConstraintViolation_ReturnsConflict()
     {
         await using var db = DbContextFactory.CreateSqlite();
