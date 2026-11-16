@@ -24,6 +24,7 @@ builder.Logging.AddFileLogger(logsDirectory);
 
 builder.AddFitEduAuthentication();
 builder.AddFitEduServices();
+builder.Services.AddFitEduHsts();
 
 var app = builder.Build();
 
@@ -95,7 +96,7 @@ app.UseHttpsRedirection();
 
 if (!app.Environment.IsDevelopment())
 {
-    // Enforce HTTPS with a long max-age (1 year). Preload-ready when ready to submit to HSTS lists.
+    // Enforce HTTPS: max-age one year (AddFitEduHsts; the framework default would be 30 days), this host only.
     app.UseHsts();
 }
 

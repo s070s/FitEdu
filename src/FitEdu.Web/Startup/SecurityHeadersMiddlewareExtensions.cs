@@ -6,6 +6,15 @@ namespace FitEdu.Web.Startup;
 /// </summary>
 public static class SecurityHeadersMiddlewareExtensions
 {
+    /// <summary>
+    /// How long a browser keeps a site on HTTPS only once it has seen the HSTS header: one year, for this host only
+    /// (no includeSubDomains, no preload: owner decision, P03-7). ASP.NET Core's own default is 30 days.
+    /// </summary>
+    public static readonly TimeSpan HstsMaxAge = TimeSpan.FromDays(365);
+
+    public static IServiceCollection AddFitEduHsts(this IServiceCollection services) =>
+        services.AddHsts(options => options.MaxAge = HstsMaxAge);
+
     public static WebApplication UseFitEduSecurityHeaders(this WebApplication app)
     {
         app.Use(async (ctx, next) =>
