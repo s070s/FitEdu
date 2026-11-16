@@ -558,4 +558,25 @@ public class ApplicationDbContextTests
 
         await Should.ThrowAsync<DbUpdateConcurrencyException>(() => db.SaveChangesAsync());
     }
+
+    [Fact]
+    public async Task SecondActiveSubscriptionForOneUser_IsRefusedByTheUniqueIndex_OnSqlite()
+    {
+        // DQ-6: SQLite builds the filtered unique index ([IsActive] = 1) too, so the "at most one
+        // active subscription per user" rule is enforced by the database under test, not only in
+        // the service code. A second inactive (history) row for the same user stays allowed.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var user = new ApplicationUser { Id = "u1", UserName = "u@x.com", Email = "u@x.com", FirstName = "A", LastName = "B" };
+        var plan = new SubscriptionPlan { Id = Guid.NewGuid(), Name = "Pro", Tier = SubscriptionTier.Pro };
+        db.Users.Add(user);
+        db.SubscriptionPlans.Add(plan);
+        db.UserSubscriptions.Add(new UserSubscription { Id = Guid.NewGuid(), UserId = user.Id, SubscriptionPlanId = plan.Id, IsActive = true });
+        await db.SaveChangesAsync();
+
+        db.UserSubscriptions.Add(new UserSubscription { Id = Guid.NewGuid(), UserId = user.Id, SubscriptionPlanId = plan.Id, IsActive = false });
+        await db.SaveChangesAsync();
+
+        db.UserSubscriptions.Add(new UserSubscription { Id = Guid.NewGuid(), UserId = user.Id, SubscriptionPlanId = plan.Id, IsActive = true });
+        await Should.ThrowAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
 }
