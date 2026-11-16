@@ -27,7 +27,7 @@ public partial class AdminUsers : IAsyncDisposable
     private string messageType = "success";
     private string _sortBy = "email";
     private string _sortDir = "asc";
-    private string? confirmDeleteId;
+    private AdminUserDto? _deleteTarget;
     private CancellationTokenSource? _searchCts;
     private bool _loadFailed;
 
@@ -248,29 +248,35 @@ public partial class AdminUsers : IAsyncDisposable
         }
     }
 
-    private void RequestDeleteUser(string userId) => confirmDeleteId = userId;
+    private void RequestDeleteUser(AdminUserDto user) => _deleteTarget = user;
 
-    private void CancelDeleteUser() => confirmDeleteId = null;
+    private void CancelDeleteUser() => _deleteTarget = null;
 
     private async Task DeleteUser()
     {
-        if (confirmDeleteId is not { } userId)
+        if (_deleteTarget is not { } user)
             return;
 
-        confirmDeleteId = null;
+        _deleteTarget = null;
 
         try
         {
-            var success = await UserConsumer.DeleteUserAsync(userId);
-            if (success)
+            var result = await UserConsumer.DeleteUserAsync(user.Id);
+            if (result.Succeeded)
             {
+                // Deleting the only row of the last page would leave that page empty.
+                if (pagedResult?.Items.Count == 1 && currentPage > 1)
+                    currentPage--;
+
                 await LoadUsers();
                 message = AdminRes.UserDeleted;
                 messageType = "success";
             }
             else
             {
-                message = AdminRes.UserDeleteFailed;
+                message = result.StatusCode == HttpStatusCode.Conflict
+                    ? AdminRes.UserDeleteConflict
+                    : AdminRes.UserDeleteFailed;
                 messageType = "danger";
             }
         }

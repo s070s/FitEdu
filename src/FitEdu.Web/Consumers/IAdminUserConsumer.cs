@@ -8,7 +8,8 @@ namespace FitEdu.Web.Consumers;
 public interface IAdminUserConsumer
 {
     Task<PagedResult<AdminUserDto>?> GetUsersAsync(int page = 1, int pageSize = 10, string? search = null, string sortBy = "email", string sortDir = "asc");
-    Task<bool> DeleteUserAsync(string userId);
+    /// <summary>Deletes the member; a 409 means other data still depends on the account.</summary>
+    Task<ApiActionResult> DeleteUserAsync(string userId);
     /// <summary>Sets the member's password; a refusal carries the server's rule message in its Detail.</summary>
     Task<ApiActionResult> SetPasswordAsync(string userId, string newPassword);
     Task<bool> DisableUserAsync(string userId);

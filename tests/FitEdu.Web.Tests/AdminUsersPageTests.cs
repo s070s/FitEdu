@@ -84,6 +84,110 @@ public class AdminUsersPageTests : BunitContext
         ButtonNames(rows[2]).ShouldBeEmpty("an admin row offers no action");
     }
 
+    // ---- Delete ----------------------------------------------------------------------------------
+
+    private IRenderedComponent<AdminUsers> OpenDeleteConfirmation()
+    {
+        var page = RenderThreeUsers();
+        ClickRowButton(page.FindAll("tbody tr")[0], AdminRes.Delete);
+        return page;
+    }
+
+    private static void ConfirmDelete(IRenderedComponent<AdminUsers> page) =>
+        page.FindAll(".modal-footer button")[^1].Click();
+
+    [Fact]
+    public void DeleteConfirmation_NamesTheUserBeingDeleted()
+    {
+        var page = OpenDeleteConfirmation();
+
+        page.Find(".modal-body").TextContent.ShouldBe(ResourceFormat.Fill(AdminRes.ConfirmDeleteUser, MemberEmail));
+        page.Find(".modal-body").TextContent.ShouldContain(MemberEmail);
+    }
+
+    [Fact]
+    public void Delete_Accepted_ReloadsTheListAndSaysSo()
+    {
+        _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Success);
+        var page = OpenDeleteConfirmation();
+
+        ConfirmDelete(page);
+
+        _users.Received(1).DeleteUserAsync("member-1");
+        page.Find(".alert-success").TextContent.ShouldContain(AdminRes.UserDeleted);
+        page.FindAll(".modal-dialog").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Delete_TheApiAnswersConflict_SaysOtherDataStillDependsOnTheUser()
+    {
+        _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Refused(HttpStatusCode.Conflict, "User could not be deleted."));
+        var page = OpenDeleteConfirmation();
+
+        ConfirmDelete(page);
+
+        page.Find(".alert-danger").TextContent.ShouldContain(AdminRes.UserDeleteConflict);
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.InternalServerError)]
+    [InlineData(null)]
+    public void Delete_AnyOtherFailure_AsksToTryAgain(HttpStatusCode? status)
+    {
+        _users.DeleteUserAsync("member-1")
+            .Returns(status is null ? ApiActionResult.Unreachable : ApiActionResult.Refused(status.Value));
+        var page = OpenDeleteConfirmation();
+
+        ConfirmDelete(page);
+
+        page.Find(".alert-danger").TextContent.ShouldContain(AdminRes.UserDeleteFailed);
+    }
+
+    [Fact]
+    public void Delete_TheOnlyRowOfTheLastPage_StepsBackToThePreviousPage()
+    {
+        // Eleven users at ten per page: page 2 holds one row. Deleting it leaves ten, so page 2 would be empty.
+        var pageOneUsers = Enumerable.Range(1, 10).Select(number => User($"member-{number}", $"member{number}@fitedu.local", true, "Student")).ToList();
+        _users.GetUsersAsync(1, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new PagedResult<AdminUserDto>(pageOneUsers, 11, 1, 10));
+        _users.GetUsersAsync(2, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new PagedResult<AdminUserDto>([User("member-11", "member11@fitedu.local", true, "Student")], 11, 2, 10));
+        _users.DeleteUserAsync("member-11").Returns(ApiActionResult.Success);
+        var page = Render<AdminUsers>();
+        page.FindAll(".pagination-controls button")[1].Click();
+        ClickRowButton(page.Find("tbody tr"), AdminRes.Delete);
+        _users.ClearReceivedCalls();
+
+        ConfirmDelete(page);
+
+        _users.Received(1).GetUsersAsync(1, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>());
+        _users.DidNotReceive().GetUsersAsync(2, Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public void Delete_OneOfSeveralRowsOnTheLastPage_StaysOnThatPage()
+    {
+        var pageTwoUsers = new List<AdminUserDto>
+        {
+            User("member-11", "member11@fitedu.local", true, "Student"),
+            User("member-12", "member12@fitedu.local", true, "Student")
+        };
+        _users.GetUsersAsync(1, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new PagedResult<AdminUserDto>(
+                Enumerable.Range(1, 10).Select(number => User($"member-{number}", $"member{number}@fitedu.local", true, "Student")).ToList(), 12, 1, 10));
+        _users.GetUsersAsync(2, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(new PagedResult<AdminUserDto>(pageTwoUsers, 12, 2, 10));
+        _users.DeleteUserAsync("member-11").Returns(ApiActionResult.Success);
+        var page = Render<AdminUsers>();
+        page.FindAll(".pagination-controls button")[1].Click();
+        ClickRowButton(page.Find("tbody tr"), AdminRes.Delete);
+        _users.ClearReceivedCalls();
+
+        ConfirmDelete(page);
+
+        _users.Received(1).GetUsersAsync(2, 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>());
+    }
+
     // ---- Set-password dialog ---------------------------------------------------------------------
 
     private static void ClickRowButton(AngleSharp.Dom.IElement row, string buttonText) =>

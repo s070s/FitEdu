@@ -77,6 +77,28 @@ public class AdminUserConsumerTests
     }
 
     [Fact]
+    public async Task Delete_Conflict_CarriesTheConflictStatus()
+    {
+        var (consumer, handler) = ConsumerAnswering(HttpStatusCode.Conflict,
+            """{"title":"Conflict","status":409,"detail":"User could not be deleted because other data still references the account."}""");
+
+        var result = await consumer.DeleteUserAsync("member-1");
+
+        result.Succeeded.ShouldBeFalse();
+        result.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        handler.LastRequest!.Method.ShouldBe(HttpMethod.Delete);
+        handler.LastRequest.RequestUri!.PathAndQuery.ShouldBe("/api/admin/users/member-1");
+    }
+
+    [Fact]
+    public async Task Delete_NoContent_Succeeds()
+    {
+        var (consumer, _) = ConsumerAnswering(HttpStatusCode.NoContent);
+
+        (await consumer.DeleteUserAsync("member-1")).ShouldBe(ApiActionResult.Success);
+    }
+
+    [Fact]
     public async Task SetPassword_ConnectionRefused_IsUnreachable()
     {
         var handler = new StubHttpMessageHandler(_ => throw new HttpRequestException("Connection refused"));

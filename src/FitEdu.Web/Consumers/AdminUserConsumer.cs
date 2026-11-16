@@ -18,8 +18,8 @@ public class AdminUserConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
         return GetAsync<PagedResult<AdminUserDto>>(url);
     }
 
-    public Task<bool> DeleteUserAsync(string userId)
-        => DeleteAsync($"api/admin/users/{userId}");
+    public Task<ApiActionResult> DeleteUserAsync(string userId)
+        => DeleteResultAsync($"api/admin/users/{userId}");
 
     public Task<bool> DisableUserAsync(string userId)
         => ActionAsync($"api/admin/users/{userId}/disable");

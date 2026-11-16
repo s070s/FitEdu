@@ -529,7 +529,7 @@ namespace FitEdu.Shared.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete this user?....
+        ///   Looks up a localized string similar to Are you sure you want to delete {0}?....
         /// </summary>
         public static string ConfirmDeleteUser {
             get {
@@ -2270,6 +2270,15 @@ namespace FitEdu.Shared.Resources {
         public static string UserDeleteFailed {
             get {
                 return ResourceManager.GetString("UserDeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't delete the user because a live class they run, or other data, still depends on the account. Cancel or reassign it first..
+        /// </summary>
+        public static string UserDeleteConflict {
+            get {
+                return ResourceManager.GetString("UserDeleteConflict", resourceCulture);
             }
         }
         

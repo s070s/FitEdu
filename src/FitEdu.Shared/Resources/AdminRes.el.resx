@@ -601,7 +601,7 @@
     <value>Διαγραφή αυτού του μαθήματος;</value>
   </data>
   <data name="ConfirmDeleteUser" xml:space="preserve">
-    <value>Σίγουρα θέλεις να διαγράψεις αυτόν τον χρήστη; Έτσι αφαιρούνται οριστικά οι εγγραφές, οι υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών και κλήσεων.</value>
+    <value>Σίγουρα θέλεις να διαγράψεις τον χρήστη {0}; Έτσι αφαιρούνται οριστικά οι εγγραφές, οι υποβολές, τα πιστοποιητικά και το ιστορικό συνομιλιών και κλήσεων.</value>
   </data>
   <data name="ConfirmDeleteArticle" xml:space="preserve">
     <value>Σίγουρα θέλεις να διαγράψεις αυτό το άρθρο;</value>
@@ -854,6 +854,9 @@
   </data>
   <data name="UserDeleteFailed" xml:space="preserve">
     <value>Δεν ήταν δυνατή η διαγραφή του χρήστη. Δοκίμασε ξανά.</value>
+  </data>
+  <data name="UserDeleteConflict" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η διαγραφή του χρήστη, επειδή έχει αναλάβει μια live προπόνηση ή υπάρχουν άλλα δεδομένα που τον αφορούν. Ακύρωσε ή ανάθεσε πρώτα την προπόνηση.</value>
   </data>
   <data name="PasswordMinLength" xml:space="preserve">
     <value>Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</value>
