@@ -81,8 +81,7 @@ public sealed class AdminDeleteCascadeTests : IDisposable
         });
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();
-        var controller = new AdminAssessmentsController(
-            _db, NullLogger<AdminAssessmentsController>.Instance, new HtmlSanitizer());
+        var controller = new AdminAssessmentsController(_db, new HtmlSanitizer());
 
         (await controller.DeleteAssessment(assessment.Id)).ShouldBeOfType<NoContentResult>();
 

@@ -47,6 +47,6 @@ public static class AssessmentMappings
 
     /// <summary>Post-materialization variant (e.g. right after submit, where the definition
     /// entity is already in hand and no category is needed).</summary>
-    public static AssessmentSubmissionDto ToDto(this AssessmentSubmission s, string assessmentTitle, string? categoryName = null) =>
-        new(s.Id, s.AssessmentDefinitionId, assessmentTitle, s.AnswersJson, s.SummaryJson, s.SubmittedAt, categoryName);
+    public static AssessmentSubmissionDto ToDto(this AssessmentSubmission s, string assessmentTitle) =>
+        new(s.Id, s.AssessmentDefinitionId, assessmentTitle, s.AnswersJson, s.SummaryJson, s.SubmittedAt);
 }

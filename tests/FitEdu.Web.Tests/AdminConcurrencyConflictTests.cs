@@ -72,8 +72,7 @@ public sealed class AdminConcurrencyConflictTests : IDisposable
     {
         var assessment = new AssessmentDefinition { Id = Guid.NewGuid(), Key = "old-key", TitleEn = "Old", SchemaJson = "{}" };
         await MakeStaleAsync(assessment);
-        var controller = WithContext(new AdminAssessmentsController(
-            _db, NullLogger<AdminAssessmentsController>.Instance, new HtmlSanitizer()));
+        var controller = WithContext(new AdminAssessmentsController(_db, new HtmlSanitizer()));
         var request = new SaveAssessmentDefinitionRequest("old-key", "Renamed", null, null, null, """{"questions":[]}""");
 
         var result = await controller.UpdateAssessment(assessment.Id, request);

@@ -30,13 +30,11 @@ public class AdminAssessmentsController : ControllerBase
 {
     // EF Core DB context used to read and write application data
     private readonly IApplicationDbContext _db;
-    private readonly ILogger<AdminAssessmentsController> _logger;
     private readonly IHtmlSanitizer _sanitizer;
 
-    public AdminAssessmentsController(IApplicationDbContext db, ILogger<AdminAssessmentsController> logger, IHtmlSanitizer sanitizer)
+    public AdminAssessmentsController(IApplicationDbContext db, IHtmlSanitizer sanitizer)
     {
         _db = db;
-        _logger = logger;
         _sanitizer = sanitizer;
     }
 
