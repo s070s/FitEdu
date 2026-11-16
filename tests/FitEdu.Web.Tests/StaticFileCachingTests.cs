@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using FitEdu.TestSupport;
@@ -173,6 +174,24 @@ public partial class StaticFileCachingTests : IClassFixture<CustomWebAppFactory>
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Content.Headers.ContentType?.MediaType.ShouldBe("font/woff2");
+    }
+
+    // quill-interop.js loads these files with an integrity attribute, so the browser refuses them unless the
+    // served bytes hash to the value named there.
+    [Theory]
+    [InlineData("quill.js", "text/javascript")]
+    [InlineData("quill.snow.css", "text/css")]
+    public async Task VendoredQuillFile_IsServedWithTheBytesTheIntegrityHashNames(string fileName, string expectedContentType)
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/lib/quill/2.0.3/" + fileName);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe(expectedContentType);
+        var integrityValue = "sha384-" + Convert.ToBase64String(SHA384.HashData(await response.Content.ReadAsByteArrayAsync()));
+        var interopScript = await File.ReadAllTextAsync(Path.Combine(RepoPaths.WebRoot, "js", "quill-interop.js"));
+        interopScript.ShouldContain(integrityValue);
     }
 
     [Fact]
