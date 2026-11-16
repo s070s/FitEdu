@@ -19,7 +19,9 @@ namespace FitEdu.Infrastructure.Data;
 ///
 /// Reads are tolerant of legacy plaintext: a value written before this converter existed will
 /// fail <see cref="IDataProtector.Unprotect"/> and is returned as-is, so an existing database is
-/// not broken and is silently upgraded to ciphertext the next time each row is written.
+/// not broken. A legacy plaintext value is not upgraded by merely reading the row: EF Core writes
+/// only the columns that changed, so the value becomes ciphertext only when that column itself is
+/// written again, and it stays plaintext until then.
 /// </summary>
 public sealed class EncryptedStringConverter : ValueConverter<string, string>
 {
@@ -39,7 +41,9 @@ public sealed class EncryptedStringConverter : ValueConverter<string, string>
         catch (CryptographicException)
         {
             // Value predates encryption (or the key ring can't read it) — return the raw
-            // string rather than crashing the read. It becomes ciphertext on its next write.
+            // string rather than crashing the read. It becomes ciphertext only when this column is
+            // written again. The fallback is silent: an unreadable ciphertext (a lost key) also comes
+            // back as-is, and the converter does not tell the two cases apart.
             return stored;
         }
     }
