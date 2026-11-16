@@ -169,15 +169,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error uploading avatar: {0}.
-        /// </summary>
-        public static string ErrorUploadingAvatarFormat {
-            get {
-                return ResourceManager.GetString("ErrorUploadingAvatarFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File too large (max 5MB).
         /// </summary>
         public static string FileTooLarge {

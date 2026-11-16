@@ -99,9 +99,6 @@
 	<data name="ErrorUploadingAvatar" xml:space="preserve">
 		<value>Δεν ήταν δυνατό το ανέβασμα της φωτογραφίας προφίλ. Δοκίμασε ξανά.</value>
 	</data>
-	<data name="ErrorUploadingAvatarFormat" xml:space="preserve">
-		<value>Δεν ήταν δυνατό το ανέβασμα της φωτογραφίας προφίλ: {0}</value>
-	</data>
 	<data name="ProfileUpdatedSuccess" xml:space="preserve">
 		<value>Το προφίλ σου ενημερώθηκε.</value>
 	</data>

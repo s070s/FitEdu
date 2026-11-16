@@ -230,9 +230,10 @@ public partial class Profile
                 RejectAvatar(ProfileRes.ErrorUploadingAvatar);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            RejectAvatar(ResourceFormat.Fill(ProfileRes.ErrorUploadingAvatarFormat, ex.Message));
+            // The exception text is English and can hold server paths, so the member sees the fixed message.
+            RejectAvatar(ProfileRes.ErrorUploadingAvatar);
         }
         finally
         {

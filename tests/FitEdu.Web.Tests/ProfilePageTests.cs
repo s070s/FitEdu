@@ -128,6 +128,20 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void AvatarUploadThrows_ShowsTheFixedMessageNotTheExceptionText()
+    {
+        _profileConsumer.UploadAvatarAsync(Arg.Any<IBrowserFile>()).ThrowsAsync(new IOException("C:\\inner\\path failed"));
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        FakeBrowserFile.Choose(page.FindComponent<FilePicker>(), new FakeBrowserFile("me.png", 1024, "image/png"));
+
+        var alert = page.Find(".alert[role=alert]");
+        alert.TextContent.ShouldContain(ProfileRes.ErrorUploadingAvatar);
+        alert.TextContent.ShouldNotContain("inner");
+    }
+
+    [Fact]
     public void AvatarOverTheLimit_IsRefusedWithoutUploading()
     {
         var page = Render<Profile>();

@@ -99,9 +99,6 @@
 	<data name="ErrorUploadingAvatar" xml:space="preserve">
 		<value>Couldn't upload your profile photo. Please try again.</value>
 	</data>
-	<data name="ErrorUploadingAvatarFormat" xml:space="preserve">
-		<value>Couldn't upload your profile photo: {0}</value>
-	</data>
 	<data name="ProfileUpdatedSuccess" xml:space="preserve">
 		<value>Profile updated.</value>
 	</data>
