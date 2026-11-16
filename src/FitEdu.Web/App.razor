@@ -45,7 +45,7 @@
         <button type="button" class="dismiss" title="@GlobalRes.Close" aria-label="@GlobalRes.Close"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
     </div>
 
-    @* Quill (script and stylesheet, from jsDelivr with integrity hashes) is not linked here: quill-interop.js loads it
+    @* Quill (script and stylesheet, vendored in wwwroot/lib/quill, with integrity hashes) is not linked here: quill-interop.js loads it
        when the first editor opens, so pages without an editor never ask the CDN for anything. *@
     <script defer src="@Assets["js/quill-interop.js"]"></script>
     <script defer src="@Assets["js/chat-interop.js"]"></script>

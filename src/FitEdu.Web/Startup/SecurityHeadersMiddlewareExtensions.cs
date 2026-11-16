@@ -11,9 +11,6 @@ public static class SecurityHeadersMiddlewareExtensions
     /// </summary>
     public static readonly TimeSpan HstsMaxAge = TimeSpan.FromDays(365);
 
-    /// <summary>The one CDN path the policy allows (path-restricted: the version is part of it); quill-interop.js loads from it.</summary>
-    private const string QuillCdnSource = "https://cdn.jsdelivr.net/npm/quill@2.0.3/";
-
     /// <summary>The <see cref="HttpContext.Items"/> key an endpoint sets (through <see cref="AllowFramingBySameOrigin"/>) to say its response may be framed by this site.</summary>
     private const string SameOriginFramingItemKey = "FitEdu.AllowFramingBySameOrigin";
 
@@ -42,9 +39,8 @@ public static class SecurityHeadersMiddlewareExtensions
         // <style> element with innerHTML, which only 'unsafe-inline' lets through, so a style-src /
         // style-src-attr split would leave that popup unstyled; and dozens of components bind
         // style="@expr". CSS injection is a materially smaller blast radius than script injection.
-        // Quill (the admin rich-text editor) comes from jsDelivr until it is vendored (owner download
-        // question, DEP-5): only its version's path is allowed, in script-src and style-src, and
-        // quill-interop.js loads it with integrity hashes on the first editor (P03-10, P03-11).
+        // Quill (the admin rich-text editor) is vendored under wwwroot/lib/quill, so it needs no extra source:
+        // quill-interop.js loads it from this site with integrity hashes on the first editor (P03-10, P03-11).
         // frame-ancestors 'none' goes with X-Frame-Options: DENY (no page of this site is framed); the one exception
         // is the lesson PDF asset, which sets its own SAMEORIGIN / frame-ancestors 'self' (AllowFramingBySameOrigin).
         // In Development, allow VS BrowserLink (http://localhost:*) and hot-reload
@@ -55,8 +51,8 @@ public static class SecurityHeadersMiddlewareExtensions
             : string.Empty;
         var contentSecurityPolicy =
             "default-src 'self'; " +
-            $"script-src 'self' {QuillCdnSource}; " +
-            $"style-src 'self' 'unsafe-inline' {QuillCdnSource}; " +
+            "script-src 'self'; " +
+            "style-src 'self' 'unsafe-inline'; " +
             "font-src 'self' data:; " +
             "img-src 'self' data: blob:; " +
             "media-src 'self' blob:; " +

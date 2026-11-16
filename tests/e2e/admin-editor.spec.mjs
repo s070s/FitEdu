@@ -1,13 +1,13 @@
-// Smoke: the admin blog editor loads Quill from the CDN on first open, under the
+// Smoke: the admin blog editor loads the vendored Quill on first open, under the
 // Content-Security-Policy and with its integrity hashes (P03-10, P03-11), and falls
-// back to a plain text box when the CDN cannot be reached. Neither is reachable from a
+// back to a plain text box when the Quill files cannot be loaded. Neither is reachable from a
 // WebApplicationFactory test: both need a real browser enforcing the policy.
 import { test, expect, request } from '@playwright/test';
 import { login, waitForCircuit, TEST_PASSWORD } from './helpers.mjs';
 
 const ADMIN_EMAIL = 'admin@fitedu.local';
 const BLOG_EDITOR_PATH = '/admin/blog/new';
-const QUILL_CDN_PATTERN = 'https://cdn.jsdelivr.net/**';
+const QUILL_FILES_PATTERN = '**/lib/quill/**';
 
 // Global setup resets the students only; the seeded admin gets the same known password here.
 test.beforeAll( async ( {}, testInfo ) => {
@@ -32,7 +32,7 @@ test.beforeAll( async ( {}, testInfo ) => {
     }
 } );
 
-test( 'blog editor loads Quill from the CDN without a Content-Security-Policy violation', async ( { page } ) => {
+test( 'blog editor loads the vendored Quill without a Content-Security-Policy violation', async ( { page } ) => {
     // Recorded in the page itself, so a violation on any full page load of the test is kept.
     await page.addInitScript( () => {
         window.__cspViolations = [];
@@ -49,8 +49,8 @@ test( 'blog editor loads Quill from the CDN without a Content-Security-Policy vi
     expect( await page.evaluate( () => window.__cspViolations ) ).toEqual( [] );
 } );
 
-test( 'blog editor falls back to a plain text box when the CDN is unreachable', async ( { page } ) => {
-    await page.route( QUILL_CDN_PATTERN, route => route.abort() );
+test( 'blog editor falls back to a plain text box when the Quill files cannot be loaded', async ( { page } ) => {
+    await page.route( QUILL_FILES_PATTERN, route => route.abort() );
 
     await login( page, ADMIN_EMAIL );
     await page.goto( BLOG_EDITOR_PATH );

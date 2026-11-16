@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -18,9 +19,6 @@ namespace FitEdu.Web.Tests;
 /// <summary>Exact security header values, shared by the Development and Production host tests.</summary>
 internal static class SecurityHeaderAssertions
 {
-    /// <summary>The only CDN path the policy allows: Quill 2.0.3, the admin rich-text editor.</summary>
-    public const string QuillSource = "https://cdn.jsdelivr.net/npm/quill@2.0.3/";
-
     public static void ShouldCarryTheSecurityHeaders(this HttpResponseMessage response, bool development)
     {
         response.Headers.GetValues("X-Content-Type-Options").ShouldBe(["nosniff"]);
@@ -36,9 +34,10 @@ internal static class SecurityHeaderAssertions
             "img-src", "media-src", "object-src", "script-src", "style-src"
         ]);
         policy["default-src"].ShouldBe(["'self'"]);
-        policy["script-src"].ShouldBe(["'self'", QuillSource]);
+        // Quill is vendored in wwwroot/lib/quill, so neither directive names a third-party host for it.
+        policy["script-src"].ShouldBe(["'self'"]);
         // Blazor's reconnect popup builds a <style> element and many components bind style="@expr", so 'unsafe-inline' stays here.
-        policy["style-src"].ShouldBe(["'self'", "'unsafe-inline'", QuillSource]);
+        policy["style-src"].ShouldBe(["'self'", "'unsafe-inline'"]);
         policy["font-src"].ShouldBe(["'self'", "data:"]);
         policy["img-src"].ShouldBe(["'self'", "data:", "blob:"]);
         policy["media-src"].ShouldBe(["'self'", "blob:"]);
@@ -51,11 +50,7 @@ internal static class SecurityHeaderAssertions
         policy["connect-src"].ShouldBe(development ? ["'self'", "http://localhost:*", "ws://localhost:*"] : ["'self'"]);
 
         policy["script-src"].ShouldNotContain(source => source.StartsWith("'unsafe-", StringComparison.Ordinal));
-        var jsDelivrSources = policy
-            .SelectMany(directive => directive.Value.Select(source => (Directive: directive.Key, Source: source)))
-            .Where(entry => entry.Source.Contains("jsdelivr", StringComparison.Ordinal))
-            .ToList();
-        jsDelivrSources.ShouldBe([("script-src", QuillSource), ("style-src", QuillSource)], ignoreOrder: true);
+        response.Headers.GetValues("Content-Security-Policy").Single().ShouldNotContain("jsdelivr", Case.Insensitive);
     }
 
     /// <summary>A page without an editor links no CDN file and no Quill file; only the local loader script is there.</summary>
@@ -226,18 +221,29 @@ public class ProductionSecurityHeadersTests : IClassFixture<ProductionSecurityHe
     }
 }
 
-/// <summary>quill-interop.js loads Quill itself, so what it asks the CDN for has to match the Content-Security-Policy.</summary>
+/// <summary>quill-interop.js loads the vendored Quill itself, so what it asks for has to be the files in wwwroot/lib/quill with their integrity hashes.</summary>
 public class QuillLazyLoadTests
 {
+    private const string QuillFolder = "lib/quill/2.0.3/";
+
     private static readonly string Script = File.ReadAllText(Path.Combine(RepoPaths.WebRoot, "js", "quill-interop.js"));
 
     [Theory]
-    [InlineData("dist/quill.js", "sha256-9hV8cqybP1HN6tQmM1aIoCexJAXZ1qTardOKZ2stf/I=")]
-    [InlineData("dist/quill.snow.css", "sha256-HHlIzROqkvrGOQMZvB5eRhgj2hcVGdOnaNtWFk+HFjY=")]
-    public void QuillFile_IsLoadedFromTheAllowedPath_WithItsIntegrityHash(string file, string integrity)
+    [InlineData("quill.js")]
+    [InlineData("quill.snow.css")]
+    public void QuillFile_IsLoadedFromTheVendoredFolder_WithItsIntegrityHash(string file)
     {
-        Script.ShouldContain($"'{SecurityHeaderAssertions.QuillSource}{file}'");
+        var vendoredBytes = File.ReadAllBytes(Path.Combine(RepoPaths.WebRoot, "lib", "quill", "2.0.3", file));
+        var integrity = "sha384-" + Convert.ToBase64String(SHA384.HashData(vendoredBytes));
+
+        Script.ShouldContain($"'/{QuillFolder}{file}'");
         Script.ShouldContain($"'{integrity}'");
+    }
+
+    [Fact]
+    public void QuillLicence_ShipsNextToTheVendoredFiles()
+    {
+        File.ReadAllText(Path.Combine(RepoPaths.WebRoot, "lib", "quill", "2.0.3", "LICENSE")).ShouldContain("Redistribution and use in source and binary forms");
     }
 
     [Fact]
@@ -247,11 +253,8 @@ public class QuillLazyLoadTests
     }
 
     [Fact]
-    public void QuillInterop_NamesNoOtherCdnAddress()
+    public void QuillInterop_NamesNoOutsideAddress()
     {
-        var addresses = Regex.Matches(Script, "https://[^'\" ]+").Select(match => match.Value).ToList();
-
-        addresses.ShouldNotBeEmpty();
-        addresses.ShouldAllBe(address => address.StartsWith(SecurityHeaderAssertions.QuillSource, StringComparison.Ordinal));
+        Regex.Matches(Script, "https?://[^'\" ]+").ShouldBeEmpty();
     }
 }

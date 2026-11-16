@@ -1,11 +1,10 @@
 // Quill.js interop for Blazor WYSIWYG editor component.
 // Each editor instance is stored by element ID for multi-editor support.
 //
-// Quill itself (script + stylesheet) comes from jsDelivr and is loaded here, on the first editor
-// that opens, not on every page: only the admin editors use it (P03-11). The addresses, the version
-// path and the integrity hashes have to match the Content-Security-Policy, which allows only
-// https://cdn.jsdelivr.net/npm/quill@2.0.3/ (SecurityHeadersMiddlewareExtensions); QuillLazyLoadTests
-// checks that. Vendoring Quill under wwwroot/lib would remove the CDN (owner download question).
+// Quill itself (script + stylesheet) is vendored under wwwroot/lib/quill/2.0.3 and is loaded here, on
+// the first editor that opens, not on every page: only the admin editors use it (P03-11). The integrity
+// hashes have to match the vendored files; QuillLazyLoadTests checks that. The Content-Security-Policy
+// needs no extra source for them: they are served from this site.
 // How long a Quill file may take to load before the editor falls back to the plain text box. It has
 // to stay well under Blazor's one-minute JS call timeout, which a hanging CDN would otherwise hit.
 const LOAD_TIMEOUT_MILLISECONDS = 15000;
@@ -16,13 +15,13 @@ window.quillInterop = {
     // The two files a Quill editor needs. `pending` holds the load in progress or done; a failed load
     // clears it, so the next editor tries again.
     _script: {
-        url: 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js',
-        integrity: 'sha256-9hV8cqybP1HN6tQmM1aIoCexJAXZ1qTardOKZ2stf/I=',
+        url: '/lib/quill/2.0.3/quill.js',
+        integrity: 'sha384-utBUCeG4SYaCm4m7GQZYr8Hy8Fpy3V4KGjBZaf4WTKOcwhCYpt/0PfeEe3HNlwx8',
         pending: null
     },
     _styles: {
-        url: 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css',
-        integrity: 'sha256-HHlIzROqkvrGOQMZvB5eRhgj2hcVGdOnaNtWFk+HFjY=',
+        url: '/lib/quill/2.0.3/quill.snow.css',
+        integrity: 'sha384-ecIckRi4QlKYya/FQUbBUjS4qp65jF/J87Guw5uzTbO1C1Jfa/6kYmd6dXUF6D7i',
         pending: null
     },
 
@@ -35,7 +34,7 @@ window.quillInterop = {
                 element.integrity = file.integrity;
                 element.crossOrigin = 'anonymous';
                 let failed = false;
-                // A hanging CDN would keep init past Blazor's one-minute JS call timeout, which
+                // A hanging request would keep init past Blazor's one-minute JS call timeout, which
                 // crashes the circuit; failing sooner leaves the plain text box.
                 element.onload = function () {
                     clearTimeout(timer);
