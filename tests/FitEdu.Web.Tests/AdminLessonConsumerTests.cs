@@ -109,6 +109,45 @@ public class AdminLessonConsumerTests : IClassFixture<CustomWebAppFactory>
         path.ShouldBeNull();
     }
 
+    // Records the request it receives, so a test can read the headers the consumer put on it.
+    private sealed class RecordingHandler : HttpMessageHandler
+    {
+        public HttpRequestMessage? Request { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            Request = request;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\"videoPath\":\"lessons/clip.mp4\"}", System.Text.Encoding.UTF8, "application/json")
+            });
+        }
+    }
+
+    [Fact]
+    public async Task UploadVideo_SendsTheSignedInUsersBearerToken()
+    {
+        // The upload client is not the consumer's own client, so the token must be on the request itself.
+        var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())], "test"));
+        var authState = Substitute.For<AuthenticationStateProvider>();
+        authState.GetAuthenticationStateAsync().Returns(Task.FromResult(new AuthenticationState(principal)));
+        var authService = Substitute.For<IAuthService>();
+        authService.GetTokenAsync(principal).Returns("lesson-upload-token");
+        var uploadHandler = new RecordingHandler();
+        var factory = Substitute.For<IHttpClientFactory>();
+        factory.CreateClient(AdminLessonConsumer.UploadClientName).Returns(Client(uploadHandler, Timeout.InfiniteTimeSpan));
+        var consumer = new AdminLessonConsumer(
+            Client(new SlowHandler(TimeSpan.Zero), Timeout.InfiniteTimeSpan), new ApiTokenProvider(authState, authService), factory);
+
+        var path = await consumer.UploadVideoAsync(Guid.NewGuid(), SmallFile("clip.mp4", "video/mp4"));
+
+        path.ShouldBe("lessons/clip.mp4");
+        var authorization = uploadHandler.Request!.Headers.Authorization;
+        authorization.ShouldNotBeNull();
+        authorization.Scheme.ShouldBe("Bearer");
+        authorization.Parameter.ShouldBe("lesson-upload-token");
+    }
+
     [Fact]
     public void EachUploadCall_IsBoundedByThirtyMinutes()
     {
