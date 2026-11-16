@@ -1,11 +1,25 @@
 /* Phones: no height limit, the stacked row cards scroll with the page. */
 @media (min-width: 768px) {
-    .scrollable-table {
+    .scrollable-table:not(.table-responsive--stack-xl) {
         max-height: var(--table-max-height, 60vh);
         overflow-y: auto;
     }
 
-    .scrollable-table__head {
+    .scrollable-table:not(.table-responsive--stack-xl) .scrollable-table__head {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}
+
+/* StackBelow="xl": the cards last until 1200 px, so the height limit and the sticky head wait for the table. */
+@media (min-width: 1200px) {
+    .scrollable-table.table-responsive--stack-xl {
+        max-height: var(--table-max-height, 60vh);
+        overflow-y: auto;
+    }
+
+    .scrollable-table.table-responsive--stack-xl .scrollable-table__head {
         position: sticky;
         top: 0;
         z-index: 1;

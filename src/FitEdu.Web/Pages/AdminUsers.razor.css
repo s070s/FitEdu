@@ -1,10 +1,22 @@
-﻿/* Wide screens: room for two action buttons per line, so a row is not four buttons tall. */
-@media (min-width: 768px) {
+﻿/* Below 1200 px the table is stacked into cards (StackBelow="xl"), so the buttons are for thumbs. */
+@media (max-width: 1199.98px) {
+    .table-actions .btn {
+        min-height: 2.75rem;
+    }
+}
+
+/* Desktop table: room for two action buttons per line, so a row is not four buttons tall,
+   and a long email may wrap instead of widening the table. */
+@media (min-width: 1200px) {
     .table-actions {
         min-width: 15rem;
     }
 
     .table-actions .btn {
         margin-block: 0.125rem;
+    }
+
+    .user-email {
+        overflow-wrap: anywhere;
     }
 }

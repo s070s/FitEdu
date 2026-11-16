@@ -32,7 +32,7 @@
             }
             else
             {
-                <ScrollableTable Items="pagedResult.Items" TItem="AdminUserDto" Caption="@AdminRes.UserManagement">
+                <ScrollableTable Items="pagedResult.Items" TItem="AdminUserDto" Caption="@AdminRes.UserManagement" StackBelow="xl">
                     <HeaderRow>
                         <tr>
                             <SortableColumnHeader ColumnKey="email"     Label="@AdminRes.ColEmail"
@@ -63,7 +63,7 @@
                     </HeaderRow>
                     <RowTemplate Context="user">
                         <tr @key="user.Id">
-                            <td data-label="@AdminRes.ColEmail">@user.Email</td>
+                            <td class="user-email" data-label="@AdminRes.ColEmail">@user.Email</td>
                             <td data-label="@AdminRes.ColName">@user.FirstName @user.LastName</td>
                             <td data-label="@AdminRes.ColTrainingLevel">@UserStatusLabels.Label(user.Status)</td>
                             <td data-label="@AdminRes.ColOnline">

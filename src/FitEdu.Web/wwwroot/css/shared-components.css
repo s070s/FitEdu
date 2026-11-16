@@ -247,6 +247,110 @@ th.sort-active {
 
 }
 
+/* ================================================
+   Opt-in card layout up to 1199 px (ScrollableTable StackBelow="xl")
+   A table with 8+ columns does not fit a tablet, so it stays cards until the desktop width.
+   The rules are the phone rules above, under the modifier class: tables without it are untouched.
+   ================================================ */
+@media (max-width: 1199.98px) {
+    /* Force the table itself to fill the card width, not its natural column widths */
+    .table-responsive--stack-xl > table {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive--stack-xl > table thead {
+        display: none;
+    }
+
+    .table-responsive--stack-xl > table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive--stack-xl > table tbody tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.75rem;
+        border: 1px solid var(--border-subtle);
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: var(--bg-surface);
+    }
+
+    .table-responsive--stack-xl > table tbody tr:nth-child(odd),
+    .table-responsive--stack-xl > table tbody tr:nth-child(even) {
+        background-color: var(--bg-surface);
+    }
+
+    .table-responsive--stack-xl > table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.5rem 0.75rem;
+        border: none;
+        border-bottom: 1px solid rgba(var(--border-subtle-rgb), 0.08);
+        gap: 1rem;
+        text-align: right;
+        color: var(--text-light-normal);
+        /* Allow long values (emails, slugs) to wrap instead of overflowing */
+        word-break: break-word;
+        overflow-wrap: break-word;
+        min-width: 0;
+    }
+
+    .table-responsive--stack-xl > table tbody td:last-child {
+        border-bottom: none;
+    }
+
+    .table-responsive--stack-xl > table tbody td::before {
+        content: attr(data-label);
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-light-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+        text-align: left;
+        padding-top: 0.1rem;
+        /* Label never shrinks below its own text width */
+        min-width: fit-content;
+    }
+
+    /* Action cell (td.table-actions, in every language): no label, buttons flow in a row and wrap */
+    .table-responsive--stack-xl > table tbody td.table-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .table-responsive--stack-xl > table tbody td.table-actions::before {
+        display: none;
+    }
+
+    .table-responsive--stack-xl > table tbody td.table-actions .btn {
+        flex: 1 1 auto;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    /* Full-width detail rows (td[colspan]) and the card radius, as on phones */
+    .table-responsive--stack-xl > table tbody td[colspan] {
+        display: block;
+        text-align: left;
+        gap: 0;
+    }
+
+    .table-responsive--stack-xl > table tbody td[colspan]::before {
+        display: none;
+    }
+
+    .table-responsive--stack-xl > table tbody tr {
+        border-radius: var(--radius-lg);
+    }
+}
+
 /* Form labels */
 .form-label {
     color: var(--text-accent);

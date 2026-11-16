@@ -4,8 +4,9 @@
 @typeparam TItem
 
 @* The height limit applies from 768 px only (ScrollableTable.razor.css): on phones the rows are
-   stacked cards (shared-components.css), and a second scroller inside the page would trap the thumb. *@
-<div class="table-responsive scrollable-table" style="--table-max-height:@MaxHeight">
+   stacked cards (shared-components.css), and a second scroller inside the page would trap the thumb.
+   A table with StackBelow="xl" stays cards up to 1199 px and gets the limit from 1200 px. *@
+<div class="@WrapperCssClass" style="--table-max-height:@MaxHeight">
     <table class="@TableCssClass">
         @if (!string.IsNullOrWhiteSpace(Caption))
         {
@@ -24,6 +25,8 @@
 </div>
 
 @code {
+    private const string ExtraLargeBreakpoint = "xl";
+
     [Parameter, EditorRequired] public IList<TItem> Items { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment HeaderRow { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<TItem> RowTemplate { get; set; } = default!;
@@ -32,4 +35,21 @@
 
     /// <summary>Accessible name of the table for screen readers (usually the page heading); not shown on screen.</summary>
     [Parameter] public string? Caption { get; set; }
+
+    /// <summary>
+    /// Opt in to keep the rows stacked as cards on screens narrower than this breakpoint, for a table whose
+    /// columns do not fit a tablet. Only <c>"xl"</c> (below 1200 px) is supported; null keeps the default,
+    /// cards on phones only. The cells need <c>data-label</c>, as for the phone cards.
+    /// </summary>
+    [Parameter] public string? StackBelow { get; set; }
+
+    private string WrapperCssClass => string.IsNullOrEmpty(StackBelow)
+        ? "table-responsive scrollable-table"
+        : $"table-responsive scrollable-table table-responsive--stack-{StackBelow}";
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(StackBelow) && StackBelow != ExtraLargeBreakpoint)
+            throw new ArgumentOutOfRangeException(nameof(StackBelow), StackBelow, $"Only \"{ExtraLargeBreakpoint}\" is supported.");
+    }
 }

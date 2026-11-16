@@ -115,6 +115,14 @@ public class AdminUsersPageTests : BunitContext
         accessibleNames.Distinct().Count().ShouldBe(accessibleNames.Count, "two buttons share an accessible name");
     }
 
+    [Fact]
+    public void Table_StaysStackedAsCardsUntilTheDesktopWidth()
+    {
+        var page = RenderThreeUsers();
+
+        page.Find(".table-responsive").ClassList.ShouldContain("table-responsive--stack-xl");
+    }
+
     // ---- Loading the list ------------------------------------------------------------------------
 
     private static PagedResult<AdminUserDto> OnePage(string email) =>
