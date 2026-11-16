@@ -47,7 +47,7 @@ public class MediaController : ControllerBase
 
     /// <summary>
     /// Serves an uploaded file if it lives within an allowed public folder.
-    /// Example: GET /api/media/testimonials/avatars/photo_abc123.jpg
+    /// Example: GET /api/media/testimonials/avatars/0123456789abcdef0123456789abcdef.jpg
     /// </summary>
     [HttpGet("{*filePath}")]
     public async Task<IActionResult> GetFile(string filePath, CancellationToken cancellationToken = default)
