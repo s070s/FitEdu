@@ -17,7 +17,7 @@ namespace FitEdu.Web.Controllers;
 [Produces("application/json", "application/problem+json")]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
-public partial class AdminTestimonialsController : ControllerBase
+public class AdminTestimonialsController : ControllerBase
 {
     private readonly ITestimonialService _testimonials;
     private readonly IFileStorage _fileStorage;
@@ -133,7 +133,6 @@ public partial class AdminTestimonialsController : ControllerBase
         }
 
         await _fileStorage.DeleteUnusedFileAsync(existing.AvatarPath, _logger);
-        LogAvatarUploaded(_logger, id, path);
         return Ok(new AvatarUploadResultDto(path));
     }
 
@@ -168,8 +167,4 @@ public partial class AdminTestimonialsController : ControllerBase
 
         return success ? NoContent() : NotFound();
     }
-
-    // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
-    [LoggerMessage(Level = LogLevel.Information, Message = "Avatar uploaded for testimonial {Id}: {Path}")]
-    private static partial void LogAvatarUploaded(ILogger logger, Guid id, string path);
 }
