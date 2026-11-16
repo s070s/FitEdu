@@ -7,6 +7,7 @@ and WebRTC):
 | Spec | Scenarios |
 |------|-----------|
 | `auth.spec.mjs` | Login lands authenticated; register page links Privacy/Terms from the consent block |
+| `admin-editor.spec.mjs` | The admin blog editor loads Quill from the CDN with no Content-Security-Policy violation (`securitypolicyviolation` events recorded); with the CDN blocked it falls back to the plain text box |
 | `pages.spec.mjs` | Courses page renders seeded course cards (anti-blank-render); Greek culture switch renders Greek; exercise library cards open their exercise page |
 | `responsive.spec.mjs` | Key public pages at 375×812 (touch) and 1280×800: no sideways scrolling, no broken images after scrolling lazy ones into view, phone tab bar only on the small screen |
 | `call.spec.mjs` | Two isolated browser contexts (two users) place and connect a real video call with fake media, assert `RTCPeerConnection.connectionState === 'connected'` and remote frames flowing, then hang up |
