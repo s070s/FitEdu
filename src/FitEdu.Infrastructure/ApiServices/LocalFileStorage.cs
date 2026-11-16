@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 
 namespace FitEdu.Infrastructure.ApiServices;
 
 /// <summary>
 /// Local file system implementation of IFileStorage.
-/// Stores files under the configured uploads directory (default ./App_Data/Uploads/{folder}/{fileName}).
+/// Stores files under the configured uploads directory (default ./App_Data/Uploads/{folder}/{guid}{extension}).
 /// </summary>
 public partial class LocalFileStorage : IFileStorage
 {
@@ -15,28 +16,6 @@ public partial class LocalFileStorage : IFileStorage
     private readonly string _basePath;
     private readonly string _basePathWithSeparator;
     private readonly ILogger<LocalFileStorage> _logger;
-
-    // File size limits (in bytes)
-    private const long MaxAvatarSize = 5 * 1024 * 1024; // 5 MB
-    private const long MaxPdfSize = 20 * 1024 * 1024; // 20 MB
-    private const long MaxVideoSize = 500 * 1024 * 1024; // 500 MB
-    private const long MaxBackgroundImageSize = 8 * 1024 * 1024; // 8 MB
-
-    // Allowed content types
-    private static readonly HashSet<string> AllowedImageTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"
-    };
-
-    private static readonly HashSet<string> AllowedPdfTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "application/pdf"
-    };
-
-    private static readonly HashSet<string> AllowedVideoTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "video/mp4", "video/webm", "video/ogg"
-    };
 
     public LocalFileStorage(IWebHostEnvironment environment, IConfiguration configuration, ILogger<LocalFileStorage> logger)
     {
@@ -58,23 +37,17 @@ public partial class LocalFileStorage : IFileStorage
         _basePathWithSeparator = Path.TrimEndingDirectorySeparator(Path.GetFullPath(_basePath)) + Path.DirectorySeparatorChar;
     }
 
-    public async Task<string> SaveFileAsync(Stream fileStream, string fileName, string folder, long? maxBytes = null, CancellationToken cancellationToken = default)
+    public async Task<string> SaveFileAsync(Stream fileStream, string contentType, string folder, long? maxBytes = null, CancellationToken cancellationToken = default)
     {
-        // Validate file name
-        fileName = Path.GetFileName(fileName); // Security: prevent directory traversal
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            throw new ArgumentException("File name is required", nameof(fileName));
-        }
+        // The extension comes from the validated content type; the client's own file name is never used.
+        var extension = ExtensionFor(contentType);
 
         // Validate folder
         var folderPath = ResolveInsideRoot(folder);
         folder = folder.Replace('\\', '/').TrimEnd('/');
 
-        // Generate unique file name to prevent collisions
-        var extension = Path.GetExtension(fileName);
-        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-        var uniqueFileName = $"{fileNameWithoutExt}_{Guid.NewGuid():N}{extension}";
+        // A fresh GUID is the whole name, so nothing the client typed reaches the path or the log.
+        var uniqueFileName = $"{Guid.NewGuid():N}{extension}";
 
         // Create folder structure
         if (!Directory.Exists(folderPath))
@@ -212,13 +185,13 @@ public partial class LocalFileStorage : IFileStorage
         // silently inheriting an arbitrary default.
         long maxSize = explicitMaxBytes ?? folder.ToLowerInvariant() switch
         {
-            var f when f.Contains("avatar") => MaxAvatarSize,
-            var f when f.Contains("pdf") => MaxPdfSize,
-            var f when f.Contains("video") => MaxVideoSize,
-            var f when f.Contains("background") => MaxBackgroundImageSize,
-            var f when f.Contains("cover") => MaxBackgroundImageSize,
-            var f when f.Contains("blog") => MaxBackgroundImageSize,
-            var f when f.Contains("certificate") => MaxPdfSize,
+            var f when f.Contains("avatar") => UploadLimits.MaxImageBytes,
+            var f when f.Contains("pdf") => UploadLimits.MaxPdfBytes,
+            var f when f.Contains("video") => UploadLimits.MaxVideoBytes,
+            var f when f.Contains("background") => UploadLimits.MaxCoverImageBytes,
+            var f when f.Contains("cover") => UploadLimits.MaxCoverImageBytes,
+            var f when f.Contains("blog") => UploadLimits.MaxCoverImageBytes,
+            var f when f.Contains("certificate") => UploadLimits.MaxPdfBytes,
             _ => throw new InvalidOperationException(
                 $"No file-size limit configured for folder '{folder}'. " +
                 "Pass an explicit maxBytes to SaveFileAsync or add a folder mapping.")
@@ -230,6 +203,32 @@ public partial class LocalFileStorage : IFileStorage
         }
     }
 
+    /// <summary>The stored extension for a content type in the upload sets; anything else is refused.</summary>
+    private static string ExtensionFor(string contentType)
+    {
+        var mediaType = (contentType ?? string.Empty).Split(';')[0].Trim();
+        var isKnown = UploadLimits.ImageContentTypes.Contains(mediaType)
+            || UploadLimits.PdfContentTypes.Contains(mediaType)
+            || UploadLimits.VideoContentTypes.Contains(mediaType);
+        if (!isKnown)
+        {
+            throw new ArgumentException("Content type is not an accepted upload type", nameof(contentType));
+        }
+
+        return mediaType.ToLowerInvariant() switch
+        {
+            "image/jpeg" or "image/jpg" => ".jpg",
+            "image/png" => ".png",
+            "image/gif" => ".gif",
+            "image/webp" => ".webp",
+            "application/pdf" => ".pdf",
+            "video/mp4" => ".mp4",
+            "video/webm" => ".webm",
+            _ => ".ogv" // video/ogg
+        };
+    }
+
+    // Also reads the extensions of files stored under the old client-name scheme (.ogg, .jpeg).
     private static string GetContentType(string extension)
     {
         return extension.ToLowerInvariant() switch
@@ -241,7 +240,7 @@ public partial class LocalFileStorage : IFileStorage
             ".pdf" => "application/pdf",
             ".mp4" => "video/mp4",
             ".webm" => "video/webm",
-            ".ogg" => "video/ogg",
+            ".ogg" or ".ogv" => "video/ogg",
             _ => "application/octet-stream"
         };
     }

@@ -159,7 +159,7 @@ public class AdminLessonsController : ControllerBase
 
         // Save the new PDF using the file storage abstraction.
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "lessons/pdf");
+        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "lessons/pdf");
 
         // Update the lesson entity with the new path and audit metadata, then persist.
         lesson.PdfPath = path;
@@ -198,7 +198,7 @@ public class AdminLessonsController : ControllerBase
 
         // Save the new video and get its storage path.
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "lessons/video");
+        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "lessons/video");
 
         // Update entity with new video path and audit metadata, then persist.
         lesson.VideoPath = path;

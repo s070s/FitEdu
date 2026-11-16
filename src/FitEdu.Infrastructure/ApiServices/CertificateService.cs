@@ -237,7 +237,7 @@ public partial class CertificateService : ICertificateService
         using var stream = new MemoryStream(pdfBytes);
         return await _storage.SaveFileAsync(
             stream,
-            $"{cert.VerificationId}.{LanguageCode(culture)}.pdf",
+            "application/pdf",
             "certificates",
             cancellationToken: cancellationToken);
     }

@@ -86,7 +86,7 @@ public class SiteSettingsController : ControllerBase
 
         // Save new background
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "backgrounds");
+        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "backgrounds");
 
         if (setting == null)
         {

@@ -25,48 +25,100 @@ public sealed class LocalFileStorageTests : IDisposable
 
     private static MemoryStream Stream(int bytes = 16) => new(new byte[bytes]);
 
-    [Fact]
-    public async Task SaveFile_WritesUniqueNameAndReturnsRelativePath()
-    {
-        var path = await _storage.SaveFileAsync(Stream(), "photo.png", "avatars");
+    // P05-2 / P05-7: a stored file is named by a fresh GUID plus the extension of its validated content type;
+    // nothing the client called the file reaches the path (or the log line).
 
-        path.ShouldStartWith("avatars/");
-        path.ShouldEndWith(".png");
+    [Fact]
+    public async Task SaveFile_NamesTheFileByAGuidAndReturnsTheRelativePath()
+    {
+        var path = await _storage.SaveFileAsync(Stream(), "image/png", "avatars");
+
+        path.ShouldMatch("^avatars/[0-9a-f]{32}\\.png$");
         _storage.FileExists(path).ShouldBeTrue();
     }
 
-    [Fact]
-    public async Task SaveFile_BlankFileName_Throws()
+    [Theory]
+    [InlineData("image/jpeg", ".jpg")]
+    [InlineData("image/jpg", ".jpg")]
+    [InlineData("IMAGE/PNG", ".png")]
+    [InlineData("image/gif", ".gif")]
+    [InlineData("image/webp", ".webp")]
+    [InlineData("application/pdf", ".pdf")]
+    [InlineData("video/mp4", ".mp4")]
+    [InlineData("video/webm", ".webm")]
+    [InlineData("video/ogg", ".ogv")]
+    [InlineData("image/png; charset=binary", ".png")]
+    public async Task SaveFile_TakesTheExtensionFromTheContentType(string contentType, string expectedExtension)
+    {
+        var path = await _storage.SaveFileAsync(Stream(), contentType, "avatars", maxBytes: 1024);
+
+        path.ShouldEndWith(expectedExtension);
+    }
+
+    [Theory]
+    [InlineData("text/html")]
+    [InlineData("image/svg+xml")]
+    [InlineData("image/avif")]
+    [InlineData("application/octet-stream")]
+    [InlineData("   ")]
+    public async Task SaveFile_ContentTypeOutsideTheUploadSets_Throws(string contentType)
     {
         await Should.ThrowAsync<ArgumentException>(
-            () => _storage.SaveFileAsync(Stream(), "   ", "avatars"));
+            () => _storage.SaveFileAsync(Stream(), contentType, "avatars"));
+    }
+
+    [Fact]
+    public async Task SaveFile_AvatarsAreCappedAtTheImageLimit_CoversAtTheLargerCoverLimit()
+    {
+        const int sixMegabytes = 6 * 1024 * 1024;
+
+        await Should.ThrowAsync<InvalidOperationException>(
+            () => _storage.SaveFileAsync(Stream(sixMegabytes), "image/png", "avatars"));
+
+        var coverPath = await _storage.SaveFileAsync(Stream(sixMegabytes), "image/png", "blog/covers");
+        _storage.FileExists(coverPath).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GetFile_ServesAnOldGreekNamedFileWithItsContentType()
+    {
+        // Files stored before the GUID names keep the client's name; they still have to be served.
+        var oldPath = "blog/covers/φωτογραφία_0123456789abcdef.JPG";
+        Directory.CreateDirectory(Path.Combine(_root, "App_Data", "Uploads", "blog", "covers"));
+        await File.WriteAllBytesAsync(Path.Combine(_root, "App_Data", "Uploads", "blog", "covers", "φωτογραφία_0123456789abcdef.JPG"), [1, 2, 3]);
+
+        var (stream, contentType) = await _storage.GetFileAsync(oldPath);
+        await using (stream)
+        {
+            contentType.ShouldBe("image/jpeg");
+        }
     }
 
     [Fact]
     public async Task SaveFile_FolderWithTraversal_Throws()
     {
         await Should.ThrowAsync<ArgumentException>(
-            () => _storage.SaveFileAsync(Stream(), "a.png", "../escape"));
+            () => _storage.SaveFileAsync(Stream(), "image/png", "../escape"));
     }
 
     [Fact]
     public async Task SaveFile_ExceedsExplicitMax_Throws()
     {
         await Should.ThrowAsync<InvalidOperationException>(
-            () => _storage.SaveFileAsync(Stream(100), "a.png", "avatars", maxBytes: 10));
+            () => _storage.SaveFileAsync(Stream(100), "image/png", "avatars", maxBytes: 10));
     }
 
     [Fact]
     public async Task SaveFile_UnknownFolderWithoutCap_Throws()
     {
         await Should.ThrowAsync<InvalidOperationException>(
-            () => _storage.SaveFileAsync(Stream(), "a.bin", "mystery-folder"));
+            () => _storage.SaveFileAsync(Stream(), "image/png", "mystery-folder"));
     }
 
     [Fact]
     public async Task SaveFile_FolderHeuristicWithinCap_Succeeds()
     {
-        var path = await _storage.SaveFileAsync(Stream(1024), "doc.pdf", "lessons/pdf");
+        var path = await _storage.SaveFileAsync(Stream(1024), "application/pdf", "lessons/pdf");
 
         _storage.FileExists(path).ShouldBeTrue();
     }
@@ -88,7 +140,7 @@ public sealed class LocalFileStorageTests : IDisposable
     [Fact]
     public async Task GetFile_ReturnsStreamAndContentTypeByExtension()
     {
-        var path = await _storage.SaveFileAsync(Stream(), "image.png", "avatars");
+        var path = await _storage.SaveFileAsync(Stream(), "image/png", "avatars");
 
         var (stream, contentType) = await _storage.GetFileAsync(path);
         await using (stream)
@@ -100,7 +152,7 @@ public sealed class LocalFileStorageTests : IDisposable
     [Fact]
     public async Task DeleteFile_RemovesExisting_AndIgnoresMissing()
     {
-        var path = await _storage.SaveFileAsync(Stream(), "x.png", "avatars");
+        var path = await _storage.SaveFileAsync(Stream(), "image/png", "avatars");
 
         await _storage.DeleteFileAsync(path);
         _storage.FileExists(path).ShouldBeFalse();
@@ -123,7 +175,7 @@ public sealed class LocalFileStorageTests : IDisposable
         await using var source = new FailingSecondReadStream(cancellation);
 
         await Should.ThrowAsync<OperationCanceledException>(
-            () => _storage.SaveFileAsync(source, "a.png", "avatars", cancellationToken: cancellation.Token));
+            () => _storage.SaveFileAsync(source, "image/png", "avatars", cancellationToken: cancellation.Token));
 
         Directory.GetFiles(_root, "*", SearchOption.AllDirectories).ShouldBeEmpty();
     }
@@ -133,7 +185,7 @@ public sealed class LocalFileStorageTests : IDisposable
     {
         await using var source = new FailingSecondReadStream(cancellation: null);
 
-        await Should.ThrowAsync<IOException>(() => _storage.SaveFileAsync(source, "a.png", "avatars"));
+        await Should.ThrowAsync<IOException>(() => _storage.SaveFileAsync(source, "image/png", "avatars"));
 
         Directory.GetFiles(_root, "*", SearchOption.AllDirectories).ShouldBeEmpty();
     }
@@ -226,7 +278,7 @@ public sealed class LocalFileStorageTests : IDisposable
     public async Task SaveFile_FolderOutsideTheUploadsFolder_Throws(string folder)
     {
         await Should.ThrowAsync<ArgumentException>(
-            () => _storage.SaveFileAsync(Stream(), "a.png", folder));
+            () => _storage.SaveFileAsync(Stream(), "image/png", folder));
     }
 
     public void Dispose()

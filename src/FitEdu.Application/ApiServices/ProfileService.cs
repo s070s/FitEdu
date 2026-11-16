@@ -50,7 +50,7 @@ public partial class ProfileService(
         return ServiceResult<ProfileDto>.Ok(ToDto(user));
     }
 
-    public async Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string fileName)
+    public async Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string contentType)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
@@ -62,9 +62,9 @@ public partial class ProfileService(
             await fileStorage.DeleteFileAsync(user.AvatarPath);
         }
 
-        // Save new avatar. The member's own file name stays out of the stored path and its log line; only the
-        // extension (which the storage's type check reads) is kept.
-        var path = await fileStorage.SaveFileAsync(fileStream, "avatar" + Path.GetExtension(fileName), "avatars");
+        // Save new avatar. The storage names it by a GUID and the validated content type, so the member's own
+        // file name never reaches the stored path or the log line (the controller validated the type and size).
+        var path = await fileStorage.SaveFileAsync(fileStream, contentType, "avatars");
 
         user.AvatarPath = path;
         var updateResult = await userManager.UpdateAsync(user);

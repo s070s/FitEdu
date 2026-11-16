@@ -136,7 +136,7 @@ public partial class CertificateServiceTests
         withPdf.PdfPath.ShouldBe("certificates/cert.pdf");
         withPdf.PdfPathEl.ShouldBeNull();
         await storage.Received(1).SaveFileAsync(
-            Arg.Any<Stream>(), $"{cert.VerificationId}.en.pdf", "certificates", Arg.Any<long?>(), Arg.Any<CancellationToken>());
+            Arg.Any<Stream>(), "application/pdf", "certificates", Arg.Any<long?>(), Arg.Any<CancellationToken>());
         pdf.ShouldNotBeNull();
         Encoding.ASCII.GetString(pdf!, 0, 4).ShouldBe("%PDF");
         // The document title readers show in their title bar and file properties.
@@ -168,7 +168,7 @@ public partial class CertificateServiceTests
         var cert = ExistingCert("u1", Guid.NewGuid());
         db.Certificates.Add(cert);
         await db.SaveChangesAsync();
-        var storage = StorageThatSavesUnderTheRequestedName();
+        var storage = StorageThatSavesUnderANewGuidName();
         var service = NewService(db, storage);
 
         using var cultureScope = new CultureScope("en");
@@ -176,8 +176,10 @@ public partial class CertificateServiceTests
         using var greekCultureScope = new CultureScope("el");
         var result = await service.EnsurePdfAsync(cert.Id);
 
-        result.PdfPath.ShouldBe($"certificates/{cert.VerificationId}.en.pdf");
-        result.PdfPathEl.ShouldBe($"certificates/{cert.VerificationId}.el.pdf");
+        // Each language has its own stored file, named by the storage (a GUID), not by the certificate.
+        result.PdfPath.ShouldNotBeNull().ShouldStartWith("certificates/");
+        result.PdfPathEl.ShouldNotBeNull().ShouldStartWith("certificates/");
+        result.PdfPathEl.ShouldNotBe(result.PdfPath);
         CertificateService.PdfPathFor(result, CultureInfo.GetCultureInfo("el")).ShouldBe(result.PdfPathEl);
         CertificateService.PdfPathFor(result, CultureInfo.GetCultureInfo("en-GB")).ShouldBe(result.PdfPath);
     }
@@ -189,7 +191,7 @@ public partial class CertificateServiceTests
         var cert = ExistingCert("u1", Guid.NewGuid());
         db.Certificates.Add(cert);
         await db.SaveChangesAsync();
-        var storage = StorageThatSavesUnderTheRequestedName();
+        var storage = StorageThatSavesUnderANewGuidName();
         var service = NewService(db, storage);
         using var cultureScope = new CultureScope("en");
 
@@ -209,20 +211,21 @@ public partial class CertificateServiceTests
         var cert = ExistingCert("u1", Guid.NewGuid(), "certificates/gone.pdf");
         db.Certificates.Add(cert);
         await db.SaveChangesAsync();
-        var storage = StorageThatSavesUnderTheRequestedName();
+        var storage = StorageThatSavesUnderANewGuidName();
         using var cultureScope = new CultureScope("en");
 
         var result = await NewService(db, storage).EnsurePdfAsync(cert.Id);
 
-        result.PdfPath.ShouldBe($"certificates/{cert.VerificationId}.en.pdf");
+        result.PdfPath.ShouldNotBeNull().ShouldStartWith("certificates/");
+        result.PdfPath.ShouldNotBe("certificates/gone.pdf");
     }
 
-    /// <summary>A storage mock whose saved path is the folder plus the file name it was asked for.</summary>
-    private static IFileStorage StorageThatSavesUnderTheRequestedName()
+    /// <summary>A storage mock whose saved path is the folder plus a new GUID name, as the real storage names files.</summary>
+    private static IFileStorage StorageThatSavesUnderANewGuidName()
     {
         var storage = Substitute.For<IFileStorage>();
         storage.SaveFileAsync(Arg.Any<Stream>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long?>(), Arg.Any<CancellationToken>())
-            .Returns(call => $"{call.ArgAt<string>(2)}/{call.ArgAt<string>(1)}");
+            .Returns(call => $"{call.ArgAt<string>(2)}/{Guid.NewGuid():N}.pdf");
         return storage;
     }
 

@@ -137,7 +137,7 @@ public class AdminBlogController : ControllerBase
         }
 
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "blog/covers", cancellationToken: cancellationToken);
+        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "blog/covers", cancellationToken: cancellationToken);
 
         article.CoverImageUrl = path;
         article.UpdatedAt = DateTimeOffset.UtcNow;

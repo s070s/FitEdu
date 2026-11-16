@@ -12,7 +12,7 @@ public interface IProfileService
     Task<ServiceResult<ProfileDto>> UpdateProfileAsync(string userId, UpdateProfileRequest request);
 
     /// <summary>Deletes any existing avatar, saves the new file, and updates the user record.</summary>
-    Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string fileName);
+    Task<ServiceResult<AvatarUploadResultDto>> UploadAvatarAsync(string userId, Stream fileStream, string contentType);
     Task<(Stream Stream, string ContentType)?> GetAvatarAsync(string userId);
     Task<ServiceResult<bool>> ChangePasswordAsync(string userId, ChangePasswordRequest request);
 

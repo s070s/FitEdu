@@ -45,7 +45,7 @@ public class MediaAndAnalyticsIntegrationTests : IClassFixture<CustomWebAppFacto
         {
             var storage = scope.ServiceProvider.GetRequiredService<IFileStorage>();
             using var ms = new MemoryStream([0x89, 0x50, 0x4E, 0x47]); // "‰PNG" header bytes — content is irrelevant
-            relPath = await storage.SaveFileAsync(ms, "csp-probe.png", "blog/covers");
+            relPath = await storage.SaveFileAsync(ms, "image/png", "blog/covers");
         }
 
         try

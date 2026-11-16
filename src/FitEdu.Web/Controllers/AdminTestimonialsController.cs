@@ -126,7 +126,7 @@ public partial class AdminTestimonialsController : ControllerBase
             await _fileStorage.DeleteFileAsync(existing.AvatarPath, cancellationToken);
 
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.FileName, "testimonials/avatars", cancellationToken: cancellationToken);
+        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "testimonials/avatars", cancellationToken: cancellationToken);
 
         await _testimonials.SetAvatarPathAsync(id, path, cancellationToken);
 

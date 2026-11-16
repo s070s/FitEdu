@@ -65,7 +65,7 @@ public class ProfileController(IProfileService profileService, IAdminUserService
             return BadRequest(ErrorMessagesRes.OnlyImageFilesAllowed);
 
         using var stream = file.OpenReadStream();
-        var result = await profileService.UploadAvatarAsync(UserId, stream, file.FileName);
+        var result = await profileService.UploadAvatarAsync(UserId, stream, file.ContentType);
         return result.ToActionResult(this);
     }
 
