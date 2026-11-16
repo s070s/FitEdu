@@ -52,7 +52,7 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     }
 
     /// <summary>
-    /// Assign a role to a user.
+    /// Assign a role to a user; their current sessions end, so the next sign-in carries the new role.
     /// </summary>
     [HttpPost("users/{userId}/roles/{roleName}")]
     public async Task<ActionResult<string>> AssignRole(string userId, string roleName, CancellationToken cancellationToken = default)
@@ -62,7 +62,8 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     }
 
     /// <summary>
-    /// Remove a role from a user.
+    /// Remove a role from a user; their current sessions end at once. The Admin role cannot be removed from
+    /// the acting admin or from the last admin.
     /// </summary>
     [HttpDelete("users/{userId}/roles/{roleName}")]
     public async Task<ActionResult<string>> RemoveRole(string userId, string roleName, CancellationToken cancellationToken = default)
@@ -92,10 +93,12 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     }
 
     /// <summary>
-    /// Delete user (GDPR data deletion). Soft-delete recommended for production.
+    /// Delete a user for good (GDPR data deletion): the account, its chat and call history, and its profile photo.
+    /// Admin accounts cannot be deleted; a member who hosts a scheduled session is refused with 409.
     /// </summary>
     [HttpDelete("users/{userId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<string>> DeleteUser(string userId, CancellationToken cancellationToken = default)
     {
         var result = await adminUserService.DeleteUserAsync(userId, cancellationToken);
@@ -131,7 +134,8 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     }
 
     /// <summary>
-    /// Disable user account (lockout).
+    /// Disable a user account: it is signed out everywhere at once and cannot sign in until it is enabled again.
+    /// Admin accounts and the acting admin's own account cannot be disabled.
     /// </summary>
     [HttpPost("users/{userId}/disable")]
     public async Task<ActionResult<bool>> DisableUser(string userId, CancellationToken cancellationToken = default)
@@ -141,7 +145,7 @@ public class AdminController(IAdminUserService adminUserService) : ControllerBas
     }
 
     /// <summary>
-    /// Enable user account (remove lockout).
+    /// Enable a user account again (and clear any lock-out date).
     /// </summary>
     [HttpPost("users/{userId}/enable")]
     public async Task<ActionResult<bool>> EnableUser(string userId, CancellationToken cancellationToken = default)
