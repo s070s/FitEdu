@@ -335,6 +335,16 @@ public class AdminUsersPageTests : BunitContext
     }
 
     [Fact]
+    public void SetPasswordDialog_BothFieldsStopAtTheLongestPasswordTheApiTakes()
+    {
+        var page = OpenSetPasswordDialog();
+
+        var maximumLength = PasswordRules.MaximumLength.ToString(CultureInfo.InvariantCulture);
+        page.Find("#reset-pwd-new").GetAttribute("maxlength").ShouldBe(maximumLength);
+        page.Find("#reset-pwd-confirm").GetAttribute("maxlength").ShouldBe(maximumLength);
+    }
+
+    [Fact]
     public void SetPasswordDialog_ATooShortPassword_ShowsTheErrorAsAnAlertWithoutCallingTheApi()
     {
         var page = OpenSetPasswordDialog();
