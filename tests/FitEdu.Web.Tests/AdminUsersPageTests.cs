@@ -169,6 +169,65 @@ public class AdminUsersPageTests : BunitContext
     private const string SnapshotKey = "admin-users-snapshot";
 
     [Fact]
+    public void List_TryAgainSucceeding_ClearsTheErrorTheFailedLoadLeftBehind()
+    {
+        _users.GetUsersAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns((PagedResult<AdminUserDto>?)null);
+        var page = Render<AdminUsers>();
+        page.Find(".alert-danger");
+        ReturnsUsers(User("member-1", MemberEmail, true, "Student"));
+
+        page.Find("button.btn-cta").Click();
+
+        page.Find("tbody").TextContent.ShouldContain(MemberEmail);
+        page.FindAll(".alert").ShouldBeEmpty();
+    }
+
+    // ---- Enable, disable ---------------------------------------------------------------------------
+
+    private void MakeTheNextListLoadFail() =>
+        _users.GetUsersAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns((PagedResult<AdminUserDto>?)null);
+
+    [Fact]
+    public void Disable_Accepted_ReloadsTheListAndSaysSo()
+    {
+        _users.DisableUserAsync("member-1").Returns(true);
+        var page = RenderThreeUsers();
+
+        ClickRowButton(page.FindAll("tbody tr")[0], AdminRes.DisableUser);
+
+        _users.Received(1).DisableUserAsync("member-1");
+        page.Find(".alert-success").TextContent.ShouldContain(AdminRes.UserStatusToggled);
+    }
+
+    [Fact]
+    public void Disable_AcceptedButTheReloadFails_ShowsTheLoadErrorInsteadOfASuccessMessage()
+    {
+        _users.DisableUserAsync("member-1").Returns(true);
+        var page = RenderThreeUsers();
+        MakeTheNextListLoadFail();
+
+        ClickRowButton(page.FindAll("tbody tr")[0], AdminRes.DisableUser);
+
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.FindAll(".alert-success").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Delete_AcceptedButTheReloadFails_ShowsTheLoadErrorInsteadOfASuccessMessage()
+    {
+        _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Success);
+        var page = OpenDeleteConfirmation();
+        MakeTheNextListLoadFail();
+
+        ConfirmDelete(page);
+
+        page.Find(".alert-danger").TextContent.ShouldContain(ErrorMessagesRes.UnexpectedErrorTryAgain);
+        page.FindAll(".alert-success").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void List_ThePrerenderedFirstPageIsReusedInteractively_WithoutAskingTheApiAgain()
     {
         _persistentState.Persist(SnapshotKey, new AdminUsers.UsersSnapshot(1, 10, string.Empty, "email", "asc", OnePage(MemberEmail)));

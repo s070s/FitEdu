@@ -111,6 +111,7 @@ public partial class AdminUsers : IAsyncDisposable
         // Answers can arrive out of order (a second search typed while the first is still loading):
         // only the newest request may change the page.
         var sequence = ++_loadSequence;
+        var failureShown = _loadFailed;
         _loadFailed = false;
         try
         {
@@ -133,6 +134,9 @@ public partial class AdminUsers : IAsyncDisposable
             }
 
             pagedResult = loaded;
+            // Try again worked: the error the failed load left behind no longer applies.
+            if (failureShown)
+                message = string.Empty;
         }
         catch (Exception)
         {
@@ -293,9 +297,10 @@ public partial class AdminUsers : IAsyncDisposable
                 : await UserConsumer.DisableUserAsync(userId);
             if (success)
             {
-                await LoadUsers();
+                // Said before the reload, so a reload that fails replaces it with its own error.
                 message = AdminRes.UserStatusToggled;
                 messageType = "success";
+                await LoadUsers();
             }
             else
             {
@@ -330,10 +335,11 @@ public partial class AdminUsers : IAsyncDisposable
                 if (pagedResult?.Items.Count == 1 && currentPage > 1)
                     currentPage--;
 
-                await LoadUsers();
+                // Said before the reload, so a reload that fails replaces it with its own error.
                 message = AdminRes.UserDeleted;
                 messageType = "success";
                 _focusHeadingAfterRender = true;
+                await LoadUsers();
             }
             else
             {
