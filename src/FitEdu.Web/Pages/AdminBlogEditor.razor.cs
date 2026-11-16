@@ -4,7 +4,9 @@ using FitEdu.Shared.Resources.Messages;
 using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Shared.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
+using FitEdu.Web.Extensions;
 using System.Text.RegularExpressions;
 
 namespace FitEdu.Web.Pages;
@@ -90,22 +92,32 @@ public partial class AdminBlogEditor
     private async Task OnCoverFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
+        _error = null;
+
+        // The size is checked here because a file over the limit makes OpenReadStream throw, and an
+        // exception in a handler ends the circuit with the unsaved article.
+        if (file.Size > UploadLimits.MaxCoverImageBytes)
+        {
+            RejectCover(UploadSizeText.TooLarge(UploadLimits.MaxCoverImageBytes));
+            return;
+        }
 
         if (_isEditMode)
         {
             // In edit mode: upload immediately
             _isBusy = true;
-            _error = null;
             try
             {
                 var path = await BlogConsumer.UploadCoverImageAsync(Id!.Value, file);
                 if (path is not null)
                     _coverImageUrl = path;
                 else
-                {
-                    _error = AdminRes.CoverImageUploadFailed;
-                    _coverPicker?.ClearFileName();
-                }
+                    RejectCover(AdminRes.CoverImageUploadFailed);
+            }
+            catch (IOException)
+            {
+                // The browser file could not be read (it changed or went away after it was chosen).
+                RejectCover(AdminRes.CoverImageUploadFailed);
             }
             finally
             {
@@ -118,6 +130,14 @@ public partial class AdminBlogEditor
             _pendingCoverFile = file;
             _coverImageUrl = file.Name; // Show filename as placeholder
         }
+    }
+
+    /// <summary>Shows why the cover was not taken; the picker stops naming the file it did not keep.</summary>
+    private void RejectCover(string reason)
+    {
+        _error = reason;
+        _pendingCoverFile = null;
+        _coverPicker?.ClearFileName();
     }
 
     private void RemoveCover()

@@ -1,10 +1,14 @@
 using Bunit;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
 using Shouldly;
 using Xunit;
@@ -42,6 +46,39 @@ public class AdminTestimonialEditorTests : BunitContext
 
     private static void ClickSave(IRenderedComponent<AdminTestimonialEditor> page) =>
         page.FindAll("button").First(button => button.TextContent.Trim() == AdminRes.Save).Click();
+
+    private IRenderedComponent<AdminTestimonialEditor> RenderEditMode()
+    {
+        var id = Guid.NewGuid();
+        _testimonialConsumer.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(Testimonial(id));
+        return Render<AdminTestimonialEditor>(parameters => parameters.Add(p => p.Id, id));
+    }
+
+    [Fact]
+    public void Photo_LargerThanTheLimit_ShowsTheTooLargeMessageAndUploadsNothing()
+    {
+        var page = RenderEditMode();
+        var sixMegabytes = InputFileContent.CreateFromBinary(new byte[6 * 1024 * 1024], "big.jpg");
+
+        Should.NotThrow(() => page.FindComponent<InputFile>().UploadFiles(sixMegabytes));
+
+        page.Markup.ShouldContain(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
+        page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+        _testimonialConsumer.DidNotReceive().UploadAvatarAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void Photo_ThatCannotBeRead_ShowsTheUploadFailedMessageInsteadOfThrowing()
+    {
+        _testimonialConsumer.UploadAvatarAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new IOException("The file changed while it was read."));
+        var page = RenderEditMode();
+
+        Should.NotThrow(() => page.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromText("image", "me.jpg")));
+
+        page.Markup.ShouldContain(AdminRes.AvatarUploadFailed);
+        page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+    }
 
     [Fact]
     public void ExistingTestimonial_LoadsTheGreekRoleAndQuoteIntoTheirInputs()

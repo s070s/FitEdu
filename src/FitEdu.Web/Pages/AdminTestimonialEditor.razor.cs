@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Pages;
@@ -71,9 +72,17 @@ public partial class AdminTestimonialEditor
     private async Task OnAvatarFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
+        _error = null;
+
+        // The size is checked here because a file over the limit makes OpenReadStream throw, and an
+        // exception in a handler ends the circuit with the unsaved form.
+        if (file.Size > UploadLimits.MaxImageBytes)
+        {
+            RejectAvatar(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
+            return;
+        }
 
         _isBusy = true;
-        _error = null;
         try
         {
             var path = await TestimonialConsumer.UploadAvatarAsync(Id!.Value, file);
@@ -84,14 +93,25 @@ public partial class AdminTestimonialEditor
             }
             else
             {
-                _error = AdminRes.AvatarUploadFailed;
-                _avatarPicker?.ClearFileName();
+                RejectAvatar(AdminRes.AvatarUploadFailed);
             }
+        }
+        catch (IOException)
+        {
+            // The browser file could not be read (it changed or went away after it was chosen).
+            RejectAvatar(AdminRes.AvatarUploadFailed);
         }
         finally
         {
             _isBusy = false;
         }
+    }
+
+    /// <summary>Shows why the photo was not taken; the picker stops naming the file it did not keep.</summary>
+    private void RejectAvatar(string reason)
+    {
+        _error = reason;
+        _avatarPicker?.ClearFileName();
     }
 
     private async Task RemoveAvatar()

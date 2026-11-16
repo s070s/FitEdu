@@ -997,4 +997,7 @@ Option 3</value>
   <data name="EditorPlaceholder" xml:space="preserve">
     <value>Write the content here…</value>
   </data>
+  <data name="FileTooLargeFormat" xml:space="preserve">
+    <value>The file is too large (max {0} MB).</value>
+  </data>
 </root>

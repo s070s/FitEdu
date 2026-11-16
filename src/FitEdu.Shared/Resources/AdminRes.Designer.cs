@@ -2749,5 +2749,14 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("EditorPlaceholder", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The file is too large (max {0} MB)..
+        /// </summary>
+        public static string FileTooLargeFormat {
+            get {
+                return ResourceManager.GetString("FileTooLargeFormat", resourceCulture);
+            }
+        }
     }
 }

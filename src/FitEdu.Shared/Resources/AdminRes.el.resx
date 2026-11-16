@@ -1016,4 +1016,7 @@
   <data name="EditorPlaceholder" xml:space="preserve">
     <value>Γράψε το περιεχόμενο εδώ…</value>
   </data>
+  <data name="FileTooLargeFormat" xml:space="preserve">
+    <value>Το αρχείο είναι πολύ μεγάλο (έως {0} MB).</value>
+  </data>
 </root>
