@@ -402,6 +402,12 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 | `POST` | `api/admin/users/{userId}/set-password` | Directly set password (not for Admin accounts); the member's open live connections are closed, and they get a notice email in their stored language, with no password and no link | Admin |
 | `POST` | `api/admin/users/{userId}/impersonate` | Generate temporary JWT as that user; the target must be an enabled Student, and the `auth` rate limit applies | Admin |
 
+### Admin — Audit log — `api/admin/audit`
+
+| Method | Route | Description | Auth |
+|--------|-------|-------------|------|
+| `GET` | `api/admin/audit` | The admin audit log, newest first (paged; `?memberId=` limits it to the actions done to one member, also after the account is deleted); read-only, see [Admin audit log](#admin-audit-log) | Admin |
+
 ### Admin — Courses — `api/admin/courses`
 
 | Method | Route | Description | Auth |
@@ -696,6 +702,15 @@ An in-app notification inbox with a **bell badge** and live push over SignalR (`
 
 ---
 
+## Admin audit log
+
+Every admin action on a member account is recorded in the `AdminAuditEntries` table: disable, enable, role added, role removed, password set, account deleted, and the start of an impersonation ("log in as user" on the admin users page, or `POST api/admin/users/{userId}/impersonate`).
+
+- **What a row holds:** its id, the acting admin's id, the member's id, the action, a short detail (the role name for a role change, otherwise empty) and the time in UTC. Never a password, a token, an email or any free text about a person.
+- **Written with the action:** the row is saved in the same database save as the action it records, so there is no action without its row and no row for an action that failed. A member erasing their own account (`DELETE api/profile`) is not an admin action and has no row. Not recorded: creating a role, and the forced password-reset email (it changes nothing on the account until the member follows the link).
+- **Retention:** the two user ids are plain columns, not foreign keys, so a row outlives the member and the admin it names and never blocks or cascades an account deletion: once an account is deleted its rows keep only its id. The app never purges rows, and nothing in it edits or deletes one (the only endpoint is a GET).
+- **Reading it:** admins read the log on `/admin/audit` (admin menu, "Audit log"): newest first, paged, in English or Greek, with the time in the site time zone, or through `GET api/admin/audit`. Both show an account's email only while the account exists.
+
 ## AI Assistant
 
 A grounded, bilingual (EN/EL) AI helper available to every authenticated user, regardless of subscription tier. It answers site questions from a background index of published courses (with every lesson in them, as students see them), assessments, and blog articles, and — as a **tool-calling agent** — can look up the signed-in user's own enrollments, lesson progress, assessment results and subscription, plus search and recommend courses and search the exercise library. Everything runs **locally** via [Ollama](https://ollama.com) — no cloud API, no per-token cost, no data leaves the machine.
@@ -771,6 +786,7 @@ You can install or start Ollama **after** the app is already running — it keep
 | XSS prevention | All rich-text inputs sanitised with Ganss.Xss (`IHtmlSanitizer`) |
 | Rate limiting | `"auth"` policy (per caller IP, an IPv6 caller as its whole /64 network, 10 requests a minute) on register / login / refresh / confirm-email / forgot-password / resend-confirmation / reset-password and the admin impersonation endpoint; the sign-in, sign-up and forgot-password pages run inside the Blazor circuit, past that limiter, so `AuthAttemptLimiter` counts their attempts per email (10 a minute), then per client address (an IPv6 client as its /64 network; 20 a minute; the address is read once when the circuit opens, and clients without a known or a loopback address share one "unknown" budget), then for everyone together (1000 a minute, a flood-only cap); `"assistant"` and `"sensitive"` policies (per-user) on the AI chat endpoint and on state-changing account actions (password change, avatar upload, checkout, assessment submission, account delete/export); `"public"` policy (per caller IP, 120 requests a minute) on the anonymous reads (exercises, landing, the course list/detail/reviews, categories, paths, blog, testimonials, search, subscription plans, certificate verification, `/sitemap.xml`); not limited on purpose: the media files (blog covers, testimonial avatars), the lesson assets and the site background image (the browser fetches them with every page), the signed payment webhook, the health probes, and `/auth/complete`, `/auth/signout` and `/auth/exit-impersonation`. The app's own calls are exempt from `"auth"` and `"public"`, because every guest's Blazor page reaches the API through them: they are recognised by a loopback address or by the `X-FitEdu-Self-Call` secret header that the app's own HttpClients send to its own base address only (outside Development that address is the public one, so those calls arrive from an outside address); behind a reverse proxy set `ForwardedHeaders:KnownProxies` so each visitor counts as their own address |
 | Anonymous reads | Open without signing in: `GET api/exercises/*`, `api/landing`, `api/courses`, `api/courses/{id}`, `api/courses/{id}/reviews`, `api/categories`, `api/paths/*`, `api/blog/*`, `api/testimonials`, `api/search`, `api/subscriptions/plans` and `api/certificates/verify/{id}`. A guest gets no enrolment, progress or own review, and never lesson content; an unpublished programme shows no reviews or rating. The two that every guest page asks for, `api/landing` (one entry per language) and `api/exercises/facets`, are served from a 60-second in-memory cache, so a burst of visitors costs one set of queries a minute |
+| Admin audit log | Disable, enable, role changes, set-password, account deletion and the start of an impersonation each write one append-only `AdminAuditEntries` row in the save of the action itself (ids, action, UTC time; no passwords, tokens or free text); rows survive the member's deletion, admins read them on `/admin/audit`, and the app has no way to edit or delete one (see [Admin audit log](#admin-audit-log)) |
 | Sign-in tickets and impersonation | The page sign-in hands `/auth/complete` a signed ticket that is valid for 5 minutes: a sign-in link that was already opened cannot be opened again (replay), while a still-unopened link can be forwarded within its 5 minutes. A disabled account gets no session. Only an Admin can start an impersonation, on an enabled Student; it lasts for the browser session. `/auth/exit-impersonation` signs the admin back in only when the session's `impersonatedBy` claim matches the signed admin-backup cookie (`SameSite=Strict`, session-only) and that admin is still an enabled Admin |
 | Login return address | `/login?returnUrl=` only follows a path on this site (starts with `/`, not `//` or `/\`); anything else goes to the home page, so the link cannot redirect to another site |
 | HSTS | Enabled in Production, `max-age` one year (`SecurityHeadersMiddlewareExtensions.HstsMaxAge`), for this host only: no `includeSubDomains`, no `preload` (owner decision); skipped in Development |
