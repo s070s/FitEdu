@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitEdu.Shared.Resources.Messages;
 
 namespace FitEdu.Application.DTOs;
 
@@ -17,7 +18,13 @@ public record SaveBlogArticleRequest(
     [MaxLength(500)] string? SummaryEl,
     [Required] string ContentEn,
     string? ContentEl,
-    [MaxLength(500)] string? CoverImageUrl,
+    // The site's content policy only loads images from this site (img-src 'self'), so a cover must be a file the site
+    // has: an uploaded one ("blog/covers/x.png") or one shipped in wwwroot ("/images/blog/x.webp"). A full URL, or a
+    // protocol-relative one ("//host/x.png"), would be blocked by the browser and never show (P05-10).
+    [MaxLength(500)]
+    [RegularExpression(@"^(?!//)(?![\s\S]*://)[\s\S]*$",
+        ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.CoverImageMustBeSiteFile))]
+    string? CoverImageUrl,
     [Required, MaxLength(100)] string AuthorName,
     string[]? Tags,
     bool IsPublished

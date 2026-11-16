@@ -260,6 +260,9 @@ public partial class AdminCourseService(
 
     public async Task<ServiceResult<AdminLessonDto>> CreateLessonAsync(SaveLessonRequest request, string userId, CancellationToken cancellationToken = default)
     {
+        if (!IsAcceptableVideoUrl(request.VideoUrl, currentVideoPath: null))
+            return ServiceResult<AdminLessonDto>.BadRequest(error: ErrorMessagesRes.VideoUrlMustBeHttp);
+
         var exercisesBySlug = await LoadRequestedExercisesAsync(request.Exercises, cancellationToken);
         var unknownSlug = FindUnknownSlug(request.Exercises, exercisesBySlug);
         if (unknownSlug is not null)
@@ -297,6 +300,9 @@ public partial class AdminCourseService(
         if (lesson is null)
             return ServiceResult<AdminLessonDto>.NotFound(error: ErrorMessagesRes.LessonNotFound);
 
+        if (!IsAcceptableVideoUrl(request.VideoUrl, lesson.VideoPath))
+            return ServiceResult<AdminLessonDto>.BadRequest(error: ErrorMessagesRes.VideoUrlMustBeHttp);
+
         var exercisesBySlug = await LoadRequestedExercisesAsync(request.Exercises, cancellationToken);
         var unknownSlug = FindUnknownSlug(request.Exercises, exercisesBySlug);
         if (unknownSlug is not null)
@@ -326,6 +332,18 @@ public partial class AdminCourseService(
 
         return ServiceResult<AdminLessonDto>.Ok(lesson.ToAdminDto());
     }
+
+    /// <summary>
+    /// The video link a lesson may be given is empty or an http(s) URL (P05-5): a stored upload path only ever comes from
+    /// the upload endpoint, so free text (an absolute or "../" path) can never name a file outside the uploads folder.
+    /// The lesson's own current value is accepted unchanged, because the lesson editor sends back what it loaded, which is
+    /// the stored path after a video upload.
+    /// </summary>
+    private static bool IsAcceptableVideoUrl(string? videoUrl, string? currentVideoPath) =>
+        string.IsNullOrWhiteSpace(videoUrl)
+        || videoUrl == currentVideoPath
+        || (Uri.TryCreate(videoUrl, UriKind.Absolute, out var uri)
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps));
 
     private string? SanitizeOptional(string? html) => html is null ? null : sanitizer.Sanitize(html);
 

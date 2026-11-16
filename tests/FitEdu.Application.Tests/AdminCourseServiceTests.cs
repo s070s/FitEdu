@@ -800,4 +800,71 @@ public class AdminCourseServiceTests
         dto.ContentEn!.ShouldNotContain("<script");
         dto.VideoPath.ShouldBe("lessons/video/intro.mp4");
     }
+
+    // ── Video link (P05-5): free text must never become a path the storage reads or deletes ──
+
+    [Theory]
+    [InlineData("/etc/passwd")]
+    [InlineData("C:/Windows/win.ini")]
+    [InlineData("../secret.mp4")]
+    [InlineData("lessons/video/someone-elses.mp4")]
+    [InlineData("javascript:alert(1)")]
+    [InlineData("ftp://example.com/clip.mp4")]
+    public async Task CreateLesson_VideoUrlThatIsNotHttp_Returns400AndSavesNothing(string videoUrl)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        var result = await NewService(db).CreateLessonAsync(LessonRequest(Guid.NewGuid()) with { VideoUrl = videoUrl }, Admin);
+
+        result.StatusCode.ShouldBe(400);
+        result.ErrorMessage.ShouldBe(ErrorMessagesRes.VideoUrlMustBeHttp);
+        (await db.Lessons.CountAsync()).ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData("https://www.youtube.com/embed/abc123")]
+    [InlineData("http://example.com/clip.mp4")]
+    [InlineData("")]
+    [InlineData(null)]
+    public async Task CreateLesson_VideoUrlHttpOrEmpty_IsCreated(string? videoUrl)
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+
+        var result = await NewService(db).CreateLessonAsync(LessonRequest(Guid.NewGuid()) with { VideoUrl = videoUrl }, Admin);
+
+        result.StatusCode.ShouldBe(201);
+    }
+
+    [Fact]
+    public async Task UpdateLesson_SendingBackTheStoredUploadPath_Succeeds()
+    {
+        // The lesson editor loads the stored path of an uploaded video into its link box and sends it back on save.
+        await using var db = DbContextFactory.CreateInMemory();
+        var lesson = NewLesson();
+        lesson.VideoPath = "lessons/video/0123456789abcdef0123456789abcdef.mp4";
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).UpdateLessonAsync(
+            lesson.Id, LessonRequest(lesson.ModuleId) with { VideoUrl = lesson.VideoPath }, Admin);
+
+        result.StatusCode.ShouldBe(200);
+        result.Value!.VideoPath.ShouldBe("lessons/video/0123456789abcdef0123456789abcdef.mp4");
+    }
+
+    [Fact]
+    public async Task UpdateLesson_ChangingTheVideoToAFreeTextPath_Returns400AndKeepsTheOldVideo()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var lesson = NewLesson();
+        lesson.VideoPath = "lessons/video/intro.mp4";
+        db.Lessons.Add(lesson);
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).UpdateLessonAsync(
+            lesson.Id, LessonRequest(lesson.ModuleId) with { VideoUrl = "C:/Windows/win.ini" }, Admin);
+
+        result.StatusCode.ShouldBe(400);
+        (await db.Lessons.AsNoTracking().SingleAsync(l => l.Id == lesson.Id)).VideoPath.ShouldBe("lessons/video/intro.mp4");
+    }
 }
