@@ -18,7 +18,11 @@ public partial class AdminBlogEditor
     [Inject] private IAdminBlogConsumer BlogConsumer { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-    private bool _isEditMode => Id.HasValue;
+    // The page edits an article when the route names one, and also right after it created one whose
+    // cover upload failed: the article exists, so a second save updates it instead of creating another.
+    private Guid? _createdId;
+    private Guid? _articleId => Id ?? _createdId;
+    private bool _isEditMode => _articleId.HasValue;
     private bool _isBusy;
     private string? _error;
     private bool _slugManuallyEdited;
@@ -53,9 +57,9 @@ public partial class AdminBlogEditor
 
     protected override async Task OnParametersSetAsync()
     {
-        if (_isEditMode)
+        if (Id.HasValue)
         {
-            var article = await BlogConsumer.GetArticleAsync(Id!.Value);
+            var article = await BlogConsumer.GetArticleAsync(Id.Value);
             if (article is not null)
             {
                 _titleEn = article.TitleEn;
@@ -108,16 +112,11 @@ public partial class AdminBlogEditor
             _isBusy = true;
             try
             {
-                var path = await BlogConsumer.UploadCoverImageAsync(Id!.Value, file);
+                var path = await UploadCoverOrNullAsync(_articleId!.Value, file);
                 if (path is not null)
                     _coverImageUrl = path;
                 else
                     RejectCover(AdminRes.CoverImageUploadFailed);
-            }
-            catch (IOException)
-            {
-                // The browser file could not be read (it changed or went away after it was chosen).
-                RejectCover(AdminRes.CoverImageUploadFailed);
             }
             finally
             {
@@ -126,9 +125,23 @@ public partial class AdminBlogEditor
         }
         else
         {
-            // In create mode: hold file, upload after article is saved
+            // In create mode: hold the file and upload it after the article is saved. It is not put in
+            // _coverImageUrl: that holds a stored path, and a file name would show a broken preview.
             _pendingCoverFile = file;
-            _coverImageUrl = file.Name; // Show filename as placeholder
+        }
+    }
+
+    /// <summary>The stored path of the uploaded cover, or null when the upload failed or the browser file could not be read.</summary>
+    private async Task<string?> UploadCoverOrNullAsync(Guid articleId, IBrowserFile file)
+    {
+        try
+        {
+            return await BlogConsumer.UploadCoverImageAsync(articleId, file);
+        }
+        catch (IOException)
+        {
+            // The file changed or went away after it was chosen.
+            return null;
         }
     }
 
@@ -162,11 +175,6 @@ public partial class AdminBlogEditor
                 ? null
                 : _tagsInput.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            // For new articles with a pending file, don't send the filename as the URL
-            var coverUrl = _pendingCoverFile is not null && !_isEditMode
-                ? null
-                : _coverImageUrl;
-
             var request = new SaveBlogArticleRequest(
                 TitleEn: _titleEn,
                 TitleEl: string.IsNullOrWhiteSpace(_titleEl) ? null : _titleEl,
@@ -175,17 +183,18 @@ public partial class AdminBlogEditor
                 SummaryEl: string.IsNullOrWhiteSpace(_summaryEl) ? null : _summaryEl,
                 ContentEn: contentEn ?? string.Empty,
                 ContentEl: string.IsNullOrWhiteSpace(contentEl) ? null : contentEl,
-                CoverImageUrl: string.IsNullOrWhiteSpace(coverUrl) ? null : coverUrl,
+                CoverImageUrl: string.IsNullOrWhiteSpace(_coverImageUrl) ? null : _coverImageUrl,
                 AuthorName: _authorName,
                 Tags: tags,
                 IsPublished: _isPublished);
 
             AdminBlogArticleDto? result;
+            var isNewArticle = !_isEditMode;
 
-            if (_isEditMode)
-                result = await BlogConsumer.UpdateArticleAsync(Id!.Value, request);
-            else
+            if (isNewArticle)
                 result = await BlogConsumer.CreateArticleAsync(request);
+            else
+                result = await BlogConsumer.UpdateArticleAsync(_articleId!.Value, request);
 
             if (result is null)
             {
@@ -193,10 +202,18 @@ public partial class AdminBlogEditor
                 return;
             }
 
-            // Upload pending cover image for newly created articles
-            if (_pendingCoverFile is not null && !_isEditMode)
+            // Upload the cover chosen before the article existed. The article is saved either way; when
+            // the cover fails the page stays, now editing that article, so the admin sees why and can retry.
+            if (isNewArticle && _pendingCoverFile is not null)
             {
-                await BlogConsumer.UploadCoverImageAsync(result.Id, _pendingCoverFile);
+                _createdId = result.Id;
+                var coverPath = await UploadCoverOrNullAsync(result.Id, _pendingCoverFile);
+                if (coverPath is null)
+                {
+                    _isDirty = false;
+                    RejectCover(AdminRes.CoverImageUploadFailed);
+                    return;
+                }
             }
 
             _isDirty = false;

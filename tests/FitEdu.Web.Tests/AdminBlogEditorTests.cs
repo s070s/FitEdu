@@ -44,6 +44,108 @@ public class AdminBlogEditorTests : BunitContext
     private static InputFileContent File(string name, long sizeInBytes) =>
         InputFileContent.CreateFromBinary(new byte[sizeInBytes], name);
 
+    private static void ClickSave(IRenderedComponent<AdminBlogEditor> page) =>
+        page.FindAll(".form-actions button").First(button => button.TextContent.Trim() == AdminRes.Save).Click();
+
+    private static void FillRequiredFields(IRenderedComponent<AdminBlogEditor> page)
+    {
+        page.Find("#blog-title-en").Input("Beginner strength guide");
+        page.Find("#blog-summary-en").Change("A short summary.");
+        page.Find("#blog-author").Change("Coach");
+    }
+
+    [Fact]
+    public void EditMode_StoredCover_PreviewsThroughTheMediaRoute()
+    {
+        _blogConsumer.GetArticleAsync(_articleId, Arg.Any<CancellationToken>()).Returns(Article("blog/covers/photo.jpg"));
+
+        var page = RenderEditMode();
+
+        page.Find("img.cover-preview").GetAttribute("src").ShouldBe("/api/media/blog/covers/photo.jpg");
+    }
+
+    [Fact]
+    public void EditMode_AfterAnUpload_PreviewsTheNewPathThroughTheMediaRoute()
+    {
+        _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())
+            .Returns("blog/covers/new.jpg");
+        var page = RenderEditMode();
+
+        page.FindComponent<InputFile>().UploadFiles(File("new.jpg", 1024));
+
+        page.Find("img.cover-preview").GetAttribute("src").ShouldBe("/api/media/blog/covers/new.jpg");
+    }
+
+    [Fact]
+    public void CreateMode_PendingCover_ShowsItsNameWithoutABrokenPreview()
+    {
+        var page = Render<AdminBlogEditor>();
+
+        page.FindComponent<InputFile>().UploadFiles(File("holiday.jpg", 1024));
+
+        page.FindAll("img.cover-preview").ShouldBeEmpty();
+        page.Find(".cover-preview-row").TextContent.ShouldContain("holiday.jpg");
+        page.Find(".cover-preview-row button").TextContent.ShouldBe(AdminRes.Remove);
+    }
+
+    [Fact]
+    public void CreateMode_PendingCover_IsNotSentAsTheCoverUrlWhenSaving()
+    {
+        SaveBlogArticleRequest? sent = null;
+        _blogConsumer.CreateArticleAsync(Arg.Do<SaveBlogArticleRequest>(request => sent = request), Arg.Any<CancellationToken>())
+            .Returns(Article(null));
+        _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())
+            .Returns("blog/covers/holiday.jpg");
+        var page = Render<AdminBlogEditor>();
+        FillRequiredFields(page);
+        page.FindComponent<InputFile>().UploadFiles(File("holiday.jpg", 1024));
+
+        ClickSave(page);
+
+        sent.ShouldNotBeNull();
+        sent.CoverImageUrl.ShouldBeNull();
+        _blogConsumer.Received(1).UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CreateMode_CoverUploadReturnsNothing_ShowsTheUploadFailedMessageAndStaysToRetry()
+    {
+        _blogConsumer.CreateArticleAsync(Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>()).Returns(Article(null));
+        _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())
+            .Returns((string?)null);
+        var navigation = Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
+        var page = Render<AdminBlogEditor>();
+        FillRequiredFields(page);
+        page.FindComponent<InputFile>().UploadFiles(File("holiday.jpg", 1024));
+
+        ClickSave(page);
+
+        page.Markup.ShouldContain(AdminRes.CoverImageUploadFailed);
+        new Uri(navigation.Uri).AbsolutePath.ShouldNotBe("/admin/blog");
+        page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+
+        // The article exists now: saving again updates it instead of creating a second one.
+        ClickSave(page);
+
+        _blogConsumer.Received(1).CreateArticleAsync(Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>());
+        _blogConsumer.Received(1).UpdateArticleAsync(_articleId, Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CreateMode_CoverThatCannotBeReadAfterSaving_ShowsTheUploadFailedMessage()
+    {
+        _blogConsumer.CreateArticleAsync(Arg.Any<SaveBlogArticleRequest>(), Arg.Any<CancellationToken>()).Returns(Article(null));
+        _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new IOException("The file changed while it was read."));
+        var page = Render<AdminBlogEditor>();
+        FillRequiredFields(page);
+        page.FindComponent<InputFile>().UploadFiles(File("holiday.jpg", 1024));
+
+        ClickSave(page);
+
+        page.Markup.ShouldContain(AdminRes.CoverImageUploadFailed);
+    }
+
     [Fact]
     public void EditMode_CoverLargerThanTheLimit_ShowsTheTooLargeMessageAndUploadsNothing()
     {

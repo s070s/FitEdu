@@ -86,7 +86,15 @@
             @if (!string.IsNullOrEmpty(_coverImageUrl))
             {
                 <div class="cover-preview-row">
-                    <img src="@_coverImageUrl" alt="@AdminRes.CoverPreviewAlt" class="cover-preview" width="320" height="180" />
+                    <img src="@MediaUrls.Resolve(_coverImageUrl)" alt="@AdminRes.CoverPreviewAlt" class="cover-preview" width="320" height="180" />
+                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="RemoveCover">@AdminRes.Remove</button>
+                </div>
+            }
+            else if (_pendingCoverFile is not null)
+            {
+                @* A file chosen before the article exists is uploaded on save: only its name can show. *@
+                <div class="cover-preview-row">
+                    <span class="cover-pending-name">@_pendingCoverFile.Name</span>
                     <button type="button" class="btn btn-sm btn-outline-danger" @onclick="RemoveCover">@AdminRes.Remove</button>
                 </div>
             }
