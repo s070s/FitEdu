@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -24,21 +25,23 @@ namespace FitEdu.Application.Tests;
 public class AdminUserServiceTests
 {
     private static AdminUserService NewService(
-        ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null)
+        ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null,
+        IFileStorage? fileStorage = null, ILogger<AdminUserService>? logger = null, string actingAdminId = "admin-actor")
     {
         var roleManager = Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
 
         var currentUser = Substitute.For<ICurrentUserAccessor>();
-        currentUser.UserId.Returns("admin-actor");
+        currentUser.UserId.Returns(actingAdminId);
 
         return new AdminUserService(
             userManager,
             roleManager,
             tokenService ?? Substitute.For<ITokenService>(),
-            NullLogger<AdminUserService>.Instance,
+            logger ?? NullLogger<AdminUserService>.Instance,
             db,
             emailService ?? Substitute.For<IEmailService>(),
+            fileStorage ?? Substitute.For<IFileStorage>(),
             currentUser,
             TimeProvider.System,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
@@ -148,6 +151,103 @@ public class AdminUserServiceTests
 
         result.IsSuccess.ShouldBeTrue();
         (await db.Users.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task DeleteUser_ByAnAdmin_LogsTheAdminAndTheDeletedUser()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("victim"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var log = new RecordingLogger<AdminUserService>();
+
+        await NewService(db, UserManagerOver(db), logger: log).DeleteUserAsync("victim");
+
+        log.Information.ShouldContain(line => line.Contains("Admin admin-actor deleted user victim"));
+    }
+
+    [Fact]
+    public async Task DeleteUser_OwnAccount_LogsASelfErasureNotAnAdminAction()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var log = new RecordingLogger<AdminUserService>();
+
+        await NewService(db, UserManagerOver(db), logger: log, actingAdminId: "member").DeleteUserAsync("member");
+
+        log.Information.ShouldContain(line => line.Contains("User member deleted their own account"));
+        log.Information.ShouldNotContain(line => line.Contains("Admin member"));
+    }
+
+    [Fact]
+    public async Task DeleteUser_WithAnAvatar_DeletesTheFileOnceTheUserIsGone()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("with-avatar");
+        member.AvatarPath = "avatars/me_0123.png";
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var fileStorage = Substitute.For<IFileStorage>();
+
+        var result = await NewService(db, UserManagerOver(db), fileStorage: fileStorage).DeleteUserAsync("with-avatar");
+
+        result.IsSuccess.ShouldBeTrue();
+        await fileStorage.Received(1).DeleteFileAsync("avatars/me_0123.png", Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task DeleteUser_WithoutAnAvatar_TouchesNoFile()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("plain"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var fileStorage = Substitute.For<IFileStorage>();
+
+        await NewService(db, UserManagerOver(db), fileStorage: fileStorage).DeleteUserAsync("plain");
+
+        await fileStorage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task DeleteUser_FailedDelete_KeepsTheAvatarFile()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("blocked");
+        member.AvatarPath = "avatars/me_0123.png";
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).ThrowsAsync(new DbUpdateException("FK violation"));
+        var fileStorage = Substitute.For<IFileStorage>();
+
+        await NewService(db, userManager, fileStorage: fileStorage).DeleteUserAsync("blocked");
+
+        await fileStorage.DidNotReceive().DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task DeleteUser_AvatarFileCannotBeRemoved_StillReportsTheDeletion()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("locked-file");
+        member.AvatarPath = "avatars/me_0123.png";
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var fileStorage = Substitute.For<IFileStorage>();
+        fileStorage.DeleteFileAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).ThrowsAsync(new IOException("in use"));
+        var log = new RecordingLogger<AdminUserService>();
+
+        var result = await NewService(db, UserManagerOver(db), fileStorage: fileStorage, logger: log).DeleteUserAsync("locked-file");
+
+        result.IsSuccess.ShouldBeTrue();
+        log.Warnings.ShouldContain(line => line.Contains("locked-file"));
     }
 
     [Fact]

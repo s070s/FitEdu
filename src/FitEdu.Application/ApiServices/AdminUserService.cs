@@ -22,6 +22,7 @@ public partial class AdminUserService(
     ILogger<AdminUserService> logger,
     IApplicationDbContext context,
     IEmailService emailService,
+    IFileStorage fileStorage,
     ICurrentUserAccessor currentUser,
     TimeProvider timeProvider,
     IOptions<AppOptions> appOptions) : IAdminUserService
@@ -206,6 +207,7 @@ public partial class AdminUserService(
         // this scoped DbContext, so its SaveChanges flushes the cleanup and the user row
         // in a single transaction. Remaining user data (subscriptions, tokens, submissions,
         // lesson completions) is removed by the database cascades.
+        var avatarPath = user.AvatarPath;
         var conversations = await context.ChatConversations
             .Where(c => c.CreatorId == userId || c.ParticipantId == userId)
             .ToListAsync(cancellationToken);
@@ -256,8 +258,30 @@ public partial class AdminUserService(
             return ServiceResult<string>.Conflict(error: "User could not be deleted because other data still references the account.");
         }
 
-        LogUserDeleted(logger, ActingAdmin, userId);
+        // The account is gone, so its profile photo goes too: a file kept on disk would outlive the erasure.
+        if (!string.IsNullOrEmpty(avatarPath))
+            await DeleteAvatarFileAsync(avatarPath, userId, cancellationToken);
+
+        // A member erasing their own account (ProfileController) is not an admin action in the log.
+        if (userId == ActingAdmin)
+            LogAccountErasedByOwner(logger, userId);
+        else
+            LogUserDeleted(logger, ActingAdmin, userId);
+
         return ServiceResult<string>.Ok("User deleted.");
+    }
+
+    // The deletion has already happened here, so a file that cannot be removed is logged, not reported as a failure.
+    private async Task DeleteAvatarFileAsync(string avatarPath, string userId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await fileStorage.DeleteFileAsync(avatarPath, cancellationToken);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            LogAvatarFileNotDeleted(logger, ex, userId);
+        }
     }
 
     public async Task<IEnumerable<AdminUserSearchResultDto>> SearchUsersAsync(string query, CancellationToken cancellationToken = default)
@@ -435,6 +459,12 @@ public partial class AdminUserService(
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} deleted user {UserId} and associated chat/call history")]
     private static partial void LogUserDeleted(ILogger logger, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} deleted their own account and associated chat/call history")]
+    private static partial void LogAccountErasedByOwner(ILogger logger, string userId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The profile photo of deleted user {UserId} could not be removed from storage")]
+    private static partial void LogAvatarFileNotDeleted(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} triggered forced password reset for user {UserId}.")]
     private static partial void LogForcedPasswordResetTriggered(ILogger logger, string adminId, string userId);
