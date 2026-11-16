@@ -49,6 +49,7 @@ Every English and Greek string in FitEdu follows this file: resx resources, seed
 | Chat | chat / messages | συνομιλίες |
 | Pricing page | plans and pricing | πλάνα και τιμές |
 | Streak | streak | σερί |
+| Sort a list (admin) | sort by, ascending, descending | ταξινόμηση κατά, αύξουσα, φθίνουσα |
 | AI assistant | FitEdu Coach | Προπονητής FitEdu (in body text: ο προπονητής AI) |
 | Impersonation (admin) | log in as user / stop impersonating | σύνδεση ως χρήστης / τέλος σύνδεσης ως χρήστης |
 | Member vs account | member (user only in admin account management) | μέλος (χρήστης only in admin account management) |

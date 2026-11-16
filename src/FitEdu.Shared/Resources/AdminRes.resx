@@ -278,6 +278,15 @@
 	<data name="ColActions" xml:space="preserve">
 		<value>Actions</value>
 	</data>
+	<data name="SortBy" xml:space="preserve">
+		<value>Sort by</value>
+	</data>
+	<data name="SortAscending" xml:space="preserve">
+		<value>ascending</value>
+	</data>
+	<data name="SortDescending" xml:space="preserve">
+		<value>descending</value>
+	</data>
 	<data name="StatusPublished" xml:space="preserve">
 		<value>Published</value>
 	</data>

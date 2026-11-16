@@ -98,6 +98,16 @@ public class AdminLayoutCssTests
         MediaBodies(css, BelowExtraLargeBreakpoint).ShouldHaveSingleItem().ShouldContain("min-height: var(--tap-min);");
     }
 
+    [Fact]
+    public void AdminUsersStylesheet_SortSelectInTheStackedLayout_IsTouchSized()
+    {
+        var css = StripComments(File.ReadAllText(Path.Combine(PagesFolder, "AdminUsers.razor.css")));
+
+        var stackedRules = MediaBodies(css, BelowExtraLargeBreakpoint).ShouldHaveSingleItem();
+        stackedRules.ShouldContain(".admin-users-sort");
+        stackedRules.ShouldContain("min-height: var(--tap-min);");
+    }
+
     /// <summary>The bodies of every top-level <c>@media</c> block with exactly this condition.</summary>
     private static List<string> MediaBodies(string css, string condition)
     {

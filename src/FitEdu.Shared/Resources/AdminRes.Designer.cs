@@ -248,6 +248,33 @@ namespace FitEdu.Shared.Resources {
                 return ResourceManager.GetString("ColActions", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by.
+        /// </summary>
+        public static string SortBy {
+            get {
+                return ResourceManager.GetString("SortBy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ascending.
+        /// </summary>
+        public static string SortAscending {
+            get {
+                return ResourceManager.GetString("SortAscending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to descending.
+        /// </summary>
+        public static string SortDescending {
+            get {
+                return ResourceManager.GetString("SortDescending", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Assessment.

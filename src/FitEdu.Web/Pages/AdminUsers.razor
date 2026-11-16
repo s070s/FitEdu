@@ -14,6 +14,18 @@
         <input type="text" class="form-control" placeholder="@AdminRes.SearchByEmailOrName"
                aria-label="@AdminRes.SearchByEmailOrName"
                value="@searchTerm" @oninput="OnSearchInput" />
+        @* The header row that sorts the table is hidden below 1200 px (the table is stacked as cards). *@
+        <label class="visually-hidden" for="admin-users-sort">@AdminRes.SortBy</label>
+        <select id="admin-users-sort" class="form-select d-xl-none admin-users-sort" @onchange="OnSortSelected">
+            @foreach (var (columnKey, columnLabel) in SortableColumns())
+            {
+                @foreach (var direction in SortDirections)
+                {
+                    var optionValue = $"{columnKey}|{direction}";
+                    <option value="@optionValue" selected="@(optionValue == SortSelection)">@columnLabel, @(direction == "asc" ? AdminRes.SortAscending : AdminRes.SortDescending)</option>
+                }
+            }
+        </select>
     </div>
 
     <AuthorizeView Roles="Admin">

@@ -123,6 +123,77 @@ public class AdminUsersPageTests : BunitContext
         page.Find(".table-responsive").ClassList.ShouldContain("table-responsive--stack-xl");
     }
 
+    // ---- Sorting without the column headers -------------------------------------------------------
+
+    // Below 1200 px the table is stacked as cards and its header row is hidden, so sorting has its own control.
+    private const string SortSelectSelector = "select.admin-users-sort";
+
+    private static readonly string[] SortableColumnKeys = ["email", "firstname", "lastseenat", "isenabled", "emailconfirmed", "tier", "createdat"];
+
+    [Fact]
+    public void SortSelect_IsOnlyShownBelowTheDesktopWidthAndHasALabel()
+    {
+        var page = RenderThreeUsers();
+
+        page.Find(SortSelectSelector).ClassList.ShouldContain("d-xl-none");
+        page.Find("label[for='admin-users-sort']").TextContent.Trim().ShouldBe(AdminRes.SortBy);
+        page.Find(SortSelectSelector).Id.ShouldBe("admin-users-sort");
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("el")]
+    public void SortSelect_OffersEverySortableColumnInBothDirections_NamedLikeTheHeaders(string culture)
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo(culture);
+        var page = RenderThreeUsers();
+
+        var options = page.FindAll($"{SortSelectSelector} option").ToDictionary(option => option.GetAttribute("value")!, option => option.TextContent.Trim());
+
+        options.Keys.ShouldBe(
+            SortableColumnKeys
+                .SelectMany(column => new[] { $"{column}|asc", $"{column}|desc" }),
+            ignoreOrder: true);
+        options["email|asc"].ShouldBe($"{AdminRes.ColEmail}, {AdminRes.SortAscending}");
+        options["createdat|desc"].ShouldBe($"{AdminRes.ColCreated}, {AdminRes.SortDescending}");
+    }
+
+    [Fact]
+    public void SortSelect_PickingAnOption_AsksTheApiForThatSortFromTheFirstPage()
+    {
+        var pageOneUsers = Enumerable.Range(1, 10).Select(number => User($"member-{number}", $"member{number}@fitedu.local", true, "Student")).ToList();
+        _users.GetUsersAsync(Arg.Any<int>(), 10, Arg.Any<string?>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(call => new PagedResult<AdminUserDto>(pageOneUsers, 11, call.ArgAt<int>(0), 10));
+        var page = Render<AdminUsers>();
+        page.FindAll(".pagination-controls button")[1].Click();
+        _users.ClearReceivedCalls();
+
+        page.Find(SortSelectSelector).Change("createdat|desc");
+
+        _users.Received(1).GetUsersAsync(1, 10, Arg.Any<string?>(), "createdat", "desc");
+    }
+
+    [Fact]
+    public void SortSelect_ShowsTheSortTheHeadersLastSet()
+    {
+        var page = RenderThreeUsers();
+
+        page.FindAll("thead th")[1].Click();
+
+        page.Find($"{SortSelectSelector} option[selected]").GetAttribute("value").ShouldBe("firstname|asc");
+    }
+
+    [Fact]
+    public void SortSelect_AValueTheListDoesNotOffer_IsIgnored()
+    {
+        var page = RenderThreeUsers();
+        _users.ClearReceivedCalls();
+
+        page.Find(SortSelectSelector).Change("passwordhash|asc");
+
+        _users.DidNotReceiveWithAnyArgs().GetUsersAsync();
+    }
+
     // ---- Loading the list ------------------------------------------------------------------------
 
     private static PagedResult<AdminUserDto> OnePage(string email) =>

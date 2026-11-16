@@ -1,6 +1,8 @@
-﻿/* Below 1200 px the table is stacked into cards (StackBelow="xl"), so the buttons are for thumbs. */
+﻿/* Below 1200 px the table is stacked into cards (StackBelow="xl"), so the buttons are for thumbs, and the
+   header row that sorts the desktop table is hidden, so a select sorts instead. */
 @media (max-width: 1199.98px) {
-    .table-actions .btn {
+    .table-actions .btn,
+    .admin-users-sort {
         min-height: var(--tap-min);
     }
 }

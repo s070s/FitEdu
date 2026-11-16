@@ -297,6 +297,15 @@
   <data name="ColActions" xml:space="preserve">
     <value>Ενέργειες</value>
   </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Ταξινόμηση κατά</value>
+  </data>
+  <data name="SortAscending" xml:space="preserve">
+    <value>αύξουσα</value>
+  </data>
+  <data name="SortDescending" xml:space="preserve">
+    <value>φθίνουσα</value>
+  </data>
   <data name="StatusPublished" xml:space="preserve">
     <value>Δημοσιευμένο</value>
   </data>

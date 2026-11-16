@@ -32,6 +32,7 @@ public partial class AdminUsers : IAsyncDisposable
     private int currentPage = 1;
     private int pageSize = 10;
     private static readonly int[] PageSizeOptions = [10, 25, 50, 100];
+    private static readonly string[] SortDirections = ["asc", "desc"];
     private string searchTerm = string.Empty;
     private string message = string.Empty;
     private string messageType = "success";
@@ -93,6 +94,20 @@ public partial class AdminUsers : IAsyncDisposable
         return Task.CompletedTask;
     }
 
+    // The columns the table header (and the select shown instead of it on narrow screens) can sort by.
+    private static (string Key, string Label)[] SortableColumns() =>
+    [
+        ("email", AdminRes.ColEmail),
+        ("firstname", AdminRes.ColName),
+        ("lastseenat", AdminRes.ColOnline),
+        ("isenabled", AdminRes.ColEnabled),
+        ("emailconfirmed", AdminRes.ColEmailConfirmed),
+        ("tier", AdminRes.ColTier),
+        ("createdat", AdminRes.ColCreated)
+    ];
+
+    private string SortSelection => $"{_sortBy}|{_sortDir}";
+
     private async Task OnSort(string columnKey)
     {
         if (_sortBy == columnKey)
@@ -102,6 +117,19 @@ public partial class AdminUsers : IAsyncDisposable
             _sortBy = columnKey;
             _sortDir = "asc";
         }
+        currentPage = 1;
+        await LoadUsers();
+    }
+
+    private async Task OnSortSelected(ChangeEventArgs e)
+    {
+        // "column|direction", as offered by the select; anything else is not a sort this page can ask for.
+        var parts = (e.Value?.ToString() ?? string.Empty).Split('|');
+        if (parts.Length != 2 || !SortableColumns().Any(column => column.Key == parts[0]) || !SortDirections.Contains(parts[1]))
+            return;
+
+        _sortBy = parts[0];
+        _sortDir = parts[1];
         currentPage = 1;
         await LoadUsers();
     }
