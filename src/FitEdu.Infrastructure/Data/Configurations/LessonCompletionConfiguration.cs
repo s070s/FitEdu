@@ -25,11 +25,9 @@ public class LessonCompletionConfiguration : IEntityTypeConfiguration<LessonComp
             .HasForeignKey(lc => lc.LessonId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Unique constraint: one completion per user per lesson
+        // Unique constraint: one completion per user per lesson. It also serves a seek on UserId alone (its
+        // first column), so there is no separate UserId index (DB-12).
         builder.HasIndex(lc => new { lc.UserId, lc.LessonId })
             .IsUnique();
-
-        // Index for querying user's completions
-        builder.HasIndex(lc => lc.UserId);
     }
 }

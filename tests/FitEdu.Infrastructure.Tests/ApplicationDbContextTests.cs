@@ -560,6 +560,18 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public void LessonCompletions_HaveNoPlainUserIdIndex_TheUniqueUserAndLessonIndexServesIt()
+    {
+        // DB-12: the unique (UserId, LessonId) index already serves a seek on the UserId prefix.
+        using var db = CtxWithUser(null);
+
+        var indexes = db.Model.FindEntityType(typeof(LessonCompletion))!.GetIndexes().ToList();
+
+        indexes.ShouldNotContain(index => index.Properties.Count == 1 && index.Properties[0].Name == nameof(LessonCompletion.UserId));
+        indexes.ShouldContain(index => index.IsUnique && index.Properties.Count == 2);
+    }
+
+    [Fact]
     public void UserSubscriptions_HaveOneUserIdIndex_TheFilteredUniqueOne()
     {
         // DB-9: a plain UserId index declared next to the filtered unique one was merged into it by EF,
