@@ -90,9 +90,6 @@
 	<data name="RedirectingToLogin" xml:space="preserve">
 		<value>Μεταφορά στη σελίδα σύνδεσης…</value>
 	</data>
-	<data name="FileTooLarge" xml:space="preserve">
-		<value>Το αρχείο είναι πολύ μεγάλο (έως 5 MB).</value>
-	</data>
 	<data name="AvatarUploadedSuccess" xml:space="preserve">
 		<value>Η φωτογραφία προφίλ ανέβηκε.</value>
 	</data>

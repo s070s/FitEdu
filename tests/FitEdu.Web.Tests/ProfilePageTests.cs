@@ -98,7 +98,7 @@ public class ProfilePageTests : BunitContext
 
         FakeBrowserFile.Choose(page.FindComponent<FilePicker>(), new FakeBrowserFile("me.png", UploadLimits.MaxImageBytes, "image/png"));
 
-        page.Markup.ShouldNotContain(ProfileRes.FileTooLarge);
+        page.Markup.ShouldNotContain(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
         _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
     }
 
@@ -151,7 +151,7 @@ public class ProfilePageTests : BunitContext
 
         FakeBrowserFile.Choose(page.FindComponent<FilePicker>(), new FakeBrowserFile("me.png", UploadLimits.MaxImageBytes + 1, "image/png"));
 
-        page.Markup.ShouldContain(ProfileRes.FileTooLarge);
+        page.Markup.ShouldContain(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
         _profileConsumer.DidNotReceive().UploadAvatarAsync(Arg.Any<IBrowserFile>());
     }
 

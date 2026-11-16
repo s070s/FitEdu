@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.Globalization;
 using FitEdu.Application.Common;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Interfaces;
 using FitEdu.Web.Layout;
 using FitEdu.Application.ApiInterfaces;
@@ -208,7 +209,7 @@ public partial class Profile
         // Over the limit, like the server: a file of exactly the limit is accepted.
         if (file.Size > UploadLimits.MaxImageBytes)
         {
-            RejectAvatar(ProfileRes.FileTooLarge);
+            RejectAvatar(UploadSizeText.TooLarge(UploadLimits.MaxImageBytes));
             return;
         }
 

@@ -169,15 +169,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File too large (max 5MB).
-        /// </summary>
-        public static string FileTooLarge {
-            get {
-                return ResourceManager.GetString("FileTooLarge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please fill all password fields.
         /// </summary>
         public static string FillAllPasswordFields {

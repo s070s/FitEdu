@@ -90,9 +90,6 @@
 	<data name="RedirectingToLogin" xml:space="preserve">
 		<value>Taking you to the log-in page…</value>
 	</data>
-	<data name="FileTooLarge" xml:space="preserve">
-		<value>The file is too large (max 5 MB).</value>
-	</data>
 	<data name="AvatarUploadedSuccess" xml:space="preserve">
 		<value>Profile photo uploaded.</value>
 	</data>
