@@ -134,15 +134,6 @@ public partial class AdminUsers : IAsyncDisposable
 
             pagedResult = loaded;
         }
-        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-        {
-            if (sequence != _loadSequence)
-                return;
-
-            message = ErrorMessagesRes.AccessDenied;
-            messageType = "danger";
-            _loadFailed = true;
-        }
         catch (Exception)
         {
             if (sequence != _loadSequence)
