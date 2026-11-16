@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Consumers;
@@ -22,9 +23,8 @@ public class AdminLessonConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenPr
 
     public async Task<string?> UploadPdfAsync(Guid id, IBrowserFile file)
     {
-        const long maxFileSize = 10 * 1024 * 1024;
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxFileSize);
+        using var stream = file.OpenReadStream(UploadLimits.MaxPdfBytes);
         var streamContent = new StreamContent(stream);
         if (!string.IsNullOrEmpty(file.ContentType))
             streamContent.Headers.ContentType =
@@ -37,9 +37,8 @@ public class AdminLessonConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenPr
 
     public async Task<string?> UploadVideoAsync(Guid id, IBrowserFile file)
     {
-        const long maxFileSize = 500L * 1024 * 1024; // 500 MB — matches server limit
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxFileSize);
+        using var stream = file.OpenReadStream(UploadLimits.MaxVideoBytes);
         var streamContent = new StreamContent(stream);
         if (!string.IsNullOrEmpty(file.ContentType))
             streamContent.Headers.ContentType =

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 #pragma warning disable CA1716 // The Shared namespace is the app's component root; renaming it would break every Razor import.
@@ -36,6 +37,8 @@ public partial class LessonEditorModal
     private string? _existingVideoPath;
     private IBrowserFile? _pendingPdf;
     private IBrowserFile? _pendingVideo;
+    private FilePicker? _pdfPicker;
+    private FilePicker? _videoPicker;
     private QuillEditor? _contentEditorEn;
     private QuillEditor? _contentEditorEl;
     private bool _isSaving;
@@ -92,8 +95,35 @@ public partial class LessonEditorModal
         }
     }
 
-    private void OnPdfSelected(InputFileChangeEventArgs e) => _pendingPdf = e.File;
-    private void OnVideoSelected(InputFileChangeEventArgs e) => _pendingVideo = e.File;
+    // A file over the limit is refused here, before the lesson is saved, so the lesson is not saved
+    // first and then left without the file the admin meant to attach.
+    private void OnPdfSelected(InputFileChangeEventArgs e)
+    {
+        _errorMessage = string.Empty;
+        if (e.File.Size > UploadLimits.MaxPdfBytes)
+        {
+            _pendingPdf = null;
+            _errorMessage = UploadSizeText.TooLarge(UploadLimits.MaxPdfBytes);
+            _pdfPicker?.ClearFileName();
+            return;
+        }
+
+        _pendingPdf = e.File;
+    }
+
+    private void OnVideoSelected(InputFileChangeEventArgs e)
+    {
+        _errorMessage = string.Empty;
+        if (e.File.Size > UploadLimits.MaxVideoBytes)
+        {
+            _pendingVideo = null;
+            _errorMessage = UploadSizeText.TooLarge(UploadLimits.MaxVideoBytes);
+            _videoPicker?.ClearFileName();
+            return;
+        }
+
+        _pendingVideo = e.File;
+    }
 
     // ── Exercise picker ──
 

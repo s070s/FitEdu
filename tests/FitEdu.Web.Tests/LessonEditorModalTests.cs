@@ -7,11 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Web.Consumers;
+using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Forms;
 using Shouldly;
 using Xunit;
@@ -282,6 +284,27 @@ public class LessonEditorModalTests : BunitContext
         var error = modal.Find(".alert-danger").TextContent;
         error.ShouldContain("Δεν ήταν δυνατό το ανέβασμα του PDF.");
         error.ShouldContain("Δεν ήταν δυνατό το ανέβασμα του βίντεο.");
+    }
+
+    [Theory]
+    [InlineData("lesson-pdf", "application/pdf", UploadLimits.MaxPdfBytes)]
+    [InlineData("lesson-video", "video/mp4", UploadLimits.MaxVideoBytes)]
+    public void FileOverTheLimit_IsRefusedAtOnce_AndTheLessonStillSavesWithoutIt(string pickerId, string contentType, long limit)
+    {
+        var modal = RenderModal(null);
+        modal.Find("#lesson-title-en").Change("Leg day");
+        var picker = modal.FindComponents<FilePicker>().Single(candidate => candidate.Instance.Id == pickerId);
+
+        FakeBrowserFile.Choose(picker, new FakeBrowserFile("big-file", limit + 1, contentType));
+
+        modal.Find(".alert-danger").TextContent.ShouldContain(UploadSizeText.TooLarge(limit));
+        picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+
+        ClickSave(modal);
+
+        _savedRequest.ShouldNotBeNull();
+        _lessonConsumer.DidNotReceive().UploadPdfAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>());
+        _lessonConsumer.DidNotReceive().UploadVideoAsync(Arg.Any<Guid>(), Arg.Any<IBrowserFile>());
     }
 
     [Fact]

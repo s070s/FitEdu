@@ -58,6 +58,10 @@
            Size="modal-xl"
            OnClose="CloseLessonModal">
     <Body>
+        @if (!string.IsNullOrEmpty(fileError))
+        {
+            <div class="alert alert-danger py-2">@fileError</div>
+        }
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label class="form-label" for="lesson-title-en">@AdminRes.FieldTitle (EN)</label>
@@ -96,7 +100,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-pdf">@AdminRes.UploadPdf</label>
-                <FilePicker Id="lesson-pdf" OnChange="OnPdfSelected" Accept=".pdf" />
+                <FilePicker @ref="pdfPicker" Id="lesson-pdf" OnChange="OnPdfSelected" Accept=".pdf" />
                 @if (!string.IsNullOrEmpty(lessonPdfPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonPdfPath</small>
@@ -104,7 +108,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="lesson-video">@AdminRes.UploadVideo</label>
-                <FilePicker Id="lesson-video" OnChange="OnVideoSelected" Accept="video/*" />
+                <FilePicker @ref="videoPicker" Id="lesson-video" OnChange="OnVideoSelected" Accept="video/*" />
                 @if (!string.IsNullOrEmpty(lessonVideoPath))
                 {
                     <small class="text-success">@AdminRes.Current @lessonVideoPath</small>

@@ -57,9 +57,6 @@ public partial class Profile
     private int? _certificates;
     private int? _assessments;
 
-    private static readonly string[] AllowedAvatarTypes =
-        { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
-
     // The catalogue call Home makes too; one page of this size covers every published course.
     private const int CoursePageSize = 100;
 
@@ -199,13 +196,14 @@ public partial class Profile
     {
         message = string.Empty;
         var file = e.File;
-        if (file.Size >= 5 * 1024 * 1024)
+        // Over the limit, like the server: a file of exactly the limit is accepted.
+        if (file.Size > UploadLimits.MaxImageBytes)
         {
             RejectAvatar(ProfileRes.FileTooLarge);
             return;
         }
 
-        if (!AllowedAvatarTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
+        if (!UploadLimits.ImageContentTypes.Contains(file.ContentType))
         {
             RejectAvatar(ProfileRes.InvalidImageType);
             return;

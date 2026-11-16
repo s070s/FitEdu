@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Shared.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Pages;
@@ -44,6 +45,9 @@ public partial class AdminLessonEdit
     private QuillEditor? lessonContentEditorEl;
     private IBrowserFile? pendingPdf;
     private IBrowserFile? pendingVideo;
+    private FilePicker? pdfPicker;
+    private FilePicker? videoPicker;
+    private string? fileError;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,6 +90,7 @@ public partial class AdminLessonEdit
         lessonDuration = null;
         lessonPdfPath = null;
         lessonVideoPath = null;
+        fileError = null;
         pendingPdf = null;
         pendingVideo = null;
         showLessonModal = true;
@@ -103,6 +108,7 @@ public partial class AdminLessonEdit
         lessonDuration = lesson.DurationMinutes;
         lessonPdfPath = lesson.PdfPath;
         lessonVideoPath = lesson.VideoPath;
+        fileError = null;
         pendingPdf = null;
         pendingVideo = null;
         showLessonModal = true;
@@ -113,13 +119,34 @@ public partial class AdminLessonEdit
         showLessonModal = false;
     }
 
+    // A file over the limit is refused here, before the lesson is saved, so the lesson is not saved
+    // first and then left without the file the admin meant to attach. The message sits inside the
+    // dialog because the page's own alert is behind it.
     private void OnPdfSelected(InputFileChangeEventArgs e)
     {
+        fileError = null;
+        if (e.File.Size > UploadLimits.MaxPdfBytes)
+        {
+            pendingPdf = null;
+            fileError = UploadSizeText.TooLarge(UploadLimits.MaxPdfBytes);
+            pdfPicker?.ClearFileName();
+            return;
+        }
+
         pendingPdf = e.File;
     }
 
     private void OnVideoSelected(InputFileChangeEventArgs e)
     {
+        fileError = null;
+        if (e.File.Size > UploadLimits.MaxVideoBytes)
+        {
+            pendingVideo = null;
+            fileError = UploadSizeText.TooLarge(UploadLimits.MaxVideoBytes);
+            videoPicker?.ClearFileName();
+            return;
+        }
+
         pendingVideo = e.File;
     }
 

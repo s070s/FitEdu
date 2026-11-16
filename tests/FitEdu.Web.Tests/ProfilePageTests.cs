@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
@@ -16,6 +17,7 @@ using FitEdu.Web.Consumers;
 using FitEdu.Web.Extensions;
 using FitEdu.Web.Pages;
 using FitEdu.Web.Services;
+using FitEdu.Web.Shared.Components.Forms;
 using Shouldly;
 using Xunit;
 
@@ -85,6 +87,31 @@ public class ProfilePageTests : BunitContext
 
         page.Markup.ShouldContain(ProfileRes.InvalidImageType);
         page.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+    }
+
+    [Fact]
+    public void AvatarOfExactlyTheLimit_IsUploaded_AsTheServerAcceptsIt()
+    {
+        _profileConsumer.UploadAvatarAsync(Arg.Any<IBrowserFile>()).Returns(true);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        FakeBrowserFile.Choose(page.FindComponent<FilePicker>(), new FakeBrowserFile("me.png", UploadLimits.MaxImageBytes, "image/png"));
+
+        page.Markup.ShouldNotContain(ProfileRes.FileTooLarge);
+        _profileConsumer.Received(1).UploadAvatarAsync(Arg.Any<IBrowserFile>());
+    }
+
+    [Fact]
+    public void AvatarOverTheLimit_IsRefusedWithoutUploading()
+    {
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+
+        FakeBrowserFile.Choose(page.FindComponent<FilePicker>(), new FakeBrowserFile("me.png", UploadLimits.MaxImageBytes + 1, "image/png"));
+
+        page.Markup.ShouldContain(ProfileRes.FileTooLarge);
+        _profileConsumer.DidNotReceive().UploadAvatarAsync(Arg.Any<IBrowserFile>());
     }
 
     [Fact]

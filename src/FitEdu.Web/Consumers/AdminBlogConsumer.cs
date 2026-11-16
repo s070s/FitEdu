@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Consumers;
@@ -39,9 +40,8 @@ public class AdminBlogConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
 
     public async Task<string?> UploadCoverImageAsync(Guid id, IBrowserFile file, CancellationToken ct = default)
     {
-        const long maxSize = 5 * 1024 * 1024;
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxSize, ct);
+        using var stream = file.OpenReadStream(UploadLimits.MaxCoverImageBytes, ct);
         var streamContent = new StreamContent(stream);
         if (!string.IsNullOrEmpty(file.ContentType))
             streamContent.Headers.ContentType =

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Forms;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 
 namespace FitEdu.Web.Consumers;
@@ -28,9 +29,8 @@ public class ProfileConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProvid
 
     public async Task<bool> UploadAvatarAsync(IBrowserFile file)
     {
-        const long maxFileSize = 5 * 1024 * 1024;
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxFileSize);
+        using var stream = file.OpenReadStream(UploadLimits.MaxImageBytes);
         var streamContent = new StreamContent(stream);
         streamContent.Headers.ContentType =
             new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
