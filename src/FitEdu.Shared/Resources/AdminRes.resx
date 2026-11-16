@@ -950,9 +950,6 @@
   <data name="BlogAuthorPlaceholder" xml:space="preserve">
     <value>e.g. FitEdu Coaching Team</value>
   </data>
-  <data name="CoverUrlPlaceholder" xml:space="preserve">
-    <value>Or paste an image URL</value>
-  </data>
   <data name="CoverPreviewAlt" xml:space="preserve">
     <value>Cover preview</value>
   </data>

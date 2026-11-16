@@ -65,6 +65,18 @@ public class AdminBlogEditorTests : BunitContext
     }
 
     [Fact]
+    public void Cover_HasNoFreeTextUrlBox_SoOnlyUploadedSiteFilesCanBeCovers()
+    {
+        _blogConsumer.GetArticleAsync(_articleId, Arg.Any<CancellationToken>()).Returns(Article("blog/covers/photo.jpg"));
+
+        var page = RenderEditMode();
+
+        // The page's CSP blocks images from other sites, so an invited outside URL would never show.
+        page.Markup.ShouldNotContain("paste an image URL", Case.Insensitive);
+        page.FindAll("input[type=text]").Any(input => input.GetAttribute("value") == "blog/covers/photo.jpg").ShouldBeFalse();
+    }
+
+    [Fact]
     public void EditMode_AfterAnUpload_PreviewsTheNewPathThroughTheMediaRoute()
     {
         _blogConsumer.UploadCoverImageAsync(_articleId, Arg.Any<IBrowserFile>(), Arg.Any<CancellationToken>())

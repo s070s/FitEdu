@@ -969,9 +969,6 @@
   <data name="BlogAuthorPlaceholder" xml:space="preserve">
     <value>π.χ. Ομάδα προπονητών FitEdu</value>
   </data>
-  <data name="CoverUrlPlaceholder" xml:space="preserve">
-    <value>Ή επικόλλησε τη διεύθυνση μιας εικόνας</value>
-  </data>
   <data name="CoverPreviewAlt" xml:space="preserve">
     <value>Προεπισκόπηση εξωφύλλου</value>
   </data>

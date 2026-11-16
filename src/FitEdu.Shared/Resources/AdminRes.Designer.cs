@@ -2625,15 +2625,6 @@ namespace FitEdu.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Or paste an image URL.
-        /// </summary>
-        public static string CoverUrlPlaceholder {
-            get {
-                return ResourceManager.GetString("CoverUrlPlaceholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cover preview.
         /// </summary>
         public static string CoverPreviewAlt {
