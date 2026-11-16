@@ -35,6 +35,8 @@ public partial class AdminUsers : IAsyncDisposable
     private bool _loadFailed;
     private int _loadSequence;
     private PersistingComponentStateSubscription _persistSubscription;
+    private ElementReference _headingRef;
+    private bool _focusHeadingAfterRender;
 
     private bool _resetPwdModalVisible;
     private string? _resetPwdUserId;
@@ -57,6 +59,17 @@ public partial class AdminUsers : IAsyncDisposable
         }
 
         await LoadUsers();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The deleted user's row button had the focus; with the row gone the dialog cannot give it back,
+        // so it goes to a fixed place instead of falling to the top of the document.
+        if (!_focusHeadingAfterRender)
+            return;
+
+        _focusHeadingAfterRender = false;
+        await _headingRef.FocusAsync();
     }
 
     private Task PersistFirstPage()
@@ -317,6 +330,7 @@ public partial class AdminUsers : IAsyncDisposable
                 await LoadUsers();
                 message = AdminRes.UserDeleted;
                 messageType = "success";
+                _focusHeadingAfterRender = true;
             }
             else
             {

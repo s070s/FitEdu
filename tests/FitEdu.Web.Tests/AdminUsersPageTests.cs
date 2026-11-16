@@ -237,6 +237,35 @@ public class AdminUsersPageTests : BunitContext
     }
 
     [Fact]
+    public void Delete_Accepted_MovesTheFocusToThePageHeading_BecauseTheRowItCameFromIsGone()
+    {
+        _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Success);
+        var page = OpenDeleteConfirmation();
+        // The first focus call is the dialog taking the focus when it opens; the second one can only be the
+        // heading, because the dialog is gone by then.
+        page.WaitForAssertion(() => JSInterop.VerifyFocusAsyncInvoke(1));
+
+        ConfirmDelete(page);
+
+        page.WaitForAssertion(() => JSInterop.VerifyFocusAsyncInvoke(2));
+        page.FindAll(".modal-dialog").ShouldBeEmpty();
+        page.Find("h1").GetAttribute("tabindex").ShouldBe("-1");
+    }
+
+    [Fact]
+    public void Delete_Refused_LeavesTheFocusWhereItIs()
+    {
+        _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Refused(HttpStatusCode.Conflict));
+        var page = OpenDeleteConfirmation();
+        page.WaitForAssertion(() => JSInterop.VerifyFocusAsyncInvoke(1));
+
+        ConfirmDelete(page);
+
+        page.Find(".alert-danger");
+        JSInterop.VerifyFocusAsyncInvoke(1);
+    }
+
+    [Fact]
     public void Delete_TheApiAnswersConflict_SaysOtherDataStillDependsOnTheUser()
     {
         _users.DeleteUserAsync("member-1").Returns(ApiActionResult.Refused(HttpStatusCode.Conflict, "User could not be deleted."));
