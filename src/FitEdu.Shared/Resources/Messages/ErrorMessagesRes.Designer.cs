@@ -916,6 +916,15 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to An article with this slug already exists..
+        /// </summary>
+        public static string BlogSlugTaken {
+            get {
+                return ResourceManager.GetString("BlogSlugTaken", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The video link must start with http:// or https://..
         /// </summary>
         public static string VideoUrlMustBeHttp {

@@ -402,6 +402,9 @@
   <data name="CoverImageMustBeSiteFile" xml:space="preserve">
     <value>Η εικόνα εξωφύλλου πρέπει να ανέβει στον ιστότοπο.</value>
   </data>
+  <data name="BlogSlugTaken" xml:space="preserve">
+    <value>Υπάρχει ήδη άρθρο με αυτό το slug.</value>
+  </data>
   <data name="VideoUrlMustBeHttp" xml:space="preserve">
     <value>Ο σύνδεσμος του βίντεο πρέπει να ξεκινά με http:// ή https://.</value>
   </data>

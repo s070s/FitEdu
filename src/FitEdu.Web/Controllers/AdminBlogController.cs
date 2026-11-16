@@ -73,7 +73,7 @@ public class AdminBlogController : ControllerBase
     {
         var result = await _blogService.CreateAsync(request, cancellationToken);
         if (result is null)
-            return Problem(detail: "A blog article with this slug already exists.", statusCode: StatusCodes.Status409Conflict);
+            return Problem(detail: ErrorMessagesRes.BlogSlugTaken, statusCode: StatusCodes.Status409Conflict);
 
         return CreatedAtAction(nameof(GetBlogArticle), new { id = result.Id }, result);
     }
@@ -92,7 +92,7 @@ public class AdminBlogController : ControllerBase
             var exists = await _blogService.GetByIdForAdminAsync(id, cancellationToken);
             return exists is null
                 ? NotFound()
-                : Problem(detail: "A blog article with this slug already exists.", statusCode: StatusCodes.Status409Conflict);
+                : Problem(detail: ErrorMessagesRes.BlogSlugTaken, statusCode: StatusCodes.Status409Conflict);
         }
         return Ok(result);
     }

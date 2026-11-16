@@ -402,6 +402,9 @@
   <data name="CoverImageMustBeSiteFile" xml:space="preserve">
     <value>The cover image must be uploaded to the site.</value>
   </data>
+  <data name="BlogSlugTaken" xml:space="preserve">
+    <value>An article with this slug already exists.</value>
+  </data>
   <data name="VideoUrlMustBeHttp" xml:space="preserve">
     <value>The video link must start with http:// or https://.</value>
   </data>
