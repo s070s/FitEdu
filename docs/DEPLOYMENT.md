@@ -90,6 +90,15 @@ attacks. The fingerprinted static assets (CSS, JavaScript, fonts) are already se
 If you want compressed pages anyway, enable it at the reverse proxy (for example nginx `gzip on;`
 for `text/html`) and accept that trade-off there.
 
+## Quill editor (vendored)
+
+The admin rich-text editor (Quill 2.0.3, BSD-3-Clause) ships with the app in
+`wwwroot/lib/quill/2.0.3/` (`quill.js`, `quill.snow.css` and its `LICENSE`), so the host needs no
+outbound access to a CDN and the Content-Security-Policy names no third-party script or style
+source. `quill-interop.js` checks the files with integrity hashes, so they must reach the server
+byte for byte: a deployment step that changes line endings or minifies them makes the editor fall
+back to a plain text box.
+
 ## Email transport
 
 `SmtpEmailService` (MailKit) is used whenever `Email:Smtp:Host` is configured — point it at
