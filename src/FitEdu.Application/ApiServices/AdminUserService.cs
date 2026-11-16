@@ -132,6 +132,11 @@ public partial class AdminUserService(
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
+        // The roles travel in the token and the cookie, so the old sessions would keep the old roles.
+        var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        if (!sessionsEnded.Succeeded)
+            return ServiceResult<string>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
+
         LogRoleAssigned(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' assigned.");
     }
@@ -148,6 +153,10 @@ public partial class AdminUserService(
         var result = await userManager.RemoveFromRoleAsync(user, roleName);
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+
+        var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        if (!sessionsEnded.Succeeded)
+            return ServiceResult<string>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
 
         LogRoleRemoved(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' removed.");

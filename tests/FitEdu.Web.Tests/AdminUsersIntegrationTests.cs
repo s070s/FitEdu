@@ -170,6 +170,35 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
+    public async Task RemoveRole_Admin_EndsTheOtherAdminsSessionAtOnce()
+    {
+        var (otherAdminId, otherAdmin) = await SignInNewUserAsync("Admin");
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var otherClient = ClientWithBearer(otherAdmin.Token!);
+        (await otherClient.GetAsync("/api/admin/users")).StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var removed = await admin.DeleteAsync($"/api/admin/users/{otherAdminId}/roles/Admin");
+
+        removed.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await otherClient.GetAsync("/api/admin/users")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        (await RefreshAsync(_factory.CreateClient(), otherAdmin.RefreshToken!)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task AssignRole_Member_EndsTheirOldSessionSoTheNextSignInCarriesTheNewRole()
+    {
+        var (memberId, login) = await SignInNewUserAsync();
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var memberClient = ClientWithBearer(login.Token!);
+
+        var assigned = await admin.PostAsync($"/api/admin/users/{memberId}/roles/Admin", content: null);
+
+        assigned.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await memberClient.GetAsync("/api/profile")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        (await RefreshAsync(_factory.CreateClient(), login.RefreshToken!)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
     public async Task DisableUser_AdminAccount_IsRefusedAndTheAdminKeepsWorking()
     {
         var (otherAdminId, otherAdmin) = await SignInNewUserAsync("Admin");
