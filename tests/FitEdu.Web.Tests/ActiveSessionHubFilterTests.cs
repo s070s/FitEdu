@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using FitEdu.Application.Common;
 using FitEdu.Domain.Identity;
+using FitEdu.Shared.Resources.Messages;
 using FitEdu.TestSupport;
 using FitEdu.Web.Hubs;
 using Shouldly;
@@ -90,7 +91,9 @@ public class ActiveSessionHubFilterTests
     {
         var h = Build(StoredUser(isEnabled: false), CurrentStamp);
 
-        await Should.ThrowAsync<HubException>(async () => await h.Filter.InvokeMethodAsync(h.Invocation, h.Next));
+        var refusal = await Should.ThrowAsync<HubException>(async () => await h.Filter.InvokeMethodAsync(h.Invocation, h.Next));
+
+        refusal.Message.ShouldBe(ErrorMessagesRes.AccountDisabled);
 
         h.Context.Received(1).Abort();
         h.NextCalls.ShouldBe(0);
@@ -101,7 +104,9 @@ public class ActiveSessionHubFilterTests
     {
         var h = Build(StoredUser(), "stamp-from-before-the-role-change");
 
-        await Should.ThrowAsync<HubException>(async () => await h.Filter.InvokeMethodAsync(h.Invocation, h.Next));
+        var refusal = await Should.ThrowAsync<HubException>(async () => await h.Filter.InvokeMethodAsync(h.Invocation, h.Next));
+
+        refusal.Message.ShouldBe(ErrorMessagesRes.NotAuthenticated);
 
         h.Context.Received(1).Abort();
         h.NextCalls.ShouldBe(0);

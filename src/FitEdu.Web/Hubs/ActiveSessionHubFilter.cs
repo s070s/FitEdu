@@ -39,7 +39,8 @@ public partial class ActiveSessionHubFilter : IHubFilter
         {
             LogSessionRejected(_logger, userId ?? "(none)");
             invocationContext.Context.Abort();
-            throw new HubException(ErrorMessagesRes.AccountDisabled);
+            // A stale session of a working account is told to sign in again; only a disabled account is told so.
+            throw new HubException(user is { IsEnabled: true } ? ErrorMessagesRes.NotAuthenticated : ErrorMessagesRes.AccountDisabled);
         }
 
         return await next(invocationContext);
