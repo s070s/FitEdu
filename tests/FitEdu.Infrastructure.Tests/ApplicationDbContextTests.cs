@@ -560,6 +560,22 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public void UserSubscriptions_HaveOneUserIdIndex_TheFilteredUniqueOne()
+    {
+        // DB-9: a plain UserId index declared next to the filtered unique one was merged into it by EF,
+        // so the model (and every migration) holds just the filtered unique index; the configuration says so.
+        using var db = CtxWithUser(null);
+
+        var userIdIndexes = db.Model.FindEntityType(typeof(UserSubscription))!.GetIndexes()
+            .Where(index => index.Properties.Select(property => property.Name).SequenceEqual([nameof(UserSubscription.UserId)]))
+            .ToList();
+
+        var only = userIdIndexes.ShouldHaveSingleItem();
+        only.IsUnique.ShouldBeTrue();
+        only.GetFilter().ShouldBe("[IsActive] = 1");
+    }
+
+    [Fact]
     public async Task SecondActiveSubscriptionForOneUser_IsRefusedByTheUniqueIndex_OnSqlite()
     {
         // DQ-6: SQLite builds the filtered unique index ([IsActive] = 1) too, so the "at most one

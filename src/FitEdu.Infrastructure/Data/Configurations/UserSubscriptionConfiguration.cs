@@ -28,9 +28,6 @@ public class UserSubscriptionConfiguration : IEntityTypeConfiguration<UserSubscr
         // Index for querying active subscriptions
         builder.HasIndex(us => us.IsActive);
 
-        // Index for querying by user
-        builder.HasIndex(us => us.UserId);
-
         // Index for expiration queries (billing/renewal)
         builder.HasIndex(us => us.ExpiresAt);
 
