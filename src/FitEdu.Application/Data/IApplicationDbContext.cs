@@ -5,6 +5,12 @@ using FitEdu.Domain.Entities;
 
 namespace FitEdu.Application.Data;
 
+/// <summary>
+/// The application's data sets as the Application services use them. It exists so a test can swap the
+/// context and so the services can be built by dependency injection; it does not make the services
+/// independent of the data provider: the DbSets are EF Core types, the services write LINQ to
+/// Entities queries against them, and the identity tables below are part of the surface.
+/// </summary>
 public interface IApplicationDbContext
 {
     DbSet<Course> Courses { get; }
@@ -38,7 +44,9 @@ public interface IApplicationDbContext
     DbSet<SessionRegistration> SessionRegistrations { get; }
     DbSet<AdminAuditEntry> AdminAuditEntries { get; }
 
-    // Identity role tables used by ChatQueryService for role lookups
+    // Identity role tables for the role lookups that join users to their role names (AdminUserService,
+    // CallQueryService, ChatQueryService, LandingService). Role changes go through UserManager, which
+    // other Application services use directly.
     DbSet<IdentityUserRole<string>> UserRoles { get; }
     DbSet<IdentityRole> Roles { get; }
 
