@@ -81,6 +81,36 @@ public class FilePickerTests : BunitContext
     }
 
     [Fact]
+    public void AnEmptyChange_DoesNotThrowAndShowsTheNoFileText()
+    {
+        var calls = 0;
+        var picker = Render<FilePicker>(parameters => parameters
+            .Add(p => p.Id, PickerId)
+            .Add(p => p.OnChange, (InputFileChangeEventArgs _) => calls++));
+        picker.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromText("image", "me.png"));
+
+        // The browser sends a change with no file when the dialog is cancelled after a choice
+        // (bUnit's UploadFiles refuses an empty list, so the input's own callback is raised).
+        var noFiles = new InputFileChangeEventArgs(Array.Empty<IBrowserFile>());
+        var inputChanged = picker.FindComponent<InputFile>().Instance.OnChange;
+        Should.NotThrow(() => picker.InvokeAsync(() => inputChanged.InvokeAsync(noFiles)).GetAwaiter().GetResult());
+
+        picker.Find(".file-picker__name").TextContent.ShouldBe(GlobalRes.NoFileChosen);
+        calls.ShouldBe(1);
+    }
+
+    [Fact]
+    public void ClearFileName_RendersANewInputSoTheSameFileCanBePickedAgain()
+    {
+        var picker = Render<FilePicker>(parameters => parameters.Add(p => p.Id, PickerId));
+        var inputBefore = picker.FindComponent<InputFile>().Instance;
+
+        picker.InvokeAsync(() => picker.Instance.ClearFileName());
+
+        picker.FindComponent<InputFile>().Instance.ShouldNotBeSameAs(inputBefore);
+    }
+
+    [Fact]
     public void Disabled_DisablesTheInputAndPassesTheAcceptList()
     {
         var picker = Render<FilePicker>(parameters => parameters

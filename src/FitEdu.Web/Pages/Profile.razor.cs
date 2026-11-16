@@ -199,7 +199,7 @@ public partial class Profile
     {
         message = string.Empty;
         var file = e.File;
-        if (file == null || file.Size >= 5 * 1024 * 1024)
+        if (file.Size >= 5 * 1024 * 1024)
         {
             RejectAvatar(ProfileRes.FileTooLarge);
             return;

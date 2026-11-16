@@ -90,7 +90,6 @@ public partial class AdminBlogEditor
     private async Task OnCoverFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-        if (file is null) return;
 
         if (_isEditMode)
         {

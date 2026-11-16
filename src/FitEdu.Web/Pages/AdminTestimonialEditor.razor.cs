@@ -71,7 +71,6 @@ public partial class AdminTestimonialEditor
     private async Task OnAvatarFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-        if (file is null) return;
 
         _isBusy = true;
         _error = null;
