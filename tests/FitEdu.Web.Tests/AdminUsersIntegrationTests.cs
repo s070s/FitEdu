@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
+using FitEdu.Infrastructure.Data;
 using Shouldly;
 using Xunit;
 
@@ -28,14 +30,29 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
     }
 
     [Fact]
-    public async Task GetUsers_Admin_IncludesSubscriptionTier()
+    public async Task GetUsers_Admin_ReportsTheActiveTierOfAPlusMemberAndFreeForOthers()
     {
-        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var (plusMemberId, _) = await SignInNewUserAsync();
+        var (freeMemberId, _) = await SignInNewUserAsync();
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var subscriptions = scope.ServiceProvider.GetRequiredService<ISubscriptionService>();
+            var plusPlan = (await subscriptions.GetPlansAsync()).First(plan => plan.Tier == SubscriptionTier.Plus);
+            await subscriptions.AssignPlanAsync(plusMemberId, plusPlan.Id);
+            await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().SaveChangesAsync();
+        }
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
 
-        var response = await client.GetAsync("/api/admin/users");
+        (await ListedUserAsync(admin, plusMemberId)).SubscriptionTier.ShouldBe(SubscriptionTier.Plus);
+        (await ListedUserAsync(admin, freeMemberId)).SubscriptionTier.ShouldBe(SubscriptionTier.Free);
+    }
 
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        (await response.Content.ReadAsStringAsync()).ShouldContain("subscriptionTier");
+    // The user's row in the admin list, found by searching for their email (the shared test database holds many users).
+    private static async Task<AdminUserDto> ListedUserAsync(HttpClient admin, string userId)
+    {
+        var detail = await admin.GetFromJsonAsync<AdminUserDetailDto>($"/api/admin/users/{userId}");
+        var page = await admin.GetFromJsonAsync<PagedResult<AdminUserDto>>($"/api/admin/users?search={Uri.EscapeDataString(detail!.Email!)}");
+        return page!.Items.Single(user => user.Id == userId);
     }
 
     [Fact]
@@ -200,6 +217,38 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
         assigned.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await memberClient.GetAsync("/api/profile")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         (await RefreshAsync(_factory.CreateClient(), login.RefreshToken!)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task SetPassword_Member_TheNewPasswordWorksAndEveryOldSessionEnds()
+    {
+        const string newPassword = "Admin-Set-Pass-1!";
+        var (memberId, login) = await SignInNewUserAsync();
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var email = (await admin.GetFromJsonAsync<AdminUserDetailDto>($"/api/admin/users/{memberId}"))!.Email!;
+
+        var response = await admin.PostAsJsonAsync($"/api/admin/users/{memberId}/set-password", new AdminSetPasswordDto { NewPassword = newPassword });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await ClientWithBearer(login.Token!).GetAsync("/api/profile")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        (await RefreshAsync(_factory.CreateClient(), login.RefreshToken!)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        var oldPasswordLogin = await _factory.CreateClient().PostAsJsonAsync("/api/auth/login",
+            new LoginRequestDto { Email = email, Password = CustomWebAppFactory.TestPassword });
+        var newPasswordLogin = await _factory.CreateClient().PostAsJsonAsync("/api/auth/login",
+            new LoginRequestDto { Email = email, Password = newPassword });
+        oldPasswordLogin.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        newPasswordLogin.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task SetPassword_AdminAccount_Returns400()
+    {
+        var (otherAdminId, _) = await SignInNewUserAsync("Admin");
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var response = await admin.PostAsJsonAsync($"/api/admin/users/{otherAdminId}/set-password", new AdminSetPasswordDto { NewPassword = "Admin-Set-Pass-1!" });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
