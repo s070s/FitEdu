@@ -91,6 +91,7 @@ public class PublicRateLimitTests : IClassFixture<CustomWebAppFactory>
     [Theory]
     [InlineData("api/site/background-image", "GET")]
     [InlineData("api/media/{*filePath}", "GET")]
+    [InlineData("api/lessons/{lessonId:guid}/asset", "GET")]
     public void FilesTheBrowserFetchesPerPage_AreDeliberatelyNotLimited(string route, string method)
     {
         PolicyFor(route, method).ShouldBeNull();
