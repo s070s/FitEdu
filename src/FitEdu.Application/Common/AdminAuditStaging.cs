@@ -11,7 +11,7 @@ namespace FitEdu.Application.Common;
 /// when the action fails the row is dropped again with <see cref="Discard"/>, so a later save of the same
 /// request cannot store a row for something that did not happen.
 /// </summary>
-public static class AdminAudit
+public static class AdminAuditStaging
 {
     public static AdminAuditEntry Stage(
         IApplicationDbContext context,

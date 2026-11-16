@@ -208,7 +208,7 @@ public partial class AuthService : IAuthService
         var token = CreateSignInToken(userId: target.Id, adminBackupId: adminId, securityStamp: stamp, rememberMe: false);
 
         // Saved before the ticket leaves the service, so a session is never handed out without its row.
-        AdminAudit.Stage(_context, adminId, target.Id, AdminAuditAction.ImpersonationStarted, DateTimeOffset.UtcNow);
+        AdminAuditStaging.Stage(_context, adminId, target.Id, AdminAuditAction.ImpersonationStarted, DateTimeOffset.UtcNow);
         await _context.SaveChangesAsync();
         LogImpersonationTokenIssued(_logger, adminId, userId);
         return new AuthResponseDto { Success = true, Token = token };

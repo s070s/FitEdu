@@ -438,7 +438,7 @@ public partial class AdminUserService(
         var (token, expiration) = await tokenService.GenerateImpersonationTokenAsync(target, adminId);
 
         // Saved before the token leaves the service, so a session is never handed out without its row.
-        AdminAudit.Stage(context, adminId, userId, AdminAuditAction.ImpersonationStarted, timeProvider.GetUtcNow());
+        AdminAuditStaging.Stage(context, adminId, userId, AdminAuditAction.ImpersonationStarted, timeProvider.GetUtcNow());
         await context.SaveChangesAsync(cancellationToken);
 
         LogImpersonationStarted(logger, adminId, userId);
@@ -534,13 +534,13 @@ public partial class AdminUserService(
 
     // The audit row of this action, staged so the save that stores the action stores the row too.
     private AdminAuditEntry StageAudit(AdminAuditAction action, string targetUserId, string? detail = null)
-        => AdminAudit.Stage(context, ActingAdmin, targetUserId, action, timeProvider.GetUtcNow(), detail);
+        => AdminAuditStaging.Stage(context, ActingAdmin, targetUserId, action, timeProvider.GetUtcNow(), detail);
 
     // A failed action leaves no row, not even one that a later save of the same request could store.
     private void DiscardAudit(AdminAuditEntry? audit)
     {
         if (audit is not null)
-            AdminAudit.Discard(context, audit);
+            AdminAuditStaging.Discard(context, audit);
     }
 
     private static bool HasConcurrencyFailure(IdentityResult result)
