@@ -272,7 +272,11 @@ public partial class AdminUserService(
         }
         catch (DbUpdateException ex)
         {
-            LogDeleteUserConstraintFailed(logger, ex, ActingAdmin, userId);
+            // A member erasing their own account (ProfileController) is not an admin action in the log.
+            if (userId == ActingAdmin)
+                LogOwnAccountErasureConstraintFailed(logger, ex, userId);
+            else
+                LogDeleteUserConstraintFailed(logger, ex, ActingAdmin, userId);
             return ServiceResult<string>.Conflict(error: "User could not be deleted because other data still references the account.");
         }
 
@@ -280,7 +284,6 @@ public partial class AdminUserService(
         if (!string.IsNullOrEmpty(avatarPath))
             await DeleteAvatarFileAsync(avatarPath, userId, cancellationToken);
 
-        // A member erasing their own account (ProfileController) is not an admin action in the log.
         if (userId == ActingAdmin)
             LogAccountErasedByOwner(logger, userId);
         else
@@ -507,6 +510,9 @@ public partial class AdminUserService(
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Admin {AdminId} deleting user {UserId} failed on a database constraint")]
     private static partial void LogDeleteUserConstraintFailed(ILogger logger, Exception exception, string adminId, string userId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "User {UserId} deleting their own account failed on a database constraint")]
+    private static partial void LogOwnAccountErasureConstraintFailed(ILogger logger, Exception exception, string userId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} deleted user {UserId} and associated chat/call history")]
     private static partial void LogUserDeleted(ILogger logger, string adminId, string userId);

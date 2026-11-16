@@ -184,6 +184,23 @@ public class AdminUserServiceTests
     }
 
     [Fact]
+    public async Task DeleteUser_OwnAccountFailsOnAConstraint_LogsAnOwnerNotAnAdmin()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.DeleteAsync(Arg.Any<ApplicationUser>()).ThrowsAsync(new DbUpdateException("FK violation"));
+        var log = new RecordingLogger<AdminUserService>();
+
+        await NewService(db, userManager, logger: log, actingAdminId: "member").DeleteUserAsync("member");
+
+        log.Errors.ShouldContain(line => line.Contains("User member deleting their own account failed on a database constraint"));
+        log.Errors.ShouldNotContain(line => line.Contains("Admin member"));
+    }
+
+    [Fact]
     public async Task DeleteUser_WithAnAvatar_DeletesTheFileOnceTheUserIsGone()
     {
         await using var db = DbContextFactory.CreateSqlite();
