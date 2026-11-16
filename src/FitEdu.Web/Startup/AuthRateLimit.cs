@@ -21,7 +21,7 @@ public static class AuthRateLimit
 
     public static RateLimitPartition<string> PartitionFor(HttpContext httpContext)
     {
-        var partitionKey = PublicRateLimit.PartitionKeyFor(httpContext.Connection.RemoteIpAddress);
+        var partitionKey = PublicRateLimit.PartitionKeyForRequest(httpContext);
         if (partitionKey is null)
             return RateLimitPartition.GetNoLimiter(UnlimitedPartitionKey);
 

@@ -5,9 +5,11 @@ namespace FitEdu.Web.Startup;
 
 /// <summary>
 /// The "public" rate limiter for the anonymous read endpoints (catalogue, exercises, blog, search…):
-/// a fixed window per caller IP address. The app's own loopback calls are never limited: every
-/// guest's Blazor page reaches the API through them, so one shared loopback bucket would throttle
-/// every visitor at once. The test server reports no address at all and is not limited either.
+/// a fixed window per caller IP address. The app's own calls are never limited: every guest's
+/// Blazor page reaches the API through them, so one shared bucket would throttle every visitor at
+/// once. They are recognised by their loopback address, or (outside Development they go to the
+/// public address) by the secret header of <see cref="SelfCallMarker"/>. The test server reports no
+/// address at all and is not limited either.
 /// </summary>
 public static class PublicRateLimit
 {
@@ -22,7 +24,7 @@ public static class PublicRateLimit
 
     public static RateLimitPartition<string> PartitionFor(HttpContext httpContext)
     {
-        var partitionKey = PartitionKeyFor(httpContext.Connection.RemoteIpAddress);
+        var partitionKey = PartitionKeyForRequest(httpContext);
         if (partitionKey is null)
             return RateLimitPartition.GetNoLimiter(UnlimitedPartitionKey);
 
@@ -33,6 +35,13 @@ public static class PublicRateLimit
             QueueLimit = 0
         });
     }
+
+    /// <summary>
+    /// The request's bucket: null (not limited) for the app's own marked calls (<see cref="SelfCallMarker"/>),
+    /// else the bucket of its address.
+    /// </summary>
+    public static string? PartitionKeyForRequest(HttpContext httpContext) =>
+        SelfCallMarker.IsSelfCall(httpContext) ? null : PartitionKeyFor(httpContext.Connection.RemoteIpAddress);
 
     // A provider hands one connection a whole /64, so a caller could otherwise pick a fresh address
     // per request and never reach the limit.

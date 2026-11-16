@@ -435,14 +435,24 @@ public static class ServiceRegistrationExtensions
         // StreamChatAsync already catches connection failures itself.
         void ConfigureStreaming(HttpClient c) => c.BaseAddress = new Uri(selfBase);
 
-        // ConfigureHttpClientDefaults adds the handler to every IHttpClientFactory client in the app,
+        // P03-1: outside Development the app calls itself at its public address, where the rate
+        // limiters see an outside caller; the marker lets them recognise the app's own calls.
+        builder.Services.AddSingleton(new SelfCallMarker(builder.Configuration[SelfCallMarker.SecretSetting], new Uri(selfBase)));
+        builder.Services.AddTransient<SelfCallHandler>();
+
+        // ConfigureHttpClientDefaults adds the handlers to every IHttpClientFactory client in the app,
         // not only the ones below. That is right today: every factory client calls this app's own API,
         // which then answers (messages, Identity errors) in the language of the page. The Ollama
         // assistant makes its own HttpClient, so it is not affected. A future factory client for an
         // outside service would send the member's language too; add it to the loopback clients by
-        // name instead if that matters.
+        // name instead if that matters. SelfCallHandler needs no such care: it adds its secret header
+        // only to requests for the app's own address, whatever the client.
         builder.Services.AddTransient<AcceptLanguageHandler>();
-        builder.Services.ConfigureHttpClientDefaults(http => http.AddHttpMessageHandler<AcceptLanguageHandler>());
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            http.AddHttpMessageHandler<AcceptLanguageHandler>();
+            http.AddHttpMessageHandler<SelfCallHandler>();
+        });
 
         // Loopback client without the auth handler; no page uses it since the dev buttons went (P02-6):
         // AcceptLanguageHandlerTests and LocalizedIdentityErrorDescriberTests call the API through it.

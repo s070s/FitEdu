@@ -22,7 +22,7 @@ restart at a time. See `.env.template` for the full local-dev list.
 
 Blazor Server renders pages by calling the app's **own** REST API over an in-process
 `HttpClient` (`Startup/ServiceRegistrationExtensions.cs`, `ResolveSelfBaseUrl`) — a deliberate
-architectural tradeoff (ARCH-1), not a bug. Two things follow:
+architectural tradeoff (ARCH-1), not a bug. Three things follow:
 
 1. **`SelfBaseUrl` must be set to the real bound base address outside Development.** The app
    fails fast at startup if it's unset or still points at `localhost` in a non-Development
@@ -31,6 +31,14 @@ architectural tradeoff (ARCH-1), not a bug. Two things follow:
    This is *not* validated at startup — if the cert isn't trusted, every API-backed page
    renders silently empty (`ApiClientBase` swallows non-success responses) instead of
    erroring visibly.
+3. **The app's own calls must be recognised by the rate limiters.** Outside Development the
+   loopback call goes to `SelfBaseUrl`, the public address, so it reaches the app from an outside
+   address. Its `HttpClient`s therefore send the header `X-FitEdu-Self-Call` with a secret, to the
+   app's own address only, and the `"public"` and `"auth"` limiters skip a request that carries the
+   matching secret (`Startup/SelfCallMarker.cs`). A random secret is made at every start; set
+   `SelfCall:Secret` (≥ 32 characters, the same on every instance) only when several instances
+   call each other through a load balancer. Without the marker every visitor's page load would
+   share one limit and a busy site would answer its own pages with 429. The secret is never logged.
 
 ## DataProtection key ring
 

@@ -17,12 +17,15 @@ public class SelfCallingWebAppFactory : CustomWebAppFactory
     {
         base.ConfigureWebHost(builder);
 
-        builder.ConfigureTestServices(services =>
-            services.ConfigureAll<HttpClientFactoryOptions>(options =>
-                options.HttpMessageHandlerBuilderActions.Add(handlerBuilder =>
-                {
-                    var testServer = (TestServer)handlerBuilder.Services.GetRequiredService<IServer>();
-                    handlerBuilder.PrimaryHandler = testServer.CreateHandler();
-                })));
+        builder.ConfigureTestServices(RouteSelfCallsToTheTestServer);
     }
+
+    /// <summary>Makes every HttpClient of the factory reach the in-memory test server (also for a Production host).</summary>
+    public static void RouteSelfCallsToTheTestServer(IServiceCollection services) =>
+        services.ConfigureAll<HttpClientFactoryOptions>(options =>
+            options.HttpMessageHandlerBuilderActions.Add(handlerBuilder =>
+            {
+                var testServer = (TestServer)handlerBuilder.Services.GetRequiredService<IServer>();
+                handlerBuilder.PrimaryHandler = testServer.CreateHandler();
+            }));
 }
