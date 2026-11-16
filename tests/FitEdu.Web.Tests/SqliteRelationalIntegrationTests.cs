@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
 using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
@@ -123,6 +125,35 @@ public class SqliteRelationalIntegrationTests
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await response.Content.ReadAsStringAsync()).ShouldContain(title);
+    }
+
+    [Fact]
+    public async Task Analytics_CourseStats_ListTheMostEnrolledCourseFirst()
+    {
+        // The ordering is part of the SQL (GROUP BY, ORDER BY COUNT) that InMemory runs in memory instead.
+        // SQLite enforces the Enrollment to User foreign key, so the members are real rows.
+        var quietCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Analytics quiet course", IsPublished = true };
+        var popularCourse = new Course { Id = Guid.NewGuid(), TitleEn = "Analytics popular course", IsPublished = true };
+        await _factory.SeedAsync(async db =>
+        {
+            db.Courses.AddRange(quietCourse, popularCourse);
+            for (var member = 0; member < 4; member++)
+            {
+                var memberId = $"analytics-member-{Guid.NewGuid():N}";
+                db.Users.Add(new ApplicationUser { Id = memberId, UserName = memberId, Email = $"{memberId}@test.local", FirstName = "Analytics", LastName = "Member" });
+                db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = memberId, CourseId = member == 0 ? quietCourse.Id : popularCourse.Id });
+            }
+
+            await db.SaveChangesAsync();
+        });
+        var client = await _factory.CreateAuthenticatedClientAsync("Admin");
+
+        var summary = await client.GetFromJsonAsync<AnalyticsSummaryDto>("/api/admin/analytics/summary");
+
+        var enrolmentCounts = summary!.CourseStats.Select(stat => stat.EnrollmentCount).ToList();
+        enrolmentCounts.ShouldBe(enrolmentCounts.OrderByDescending(count => count).ToList());
+        var courseIds = summary.CourseStats.Select(stat => stat.CourseId).ToList();
+        courseIds.IndexOf(popularCourse.Id).ShouldBeLessThan(courseIds.IndexOf(quietCourse.Id));
     }
 
     [Fact]
