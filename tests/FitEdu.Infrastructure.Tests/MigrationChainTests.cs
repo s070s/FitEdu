@@ -18,14 +18,18 @@ namespace FitEdu.Infrastructure.Tests;
 /// <para><see cref="Model_HasNoPendingChanges_AgainstSqlServer"/> is provider-correct and needs no
 /// database — it catches the most common migration bug (a model change with no matching migration).
 /// <see cref="FullMigrationChain_AppliesCleanly_AgainstLocalDb"/> actually applies every migration
-/// to a throwaway LocalDB database; it self-skips when LocalDB is unreachable (non-Windows), the
-/// same opt-out shape the Ollama live smoke test uses, so it runs automatically on developer machines
-/// without breaking hosts that lack SQL Server.</para>
+/// to a throwaway LocalDB database. When LocalDB is unreachable (non-Windows) it returns early, so it
+/// runs automatically on developer machines without breaking hosts that lack SQL Server. xUnit 2.x
+/// (this solution's version) cannot skip a test at run time (<c>Assert.Skip</c> needs xUnit v3), so
+/// such a run is reported as passed: it writes <see cref="NotRunMessage"/> to the test output, and the
+/// check that the chain applies is <c>tools/check.ps1 -Migrations</c>, which fails when LocalDB is
+/// unreachable.</para>
 /// </summary>
 public class MigrationChainTests(ITestOutputHelper output)
 {
     private const string SqlServerProvider = "Microsoft.EntityFrameworkCore.SqlServer";
     private const string LocalDbServer = "Server=(localdb)\\MSSQLLocalDB;Trusted_Connection=True;";
+    private const string NotRunMessage = "LocalDB unreachable: this test did NOT run (xUnit 2.x cannot skip at run time, so it is counted as passed).";
 
     [Fact]
     public void Model_HasNoPendingChanges_AgainstSqlServer()
@@ -47,7 +51,7 @@ public class MigrationChainTests(ITestOutputHelper output)
     {
         if (!await LocalDbIsReachableAsync())
         {
-            output.WriteLine("LocalDB unreachable — full migration-chain test skipped.");
+            output.WriteLine(NotRunMessage);
             return;
         }
 
@@ -94,7 +98,7 @@ public class MigrationChainTests(ITestOutputHelper output)
     {
         if (!await LocalDbIsReachableAsync())
         {
-            output.WriteLine("LocalDB unreachable — data migration test skipped.");
+            output.WriteLine(NotRunMessage);
             return;
         }
 
