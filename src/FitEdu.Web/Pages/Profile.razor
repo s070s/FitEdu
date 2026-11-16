@@ -82,7 +82,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="profile-avatar">@ProfileRes.LabelAvatar</label>
                             <div>
-                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" OnChange="HandleAvatarUpload" Accept="image/*" />
+                                <FilePicker @ref="_avatarPicker" Id="profile-avatar" DescribedBy="@(messageType == ErrorAlert && !string.IsNullOrEmpty(message) ? "profile-message" : null)" OnChange="HandleAvatarUpload" Accept="image/*" />
                                 @if (_uploadingAvatar)
                                 {
                                     @* The status wrapper is read out; only the spinner picture is hidden. *@
@@ -181,7 +181,7 @@
                     </ChildContent>
                 </FormCardSection>
 
-                <DismissibleAlert Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
+                <DismissibleAlert Id="profile-message" Message="@message" AlertType="@messageType" OnDismiss="@(() => message = string.Empty)" />
 
                 @if (!_isImpersonating)
                 {

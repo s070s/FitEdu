@@ -156,6 +156,25 @@ public class ProfilePageTests : BunitContext
     }
 
     [Fact]
+    public void AvatarError_IsLinkedToThePicker_AndASuccessMessageIsNot()
+    {
+        _profileConsumer.UploadAvatarAsync(Arg.Any<IBrowserFile>()).Returns(true);
+        var page = Render<Profile>();
+        page.WaitForAssertion(() => page.Find("#profile-avatar"));
+        var picker = page.FindComponent<FilePicker>();
+
+        FakeBrowserFile.Choose(picker, new FakeBrowserFile("me.png", UploadLimits.MaxImageBytes + 1, "image/png"));
+
+        page.Find(".alert[role=alert]").Id.ShouldBe("profile-message");
+        page.Find("#profile-avatar").GetAttribute("aria-describedby")!.ShouldContain("profile-message");
+
+        FakeBrowserFile.Choose(picker, new FakeBrowserFile("me.png", 1024, "image/png"));
+
+        page.WaitForAssertion(() => page.Find(".alert-success").TextContent.ShouldContain(ProfileRes.AvatarUploadedSuccess));
+        page.Find("#profile-avatar").GetAttribute("aria-describedby")!.ShouldNotContain("profile-message");
+    }
+
+    [Fact]
     public void PreferNotToSayLevel_ShowsNoLevelChip()
     {
         _profileConsumer.GetProfileAsync().Returns(AliceProfile with { Status = UserStatus.Other });

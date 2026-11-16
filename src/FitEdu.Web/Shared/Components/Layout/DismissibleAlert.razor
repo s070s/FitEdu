@@ -2,7 +2,7 @@
 
 @if (!string.IsNullOrEmpty(Message))
 {
-    <div class="alert alert-@AlertType @(Dismissible ? "alert-dismissible" : "") mt-3" role="alert">
+    <div id="@Id" class="alert alert-@AlertType @(Dismissible ? "alert-dismissible" : "") mt-3" role="alert">
         @Message
         @if (Dismissible)
         {
@@ -12,6 +12,8 @@
 }
 
 @code {
+    /// <summary>The id of the alert element, so a field can point at it with aria-describedby.</summary>
+    [Parameter] public string? Id { get; set; }
     [Parameter] public string Message { get; set; } = "";
     [Parameter] public string AlertType { get; set; } = "info";
     [Parameter] public EventCallback OnDismiss { get; set; }
