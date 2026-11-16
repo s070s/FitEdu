@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.TestSupport;
 using Shouldly;
 using Xunit;
 
@@ -54,6 +56,15 @@ internal static class SecurityHeaderAssertions
             .Where(entry => entry.Source.Contains("jsdelivr", StringComparison.Ordinal))
             .ToList();
         jsDelivrSources.ShouldBe([("script-src", QuillSource), ("style-src", QuillSource)], ignoreOrder: true);
+    }
+
+    /// <summary>A page without an editor links no CDN file and no Quill file; only the local loader script is there.</summary>
+    public static void ShouldNotLoadQuillFromTheCdn(this string pageHtml)
+    {
+        pageHtml.ShouldContain("js/quill-interop");
+        pageHtml.ShouldNotContain("jsdelivr", Case.Insensitive);
+        pageHtml.ShouldNotContain("quill.js", Case.Insensitive);
+        pageHtml.ShouldNotContain("quill.snow", Case.Insensitive);
     }
 
     private static Dictionary<string, string[]> ParsePolicy(string header) => header
@@ -118,6 +129,14 @@ public class DevelopmentSecurityHeadersTests : IClassFixture<CustomWebAppFactory
 
         response.Headers.Contains("Strict-Transport-Security").ShouldBeFalse();
     }
+
+    [Fact]
+    public async Task HomePage_LoadsNoQuillAndNoCdn()
+    {
+        var body = await _factory.CreateClient().GetStringAsync("/");
+
+        body.ShouldNotLoadQuillFromTheCdn();
+    }
 }
 
 /// <summary>The headers the deployed (Production) host sends.</summary>
@@ -173,5 +192,43 @@ public class ProductionSecurityHeadersTests : IClassFixture<ProductionSecurityHe
         body.ShouldNotContain("the blog store is down");
         // The exception handler clears the response, so the headers have to be set as the response starts.
         response.ShouldCarryTheSecurityHeaders(development: false);
+    }
+
+    [Fact]
+    public async Task HomePage_LoadsNoQuillAndNoCdn()
+    {
+        var body = await _factory.CreateHttpsClient().GetStringAsync("/");
+
+        body.ShouldNotLoadQuillFromTheCdn();
+    }
+}
+
+/// <summary>quill-interop.js loads Quill itself, so what it asks the CDN for has to match the Content-Security-Policy.</summary>
+public class QuillLazyLoadTests
+{
+    private static readonly string Script = File.ReadAllText(Path.Combine(RepoPaths.WebRoot, "js", "quill-interop.js"));
+
+    [Theory]
+    [InlineData("dist/quill.js", "sha256-9hV8cqybP1HN6tQmM1aIoCexJAXZ1qTardOKZ2stf/I=")]
+    [InlineData("dist/quill.snow.css", "sha256-HHlIzROqkvrGOQMZvB5eRhgj2hcVGdOnaNtWFk+HFjY=")]
+    public void QuillFile_IsLoadedFromTheAllowedPath_WithItsIntegrityHash(string file, string integrity)
+    {
+        Script.ShouldContain($"'{SecurityHeaderAssertions.QuillSource}{file}'");
+        Script.ShouldContain($"'{integrity}'");
+    }
+
+    [Fact]
+    public void QuillFiles_AreRequestedAsAnonymousCorsCalls_SoTheIntegrityCheckCanRun()
+    {
+        Script.ShouldContain("crossOrigin = 'anonymous'");
+    }
+
+    [Fact]
+    public void QuillInterop_NamesNoOtherCdnAddress()
+    {
+        var addresses = Regex.Matches(Script, "https://[^'\" ]+").Select(match => match.Value).ToList();
+
+        addresses.ShouldNotBeEmpty();
+        addresses.ShouldAllBe(address => address.StartsWith(SecurityHeaderAssertions.QuillSource, StringComparison.Ordinal));
     }
 }

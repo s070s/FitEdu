@@ -15,9 +15,6 @@
     @* Same render mode as Routes: a static outlet keeps the first page's title after in-app navigation. *@
     <HeadOutlet @rendermode="@(new InteractiveServerRenderMode(prerender: true))" />
 
-    <!-- Preconnect hint (Quill comes from jsDelivr) -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-
     <!-- Critical CSS (needed for first paint) -->
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <!-- Asset URLs are fingerprinted (cached for good, changed file = new URL). -->
@@ -34,13 +31,6 @@
     <link rel="apple-touch-icon" href="icon-192.png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link href="@Assets["FitEdu.Web.styles.css"]" rel="stylesheet" />
-
-    <!-- Non-critical CSS deferred until after first paint. media="print" defers application
-         without blocking render; js/lazy-css.js (external, not inline — SEC-5/CSP) flips
-         media back to "all" once each stylesheet has loaded (handles either load order). -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
-          media="print" data-lazy-css />
-    <script defer src="@Assets["js/lazy-css.js"]"></script>
 </head>
 
 <body>
@@ -55,8 +45,8 @@
         <button type="button" class="dismiss" title="@GlobalRes.Close" aria-label="@GlobalRes.Close"><span class="bi bi-x-lg" aria-hidden="true"></span></button>
     </div>
 
-    <!-- Defer heavy third-party JS -->
-    <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    @* Quill (script and stylesheet, from jsDelivr with integrity hashes) is not linked here: quill-interop.js loads it
+       when the first editor opens, so pages without an editor never ask the CDN for anything. *@
     <script defer src="@Assets["js/quill-interop.js"]"></script>
     <script defer src="@Assets["js/chat-interop.js"]"></script>
     <script defer src="@Assets["js/input-interop.js"]"></script>
