@@ -9,9 +9,10 @@ namespace FitEdu.Web.Hubs;
 
 /// <summary>
 /// Re-checks the signed-in account on every hub method call. The hubs only check the account when a
-/// connection opens, so without this an open connection would keep working after an admin disables
-/// the account, changes its roles or sets its password (each of those rotates the security stamp).
-/// A call from a disabled, deleted or stale session closes the connection and is refused.
+/// connection opens, and <see cref="Services.LiveConnectionRegistry"/> closes the open connections when an
+/// admin disables the account, changes its roles or sets its password (each of those rotates the security
+/// stamp). This filter is the guard for the actions themselves: a call from a disabled, deleted or stale
+/// session closes the connection and is refused, even if the connection was missed.
 /// </summary>
 public partial class ActiveSessionHubFilter : IHubFilter
 {

@@ -120,6 +120,10 @@ public static class ServiceRegistrationExtensions
         // Tracks live NotificationHub connections (per-user refcount) — the hub connects globally
         // in MainLayout, so this doubles as an online/offline signal for dispatch decisions.
         builder.Services.AddSingleton<NotificationConnectionTracker>();
+        // One instance, two ways in: the hubs register their connections on it, and the Application layer
+        // closes them through ILiveConnectionCloser when an admin ends a member's sessions.
+        builder.Services.AddSingleton<LiveConnectionRegistry>();
+        builder.Services.AddSingleton<ILiveConnectionCloser>(services => services.GetRequiredService<LiveConnectionRegistry>());
 
         // --- Web Services ---
         // Singleton: the sign-in page's attempt counters must outlive each Blazor circuit.
@@ -292,11 +296,12 @@ public static class ServiceRegistrationExtensions
         // minute behind an admin's edit.
         builder.Services.AddMemoryCache();
         // The hub filter re-checks the account and its security stamp on every chat and call hub
-        // call, so an open connection stops working once an admin disables the account or changes
-        // its roles/password. It is added per hub, not globally: a global filter would also run on
-        // Blazor's own circuit hub, where guests have no account and the sign-in cookie carries no
-        // bearer stamp claim, so every circuit would be refused. NotificationHub has no client
-        // methods to filter.
+        // call, so a call made on an open connection is refused once an admin disables the account or
+        // changes its roles/password; LiveConnectionRegistry also closes those open connections right
+        // away (chat, call and notifications). The filter is added per hub, not globally: a global
+        // filter would also run on Blazor's own circuit hub, where guests have no account and the
+        // sign-in cookie carries no bearer stamp claim, so every circuit would be refused.
+        // NotificationHub has no client methods to filter.
         builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = AppHubMessageLimitBytes)
             .AddHubOptions<ChatHub>(o => o.AddFilter<ActiveSessionHubFilter>())
             .AddHubOptions<CallHub>(o => o.AddFilter<ActiveSessionHubFilter>());

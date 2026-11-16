@@ -40,6 +40,7 @@ public class CallHubTests
         public required Dictionary<string, IClientProxy> CallGroups;
         public required Dictionary<string, IClientProxy> ChatGroups;
         public required UserManager<ApplicationUser> Um;
+        public required LiveConnectionRegistry LiveConnections;
     }
 
     private static ApplicationUser AppUser(string id, bool enabled = true) =>
@@ -91,6 +92,7 @@ public class CallHubTests
         var um = IdentityMocks.MockUserManager();
 
         registry ??= new CallRegistry();
+        var liveConnections = new LiveConnectionRegistry();
         var callEventService = new CallEventService(db, um);
         var callQueryService = new CallQueryService(db, um);
         var options = Options.Create(new WebRtcOptions { RingTimeoutSeconds = 45, MaxParticipants = 6 });
@@ -101,7 +103,7 @@ public class CallHubTests
         var chatHubContext = Substitute.For<IHubContext<ChatHub>>();
         chatHubContext.Clients.Returns(chatClients);
 
-        var hub = new CallHub(callEventService, callQueryService, registry, um, options, chatHubContext, NullLogger<CallHub>.Instance)
+        var hub = new CallHub(callEventService, callQueryService, registry, liveConnections, um, options, chatHubContext, NullLogger<CallHub>.Instance)
         {
             Clients = clients,
             Context = context,
@@ -118,7 +120,8 @@ public class CallHubTests
             All = all,
             CallGroups = callGroups,
             ChatGroups = chatGroups,
-            Um = um
+            Um = um,
+            LiveConnections = liveConnections
         };
     }
 
@@ -138,6 +141,24 @@ public class CallHubTests
 
         h.Context.Received().Abort();
         await h.Groups.DidNotReceive().AddToGroupAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+        h.LiveConnections.CloseAll(Initiator);
+        h.Context.Received(1).Abort(); // only the refusal itself: a refused connection is never registered
+    }
+
+    [Fact]
+    public async Task OnConnected_EnabledUser_RegistersTheConnection_AndDisconnectUnregistersIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var h = BuildHub(db, Initiator);
+        h.Um.FindByIdAsync(Initiator).Returns(AppUser(Initiator));
+
+        await h.Hub.OnConnectedAsync();
+        h.LiveConnections.CloseAll(Initiator);
+        h.Context.Received(1).Abort();
+
+        await h.Hub.OnDisconnectedAsync(null);
+        h.LiveConnections.CloseAll(Initiator);
+        h.Context.Received(1).Abort();
     }
 
     // ---- Presence ---------------------------------------------------------------

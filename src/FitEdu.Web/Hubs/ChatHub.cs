@@ -25,6 +25,7 @@ public partial class ChatHub : Hub
     private readonly IChatCommandService _chatCommandService;
     private readonly INotificationDispatcher _notifications;
     private readonly NotificationConnectionTracker _notificationTracker;
+    private readonly LiveConnectionRegistry _liveConnections;
     private readonly ILogger<ChatHub> _logger;
 
     public ChatHub(
@@ -32,12 +33,14 @@ public partial class ChatHub : Hub
         IChatCommandService chatCommandService,
         INotificationDispatcher notifications,
         NotificationConnectionTracker notificationTracker,
+        LiveConnectionRegistry liveConnections,
         ILogger<ChatHub> logger)
     {
         _userManager = userManager;
         _chatCommandService = chatCommandService;
         _notifications = notifications;
         _notificationTracker = notificationTracker;
+        _liveConnections = liveConnections;
         _logger = logger;
     }
 
@@ -54,6 +57,7 @@ public partial class ChatHub : Hub
                 return;
             }
 
+            _liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             LogUserConnected(_logger, userId);
         }
@@ -63,6 +67,7 @@ public partial class ChatHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        _liveConnections.Unregister(Context);
         var userId = Context.UserIdentifier;
         if (userId is not null)
         {

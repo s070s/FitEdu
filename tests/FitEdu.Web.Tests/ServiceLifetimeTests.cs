@@ -24,6 +24,8 @@ public class ServiceLifetimeTests : IClassFixture<ServiceLifetimeTests.Registrat
     [InlineData(typeof(PresenceService), ServiceLifetime.Scoped)]
     [InlineData(typeof(CallRegistry), ServiceLifetime.Singleton)]
     [InlineData(typeof(NotificationConnectionTracker), ServiceLifetime.Singleton)]
+    [InlineData(typeof(LiveConnectionRegistry), ServiceLifetime.Singleton)]
+    [InlineData(typeof(ILiveConnectionCloser), ServiceLifetime.Singleton)]
     [InlineData(typeof(IAuthAttemptLimiter), ServiceLifetime.Singleton)]
     // ChatService is a typed HttpClient (transient), unlike the scoped CallService: each component that injects it gets
     // its own instance and hub connection. It works today; a change to either lifetime has to be a deliberate one.
@@ -31,6 +33,13 @@ public class ServiceLifetimeTests : IClassFixture<ServiceLifetimeTests.Registrat
     public void RealtimeServices_KeepTheirLifetime(Type serviceType, ServiceLifetime expected)
     {
         _factory.Registrations.Single(descriptor => descriptor.ServiceType == serviceType).Lifetime.ShouldBe(expected);
+    }
+
+    [Fact]
+    public void LiveConnectionCloser_IsTheSameInstanceTheHubsRegisterOn()
+    {
+        _factory.Services.GetRequiredService<ILiveConnectionCloser>()
+            .ShouldBeSameAs(_factory.Services.GetRequiredService<LiveConnectionRegistry>());
     }
 
     [Fact]

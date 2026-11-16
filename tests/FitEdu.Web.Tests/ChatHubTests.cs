@@ -33,6 +33,7 @@ public class ChatHubTests
         public required UserManager<ApplicationUser> Um;
         public required INotificationDispatcher Notifications;
         public required NotificationConnectionTracker Tracker;
+        public required LiveConnectionRegistry LiveConnections;
     }
 
     private static ApplicationUser AppUser(string id, bool enabled = true) =>
@@ -56,9 +57,10 @@ public class ChatHubTests
         var um = IdentityMocks.MockUserManager();
         var notifications = Substitute.For<INotificationDispatcher>();
         var tracker = new NotificationConnectionTracker();
+        var liveConnections = new LiveConnectionRegistry();
         var commandService = new ChatCommandService(db);
 
-        var hub = new ChatHub(um, commandService, notifications, tracker, NullLogger<ChatHub>.Instance)
+        var hub = new ChatHub(um, commandService, notifications, tracker, liveConnections, NullLogger<ChatHub>.Instance)
         {
             Clients = clients,
             Context = context,
@@ -68,7 +70,7 @@ public class ChatHubTests
         return new Harness
         {
             Hub = hub, Caller = caller, Group = group, Context = context, Groups = groups, Um = um,
-            Notifications = notifications, Tracker = tracker
+            Notifications = notifications, Tracker = tracker, LiveConnections = liveConnections
         };
     }
 
@@ -86,6 +88,24 @@ public class ChatHubTests
 
         h.Context.Received().Abort();
         await h.Groups.DidNotReceive().AddToGroupAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+        h.LiveConnections.CloseAll(Me);
+        h.Context.Received(1).Abort(); // only the refusal itself: a refused connection is never registered
+    }
+
+    [Fact]
+    public async Task OnConnected_EnabledUser_RegistersTheConnection_AndDisconnectUnregistersIt()
+    {
+        await using var db = DbContextFactory.CreateInMemory();
+        var h = BuildHub(db, Me);
+        h.Um.FindByIdAsync(Me).Returns(AppUser(Me));
+
+        await h.Hub.OnConnectedAsync();
+        h.LiveConnections.CloseAll(Me);
+        h.Context.Received(1).Abort();
+
+        await h.Hub.OnDisconnectedAsync(null);
+        h.LiveConnections.CloseAll(Me);
+        h.Context.Received(1).Abort();
     }
 
     [Fact]

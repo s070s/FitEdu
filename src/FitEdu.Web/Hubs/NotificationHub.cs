@@ -12,13 +12,14 @@ namespace FitEdu.Web.Hubs;
 /// <c>IHubContext&lt;NotificationHub&gt;</c>.
 /// </summary>
 [Authorize]
-public class NotificationHub(NotificationConnectionTracker tracker) : Hub
+public class NotificationHub(NotificationConnectionTracker tracker, LiveConnectionRegistry liveConnections) : Hub
 {
     public override async Task OnConnectedAsync()
     {
         var userId = Context.UserIdentifier;
         if (userId is not null)
         {
+            liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             tracker.MarkConnected(userId);
         }
@@ -28,6 +29,7 @@ public class NotificationHub(NotificationConnectionTracker tracker) : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        liveConnections.Unregister(Context);
         var userId = Context.UserIdentifier;
         if (userId is not null)
         {

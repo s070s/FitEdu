@@ -23,6 +23,7 @@ public partial class AdminUserService(
     IApplicationDbContext context,
     IEmailService emailService,
     IFileStorage fileStorage,
+    ILiveConnectionCloser liveConnectionCloser,
     ICurrentUserAccessor currentUser,
     TimeProvider timeProvider,
     IOptions<AppOptions> appOptions) : IAdminUserService
@@ -442,6 +443,7 @@ public partial class AdminUserService(
         // SEC-1: this rotated SecurityStamp — revoke outstanding refresh tokens explicitly
         // rather than waiting for RefreshAsync's stamp check to reject them one by one.
         await RefreshTokenRevocation.RevokeActiveTokensAsync(context, userId, cancellationToken);
+        liveConnectionCloser.CloseAll(userId);
 
         LogPasswordSetByAdmin(logger, ActingAdmin, userId);
         await SendPasswordChangedNoticeAsync(user, cancellationToken);
@@ -469,6 +471,7 @@ public partial class AdminUserService(
     // what is already signed in, and the refresh tokens can no longer renew it. The refresh tokens go first, so a
     // failed stamp update never leaves a token that could still renew a session. The stamp update saves every
     // pending change of the user too: userChange runs right before it, so that change and the stamp are one UPDATE.
+    // Once the stamp is saved, the open chat, call and notification connections of the user are closed too.
     private async Task<IdentityResult> EndSessionsAsync(
         ApplicationUser user, CancellationToken cancellationToken, Action<ApplicationUser>? userChange = null)
     {
@@ -476,14 +479,19 @@ public partial class AdminUserService(
 
         userChange?.Invoke(user);
         var stampResult = await userManager.UpdateSecurityStampAsync(user);
-        if (!HasConcurrencyFailure(stampResult))
-            return stampResult;
+        if (HasConcurrencyFailure(stampResult))
+        {
+            // The row changed since it was read (a sign-in, a second admin). The tracked user still carries the old
+            // concurrency stamp, so take the stored values, apply the change again and try once more.
+            await context.Entry(user).ReloadAsync(cancellationToken);
+            userChange?.Invoke(user);
+            stampResult = await userManager.UpdateSecurityStampAsync(user);
+        }
 
-        // The row changed since it was read (a sign-in, a second admin). The tracked user still carries the old
-        // concurrency stamp, so take the stored values, apply the change again and try once more.
-        await context.Entry(user).ReloadAsync(cancellationToken);
-        userChange?.Invoke(user);
-        return await userManager.UpdateSecurityStampAsync(user);
+        if (stampResult.Succeeded)
+            liveConnectionCloser.CloseAll(user.Id);
+
+        return stampResult;
     }
 
     private static bool HasConcurrencyFailure(IdentityResult result)

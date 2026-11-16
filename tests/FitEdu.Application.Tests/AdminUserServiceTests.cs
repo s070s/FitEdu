@@ -28,7 +28,7 @@ public class AdminUserServiceTests
     private static AdminUserService NewService(
         ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null,
         IFileStorage? fileStorage = null, ILogger<AdminUserService>? logger = null, string actingAdminId = "admin-actor",
-        RoleManager<IdentityRole>? roleManager = null)
+        RoleManager<IdentityRole>? roleManager = null, ILiveConnectionCloser? liveConnectionCloser = null)
     {
         roleManager ??= Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
@@ -44,6 +44,7 @@ public class AdminUserServiceTests
             db,
             emailService ?? Substitute.For<IEmailService>(),
             fileStorage ?? Substitute.For<IFileStorage>(),
+            liveConnectionCloser ?? Substitute.For<ILiveConnectionCloser>(),
             currentUser,
             TimeProvider.System,
             Options.Create(new AppOptions { BaseUrl = "https://site.test" }));
@@ -846,5 +847,96 @@ public class AdminUserServiceTests
         result.IsSuccess.ShouldBeTrue();
         await userManager.Received(1).UpdateSecurityStampAsync(Arg.Any<ApplicationUser>());
         (await db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task DisableUser_ClosesTheMembersLiveConnections()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, UserManagerThatEndsSessions(db), liveConnectionCloser: closer).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        closer.Received(1).CloseAll("member");
+    }
+
+    [Fact]
+    public async Task DisableUser_WhenTheSessionsCannotBeEnded_ClosesNothing()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, liveConnectionCloser: closer).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeFalse();
+        closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
+    }
+
+    [Fact]
+    public async Task AssignRole_ClosesTheMembersLiveConnections()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(IdentityResult.Success);
+        var roleManager = Substitute.For<RoleManager<IdentityRole>>(Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
+        roleManager.RoleExistsAsync(RoleNames.Admin).Returns(true);
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, roleManager: roleManager, liveConnectionCloser: closer)
+            .AssignRoleAsync("member", RoleNames.Admin);
+
+        result.IsSuccess.ShouldBeTrue();
+        closer.Received(1).CloseAll("member");
+    }
+
+    [Fact]
+    public async Task RemoveRole_ClosesTheMembersLiveConnections()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(IdentityResult.Success);
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, liveConnectionCloser: closer).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.IsSuccess.ShouldBeTrue();
+        closer.Received(1).CloseAll("member");
+    }
+
+    [Fact]
+    public async Task SetPassword_ClosesTheMembersLiveConnections()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, UserManagerThatResetsPasswords(db), liveConnectionCloser: closer).SetPasswordAsync("member", "New-Pass-1!");
+
+        result.IsSuccess.ShouldBeTrue();
+        closer.Received(1).CloseAll("member");
+    }
+
+    [Fact]
+    public async Task SetPassword_RejectedPassword_ClosesNothing()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerThatResetsPasswords(db);
+        userManager.ResetPasswordAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(IdentityResult.Failed(new IdentityError { Description = "Too common." }));
+        var closer = Substitute.For<ILiveConnectionCloser>();
+
+        var result = await NewService(db, userManager, liveConnectionCloser: closer).SetPasswordAsync("member", "Password1!");
+
+        result.StatusCode.ShouldBe(400);
+        closer.DidNotReceiveWithAnyArgs().CloseAll(default!);
     }
 }

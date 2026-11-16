@@ -24,6 +24,7 @@ public partial class CallHub : Hub
     private readonly ICallEventService _callEventService;
     private readonly ICallQueryService _callQueryService;
     private readonly CallRegistry _registry;
+    private readonly LiveConnectionRegistry _liveConnections;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly WebRtcOptions _options;
     private readonly IHubContext<ChatHub> _chatHub;
@@ -33,6 +34,7 @@ public partial class CallHub : Hub
         ICallEventService callEventService,
         ICallQueryService callQueryService,
         CallRegistry registry,
+        LiveConnectionRegistry liveConnections,
         UserManager<ApplicationUser> userManager,
         IOptions<WebRtcOptions> options,
         IHubContext<ChatHub> chatHub,
@@ -41,6 +43,7 @@ public partial class CallHub : Hub
         _callEventService = callEventService;
         _callQueryService = callQueryService;
         _registry = registry;
+        _liveConnections = liveConnections;
         _userManager = userManager;
         _options = options.Value;
         _chatHub = chatHub;
@@ -60,6 +63,7 @@ public partial class CallHub : Hub
                 return;
             }
 
+            _liveConnections.Register(Context);
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             var wentOnline = _registry.AddUserConnection(userId);
             if (wentOnline)
@@ -75,6 +79,7 @@ public partial class CallHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        _liveConnections.Unregister(Context);
         var userId = Context.UserIdentifier;
         if (userId is not null)
         {

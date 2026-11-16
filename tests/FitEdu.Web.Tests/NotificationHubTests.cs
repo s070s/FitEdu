@@ -24,6 +24,7 @@ public class NotificationHubTests
         public required HubCallerContext Context;
         public required IGroupManager Groups;
         public required NotificationConnectionTracker Tracker;
+        public required LiveConnectionRegistry LiveConnections;
     }
 
     private static Harness Build(string? userId)
@@ -34,10 +35,11 @@ public class NotificationHubTests
 
         var groups = Substitute.For<IGroupManager>();
         var tracker = new NotificationConnectionTracker();
+        var liveConnections = new LiveConnectionRegistry();
 
-        var hub = new NotificationHub(tracker) { Context = context, Groups = groups };
+        var hub = new NotificationHub(tracker, liveConnections) { Context = context, Groups = groups };
 
-        return new Harness { Hub = hub, Context = context, Groups = groups, Tracker = tracker };
+        return new Harness { Hub = hub, Context = context, Groups = groups, Tracker = tracker, LiveConnections = liveConnections };
     }
 
     [Fact]
@@ -49,6 +51,20 @@ public class NotificationHubTests
 
         await h.Groups.Received(1).AddToGroupAsync("conn-1", $"user_{UserId}", Arg.Any<CancellationToken>());
         h.Tracker.IsOnline(UserId).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task OnConnected_RegistersTheConnection_AndDisconnectUnregistersIt()
+    {
+        var h = Build(UserId);
+
+        await h.Hub.OnConnectedAsync();
+        h.LiveConnections.CloseAll(UserId);
+        h.Context.Received(1).Abort();
+
+        await h.Hub.OnDisconnectedAsync(null);
+        h.LiveConnections.CloseAll(UserId);
+        h.Context.Received(1).Abort();
     }
 
     [Fact]
@@ -80,8 +96,8 @@ public class NotificationHubTests
         var first = Build(UserId);
         var second = Build(UserId);
         // Share one tracker across both "tabs" for this user.
-        var hub1 = new NotificationHub(tracker) { Context = first.Context, Groups = first.Groups };
-        var hub2 = new NotificationHub(tracker) { Context = second.Context, Groups = second.Groups };
+        var hub1 = new NotificationHub(tracker, new LiveConnectionRegistry()) { Context = first.Context, Groups = first.Groups };
+        var hub2 = new NotificationHub(tracker, new LiveConnectionRegistry()) { Context = second.Context, Groups = second.Groups };
 
         await hub1.OnConnectedAsync();
         await hub2.OnConnectedAsync();
