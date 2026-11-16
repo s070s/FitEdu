@@ -1,5 +1,4 @@
 using FitEdu.Application.DTOs;
-using System.Net.Http.Json;
 
 namespace FitEdu.Web.Consumers;
 
@@ -19,22 +18,8 @@ public class AdminUserConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
         return GetAsync<PagedResult<AdminUserDto>>(url);
     }
 
-    public Task<AdminUserDto?> GetUserAsync(string userId)
-        => GetAsync<AdminUserDto>($"api/admin/users/{userId}");
-
     public Task<bool> DeleteUserAsync(string userId)
         => DeleteAsync($"api/admin/users/{userId}");
-
-    public async Task<string?> ForcePasswordResetAsync(string userId)
-    {
-        await EnsureAuthorizationAsync();
-        var response = await Http.PostAsync($"api/admin/users/{userId}/force-password-reset", null);
-        if (!response.IsSuccessStatusCode)
-            return null;
-
-        var result = await response.Content.ReadFromJsonAsync<ForcePasswordResetResponse>();
-        return result?.ResetToken;
-    }
 
     public Task<bool> DisableUserAsync(string userId)
         => ActionAsync($"api/admin/users/{userId}/disable");
@@ -46,18 +31,4 @@ public class AdminUserConsumer(HttpClient http, FitEdu.Web.Services.ApiTokenProv
 
     public Task<bool> EnableUserAsync(string userId)
         => ActionAsync($"api/admin/users/{userId}/enable");
-
-    public Task<bool> AssignRoleAsync(string userId, string roleName)
-        => ActionAsync($"api/admin/users/{userId}/roles/{roleName}");
-
-    public async Task<List<AdminUserDto>> SearchUsersAsync(string query)
-        => await GetAsync<List<AdminUserDto>>($"api/admin/users/search?query={Uri.EscapeDataString(query)}") ?? [];
-
-    public Task<bool> RemoveRoleAsync(string userId, string roleName)
-        => DeleteAsync($"api/admin/users/{userId}/roles/{roleName}");
-
-    public async Task<List<string>> GetRolesAsync()
-        => await GetAsync<List<string>>("api/admin/roles") ?? [];
-
-    private sealed record ForcePasswordResetResponse(string UserId, string ResetToken);
 }

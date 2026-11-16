@@ -183,10 +183,3 @@ public record AdminUserDto(
     DateTime CreatedAt,
     DateTime? LastSeenAt = null
 );
-
-/// <summary>
-/// Request to force password reset.
-/// </summary>
-public record ForcePasswordResetRequest(
-    string UserId
-);
