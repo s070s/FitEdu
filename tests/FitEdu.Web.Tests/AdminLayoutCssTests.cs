@@ -23,6 +23,17 @@ public class AdminLayoutCssTests
         css.ShouldContain("grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);");
     }
 
+    [Fact]
+    public void AdminUsersStylesheet_HoldsNoEmptyBodyRuleAndNoTableRulesThatBelongToSharedComponents()
+    {
+        // The page's own markup holds no .table, and the themed table colours already live in
+        // shared-components.css; scoped copies here matched nothing.
+        var css = StripComments(File.ReadAllText(Path.Combine(PagesFolder, "AdminUsers.razor.css")));
+
+        Regex.IsMatch(css, @"(?m)^\s*body\s*\{").ShouldBeFalse("the empty body rule is dead");
+        Regex.IsMatch(css, @"(?m)^\s*\.table(-striped)?\b(?!-actions)").ShouldBeFalse("the .table rules belong to shared-components.css");
+    }
+
     /// <summary>A stylesheet without its comments, so a rule named only in a comment does not count.</summary>
     private static string StripComments(string css) => Regex.Replace(css, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
 }
