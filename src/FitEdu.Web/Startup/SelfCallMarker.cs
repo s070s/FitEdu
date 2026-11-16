@@ -24,6 +24,10 @@ public sealed class SelfCallMarker
 
     private const int GeneratedSecretBytes = 32;
 
+    private const char PrintableAsciiStart = '!';
+
+    private const char PrintableAsciiEnd = '~';
+
     private readonly string _secret;
     private readonly byte[] _secretBytes;
     private readonly Uri _selfBaseAddress;
@@ -34,10 +38,13 @@ public sealed class SelfCallMarker
         _secret = string.IsNullOrWhiteSpace(configuredSecret)
             ? Convert.ToBase64String(RandomNumberGenerator.GetBytes(GeneratedSecretBytes))
             : configuredSecret;
-        if (_secret.Length < MinimumSecretLength)
+        // A header value cannot carry spaces at its ends or non-printable characters unchanged, so such a
+        // secret would never match; the message does not name the value.
+        var hasUnsafeCharacter = _secret.Trim() != _secret || _secret.Any(character => character < PrintableAsciiStart || character > PrintableAsciiEnd);
+        if (_secret.Length < MinimumSecretLength || hasUnsafeCharacter)
         {
             throw new InvalidOperationException(
-                $"{SecretSetting} must be at least {MinimumSecretLength} characters, or left unset to use a random secret.");
+                $"{SecretSetting} must be at least {MinimumSecretLength} printable characters without spaces at its ends, or left unset to use a random secret.");
         }
 
         _secretBytes = Encoding.UTF8.GetBytes(_secret);

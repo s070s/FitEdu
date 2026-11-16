@@ -202,6 +202,21 @@ public class SelfCallMarkerTests
         error.Message.ShouldNotContain(tooShort);
     }
 
+    [Theory]
+    [InlineData(" long-enough-secret-with-a-leading-space-0123")]
+    [InlineData("long-enough-secret-with-a-trailing-space-0123 ")]
+    [InlineData("long-enough-secret-with-an-inner space-0123456")]
+    [InlineData("long-enough-secret-with-a-non-ascii-é-0123456")]
+    public void AConfiguredSecretThatAHeaderCannotCarryUnchanged_IsRefusedWithoutNamingIt(string secret)
+    {
+        secret.Length.ShouldBeGreaterThanOrEqualTo(SelfCallMarker.MinimumSecretLength);
+
+        var error = Should.Throw<InvalidOperationException>(() => new SelfCallMarker(secret, OwnAddress));
+
+        error.Message.ShouldContain(SelfCallMarker.SecretSetting);
+        error.Message.ShouldNotContain(secret);
+    }
+
     private static DefaultHttpContext ContextWith(SelfCallMarker marker, params string[] sentSecrets)
     {
         var httpContext = new DefaultHttpContext
