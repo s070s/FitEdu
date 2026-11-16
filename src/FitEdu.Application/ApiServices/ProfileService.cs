@@ -62,8 +62,9 @@ public partial class ProfileService(
             await fileStorage.DeleteFileAsync(user.AvatarPath);
         }
 
-        // Save new avatar
-        var path = await fileStorage.SaveFileAsync(fileStream, fileName, "avatars");
+        // Save new avatar. The member's own file name stays out of the stored path and its log line; only the
+        // extension (which the storage's type check reads) is kept.
+        var path = await fileStorage.SaveFileAsync(fileStream, "avatar" + Path.GetExtension(fileName), "avatars");
 
         user.AvatarPath = path;
         var updateResult = await userManager.UpdateAsync(user);
