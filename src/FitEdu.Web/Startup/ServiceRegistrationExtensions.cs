@@ -507,6 +507,8 @@ public static class ServiceRegistrationExtensions
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IAdminUserConsumer, AdminUserConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
+        builder.Services.AddHttpClient<IAdminAuditConsumer, AdminAuditConsumer>(Configure)
+            .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IAdminCourseConsumer, AdminCourseConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<ICategoryConsumer, CategoryConsumer>(Configure)
