@@ -126,6 +126,7 @@ public class AdminBlogController : ControllerBase
 
     /// <summary>Upload (or replace) the cover image for a blog article.</summary>
     [HttpPost("{id:guid}/upload/cover")]
+    [RequestSizeLimit(UploadLimits.MaxCoverImageBytes + UploadLimits.FormOverheadBytes)]
     public async Task<IActionResult> UploadBlogCoverImage(
         Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {

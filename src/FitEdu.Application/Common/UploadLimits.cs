@@ -18,6 +18,12 @@ public static class UploadLimits
     /// <summary>Lesson videos.</summary>
     public const long MaxVideoBytes = 500L * 1024 * 1024;
 
+    /// <summary>
+    /// Room above a file's own limit for the multipart form's boundaries and headers. A controller caps its request at
+    /// the file limit plus this, so a body far over the limit is refused (413) before it is buffered.
+    /// </summary>
+    public const long FormOverheadBytes = 1024L * 1024;
+
     public static readonly IReadOnlySet<string> ImageContentTypes =
         new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
 

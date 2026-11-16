@@ -52,6 +52,7 @@ public class ProfileController(IProfileService profileService, IAdminUserService
     /// </summary>
     [HttpPost("avatar")]
     [EnableRateLimiting("sensitive")]
+    [RequestSizeLimit(UploadLimits.MaxImageBytes + UploadLimits.FormOverheadBytes)]
     public async Task<ActionResult<AvatarUploadResultDto>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
         var check = await UploadValidator.CheckAsync(

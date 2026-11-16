@@ -68,6 +68,7 @@ public class SiteSettingsController : ControllerBase
     // api/site/admin/* (the one outlier the SEC "everything admin lives under /api/admin"
     // review heuristic used to miss).
     [HttpPost("~/api/admin/site/background-image")]
+    [RequestSizeLimit(UploadLimits.MaxCoverImageBytes + UploadLimits.FormOverheadBytes)]
     public async Task<IActionResult> UploadBackgroundImage(IFormFile file, CancellationToken cancellationToken = default)
     {
         var check = await UploadValidator.CheckAsync(

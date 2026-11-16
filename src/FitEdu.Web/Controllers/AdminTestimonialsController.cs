@@ -105,6 +105,7 @@ public class AdminTestimonialsController : ControllerBase
 
     /// <summary>Upload (or replace) the avatar image for a testimonial (jpeg, png, gif, webp; max 5 MB).</summary>
     [HttpPost("{id:guid}/upload/avatar")]
+    [RequestSizeLimit(UploadLimits.MaxImageBytes + UploadLimits.FormOverheadBytes)]
     public async Task<IActionResult> UploadAvatar(
         Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {

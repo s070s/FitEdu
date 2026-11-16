@@ -138,6 +138,7 @@ public class AdminLessonsController : ControllerBase
 
     /// <summary>Upload (or replace) the PDF asset for a lesson. Accepts a single PDF file.</summary>
     [HttpPost("{id:guid}/upload/pdf")]
+    [RequestSizeLimit(UploadLimits.MaxPdfBytes + UploadLimits.FormOverheadBytes)]
     public async Task<IActionResult> UploadPdf(Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
         // Find the lesson or return 404.
