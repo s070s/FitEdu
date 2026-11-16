@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using FitEdu.Application.Common;
 using FitEdu.Web.Interfaces;
 using FitEdu.Web.Startup;
 using System.Security.Claims;
@@ -39,7 +40,7 @@ public partial class ImpersonationBanner : IDisposable
     {
         // Read the impersonatedBy claim directly from the cascaded principal —
         // avoids touching HttpContext which is null inside a Blazor Server circuit.
-        _isImpersonating = state.User.FindFirst("impersonatedBy") is not null;
+        _isImpersonating = state.User.FindFirst(UserClaimsBuilder.ImpersonatedByClaim) is not null;
         if (_isImpersonating)
         {
             _impersonatedEmail = state.User.FindFirst(ClaimTypes.Email)?.Value

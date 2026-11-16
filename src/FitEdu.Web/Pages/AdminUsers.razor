@@ -2,6 +2,7 @@
 @attribute [Authorize(Roles = "Admin")]
 @using FitEdu.Web.Shared.Components.Data
 @using FitEdu.Web.Extensions
+@using FitEdu.Web.Layout
 
 <AppPageTitle Text="@AdminRes.UserManagement" />
 
@@ -81,15 +82,15 @@
                             <td data-label="@AdminRes.ColRoles">@string.Join(", ", user.Roles.Select(RoleLabels.Label))</td>
                             <td data-label="@AdminRes.ColCreated">@SiteClock.ToSiteTime(user.CreatedAt).ToString("d")</td>
                             <td class="table-actions" data-label="@AdminRes.ColActions">
-                                @if (user.Roles.Contains("Student"))
+                                @if (user.Roles.Contains(NavItems.StudentRole))
                                 {
                                     <button class="btn btn-sm btn-primary me-1" @onclick="() => ImpersonateUser(user.Id)">@AdminRes.LoginAs</button>
                                 }
-                                @if (!user.Roles.Contains("Admin"))
+                                @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
                                     <button class="btn btn-sm btn-outline-secondary" @onclick="() => OpenResetPasswordModal(user)">@AdminRes.ResetPassword</button>
                                 }
-                                @if (!user.Roles.Contains("Admin"))
+                                @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
                                     @if (user.IsEnabled)
                                     {
@@ -100,7 +101,7 @@
                                         <button class="btn btn-sm btn-outline-primary" @onclick="() => SetUserEnabled(user.Id, true)">@AdminRes.EnableUser</button>
                                     }
                                 }
-                                @if (!user.Roles.Contains("Admin"))
+                                @if (!user.Roles.Contains(NavItems.AdminRole))
                                 {
                                     <button class="btn btn-sm btn-outline-danger" @onclick="() => RequestDeleteUser(user.Id)">@AdminRes.Delete</button>
                                 }
