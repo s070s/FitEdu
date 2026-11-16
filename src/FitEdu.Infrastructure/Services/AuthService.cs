@@ -188,7 +188,7 @@ public partial class AuthService : IAuthService
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.NotAuthenticated };
 
         // The admin pages are guarded already; this check keeps the service safe whoever calls it.
-        if (!admin.IsInRole("Admin"))
+        if (!admin.IsInRole(RoleNames.Admin))
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.AccessDenied };
 
         var target = await _userManager.FindByIdAsync(userId);
@@ -196,7 +196,7 @@ public partial class AuthService : IAuthService
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.UserNotFound };
 
         var targetRoles = await _userManager.GetRolesAsync(target);
-        if (!targetRoles.Contains("Student"))
+        if (!targetRoles.Contains(RoleNames.Student))
             return new AuthResponseDto { Success = false, Message = ErrorMessagesRes.ImpersonationOnlyStudents };
 
         if (!target.IsEnabled)

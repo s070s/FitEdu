@@ -31,8 +31,6 @@ public partial class AuthApiService(
     TimeProvider timeProvider,
     IMemoryCache cache) : IAuthApiService
 {
-    private const string StudentRole = "Student";
-
     // Identity's password-rule errors (PasswordTooShort, PasswordRequiresDigit, ...) and our PasswordTooCommon.
     private const string PasswordErrorCodePrefix = "Password";
 
@@ -150,7 +148,7 @@ public partial class AuthApiService(
     {
         try
         {
-            var roleResult = await userManager.AddToRoleAsync(user, StudentRole);
+            var roleResult = await userManager.AddToRoleAsync(user, RoleNames.Student);
             if (!roleResult.Succeeded)
             {
                 LogRegistrationRoleFailed(logger, user.Id, string.Join(", ", roleResult.Errors.Select(e => e.Code)));

@@ -5,6 +5,7 @@ using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Entities;
+using FitEdu.Domain.Identity;
 
 namespace FitEdu.Application.ApiServices;
 
@@ -16,8 +17,6 @@ public class LandingService(
 
     // Every guest's home page asks for the same numbers; a minute-old count is fine for them.
     public static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(60);
-
-    private const string MemberRoleName = "Student";
 
     // Keyed by the two page languages only, so odd ?lang= values cannot fill the cache.
     public static string CacheKey(string lang) => Localized.IsEl(lang) ? "landing:el" : "landing:en";
@@ -48,7 +47,7 @@ public class LandingService(
 
     private Task<int> CountMembersAsync(CancellationToken cancellationToken)
     {
-        var memberRoleIds = db.Roles.Where(r => r.Name == MemberRoleName).Select(r => r.Id);
+        var memberRoleIds = db.Roles.Where(r => r.Name == RoleNames.Student).Select(r => r.Id);
         return db.UserRoles.CountAsync(ur => memberRoleIds.Contains(ur.RoleId), cancellationToken);
     }
 
