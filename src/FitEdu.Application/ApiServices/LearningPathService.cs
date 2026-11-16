@@ -279,7 +279,10 @@ public partial class LearningPathService(IApplicationDbContext db, ILogger<Learn
         if (alreadyInPath)
             return ServiceResult<AdminLearningPathDetailDto>.Conflict(error: "This course is already a step in the path.");
 
+        // The query filter hides the step of a soft-deleted course, but its row still holds its slot in
+        // the unique (LearningPathId, StepOrder) index, so the next order must count hidden steps too.
         var maxOrder = await db.LearningPathSteps
+            .IgnoreQueryFilters()
             .Where(s => s.LearningPathId == pathId)
             .Select(s => (int?)s.StepOrder)
             .MaxAsync(cancellationToken) ?? 0;
@@ -311,8 +314,10 @@ public partial class LearningPathService(IApplicationDbContext db, ILogger<Learn
 
         // Close the gap left in StepOrder so the sequence stays contiguous 1..N. Ascending order
         // means each row shifts into the slot the previous row (or the delete) just vacated, so
-        // no two rows can transiently collide on the unique (LearningPathId, StepOrder) index.
+        // no two rows can transiently collide on the unique (LearningPathId, StepOrder) index. Steps of
+        // soft-deleted courses are hidden by the query filter but still hold a slot, so they shift too.
         var following = await db.LearningPathSteps
+            .IgnoreQueryFilters()
             .Where(s => s.LearningPathId == pathId && s.StepOrder > removedOrder)
             .OrderBy(s => s.StepOrder)
             .ToListAsync(cancellationToken);

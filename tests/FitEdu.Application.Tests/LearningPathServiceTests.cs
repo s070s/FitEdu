@@ -276,6 +276,59 @@ public class LearningPathServiceTests
     }
 
     [Fact]
+    public async Task AddStepAsync_StepOfSoftDeletedCourseStillHoldsItsSlot_AppendsAfterIt()
+    {
+        // SQLite enforces the unique (LearningPathId, StepOrder) index; the query filter hides the step of a
+        // soft-deleted course but its row still holds the slot, so the new step must start after it.
+        await using var db = DbContextFactory.CreateSqlite();
+        var courseA = NewCourse("Course A");
+        var courseB = NewCourse("Course B");
+        var courseC = NewCourse("Course C");
+        var path = new LearningPath { Id = Guid.NewGuid(), TitleEn = "Mobility Starter", IsPublished = true };
+        db.Courses.AddRange(courseA, courseB, courseC);
+        db.LearningPaths.Add(path);
+        db.LearningPathSteps.AddRange(
+            new LearningPathStep { LearningPathId = path.Id, CourseId = courseA.Id, StepOrder = 1 },
+            new LearningPathStep { LearningPathId = path.Id, CourseId = courseB.Id, StepOrder = 2 });
+        await db.SaveChangesAsync();
+        courseB.IsDeleted = true;
+        await db.SaveChangesAsync();
+
+        var result = await NewService(db).AddStepAsync(path.Id, courseC.Id);
+
+        result.IsSuccess.ShouldBeTrue();
+        var orders = await db.LearningPathSteps.IgnoreQueryFilters().Where(s => s.LearningPathId == path.Id)
+            .OrderBy(s => s.StepOrder).Select(s => s.StepOrder).ToListAsync();
+        orders.ShouldBe([1, 2, 3]);
+    }
+
+    [Fact]
+    public async Task RemoveStepAsync_StepOfSoftDeletedCourseBetween_ClosesTheGapWithoutCollision()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var courseA = NewCourse("Course A");
+        var courseB = NewCourse("Course B");
+        var courseC = NewCourse("Course C");
+        var path = new LearningPath { Id = Guid.NewGuid(), TitleEn = "Mobility Starter", IsPublished = true };
+        db.Courses.AddRange(courseA, courseB, courseC);
+        db.LearningPaths.Add(path);
+        db.LearningPathSteps.AddRange(
+            new LearningPathStep { LearningPathId = path.Id, CourseId = courseA.Id, StepOrder = 1 },
+            new LearningPathStep { LearningPathId = path.Id, CourseId = courseB.Id, StepOrder = 2 },
+            new LearningPathStep { LearningPathId = path.Id, CourseId = courseC.Id, StepOrder = 3 });
+        await db.SaveChangesAsync();
+        courseB.IsDeleted = true;
+        await db.SaveChangesAsync();
+        var firstStepId = await db.LearningPathSteps.Where(s => s.CourseId == courseA.Id).Select(s => s.Id).SingleAsync();
+
+        (await NewService(db).RemoveStepAsync(path.Id, firstStepId)).ShouldBeTrue();
+
+        var orders = await db.LearningPathSteps.IgnoreQueryFilters().Where(s => s.LearningPathId == path.Id)
+            .OrderBy(s => s.StepOrder).Select(s => s.StepOrder).ToListAsync();
+        orders.ShouldBe([1, 2]);
+    }
+
+    [Fact]
     public async Task MoveStepUpAsync_SwapsWithPrevious()
     {
         var (db, path, courseA, courseB, _) = await SeedPublishedPathAsync();
