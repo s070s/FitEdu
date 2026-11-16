@@ -61,6 +61,7 @@ public class AdminCategoriesController(IAdminCategoryService adminCategoryServic
     /// Rename an existing category.
     /// </summary>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AdminCategoryDto>> UpdateCategory(Guid id, [FromBody] SaveCategoryRequest request, CancellationToken cancellationToken = default)
     {
         var result = await adminCategoryService.UpdateCategoryAsync(id, request, cancellationToken);

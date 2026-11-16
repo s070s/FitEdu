@@ -70,6 +70,7 @@ public class AdminCoursesController(IAdminCourseService adminCourseService) : Co
     /// Update an existing course.
     /// </summary>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AdminCourseDto>> UpdateCourse(Guid id, [FromBody] SaveCourseRequest request, CancellationToken cancellationToken = default)
     {
         var result = await adminCourseService.UpdateCourseAsync(id, request, UserId, cancellationToken);
