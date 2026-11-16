@@ -117,13 +117,8 @@ public class AdminLessonsController : ControllerBase
         if (lesson == null)
             return NotFound();
 
-        // Remove lesson completion records first (FK constraint).
-        var completions = await _db.LessonCompletions
-            .Where(lc => lc.LessonId == id)
-            .ToListAsync();
-        _db.LessonCompletions.RemoveRange(completions);
-
-        // Remove the lesson entity and persist the deletion first; its files go afterwards (P05-6), so a failed
+        // Remove the lesson entity and persist the deletion first (the database cascades to its completion records
+        // and exercise rows, so nothing is loaded just to delete it); its files go afterwards (P05-6), so a failed
         // save never leaves a lesson whose files are gone.
         _db.Lessons.Remove(lesson);
         await _db.SaveChangesAsync();

@@ -136,17 +136,7 @@ public class AdminModulesController : ControllerBase
         if (module == null)
             return NotFound();
 
-        // Remove lesson completions for all lessons in this module before deleting.
-        if (module.Lessons.Count > 0)
-        {
-            var lessonIds = module.Lessons.Select(l => l.Id).ToList();
-            var completions = await _db.LessonCompletions
-                .Where(lc => lessonIds.Contains(lc.LessonId))
-                .ToListAsync();
-            _db.LessonCompletions.RemoveRange(completions);
-        }
-
-        // Remove the module (cascade will remove its lessons).
+        // Remove the module; the database cascades to its lessons and their completion records.
         _db.Modules.Remove(module);
         await _db.SaveChangesAsync();
 

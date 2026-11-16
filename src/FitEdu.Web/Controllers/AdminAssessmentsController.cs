@@ -312,6 +312,8 @@ public class AdminAssessmentsController : ControllerBase
             return NotFound();
         }
 
+        // Submissions reference their definition with Restrict (they hold users' answers, so the database never
+        // drops them silently): the delete removes them explicitly, and loading them decrypts their answers.
         _db.AssessmentSubmissions.RemoveRange(assessment.Submissions);
         _db.AssessmentDefinitions.Remove(assessment);
         await _db.SaveChangesAsync();
