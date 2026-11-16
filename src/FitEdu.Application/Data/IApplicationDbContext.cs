@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using FitEdu.Domain.Entities;
 
 namespace FitEdu.Application.Data;
@@ -39,6 +40,9 @@ public interface IApplicationDbContext
     // Identity role tables used by ChatQueryService for role lookups
     DbSet<IdentityUserRole<string>> UserRoles { get; }
     DbSet<IdentityRole> Roles { get; }
+
+    /// <summary>The change-tracker entry of an entity, for re-reading a row another writer changed.</summary>
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

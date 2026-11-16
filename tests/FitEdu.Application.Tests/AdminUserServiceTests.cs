@@ -26,9 +26,10 @@ public class AdminUserServiceTests
 {
     private static AdminUserService NewService(
         ApplicationDbContext db, UserManager<ApplicationUser> userManager, IEmailService? emailService = null, ITokenService? tokenService = null,
-        IFileStorage? fileStorage = null, ILogger<AdminUserService>? logger = null, string actingAdminId = "admin-actor")
+        IFileStorage? fileStorage = null, ILogger<AdminUserService>? logger = null, string actingAdminId = "admin-actor",
+        RoleManager<IdentityRole>? roleManager = null)
     {
-        var roleManager = Substitute.For<RoleManager<IdentityRole>>(
+        roleManager ??= Substitute.For<RoleManager<IdentityRole>>(
             Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
 
         var currentUser = Substitute.For<ICurrentUserAccessor>();
@@ -567,5 +568,178 @@ public class AdminUserServiceTests
 
         result.StatusCode.ShouldBe(409);
         result.ErrorMessage.ShouldNotBeNullOrEmpty();
+    }
+
+    private static IdentityResult ConcurrencyFailure() => IdentityResult.Failed(new IdentityErrorDescriber().ConcurrencyFailure());
+
+    /// <summary>
+    /// Like the real store, a security-stamp update saves everything the service changed on the user
+    /// (the substitute shares the service's context), so the test sees what one UPDATE would store.
+    /// </summary>
+    private static UserManager<ApplicationUser> UserManagerThatEndsSessions(ApplicationDbContext db)
+    {
+        var userManager = UserManagerOver(db);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+        return userManager;
+    }
+
+    private static async Task<ApplicationDbContext> SqliteWithAMemberAndAToken()
+    {
+        var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("member"));
+        db.RefreshTokens.Add(new RefreshToken { Id = Guid.NewGuid(), UserId = "member", TokenHash = "hash", ExpiresAt = DateTimeOffset.UtcNow.AddDays(7) });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        return db;
+    }
+
+    [Fact]
+    public async Task DisableUser_SavesTheFlagWithTheStampInOneUpdate_AndEndsTheRefreshTokens()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        await userManager.DidNotReceive().UpdateAsync(Arg.Any<ApplicationUser>());
+        await userManager.Received(1).UpdateSecurityStampAsync(Arg.Any<ApplicationUser>());
+        db.ChangeTracker.Clear();
+        (await db.Users.SingleAsync()).IsEnabled.ShouldBeFalse();
+        (await db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task DisableUser_EndsTheRefreshTokensBeforeTheStampIsRotated()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        var tokensEndedWhenTheStampWasRotated = false;
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            tokensEndedWhenTheStampWasRotated = await db.RefreshTokens.AsNoTracking().AllAsync(t => t.RevokedAt != null);
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        await NewService(db, userManager).DisableUserAsync("member");
+
+        tokensEndedWhenTheStampWasRotated.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task DisableUser_ARowChangedSinceItWasRead_IsReloadedAndTheFlagStillSaved()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        var attempts = 0;
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            attempts++;
+            if (attempts > 1)
+            {
+                await db.SaveChangesAsync();
+                return IdentityResult.Success;
+            }
+
+            // Someone else wrote the row after the service read it: the stored stamp no longer matches.
+            await db.Database.ExecuteSqlRawAsync("UPDATE AspNetUsers SET ConcurrencyStamp = 'changed-elsewhere' WHERE Id = 'member'");
+            return ConcurrencyFailure();
+        });
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        attempts.ShouldBe(2);
+        db.ChangeTracker.Clear();
+        (await db.Users.SingleAsync()).IsEnabled.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task DisableUser_ARowThatKeepsChanging_ReturnsConflict()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager).DisableUserAsync("member");
+
+        result.StatusCode.ShouldBe(409);
+        await userManager.Received(2).UpdateSecurityStampAsync(Arg.Any<ApplicationUser>());
+    }
+
+    [Fact]
+    public async Task EnableUser_SetsTheFlagAndClearsTheLockoutInOneUpdate()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        var member = NewUser("member");
+        member.IsEnabled = false;
+        member.LockoutEnd = DateTimeOffset.MaxValue;
+        db.Users.Add(member);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(async _ =>
+        {
+            await db.SaveChangesAsync();
+            return IdentityResult.Success;
+        });
+
+        var result = await NewService(db, userManager).EnableUserAsync("member");
+
+        result.IsSuccess.ShouldBeTrue();
+        await userManager.Received(1).UpdateAsync(Arg.Any<ApplicationUser>());
+        await userManager.DidNotReceive().SetLockoutEndDateAsync(Arg.Any<ApplicationUser>(), Arg.Any<DateTimeOffset?>());
+        db.ChangeTracker.Clear();
+        var stored = await db.Users.SingleAsync();
+        stored.IsEnabled.ShouldBeTrue();
+        stored.LockoutEnd.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task EnableUser_ARowChangedSinceItWasRead_ReturnsConflict()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerOver(db);
+        userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(ConcurrencyFailure());
+
+        var result = await NewService(db, userManager).EnableUserAsync("member");
+
+        result.StatusCode.ShouldBe(409);
+    }
+
+    [Fact]
+    public async Task AssignRole_EndsTheRefreshTokensAndRotatesTheStampOnce()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(IdentityResult.Success);
+        var roleManager = Substitute.For<RoleManager<IdentityRole>>(Substitute.For<IRoleStore<IdentityRole>>(), null, null, null, null);
+        roleManager.RoleExistsAsync(RoleNames.Admin).Returns(true);
+
+        var result = await NewService(db, userManager, roleManager: roleManager).AssignRoleAsync("member", RoleNames.Admin);
+
+        result.IsSuccess.ShouldBeTrue();
+        await userManager.Received(1).UpdateSecurityStampAsync(Arg.Any<ApplicationUser>());
+        (await db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task RemoveRole_EndsTheRefreshTokensAndRotatesTheStampOnce()
+    {
+        await using var db = await SqliteWithAMemberAndAToken();
+        var userManager = UserManagerThatEndsSessions(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(IdentityResult.Success);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("member", RoleNames.Student);
+
+        result.IsSuccess.ShouldBeTrue();
+        await userManager.Received(1).UpdateSecurityStampAsync(Arg.Any<ApplicationUser>());
+        (await db.RefreshTokens.SingleAsync()).RevokedAt.ShouldNotBeNull();
     }
 }

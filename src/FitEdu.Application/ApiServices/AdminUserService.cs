@@ -136,7 +136,7 @@ public partial class AdminUserService(
         // The roles travel in the token and the cookie, so the old sessions would keep the old roles.
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
         if (!sessionsEnded.Succeeded)
-            return ServiceResult<string>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
+            return IdentityFailure<string>(sessionsEnded);
 
         LogRoleAssigned(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' assigned.");
@@ -168,7 +168,7 @@ public partial class AdminUserService(
 
         var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
         if (!sessionsEnded.Succeeded)
-            return ServiceResult<string>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
+            return IdentityFailure<string>(sessionsEnded);
 
         LogRoleRemoved(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' removed.");
@@ -349,15 +349,11 @@ public partial class AdminUserService(
             return ServiceResult<bool>.BadRequest(error: "Admin accounts cannot be disabled.");
 
         // IsEnabled is the flag every session check reads (cookie, bearer token, refresh, hubs); a lock-out
-        // date alone left the member signed in.
-        user.IsEnabled = false;
-        var result = await userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-            return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
-
-        var sessionsEnded = await EndSessionsAsync(user, cancellationToken);
+        // date alone left the member signed in. It is saved by the stamp update, in the same UPDATE, so a
+        // failure cannot leave the flag set with the old sessions still valid.
+        var sessionsEnded = await EndSessionsAsync(user, cancellationToken, endedUser => endedUser.IsEnabled = false);
         if (!sessionsEnded.Succeeded)
-            return ServiceResult<bool>.BadRequest(error: string.Join(", ", sessionsEnded.Errors.Select(e => e.Description)));
+            return IdentityFailure<bool>(sessionsEnded);
 
         LogUserDisabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
@@ -369,15 +365,13 @@ public partial class AdminUserService(
         if (user == null)
             return ServiceResult<bool>.NotFound(error: "User not found");
 
-        user.IsEnabled = true;
-        var enableResult = await userManager.UpdateAsync(user);
-        if (!enableResult.Succeeded)
-            return ServiceResult<bool>.BadRequest(error: string.Join(", ", enableResult.Errors.Select(e => e.Description)));
-
         // Accounts the old code "disabled" carry a lock-out date far in the future; clear it so they can sign in.
-        var result = await userManager.SetLockoutEndDateAsync(user, null);
+        // Both changes go out in one UPDATE.
+        user.IsEnabled = true;
+        user.LockoutEnd = null;
+        var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
-            return ServiceResult<bool>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
+            return IdentityFailure<bool>(result);
 
         LogUserEnabled(logger, ActingAdmin, userId);
         return ServiceResult<bool>.NoContent();
@@ -451,16 +445,37 @@ public partial class AdminUserService(
     }
 
     // Ends every session of the user: the new security stamp makes the cookie and bearer-token checks reject
-    // what is already signed in, and the refresh tokens can no longer renew it.
-    private async Task<IdentityResult> EndSessionsAsync(ApplicationUser user, CancellationToken cancellationToken)
+    // what is already signed in, and the refresh tokens can no longer renew it. The refresh tokens go first, so a
+    // failed stamp update never leaves a token that could still renew a session. The stamp update saves every
+    // pending change of the user too: userChange runs right before it, so that change and the stamp are one UPDATE.
+    private async Task<IdentityResult> EndSessionsAsync(
+        ApplicationUser user, CancellationToken cancellationToken, Action<ApplicationUser>? userChange = null)
     {
+        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id, cancellationToken);
+
+        userChange?.Invoke(user);
         var stampResult = await userManager.UpdateSecurityStampAsync(user);
-        if (!stampResult.Succeeded)
+        if (!HasConcurrencyFailure(stampResult))
             return stampResult;
 
-        await RefreshTokenRevocation.RevokeActiveTokensAsync(context, user.Id, cancellationToken);
-        return stampResult;
+        // The row changed since it was read (a sign-in, a second admin). The tracked user still carries the old
+        // concurrency stamp, so take the stored values, apply the change again and try once more.
+        await context.Entry(user).ReloadAsync(cancellationToken);
+        userChange?.Invoke(user);
+        return await userManager.UpdateSecurityStampAsync(user);
     }
+
+    private static bool HasConcurrencyFailure(IdentityResult result)
+    {
+        var concurrencyFailureCode = new IdentityErrorDescriber().ConcurrencyFailure().Code;
+        return result.Errors.Any(error => error.Code == concurrencyFailureCode);
+    }
+
+    // A concurrency failure means the account changed at the same time: 409 asks the admin to try again.
+    private static ServiceResult<T> IdentityFailure<T>(IdentityResult result)
+        => HasConcurrencyFailure(result)
+            ? ServiceResult<T>.Conflict(error: "The account was changed at the same time. Please try again.")
+            : ServiceResult<T>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
     // Source-generated log methods (LoggerMessage) avoid the CA1848/CA1873 analyzer warnings.
     [LoggerMessage(Level = LogLevel.Information, Message = "Admin {AdminId} assigned role {Role} to user {UserId}")]
