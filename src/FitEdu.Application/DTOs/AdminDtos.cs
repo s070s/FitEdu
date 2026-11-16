@@ -184,3 +184,19 @@ public record AdminUserDto(
     DateTime CreatedAt,
     DateTime? LastSeenAt = null
 );
+
+/// <summary>
+/// One row of the admin audit log. The row itself holds ids only; <paramref name="ActorEmail"/> and
+/// <paramref name="TargetEmail"/> are read from the accounts at the moment of the request and are null for an
+/// account that no longer exists, so a deleted member leaves nothing but the id.
+/// </summary>
+public record AdminAuditEntryDto(
+    Guid Id,
+    string ActorUserId,
+    string? ActorEmail,
+    string TargetUserId,
+    string? TargetEmail,
+    AdminAuditAction Action,
+    string? Detail,
+    DateTimeOffset OccurredAt
+);
