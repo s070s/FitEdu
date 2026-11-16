@@ -22,6 +22,43 @@ namespace FitEdu.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FitEdu.Domain.Entities.AdminAuditEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ActorUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("TargetUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAt")
+                        .HasDatabaseName("IX_AdminAuditEntries_OccurredAt");
+
+                    b.HasIndex("TargetUserId", "OccurredAt")
+                        .HasDatabaseName("IX_AdminAuditEntries_TargetUserId_OccurredAt");
+
+                    b.ToTable("AdminAuditEntries");
+                });
+
             modelBuilder.Entity("FitEdu.Domain.Entities.AssessmentDefinition", b =>
                 {
                     b.Property<Guid>("Id")

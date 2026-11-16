@@ -36,6 +36,7 @@ public interface IApplicationDbContext
     DbSet<LearningPathStep> LearningPathSteps { get; }
     DbSet<ScheduledSession> ScheduledSessions { get; }
     DbSet<SessionRegistration> SessionRegistrations { get; }
+    DbSet<AdminAuditEntry> AdminAuditEntries { get; }
 
     // Identity role tables used by ChatQueryService for role lookups
     DbSet<IdentityUserRole<string>> UserRoles { get; }

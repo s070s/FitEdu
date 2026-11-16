@@ -100,6 +100,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<ScheduledSession> ScheduledSessions => Set<ScheduledSession>();
     public DbSet<SessionRegistration> SessionRegistrations => Set<SessionRegistration>();
 
+    // --- Admin audit log ---
+    public DbSet<AdminAuditEntry> AdminAuditEntries => Set<AdminAuditEntry>();
+
     // --- DataProtection keys (SCALE-4) ---
     // Shared DB-backed key ring instead of the local filesystem: keys survive a redeploy/container
     // rebuild and (unlike PersistKeysToFileSystem) are automatically visible to every instance
