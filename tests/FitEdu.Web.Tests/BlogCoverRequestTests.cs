@@ -28,6 +28,8 @@ public class BlogCoverRequestTests : IClassFixture<CustomWebAppFactory>
     [InlineData("https://example.com/cover.png")]
     [InlineData("http://example.com/cover.png")]
     [InlineData("//cdn.example.com/cover.png")]
+    [InlineData(" //host/x.png")]
+    [InlineData("/\\host/x.png")]
     [InlineData("blog/covers/x.png?next=https://example.com")]
     public async Task Create_CoverThatIsNotASiteFile_Returns400WithTheMessage(string cover)
     {

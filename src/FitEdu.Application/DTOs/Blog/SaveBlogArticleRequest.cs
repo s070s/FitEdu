@@ -20,9 +20,10 @@ public record SaveBlogArticleRequest(
     string? ContentEl,
     // The site's content policy only loads images from this site (img-src 'self'), so a cover must be a file the site
     // has: an uploaded one ("blog/covers/x.png") or one shipped in wwwroot ("/images/blog/x.webp"). A full URL, or a
-    // protocol-relative one ("//host/x.png"), would be blocked by the browser and never show (P05-10).
+    // protocol-relative one ("//host/x.png", also with leading spaces or backslashes, which browsers read as slashes),
+    // would be blocked by the browser and never show (P05-10).
     [MaxLength(500)]
-    [RegularExpression(@"^(?!//)(?![\s\S]*://)[\s\S]*$",
+    [RegularExpression(@"^(?!\s*[/\\][/\\])(?![\s\S]*://)[\s\S]*$",
         ErrorMessageResourceType = typeof(ErrorMessagesRes), ErrorMessageResourceName = nameof(ErrorMessagesRes.CoverImageMustBeSiteFile))]
     string? CoverImageUrl,
     [Required, MaxLength(100)] string AuthorName,
