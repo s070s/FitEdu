@@ -114,6 +114,62 @@ public sealed class LocalFileStorageTests : IDisposable
         _storage.FileExists("../nope").ShouldBeFalse();
     }
 
+    // P05-5: every path the storage takes is resolved against the uploads folder and must stay inside it.
+    // The absolute path, the drive/stream colon and the control character cases all used to get past the
+    // ".." check, because Path.Combine drops the base folder when its second part is rooted.
+
+    [Theory]
+    [InlineData("C:/Windows/win.ini")]
+    [InlineData("C:\\Windows\\win.ini")]
+    [InlineData("/etc/passwd")]
+    [InlineData("\\\\server\\share\\file.png")]
+    [InlineData("avatars/photo.png:hidden")]
+    [InlineData("avatars/photo\u0000.png")]
+    [InlineData("avatars/photo\n.png")]
+    [InlineData("avatars/../../outside.png")]
+    public async Task GetFile_PathOutsideTheUploadsFolder_Throws(string path)
+    {
+        await Should.ThrowAsync<ArgumentException>(() => _storage.GetFileAsync(path));
+    }
+
+    [Theory]
+    [InlineData("C:/Windows/win.ini")]
+    [InlineData("/etc/passwd")]
+    [InlineData("avatars/photo.png:hidden")]
+    [InlineData("avatars/photo\u0000.png")]
+    public void FileExists_PathOutsideTheUploadsFolder_ReturnsFalse(string path)
+    {
+        _storage.FileExists(path).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task DeleteFile_AbsolutePathOfAFileOutsideTheUploadsFolder_ThrowsAndKeepsTheFile()
+    {
+        var outside = Path.Combine(Path.GetTempPath(), "fitedu-outside-" + Guid.NewGuid().ToString("N") + ".txt");
+        await File.WriteAllTextAsync(outside, "keep me");
+        try
+        {
+            await Should.ThrowAsync<ArgumentException>(() => _storage.DeleteFileAsync(outside));
+
+            File.Exists(outside).ShouldBeTrue();
+        }
+        finally
+        {
+            File.Delete(outside);
+        }
+    }
+
+    [Theory]
+    [InlineData("C:/escape")]
+    [InlineData("/escape")]
+    [InlineData("avatars/../../escape")]
+    [InlineData("avatars:stream")]
+    public async Task SaveFile_FolderOutsideTheUploadsFolder_Throws(string folder)
+    {
+        await Should.ThrowAsync<ArgumentException>(
+            () => _storage.SaveFileAsync(Stream(), "a.png", folder));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root))

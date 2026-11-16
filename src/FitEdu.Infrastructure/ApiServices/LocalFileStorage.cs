@@ -9,7 +9,11 @@ namespace FitEdu.Infrastructure.ApiServices;
 /// </summary>
 public partial class LocalFileStorage : IFileStorage
 {
+    private static readonly StringComparison PathComparison =
+        OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
     private readonly string _basePath;
+    private readonly string _basePathWithSeparator;
     private readonly ILogger<LocalFileStorage> _logger;
 
     // File size limits (in bytes)
@@ -50,6 +54,8 @@ public partial class LocalFileStorage : IFileStorage
         {
             Directory.CreateDirectory(_basePath);
         }
+
+        _basePathWithSeparator = Path.TrimEndingDirectorySeparator(Path.GetFullPath(_basePath)) + Path.DirectorySeparatorChar;
     }
 
     public async Task<string> SaveFileAsync(Stream fileStream, string fileName, string folder, long? maxBytes = null, CancellationToken cancellationToken = default)
@@ -62,11 +68,8 @@ public partial class LocalFileStorage : IFileStorage
         }
 
         // Validate folder
-        folder = folder.Replace("\\", "/").Trim('/');
-        if (string.IsNullOrWhiteSpace(folder) || folder.Contains(".."))
-        {
-            throw new ArgumentException("Invalid folder path", nameof(folder));
-        }
+        var folderPath = ResolveInsideRoot(folder);
+        folder = folder.Replace('\\', '/').TrimEnd('/');
 
         // Generate unique file name to prevent collisions
         var extension = Path.GetExtension(fileName);
@@ -74,7 +77,6 @@ public partial class LocalFileStorage : IFileStorage
         var uniqueFileName = $"{fileNameWithoutExt}_{Guid.NewGuid():N}{extension}";
 
         // Create folder structure
-        var folderPath = Path.Combine(_basePath, folder);
         if (!Directory.Exists(folderPath))
         {
             Directory.CreateDirectory(folderPath);
@@ -99,14 +101,7 @@ public partial class LocalFileStorage : IFileStorage
 
     public Task<(Stream stream, string contentType)> GetFileAsync(string filePath, CancellationToken cancellationToken = default)
     {
-        // Validate and sanitize path
-        filePath = filePath.Replace("\\", "/").Trim('/');
-        if (string.IsNullOrWhiteSpace(filePath) || filePath.Contains(".."))
-        {
-            throw new ArgumentException("Invalid file path", nameof(filePath));
-        }
-
-        var fullPath = Path.Combine(_basePath, filePath);
+        var fullPath = ResolveInsideRoot(filePath);
 
         if (!File.Exists(fullPath))
         {
@@ -124,14 +119,7 @@ public partial class LocalFileStorage : IFileStorage
 
     public Task DeleteFileAsync(string filePath, CancellationToken cancellationToken = default)
     {
-        // Validate and sanitize path
-        filePath = filePath.Replace("\\", "/").Trim('/');
-        if (string.IsNullOrWhiteSpace(filePath) || filePath.Contains(".."))
-        {
-            throw new ArgumentException("Invalid file path", nameof(filePath));
-        }
-
-        var fullPath = Path.Combine(_basePath, filePath);
+        var fullPath = ResolveInsideRoot(filePath);
 
         if (File.Exists(fullPath))
         {
@@ -144,15 +132,43 @@ public partial class LocalFileStorage : IFileStorage
 
     public bool FileExists(string filePath)
     {
-        // Validate and sanitize path
-        filePath = filePath.Replace("\\", "/").Trim('/');
-        if (string.IsNullOrWhiteSpace(filePath) || filePath.Contains(".."))
+        try
         {
+            return File.Exists(ResolveInsideRoot(filePath));
+        }
+        catch (ArgumentException)
+        {
+            // A path outside the uploads folder names no stored file.
             return false;
         }
+    }
 
-        var fullPath = Path.Combine(_basePath, filePath);
-        return File.Exists(fullPath);
+    /// <summary>
+    /// The one place a stored relative path becomes a full path. Rejects an absolute path, a drive or stream
+    /// colon, control characters and ".." (Path.Combine drops the uploads folder when its second part is
+    /// rooted), then requires the full path to start with the uploads folder and a separator.
+    /// </summary>
+    /// <exception cref="ArgumentException">The path is empty or does not stay inside the uploads folder.</exception>
+    private string ResolveInsideRoot(string relativePath)
+    {
+        var normalized = (relativePath ?? string.Empty).Replace('\\', '/').TrimEnd('/');
+        var isUnsafe = string.IsNullOrWhiteSpace(normalized)
+            || normalized.Contains("..", StringComparison.Ordinal)
+            || normalized.Contains(':')
+            || normalized.Any(char.IsControl)
+            || Path.IsPathRooted(normalized);
+        if (isUnsafe)
+        {
+            throw new ArgumentException("Invalid file path", nameof(relativePath));
+        }
+
+        var fullPath = Path.GetFullPath(Path.Combine(_basePath, normalized));
+        if (!fullPath.StartsWith(_basePathWithSeparator, PathComparison))
+        {
+            throw new ArgumentException("Invalid file path", nameof(relativePath));
+        }
+
+        return fullPath;
     }
 
     private static void ValidateFileSize(Stream fileStream, string folder, long? explicitMaxBytes)
