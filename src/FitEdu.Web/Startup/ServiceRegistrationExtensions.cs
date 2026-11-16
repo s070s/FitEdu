@@ -462,6 +462,13 @@ public static class ServiceRegistrationExtensions
         // StreamChatAsync already catches connection failures itself.
         void ConfigureStreaming(HttpClient c) => c.BaseAddress = new Uri(selfBase);
 
+        // File uploads can take longer than the 30 seconds above, so their client never times out by itself.
+        void ConfigureUpload(HttpClient c)
+        {
+            c.BaseAddress = new Uri(selfBase);
+            c.Timeout = Timeout.InfiniteTimeSpan;
+        }
+
         // P03-1: outside Development the app calls itself at its public address, where the rate
         // limiters see an outside caller; the marker lets them recognise the app's own calls.
         builder.Services.AddSingleton(new SelfCallMarker(builder.Configuration[SelfCallMarker.SecretSetting], new Uri(selfBase)));
@@ -508,6 +515,10 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddHttpClient<IAdminModuleConsumer, AdminModuleConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IAdminLessonConsumer, AdminLessonConsumer>(Configure)
+            .AddHttpMessageHandler<SsrApiHandler>();
+        // A video upload runs for minutes, so this client has no client timeout; AdminLessonConsumer
+        // bounds each upload with its own 30-minute cancellation instead (P05-4).
+        builder.Services.AddHttpClient(AdminLessonConsumer.UploadClientName, ConfigureUpload)
             .AddHttpMessageHandler<SsrApiHandler>();
         builder.Services.AddHttpClient<IAdminAssessmentConsumer, AdminAssessmentConsumer>(Configure)
             .AddHttpMessageHandler<SsrApiHandler>();
