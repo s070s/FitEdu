@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using Shouldly;
 using Xunit;
@@ -63,6 +66,69 @@ public class MigrationChainTests(ITestOutputHelper output)
             applied.ShouldNotBeEmpty();
             (await db.Database.GetPendingMigrationsAsync()).ShouldBeEmpty();
             output.WriteLine($"Applied {applied.Count} migrations to {dbName}.");
+        }
+        finally
+        {
+            await db.Database.EnsureDeletedAsync();
+        }
+    }
+
+    // The migration before the data migration: the schema is identical, so rows can be added through the model.
+    private const string MigrationBeforeDisabledUsers = "20261115210806_RefreshTokenRevokedAtConcurrencyToken";
+
+    private static ApplicationUser NewUser(string name, bool isEnabled, DateTimeOffset? lockoutEnd) => new()
+    {
+        UserName = $"{name}@test.local",
+        Email = $"{name}@test.local",
+        FirstName = "First",
+        LastName = "Last",
+        IsEnabled = isEnabled,
+        LockoutEnd = lockoutEnd
+    };
+
+    private static ApplicationDbContext NewLocalDbContext(string dbName) =>
+        new(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer($"{LocalDbServer}Database={dbName};").Options);
+
+    [Fact]
+    public async Task DisabledUsersMigration_DisablesOnlyTheUsersTheOldCodeLockedOutForever_AndDownRestoresThem()
+    {
+        if (!await LocalDbIsReachableAsync())
+        {
+            output.WriteLine("LocalDB unreachable — data migration test skipped.");
+            return;
+        }
+
+        var dbName = "FitEduDisabledUsersTest_" + Guid.NewGuid().ToString("N");
+        await using var db = NewLocalDbContext(dbName);
+        try
+        {
+            var migrator = db.GetService<IMigrator>();
+            await migrator.MigrateAsync(MigrationBeforeDisabledUsers);
+            db.Users.AddRange(
+                NewUser("old-disabled", isEnabled: true, lockoutEnd: DateTimeOffset.MaxValue),
+                NewUser("active", isEnabled: true, lockoutEnd: null),
+                NewUser("short-lockout", isEnabled: true, lockoutEnd: DateTimeOffset.UtcNow.AddMinutes(15)),
+                NewUser("already-disabled", isEnabled: false, lockoutEnd: null));
+            await db.SaveChangesAsync();
+
+            await migrator.MigrateAsync();
+
+            await using (var after = NewLocalDbContext(dbName))
+            {
+                var enabledAfterUp = await after.Users.ToDictionaryAsync(u => u.UserName!, u => u.IsEnabled);
+                enabledAfterUp["old-disabled@test.local"].ShouldBeFalse();
+                enabledAfterUp["active@test.local"].ShouldBeTrue();
+                enabledAfterUp["short-lockout@test.local"].ShouldBeTrue();
+                enabledAfterUp["already-disabled@test.local"].ShouldBeFalse();
+                // The lock-out date stays, so the old marker is still readable.
+                (await after.Users.SingleAsync(u => u.UserName == "old-disabled@test.local")).LockoutEnd.ShouldBe(DateTimeOffset.MaxValue);
+            }
+
+            await migrator.MigrateAsync(MigrationBeforeDisabledUsers);
+
+            await using var afterDown = NewLocalDbContext(dbName);
+            (await afterDown.Users.SingleAsync(u => u.UserName == "old-disabled@test.local")).IsEnabled.ShouldBeTrue();
+            (await afterDown.Users.SingleAsync(u => u.UserName == "already-disabled@test.local")).IsEnabled.ShouldBeFalse();
         }
         finally
         {
