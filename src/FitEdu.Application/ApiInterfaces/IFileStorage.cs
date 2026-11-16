@@ -1,5 +1,8 @@
 namespace FitEdu.Application.ApiInterfaces;
 
+/// <summary>The size and last-write time of a stored file.</summary>
+public readonly record struct StoredFileInfo(long Length, DateTimeOffset LastModified);
+
 /// <summary>
 /// Abstraction for file storage operations.
 /// Supports local file system storage (can be extended to cloud storage).
@@ -34,6 +37,13 @@ public interface IFileStorage
     /// <param name="filePath">Relative file path from database</param>
     /// <param name="cancellationToken">Cancellation token</param>
     Task DeleteFileAsync(string filePath, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// The size and last-write time of a stored file, for cache validators (ETag, Last-Modified); null when there is
+    /// no such file or the path is not a stored path.
+    /// </summary>
+    /// <param name="filePath">Relative file path from database</param>
+    StoredFileInfo? GetFileInfo(string filePath);
 
     /// <summary>
     /// Checks if a file exists in storage.

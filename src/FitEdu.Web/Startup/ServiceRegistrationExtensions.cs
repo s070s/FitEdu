@@ -67,7 +67,9 @@ public static class ServiceRegistrationExtensions
 
         // --- API Services ---
         builder.Services.AddScoped<ITokenService, TokenService>();
-        builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
+        // One instance for the whole app (P05-18): it holds only singleton services (host environment, configuration,
+        // a logger) and its constructor creates the uploads folder, which is not worth repeating on every request.
+        builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
         // Email transport. SmtpEmailService (MailKit) is used whenever Email:Smtp:Host is configured —
         // point it at Papercut/Mailhog in Development or a real relay (SES/SendGrid SMTP/etc.) in prod.
         // With no SMTP host configured, Development falls back to StubEmailService (logs only); any other

@@ -114,6 +114,20 @@ public partial class LocalFileStorage : IFileStorage
         return Task.CompletedTask;
     }
 
+    public StoredFileInfo? GetFileInfo(string filePath)
+    {
+        try
+        {
+            var info = new FileInfo(ResolveInsideRoot(filePath));
+            return info.Exists ? new StoredFileInfo(info.Length, new DateTimeOffset(info.LastWriteTimeUtc, TimeSpan.Zero)) : null;
+        }
+        catch (ArgumentException)
+        {
+            // A path outside the uploads folder names no stored file.
+            return null;
+        }
+    }
+
     public bool FileExists(string filePath)
     {
         try

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Extensions;
 
 namespace FitEdu.Web.Controllers;
 
@@ -30,6 +32,12 @@ public class MediaController : ControllerBase
         ".jpg", ".jpeg", ".png", ".gif", ".webp"
     };
 
+    /// <summary>
+    /// Uploaded files have a name no other file ever gets (a GUID, or on older files the client's name plus a GUID) and are
+    /// never rewritten, so a browser may keep them for a year (P05-18).
+    /// </summary>
+    private const string CacheControlValue = "public, max-age=31536000, immutable";
+
     private readonly IFileStorage _fileStorage;
 
     public MediaController(IFileStorage fileStorage)
@@ -45,7 +53,7 @@ public class MediaController : ControllerBase
     public async Task<IActionResult> GetFile(string filePath, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(filePath) || filePath.Contains(".."))
-            return Problem(detail: "Invalid file path.", statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: ErrorMessagesRes.InvalidFilePath, statusCode: StatusCodes.Status400BadRequest);
 
         // Normalise to forward slashes
         filePath = filePath.Replace('\\', '/').Trim('/');
@@ -62,23 +70,20 @@ public class MediaController : ControllerBase
         if (string.IsNullOrEmpty(ext) || !AllowedExtensions.Contains(ext))
             return NotFound();
 
-        if (!_fileStorage.FileExists(filePath))
+        // No Content-Disposition: an image shown in the page needs none, and a stored name with non-ASCII letters or a
+        // quote in it made the header invalid (a 500 for Greek file names, P05-2).
+        var result = await this.TryServeStoredFileAsync(_fileStorage, filePath, CacheControlValue, cancellationToken);
+        if (result is null)
             return NotFound();
 
-        var (stream, contentType) = await _fileStorage.GetFileAsync(filePath, cancellationToken);
-
-        // Allow browsers to cache public media for 24 h
-        Response.Headers.CacheControl = "public, max-age=86400";
-        // Prevent MIME-sniffing attacks and force inline rendering (not download)
+        // Prevent MIME-sniffing attacks
         Response.Headers["X-Content-Type-Options"] = "nosniff";
         // Neutralise script-carrying uploads (e.g. SVG). The `sandbox` directive runs the
         // response as a sandboxed document with scripts disabled when navigated directly,
         // while still allowing display via <img>. `default-src 'none'` blocks any outbound
         // fetch the file might attempt.
         Response.Headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
-        var fileName = Path.GetFileName(filePath);
-        Response.Headers["Content-Disposition"] = $"inline; filename=\"{fileName}\"";
 
-        return File(stream, contentType);
+        return result;
     }
 }

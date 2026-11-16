@@ -8,6 +8,7 @@ using FitEdu.Domain.Entities;
 using FitEdu.Application.ApiInterfaces;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
+using FitEdu.Web.Extensions;
 
 namespace FitEdu.Web.Controllers;
 
@@ -26,6 +27,9 @@ public class SiteSettingsController : ControllerBase
     private readonly IFileStorage _fileStorage;
     private readonly ILogger<SiteSettingsController> _logger;
 
+    /// <summary>The background keeps a stored name that a later upload may replace, so it is cached briefly and revalidated by ETag.</summary>
+    private const string BackgroundCacheControl = "public, max-age=300";
+
     public SiteSettingsController(IApplicationDbContext db, IFileStorage fileStorage, ILogger<SiteSettingsController> logger)
     {
         _db = db;
@@ -42,24 +46,19 @@ public class SiteSettingsController : ControllerBase
     [HttpGet("background-image")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "image/jpeg", "image/png", "image/webp")]
-    public async Task<IActionResult> GetBackgroundImage()
+    public async Task<IActionResult> GetBackgroundImage(CancellationToken cancellationToken = default)
     {
         var setting = await _db.SiteSettings
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey);
+            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey, cancellationToken);
 
         if (setting == null || string.IsNullOrEmpty(setting.Value))
         {
             return NotFound();
         }
 
-        if (!_fileStorage.FileExists(setting.Value))
-        {
-            return NotFound();
-        }
-
-        var (stream, contentType) = await _fileStorage.GetFileAsync(setting.Value);
-        return File(stream, contentType);
+        var result = await this.TryServeStoredFileAsync(_fileStorage, setting.Value, BackgroundCacheControl, cancellationToken);
+        return result ?? NotFound();
     }
 
     /// <summary>

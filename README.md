@@ -255,7 +255,7 @@ The public exercise library (published exercises only). Photos are served from `
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/lessons/{lessonId}/asset?type=pdf\|video` | Download lesson PDF or video (enrolled only) | Yes (or an `assetToken`) |
+| `GET` | `api/lessons/{lessonId}/asset?type=pdf\|video` | Download lesson PDF or video (enrolled members of a published programme only; `ETag` and range requests, `Cache-Control: private, no-cache`) | Yes (or an `assetToken`) |
 
 ### Assessments — `api/assessments`
 
@@ -375,14 +375,14 @@ An in-app notification inbox with a bell badge and live push (see [Notifications
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/site/background-image` | Landing page background image | No |
+| `GET` | `api/site/background-image` | Landing page background image (`ETag`, cached for 5 minutes) | No |
 | `POST` | `api/admin/site/background-image` | Upload landing page background image (lives under `api/admin/*` like every other admin-only surface) | Admin |
 
 ### Media — `api/media`
 
 | Method | Route | Description | Auth |
 |--------|-------|-------------|------|
-| `GET` | `api/media/{*filePath}` | Serve public media files (allowed folders: `blog/covers`, `testimonials/avatars`; allowed extensions: `.jpg .jpeg .png .gif .webp`) | No |
+| `GET` | `api/media/{*filePath}` | Serve public media files (allowed folders: `blog/covers`, `testimonials/avatars`; allowed extensions: `.jpg .jpeg .png .gif .webp`; uploads are named by a GUID, so the response is `Cache-Control: public, max-age=31536000, immutable` with `ETag` and range support) | No |
 
 ### Admin — Users — `api/admin`
 

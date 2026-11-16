@@ -36,6 +36,14 @@ public class ServiceLifetimeTests : IClassFixture<ServiceLifetimeTests.Registrat
     }
 
     [Fact]
+    public void FileStorage_IsOneInstanceForTheWholeApp()
+    {
+        // It holds only singleton services and creates the uploads folder in its constructor (P05-18).
+        _factory.Registrations.Single(descriptor => descriptor.ServiceType == typeof(IFileStorage))
+            .Lifetime.ShouldBe(ServiceLifetime.Singleton);
+    }
+
+    [Fact]
     public void LiveConnectionCloser_IsTheSameInstanceTheHubsRegisterOn()
     {
         _factory.Services.GetRequiredService<ILiveConnectionCloser>()
