@@ -1,6 +1,9 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using FitEdu.Domain.Entities;
+using FitEdu.Domain.Enums;
 using FitEdu.Domain.Identity;
 using FitEdu.Infrastructure.Data;
 using Shouldly;
@@ -133,6 +136,67 @@ public class MigrationChainTests(ITestOutputHelper output)
             await using var afterDown = NewLocalDbContext(dbName);
             (await afterDown.Users.SingleAsync(u => u.UserName == "old-disabled@test.local")).IsEnabled.ShouldBeTrue();
             (await afterDown.Users.SingleAsync(u => u.UserName == "already-disabled@test.local")).IsEnabled.ShouldBeFalse();
+        }
+        finally
+        {
+            await db.Database.EnsureDeletedAsync();
+        }
+    }
+
+    // The migration before the one that lets a billing record outlive its user.
+    private const string MigrationBeforeBillingKeepsRecords = "20261116061133_AddAdminAuditEntries";
+
+    [Fact]
+    public async Task BillingMigration_KeepsTheRecordOfADeletedAccount_AndDownRefusesWhileSuchRecordsExist()
+    {
+        if (!await LocalDbIsReachableAsync())
+        {
+            output.WriteLine(NotRunMessage);
+            return;
+        }
+
+        var dbName = "FitEduBillingKeepTest_" + Guid.NewGuid().ToString("N");
+        await using var db = NewLocalDbContext(dbName);
+        try
+        {
+            var migrator = db.GetService<IMigrator>();
+            await migrator.MigrateAsync(MigrationBeforeBillingKeepsRecords);
+            // The schema is the same as the next one apart from the nullability of UserId, so rows go in through the model.
+            var member = NewUser("billed", isEnabled: true, lockoutEnd: null);
+            var plan = new SubscriptionPlan { Id = Guid.NewGuid(), Name = "Pro", Tier = SubscriptionTier.Pro };
+            var transaction = new BillingTransaction
+            {
+                Id = Guid.NewGuid(),
+                UserId = member.Id,
+                SubscriptionPlanId = plan.Id,
+                Amount = 19.90m,
+                Type = BillingTransactionType.Purchase,
+                Description = "Purchased Pro"
+            };
+            db.Users.Add(member);
+            db.SubscriptionPlans.Add(plan);
+            db.BillingTransactions.Add(transaction);
+            await db.SaveChangesAsync();
+
+            await migrator.MigrateAsync();
+
+            await using (var afterUp = NewLocalDbContext(dbName))
+            {
+                (await afterUp.BillingTransactions.SingleAsync()).UserId.ShouldBe(member.Id);
+                afterUp.Users.Remove(await afterUp.Users.SingleAsync());
+                await afterUp.SaveChangesAsync();
+            }
+
+            await using var afterDelete = NewLocalDbContext(dbName);
+            (await afterDelete.BillingTransactions.SingleAsync()).UserId.ShouldBeNull();
+
+            var refusal = await Should.ThrowAsync<SqlException>(() => migrator.MigrateAsync(MigrationBeforeBillingKeepsRecords));
+            refusal.Message.ShouldContain("Cannot roll back");
+            (await afterDelete.BillingTransactions.CountAsync()).ShouldBe(1);
+
+            await afterDelete.BillingTransactions.ExecuteDeleteAsync();
+            await migrator.MigrateAsync(MigrationBeforeBillingKeepsRecords);
+            (await afterDelete.Database.GetAppliedMigrationsAsync()).ShouldNotContain(name => name.EndsWith("BillingTransactionKeepsRecordAfterUserDelete"));
         }
         finally
         {

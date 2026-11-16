@@ -12,14 +12,15 @@ public class BillingTransaction
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Foreign key to the user who was billed.
+    /// Foreign key to the user who was billed. Null once the account is deleted: the record is a tax
+    /// record and stays for the retention period (<c>BillingRetention</c>), detached from the user.
     /// </summary>
-    public required string UserId { get; set; }
+    public string? UserId { get; set; }
 
     /// <summary>
-    /// Navigation: the billed user.
+    /// Navigation: the billed user; null after the account was deleted.
     /// </summary>
-    public ApplicationUser User { get; set; } = null!;
+    public ApplicationUser? User { get; set; }
 
     /// <summary>
     /// Foreign key to the plan associated with this transaction.

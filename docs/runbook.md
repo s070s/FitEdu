@@ -75,6 +75,12 @@ automatic undo. Always follow this order:
 **Rollback:** there is no `ef database update <previous>` safety net for data changes — restore the
 pre-update database backup and redeploy the previous binaries. Keep the previous published output.
 
+**One migration refuses to roll back:** `BillingTransactionKeepsRecordAfterUserDelete` lets a billing
+record outlive its account (`UserId` becomes NULL when the account is deleted). Its `Down()` stops with
+"Cannot roll back" while any `BillingTransactions` row has `UserId IS NULL`, because the old schema
+needs a user on every row and the only ways out would delete or falsify tax records. Export those rows
+(they are tax records, kept for the retention period in the README), delete them on purpose, then roll back.
+
 > Deploying by "delete the folder and re-copy" is destructive if uploads/logs live inside it. Point
 > `Storage:UploadsPath` and `Logging:File:Directory` outside the deploy folder (CLOUD-1) first.
 

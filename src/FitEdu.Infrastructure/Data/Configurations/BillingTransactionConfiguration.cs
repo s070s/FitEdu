@@ -30,10 +30,13 @@ public class BillingTransactionConfiguration : IEntityTypeConfiguration<BillingT
         builder.Property(bt => bt.StripeSessionId)
             .HasMaxLength(200);
 
+        // Billing records are tax records kept for the retention period (BillingRetention), so deleting
+        // the user detaches them (UserId set to null by the database) instead of deleting them.
         builder.HasOne(bt => bt.User)
             .WithMany()
             .HasForeignKey(bt => bt.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(bt => bt.SubscriptionPlan)
             .WithMany()

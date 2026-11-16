@@ -334,6 +334,42 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public async Task BillingTransaction_UserDeleted_KeepsTheRecordWithoutTheUser()
+    {
+        // Billing records are tax records: they are kept for the legal period, so deleting the account
+        // detaches them (UserId becomes null, set by the database) instead of cascading to them.
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var user = new ApplicationUser { Id = "u1", UserName = "u@x.com", Email = "u@x.com", FirstName = "A", LastName = "B" };
+        var plan = new SubscriptionPlan { Id = Guid.NewGuid(), Name = "Pro", Tier = SubscriptionTier.Pro };
+        var transaction = new BillingTransaction
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            SubscriptionPlanId = plan.Id,
+            Amount = 19.90m,
+            Type = BillingTransactionType.Purchase,
+            Description = "Purchased Pro",
+            StripeSessionId = "cs_test_1"
+        };
+        db.Users.Add(user);
+        db.SubscriptionPlans.Add(plan);
+        db.BillingTransactions.Add(transaction);
+        await db.SaveChangesAsync();
+        // Reload the user alone: EF then does not track the transaction and cannot detach it itself, so
+        // only the database's ON DELETE SET NULL can keep the row.
+        db.ChangeTracker.Clear();
+
+        db.Users.Remove(await db.Users.SingleAsync(u => u.Id == user.Id));
+        await db.SaveChangesAsync();
+
+        var kept = await db.BillingTransactions.AsNoTracking().SingleAsync();
+        kept.Id.ShouldBe(transaction.Id);
+        kept.UserId.ShouldBeNull();
+        kept.Amount.ShouldBe(19.90m);
+        kept.StripeSessionId.ShouldBe("cs_test_1");
+    }
+
+    [Fact]
     public async Task LessonExercise_LessonDeleted_CascadesPrescriptions()
     {
         await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
