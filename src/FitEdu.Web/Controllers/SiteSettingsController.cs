@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Domain.Entities;
 using FitEdu.Application.ApiInterfaces;
@@ -68,25 +69,27 @@ public class SiteSettingsController : ControllerBase
     // api/site/admin/* (the one outlier the SEC "everything admin lives under /api/admin"
     // review heuristic used to miss).
     [HttpPost("~/api/admin/site/background-image")]
-    public async Task<IActionResult> UploadBackgroundImage(IFormFile file)
+    public async Task<IActionResult> UploadBackgroundImage(IFormFile file, CancellationToken cancellationToken = default)
     {
-        if (file == null || file.Length == 0)
+        var check = await UploadValidator.CheckAsync(
+            file, UploadLimits.ImageContentTypes, UploadLimits.MaxCoverImageBytes, ErrorMessagesRes.OnlyImageFilesAllowed, cancellationToken);
+        if (!check.IsValid)
         {
-            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
+            return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var setting = await _db.SiteSettings
-            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey);
+            .FirstOrDefaultAsync(s => s.Key == SiteSetting.LandingBackgroundImageKey, cancellationToken);
 
         // Delete old background if exists
         if (setting != null && !string.IsNullOrEmpty(setting.Value))
         {
-            await _fileStorage.DeleteFileAsync(setting.Value);
+            await _fileStorage.DeleteFileAsync(setting.Value, cancellationToken);
         }
 
         // Save new background
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "backgrounds");
+        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "backgrounds", cancellationToken: cancellationToken);
 
         if (setting == null)
         {
@@ -107,7 +110,7 @@ public class SiteSettingsController : ControllerBase
             setting.UpdatedAt = DateTimeOffset.UtcNow;
         }
 
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(cancellationToken);
 
         return Ok(new BackgroundImageUploadResultDto(path));
     }

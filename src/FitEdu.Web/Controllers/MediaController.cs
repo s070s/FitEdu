@@ -11,7 +11,7 @@ namespace FitEdu.Web.Controllers;
 [ApiController]
 [Route("api/media")]
 [Tags("Media")]
-[ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "image/jpeg", "image/png", "image/gif", "image/webp", "image/avif", "image/svg+xml")]
+[ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "image/jpeg", "image/png", "image/gif", "image/webp")]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
 public class MediaController : ControllerBase
@@ -22,12 +22,12 @@ public class MediaController : ControllerBase
         "testimonials/avatars"
     };
 
-    // Only these extensions may be served through the public media endpoint.
-    // Prevents drive-by content-type attacks where an attacker uploads a file with
-    // a crafted extension (e.g. .html, .svg) to execute scripts in browser context.
+    // Only these extensions may be served through the public media endpoint: the image types an upload can have
+    // (UploadLimits.ImageContentTypes). SVG and AVIF can never be uploaded, so they are not served either; the list
+    // also prevents content-type attacks with a crafted extension (e.g. .html) that would run script in the browser.
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif", ".svg"
+        ".jpg", ".jpeg", ".png", ".gif", ".webp"
     };
 
     private readonly IFileStorage _fileStorage;

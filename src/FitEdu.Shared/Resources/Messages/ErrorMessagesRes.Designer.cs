@@ -358,11 +358,11 @@ namespace FitEdu.Shared.Resources.Messages {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to File too large (max 5 MB).
+        ///   Looks up a localized string similar to The file is too large (max {0} MB)..
         /// </summary>
-        public static string FileTooLarge5Mb {
+        public static string FileTooLargeFormat {
             get {
-                return ResourceManager.GetString("FileTooLarge5Mb", resourceCulture);
+                return ResourceManager.GetString("FileTooLargeFormat", resourceCulture);
             }
         }
 
@@ -876,6 +876,51 @@ namespace FitEdu.Shared.Resources.Messages {
         public static string OnlyPdfFilesAllowed {
             get {
                 return ResourceManager.GetString("OnlyPdfFilesAllowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only video files are allowed (mp4, webm, ogg)..
+        /// </summary>
+        public static string OnlyVideoFilesAllowed {
+            get {
+                return ResourceManager.GetString("OnlyVideoFilesAllowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The file's content doesn't match its type..
+        /// </summary>
+        public static string FileContentMismatch {
+            get {
+                return ResourceManager.GetString("FileContentMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid file path..
+        /// </summary>
+        public static string InvalidFilePath {
+            get {
+                return ResourceManager.GetString("InvalidFilePath", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The cover image must be uploaded to the site..
+        /// </summary>
+        public static string CoverImageMustBeSiteFile {
+            get {
+                return ResourceManager.GetString("CoverImageMustBeSiteFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The video link must start with http:// or https://..
+        /// </summary>
+        public static string VideoUrlMustBeHttp {
+            get {
+                return ResourceManager.GetString("VideoUrlMustBeHttp", resourceCulture);
             }
         }
     }

@@ -29,6 +29,12 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbName = "web-tests-" + Guid.NewGuid().ToString("N");
 
+    /// <summary>
+    /// This factory's own uploads folder (Storage:UploadsPath), so upload tests never write into the real
+    /// src/FitEdu.Web/App_Data/Uploads; it is deleted when the factory is disposed.
+    /// </summary>
+    public string UploadsPath { get; } = Path.Combine(Path.GetTempPath(), "fitedu-web-uploads-" + Guid.NewGuid().ToString("N"));
+
     public const string TestPassword = "Test-Pass-1!";
 
     static CustomWebAppFactory()
@@ -51,6 +57,7 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment(EnvironmentName);
+        builder.UseSetting("Storage:UploadsPath", UploadsPath);
 
         builder.ConfigureTestServices(services =>
         {
@@ -84,6 +91,33 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>
     protected virtual void ConfigureDatabase(IServiceCollection services)
     {
         services.AddDbContext<ApplicationDbContext>(o => o.UseInMemoryDatabase(_dbName));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+            DeleteUploads();
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        DeleteUploads();
+        GC.SuppressFinalize(this);
+    }
+
+    private void DeleteUploads()
+    {
+        try
+        {
+            if (Directory.Exists(UploadsPath))
+                Directory.Delete(UploadsPath, recursive: true);
+        }
+        catch (IOException)
+        {
+            // A scanner can hold a file for a moment; a leftover folder in the temp directory is harmless.
+        }
     }
 
     /// <summary>Creates an HttpClient carrying a valid Bearer token for a freshly-seeded user in the given role.</summary>

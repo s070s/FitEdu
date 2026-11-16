@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
@@ -122,8 +123,10 @@ public class AdminBlogController : ControllerBase
     public async Task<IActionResult> UploadBlogCoverImage(
         Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
-        if (file is null || file.Length == 0)
-            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
+        var check = await UploadValidator.CheckAsync(
+            file, UploadLimits.ImageContentTypes, UploadLimits.MaxCoverImageBytes, ErrorMessagesRes.OnlyImageFilesAllowed, cancellationToken);
+        if (!check.IsValid)
+            return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
 
         var article = await _context.BlogArticles.FindAsync(new object[] { id }, cancellationToken);
         if (article is null)
@@ -137,7 +140,7 @@ public class AdminBlogController : ControllerBase
         }
 
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "blog/covers", cancellationToken: cancellationToken);
+        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "blog/covers", cancellationToken: cancellationToken);
 
         article.CoverImageUrl = path;
         article.UpdatedAt = DateTimeOffset.UtcNow;

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FitEdu.Application.Common;
 using FitEdu.Application.Data;
 using FitEdu.Application.Mappings;
 using FitEdu.Domain.Entities;
@@ -137,35 +138,34 @@ public class AdminLessonsController : ControllerBase
 
     /// <summary>Upload (or replace) the PDF asset for a lesson. Accepts a single PDF file.</summary>
     [HttpPost("{id:guid}/upload/pdf")]
-    public async Task<IActionResult> UploadPdf(Guid id, IFormFile file)
+    public async Task<IActionResult> UploadPdf(Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
         // Find the lesson or return 404.
-        var lesson = await _db.Lessons.FindAsync(id);
+        var lesson = await _db.Lessons.FindAsync([id], cancellationToken);
         if (lesson == null)
             return NotFound();
 
-        // Validate that a file was provided.
-        if (file == null || file.Length == 0)
-            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
-
-        if (!string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase))
-            return Problem(detail: ErrorMessagesRes.OnlyPdfFilesAllowed, statusCode: StatusCodes.Status400BadRequest);
+        // Validate the file: present, a PDF by type and by its first bytes, within the size limit.
+        var check = await UploadValidator.CheckAsync(
+            file, UploadLimits.PdfContentTypes, UploadLimits.MaxPdfBytes, ErrorMessagesRes.OnlyPdfFilesAllowed, cancellationToken);
+        if (!check.IsValid)
+            return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
 
         // Delete previous PDF if it exists to avoid orphaned files.
         if (!string.IsNullOrEmpty(lesson.PdfPath))
         {
-            await _fileStorage.DeleteFileAsync(lesson.PdfPath);
+            await _fileStorage.DeleteFileAsync(lesson.PdfPath, cancellationToken);
         }
 
         // Save the new PDF using the file storage abstraction.
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "lessons/pdf");
+        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "lessons/pdf", cancellationToken: cancellationToken);
 
         // Update the lesson entity with the new path and audit metadata, then persist.
         lesson.PdfPath = path;
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.UpdatedByUserId = UserId;
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(cancellationToken);
 
         // Return the stored PDF path to the caller.
         return Ok(new LessonPdfUploadResultDto(path));
@@ -174,37 +174,35 @@ public class AdminLessonsController : ControllerBase
     /// <summary>Upload (or replace) the video asset for a lesson (mp4, webm, ogg; up to 500 MB).</summary>
     [HttpPost("{id:guid}/upload/video")]
     [DisableRequestSizeLimit]
-    [RequestFormLimits(MultipartBodyLengthLimit = 524_288_000)] // 500 MB
-    public async Task<IActionResult> UploadVideo(Guid id, IFormFile file)
+    [RequestFormLimits(MultipartBodyLengthLimit = UploadLimits.MaxVideoBytes)]
+    public async Task<IActionResult> UploadVideo(Guid id, IFormFile file, CancellationToken cancellationToken = default)
     {
         // Find the lesson or return 404.
-        var lesson = await _db.Lessons.FindAsync(id);
+        var lesson = await _db.Lessons.FindAsync([id], cancellationToken);
         if (lesson == null)
             return NotFound();
 
-        // Validate file input.
-        if (file == null || file.Length == 0)
-            return Problem(detail: ErrorMessagesRes.NoFileProvided, statusCode: StatusCodes.Status400BadRequest);
-
-        var allowedVideoTypes = new[] { "video/mp4", "video/webm", "video/ogg" };
-        if (!allowedVideoTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
-            return Problem(detail: "Only video files are allowed (mp4, webm, ogg).", statusCode: StatusCodes.Status400BadRequest);
+        // Validate the file: present, a video by type and by its first bytes, within the size limit.
+        var check = await UploadValidator.CheckAsync(
+            file, UploadLimits.VideoContentTypes, UploadLimits.MaxVideoBytes, ErrorMessagesRes.OnlyVideoFilesAllowed, cancellationToken);
+        if (!check.IsValid)
+            return Problem(detail: check.Error, statusCode: StatusCodes.Status400BadRequest);
 
         // Delete previous video if present to prevent orphaned files.
         if (!string.IsNullOrEmpty(lesson.VideoPath))
         {
-            await _fileStorage.DeleteFileAsync(lesson.VideoPath);
+            await _fileStorage.DeleteFileAsync(lesson.VideoPath, cancellationToken);
         }
 
         // Save the new video and get its storage path.
         using var stream = file.OpenReadStream();
-        var path = await _fileStorage.SaveFileAsync(stream, file.ContentType, "lessons/video");
+        var path = await _fileStorage.SaveFileAsync(stream, check.ContentType, "lessons/video", cancellationToken: cancellationToken);
 
         // Update entity with new video path and audit metadata, then persist.
         lesson.VideoPath = path;
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.UpdatedByUserId = UserId;
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(cancellationToken);
 
         // Return the new video path.
         return Ok(new LessonVideoUploadResultDto(path));

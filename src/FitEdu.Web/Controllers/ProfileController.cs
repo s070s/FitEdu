@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using FitEdu.Application.ApiInterfaces;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Shared.Resources.Messages;
 using FitEdu.Web.Extensions;
@@ -51,21 +52,15 @@ public class ProfileController(IProfileService profileService, IAdminUserService
     /// </summary>
     [HttpPost("avatar")]
     [EnableRateLimiting("sensitive")]
-    public async Task<ActionResult<AvatarUploadResultDto>> UploadAvatar(IFormFile file)
+    public async Task<ActionResult<AvatarUploadResultDto>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
-        if (file == null || file.Length == 0)
-            return BadRequest(ErrorMessagesRes.NoFileProvided);
-
-        const long maxAvatarSize = 5 * 1024 * 1024; // 5 MB
-        if (file.Length > maxAvatarSize)
-            return BadRequest(ErrorMessagesRes.FileTooLarge5Mb);
-
-        var allowedAvatarTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
-        if (!allowedAvatarTypes.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
-            return BadRequest(ErrorMessagesRes.OnlyImageFilesAllowed);
+        var check = await UploadValidator.CheckAsync(
+            file, UploadLimits.ImageContentTypes, UploadLimits.MaxImageBytes, ErrorMessagesRes.OnlyImageFilesAllowed, cancellationToken);
+        if (!check.IsValid)
+            return BadRequest(check.Error);
 
         using var stream = file.OpenReadStream();
-        var result = await profileService.UploadAvatarAsync(UserId, stream, file.ContentType);
+        var result = await profileService.UploadAvatarAsync(UserId, stream, check.ContentType);
         return result.ToActionResult(this);
     }
 

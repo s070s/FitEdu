@@ -216,8 +216,8 @@
   <data name="NoFileProvided" xml:space="preserve">
     <value>No file selected.</value>
   </data>
-  <data name="FileTooLarge5Mb" xml:space="preserve">
-    <value>The file is too large (max 5 MB).</value>
+  <data name="FileTooLargeFormat" xml:space="preserve">
+    <value>The file is too large (max {0} MB).</value>
   </data>
   <data name="OnlyImageFilesAllowed" xml:space="preserve">
     <value>Only image files are allowed (jpeg, png, gif, webp).</value>
@@ -389,5 +389,20 @@
   </data>
   <data name="OnlyPdfFilesAllowed" xml:space="preserve">
     <value>Only PDF files are allowed.</value>
+  </data>
+  <data name="OnlyVideoFilesAllowed" xml:space="preserve">
+    <value>Only video files are allowed (mp4, webm, ogg).</value>
+  </data>
+  <data name="FileContentMismatch" xml:space="preserve">
+    <value>The file's content doesn't match its type.</value>
+  </data>
+  <data name="InvalidFilePath" xml:space="preserve">
+    <value>Invalid file path.</value>
+  </data>
+  <data name="CoverImageMustBeSiteFile" xml:space="preserve">
+    <value>The cover image must be uploaded to the site.</value>
+  </data>
+  <data name="VideoUrlMustBeHttp" xml:space="preserve">
+    <value>The video link must start with http:// or https://.</value>
   </data>
 </root>

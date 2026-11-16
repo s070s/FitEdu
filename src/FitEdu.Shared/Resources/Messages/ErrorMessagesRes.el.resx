@@ -216,8 +216,8 @@
   <data name="NoFileProvided" xml:space="preserve">
     <value>Δεν επιλέχθηκε αρχείο.</value>
   </data>
-  <data name="FileTooLarge5Mb" xml:space="preserve">
-    <value>Το αρχείο είναι πολύ μεγάλο (έως 5 MB).</value>
+  <data name="FileTooLargeFormat" xml:space="preserve">
+    <value>Το αρχείο είναι πολύ μεγάλο (έως {0} MB).</value>
   </data>
   <data name="OnlyImageFilesAllowed" xml:space="preserve">
     <value>Επιτρέπονται μόνο αρχεία εικόνας (jpeg, png, gif, webp).</value>
@@ -389,5 +389,20 @@
   </data>
   <data name="OnlyPdfFilesAllowed" xml:space="preserve">
     <value>Επιτρέπονται μόνο αρχεία PDF.</value>
+  </data>
+  <data name="OnlyVideoFilesAllowed" xml:space="preserve">
+    <value>Επιτρέπονται μόνο αρχεία βίντεο (mp4, webm, ogg).</value>
+  </data>
+  <data name="FileContentMismatch" xml:space="preserve">
+    <value>Το περιεχόμενο του αρχείου δεν ταιριάζει με τον τύπο του.</value>
+  </data>
+  <data name="InvalidFilePath" xml:space="preserve">
+    <value>Μη έγκυρη διαδρομή αρχείου.</value>
+  </data>
+  <data name="CoverImageMustBeSiteFile" xml:space="preserve">
+    <value>Η εικόνα εξωφύλλου πρέπει να ανέβει στον ιστότοπο.</value>
+  </data>
+  <data name="VideoUrlMustBeHttp" xml:space="preserve">
+    <value>Ο σύνδεσμος του βίντεο πρέπει να ξεκινά με http:// ή https://.</value>
   </data>
 </root>
