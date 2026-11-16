@@ -252,6 +252,57 @@ public class AdminUserServiceTests
     }
 
     [Fact]
+    public async Task RemoveRole_AdminFromTheActingAdminThemselves_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("admin-actor"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns([NewUser("admin-actor"), NewUser("second-admin")]);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("admin-actor", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(400);
+        await userManager.DidNotReceive().RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task RemoveRole_AdminFromTheLastAdmin_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("only-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns([NewUser("only-admin")]);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("only-admin", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(400);
+        await userManager.DidNotReceive().RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task RemoveRole_StudentFromTheActingAdmin_IsStillAllowed()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("admin-actor"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(true);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Student).Returns(IdentityResult.Success);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("admin-actor", RoleNames.Student);
+
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task DeleteUser_ConstraintViolation_ReturnsConflict()
     {
         await using var db = DbContextFactory.CreateSqlite();

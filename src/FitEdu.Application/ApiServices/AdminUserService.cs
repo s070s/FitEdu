@@ -150,6 +150,17 @@ public partial class AdminUserService(
         if (!await userManager.IsInRoleAsync(user, roleName))
             return ServiceResult<string>.BadRequest(error: $"User does not have role '{roleName}'.");
 
+        if (string.Equals(roleName, RoleNames.Admin, StringComparison.OrdinalIgnoreCase))
+        {
+            if (user.Id == ActingAdmin)
+                return ServiceResult<string>.BadRequest(error: "You cannot remove the Admin role from your own account.");
+
+            // Without an admin nobody could manage the site or hand the role out again.
+            var admins = await userManager.GetUsersInRoleAsync(RoleNames.Admin);
+            if (admins.Count <= 1)
+                return ServiceResult<string>.BadRequest(error: "The last Admin account keeps its Admin role.");
+        }
+
         var result = await userManager.RemoveFromRoleAsync(user, roleName);
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
