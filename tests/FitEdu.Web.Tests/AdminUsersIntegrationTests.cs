@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using FitEdu.Application.Common;
 using FitEdu.Application.DTOs;
 using FitEdu.Domain.Enums;
 using Shouldly;
@@ -196,6 +197,18 @@ public class AdminUsersIntegrationTests : IClassFixture<CustomWebAppFactory>
         assigned.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await memberClient.GetAsync("/api/profile")).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         (await RefreshAsync(_factory.CreateClient(), login.RefreshToken!)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task SetPassword_LongerThanTheMaximum_Returns400()
+    {
+        var (memberId, _) = await SignInNewUserAsync();
+        var admin = await _factory.CreateAuthenticatedClientAsync("Admin");
+        var tooLong = "Aa1!" + new string('x', PasswordRules.MaximumLength - 3);
+
+        var response = await admin.PostAsJsonAsync($"/api/admin/users/{memberId}/set-password", new AdminSetPasswordDto { NewPassword = tooLong });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]

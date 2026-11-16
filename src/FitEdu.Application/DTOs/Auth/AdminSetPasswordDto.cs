@@ -5,6 +5,6 @@ namespace FitEdu.Application.DTOs;
 
 public class AdminSetPasswordDto
 {
-    [Required, MinLength(PasswordRules.MinimumLength)]
+    [Required, MinLength(PasswordRules.MinimumLength), MaxLength(PasswordRules.MaximumLength)]
     public string NewPassword { get; set; } = string.Empty;
 }
