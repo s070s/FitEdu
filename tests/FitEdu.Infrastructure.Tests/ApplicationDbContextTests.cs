@@ -468,6 +468,28 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
+    public async Task DateTimeProperty_WrittenAsLocalTime_IsStoredAsTheSameUtcMoment()
+    {
+        // The column holds UTC and materialization says Utc, so a Local value must be converted on write.
+        // The local value is built from a fixed UTC moment, so the check holds in any machine time zone.
+        var utcMoment = new DateTime(2026, 7, 1, 9, 30, 0, DateTimeKind.Utc);
+        var localMoment = utcMoment.ToLocalTime();
+        await using var db = FitEdu.TestSupport.DbContextFactory.CreateSqlite();
+        var user = new ApplicationUser { Id = "u1", UserName = "u@x.com", Email = "u@x.com", FirstName = "A", LastName = "B" };
+        var course = new Course { Id = Guid.NewGuid(), TitleEn = "C" };
+        db.Users.Add(user);
+        db.Courses.Add(course);
+        db.Enrollments.Add(new Enrollment { Id = Guid.NewGuid(), UserId = user.Id, CourseId = course.Id, EnrolledAt = localMoment });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+
+        var enrollment = await db.Enrollments.AsNoTracking().SingleAsync();
+
+        enrollment.EnrolledAt.ShouldBe(utcMoment);
+        enrollment.EnrolledAt.Kind.ShouldBe(DateTimeKind.Utc);
+    }
+
+    [Fact]
     public async Task ConcurrentEdit_StaleRowVersion_ThrowsConcurrencyException()
     {
         // DB-7: RowVersion is DB-generated in production (SQL Server's rowversion type is

@@ -192,11 +192,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         // CallParticipant, ApplicationUser timestamps). Column type is unchanged (still
         // datetime2) — this only fixes materialization, which previously left Kind=Unspecified
         // and broke ToLocalTime()/ToUniversalTime() and "Z"-suffixed JSON serialization.
+        // On write a Local value becomes UTC, so the stored wall-clock time is always UTC; Utc and
+        // Unspecified values are stored as they are.
         var utcDateTimeConverter = new ValueConverter<DateTime, DateTime>(
-            v => v,
+            v => v.Kind == DateTimeKind.Local ? v.ToUniversalTime() : v,
             v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
         var utcNullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
-            v => v,
+            v => v.HasValue && v.Value.Kind == DateTimeKind.Local ? v.Value.ToUniversalTime() : v,
             v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
 
         foreach (var entityType in builder.Model.GetEntityTypes())
