@@ -27,6 +27,8 @@ public partial class AdminUserService(
     TimeProvider timeProvider,
     IOptions<AppOptions> appOptions) : IAdminUserService
 {
+    private static readonly SemaphoreSlim AdminRoleGate = new(1, 1);
+
     // LOG-4: the acting admin's id for audit attribution ("who did it"), from the request principal.
     private string ActingAdmin => currentUser.UserId ?? "unknown";
 
@@ -151,18 +153,9 @@ public partial class AdminUserService(
         if (!await userManager.IsInRoleAsync(user, roleName))
             return ServiceResult<string>.BadRequest(error: $"User does not have role '{roleName}'.");
 
-        if (string.Equals(roleName, RoleNames.Admin, StringComparison.OrdinalIgnoreCase))
-        {
-            if (user.Id == ActingAdmin)
-                return ServiceResult<string>.BadRequest(error: "You cannot remove the Admin role from your own account.");
-
-            // Without an admin nobody could manage the site or hand the role out again.
-            var admins = await userManager.GetUsersInRoleAsync(RoleNames.Admin);
-            if (admins.Count <= 1)
-                return ServiceResult<string>.BadRequest(error: "The last Admin account keeps its Admin role.");
-        }
-
-        var result = await userManager.RemoveFromRoleAsync(user, roleName);
+        var result = string.Equals(roleName, RoleNames.Admin, StringComparison.OrdinalIgnoreCase)
+            ? await RemoveAdminRoleAsync(user, cancellationToken)
+            : await userManager.RemoveFromRoleAsync(user, roleName);
         if (!result.Succeeded)
             return ServiceResult<string>.BadRequest(error: string.Join(", ", result.Errors.Select(e => e.Description)));
 
@@ -173,6 +166,31 @@ public partial class AdminUserService(
         LogRoleRemoved(logger, ActingAdmin, roleName, userId);
         return ServiceResult<string>.Ok($"Role '{roleName}' removed.");
     }
+
+    // Without an enabled admin nobody could manage the site or hand the role out again. The check and the removal
+    // run one at a time, so two admins removed at once cannot both see the other one still there. The gate is per
+    // process, which is the single instance this site runs on.
+    private async Task<IdentityResult> RemoveAdminRoleAsync(ApplicationUser user, CancellationToken cancellationToken)
+    {
+        if (user.Id == ActingAdmin)
+            return Refused("You cannot remove the Admin role from your own account.");
+
+        await AdminRoleGate.WaitAsync(cancellationToken);
+        try
+        {
+            var admins = await userManager.GetUsersInRoleAsync(RoleNames.Admin);
+            if (!admins.Any(admin => admin.IsEnabled && admin.Id != user.Id))
+                return Refused("The last Admin account keeps its Admin role.");
+
+            return await userManager.RemoveFromRoleAsync(user, RoleNames.Admin);
+        }
+        finally
+        {
+            AdminRoleGate.Release();
+        }
+    }
+
+    private static IdentityResult Refused(string description) => IdentityResult.Failed(new IdentityError { Description = description });
 
     public async Task<List<string?>> GetRolesAsync(CancellationToken cancellationToken = default)
     {

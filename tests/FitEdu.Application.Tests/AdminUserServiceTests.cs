@@ -483,6 +483,75 @@ public class AdminUserServiceTests
     }
 
     [Fact]
+    public async Task RemoveRole_AdminWhenTheOtherAdminIsDisabled_IsRefused()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("second-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        var disabledAdmin = NewUser("disabled-admin");
+        disabledAdmin.IsEnabled = false;
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns([NewUser("second-admin"), disabledAdmin]);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("second-admin", RoleNames.Admin);
+
+        result.StatusCode.ShouldBe(400);
+        await userManager.DidNotReceive().RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task RemoveRole_AdminWhenAnotherEnabledAdminRemains_IsAllowed()
+    {
+        await using var db = DbContextFactory.CreateSqlite();
+        db.Users.Add(NewUser("second-admin"));
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var userManager = UserManagerOver(db);
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns([NewUser("second-admin"), NewUser("third-admin")]);
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(IdentityResult.Success);
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+
+        var result = await NewService(db, userManager).RemoveRoleAsync("second-admin", RoleNames.Admin);
+
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task RemoveRole_TwoAdminsRemovedAtTheSameTime_LeavesOneAdmin()
+    {
+        await using var firstDb = DbContextFactory.CreateSqlite();
+        await using var secondDb = DbContextFactory.CreateSqlite();
+        var admins = new List<ApplicationUser> { NewUser("admin-a"), NewUser("admin-b") };
+        var userManager = IdentityMocks.MockUserManager();
+        userManager.FindByIdAsync(Arg.Any<string>()).Returns(call => admins.Single(a => a.Id == call.Arg<string>()));
+        userManager.IsInRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(true);
+        userManager.GetUsersInRoleAsync(RoleNames.Admin).Returns(_ =>
+        {
+            lock (admins)
+                return admins.ToList();
+        });
+        userManager.RemoveFromRoleAsync(Arg.Any<ApplicationUser>(), RoleNames.Admin).Returns(async call =>
+        {
+            // Slow enough that an unguarded second request reads the list before this one has changed it.
+            await Task.Delay(150);
+            lock (admins)
+                admins.Remove(call.Arg<ApplicationUser>());
+            return IdentityResult.Success;
+        });
+        userManager.UpdateSecurityStampAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+
+        var results = await Task.WhenAll(
+            NewService(firstDb, userManager).RemoveRoleAsync("admin-a", RoleNames.Admin),
+            NewService(secondDb, userManager).RemoveRoleAsync("admin-b", RoleNames.Admin));
+
+        results.Count(result => result.IsSuccess).ShouldBe(1);
+        admins.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task RemoveRole_StudentFromTheActingAdmin_IsStillAllowed()
     {
         await using var db = DbContextFactory.CreateSqlite();
