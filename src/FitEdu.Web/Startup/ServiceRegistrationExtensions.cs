@@ -151,6 +151,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddHostedService<SessionStartMonitor>();
         builder.Services.AddHostedService<SubscriptionExpirySweeper>();
         builder.Services.AddHostedService<RefreshTokenPurgeService>();
+        builder.Services.AddHostedService<BillingRetentionPurgeService>();
         builder.Services.AddOptions<WebRtcOptions>()
             .Bind(config.GetSection("WebRtc"))
             .ValidateDataAnnotations()   // CFG-4
