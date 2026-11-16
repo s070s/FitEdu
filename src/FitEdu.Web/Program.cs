@@ -155,9 +155,12 @@ app.Map("/__status-code-dispatch", (HttpContext ctx) =>
 }).AllowAnonymous().ExcludeFromDescription();
 
 app.MapControllers();
-app.MapHub<ChatHub>("/hubs/chat");
-app.MapHub<CallHub>("/hubs/call");
-app.MapHub<NotificationHub>("/hubs/notifications");
+// CloseOnAuthenticationExpiration closes a connection when its access token expires (60 minutes for the
+// bearer token the Blazor circuits mint); the client reconnects with a freshly minted token, which the
+// bearer validation rejects for a disabled account or a rotated security stamp.
+app.MapHub<ChatHub>("/hubs/chat", options => options.CloseOnAuthenticationExpiration = true);
+app.MapHub<CallHub>("/hubs/call", options => options.CloseOnAuthenticationExpiration = true);
+app.MapHub<NotificationHub>("/hubs/notifications", options => options.CloseOnAuthenticationExpiration = true);
 // appsettings.json sets DisableStaticAssetNotFoundRuntimeFallback: when MapStaticAssets runs from the build-time
 // manifest (dotnet run, test hosts) it would otherwise map a GET/HEAD-only {**path:file} fallback that turns a
 // POST/PUT/DELETE to an unknown URL into 405 instead of 404.
