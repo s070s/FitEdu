@@ -114,6 +114,65 @@ public sealed class LocalFileStorageTests : IDisposable
         _storage.FileExists("../nope").ShouldBeFalse();
     }
 
+    // P05-6: a copy that fails or is cancelled leaves no half-written file behind.
+
+    [Fact]
+    public async Task SaveFile_CancelledMidCopy_LeavesNoFile()
+    {
+        using var cancellation = new CancellationTokenSource();
+        await using var source = new FailingSecondReadStream(cancellation);
+
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => _storage.SaveFileAsync(source, "a.png", "avatars", cancellationToken: cancellation.Token));
+
+        Directory.GetFiles(_root, "*", SearchOption.AllDirectories).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SaveFile_SourceFailsMidCopy_LeavesNoFileAndRethrows()
+    {
+        await using var source = new FailingSecondReadStream(cancellation: null);
+
+        await Should.ThrowAsync<IOException>(() => _storage.SaveFileAsync(source, "a.png", "avatars"));
+
+        Directory.GetFiles(_root, "*", SearchOption.AllDirectories).ShouldBeEmpty();
+    }
+
+    /// <summary>Gives some bytes on the first read, then cancels the token (when given) or fails on the second.</summary>
+    private sealed class FailingSecondReadStream(CancellationTokenSource? cancellation) : Stream
+    {
+        private int _reads;
+
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            _reads++;
+            if (_reads == 1)
+            {
+                buffer.Span[..10].Clear();
+                return ValueTask.FromResult(10);
+            }
+
+            if (cancellation is not null)
+            {
+                cancellation.Cancel();
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            throw new IOException("the source broke");
+        }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => throw new NotSupportedException();
+        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+        public override void Flush() { }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
+
     // P05-5: every path the storage takes is resolved against the uploads folder and must stay inside it.
     // The absolute path, the drive/stream colon and the control character cases all used to get past the
     // ".." check, because Path.Combine drops the base folder when its second part is rooted.

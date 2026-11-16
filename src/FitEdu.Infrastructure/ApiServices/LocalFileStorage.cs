@@ -88,9 +88,20 @@ public partial class LocalFileStorage : IFileStorage
         // Validate file size — prefer explicit cap; fall back to folder-heuristic.
         ValidateFileSize(fileStream, folder, maxBytes);
 
-        // Save file
-        using var fileStreamOut = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
-        await fileStream.CopyToAsync(fileStreamOut, cancellationToken);
+        // Save file. CreateNew never overwrites another file; a copy that fails or is cancelled must not leave
+        // its half-written file behind (the caller only learns the path when this method returns).
+        var fileStreamOut = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+        try
+        {
+            await fileStream.CopyToAsync(fileStreamOut, cancellationToken);
+            await fileStreamOut.DisposeAsync();
+        }
+        catch
+        {
+            await fileStreamOut.DisposeAsync();
+            DeletePartialFile(filePath);
+            throw;
+        }
 
         // Return relative path
         var relativePath = $"{folder}/{uniqueFileName}";
@@ -171,6 +182,22 @@ public partial class LocalFileStorage : IFileStorage
         return fullPath;
     }
 
+    private void DeletePartialFile(string fullPath)
+    {
+        try
+        {
+            File.Delete(fullPath);
+        }
+        catch (IOException exception)
+        {
+            LogPartialFileNotDeleted(_logger, exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            LogPartialFileNotDeleted(_logger, exception);
+        }
+    }
+
     private static void ValidateFileSize(Stream fileStream, string folder, long? explicitMaxBytes)
     {
         // Network streams (e.g. from IFormFile) may not be seekable;
@@ -226,4 +253,7 @@ public partial class LocalFileStorage : IFileStorage
 
     [LoggerMessage(Level = LogLevel.Information, Message = "File deleted: {FilePath}")]
     private static partial void LogFileDeleted(ILogger logger, string filePath);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "A half-written upload could not be deleted.")]
+    private static partial void LogPartialFileNotDeleted(ILogger logger, Exception exception);
 }
