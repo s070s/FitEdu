@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using Bunit;
 using Bunit.TestDoubles;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -421,6 +423,13 @@ public class AdminUsersPageTests : BunitContext
         page.WaitForAssertion(() => JSInterop.VerifyFocusAsyncInvoke(2));
         page.FindAll(".modal-dialog").ShouldBeEmpty();
         page.Find("h1").GetAttribute("tabindex").ShouldBe("-1");
+        // bUnit's ShouldBeElementReferenceTo reads the id from the markup, where it stays empty for a reference
+        // captured in the first render, so the id of the heading's reference is read from the page itself.
+        var headingReference = (ElementReference)typeof(AdminUsers)
+            .GetField("_headingRef", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(page.Instance)!;
+        var focusCalls = JSInterop.VerifyFocusAsyncInvoke(2);
+        ((ElementReference)focusCalls[1].Arguments[0]!).Id.ShouldBe(headingReference.Id);
+        ((ElementReference)focusCalls[0].Arguments[0]!).Id.ShouldNotBe(headingReference.Id);
     }
 
     [Fact]
